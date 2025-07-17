@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.8.11">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Arvind V">
 <meta name="dcterms.date" content="2023-03-28">
 <title>Comparing Multiple Means with ANOVA – The Mad Hatter’s Guide to Data Viz and Stats in R</title>
 <style>
@@ -95,7 +96,7 @@ div.csl-indent {
 <link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-c23b7709e79dce8e83170d48840a32ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../../../../site_libs/bootstrap/bootstrap-847de0ff13bb6db62c70a934105de66e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../../../site_libs/bootstrap/bootstrap-4efab6f43faeb1fd65bd76af97763141.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="../../../../../../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.css" rel="stylesheet">
 <script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <link href="../../../../../../site_libs/quarto-contrib/downloadthis-1.9.1/downloadthis.css" rel="stylesheet">
@@ -155,7 +156,11 @@ const typesetMath = (el) => {
 window.Quarto = {
   typesetMath
 };
-</script>
+</script><link rel="stylesheet" href="../../../../../../css/fira.css">
+<link rel="stylesheet" href="../../../../../../css/roboto-condensed.css">
+<link rel="stylesheet" href="../../../../../../css/vollkorn.css">
+<link rel="stylesheet" href="../../../../../../css/fraunces.css">
+<link rel="stylesheet" href="../../../../../../css/styles.css">
 <meta property="og:title" content="Comparing Multiple Means with ANOVA – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:description" content="ANOVA to investigate how frogspawn hatching time varies with temperature.">
 <meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/Inference/Modules/130-ThreeMeansOrMore/preview.jpg">
@@ -675,6 +680,12 @@ window.Quarto = {
 
 <div class="quarto-title-meta column-body">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Arvind V </p>
+          </div>
+  </div>
     
     <div>
     <div class="quarto-title-meta-heading">Published</div>
@@ -825,7 +836,7 @@ window.Quarto = {
 </section><section id="workflow-read-the-data" class="level2"><h2 class="anchored" data-anchor-id="workflow-read-the-data">
 <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Read the Data</h2>
 <p>Download the data by clicking the button below.</p>
-<p><a href="#dnldts42022" onclick="fetch('data:text/csv;base64,RnJvZ3NwYXduIHNhbXBsZSBpZCxUZW1wZXJhdHVyZTEzLFRlbXBlcmF0dXJlMTgsVGVtcGVyYXR1cmUyNQoxLDI0LCwKMiwsMjEsCjMsLCwxOAo0LDI2LCwKNSwsMjIsCjYsLCwxNAo3LDI3LCwKOCwsMjIsCjksLCwxNQoxMCwyNywsCjExLCwyMSwKMTIsLCwxNQoxMywyNiwsCjE0LCwyMCwKMTUsLCwxNgoxNiwyNywsCjE3LCwyMCwKMTgsLCwxNgoxOSwyNywsCjIwLCwxOSwKMjEsLCwxNwoyMiwyNSwsCjIzLCwyMSwKMjQsLCwxNwoyNSwyNiwsCjI2LCwyMywKMjcsLCwxNwoyOCwyOCwsCjI5LCwyMSwKMzAsLCwxNwozMSwyNCwsCjMyLCwyMSwKMzMsLCwxOAozNCwyNiwsCjM1LCwyMiwKMzYsLCwxNAozNywyNywsCjM4LCwyMiwKMzksLCwxNQo0MCwyNywsCjQxLCwyMSwKNDIsLCwxNQo0MywyNiwsCjQ0LCwyMCwKNDUsLCwxNgo0NiwyNywsCjQ3LCwyMCwKNDgsLCwxNgo0OSwyNywsCjUwLCwxOSwKNTEsLCwxNwo1MiwyNSwsCjUzLCwyMSwKNTQsLCwxNwo1NSwyNiwsCjU2LCwyMywKNTcsLCwxNwo1OCwyOCwsCjU5LCwyMSwKNjAsLCwxNwo=').then(res => res.blob()).then(blob => {
+<p><a href="#dnldts25172" onclick="fetch('data:text/csv;base64,RnJvZ3NwYXduIHNhbXBsZSBpZCxUZW1wZXJhdHVyZTEzLFRlbXBlcmF0dXJlMTgsVGVtcGVyYXR1cmUyNQoxLDI0LCwKMiwsMjEsCjMsLCwxOAo0LDI2LCwKNSwsMjIsCjYsLCwxNAo3LDI3LCwKOCwsMjIsCjksLCwxNQoxMCwyNywsCjExLCwyMSwKMTIsLCwxNQoxMywyNiwsCjE0LCwyMCwKMTUsLCwxNgoxNiwyNywsCjE3LCwyMCwKMTgsLCwxNgoxOSwyNywsCjIwLCwxOSwKMjEsLCwxNwoyMiwyNSwsCjIzLCwyMSwKMjQsLCwxNwoyNSwyNiwsCjI2LCwyMywKMjcsLCwxNwoyOCwyOCwsCjI5LCwyMSwKMzAsLCwxNwozMSwyNCwsCjMyLCwyMSwKMzMsLCwxOAozNCwyNiwsCjM1LCwyMiwKMzYsLCwxNAozNywyNywsCjM4LCwyMiwKMzksLCwxNQo0MCwyNywsCjQxLCwyMSwKNDIsLCwxNQo0MywyNiwsCjQ0LCwyMCwKNDUsLCwxNgo0NiwyNywsCjQ3LCwyMCwKNDgsLCwxNgo0OSwyNywsCjUwLCwxOSwKNTEsLCwxNwo1MiwyNSwsCjUzLCwyMSwKNTQsLCwxNwo1NSwyNiwsCjU2LCwyMywKNTcsLCwxNwo1OCwyOCwsCjU5LCwyMSwKNjAsLCwxNwo=').then(res => res.blob()).then(blob => {
       const downloadURL = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       document.body.appendChild(a);
@@ -833,7 +844,7 @@ window.Quarto = {
       a.download = 'frogs.csv'; a.click();
       window.URL.revokeObjectURL(downloadURL);
       document.body.removeChild(a);
-        });"><button class="btn btn-info downloadthis  " id="dnldts42022"><i class="bi bi-database-fill-down"></i> Download the frogs data </button></a></p>
+        });"><button class="btn btn-info downloadthis  " id="dnldts25172"><i class="bi bi-database-fill-down"></i> Download the frogs data </button></a></p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1922,8 +1933,8 @@ Wilke, Claus O., and Brenton M. Wiernik. 2022. <em><span class="nocase">ggtext</
 <li id="fn6"><p>ggplot2 Based Plots with Statistical Details • ggstatsplot <a href="https://indrajeetpatil.github.io/ggstatsplot/" class="uri">https://indrajeetpatil.github.io/ggstatsplot/</a><a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn7"><p><a href="https://github.com/UCLATALL/supernova" class="uri">https://github.com/UCLATALL/supernova</a><a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn8"><p>Ernst, Michael D. 2004. “Permutation Methods: A Basis for Exact Inference.” Statistical Science 19 (4): 676–85. doi:10.1214/088342304000000396.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{2023,
-  author = {},
+</ol></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{v2023,
+  author = {V, Arvind},
   title = {Comparing {Multiple} {Means} with {ANOVA}},
   date = {2023-03-28},
   url = {https://madhatterguide.netlify.app/content/courses/Analytics/Inference/Modules/130-ThreeMeansOrMore/},
@@ -1931,9 +1942,9 @@ Wilke, Claus O., and Brenton M. Wiernik. 2022. <em><span class="nocase">ggtext</
   abstract = {ANOVA to investigate how frogspawn hatching time varies
     with temperature.}
 }
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-2023" class="csl-entry quarto-appendix-citeas" role="listitem">
-<span>“Comparing Multiple Means with ANOVA.”</span> 2023. March 28,
-2023. <a href="https://madhatterguide.netlify.app/content/courses/Analytics/Inference/Modules/130-ThreeMeansOrMore/">https://madhatterguide.netlify.app/content/courses/Analytics/Inference/Modules/130-ThreeMeansOrMore/</a>.
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-v2023" class="csl-entry quarto-appendix-citeas" role="listitem">
+V, Arvind. 2023. <span>“Comparing Multiple Means with ANOVA.”</span>
+March 28, 2023. <a href="https://madhatterguide.netlify.app/content/courses/Analytics/Inference/Modules/130-ThreeMeansOrMore/">https://madhatterguide.netlify.app/content/courses/Analytics/Inference/Modules/130-ThreeMeansOrMore/</a>.
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
