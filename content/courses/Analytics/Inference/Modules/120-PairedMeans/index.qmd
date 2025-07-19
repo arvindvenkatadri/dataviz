@@ -47,65 +47,58 @@ library(MKdescr)
 #### Plot Fonts and Theme
 
 ```{r}
-#| label: Plot Sizing and theming
+#| label: plot-theme
+#| echo: true
+#| cache: false
 #| code-fold: true
-#| message: false
-#| warning: true
+#| messages: false
+#| warning: false
 
-# Chunk options
-knitr::opts_chunk$set(
- fig.width = 7,
- fig.asp = 0.618, # Golden Ratio
- #out.width = "80%",
- fig.align = "center"
-)
-### Ggplot Theme
-### https://rpubs.com/mclaire19/ggplot2-custom-themes
-### https://stackoverflow.com/questions/74491138/ggplot-custom-fonts-not-working-in-quarto
-
-# We have locally downloaded the `Alegreya` and `Roboto Condensed` fonts.
-# This ensures we are GDPR-compliant, and not using Google Fonts directly.
-# Let us import these local fonts into our session and use them to define our ggplot theme. 
-library(sysfonts)
-
-sysfonts::font_add(family = "Alegreya", 
-                   regular = "../../../../../../fonts/Alegreya-Regular.ttf",
-                   italic = "../../../../../../fonts/Alegreya-Italic.ttf",
-                   bold = "../../../../../../fonts/Alegreya-Bold.ttf",
-                   bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
+library(systemfonts)
+library(showtext)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
 
 sysfonts::font_add(family = "Roboto Condensed", 
-                   regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
-                   italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
-                   bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
-                   bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
-
-
+  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+showtext_auto(enable = TRUE) #enable showtext
+##
 theme_custom <- function(){ 
     font <- "Alegreya"   #assign font family up front
     
-    theme_classic(base_size = 14) %+replace%    #replace elements we want to change
+    theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
     
     theme(
-      
-      text = element_text(family = "Alegreya"), #set default font family for all text
+      text = element_text(family = font),  #set base font family
       
       #text elements
       plot.title = element_text(                 #title
-                   family = "Alegreya",          #set font family
-                   size = 18,                    #set font size
+                   family = font,          #set font family
+                   size = 24,                    #set font size
                    face = 'bold',                #bold typeface
                    hjust = 0,                    #left align
-                   vjust = 2),                   #raise slightly
-      
+                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
       plot.title.position = "plot", 
       
       plot.subtitle = element_text(              #subtitle
-                   family = "Alegreya",          #font family
-                   size = 14),                   #font size
+                   family = font,          #font family
+                   size = 14,                   #font size
+                   hjust = 0,                   #left align
+                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
       
       plot.caption = element_text(               #caption
-                   family = "Alegreya",          #font family
+                   family = font,          #font family
                    size = 9,                     #font size
                    hjust = 1),                   #right align
       
@@ -113,7 +106,7 @@ theme_custom <- function(){
       
       axis.title = element_text(                 #axis titles
                    family = "Roboto Condensed",  #font family
-                   size = 10),                   #font size
+                   size = 12),                   #font size
       
       axis.text = element_text(                  #axis text
                    family = "Roboto Condensed",  #font family
@@ -128,7 +121,7 @@ theme_custom <- function(){
 }
 
 ## Use available fonts in ggplot text geoms too!
-update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text",new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -137,13 +130,9 @@ update_geom_defaults(geom = "text",new = list(
 )
 
 ## Set the theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ```
-
-
-
-
 
 
 ## {{< iconify openmoji japanese-symbol-for-beginner >}} Introduction to Inference for Paired Data
@@ -151,12 +140,12 @@ theme_set(new = theme_custom())
 ### {{< iconify fluent pair-24-filled >}} What is Paired Data?
 
 Sometimes the data is collected on the same set of individual
-categories, e.g. scores by sport persons in two separate tournaments, or
-sales of identical items in two separate locations of a chain store. Or
+categories, e.g. scores by *the same* sport persons in two separate tournaments, or
+sales of *identical items* in two separate locations of a chain store. Or
 say the number of customers in the morning and in the evening, at a set
 of store locations. In this case we treat the two sets of observations
 as **paired**, since they correspond to the same set of observable
-entities. This is how some experiments give us paired data.
+entities ( Qual !!) . This is how some experiments give us paired data.
 
 We would naturally be interested in the differences in **means** across
 these two sets, which exploits this paired nature. In this module, we will examine tests for this purpose.
@@ -206,9 +195,7 @@ Let us first make this data into long form:
 ```{r}
 #| label: making-diving-long
 #| eval: false
-# Set graph theme
-theme_set(new = theme_custom())
-#
+
 Diving2017_long <- Diving2017 %>%
   pivot_longer(
     cols = c(Final, Semifinal),
@@ -237,6 +224,8 @@ Next, histograms and densities of the two variables at hand:
 ```{r}
 #| label: diving-density-1
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
+
 Diving2017_long %>%
   gf_density( ~ scores,
               fill = ~ race,
@@ -244,7 +233,8 @@ Diving2017_long %>%
               title = "Diving Scores") %>%
   gf_refine(scale_fill_brewer(palette = "Set1")) %>%
   gf_facet_grid( ~ race) %>%
-  gf_fitdistr(dist = "dnorm")
+  gf_fitdistr(dist = "dnorm") %>% 
+gf_theme(theme(legend.position = "none")) # No Need!!
   
 ```
 
@@ -265,6 +255,8 @@ Diving2017_long %>%
 ```{r}
 #| label: diving-col-1
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
+
 Diving2017_long %>%
   gf_col(
     fct_reorder(Name, scores) ~ scores,
@@ -275,7 +267,8 @@ Diving2017_long %>%
     ylab = "Name",
     title = "Diving Scores"
   )  %>% 
-  gf_refine(scale_fill_brewer(palette = "Set1")) %>%
+  gf_refine(scale_fill_brewer(palette = "Set1"))
+
 ```
 :::
 :::{.column}
@@ -294,6 +287,8 @@ Diving2017_long %>%
 ```{r}
 #| label: diving-boxplot-1
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
+
 Diving2017_long %>%
   gf_boxplot(
     scores ~ race,
@@ -303,7 +298,8 @@ Diving2017_long %>%
     ylab = "Scores",
     title = "Diving Scores"
   ) %>% 
-    gf_refine(scale_fill_brewer(palette = "Set1")) %>%
+    gf_refine(scale_fill_brewer(palette = "Set1")) %>% 
+gf_theme(theme(legend.position = "none")) # No Need
 
 ```
 :::
@@ -353,33 +349,17 @@ data generated with the same means and standard deviations:
 ```{r}
 #| layout-ncol: 2
 #| warning: false
-# Set graph theme
-theme_set(new = theme_custom())
-#
-set.rseed(1234)
-Diving2017 %>% 
-  mutate(Final_norm = rnorm(n = 12, 
-                            mean = mean(Final), 
-                            sd = sd(Final)),
+ggplot2::theme_set(new = theme_custom())
 
-         Semifinal_norm = rnorm(n = 12, 
-                                mean = mean(Semifinal), 
-                                sd = sd(Semifinal))) %>% 
-  pivot_longer(cols = 
-                 c(Semifinal, Final, Semifinal_norm,Final_norm),
-               names_to = "score_type", values_to = "value") %>% 
-  gf_boxplot(value ~ score_type, fill = ~ score_type, 
-             show.legend = FALSE) %>% 
-  gf_labs(title = "Comparing Data and Normal Boxplots") %>% 
-  gf_refine(scale_fill_brewer(palette = "Set1")) 
-###
 Diving2017_long %>% 
-  gf_qq(~ scores | race, size = 2) %>% 
-  gf_qqline(ylab = "scores", xlab = "theoretical normal") 
+  gf_qq(~ scores | race, size = 2, colour = ~ race) %>% 
+  gf_qqline(ylab = "scores", colour = ~ race,
+xlab = "theoretical normal", title = "Q-Q Plots for Paired Race Data") %>% 
+gf_theme(theme(legend.position = "none"))
 
 ```
 
-While the boxplots are not very evocative, we see in the QQ-plots that
+We see in the QQ-plots that
 the `Final` scores are closer to the straight line than the `Semifinal`
 scores. But it is perhaps still hard to accept the data as normally
 distributed...hmm.
@@ -448,7 +428,7 @@ obs_diff_swim
 ### {{< iconify fluent-mdl2 insights >}} Inference
 
 ::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
-#### Using the *paired* t.test
+#### *Paired* t.test
 
 Since the data variables satisfy the assumption of being *normally
 distributed*, and the variances are not significantly different, we may
@@ -479,7 +459,7 @@ high $0.259$, so there is no reason to accept alternative hypothesis
 that the means are different. Hence we say that there is no evidence of
 a difference between `SemiFinal` and `Final` scores.
 
-#### Using non-parametric *paired* Wilcoxon test
+#### *Paired* Wilcoxon test
 
 Well, we might consider ( based on knowledge of the sport ) that at
 least one of the variables does *not* meet the normality criteria, and
@@ -514,7 +494,7 @@ Here also with the `p.value` being $0.3804$, we have no reason to accept
 the Alternative Hypothesis. The parametric `t.test` and the
 non-parametric `wilcox.test` agree in their inferences.
 
-#### Using the Linear Model Method
+#### Linear Model Method
 
 We can apply the *linear-model-as-inference* interpretation both to the
 original data and to the sign.rank data: 
@@ -548,7 +528,7 @@ lm(signed_rank(Semifinal - Final) ~ 1,
 
 We observe that using the linear model method for the original scores and the sign-rank scores both sdo not permit us to reject the $H_0$ Null Hypothesis, since `p.values` are high, and the `confidence.intervals` straddle $0$.
 
-#### Using Permutation Tests
+#### Permutation Tests
 
 For the specific data at hand, we need to shuffle
 the records between `Semifinal` and `Final` on **a per Swimmer basis** (paired data!!) and take the `test statistic` (difference between the two swim records for *each* swimmer). Another way to look at this is to take the differences between `Semifinal` and `Final` scores and *shuffle the differences to either polarity*. We will follow this method in the code below:
@@ -576,19 +556,22 @@ Let us plot the NULL distribution and compare it with the actual
 
 ```{r}
 #| layout-ncol: 2
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 gf_histogram(data = null_dist_swim, ~ mean) %>%
   gf_vline(xintercept = obs_diff_swim, 
            colour = "red",
-           linewidth = 1)
+           linewidth = 1, title = "Null Distribution by Permutation", 
+           subtitle = "Histogram") %>% 
+  gf_labs(x = "Difference in Means")
 
 ###
 gf_ecdf(data = null_dist_swim, ~ mean, linewidth = 1) %>%
   gf_vline(xintercept = obs_diff_swim, 
            colour = "red",
-           linewidth = 1)
+           linewidth = 1, title = "Null Distribution by Permutation", 
+           subtitle = "Cumulative Density") %>% 
+  gf_labs(x = "Difference in Means")
 
 ###
 prop1(~ mean <= obs_diff_swim, data = null_dist_swim)
@@ -683,7 +666,7 @@ Groceries_inspect$quantitative
 
 ```
 
-There are just 30 prices for each vendor....just barely enough to get an idea of what the distribution might be. Let us plot the
+There are just 30 prices for each vendor....just barely enough to get an idea of what the distribution might be. Let us convert the data to tidy long-form for convenience, and plot the
 prices for the products, as box plots after pivoting the data to long
 form, [^1] and as bar charts:
 
@@ -691,10 +674,8 @@ form, [^1] and as bar charts:
 
 
 ```{r}
-#| layout-ncol: 2
-## Set graph theme
-theme_set(new = theme_custom())
-##
+#| label: making-groceries-long
+#| code-fold: true
 Groceries_long <- Groceries %>%
   pivot_longer(
     cols = c(Walmart, Target),
@@ -702,6 +683,8 @@ Groceries_long <- Groceries %>%
     values_to = "prices"
   ) %>% 
   mutate(store = as_factor(store))
+Groceries_long
+
 ```
 
 
@@ -713,6 +696,8 @@ Let us plot histograms/densities of the two variables that we wish to compare. W
 ```{r}
 #| label: Grocery-histograms-1
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
+
 Groceries_long %>%
   gf_dhistogram( ~ prices,
               fill = ~ store,
@@ -720,7 +705,8 @@ Groceries_long %>%
               title = "Grocery Costs") %>%
   gf_facet_grid( ~ store) %>%
   gf_fitdistr(dist = "dnorm") %>% 
-  gf_refine(scale_fill_brewer(palette = "Set1")) 
+  gf_refine(scale_fill_brewer(palette = "Set1")) %>% 
+gf_theme(theme(legend.position = "none"))
 ```
 :::
 :::{.column }
@@ -736,6 +722,8 @@ Groceries_long %>%
 ```{r}
 #| label: Grocery-density-1
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
+
 Groceries_long %>%
   gf_density( ~ prices,
               fill = ~ store,
@@ -743,7 +731,8 @@ Groceries_long %>%
               title = "Grocery Costs") %>%
   gf_facet_grid( ~ store) %>%
   gf_fitdistr(dist = "dnorm") %>% 
-  gf_refine(scale_fill_brewer(palette = "Set1")) 
+  gf_refine(scale_fill_brewer(palette = "Set1")) %>% 
+gf_theme(theme(legend.position = "none"))
 
 ```
 :::
@@ -766,10 +755,8 @@ How about price differences, what we are interested in?
 ```{r}
 #| label: Grocery-boxplot-1
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
-## Set graph theme
-theme_set(new = theme_custom())
-##
 Groceries_long %>% 
   gf_boxplot(prices~ store, 
              fill = ~ store) %>% 
@@ -789,14 +776,12 @@ Groceries_long %>%
 ```{r}
 #| label: Grocery-colplot-1
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
-## Set graph theme
-theme_set(new = theme_custom())
-##
 Groceries_long %>%
   gf_col(fct_reorder(Product, prices) ~ prices,
     fill = ~ store,
-    alpha = 0.5,
+    #alpha = 0.5,
     position = "dodge",
     xlab = "Prices",
     ylab = "",
@@ -809,7 +794,7 @@ Groceries_long %>%
          fct_reorder(Product, prices) ~ prices, 
          fill = ~ store, 
          position = "dodge") %>% 
-  gf_refine(scale_fill_brewer(palette = "Set1")) 
+  gf_refine(scale_fill_brewer(name = "Store", palette = "Set1")) 
 
 ```
 
@@ -954,16 +939,14 @@ lm(signed_rank(Target - Walmart) ~ 1,
 
 Very interesting results, but confirming what we saw earlier: The Linear Model with the original data reports no significant difference, but the linear model with sign-ranks, suggests there is a significant difference in means prices between stores!
 
-#### Using Permutation Tests
+#### Permutation Tests
 
 Let us perform the pair-wise permutation test on prices, by shuffling
 the two store names:
 
 ```{r}
 # | layout: [[15, 85, 15]]
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
 
 polarity <- c(rep(1, 15), rep(-1,15))
 ##
@@ -1035,9 +1018,8 @@ Suppose we knock off the `Quaker Cereal` data item...(note the spaces in the pro
 ```{r}
 #| layout: [[30,5],[50,5]]
 #| warning: false
-## Set graph theme
-theme_set(new = theme_custom())
-##
+ggplot2::theme_set(new = theme_custom())
+
 set.seed(12345)
 Groceries_less <- Groceries %>%
   filter(Product != "Quaker Oats Life Cereal Original")

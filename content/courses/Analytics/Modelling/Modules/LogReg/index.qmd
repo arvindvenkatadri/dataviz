@@ -56,6 +56,7 @@ library(grateful)
 ```{r}
 #| label: plot-theme
 #| echo: true
+#| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
@@ -127,7 +128,7 @@ theme_custom <- function(){
 }
 
 ## Use available fonts in ggplot text geoms too!
-update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text",new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -136,7 +137,7 @@ update_geom_defaults(geom = "text",new = list(
 )
 
 ## Set the theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ```
 
@@ -227,9 +228,7 @@ variable. If we naively use a linear model equation as
 #| fig-cap: "Naive Linear Model"
 #| echo: false
 #| warning: false
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
 
 lm_mod <- lm(default ~ balance, data = default_modified)
 default_modified %>%
@@ -255,47 +254,50 @@ $Y_i = -0.22$? Anything other than Yes/No is hard to interpret!
 
 Where do we go from here?
 
-Let us state what we might desire of our model:
+###### 1. Model Equation: 
 
-1.  **Model Equation**: Despite this setback, we would still like our
-    model to be as close as possible to the familiar linear model
-    equation. 
+Let us state what we might desire of our model: despite this setback, we would still like our model to be as close as possible to the familiar linear model equation. 
     
-    $$
+$$
     Y_i = \beta_0 + \beta_1*X_i + \epsilon_i\\ \nonumber
-    $$ 
-    
-    $$
+$$ 
+$$
     where\\\
-    $$ $$
+$$ 
+    
+$$
     \begin{align}
     Y_i &= 0 ~ if ~~~"No"\\ \nonumber
     &= 1 ~ if ~~~ "Yes"  \nonumber
     \end{align}
-    $$ {#eq-linear-model}
+$$ {#eq-linear-model}
 
-2.  **Predictors and Weights**: We have quantitative **predictors** so
+###### 2. Predictors and Weights: 
+
+We have quantitative **predictors** so
     we still want to use a linear-weighted sum for the RHS (i.e
     predictor side) of the model equation. 
     What can we try to make this work? Especially for the LHS (i.e the
 target side)?
 
-3.  **Making the LHS continuous**: What can we try? In dummy encoding
-    our target variable, we found a range of \[0,1\], [which is the same
+###### 3. Making the LHS continuous? 
+
+What can we try? In dummy encoding our target variable, we found a range of \[0,1\], [which is the same
     range for a **probability** value]{.black .bg-yellow}! Could we try
     to use **probability of the outcome** as our target, even though we
     are interested in binary outcomes? This would still leave us with a
     range of $[0,1]$ for the target variable, as before.
 
 :::::: callout-note
+
 #### Binomially distributed target variable
 ::::: grid
 ::: g-col-6
+
 ```{r}
 #| echo: false
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 n <- 1
 gf_fun(p *(1 - p) *n ~ p, xlim = c(0, 1), linewidth = 1) %>% 
     gf_labs(x = "Probability p",
@@ -336,7 +338,9 @@ counter with transformations such as the $log()$ function. More on this
 very shortly!
 ::::::
 
-4.  **Odds**?: How would one "extend" the range of a target variable
+###### 4. Odds?: 
+
+How would one "extend" the range of a target variable
     from \[0,1\] to $[-\infty, \infty]$ ? One step would be to try the
     **odds of the outcome**, instead of trying to predict the outcomes
     directly (Yes or No), or their probabilities $[0,1]$.
@@ -383,22 +387,22 @@ have **transformed** a simple probability that lies between $[0,1]$ to
 odds lying between $[0, \infty]$. That's one step towards making a
 linear model possible; we have "removed" one of the limits on our linear
 model's prediction range by using `Odds` as our target variable.
+
 :::
 
-5.  **Transformation using `log()`?**: We need one more leap of faith:
-    how do we convert a $[0, \infty]$ range to a $[-\infty, \infty]$?
-    Can we try a log transformation?
-
+###### 5. Transformation using `log()`?
+    
+We need one more leap of faith: how do we convert a $[0, \infty]$ range to a $[-\infty, \infty]$? Can we try a log transformation?
 
 $$
-log([0, \infty]) ~ = ~ [-\infty, \infty]
+    log([0, \infty]) ~ = ~ [-\infty, \infty]
 $$ 
 
 
-This extends the range of our Qualitative target to the same as with
+  This extends the range of our Qualitative target to the same as with
 a Quantitative target!
 
-There is an additional benefit if this `log()` transformation: the
+  There is an additional benefit if this `log()` transformation: the
 **Error Distributions with Odds targets**. See the plot below. Odds are
 a necessarily nonlinear function of probability; the slope of
 `Odds ~ probability` also depends upon the probability itself, as we saw
@@ -413,10 +417,8 @@ with the probability curve earlier.
 #| fig-subcap: 
 #|   - "Odds"
 #|   - "Log Odds"
-# Set graph theme
-theme_set(new = theme_custom())
-#
-library(ggtext)
+ggplot2::theme_set(new = theme_custom())
+
 gf_fun(p / (1 - p) ~ p, xlim = c(0.01, 0.9), linewidth = 1) %>% 
   gf_labs(
     x = "Probability p",
@@ -498,9 +500,8 @@ function of the weighted sum of predictors and is limited to the range
 #|   - "naive linear regression model"
 #|   - "logistic regression model"
 #|   - "log odds gives linear models"
-# Set graph theme
-theme_set(new = theme_custom())
-##
+ggplot2::theme_set(new = theme_custom())
+
 default_modified %>%
   gf_point(default ~ balance, colour = ~ default, size = 2,
            title = "Student Credit Card Default data") %>%
@@ -564,7 +565,9 @@ since it includes *three variables*. We'll see this shortly, with code.
 The thing to note is that the formula inside the `exp()` is a **linear
 combination** of the predictors!
 
-5.  **Estimation of Model Parameters**: The parameters $\beta_i$ now
+###### 6.Estimation of Model Parameters: 
+
+The parameters $\beta_i$ now
     need to be estimated. How might we do that? This last problem is
     that because we have made so many transformations to get to the
     `logits` that we want to model, the logic of minimizing the **sum of
@@ -673,6 +676,7 @@ cancer <- read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/dslabs/br
   janitor::clean_names()
 glimpse(cancer)
 skim(cancer)
+
 ```
 
 We see that there are 31 Quantitative variables, all named as `x_***`,
@@ -706,6 +710,7 @@ cancer_modified <- cancer %>%
   select(radius_mean, concave_points_mean, diagnosis, diagnosis_malignant)
   
 cancer_modified
+
 ```
 
 ::: callout-note
@@ -725,9 +730,8 @@ dataset:
 #| label: pairs-plot-1
 #| code-fold: true
 #| message: false
-#| # Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 cancer_modified %>% 
   select(diagnosis, radius_mean, concave_points_mean) %>% 
   GGally::ggpairs(mapping = aes(colour = diagnosis),
@@ -812,9 +816,8 @@ $exp(\hat{\beta_1}) =  2.809$. We can plot the model as shown below:
 #| fig-cap: "Simple Model plot"
 #| warning: false
 #| code-fold: true
-# Set graph theme
-theme_set(new = theme_custom())
-##
+ggplot2::theme_set(new = theme_custom())
+
 qthresh <- c(0.2, 0.5, 0.8)
 beta01 <- coef(cancer_fit_1)[1]
 beta11 <- coef(cancer_fit_1)[2]
@@ -857,7 +860,8 @@ $q$.
 #| label: emi-tanaka-1
 #| eval: false
 #| echo: false
-#| 
+ggplot2::theme_set(new = theme_custom())
+
 ggplot(cancer_modified, aes(radius_mean, diagnosis_malignant)) +
   geom_point(aes(color = diagnosis, shape = diagnosis), alpha = 0.5, size = 3) + 
   geom_smooth(method = glm, method.args = list(family = "binomial"), se = FALSE, color = "black") +
@@ -921,9 +925,8 @@ several constant values of threshold probability $q$.
 #| label: fig-model-plot-2
 #| fig-cap: "Complex Model plot"
 #| code-fold: true
-# Set graph theme
-theme_set(new = theme_custom())
-##
+ggplot2::theme_set(new = theme_custom())
+
 beta02 <- coef(cancer_fit_2)[1]
 beta12 <- coef(cancer_fit_2)[2]
 beta22 <- coef(cancer_fit_2)[3]
@@ -952,15 +955,18 @@ cancer_modified %>%
 
 #### {{< iconify flat-color-icons workflow >}} Workflow: Model Checking and Diagnostics {#sec-diagnostics}
 
-To Be Written Up.
+To Be Written Up. 
+Yeah, sure. 
 
 #### {{< iconify ic twotone-rule >}} Workflow: Checks for Uncertainty
 
 To Be Written Up.
+Hmph.
 
 #### {{< iconify simple-icons hypothesis >}} Logistic Regression Models as Hypothesis Tests
 
 To Be Written Up.
+(This is becoming a joke.)
 :::
 
 ## Workflow: Logistic Regression Internals
@@ -992,6 +998,8 @@ procedure:
     the parameters (step 5) are made in accordance with a method such as
     the [Newton-Raphson](https://www.geeksforgeeks.org/newton-raphson-method/) method that can rapidly find the ML values
     for the parameters.
+
+### Likelihood Function
 
 Let us visualize the variations and computations from step(5). For the
 sake of clarity:
@@ -1026,9 +1034,8 @@ beta1_sample = coef(glm_sample_model)[2]
 #| echo: false
 #| label: fig-multiple-models
 #| fig-cap: "Multiple Models"
-## Set graph theme
-theme_set(new = theme_custom())
-##
+ggplot2::theme_set(new = theme_custom())
+
 colors <- RColorBrewer::brewer.pal(3, "Set1")
 cancer_modified_sample %>% 
   gf_point(diagnosis_malignant ~ radius_mean, 
@@ -1059,9 +1066,8 @@ the predicted probability for each point.
 #| echo: false
 #| layout-ncol: 2
 #| 
-## Set graph theme
-theme_set(new = theme_custom())
-##
+ggplot2::theme_set(new = theme_custom())
+
 plot_dat <- cancer_modified_sample %>% 
   mutate(
   curve1 = ilogit(radius_mean * (beta1_sample - 0.002) + beta0_sample - 1),
@@ -1161,6 +1167,7 @@ likelihood &=  \prod_{Malignant}^{}p_i ~ \times ~ \prod_{Benign}^{}(1 - p_i)\\
 \end{equation}
 }
 $$
+
 Lastly, since this is a product of small numbers, it can lead to inaccuracies, so we take the log of the whole thing to make it into an addition, obtaining the **log-likelihood (LL)**:
 
 $$
@@ -1174,6 +1181,9 @@ log~likelihood ~~ ll(\beta_i) &= log\prod_{}^{}(p_i)^{y_i} * (1-p_i)^{1-y_i}\\
 }
 $${#eq-log-likelihood}
 
+
+### Maximum Likelihood Estimation 
+
 We now need to find the (global) **maximum** of this quantity and determine the $\beta_i$. Flipping this problem around, we find the *maximum likelihood* by **minimizing** the slope/gradient of of the LL!! And, to minimize the *slope of the LL*, we use the [Newton-Raphson method](https://www.geeksforgeeks.org/newton-raphson-method/) or equivalent. Phew!
 
 ::::: callout-note
@@ -1184,9 +1194,8 @@ We now need to find the (global) **maximum** of this quantity and determine the 
 ```{r}
 #| label: newton-raphson
 #| echo: false
-## Set graph theme
-theme_set(new = theme_custom())
-##
+ggplot2::theme_set(new = theme_custom())
+
 my_fun_exp = expression(0.005 * (x - 2)^3 + 5)
 my_fun_slope_exp = D(my_fun_exp, "x")
 my_fun <- function(x) {
@@ -1318,11 +1327,12 @@ How do we calculate the next value of x using the tangent?
 
 :::::
 
-To be written up:
+## To be written up
 
 - Formula for gradient of LL
 - Convergence of Newton- Raphson method for Maximum Likelihood
 - Hand Calculation of all steps (!!)
+- Bah.
 
 
 ## {{< iconify fluent-mdl2 decision-solid >}} Conclusions

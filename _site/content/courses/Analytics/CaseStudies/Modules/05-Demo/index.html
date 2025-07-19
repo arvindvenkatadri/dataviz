@@ -603,7 +603,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
 <li><a href="#setting-up-r-packages" id="toc-setting-up-r-packages" class="nav-link active" data-scroll-target="#setting-up-r-packages"><iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</a></li>
-  <li><a href="#setting-up-plot-theme" id="toc-setting-up-plot-theme" class="nav-link" data-scroll-target="#setting-up-plot-theme">Setting up plot theme</a></li>
   <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction"><iconify-icon inline="" icon="fxemoji:japanesesymbolforbeginner" aria-label="Icon japanesesymbolforbeginner from fxemoji Iconify.design set." title="Icon japanesesymbolforbeginner from fxemoji Iconify.design set."></iconify-icon> Introduction</a></li>
   <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><iconify-icon inline="" icon="tabler:variable" aria-label="Icon variable from tabler Iconify.design set." title="Icon variable from tabler Iconify.design set."></iconify-icon> Data</a></li>
   <li><a href="#data-dictionary" id="toc-data-dictionary" class="nav-link" data-scroll-target="#data-dictionary"><iconify-icon inline="" icon="streamline:dictionary-language-book-solid" aria-label="Icon dictionary-language-book-solid from streamline Iconify.design set." title="Icon dictionary-language-book-solid from streamline Iconify.design set."></iconify-icon> Data Dictionary</a></li>
@@ -669,48 +668,98 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://danchaltiel.github.io/crosstable/">crosstable</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/EmilHvitfeldt/paletteer">paletteer</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section><section id="setting-up-plot-theme" class="level2"><h2 class="anchored" data-anchor-id="setting-up-plot-theme">Setting up plot theme</h2>
-<div class="cell">
-<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode" id="cb3" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">extrafont</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/extrafont/man/loadfonts.html">loadfonts</a></span><span class="op">(</span>quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">font</span> <span class="op">&lt;-</span> <span class="st">"Roboto Condensed"</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_classic</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">12</span><span class="op">)</span><span class="op">)</span></span>
+<section id="plot-fonts-and-theme" class="level4"><h4 class="anchored" data-anchor-id="plot-fonts-and-theme">Plot Fonts and Theme</h4>
+<div class="cell" data-messages="false">
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode" id="cb3" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-lib/systemfonts">systemfonts</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/yixuan/showtext">showtext</a></span><span class="op">)</span></span>
+<span><span class="co">## Clean the slate</span></span>
+<span><span class="fu">systemfonts</span><span class="fu">::</span><span class="fu"><a href="https://systemfonts.r-lib.org/reference/add_fonts.html">clear_local_fonts</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">systemfonts</span><span class="fu">::</span><span class="fu"><a href="https://systemfonts.r-lib.org/reference/register_font.html">clear_registry</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">##</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/showtext/man/showtext_opts.html">showtext_opts</a></span><span class="op">(</span>dpi <span class="op">=</span> <span class="fl">96</span><span class="op">)</span> <span class="co"># set DPI for showtext</span></span>
+<span><span class="fu">sysfonts</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sysfonts/man/font_add.html">font_add</a></span><span class="op">(</span></span>
+<span>  family <span class="op">=</span> <span class="st">"Alegreya"</span>,</span>
+<span>  regular <span class="op">=</span> <span class="st">"../../../../../../fonts/Alegreya-Regular.ttf"</span>,</span>
+<span>  bold <span class="op">=</span> <span class="st">"../../../../../../fonts/Alegreya-Bold.ttf"</span>,</span>
+<span>  italic <span class="op">=</span> <span class="st">"../../../../../../fonts/Alegreya-Italic.ttf"</span>,</span>
+<span>  bolditalic <span class="op">=</span> <span class="st">"../../../../../../fonts/Alegreya-BoldItalic.ttf"</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_update</a></span><span class="op">(</span></span>
-<span>  panel.grid.minor <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>family <span class="op">=</span> <span class="va">font</span><span class="op">)</span>,</span>
-<span>  <span class="co"># text elements</span></span>
-<span>  plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># title</span></span>
-<span>    family <span class="op">=</span> <span class="va">font</span>, <span class="co"># set font family</span></span>
-<span>    size <span class="op">=</span> <span class="fl">16</span>, <span class="co"># set font size</span></span>
-<span>    face <span class="op">=</span> <span class="st">"bold"</span>, <span class="co"># bold typeface</span></span>
-<span>    hjust <span class="op">=</span> <span class="fl">0</span>, <span class="co"># left align</span></span>
-<span>    <span class="co"># vjust = 2                #raise slightly</span></span>
-<span>    margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">10</span>, <span class="fl">0</span><span class="op">)</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># subtitle</span></span>
-<span>    family <span class="op">=</span> <span class="va">font</span>, <span class="co"># font family</span></span>
-<span>    size <span class="op">=</span> <span class="fl">12</span>, <span class="co"># font size</span></span>
-<span>    hjust <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>    margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">0</span><span class="op">)</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  plot.caption <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># caption</span></span>
-<span>    family <span class="op">=</span> <span class="va">font</span>, <span class="co"># font family</span></span>
-<span>    size <span class="op">=</span> <span class="fl">8</span>, <span class="co"># font size</span></span>
-<span>    hjust <span class="op">=</span> <span class="fl">1</span></span>
-<span>  <span class="op">)</span>, <span class="co"># right align</span></span>
+<span><span class="fu">sysfonts</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sysfonts/man/font_add.html">font_add</a></span><span class="op">(</span></span>
+<span>  family <span class="op">=</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span>  regular <span class="op">=</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Regular.ttf"</span>,</span>
+<span>  bold <span class="op">=</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Bold.ttf"</span>,</span>
+<span>  italic <span class="op">=</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Italic.ttf"</span>,</span>
+<span>  bolditalic <span class="op">=</span> <span class="st">"../../../../../../fonts/RobotoCondensed-BoldItalic.ttf"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/showtext/man/showtext_auto.html">showtext_auto</a></span><span class="op">(</span>enable <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># enable showtext</span></span>
+<span><span class="co">##</span></span>
+<span><span class="va">theme_custom</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">font</span> <span class="op">&lt;-</span> <span class="st">"Alegreya"</span> <span class="co"># assign font family up front</span></span>
 <span></span>
-<span>  axis.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># axis titles</span></span>
-<span>    family <span class="op">=</span> <span class="va">font</span>, <span class="co"># font family</span></span>
-<span>    size <span class="op">=</span> <span class="fl">10</span> <span class="co"># font size</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  axis.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># axis text</span></span>
-<span>    family <span class="op">=</span> <span class="va">font</span>, <span class="co"># axis family</span></span>
-<span>    size <span class="op">=</span> <span class="fl">8</span></span>
-<span>  <span class="op">)</span> <span class="co"># font size</span></span>
-<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_classic</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">14</span>, base_family <span class="op">=</span> <span class="va">font</span><span class="op">)</span> <span class="op"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">%+replace%</a></span> <span class="co"># replace elements we want to change</span></span>
+<span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span></span>
+<span>      text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>family <span class="op">=</span> <span class="va">font</span><span class="op">)</span>, <span class="co"># set base font family</span></span>
+<span></span>
+<span>      <span class="co"># text elements</span></span>
+<span>      plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># title</span></span>
+<span>        family <span class="op">=</span> <span class="va">font</span>, <span class="co"># set font family</span></span>
+<span>        size <span class="op">=</span> <span class="fl">24</span>, <span class="co"># set font size</span></span>
+<span>        face <span class="op">=</span> <span class="st">"bold"</span>, <span class="co"># bold typeface</span></span>
+<span>        hjust <span class="op">=</span> <span class="fl">0</span>, <span class="co"># left align</span></span>
+<span>        margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">5</span>, r <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">5</span>, l <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span>      <span class="op">)</span>, <span class="co"># margin</span></span>
+<span>      plot.title.position <span class="op">=</span> <span class="st">"plot"</span>,</span>
+<span>      plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># subtitle</span></span>
+<span>        family <span class="op">=</span> <span class="va">font</span>, <span class="co"># font family</span></span>
+<span>        size <span class="op">=</span> <span class="fl">14</span>, <span class="co"># font size</span></span>
+<span>        hjust <span class="op">=</span> <span class="fl">0</span>, <span class="co"># left align</span></span>
+<span>        margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">5</span>, r <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">10</span>, l <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span>      <span class="op">)</span>, <span class="co"># margin</span></span>
+<span></span>
+<span>      plot.caption <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># caption</span></span>
+<span>        family <span class="op">=</span> <span class="va">font</span>, <span class="co"># font family</span></span>
+<span>        size <span class="op">=</span> <span class="fl">9</span>, <span class="co"># font size</span></span>
+<span>        hjust <span class="op">=</span> <span class="fl">1</span></span>
+<span>      <span class="op">)</span>, <span class="co"># right align</span></span>
+<span></span>
+<span>      plot.caption.position <span class="op">=</span> <span class="st">"plot"</span>, <span class="co"># right align</span></span>
+<span></span>
+<span>      axis.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># axis titles</span></span>
+<span>        family <span class="op">=</span> <span class="st">"Roboto Condensed"</span>, <span class="co"># font family</span></span>
+<span>        size <span class="op">=</span> <span class="fl">12</span></span>
+<span>      <span class="op">)</span>, <span class="co"># font size</span></span>
+<span></span>
+<span>      axis.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># axis text</span></span>
+<span>        family <span class="op">=</span> <span class="st">"Roboto Condensed"</span>, <span class="co"># font family</span></span>
+<span>        size <span class="op">=</span> <span class="fl">9</span></span>
+<span>      <span class="op">)</span>, <span class="co"># font size</span></span>
+<span></span>
+<span>      axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># margin for axis text</span></span>
+<span>        margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span><span class="fl">5</span>, b <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span>      <span class="op">)</span></span>
+<span></span>
+<span>      <span class="co"># since the legend often requires manual tweaking</span></span>
+<span>      <span class="co"># based on plot content, don't define it here</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co">## Use available fonts in ggplot text geoms too!</span></span>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/update_defaults.html">update_geom_defaults</a></span><span class="op">(</span>geom <span class="op">=</span> <span class="st">"text"</span>, new <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>  family <span class="op">=</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span>  face <span class="op">=</span> <span class="st">"plain"</span>,</span>
+<span>  size <span class="op">=</span> <span class="fl">3.5</span>,</span>
+<span>  color <span class="op">=</span> <span class="st">"#2b2b2b"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Set the theme</span></span>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-error">
+<pre data-code-line-numbers=""><code>Error in theme_classic(base_size = 14, base_family = font) %+replace% : could not find function "%+replace%"</code></pre>
 </div>
-</section><section id="introduction" class="level2"><h2 class="anchored" data-anchor-id="introduction">
+</div>
+</section></section><section id="introduction" class="level2"><h2 class="anchored" data-anchor-id="introduction">
 <iconify-icon inline="" icon="fxemoji:japanesesymbolforbeginner" aria-label="Icon japanesesymbolforbeginner from fxemoji Iconify.design set." title="Icon japanesesymbolforbeginner from fxemoji Iconify.design set."></iconify-icon> Introduction</h2>
 <p>As a demonstration Data Analysis flow, I will take a dataset and show the various steps involved in the workflow: data inspection, cleaning, setting up a hypothesis, plotting a chart, and responding to the hypothesis.</p>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -790,7 +839,7 @@ Note
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb4" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">opening</span> <span class="op">&lt;-</span> <span class="va">opening</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">janitor</span><span class="fu">::</span><span class="fu"><a href="https://sfirke.github.io/janitor/reference/clean_names.html">clean_names</a></span><span class="op">(</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb5" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">opening</span> <span class="op">&lt;-</span> <span class="va">opening</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">janitor</span><span class="fu">::</span><span class="fu"><a href="https://sfirke.github.io/janitor/reference/clean_names.html">clean_names</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">opening</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/mosaicCore/man/inspect.html">inspect</a></span><span class="op">(</span><span class="va">opening</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -858,7 +907,7 @@ quantitative variables:
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb6" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## janitor is a good package to make clean names out of weird column names</span></span>
+<div class="sourceCode" id="cb7" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## janitor is a good package to make clean names out of weird column names</span></span>
 <span><span class="co">##</span></span>
 <span><span class="va">closing</span> <span class="op">&lt;-</span> <span class="va">closing</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">janitor</span><span class="fu">::</span><span class="fu"><a href="https://sfirke.github.io/janitor/reference/clean_names.html">clean_names</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">closing</span><span class="op">)</span></span>
@@ -1008,7 +1057,7 @@ quantitative variables:
 <iconify-icon inline="" icon="carbon:clean" aria-label="Icon clean from carbon Iconify.design set." title="Icon clean from carbon Iconify.design set."></iconify-icon> Analyse / Transform the Data</h2>
 <p>We need to first convert all the obvious Qual variables into, well, Qual factors! A few variables are also obviously Quant, and need to be transformed. We can also perform counts based on <code>hand_pain</code> and <code>hand_illness</code> to decide how to deal with them. And we will not modify the original data !!</p>
 <div class="cell">
-<div class="sourceCode" id="cb8" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">opening_modified</span> <span class="op">&lt;-</span> <span class="va">opening</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<div class="sourceCode" id="cb9" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">opening_modified</span> <span class="op">&lt;-</span> <span class="va">opening</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># correct spelling mistake</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span><span class="st">"time_sauce"</span> <span class="op">=</span> <span class="va">time_suace</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># If you want to do this fast!</span></span>
@@ -1030,7 +1079,7 @@ quantitative variables:
   </script>
 </div>
 </div>
-<div class="sourceCode" id="cb9" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">opening_modified</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb10" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">opening_modified</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre data-code-line-numbers=""><code>Rows: 17
 Columns: 17
@@ -1057,7 +1106,7 @@ $ time_soup      &lt;dbl&gt; 6, 23, 23, 6, 3, 6, 2, 30, 23, 3, 4, 6, 9, 4, 6, 8,
 </section><section id="analyse-the-data" class="level2"><h2 class="anchored" data-anchor-id="analyse-the-data">Analyse the Data</h2>
 <p>Let us make some counts wrt Qual variables, and histograms of Quant variables and get used to our data.</p>
 <div class="cell">
-<div class="sourceCode" id="cb11" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">opening_modified</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/mosaicCore/man/prop.html">count</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">opening_modified</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/mosaicCore/man/prop.html">count</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -1065,7 +1114,7 @@ $ time_soup      &lt;dbl&gt; 6, 23, 23, 6, 3, 6, 2, 30, 23, 3, 4, 6, 9, 4, 6, 8,
   </script>
 </div>
 </div>
-<div class="sourceCode" id="cb12" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">opening_modified</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/mosaicCore/man/prop.html">count</a></span><span class="op">(</span><span class="va">hand_pain</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">opening_modified</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/mosaicCore/man/prop.html">count</a></span><span class="op">(</span><span class="va">hand_pain</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -1073,7 +1122,7 @@ $ time_soup      &lt;dbl&gt; 6, 23, 23, 6, 3, 6, 2, 30, 23, 3, 4, 6, 9, 4, 6, 8,
   </script>
 </div>
 </div>
-<div class="sourceCode" id="cb13" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">opening_modified</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/mosaicCore/man/prop.html">count</a></span><span class="op">(</span><span class="va">hand_pain</span>, <span class="va">hand_illness</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">opening_modified</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/mosaicCore/man/prop.html">count</a></span><span class="op">(</span><span class="va">hand_pain</span>, <span class="va">hand_illness</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -1083,17 +1132,16 @@ $ time_soup      &lt;dbl&gt; 6, 23, 23, 6, 3, 6, 2, 30, 23, 3, 4, 6, 9, 4, 6, 8,
 </div>
 </div>
 <p>Reasonably balanced groups. <code>Hand_pain</code> and <code>Hand_illness</code> are not the same thing, as seen from the 4-fold counts above.</p>
-<div class="sourceCode" id="cb14" data-code-line-numbers=""><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Set graph theme</span></span>
-<span><span class="co"># theme_set(new = theme_custom())</span></span>
-<span><span class="co">#</span></span>
+<div class="sourceCode" id="cb15" data-code-line-numbers=""><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
 <span><span class="va">opening_modified</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_histogram.html">gf_histogram</a></span><span class="op">(</span><span class="op">~</span><span class="va">hand_strength</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_histogram.html">gf_histogram</a></span><span class="op">(</span><span class="op">~</span><span class="va">hand_strength</span>, title <span class="op">=</span> <span class="st">"Hand Strength"</span><span class="op">)</span></span>
 <span><span class="va">opening_modified</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_histogram.html">gf_histogram</a></span><span class="op">(</span><span class="op">~</span><span class="va">pinch_strength</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_histogram.html">gf_histogram</a></span><span class="op">(</span><span class="op">~</span><span class="va">pinch_strength</span>, title <span class="op">=</span> <span class="st">"Pinch Strength"</span><span class="op">)</span></span>
 <span><span class="va">opening_modified</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_histogram.html">gf_histogram</a></span><span class="op">(</span><span class="op">~</span><span class="va">time_jar</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_histogram.html">gf_histogram</a></span><span class="op">(</span><span class="op">~</span><span class="va">time_jar</span>, title <span class="op">=</span> <span class="st">"Time to Open a Jar"</span><span class="op">)</span></span>
 <span><span class="va">opening_modified</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_histogram.html">gf_histogram</a></span><span class="op">(</span><span class="op">~</span><span class="va">time_bottle</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_histogram.html">gf_histogram</a></span><span class="op">(</span><span class="op">~</span><span class="va">time_bottle</span>, title <span class="op">=</span> <span class="st">"Time to Open a Bottle"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
@@ -1146,7 +1194,7 @@ Note
 <iconify-icon inline="" icon="material-symbols:pivot-table-chart-rounded" aria-label="Icon pivot-table-chart-rounded from material-symbols Iconify.design set." title="Icon pivot-table-chart-rounded from material-symbols Iconify.design set."></iconify-icon> More data transformation</h2>
 <p>As seen, this data is in <em>untidy</em> form: there are several numerical columns that have some “Qual” information embedded in their column names, such as the the <em>kind of package that is being opened</em>. We should transform the data into <em>long form</em> so that all the time numbers are stacked up in one column, and the <em>types of packages</em> are in another column, called <code>grocery</code>. For more info see <a href="https://www.garrickadenbuie.com/project/tidyexplain/" class="uri">https://www.garrickadenbuie.com/project/tidyexplain/</a>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb15" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">opening_modified</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<div class="sourceCode" id="cb16" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">opening_modified</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span></span>
 <span>    cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span>, <span class="co"># Choose columns to stack (by negation)</span></span>
 <span>    names_to <span class="op">=</span> <span class="st">"operation"</span>, <span class="co"># Name of stack column</span></span>
@@ -1162,7 +1210,7 @@ Note
 </div>
 <p>Once we do this, we realize that the word “time” in the column <code>operation</code> adds no value, since we want only the grocery involved.</p>
 <div class="cell">
-<div class="sourceCode" id="cb16" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">opening_modified</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<div class="sourceCode" id="cb17" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">opening_modified</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span></span>
 <span>    cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span>,</span>
 <span>    names_to <span class="op">=</span> <span class="st">"operation"</span>,</span>
@@ -1186,9 +1234,8 @@ Note
 <p>OK, looking better! Now if we plot <code>times</code>, we can colour or facet by <code>grocery</code>.</p>
 </section><section id="first-plot" class="level2"><h2 class="anchored" data-anchor-id="first-plot">First Plot</h2>
 <div class="cell">
-<div class="sourceCode" id="cb17" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Set graph theme</span></span>
-<span><span class="co"># theme_set(new = theme_custom())</span></span>
-<span><span class="co">#</span></span>
+<div class="sourceCode" id="cb18" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
 <span><span class="va">opening_modified</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span></span>
 <span>    cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span>,</span>
@@ -1219,9 +1266,8 @@ Note
 <li>In two steps!!</li>
 </ul>
 <div class="cell">
-<div class="sourceCode" id="cb18" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Set graph theme</span></span>
-<span><span class="co"># theme_set(new = theme_custom())</span></span>
-<span><span class="co">#</span></span>
+<div class="sourceCode" id="cb19" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
 <span><span class="va">opening_modified</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span></span>
 <span>    cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span>,</span>
@@ -1269,9 +1315,8 @@ Warning
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb19" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Set graph theme</span></span>
-<span><span class="co"># theme_set(new = theme_custom())</span></span>
-<span><span class="co">#</span></span>
+<div class="sourceCode" id="cb20" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
 <span><span class="va">opening_modified</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span></span>
 <span>    cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span>,</span>
@@ -1313,7 +1358,9 @@ Warning
 </div>
 <p>Almost done! We need to relabel the y-axis name and also add some title and subtitles to our plot. And maybe add a point on each sub-plot to show the median opening times?</p>
 <div class="cell">
-<div class="sourceCode" id="cb20" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">opening_modified</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<div class="sourceCode" id="cb21" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">opening_modified</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span></span>
 <span>    cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span>,</span>
 <span>    names_to <span class="op">=</span> <span class="st">"operation"</span>,</span>
@@ -1365,12 +1412,14 @@ Warning
 </figure>
 </div>
 </div>
-<div class="sourceCode" id="cb21" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># %&gt;% gf_theme(theme_custom())</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb22" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># %&gt;% gf_theme(theme_custom())</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="closing-times-analysis" class="level3"><h3 class="anchored" data-anchor-id="closing-times-analysis">Closing Times Analysis</h3>
 <p>Since the <code>as.numeric</code> did not work for us in the analysis of <code>opening</code> data, I have found and used another function <code>as_numeric</code> from the <code>sjlabelled</code> package. Sigh.</p>
 <div class="cell">
-<div class="sourceCode" id="cb22" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">closing</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<div class="sourceCode" id="cb23" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">closing</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"time"</span><span class="op">)</span>, <span class="fu">sjlabelled</span><span class="fu">::</span><span class="va"><a href="https://strengejacke.github.io/sjlabelled/reference/as_numeric.html">as_numeric</a></span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span></span>
 <span>    cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span>, names_to <span class="op">=</span> <span class="st">"operation"</span>,</span>
@@ -1404,7 +1453,7 @@ Warning
 </figure>
 </div>
 </div>
-<div class="sourceCode" id="cb23" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># %&gt;%</span></span>
+<div class="sourceCode" id="cb24" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># %&gt;%</span></span>
 <span><span class="co">#   gf_theme(theme_custom())</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section></section><section id="task-and-discussion" class="level2"><h2 class="anchored" data-anchor-id="task-and-discussion">Task and Discussion</h2>
@@ -1455,10 +1504,10 @@ Warning
 <li>If you want those funky icons at the Section Headers, install <a href="https://github.com/mcanouil/quarto-iconify">this Quarto Extension</a>, and then choosing the icons you want from <a href="https://iconify.design" class="uri">https://iconify.design</a> and using the <code>iconify</code> shortcode syntax shown below.</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="kw">{</span><span class="at">{&lt; iconify fluent-emoji exploding-head &gt;</span><span class="kw">}</span><span class="at">}</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="kw">{</span><span class="at">{&lt; iconify fa6-brands apple width=50px height=10px rotate=90deg flip=vertical &gt;</span><span class="kw">}</span><span class="at">}</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="kw">{</span><span class="at">{&lt; iconify simple-icons:quarto &gt;</span><span class="kw">}</span><span class="at">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="kw">{</span><span class="at">{&lt; iconify fluent-emoji exploding-head &gt;</span><span class="kw">}</span><span class="at">}</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="kw">{</span><span class="at">{&lt; iconify fa6-brands apple width=50px height=10px rotate=90deg flip=vertical &gt;</span><span class="kw">}</span><span class="at">}</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="kw">{</span><span class="at">{&lt; iconify simple-icons:quarto &gt;</span><span class="kw">}</span><span class="at">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 

@@ -75,6 +75,7 @@ library(explore) # New, Easy package for Stats Test and Viz, and other things
 ```{r}
 #| label: plot-theme
 #| echo: true
+#| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
@@ -146,7 +147,7 @@ theme_custom <- function(){
 }
 
 ## Use available fonts in ggplot text geoms too!
-update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text",new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -155,7 +156,7 @@ update_geom_defaults(geom = "text",new = list(
 )
 
 ## Set the theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ```
 
@@ -225,9 +226,8 @@ mydata
 ```{r}
 #| label: charting-data-1
 #| eval: false
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 mydata %>% 
   gf_density(~ y) %>% 
   gf_fitdistr(dist = "dnorm") %>% 
@@ -414,9 +414,8 @@ We see that the means here that **chances** that the randomly generated means ca
 
 ```{r}
 #| label: permutation-test-1
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 # Calculate exact mean
 obs_mean <- mean( ~ y, data = mydata)
 belief1 <- 0 # What we think the mean is
@@ -450,15 +449,15 @@ gf_histogram(
 # Null distributions are always centered around zero. Why?
 prop(~ mean >= obs_diff_mosaic, 
      data = null_dist_mosaic)
+
 ```
 
 Let us try the bootstrap test now: Here we *simulate samples, similar to the one at hand*, using repeated sampling the sample itself, with replacement, a process known as **bootstrapping**, or *bootstrap sampling*.
 
 ```{r}
 #| label: bootstrap-test-1
-# Set graph theme
-theme_set(new = theme_custom())
-##
+ggplot2::theme_set(new = theme_custom())
+
 ## Resample with replacement from the one sample of 50
 ## Calculate the mean each time
 null_toy_bs <- mosaic::do(4999) * 
@@ -480,6 +479,7 @@ prop(~ mean >= belief1,
      data = null_toy_bs) +
   prop(~ mean <= - belief1, 
      data = null_toy_bs)
+
 ```
 
 ::: callout-note
@@ -532,9 +532,8 @@ How can we visualize this?
 ```{r}
 #| echo: false
 #| message: true
-## Set graph theme
-theme_set(new = theme_custom())
-##
+ggplot2::theme_set(new = theme_custom())
+
 gf_dhistogram(~ y, data = mydata, 
     title = "Distributions for Data and Estimates",
     subtitle = "Sample Mean also has a distribution!") %>% 
@@ -551,9 +550,8 @@ gf_dhistogram(~ y, data = mydata,
 #| echo: false
 #| message: true
 #| layout-ncol: 2
-## Set graph theme
-theme_set(new = theme_custom())
-##
+ggplot2::theme_set(new = theme_custom())
+
 xpnorm(mean = mean_y, sd = std_error, q = mean_y - 6.785596 * std_error,lower.tail = T) 
 
 
@@ -589,10 +587,8 @@ In *general*, the Teacher in this class is overly generous with grades [[unlike 
 ```{r}
 #| label: charting-data-2
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
-# Set graph theme
-theme_set(new = theme_custom())
-#
 exam_grades %>% 
   gf_density(~ course_grade) %>% 
   gf_fitdistr(dist = "dnorm") %>% 
@@ -692,9 +688,8 @@ Note that we have computed whether the average `course_grade` is generally **dif
 
 ```{r}
 #| label: permutation-test-2
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 # Calculate exact mean
 obs_mean_grade = mean(~course_grade, data = exam_grades)
 belief <- 80
@@ -737,6 +732,8 @@ And let us now do the bootstrap test:
 
 ```{r}
 #| label: bootstrap-test-2
+ggplot2::theme_set(new = theme_custom())
+
 null_grade_bs <- mosaic::do(4999) * 
   mean( ~ sample(course_grade,
             replace = T), # select with replacement

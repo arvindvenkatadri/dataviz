@@ -27,12 +27,6 @@ webr:
 
 ---
 
-## {{< fa folder-open >}} Slides and Tutorials
-
-|                                                                                                 |                                                                                                    |                                                                                        |
-|------------------------|------------------------|------------------------|
-| <a href="./files/distributions.qmd"><i class="fa-brands fa-r-project"></i> R (Static Viz)</a>   | <a href="./files/distributions.rda"> <i class="fa-solid fa-person-rays"></i> Radiant Tutorial</a>  | <a href="./files/data/qdd-data.zip"> <i class="fa-solid fa-database"></i> Datasets</a> |
-
 
 :::: {.pa4}
 ::: {.athelas .ml0 .mt0 .pl4 .black-90 .bl .bw2 .b--blue}
@@ -60,9 +54,7 @@ library(ggformula)
 library(ggridges)
 library(skimr)
 library(palmerpenguins) # Our new favourite dataset
-##
-library(tidyplots) # Easily Produced Publication-Ready Plots
-library(tinyplot) # Plots with Base R
+
 library(tinytable) # Elegant Tables for our data
 
 ```
@@ -89,6 +81,7 @@ library(downloadthis)
 ```{r}
 #| label: plot-theme
 #| echo: true
+#| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
@@ -160,7 +153,7 @@ theme_custom <- function(){
 }
 
 ## Use available fonts in ggplot text geoms too!
-update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text",new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -169,11 +162,9 @@ update_geom_defaults(geom = "text",new = list(
 )
 
 ## Set the theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ```
-
-
 
 
 ## {{< iconify fxemoji japanesesymbolforbeginner >}} What graphs will we see today?
@@ -202,7 +193,7 @@ read_csv("../../../../../materials/Data/pronouns.csv") %>%
 #| echo: false
 #| warning: false
 #| message: false
-
+ggplot2::theme_set(new = theme_custom())
 
 lincoln_weather %>% 
   gf_density_ridges_gradient(Month ~ `Max Temperature [F]`,
@@ -329,6 +320,7 @@ skim(penguins)
 ```{r}
 #| label: fig-ggformula-1
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 penguins <- penguins %>% drop_na()
 
@@ -353,7 +345,8 @@ gf_density( ~ body_mass_g, data = penguins) %>%
 ```{r}
 #| label: fig-ggformula-2
 #| eval: false
-# ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
+ggplot2::theme_set(new = theme_custom())
+
 penguins %>% gf_density( ~ body_mass_g, 
                          fill = ~ species, 
                          color = "black") %>%
@@ -377,6 +370,7 @@ penguins %>% gf_density( ~ body_mass_g,
 ```{r}
 #| label: fig-ggformula-3
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 penguins %>%
   gf_density(
@@ -404,6 +398,7 @@ penguins %>%
 ```{r}
 #| label: fig-ggformula-4
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 penguins %>%
   gf_density( ~ body_mass_g, fill = ~ species, color = "black") %>%
@@ -433,6 +428,7 @@ penguins %>%
 ```{r}
 #| label: fig-ggplot-1
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 penguins <- penguins %>% drop_na()
 
@@ -457,6 +453,7 @@ ggplot(data = penguins) +
 ```{r}
 #| label: fig-ggplot-2
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 penguins %>% 
   ggplot() + 
@@ -483,6 +480,7 @@ penguins %>%
 ```{r}
 #| label: fig-ggplot-3
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 penguins %>% ggplot() + 
   geom_density(aes(x = body_mass_g, fill = species),
@@ -507,6 +505,7 @@ penguins %>% ggplot() +
 ```{r}
 #| label: fig-ggplot-4
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 penguins %>% ggplot() + 
   geom_density(aes(x = body_mass_g, fill = species),
@@ -534,6 +533,7 @@ penguins %>% ggplot() +
 #### {{< iconify noto-v1 spider-web >}} web-r
 ```{webr-r}
 #| label: density-charts-ggformula-webr
+ggplot2::theme_set(new = theme_custom())
 
 penguins <- penguins %>% drop_na()
 
@@ -543,6 +543,8 @@ gf_density( ~ body_mass_g, data = penguins) %>%
 ```
 
 ```{webr-r}
+ggplot2::theme_set(new = theme_custom())
+
 penguins %>% 
   gf_density( ~ body_mass_g, fill = ~ species, 
                              color = "black") %>%
@@ -554,6 +556,7 @@ penguins %>%
 ```
 
 ```{webr-r}
+ggplot2::theme_set(new = theme_custom())
 
 penguins %>%
   gf_density(
@@ -568,6 +571,7 @@ penguins %>%
 ```
 
 ```{webr-r}
+ggplot2::theme_set(new = theme_custom())
 
 penguins %>%
   gf_density( ~ body_mass_g, fill = ~ species, color = "black") %>%
@@ -582,6 +586,7 @@ penguins %>%
 
 ```{webr-r}
 #| label: density-charts-ggplot-webr
+ggplot2::theme_set(new = theme_custom())
 
 penguins <- penguins %>% drop_na()
 
@@ -592,6 +597,7 @@ ggplot(data = penguins) +
 ```
 
 ```{webr-r}
+ggplot2::theme_set(new = theme_custom())
 
 penguins %>% 
   ggplot() + 
@@ -605,6 +611,7 @@ penguins %>%
 ```
 
 ```{webr-r}
+ggplot2::theme_set(new = theme_custom())
 
 penguins %>% ggplot() + 
   geom_density(aes(x = body_mass_g, fill = species),
@@ -616,6 +623,7 @@ penguins %>% ggplot() +
 ```
 
 ```{webr-r}
+ggplot2::theme_set(new = theme_custom())
 
 penguins %>% ggplot() + 
   geom_density(aes(x = body_mass_g, fill = species, 
@@ -661,6 +669,7 @@ plot*. `ggformula` support this plot by importing/depending upon the `ggridges` 
 ```{r}
 #| label: ridgeplot-ggformula
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 gf_density_ridges(drv ~ hwy, fill = ~ drv, 
                   alpha = 0.5, # colour saturation
@@ -692,6 +701,7 @@ gf_density_ridges(drv ~ hwy, fill = ~ drv,
 ```{r}
 #| label: ridgeplot-ggplot
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 gf_density_ridges(drv ~ hwy, fill = ~ drv, 
                   alpha = 0.5, # colour saturation
@@ -720,6 +730,7 @@ palette = "Spectral")) %>%
 
 ```{webr-r}
 #| label: more-charts-webr
+ggplot2::theme_set(new = theme_custom())
 
 gf_density_ridges(drv ~ hwy, fill = ~ drv, 
                   alpha = 0.3, 

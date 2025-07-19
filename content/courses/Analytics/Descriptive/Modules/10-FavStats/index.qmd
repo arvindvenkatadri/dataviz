@@ -63,9 +63,10 @@ This tutorial uses `web-r` that allows you to run all code within your browser, 
 #| message: false
 #| warning: false
 
+library(mosaic) # Our all-in-one package
+library(skimr) # Looking at data
+library(tinytable) # Printing Tables for our data
 library(tidyverse)
-library(mosaic)
-library(skimr)
 
 ```
 
@@ -73,7 +74,6 @@ library(skimr)
 #| label: Themes and Extra Packages
 #| echo: false
 #| message: false
-ggplot2::theme_set(new = theme_classic(base_size = 14, base_family = "roboto"))
 library(checkdown)
 library(epoxy)
 library(explore) # fake data generation
@@ -168,6 +168,13 @@ theme_custom <- function(){
     )
 }
 
+```
+
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| cache: false
 ## Use available fonts in ggplot text geoms too!
 update_geom_defaults(geom = "text",new = list(
   family = "Roboto Condensed",
@@ -345,6 +352,20 @@ It is usually a good idea to make crisp business-like tables, for the
 data itself, and the *schema* as revealed by one of the outputs of the
 three methods to be presented below. There are many methods to do this; 
 one of the simplest and effective ones is to use the `kable` set of commands from the `knitr` and [`kableExtra` package](https://bookdown.org/yihui/rmarkdown-cookbook/kableextra.html )package:
+
+
+```{r}
+#| label: tinytable-for-data-1
+#| eval: false
+mpg %>%
+  head(10) %>% 
+  tt(theme = c("striped")) %>%
+  setNames(c("Manufacturer", "Model", "Engine\nDisplacement", 
+                    "Model\n Year", "Cylinders", "Transmission",
+                    "Drivetrain", "City\n Mileage", "Highway\n Mileage",
+                    "Fuel", "Class\nOf\nVehicle")) 
+
+```
 
 ```{r}
 #| label: kable-for-data-1
@@ -940,7 +961,7 @@ docVisits_modified %>%
 
 The `dplyr` package is capable of doing much more than just `count`, `group_by` and `summarize`. We will encounter this package many times more as we build our intuition about data visualization. A full tutorial on `dplyr` is linked to the icon below: 
 
-| <a href="../../../../../labs/r-labs/tidy/dplyr.qmd"><iconify-icon icon="carbon:data-blob"></iconify-icon> `dplyr` Tutorial</a> |
+| <a href="https://av-quarto.netlify.app/content/labs/r-labs/tidy/dplyr"><iconify-icon icon="carbon:data-blob"></iconify-icon> `dplyr` Tutorial</a> |
 |--------------------------------------------------------------|
 
 ## {{< iconify mdi table-star >}} Reporting Tables for Data and the Data Schema
@@ -958,6 +979,10 @@ As stated earlier, it is usually a good idea to make crisp business-like tables,
 three methods (`glimpse/skim/inspect`) presented above. There are many table-making methods in R to do this; one of
 the simplest and effective ones is to use the `kable` set of commands
 from the `knitr` and `kableExtra` packages that we have installed already:
+
+```{r}
+#| label: tinytable-for-data-1
+```
 
 ```{r}
 #| label: kable-for-data-2

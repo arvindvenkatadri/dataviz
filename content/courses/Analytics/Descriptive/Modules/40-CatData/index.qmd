@@ -82,6 +82,7 @@ library(grateful)
 ```{r}
 #| label: plot-theme
 #| echo: true
+#| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
@@ -153,7 +154,7 @@ theme_custom <- function(){
 }
 
 ## Use available fonts in ggplot text geoms too!
-update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text",new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -162,7 +163,7 @@ update_geom_defaults(geom = "text",new = list(
 )
 
 ## Set the theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ```
 
@@ -900,14 +901,13 @@ gss2002
 ```{r}
 #| label: ggmosaic-plot
 #| eval: false
-#library(ggmosaic)
-#
-# ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
+ggplot2::theme_set(new = theme_custom())
 ##
 ggplot(data = gss2002) +
   ggmosaic::geom_mosaic(
       aes(x = product(DeathPenalty, Education), 
           fill = DeathPenalty)) +
+labs(title = "Mosaic Plot with ggmosaic") + 
 theme(legend.position = "top") + 
 scale_fill_brewer(palette = "Set1")
 
@@ -959,6 +959,7 @@ gss_summary
 #| label: ggformula-marimekko
 #| eval: false
 # This works but is not very intuitive...
+ggplot2::theme_set(new = theme_custom())
 
 gf_col(edu_prop ~ Education, data = gss_summary,
        width = ~ edu_count, # Not typically used in a column chart
@@ -966,6 +967,7 @@ gf_col(edu_prop ~ Education, data = gss_summary,
        stat = "identity", 
        position = "fill", 
        color = "black") %>% 
+  gf_labs(title = "Mosaic Chart with ggformula") %>%
   
   gf_text(edu_prop ~ Education, 
           label = ~ scales::percent(edu_prop),

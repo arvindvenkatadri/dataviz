@@ -55,10 +55,6 @@ library(ggraph) # Trees, Dendros, and Circle Packings
 library(echarts4r) # Interactive Charts
 
 library(patchwork) # Arrange your plots
-
-##
-library(tidyplots) # Easily Produced Publication-Ready Plots
-library(tinyplot) # Plots with Base R
 library(tinytable) # Elegant Tables for our data
 
 
@@ -79,6 +75,7 @@ library(grateful)
 ```{r}
 #| label: plot-theme
 #| echo: true
+#| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
@@ -150,7 +147,7 @@ theme_custom <- function(){
 }
 
 ## Use available fonts in ggplot text geoms too!
-update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text",new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -159,7 +156,7 @@ update_geom_defaults(geom = "text",new = list(
 )
 
 ## Set the theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ```
 
@@ -202,7 +199,8 @@ toy data first:
 :::: {.columns}
 ::: {.column}
 ```{r}
-#| label: base-pie
+#| label: pie-data
+#| eval: false
 pie_data <- tibble(
   sales = c(0.12, 0.3, 0.26, 0.16, 0.04, 0.12), 
   
@@ -211,6 +209,24 @@ pie_data <- tibble(
              "Other","Vanilla Cream")
   )
 pie_data
+
+```
+:::
+::: {.column}
+```{r}
+#| ref.label: pie-data
+#| echo: false
+```
+
+:::
+::::
+
+
+:::: {.columns}
+::: {.column}
+```{r}
+#| label: base-pie
+#| eval: false
 pie(
   x = pie_data$sales,
   labels = pie_data$labels, # Character Vector is a MUST
@@ -234,6 +250,7 @@ pie(
 ```
 
 :::
+
 ::::
 
 
@@ -246,7 +263,7 @@ Then the `coord_polar(theta = "y")` converts the bar plot into a pie.
 #| label: ggformula-pie
 #| layout-ncol: 2
 #| layout-nrow: 2
-
+ggplot2::theme_set(new = theme_custom())
 
 # Using gf_col since we have a count/value column already
 pie_data %>%
@@ -347,7 +364,6 @@ comparison:
 #| label: fan-plot
 #| eval: false
 
-
 plotrix::fan.plot(
   x = pie_data$sales,
   labels = pie_data$labels,
@@ -393,7 +409,7 @@ Let us make some toy data:
 ```{r}
 #| label:  donut-chart
 #| layout-ncol: 2
-
+ggplot2::theme_set(new = theme_custom())
 
 # Data
 df <- tibble(group = LETTERS[1:3],
@@ -435,9 +451,13 @@ df %>%
   # try to play with the "0"
   # Recall x = [2,4]
   gf_refine(xlim(c(-2, 5)), scale_fill_brewer(palette = "Spectral")) %>% 
-
-  gf_theme(theme = theme_void()) %>% 
-  gf_theme(legend.position = "none")
+  gf_labs(title = "Pie Chart by Polar Rendering of Bar Chart") %>%
+  gf_theme(theme_custom()) %>%
+  gf_theme(theme(axis.line = element_blank(),
+                axis.text = element_blank(),
+                axis.title = element_blank(),
+                axis.ticks = element_blank(),
+                legend.position = "none"))
 
 
 ```
@@ -517,10 +537,9 @@ df
 ```{r}
 #| label: waffle-plot
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
+
 # Waffle plot
-# Using ggplot, sadly not yet ggformula
-
-
 ggplot(df, aes(fill = group, values = value)) +
   geom_waffle(
     n_rows = 8,
@@ -560,12 +579,8 @@ a array of "seats" in a parliament. (There is also a package called
 ```{r}
 #| label: using-ggpol
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
-# Same toy dataset
-# df <- tibble(group = LETTERS[1:3],
-#                  value = c(25, 20, 35))
-#                  
-# Parliament Plot
 ggplot(df) +
   ggpol::geom_parliament(aes(seats = value, 
                              fill = group),
@@ -674,6 +689,7 @@ mygraph1
 ```{r}
 #| label: dendrogram
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 # Basic tree
 ggraph(mygraph1, layout = 'dendrogram', 
@@ -763,6 +779,7 @@ mygraph2
 ```{r}
 #| label: graph-2
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 # Now we can plot that
 ggraph(mygraph2, layout = 'dendrogram', circular = FALSE) + 
@@ -791,6 +808,7 @@ ggraph(mygraph2, layout = 'dendrogram', circular = FALSE) +
 ```{r}
 #| label: graph-flare
 #| eval: false
+
 graph_flare <- tbl_graph(flare$vertices, flare$edges)
 graph_flare
 ```
@@ -809,12 +827,15 @@ graph_flare
 ```{r}
 #| label: plot-flare
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 set.seed(1)
 ggraph(graph_flare, 'circlepack', weight = size) +
-geom_node_circle(aes(fill = as_factor(depth)), size = 0.25, n = 50) +
+geom_node_circle(aes(fill = as_factor(depth)), 
+linewidth = 0.25, n = 50) +
+labs(title = "Circle Packing Diagram") + 
 coord_fixed() +
-scale_fill_brewer(name = "Depth", palette = "Set1") 
+scale_fill_brewer(name = "Depth", palette = "Set1")
 
 ```
 :::
@@ -828,9 +849,7 @@ scale_fill_brewer(name = "Depth", palette = "Set1")
 
 ## {{< iconify bi person-up >}} Your Turn
 
-1.  Use the `penguins` dataset from the `palmerpenguins` package and
-    plot pies, fans, and donuts as appropriate.
-2.  Look at the `whigs` and `highschool` datasets in the package
+1.  Look at the `whigs` and `highschool` datasets in the package
     `ggraph`. Plot Pies, Fans and if you are feeling confident, Trees,
     Dendrograms, and Circle Packings as appropriate for these.
 

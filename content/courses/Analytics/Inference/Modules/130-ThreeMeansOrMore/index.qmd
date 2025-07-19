@@ -28,6 +28,7 @@ library(patchwork) # Arranging Plots
 library(ggprism) # Interesting Categorical Axes
 library(supernova) # Beginner-Friendly ANOVA Tables 
 library(paletteer) # Color Palettes
+library(ggtext)
 ```
 
 ```{r}
@@ -42,6 +43,7 @@ library(TeachingDemos)
 library(grateful)
 library(restriktor)
 library(tinytable) # Easy-to-make tables for data
+
 ```
 
 
@@ -50,6 +52,7 @@ library(tinytable) # Easy-to-make tables for data
 ```{r}
 #| label: plot-theme
 #| echo: true
+#| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
@@ -121,7 +124,7 @@ theme_custom <- function(){
 }
 
 ## Use available fonts in ggplot text geoms too!
-update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text",new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -130,7 +133,7 @@ update_geom_defaults(geom = "text",new = list(
 )
 
 ## Set the theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ```
 
@@ -224,13 +227,12 @@ Let us plot some histograms and boxplots of Hatching Time:
 
 ```{r}
 #| fig-column: margin
-# Set graph theme
-theme_set(new = theme_custom())
-##
+ggplot2::theme_set(new = theme_custom())
+
 gf_histogram(~ Time, fill = ~ TempFac,
   data = frogs_long, alpha = 0.5) %>%
   gf_vline(xintercept = ~ mean(Time)) %>%
-  gf_labs(title = "Histograms of Hatching Time Distributions vs Temperature",
+  gf_labs(title = "Frog Spawn Hatching Time vs Temperature",
           x = "Hatching Time", y = "Count") %>%
   gf_text(7 ~ (mean(Time) + 2),
           label = "Overall Mean") %>%
@@ -244,15 +246,14 @@ gf_histogram(~ Time, fill = ~ TempFac,
 
 ```{r}
 #| fig-column: margin
-# Set graph theme
-theme_set(new = theme_custom())
-##
+ggplot2::theme_set(new = theme_custom())
+
 gf_boxplot(data = frogs_long,
            Time ~ TempFac,
            fill = ~ TempFac,
            alpha = 0.5) %>%
   gf_vline(xintercept = ~ mean(Time)) %>%
-  gf_labs(title = "Boxplots of Hatching Time Distributions vs Temperature",
+  gf_labs(title = "Frog Spawn Hatching Time vs Temperature",
           x = "Temperature", y = "Hatching Time", 
           caption = "Using ggprism") %>%
   gf_refine(scale_fill_paletteer_d("ggthemes::colorblind"),
@@ -284,9 +285,8 @@ This creates an *ANOVA model object*, called `frogs_anova`. We can examine the A
 
 ```{r}
 # library(supernova)
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 supernova::pairwise(frogs_anova,
                     correction = "Bonferroni", #Try "Tukey"
                     alpha = 0.05, #95% CI calculation
@@ -314,12 +314,8 @@ Consider a data set with a single Quant and a single Qual variable. The Qual var
 #| label: Anova-Intuitive
 #| warning: false
 #| echo: false
+ggplot2::theme_set(new = theme_custom())
 
-# Set graph theme
-theme_set(new = theme_custom())
-#
-
-library(ggtext)
 set.seed(42) # for replication
 toydata = tibble(
   index = 1:40,
@@ -436,7 +432,7 @@ When divide each of $SSA$ and $SSE$ by their [*degrees of freedom*]{style="backg
 So this may seem like a great [Hero's Journey](https://www.youtube.com/watch?v=bnaXpcH7L6I&list=PLsvuw0vMeKQ0CWR-YpAYH90YjYPck6Ots&pp=iAQB), where we start with means and differences, go into sums of squares, differences and comparisons of error ratios, and [return to the means where we started, only to know them properly now](https://www.quora.com/profile/Arvind-Venkatadri/https-www-quora-com-What-did-T-S-Elliot-mean-when-he-wrote-We-must-not-cease-from-exploration-and-the-end-of-all-our-e).
 
 
-### Frogs Demonstrated
+### ANOVA Hand Calculation
 
 Now that we understand what `aov()` is doing, let us hand-calculate the numbers for our `frogs` dataset and check. Let us visualize our calculations first.
 
@@ -447,9 +443,8 @@ Now that we understand what `aov()` is doing, let us hand-calculate the numbers 
 #|   - "SSE"
 #| echo: false
 #| layout-ncol: 2
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 frogs_plot <- frogs_long %>% 
   arrange(TempFac) %>% 
            rowid_to_column(var = "index")
@@ -674,9 +669,8 @@ The `F_crit` value can also be seen in a plot[^4],[^5]:
 ```{r}
 #| eval: false
 #| echo: false
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 gf_dist("f", df1 = df_SSA, df2 = df_SSE,
         fill = ~ (x <= F_crit), geom = "area") %>% 
   gf_vline(xintercept = F_crit, 
@@ -690,9 +684,8 @@ gf_dist("f", df1 = df_SSA, df2 = df_SSE,
 
 
 ```{r}
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 mosaic::xpf(q = F_crit, 
             df1 = df_SSA, df2 = df_SSE, method = "gg",
             log.p = FALSE,lower.tail = TRUE, 
@@ -812,9 +805,8 @@ We can also check the residuals post-model:
 ```{r}
 #| layout-ncol: 3
 #| column: screen-inset-right
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 frogs_anova$residuals %>% 
   as_tibble() %>% 
   gf_dhistogram(~ value,data = .) %>% 
@@ -853,6 +845,7 @@ frogs_long %>%
 DescTools::LeveneTest(Time ~ TempFac, data = frogs_long)
 ##
 fligner.test(Time ~ TempFac, data = frogs_long)
+  
 ```
 
 It seems that there is no cause for concern here; the data do not have significantly different variances.
@@ -867,9 +860,8 @@ The simplest way to find the actual `effect sizes` detected by an ANOVA test is 
 
 ```{r}
 #| fig-column: margin
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 frogs_supernova <- 
   supernova::pairwise(frogs_anova,
                       plot = TRUE,
@@ -904,9 +896,8 @@ Observe that the `std.error` for the intercept is $0.257$ while that for `TempFa
 We can easily plot bar-chart with error bars for the effect size:
 
 ```{r}
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 tidy_anova %>% 
   mutate(hi = estimate + std.error,
          lo = estimate - std.error) %>% 
@@ -937,9 +928,7 @@ If we want an "absolute value" plot for effect size, it needs just a little bit 
 
 ```{r}
 # Merging group averages with `std.error`
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
 
 frogs_long %>% 
   group_by(TempFac) %>% 
@@ -988,9 +977,8 @@ There is a very neat package called `ggstatsplot`[^6] that allows us to plot ver
 
 ```{r}
 #| message: false
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 library(ggstatsplot)
 frogs_long %>%
   ggstatsplot::ggbetweenstats(x = TempFac, y = Time, 

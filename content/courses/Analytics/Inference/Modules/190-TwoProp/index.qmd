@@ -58,6 +58,7 @@ library(grateful)
 ```{r}
 #| label: plot-theme
 #| echo: true
+#| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
@@ -129,7 +130,7 @@ theme_custom <- function(){
 }
 
 ## Use available fonts in ggplot text geoms too!
-update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text",new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -138,7 +139,7 @@ update_geom_defaults(geom = "text",new = list(
 )
 
 ## Set the theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ```
 
@@ -192,7 +193,7 @@ $\hat{p_1}-\hat{p_2}$ is well-approximated by:
 
 $$
 SE(\hat{p_1}-\hat{p_2}) = \sqrt{\frac{\hat{p_1}*(1-\hat{p_1})}{n_1}} + \sqrt{\frac{\hat{p_2}*(1-\hat{p_2})}{n_2}}
-$$
+$${#eq-se-two-proportions}
 
 where $\hat{p_1}$ and $\hat{p_2}$ represent the sample proportions, and
 $n_1$ and $n_2$ represent the sample sizes.
@@ -204,7 +205,7 @@ $$
 CI(p_1 - p_2) &=& (\hat{p_1} - \hat{p_2}) \pm 1.96 * SE(\hat{p_1}-\hat{p_2})\\
 &=& (\hat{p_1} - \hat{p_2}) \pm 1.96 * \left(\sqrt{\frac{\hat{p_1}*(1-\hat{p_1})}{n_1}} + \sqrt{\frac{\hat{p_2}*(1-\hat{p_2})}{n_2}}\right)
 \end{eqnarray}
-$$
+$${#eq-ci-two-proportions}
 
 ## {{< iconify grommet-icons test >}} {{< iconify lucide ratio >}} Case Study-1: `GSS2002` dataset
 
@@ -268,42 +269,39 @@ The Contingency Table can be plotted, as we have seen, using a
 
 ::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
 
-#### Using vcd
+#### vcd
 
 ```{r}
 mosaic::tally(DeathPenalty ~ Education, data = gss2002) %>% 
+  # Note mosaic above is a PACKAGE
+  # mosaic below is a function in the vcd package
   vcd::mosaic(gp = shading_hsv)
 
 ```
 
-#### Using ggmosaic
+#### ggmosaic
 
 ```{r mosaic-plot,warning=FALSE}
-#library(ggmosaic)
+ggplot2::theme_set(new = theme_custom())
 
-# Set graph theme
-theme_set(new = theme_custom())
-#
+#library(ggmosaic)
 ggplot(data = gss2002) +
-  geom_mosaic(aes(x = product(DeathPenalty, Education), 
+  ggmosaic::geom_mosaic(aes(x = product(DeathPenalty, Education), 
                   fill = DeathPenalty)) + 
   scale_fill_brewer(name = "Death Penalty", palette = "Set1") +
   labs(title = "Mosaic Plot of Death Penalty by Education")
 
 ```
 
-#### Using ggformula
+#### ggformula
 
 As seen before, it needs a little more work, to convert the Contingency
 Table into a tibble:
 
 ```{r warning=FALSE,message=FALSE}
+ggplot2::theme_set(new = theme_custom())
+
 # https://stackoverflow.com/questions/19233365/how-to-create-a-marimekko-mosaic-plot-in-ggplot2
-
-# Set graph theme
-theme_set(new = theme_custom())
-#
-
 gss_summary <- gss2002 %>%
   mutate(
     Education = factor(
@@ -370,10 +368,9 @@ Let us now perform the base `chisq test`: We need a `contingency table` and then
 # Chi-square test
 mosaic::xchisq.test(mosaic::tally(DeathPenalty ~ Education, data = gss2002))
 
-
 # Get the observed chi-square statistic
-observedChi2 <- mosaic::chisq(mosaic::tally(DeathPenalty ~ Education, data = gss2002))
-observedChi2
+X_squared_observed <- mosaic::chisq(mosaic::tally(DeathPenalty ~ Education, data = gss2002))
+X_squared_observed
 
 # Determine the Chi-Square critical value
 X_squared_critical <- qchisq(p = .05, 
@@ -390,15 +387,42 @@ Hypothesis should be rejected in favour of the alternate hypothesis,
 that opinions about the `DeathPenalty` are related to `Education`.
 
 ```{r}
-#| echo: false
-mosaic::xqchisq(p = c(0.025, 0.975), 2, 2,
+#| code-fold: true
+#| label: fig-chi-square-critical-value
+ggplot2::theme_set(new = theme_custom())
+
+mosaic::xqchisq(p = 0.95, df = 4, 
                return = c("plot"), verbose = F,
         system = "gg") %>%  
-   gf_labs(title = "Critical Chi-Square Value", 
+   gf_labs(x = "F value", title = "Critical and Observed Chi-Square Values", 
  x = "") %>% 
-  gf_vline(xintercept = observedChi2, color = "red", linewidth = 1) %>%
-  gf_refine(annotate(x = 21, y = 0.15, geom = "text", label = "Observed\n Chi-Square")) 
- 
+  gf_vline(xintercept = X_squared_observed, 
+           color = "red", linewidth = 1) %>%
+  
+  gf_vline(xintercept = X_squared_critical, 
+           color = "dodgerblue", 
+           linewidth = 1) %>%
+  
+  gf_refine(
+    annotate(x = X_squared_observed - 2.5, y = 0.15, 
+             geom = "label", label = "Observed\n Chi-Square", 
+             fill = "red", alpha = 0.3),
+        
+    annotate('curve', X_squared_observed - 2.5, y = 0.135, yend = 0.10,
+             xend = X_squared_observed - 0.5,
+             linewidth = 0.5, curvature = 0.3,
+             arrow = arrow(length = unit(0.25, 'cm'))),
+    
+    annotate(x = X_squared_critical + 2.5, y = 0.15, 
+             geom = "label", label = "Critical\n Chi-Square", 
+             fill = "lightblue"),
+                 
+    annotate('curve', X_squared_critical + 2.5, y = 0.135, yend = 0.10,
+             xend = X_squared_critical + 0.5,
+             linewidth = 0.5, curvature = - 0.3,
+             arrow = arrow(length = unit(0.25, 'cm')))
+  )
+
 ```
 
 Let us now dig into that cryptic-looking table above!
@@ -583,10 +607,8 @@ Post](https://stats.stackexchange.com/a/303548):
 #| echo: false
 #| warning: false
 #| layout-ncol: 2
+ggplot2::theme_set(new = theme_custom())
 
-# Set graph theme
-theme_set(new = theme_custom())
-#
 df <- tibble(x = rnorm(500, mean = 0, sd = 2), 
              y = x^2)
 df %>% gf_density(~x) %>% 
@@ -669,9 +691,8 @@ summary
 #| layout: [[20],[80]]
 #| echo: false
 #| warning: false
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 obs_difference <-
   diff(mean(candidate_selected ~ evaluator, data = data))
 obs_difference
@@ -766,6 +787,8 @@ data_shuffled %>%
 #| echo: false
 #| layout: [[45,-10, 45]]
 #| warning: false
+ggplot2::theme_set(new = theme_custom())
+
 data_shuffled %>% 
       group_by(evaluator, candidate_selected) %>% 
       ggplot(aes(x = x, y = y, 
@@ -848,9 +871,8 @@ observed figure from Mother Nature.
 
 ```{r}
 #| layout: [[60, -10, 30]]
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 null_dist <- do(4999) * diff(mean(
   candidate_selected ~ shuffle(evaluator), 
   data = data))
@@ -880,10 +902,7 @@ reject our NULL Hypothesis that there is no bias.
 We should now repeat the test with permutations on `Education`:
 
 ```{r}
-
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
 
 null_chisq <- do(4999) * 
   chisq.test(mosaic::tally(DeathPenalty ~ shuffle(Education), 
@@ -927,6 +946,10 @@ fairly high ( \>= 5) the resulting NULL distribution is of the $X^2$
 variety.
 
 ## {{< iconify mingcute thought-line >}} Wait, But Why?
+
+The $X^2$ test is a very powerful tool for testing the independence of two categorical variables. It is widely used in various fields, including social sciences, biology, and market research. The test is based on the comparison of observed frequencies in a contingency table with expected frequencies under the assumption of independence.
+
+When performing research for a design project, peasants, you are likely to have only several Qual variables, and you will want to see if there is a relationship between them. The $X^2$ test is a great way to do that. It allows you to test the independence of two categorical variables, which can help you understand the relationships between different factors in your design project.
 
 ## {{< iconify bi person-up >}} Your Turn
 

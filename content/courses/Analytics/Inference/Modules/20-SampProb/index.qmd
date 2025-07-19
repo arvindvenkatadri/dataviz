@@ -13,18 +13,10 @@ categories:
 bibliography: 
   - grateful-refs.bib
 citation: true
-# filters: 
-#   - shinylive
 editor: 
   markdown: 
     wrap: 72
 ---
-
-## {{< fa folder-open >}} Slides and Tutorials
-
-|  |  |  |  |
-|--------------------------------------------------------------------|---------|---------|--------------------------------------------------------|
-| <a href="./files/sampling-tutorial.qmd"><i class="fa-brands fa-r-project"></i> R Tutorial</a>   |  |  | <a href="./files/data/qdd-data.zip"> <i class="fa-solid fa-database"></i> Datasets</a> |
 
 :::: pa4
 ::: {.athelas .ml0 .mt0 .pl4 .black-90 .bl .bw2 .b--blue}
@@ -78,6 +70,7 @@ library(visualize) # Plot Densities, Histograms and Probabilities as areas under
 ```{r}
 #| label: plot-theme
 #| echo: true
+#| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
@@ -149,7 +142,7 @@ theme_custom <- function(){
 }
 
 ## Use available fonts in ggplot text geoms too!
-update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text",new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -158,7 +151,7 @@ update_geom_defaults(geom = "text",new = list(
 )
 
 ## Set the theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ```
 
@@ -334,10 +327,7 @@ with **population parameters** on the basis of this ONE sample of 50:
 ```{r}
 #| layout: [[20,20,60]]
 #| warning: false
-
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
 
 sample_50 <- mosaic::sample(NHANES_adult, size = 50) %>% 
   select(Height)
@@ -397,10 +387,7 @@ dim(sample_50_500)
 
 ```{r}
 #| layout-ncol: 2
-
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
 
 sample_50_500 %>%
   gf_point(.index ~ sample_mean, color = "purple",
@@ -464,10 +451,7 @@ the **distribution** of these 500 sample-means themselves, called [**a distribut
 #| fig-subcap: 
 #|  - Sample Means
 #|  - Sample Means and Population
-
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
 
 sample_50_500 %>% 
   gf_dhistogram(~ sample_mean, bins = 30, xlab = "Height") %>% 
@@ -545,12 +529,9 @@ head(samples_08_1000)
 #| warning: false
 #| eval: false
 #| echo: false
+ggplot2::theme_set(new = theme_custom())
+
 # Now let's create separate Q-Q plots for the different sample sizes.
-
-# Set graph theme
-theme_set(new = theme_custom())
-#
-
 p1 <- gf_qq( ~ mean,data = samples_08_1000,
              title = "N = 8", 
              color = "dodgerblue") %>%
@@ -583,10 +564,8 @@ Let us plot their individual histograms to compare them:
 #| warning: false
 #| layout-ncol: 2
 #| layout-nrow: 2
+ggplot2::theme_set(new = theme_custom())
 
-# Set graph theme
-theme_set(new = theme_custom())
-#
 # Let us overlay their individual histograms to compare them:
 p5 <- gf_dhistogram(~ mean,
               data = samples_08_1000,
@@ -647,10 +626,7 @@ p8
 And if we overlay these histograms on top of one another:
 
 ```{r, echo=FALSE}
-
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
 
 gf_dhistogram(~ mean,
               data = samples_08_1000,
@@ -763,10 +739,8 @@ Taking the square root gives us an average error, which we would call, of course
 ```{r}
 #| label: showing-variance-calculation
 #| echo: false
+ggplot2::theme_set(new = theme_custom())
 
-# Set graph theme
-theme_set(new = theme_custom())
-##
 sample_50 %>% 
   rowid_to_column() %>% 
   gf_hline(yintercept = mean(~sample_50$Height)) %>% 
@@ -955,9 +929,8 @@ $68\%$ and $95 \%$ probability respectively.
 How do these vary with sample size $n$?f
 
 ```{r}
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 tbl_1 <- get_ci(samples_08_1000, level = 0.95)
 tbl_2 <- get_ci(samples_16_1000, level = 0.95)
 tbl_3 <- get_ci(samples_32_1000, level = 0.95)
@@ -988,11 +961,8 @@ So finally, [we can *pretend* that our sample is also distributed normally ( i.e
 #| label: Final-approximation-pop-sample
 #| message: true
 #| results: hold
+ggplot2::theme_set(new = theme_custom())
 
-
-# Set graph theme
-theme_set(new = theme_custom())
-#
 sample_mean = mean(~ Height, data = sample_16)
 se = sd(~ Height, data = sample_16)/sqrt(16)
 #

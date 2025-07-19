@@ -106,6 +106,7 @@ library(grateful)
 ```{r}
 #| label: plot-theme
 #| echo: true
+#| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
@@ -177,7 +178,7 @@ theme_custom <- function(){
 }
 
 ## Use available fonts in ggplot text geoms too!
-update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text",new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -186,7 +187,7 @@ update_geom_defaults(geom = "text",new = list(
 )
 
 ## Set the theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ```
 
@@ -227,15 +228,17 @@ df1
 ```{r}
 #| label: lollipop-1
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
-###
 gf_segment(0 + rank ~ product + product, data = df1) %>% 
 # A formula with shape y + yend ~ x + xend.
   
   gf_point(rank ~ product, colour = ~ product, 
            size = 5,
            ylab = "Rank",
-           xlab = "Product") 
+           xlab = "Product") %>%
+  gf_theme(theme = theme(legend.position = "none")) # Not needed!
+
 ```
 :::
 
@@ -254,6 +257,7 @@ gf_segment(0 + rank ~ product + product, data = df1) %>%
 ```{r}
 #| label: lollipop-2
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 gf_segment(0 + rank ~ fct_reorder(product, - rank) + 
              fct_reorder(product, - rank), 
@@ -263,7 +267,8 @@ gf_segment(0 + rank ~ fct_reorder(product, - rank) +
   gf_point(rank ~ product, colour = ~ product, size = 5) %>%
   
   gf_refine(coord_flip()) %>%
-  gf_labs(x = "Product", y = "Rank") 
+  gf_labs(x = "Product", y = "Rank") %>%
+gf_theme(theme = theme(legend.position = "none")) # Not needed!
 
 ```
 :::
@@ -284,13 +289,15 @@ We have flipped the chart horizontally *and* reordered the $x$ categories in ord
 
 ```{r}
 #| layout-ncol: 2
+ggplot2::theme_set(new = theme_custom())
 
 ggplot(df1) +
   geom_segment(aes(y = 0, yend = rank, 
                    x = product, 
                    xend = product)) +
   geom_point(aes(y = rank, x = product, colour = product), size = 5) +
-  labs(title = "Product Ratings", x = "Product", y = "Rank")
+  labs(title = "Product Ratings", x = "Product", y = "Rank") +
+theme(legend.position = "none") # Not needed!
 
 ###
 ggplot(df1) +
@@ -299,7 +306,8 @@ ggplot(df1) +
                    xend = fct_reorder(product, -rank)))  +
   geom_point(aes(x = product, y = rank, colour = product), size = 5) +
   labs(title = "Product Ratings", x = "Product", y = "Rank")  +
-  coord_flip()
+  coord_flip() +
+theme(legend.position = "none") # Not needed!
  
 ```
 
@@ -312,6 +320,7 @@ Yes, R has ( nearly) everything, including a `geom_lollipop` command: Here!
 ```{r}
 #| label: ggalt-1
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 ggplot(df1) +
   geom_lollipop(aes(x = rank, y = product), 
@@ -334,6 +343,7 @@ ggplot(df1) +
 ```{r}
 #| label: ggalt-2
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 ggplot(df1) +
   geom_lollipop(aes(y = rank, x = product), 
@@ -354,6 +364,7 @@ ggplot(df1) +
 ```{r}
 #| label: ggalt-3
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 ggplot(df1) +
   geom_lollipop(aes(y = rank, x = product), 
@@ -377,6 +388,7 @@ ggplot(df1) +
 ```{r}
 #| label: ggalt-4
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 ggplot(df1) +
   geom_lollipop(aes(x = rank, 
@@ -384,7 +396,9 @@ ggplot(df1) +
                     colour = product), stroke = 2,
                 point.size = 3, horizontal = T) + 
   labs(title = "Now you're talking", 
-       x = "Rank", y = "Product")
+       x = "Rank", y = "Product") + 
+theme(legend.position = "none") # No need!!
+
 ```
 
 :::
@@ -466,6 +480,7 @@ A cool visualization of this operation was created by [Garrick Aden-Buie](https:
 ```{r}
 #| label: dumbbell-1
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 ## With Wide Form Data
 ## 
@@ -476,10 +491,11 @@ df2 %>%
                            length = unit(0.25, "inches"),
       ends = "last", type = "open")) %>% 
   gf_point(product ~ rank_year1, size = 3, 
-           colour = "#123456") %>% 
+           colour = ~ "Year1") %>% 
   gf_point(product ~ rank_year2, size = 3, 
-           colour = "#bad744") %>% 
-  gf_labs(x = "Rank", y = "Product", title = "Product Ranks in Year1 and Year2")
+           colour = ~ "Year2") %>% 
+  gf_labs(x = "Rank", y = "Product", title = "Product Ranks in Year1 and Year2") %>%
+gf_refine(scale_colour_manual(name = "Year", values = c("#123456","#bad744")))
 
 ```
 
@@ -499,6 +515,7 @@ df2 %>%
 ```{r}
 #| label: dumbbell-2
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 ## Rearranging `product` in order of rank_year2
 df2 %>% 
@@ -510,11 +527,13 @@ df2 %>%
       arrow = arrow(angle = 30, 
                     length = unit(0.25, "inches"))) %>% 
   gf_point(product ~ rank_year1, size = 3, 
-           colour = "#123456") %>% 
+           colour = ~ "Year1") %>% 
   gf_point(product ~ rank_year2, size = 3, 
-           colour = "#bad744") %>% 
+           colour = ~ "Year2") %>% 
   gf_labs(x = "Rank", y = "Product", 
-          title = "In Decreasing order of Year2 Rank")
+          title = "Ratings in Decreasing order of Year2 Rank") %>%
+gf_refine(scale_colour_manual(name = "Year", values = c("#123456","#bad744")))
+
 ```
 
 :::
@@ -532,6 +551,7 @@ df2 %>%
 ### Using ggplot
 
 ```{r}
+ggplot2::theme_set(new = theme_custom())
 
 ## With Wide Format Data
 ggplot(df2, aes(y = product, yend = product, x = rank_year1, xend = rank_year2)) + 
@@ -542,7 +562,7 @@ ggplot(df2, aes(y = product, yend = product, x = rank_year1, xend = rank_year2))
              colour = "#5b8124", size = 3)   +
   geom_point(aes(rank_year2, product), 
              colour = "#bad744", size = 3) + 
-  labs(x = "Rank", y = "Product")
+  labs(x = "Rank", y = "Product") 
 
 ## Rearranging `product` in order of rank_year2
 ggplot(df2, aes(y = reorder(product,rank_year2), yend = reorder(product,rank_year2), x = rank_year1, xend = rank_year2)) + 
@@ -554,7 +574,7 @@ ggplot(df2, aes(y = reorder(product,rank_year2), yend = reorder(product,rank_yea
   geom_point(aes(rank_year2, product), 
              colour = "#bad744", size = 3) + 
   labs(x = "Rank", y = "Product", 
-       title = "In Decreasing order of Year2 Rank")
+       title = "In Decreasing order of Year2 Rank") 
 ```
 
 
@@ -564,6 +584,7 @@ ggplot(df2, aes(y = reorder(product,rank_year2), yend = reorder(product,rank_yea
 ```{r}
 #| label: ggalt-dumbbell-1
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 df2 %>% ggplot() + 
   geom_dumbbell(aes(y = reorder(product,rank_year2),
@@ -601,6 +622,7 @@ df2 %>% ggplot() +
 ```{r}
 #| label: barplot-for-comparison
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 df2_long %>% 
   gf_col(product ~ scores, group = ~ year, 
@@ -672,6 +694,7 @@ Note the `+` syntax with `ggplot` code!!
 ```{r}
 #| label: bump-1
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 df3 %>%  
   ggplot() +
@@ -704,6 +727,7 @@ altogether:
 ```{r}
 #| label: bump-2
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 ggplot(df3) +
   geom_bump(aes(x = year, y = position, color = product)) +
@@ -801,6 +825,7 @@ And now plot it with both packages.
 ```{r}
 #| label: radar-1
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 ggradar::ggradar(plot.data = df4,
                  axis.label.size = 3, # Titles of Params
@@ -841,6 +866,7 @@ From the `ggiraphExtra` website:
 ```{r}
 #| label: radar-2
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 ggiraphExtra::ggRadar(data = df4,
         aes(colour = Product),

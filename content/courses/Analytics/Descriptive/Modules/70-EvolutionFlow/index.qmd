@@ -21,11 +21,6 @@ citation: true
 #suppress-bibliography: true
 ---
 
-## {{< fa folder-open >}} Slides and Tutorials
-
-|                                                                                       |     |     |     |
-|-----------------|---------------------|-----------------|-----------------|
-| <a href="./files/evolutions.qmd"><i class="fa-brands fa-r-project"></i>R Tutorial</a> |     |     |     |
 
 :::: {.pa4}
 ::: {.athelas .ml0 .mt0 .pl4 .black-90 .bl .bw2 .b--blue}
@@ -77,6 +72,7 @@ library(grateful)
 ```{r}
 #| label: plot-theme
 #| echo: true
+#| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
@@ -148,7 +144,7 @@ theme_custom <- function(){
 }
 
 ## Use available fonts in ggplot text geoms too!
-update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text",new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -157,7 +153,7 @@ update_geom_defaults(geom = "text",new = list(
 )
 
 ## Set the theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ```
 
@@ -204,13 +200,15 @@ health_filtered <- health %>%
 ```{r}
 #| layout-ncol: 2
 #| results: hold
+ggplot2::theme_set(new = theme_custom())
 
 gf_point(data = health_filtered,
              public_health_expenditure_pc_gdp ~ Year, 
              colour = ~ Entity, 
              ylab = "Healthcare Budget\n as % of GDP",
          title = "Line Charts to show Evolution (over Time )") %>% 
-  gf_line() 
+  gf_line() %>%
+  gf_refine(scale_colour_brewer(palette = "Set1"))
 
 ###
 gf_area(data = health_filtered,
@@ -353,8 +351,8 @@ practically all this while. You will find examples of on the
 ```{r}
 #| label: titanic-plot
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
-##
 Titanic %>% ggplot(data = .,
     
 # Select the Categorical Variables for the vertical Axes / Stages
@@ -435,6 +433,7 @@ The `ggsankeyfier` also plots alluvial and sankey diagrams. This package takes d
 ```{r}
 #| label: titanic-long-sankeyfier
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 Titanic %>% 
   as_tibble() %>% 
@@ -465,6 +464,7 @@ Let us plot this now:
 ```{r}
 #| label: titanic-ggsankeyfier
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 Titanic_long %>% 
   ggplot(aes(x = stage, y = n, 
@@ -499,20 +499,20 @@ Let us make an interactive graph for this dataset using `echarts4`.
 
 
 ClassSex <- 
-  Titanic %>% group_by(Class, Sex) %>% 
-  summarise(cs = sum(n)) %>% 
+  Titanic %>% dplyr::group_by(Class, Sex) %>% 
+  dplyr::summarise(cs = sum(n)) %>% 
   ungroup() %>% 
   rename("source" = Class, "target" = Sex, "value" = cs)
             
 SexAge <- 
-  Titanic %>% group_by(Sex,Age) %>% 
-  summarise(sa = sum(n)) %>% 
+  Titanic %>% dplyr::group_by(Sex,Age) %>% 
+  dplyr::summarise(sa = sum(n)) %>% 
   ungroup() %>% 
   rename("source" = Sex, "target" = Age, "value" = sa)
 
 AgeSurvived <- 
-  Titanic %>% group_by(Age,Survived) %>% 
-  summarise(as = sum(n)) %>% 
+  Titanic %>% dplyr::group_by(Age,Survived) %>% 
+  dplyr::summarise(as = sum(n)) %>% 
   ungroup() %>% 
   rename("source" = Age, "target" = Survived, "value" = as)
 
@@ -614,6 +614,7 @@ health_2010_2018
 ```{r}
 #| label: health-plot-1
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 health_2010_2018 %>%   
   # remove NA data across the data set
@@ -625,10 +626,14 @@ health_2010_2018 %>%
   gf_segment(Entity + Entity ~ Year2010 + Year2018,
              colour = "grey",
              linewidth = 2) %>%
-  gf_point(Entity ~ Year2018,
+  gf_point(Entity ~ Year2018, size = 2,
            colour = ~ "2018") %>%
-  gf_point(Entity ~ Year2010,
-           colour = ~ "2010")
+  gf_point(Entity ~ Year2010, size = 2,
+           colour = ~ "2010") %>%
+gf_refine(scale_colour_manual(name = "Year", 
+values = c("dodgerblue", "gold"))) %>%
+
+gf_labs(title = "Healthcare Budget Variation over 8 years")
 ```
 
 
@@ -651,6 +656,9 @@ health_2010_2018 %>%
 ```{r}
 #| label: health-plot-2
 #| eval: false
+
+ggplot2::theme_set(new = theme_custom())
+
 ## Can we do better? Sort the bars, improve axis ticks, title..
 
 health_2010_2018 %>%
@@ -665,8 +673,7 @@ health_2010_2018 %>%
     reorder(Entity, Year2018) + reorder(Entity, Year2018) ~
       Year2010 + Year2018,
     colour = "grey",
-    linewidth = 2
-  ) %>%
+    linewidth = 2) %>%
   
 # Then plot points
   gf_point(reorder(Entity, Year2018) ~ Year2018,
@@ -679,14 +686,12 @@ health_2010_2018 %>%
     ylab = "Country",
 title = "Healthcare Budgets Changes between 2010 to 2018",
 subtitle = "Bars are Sorted",
-caption = "And the X-Axis is in percentage"
-  ) %>% 
+caption = "And the X-Axis is in percentage") %>% 
   gf_refine(scale_x_continuous(
     breaks = scales::breaks_width(2), 
     labels = scales::label_percent(suffix = "%", scale = 1)),
-    
-    scale_colour_manual(name = "Year",values = c("red", "green"))
-  )
+scale_colour_manual(name = "Year", 
+                    values = c("dodgerblue", "gold")))
             
 ```
 
@@ -708,6 +713,7 @@ caption = "And the X-Axis is in percentage"
 
 ```{r}
 #| layout-ncol: 2
+ggplot2::theme_set(new = theme_custom())
 
 health_2010_2018 <- health %>%
   # select Years 2010 and 2018
@@ -767,7 +773,7 @@ health_2010_2018 %>%
     breaks = scales::breaks_width(2), 
     labels = scales::label_percent(suffix = "%", scale = 1)) + 
     
-    scale_colour_manual(name = "Year",values = c("red", "green"))
+    scale_colour_manual(name = "Year",values = c("dodgerblue", "gold"))
            
 
 ```

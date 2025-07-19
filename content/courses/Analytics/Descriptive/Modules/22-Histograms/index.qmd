@@ -26,13 +26,6 @@ webr:
 
 ---
 
-## {{< fa folder-open >}} Slides and Tutorials
-
-|                                                                                                 |                                                                                                    |                                                                                        |
-|------------------------|------------------------|------------------------|
-| <a href="./files/distributions.qmd"><i class="fa-brands fa-r-project"></i> R (Static Viz)</a>   | <a href="./files/distributions.rda"> <i class="fa-solid fa-person-rays"></i> Radiant Tutorial</a>  | <a href="./files/data/qdd-data.zip"> <i class="fa-solid fa-database"></i> Datasets</a> |
-
-
 :::: {.pa4}
 ::: {.athelas .ml0 .mt0 .pl4 .black-90 .bl .bw2 .b--blue}
 ["The fear of death follows from the fear of life. A man who lives fully is prepared to die at any time."]{.f5 .f4-m .f3-l .lh-copy .measure .mt0}
@@ -55,16 +48,9 @@ library(ggformula)
 library(skimr)
 ##
 library(crosstable) # Fast stats for multiple variables in table form
-##
-library(tidyplots) # Easily Produced Publication-Ready Plots
-library(tinyplot) # Plots with Base R
+
 library(tinytable) # Elegant Tables for our data
 
-## ggplot theme
-# library(hrbrthemes)
-# hrbrthemes::import_roboto_condensed() # Import Roboto Condensed font for use in charts
-# hrbrthemes::update_geom_font_defaults() #Update matching font defaults for text geoms
-# ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
 ```
 
 
@@ -92,56 +78,42 @@ library(embedr) # Embed multimedia in HTML files
 
 ```{r}
 #| label: plot-theme
-#| echo: true
+#| echo: fenced
+#| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
 
-library(systemfonts)
 library(showtext)
-## Clean the slate
-systemfonts::clear_local_fonts()
-systemfonts::clear_registry()
-##
-showtext_opts(dpi = 96) #set DPI for showtext
-sysfonts::font_add(family = "Alegreya",
-  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
-  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
-  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
-  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
-
-sysfonts::font_add(family = "Roboto Condensed", 
-  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
-  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
-  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
-  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+font_add(family = "Alegreya", regular = "../../../../fonts/Alegreya/Alegreya-Regular.ttf")
+font_add(family = "Roboto Condensed", regular = "../../../../fonts/RobotoCondensed-Regular.ttf")
 showtext_auto(enable = TRUE) #enable showtext
 ##
 theme_custom <- function(){ 
     font <- "Alegreya"   #assign font family up front
     
-    theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
+    theme_classic(base_size = 14) %+replace%    #replace elements we want to change
     
     theme(
       text = element_text(family = font),  #set base font family
       
       #text elements
       plot.title = element_text(                 #title
-                   family = font,          #set font family
-                   size = 24,                    #set font size
+                   family = "Alegreya",          #set font family
+                   size = 18,                    #set font size
                    face = 'bold',                #bold typeface
                    hjust = 0,                    #left align
                    margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
       plot.title.position = "plot", 
       
       plot.subtitle = element_text(              #subtitle
-                   family = font,          #font family
+                   family = "Alegreya",          #font family
                    size = 14,                   #font size
                    hjust = 0,                   #left align
                    margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
       
       plot.caption = element_text(               #caption
-                   family = font,          #font family
+                   family = "Alegreya",          #font family
                    size = 9,                     #font size
                    hjust = 1),                   #right align
       
@@ -164,7 +136,7 @@ theme_custom <- function(){
 }
 
 ## Use available fonts in ggplot text geoms too!
-update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text",new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -173,9 +145,10 @@ update_geom_defaults(geom = "text",new = list(
 )
 
 ## Set the theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ```
+
 
 
 
@@ -374,8 +347,7 @@ Let's plot some histograms to answer each of the Hypothesis questions above.
 ```{r}
 #| label: histogram-price-ggformula-1
 #| eval: false
-
-#ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
+ggplot2::theme_set(new = theme_custom())
 
 gf_histogram(~ price, data = diamonds) %>%
   gf_labs(title = "Plot 1A: Diamond Prices",
@@ -397,8 +369,7 @@ gf_histogram(~ price, data = diamonds) %>%
 ```{r}
 #| label: histogram-price-ggformula-2
 #| eval: false
-
-#ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
+ggplot2::theme_set(new = theme_custom())
 
 ## More bins
 gf_histogram(~ price, data = diamonds, 
@@ -422,9 +393,7 @@ gf_histogram(~ price, data = diamonds,
 ```{r}
 #| label: histogram-price-ggplot
 #| message: false
-
-#ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
-
+ggplot2::theme_set(new = theme_custom())
 
 ggplot(data = diamonds) + 
   geom_histogram(aes(x = price)) +
@@ -441,8 +410,7 @@ ggplot(data = diamonds) +
 ### {{< iconify noto-v1 spider-web >}} web-r-1
 
 ```{webr-r}
-
-#ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
+ggplot2::theme_set(new = theme_custom())
 
 gf_histogram(~ price, data = diamonds) %>%
   gf_labs(title = "Plot 1A: Diamond Prices",
@@ -476,8 +444,7 @@ gf_histogram(~ price, data = diamonds,
 ```{r}
 #| label: histogram-carat-ggformula-1
 #| eval: false
-
-#ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
+ggplot2::theme_set(new = theme_custom())
 
 diamonds %>% 
   gf_histogram(~ carat) %>%
@@ -499,8 +466,7 @@ diamonds %>%
 ```{r}
 #| label: histogram-carat-ggformula-2
 #| eval: false
-
-#ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
+ggplot2::theme_set(new = theme_custom())
 
 ## More bins
 diamonds %>% 
@@ -523,8 +489,7 @@ diamonds %>%
 ```{r}
 #| layout-ncol: 2
 #| message: false
-
-#ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
+ggplot2::theme_set(new = theme_custom())
 
 diamonds %>% 
   ggplot() + 
@@ -543,8 +508,7 @@ diamonds %>%
 ### {{< iconify noto-v1 spider-web >}} web-r-2
 
 ```{webr-r}
-
-#ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
+ggplot2::theme_set(new = theme_custom())
 
 diamonds %>% 
   gf_histogram(~ carat) %>%
@@ -580,10 +544,8 @@ diamonds %>%
 ```{r}
 #| label: ggformula-price-others-1
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
-#ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
-
-##
 gf_histogram(~ price, fill = ~ cut, data = diamonds) %>%
   gf_labs(title = "Plot 3A: Diamond Prices",caption = "ggformula") 
 ```
@@ -602,8 +564,7 @@ gf_histogram(~ price, fill = ~ cut, data = diamonds) %>%
 ```{r}
 #| label: ggformula-price-others-2
 #| eval: false
-
-#ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
+ggplot2::theme_set(new = theme_custom())
 
 diamonds %>% 
   gf_histogram(~ price, fill = ~ cut, color = "black", alpha = 0.3) %>%
@@ -624,9 +585,7 @@ diamonds %>%
 ```{r}
 #| label: ggformula-price-others-3
 #| eval: false
-
-
-#ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
+ggplot2::theme_set(new = theme_custom())
 
 diamonds %>% 
   gf_histogram(~ price, fill = ~ cut, color = "black", alpha = 0.3) %>%
@@ -651,8 +610,7 @@ diamonds %>%
 ```{r}
 #| label: ggformula-price-others-4
 #| eval: false
-
-#ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
+ggplot2::theme_set(new = theme_custom())
 
 diamonds %>% 
   gf_histogram(~ price, fill = ~ cut, color = "black", alpha = 0.3) %>% 
@@ -676,8 +634,7 @@ diamonds %>%
 ### ggplot-3
 ```{r}
 #| layout-ncol: 2
-
-#ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
+ggplot2::theme_set(new = theme_custom())
 
 diamonds %>% ggplot() + 
   geom_histogram(aes(x = price, fill = cut), alpha = 0.3) + 
@@ -710,8 +667,7 @@ diamonds  %>% ggplot() +
 
 ### {{< iconify noto-v1 spider-web >}} web-r-3
 ```{webr-r}
-
-#ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
+ggplot2::theme_set(new = theme_custom())
 
 gf_histogram(~ price, fill = ~ cut, data = diamonds) %>%
   gf_labs(title = "Plot 3A: Diamond Prices",caption = "ggformula") 
@@ -1118,10 +1074,7 @@ races and all ranks?
 ```{r}
 #| label: ggformula-race-times-1
 #| eval: false
-
-#ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
-
-##
+ggplot2::theme_set(new = theme_custom())
 
 rank_df %>%
   gf_histogram(~ time_in_seconds, bins = 75) %>%
@@ -1141,8 +1094,7 @@ rank_df %>%
 ### {{< iconify noto-v1 spider-web >}} web-r
 
 ```{webr-r}
-
-#ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
+ggplot2::theme_set(new = theme_custom())
 
 rank_df %>%
   gf_histogram(~ time_in_seconds, bins = 75)  %>%
@@ -1173,8 +1125,7 @@ What is the distribution of race distances?
 ```{r}
 #| label: ggformula-race-times-2
 #| eval: false
-
-#ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
+ggplot2::theme_set(new = theme_custom())
 
 race_df %>%
   gf_histogram(~ distance, bins =  50) %>%
@@ -1201,8 +1152,7 @@ race_df %>%
 ### {{< iconify noto-v1 spider-web >}} web-r
 
 ```{webr-r}
-
-#ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
+ggplot2::theme_set(new = theme_custom())
 
 race_df %>%
   gf_histogram(~ distance, bins =  50) %>%
@@ -1256,9 +1206,7 @@ afternoon(1400: 1800), evening(1800:2200), and night(2200:0200)
 ```{r}
 #| label: Slicing_time_to_Qual
 # Demo purposes only!
-
-#ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
-
+ggplot2::theme_set(new = theme_custom())
 
 race_start_factor <- race_df %>%
   filter(distance == 0) %>%  # Races that actually took place
@@ -1367,6 +1315,7 @@ race_start_factor <- race_df %>%
 
 
 ```{webr-r}
+ggplot2::theme_set(new = theme_custom())
 
 # Join with rank_df
 race_start_factor %>%
@@ -1419,9 +1368,9 @@ Let us plot densities/histograms for `value`:
 ```{r}
 #| label: skewed-histogram
 #| layout-ncol: 2
+ggplot2::theme_set(new = theme_custom())
 
 gf_histogram(~ value, data = pop, title = "Long Tailed Histogram") 
-
 gf_density(~ value, data = pop, title = "Long Tailed Density")
 
 ```
@@ -1436,9 +1385,9 @@ concerned, using say a "log" transformation:
 ```{r}
 #| label: skewed-density
 #| layout-ncol: 2
+ggplot2::theme_set(new = theme_custom())
 
 gf_histogram(~ log10(value), data = pop, title = "Histogram with Log transformed x-variable") 
-
 gf_density(~ log10(value), data = pop, title = "Density with Log transformed x-variable")
 
 ```

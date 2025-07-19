@@ -58,6 +58,7 @@ library(grateful)
 ```{r}
 #| label: plot-theme
 #| echo: true
+#| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
@@ -129,7 +130,7 @@ theme_custom <- function(){
 }
 
 ## Use available fonts in ggplot text geoms too!
-update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text",new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -138,7 +139,7 @@ update_geom_defaults(geom = "text",new = list(
 )
 
 ## Set the theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ```
 
@@ -227,9 +228,8 @@ This is the `observed_statistic`: the proportion of people  **in this sample** w
 We can quickly plot this, just for the sake of visual understanding of the proportions:
 
 ```{r}
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 no_helmet_text %>% drop_na() %>% 
   gf_bar(~ text_ind) %>% 
   gf_labs(x = "texted?",
@@ -343,9 +343,8 @@ summary
 #| layout: [[20],[80]]
 #| echo: false
 #| warning: false
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 obs_difference <-
   diff(mean(candidate_selected ~ evaluator, data = data))
 obs_difference
@@ -497,9 +496,8 @@ We can now check out our Hypothesis that there is *no* bias. We can shuffle the 
 
 ```{r}
 #| layout: [[60, -10, 30]]
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 null_dist <- do(4999) * diff(mean(
   candidate_selected ~ shuffle(evaluator), 
   data = data))
@@ -544,7 +542,7 @@ Note that since the goal is to construct an interval estimate for a proportion, 
 
 ## {{< iconify pajamas issue-type-test-case >}} Case Study #2: TBD
 
-To be Written up in the foreseeable future. 
+To be Written up in the foreseeable future. Yeah. Never Mind. 
 
 ## {{< iconify material-symbols interactive-space-outline >}} An interactive app
 

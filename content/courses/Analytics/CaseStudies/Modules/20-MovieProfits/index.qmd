@@ -9,7 +9,7 @@ order: 20
 #| label: setup
 #| message: false
 #| warning: false
-#| 
+
 library(tidyverse)
 library(mosaic)
 library(skimr)
@@ -32,70 +32,96 @@ library(glue)
 #    
 ```
 
-#### Plot Theme
+#### Plot Fonts and Theme
+
 ```{r}
-#| label: Plot-Sizing-and-theming
+#| label: plot-theme
+#| echo: true
+#| cache: false
 #| code-fold: true
-#| message: false
-#| results: hide
+#| messages: false
+#| warning: false
 
-# https://stackoverflow.com/questions/74491138/ggplot-custom-fonts-not-working-in-quarto
+library(systemfonts)
+library(showtext)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
 
-# Chunk options
-knitr::opts_chunk$set(
- fig.width = 7,
- fig.asp = 0.618, # Golden Ratio
- #out.width = "80%",
- fig.align = "center"
-)
-### Ggplot Theme
-### https://rpubs.com/mclaire19/ggplot2-custom-themes
-
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+showtext_auto(enable = TRUE) #enable showtext
+##
 theme_custom <- function(){ 
-    font <- "Roboto Condensed"   #assign font family up front
+    font <- "Alegreya"   #assign font family up front
     
-    theme_classic(base_size = 14) %+replace%    #replace elements we want to change
+    theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
     
     theme(
-      panel.grid.minor = element_blank(),    #strip minor gridlines
-      text = element_text(family = font),
+      text = element_text(family = font),  #set base font family
+      
       #text elements
-      plot.title = element_text(             #title
-                   family = font,            #set font family
-                   #size = 20,               #set font size
-                   face = 'bold',            #bold typeface
-                   hjust = 0,                #left align
-                   #vjust = 2                #raise slightly
-                   margin=margin(0,0,10,0)
-),               
+      plot.title = element_text(                 #title
+                   family = font,          #set font family
+                   size = 24,                    #set font size
+                   face = 'bold',                #bold typeface
+                   hjust = 0,                    #left align
+                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
+      plot.title.position = "plot", 
       
-      plot.subtitle = element_text(          #subtitle
-                   family = font,            #font family
-                   #size = 14,                #font size
-                   hjust = 0,
-                   margin=margin(2,0,5,0)
-),               
+      plot.subtitle = element_text(              #subtitle
+                   family = font,          #font family
+                   size = 14,                   #font size
+                   hjust = 0,                   #left align
+                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
       
-      plot.caption = element_text(           #caption
-                   family = font,            #font family
-                   size = 8,                 #font size
-                   hjust = 1),               #right align
+      plot.caption = element_text(               #caption
+                   family = font,          #font family
+                   size = 9,                     #font size
+                   hjust = 1),                   #right align
       
-      axis.title = element_text(             #axis titles
-                   family = font,            #font family
-                   size = 10                 #font size
-),
+      plot.caption.position = "plot",            #right align
       
-      axis.text = element_text(              #axis text
-                   family = font,            #axis family
-                   size = 8)               #font size
+      axis.title = element_text(                 #axis titles
+                   family = "Roboto Condensed",  #font family
+                   size = 12),                   #font size
+      
+      axis.text = element_text(                  #axis text
+                   family = "Roboto Condensed",  #font family
+                   size = 9),                    #font size
+      
+      axis.text.x = element_text(                #margin for axis text
+                    margin = margin(5, b = 10))
+      
+      #since the legend often requires manual tweaking 
+      #based on plot content, don't define it here
     )
 }
 
-# Set graph theme
-theme_set(new = theme_custom())
-#
+## Use available fonts in ggplot text geoms too!
+ggplot2::update_geom_defaults(geom = "text",new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
+
 ```
+
 
 ## Introduction
 
@@ -151,6 +177,8 @@ movie_profit %>%
 #     icon = "fa fa-save"
 #   )
 ```
+
+
 ## Data Dictionary
 ::: callout-note
 ### Quantitative Variables
@@ -173,9 +201,7 @@ Write in.
 
 ## Plot the Data
 
-::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
 
-### Using R
 ```{r}
 #| echo: false
 movie_profit %>%
@@ -193,10 +219,6 @@ movie_profit %>%
 
 ```
 
-### Using Observable
-
-
-:::
 
 ## Task and Discussion
 Complete the Data Dictionary.

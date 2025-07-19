@@ -70,6 +70,7 @@ knitr::opts_chunk$set(tidy = 'styler')
 ```{r}
 #| label: plot-theme
 #| echo: true
+#| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
@@ -141,7 +142,7 @@ theme_custom <- function(){
 }
 
 ## Use available fonts in ggplot text geoms too!
-update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text",new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -150,7 +151,7 @@ update_geom_defaults(geom = "text",new = list(
 )
 
 ## Set the theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ```
 
@@ -214,6 +215,13 @@ interested in, after converting data into long format:
 
 # Set graph theme
 theme_set(new = theme_custom())
+
+MathAnxiety %>% count(Gender)
+
+MathAnxiety %>% 
+  group_by(Gender) %>% 
+  summarise(mean = mean(AMAS), n = n())
+
 #
 MathAnxiety %>%
   gf_density(
@@ -238,15 +246,21 @@ MathAnxiety %>%
     subtitle = "Illustrating Difference in Means"
   ) %>%
   gf_summary(geom = "point", size = 3, colour = "black") %>% 
-  gf_line(stat = "summary", linewidth = 1, 
-          geom = "line", colour = ~"MeanDifferenceLine")
-
-##
-MathAnxiety %>% count(Gender)
-
-MathAnxiety %>% 
-  group_by(Gender) %>% 
-  summarise(mean = mean(AMAS))
+  gf_summary(group = ~ 1, # See the reference link above. Damn!!!
+             fun = "mean", geom = "line", 
+             colour = ~"MeanDifferenceLine", 
+             lty = 1, linewidth = 2) %>% 
+  gf_refine(scale_x_discrete(
+    breaks = c("Boy", "Girl"),
+    labels = c("Boy", "Girl"),
+    guide = "prism_bracket"
+  )) %>%
+  gf_refine(
+    annotate(x = 0.65, y = 25, geom = "text", label = "Mean\n Boys' Anxiety Scores"),
+    annotate(x = 2.35, y = 25, geom = "text", label = "Mean\n Girls' Anxiety Scores"),
+    annotate(x = 1.5, y = 30, geom = "label", label = "Mean Difference Line\nSlope indicates\n differences in mean", fill = "moccasin")
+  ) %>% 
+  gf_theme(theme(legend.position = "none"))
 
 ```
 
@@ -281,13 +295,18 @@ MathAnxiety %>%
               alpha = 0.5,
               title = "Math Anxiety scores for boys and girls") %>%
   gf_facet_grid(~ Gender) %>% 
-  gf_fitdistr(dist = "dnorm") 
+  gf_fitdistr(dist = "dnorm") %>% 
+  gf_theme(theme(legend.position = "none")) # No Need!!
 ##
 MathAnxiety %>% 
   gf_qqline(~ AMAS, color = ~ Gender,
-            title = "Math Anxiety Score..are they Normally Distributed?") %>%
+            title = "Math Anxiety Scores..",
+            subtitle= "Are they Normally Distributed?") %>%
   gf_qq() %>% 
-  gf_facet_wrap(~ Gender)  # independent y-axis
+  gf_facet_wrap(~ Gender) %>%  # independent y-axis
+
+  gf_theme(theme(legend.position = "none")) # No Need!!
+
 ```
 
 Let us split the dataset into subsets, to execute the normality check
@@ -406,7 +425,7 @@ but with the same value! This depends upon the way the factor variable
 ### {{< iconify fluent-mdl2 insights >}} Inference
 
 ::::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
-#### Using the Parametric t.test
+#### Parametric t.test
 
 Since the data are not both normally distributed, though the variances
 similar, we typically cannot use a parametric `t.test`. However, we can
@@ -424,7 +443,7 @@ significant difference between Boys and Girls when it comes to `AMAS`
 anxiety. But can we really believe this, given the non-normality of
 data?
 
-#### Using the Mann-Whitney Test
+#### Mann-Whitney Test
 
 Since the data variables do not satisfy the assumption of being
 *normally distributed*, and though the variances are similar, we use the
@@ -501,7 +520,7 @@ reject the NULL hypothesis that the means are equal and accept the
 alternative hypothesis that there is a significant difference in mean
 anxiety scores between Boys and Girls.
 
-#### Using the Linear Model Interpretation
+#### Linear Model Interpretation
 
 We can apply the *linear-model-as-inference* interpretation to the
 **ranked data** data to implement the non-parametric test as a Linear
@@ -529,11 +548,7 @@ library(ggtext)
 library(glue)
 library(latex2exp)
 # https://www.statology.org/r-geom_path-each-group-consists-of-only-one-observation/
-
-
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
 
 MathAnxiety %>% 
   gf_jitter(rank(AMAS) ~ Gender, color = ~ Gender, 
@@ -577,7 +592,7 @@ Note how the **Qual** variable was used here in Linear Regression! The
 Here too we see that the `p.value` for the *slope term* ("GenderGirl")
 is significant at $7.4*10^{-4}$.
 
-#### Using the Permutation Test
+#### Permutation Test
 
 We **pretend** that `Gender` has no *effect* on the `AMAS` anxiety
 scores. If this is our position, then the `Gender` labels are
@@ -601,9 +616,8 @@ null_dist_amas
 
 ```{r}
 #| layout-ncol: 2
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 gf_histogram(data = null_dist_amas, ~ diffmean, bins = 25) %>%
   gf_vline(xintercept = obs_diff_amas, 
            colour = "red", linewidth = 1,
@@ -771,14 +785,14 @@ yrbss_select_gender <- yrbss %>%
 #| layout-ncol: 2
 #| warning: false
 #| message: false
-# Set graph theme
-theme_set(new = theme_custom())
-##
+ggplot2::theme_set(new = theme_custom())
+
 yrbss_select_gender %>%
   gf_density( ~ weight,
               fill = ~ gender,
               alpha = 0.5,
-              title = "Highschoolers' Weights by Gender") 
+              title = "Highschoolers' Weights by Gender") %>% 
+  gf_refine(scale_fill_brewer(name = "Gender", palette = "Set1"))
 
 ###
 yrbss_select_gender %>% 
@@ -798,7 +812,9 @@ yrbss_select_gender %>%
   gf_refine(annotate(x = 0.75, y = 60, geom = "text", label = "Mean\n Girls Weights"),
             annotate(x = 2.25, y = 60, geom = "text", label = "Mean\n Boys Weights"),
             annotate(x = 1.5, y = 100, geom = "label", label = "Slope indicates\n differences in mean", fill = "moccasin")
-            )
+            ) %>% 
+  gf_refine(scale_colour_brewer(name = "Gender", palette = "Set1"))
+
 ```
 
 ```{r}
@@ -847,10 +863,8 @@ Let us plot frequency distribution and Q-Q plots[^5] for both variables.
 ```{r}
 #| results: hold
 #| layout-ncol: 2
+ggplot2::theme_set(new = theme_custom())
 
-# Set graph theme
-theme_set(new = theme_custom())
-#
 male_student_weights <- yrbss_select_gender %>% 
   filter(gender == "male") %>% 
   select(weight)
@@ -868,11 +882,12 @@ yrbss_select_gender %>%
               alpha = 0.5,
               title = "Highschoolers' Weights by Gender") %>%
   gf_facet_grid(~ gender) %>% 
-  gf_fitdistr(dist = "dnorm") 
+  gf_fitdistr(dist = "dnorm") %>% 
+  gf_refine(scale_fill_brewer(name = "Gender", palette = "Set1"))
 ##
 yrbss_select_gender %>% 
   gf_qqline(~ weight | gender, ylab = "scores") %>% 
-  gf_qq() 
+  gf_qq(title = "Q-Q Plots of Male and Female Weights") 
 
 ```
 
@@ -943,7 +958,7 @@ obs_diff_gender
 ### {{< iconify fluent-mdl2 insights >}} Inference
 
 :::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
-#### Using the Mann-Whitney test
+#### Mann-Whitney test
 
 Since the data variables do not satisfy the assumption of being
 *normally distributed*, and the variances are significantly different,
@@ -978,7 +993,7 @@ wilcox.test(weight ~ gender, data = yrbss_select_gender,
 The `p.value` is negligible and we are able to reject the NULL
 hypothesis that the means are equal.
 
-#### Using the Linear Model
+#### Linear Model
 
 We can apply the *linear-model-as-inference* interpretation to the
 **ranked data** data to implement the non-parametric test as a Linear
@@ -1019,7 +1034,7 @@ variable[^6].
 :::
 
 
-#### Using the Permutation Test
+#### Permutation Test
 
 For the specific data at hand, we need to shuffle the `gender` and take
 the `test statistic` (difference in means) each time.
@@ -1027,10 +1042,8 @@ the `test statistic` (difference in means) each time.
 ```{r}
 #| layout-ncol: 2
 #| layout-nrow: 2
+ggplot2::theme_set(new = theme_custom())
 
-# Set graph theme
-theme_set(new = theme_custom())
-#
 null_dist_weight <- 
   do(4999) * diffmean(data = yrbss_select_gender, 
                       weight ~ shuffle(gender))
@@ -1166,23 +1179,36 @@ We can make distribution plots for `weight` by `physical_3plus`:
 #| layout-ncol: 2
 #| message: false
 #| warning: false
-# Set graph theme
-theme_set(new = theme_custom())
-###
+ggplot2::theme_set(new = theme_custom())
+
 yrbss_select_phy %>% 
-  gf_jitter(weight ~ physical_3plus, group = ~ physical_3plus,
-            width = 0.08, alpha = 0.08,
-            xlab = "Days of Exercise >=3") %>%  
-  gf_summary(geom = "point", size = 3, group = ~ physical_3plus,
-             colour = ~ physical_3plus) %>%
-  gf_line(group =1, # weird remedy to fix groups error message!
-    stat = "summary", linewidth = 1,
-    geom = "line", colour = ~"MeanDifferenceLine"
-  )
+  gf_jitter(weight ~ physical_3plus, colour = ~ physical_3plus,
+            width = 0.08, alpha = 0.2,
+            xlab = "Days of Exercise >=3",
+            title = "Student Weights vs Exercise Days") %>%  
+   gf_summary(
+    group = ~1, # See the reference link above. Damn!!!
+    fun = "mean", geom = "line", colour = "lightblue",
+    lty = 1, linewidth = 2
+  ) %>% 
+    gf_summary(fun = "mean", geom = "point", size = 3, colour = "firebrick") %>%
+  gf_refine(scale_x_discrete(
+    breaks = c("no", "yes"),
+    labels = c("no", "yes"),
+    guide = "prism_bracket"
+  ))  %>%
+  gf_refine(
+    annotate(x = 0.65, y = 60, geom = "text", label = "Mean Weights\n No Exercise"),
+    annotate(x = 2.35, y = 60, geom = "text", label = "Mean Weights\nWith Exercise"),
+    annotate(x = 1.5, y = 100, geom = "label", label = "Slope indicates\n differences in mean", fill = "moccasin"),
+    scale_colour_brewer(name = "Days of Exercise >=3", palette = "Set2"))
+
 ###
 gf_density(~ weight,
           fill = ~ physical_3plus,
-          data = yrbss_select_phy)
+          data = yrbss_select_phy,
+          title = "Highschoolers' Weights by Days of Exercise") %>% 
+  gf_refine(scale_fill_brewer(name = "Days of Exercise >=3", palette = "Set2"))
 
 ```
 
@@ -1218,9 +1244,8 @@ cannot do a `shapiro.test`:
 ```{r}
 #| layout-ncol: 2
 #| results: hold
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 yrbss_select_phy %>%
   gf_density( ~ weight,
               fill = ~ physical_3plus,
@@ -1309,7 +1334,7 @@ obs_diff_phy
 ### {{< iconify fluent-mdl2 insights >}} Inference
 
 ::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
-#### Using *parametric* t.test
+#### *Parametric* t.test
 
 Well, the variables are *not* normally distributed, and the variances
 are significantly different so a standard `t.test` is not advised. We
@@ -1327,10 +1352,10 @@ $0$. So the `t.test` gives us good reason to reject the Null Hypothesis
 that the means are similar. But can we really believe this, given the
 non-normality of data?
 
-#### Using non-parametric *paired* Wilcoxon test
+#### *Non-Parametric* Wilcoxon test
 
 However, we have seen that the data variables are *not* normally
-distributed. So a Wilcoxon Test, using signed-ranks, is indicated:
+distributed. So a **non-parametric** Wilcoxon Test, using signed-ranks, is indicated:
 (recall the model!)
 
 ```{r}
@@ -1349,7 +1374,7 @@ wilcox.test(weight ~ physical_3plus,
 The nonparametric `wilcox.test` also suggests that the means for
 `weight` across `physical_3plus` are significantly different.
 
-#### Using the Linear Model Interpretation
+#### Linear Model Interpretation
 
 We can apply the *linear-model-as-inference* interpretation to the
 **ranked data** data to implement the non-parametric test as a Linear
@@ -1377,7 +1402,7 @@ Here too, the linear model using `rank` data arrives at a conclusion
 similar to that of the Mann-Whitney U test.
 :::
 
-### Using Permutation Tests
+### Permutation Tests
 
 For this last Case Study, we will do this in two ways, just for fun: one
 using our familiar `mosaic` package, and the other using the package
@@ -1460,10 +1485,8 @@ find the observed difference in means!
 We can visualize this null distribution with the following code:
 
 ```{r}
+ggplot2::theme_set(new = theme_custom())
 
-# Set graph theme
-theme_set(new = theme_custom())
-#
 null_dist %>% 
   visualise() + # Note this plus sign! 
   shade_p_value(obs_diff_infer,
@@ -1521,9 +1544,8 @@ that with the `obs`erved `diff`rence and compute the `p-value` and
 `confidence intervals`:
 
 ```{r}
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 gf_histogram(~ diffmean, data = null_dist_mosaic) %>% 
   gf_vline(xintercept = obs_diff_mosaic, 
            colour = "red", linewidth = 2)

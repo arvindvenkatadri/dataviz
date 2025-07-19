@@ -62,6 +62,7 @@ library(grateful)
 ```{r}
 #| label: plot-theme
 #| echo: true
+#| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
@@ -133,7 +134,7 @@ theme_custom <- function(){
 }
 
 ## Use available fonts in ggplot text geoms too!
-update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text",new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -142,7 +143,7 @@ update_geom_defaults(geom = "text",new = list(
 )
 
 ## Set the theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ```
 
@@ -184,13 +185,14 @@ visualized as a network
 ```{r}
 #| echo: false
 #| warning: false
+set_graph_style(family = "Roboto Condensed", size = 16)
 
 data(karate)
 karate <- karate %>% 
   igraph::upgrade_graph() # Old format, convert to new
 set.seed(123)
 l <- layout.graphopt(karate)
-set_graph_style(family = "Roboto Condensed", size = 16)
+
 karate %>% 
   as_tbl_graph() %>% # to access nodes and edges in tidygraph
   
@@ -442,6 +444,8 @@ plotting.
 
 ```{r}
 #| label:  3a.Auto-graph-grey-anatomy
+set_graph_style(family = "Roboto Condensed", size = 16)
+
 autograph(ga)
 
 ```
@@ -480,7 +484,7 @@ Two kinds of `geom`: one set for nodes, and another for edges
 
 ```{r}
 #| label:  3b.Ggraph-greys-anatomy
-
+set_graph_style(family = "Roboto Condensed", size = 16)
 # Write Comments next to each line 
 # About what that line does for the overall graph
 
@@ -495,9 +499,7 @@ ggraph(graph = ga,  layout = "kk") +
   
   labs(title = "Whoo Hoo! My First Silly Grey's Anatomy graph in R!",
        subtitle = "Why did I ever get in this course...",
-       caption = "Bro, they are doing cool things in the other classes...\n And the show is even more cool!") +
-  
-  set_graph_style(family = "Roboto Condensed", size = 16)
+       caption = "Bro, they are doing cool things in the other classes...\n And the show is even more cool!")
 
 ```
 
@@ -513,6 +515,8 @@ changes. Colour? Fill? Width? Size? Stroke? Labs? Of course!
 
 ```{r}
 #| label:  3c.Modify-Greys-Anatomy-ggraph
+
+set_graph_style(family = "Roboto Condensed", size = 16)
 # Change the parameters in each of the commands here to new ones
 # Use fixed values for colours or sizes...etc. 
 
@@ -524,8 +528,7 @@ ggraph(graph = ga,  layout = "kk") +
                   stroke = 2) +
   labs(title = "Whoo Hoo! My next silly Grey's Anatomy graph in R!",
        subtitle = "Why did I ever get in this course...",
-       caption = "Bro, they are doing cool things in the other classes...") + 
-set_graph_style(family = "Roboto Condensed", size = 16)
+       caption = "Bro, they are doing cool things in the other classes...") 
 
 ```
 
@@ -570,6 +573,7 @@ information.
 
 ```{r}
 #| label:  3d.aesthetics-using-ggraph-Modify
+set_graph_style(family = "Roboto Condensed", size = 16)
 
 ggraph(graph = ga, layout = "fr") +
   geom_edge_link0(aes(width = weight)) + # change variable here
@@ -581,9 +585,7 @@ ggraph(graph = ga, layout = "fr") +
        subtitle = "Colouring Nodes by Attribute",
        caption = "Grey's Anatomy") +
   
-  scale_edge_width(range = c(0.2,2)) +
-  set_graph_style(family = "Roboto Condensed", size = 16)
-
+  scale_edge_width(range = c(0.2,2)) 
 
 ```
 
@@ -598,6 +600,7 @@ work with either of the two?
 
 ```{r}
 #| label:  arc-diagram
+set_graph_style(family = "Roboto Condensed", size = 16)
 # Arc diagram
 
 ggraph(ga, layout = "linear") +
@@ -605,8 +608,7 @@ ggraph(ga, layout = "linear") +
   scale_edge_width(range = c(0.2, 2)) +
   geom_node_point(size = 2, colour = "red") +
   labs(edge_width = "Weight",title = "Grey's Anatomy", 
-       subtitle = "Arc Layout") +
-  set_graph_style(family = "Roboto Condensed", size = 16)
+       subtitle = "Arc Layout") 
 
 ```
 
@@ -619,6 +621,8 @@ difference in the relationships between people here? Why?
 
 ```{r}
 #| label:  Coord-Diagram-circular
+set_graph_style(family = "Roboto Condensed", size = 16)
+
 # Coord diagram, circular
 ggraph(ga, layout = "linear", circular = TRUE) + # Note the layout!
   geom_edge_arc0(aes(width = weight), alpha = 0.8) + 
@@ -631,8 +635,7 @@ ggraph(ga, layout = "linear", circular = TRUE) + # Note the layout!
   labs(edge_width = "Weight", 
        title = "Grey's Anatomy", 
        subtitle = "Arc Layout") +
-  theme(aspect.ratio = 1) +
-  set_graph_style(family = "Roboto Condensed", size = 16)
+  theme(aspect.ratio = 1)
 
 ```
 
@@ -653,7 +656,7 @@ that not all layouts are possible for all datasets!!
 #| fig-show: hold
 #| column: body-outset-right
 
-# set_graph_style()
+set_graph_style(family = "Roboto Condensed", size = 16)
 
 # This dataset contains the graph that describes the class 
 # hierarchy for the Flare visualization library.
@@ -671,9 +674,8 @@ graph <-  tbl_graph(edges = flare$edges, nodes = flare$vertices)
 #| fig-show: hold
 #| column: body-outset-right
 #| warning: false
-##
+
 set_graph_style(family = "Roboto Condensed", size = 16)
-##
 
 # dendrogram
 ggraph(graph, layout = "dendrogram") + 
@@ -733,7 +735,6 @@ qualitative attribute on nodes or edges.
 #| label:  faceting
 #| column: body-outset-right
 #| layout-ncol: 2
-
 set_graph_style(family = "Roboto Condensed",size = 16)
 
 # facet edges by type
@@ -818,14 +819,14 @@ set_graph_style(family = "Roboto Condensed", size = 16)
 ggraph(ga,layout = "nicely") +
     geom_edge_link0(aes(width = centrality_edge_betweenness())) + 
     
-    geom_node_point(aes(colour = centrality_degree(), 
-                        size = centrality_degree())) +
+    geom_node_point(aes(fill = centrality_degree(), 
+                        size = centrality_degree()), shape = 21) +
     
     geom_node_text(aes(label = name), repel = TRUE, size = 2.5) +
     
+  # USE SAME NAME for two scales to Merge their legends!!
     scale_size(name = "Degree", range = c(2, 5)) + 
-    
-    scale_color_fermenter(name = "Degree", # USE SAME NAME to Merge legends!!
+    scale_fill_fermenter(name = "Degree", 
                           palette = "Set1",
                           aesthetics = c("colour", "fill"), 
                           guide = guide_legend(reverse = FALSE)) + 

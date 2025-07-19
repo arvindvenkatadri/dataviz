@@ -55,53 +55,96 @@ library(glue)
 #    
 ```
 
-## Setting up plot theme
+#### Plot Fonts and Theme
 
 ```{r}
-#| label: one-time-theme
+#| label: plot-theme
+#| echo: true
+#| cache: false
 #| code-fold: true
-#| 
-extrafont::loadfonts(quiet = TRUE)
-font <- "Roboto Condensed" 
-theme_set(new = theme_classic(base_size = 12))
+#| messages: false
+#| warning: false
 
-theme_update(
-      panel.grid.minor = element_blank(), 
+library(systemfonts)
+library(showtext)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+showtext_auto(enable = TRUE) #enable showtext
+##
+theme_custom <- function(){ 
+    font <- "Alegreya"   #assign font family up front
+    
+    theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
+    
+    theme(
+      text = element_text(family = font),  #set base font family
       
-      text = element_text(family = font),
       #text elements
-      plot.title = element_text(             #title
-                   family = font,            #set font family
-                   size = 16,                #set font size
-                   face = 'bold',            #bold typeface
-                   hjust = 0,                #left align
-                   #vjust = 2                #raise slightly
-                   margin=margin(0,0,10,0)
-),               
+      plot.title = element_text(                 #title
+                   family = font,          #set font family
+                   size = 24,                    #set font size
+                   face = 'bold',                #bold typeface
+                   hjust = 0,                    #left align
+                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
+      plot.title.position = "plot", 
       
-      plot.subtitle = element_text(          #subtitle
-                   family = font,            #font family
-                   size = 12,                #font size
-                   hjust = 0,
-                   margin=margin(2,0,5,0)
-),               
+      plot.subtitle = element_text(              #subtitle
+                   family = font,          #font family
+                   size = 14,                   #font size
+                   hjust = 0,                   #left align
+                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
       
-      plot.caption = element_text(           #caption
-                   family = font,            #font family
-                   size = 8,                 #font size
-                   hjust = 1),               #right align
+      plot.caption = element_text(               #caption
+                   family = font,          #font family
+                   size = 9,                     #font size
+                   hjust = 1),                   #right align
       
-      axis.title = element_text(             #axis titles
-                   family = font,            #font family
-                   size = 10                 #font size
-),
+      plot.caption.position = "plot",            #right align
       
-      axis.text = element_text(              #axis text
-                   family = font,            #axis family
-                   size = 8)                 #font size
+      axis.title = element_text(                 #axis titles
+                   family = "Roboto Condensed",  #font family
+                   size = 12),                   #font size
+      
+      axis.text = element_text(                  #axis text
+                   family = "Roboto Condensed",  #font family
+                   size = 9),                    #font size
+      
+      axis.text.x = element_text(                #margin for axis text
+                    margin = margin(5, b = 10))
+      
+      #since the legend often requires manual tweaking 
+      #based on plot content, don't define it here
     )
+}
+
+## Use available fonts in ggplot text geoms too!
+ggplot2::update_geom_defaults(geom = "text",new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
 
 ```
+
 
 
 
@@ -249,17 +292,16 @@ Reasonably balanced groups.
 
 ```{r}
 #| layout-ncol: 2
-# Set graph theme
-# theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 opening_modified %>% 
-  gf_histogram(~ hand_strength) 
+  gf_histogram(~ hand_strength, title = "Hand Strength") 
 opening_modified %>% 
-  gf_histogram(~ pinch_strength)
+  gf_histogram(~ pinch_strength,title = "Pinch Strength")
 opening_modified %>% 
-  gf_histogram(~ time_jar)
+  gf_histogram(~ time_jar, title = "Time to Open a Jar")
 opening_modified %>% 
-  gf_histogram(~ time_bottle)
+  gf_histogram(~ time_bottle,title = "Time to Open a Bottle")
 
 ```
 
@@ -318,9 +360,8 @@ Now if we plot `times`, we can colour or facet by `grocery`.
 
 ```{r}
 #| label: plot-1
-# Set graph theme
-# theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 opening_modified %>% 
   pivot_longer(cols = -c(1:7),
                names_to = "operation",
@@ -333,6 +374,7 @@ opening_modified %>%
   gf_density_ridges(grocery ~ times,
                     fill = "grey70",scale = 0.75) %>% 
   gf_facet_grid(hand_pain ~ .) 
+
 ```
 
 Ok!
@@ -345,9 +387,8 @@ We now want to label to do two things:
 
 ```{r}
 #| label: plot-2
-# Set graph theme
-# theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 opening_modified %>% 
   pivot_longer(cols = -c(1:7),
                names_to = "operation",
@@ -378,9 +419,8 @@ This does not seem to be happening at this time. Needs to be checked! Wonder wha
 
 ```{r}
 #| label: plot-3
-# Set graph theme
-# theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 opening_modified %>% 
   pivot_longer(cols = -c(1:7),
                names_to = "operation",
@@ -416,6 +456,7 @@ And maybe add a point on each sub-plot to show the median opening times?
 #| label: plot-4
 #| warning: false
 #| message: false
+ggplot2::theme_set(new = theme_custom())
 
 opening_modified %>% 
   pivot_longer(cols = -c(1:7),
@@ -490,6 +531,8 @@ opening %>%
 Since the `as.numeric` did not work for us in the analysis of `opening` data, I have found and used another function `as_numeric` from the `sjlabelled` package. Sigh. 
 
 ```{r}
+ggplot2::theme_set(new = theme_custom())
+
 closing %>% 
   mutate(across(starts_with("time"), sjlabelled::as_numeric)) %>% 
   pivot_longer(cols = -c(1:7), names_to = "operation", 

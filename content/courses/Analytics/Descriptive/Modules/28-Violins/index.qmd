@@ -54,9 +54,7 @@ library(tidyverse)
 library(mosaic)
 library(ggformula)
 library(skimr)
-##
-library(tidyplots) # Easily Produced Publication-Ready Plots
-library(tinyplot) # Plots with Base R
+
 library(tinytable) # Elegant Tables for our data
 
 
@@ -87,6 +85,7 @@ library(MKdescr)
 ```{r}
 #| label: plot-theme
 #| echo: true
+#| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
@@ -158,7 +157,7 @@ theme_custom <- function(){
 }
 
 ## Use available fonts in ggplot text geoms too!
-update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text",new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -167,7 +166,7 @@ update_geom_defaults(geom = "text",new = list(
 )
 
 ## Set the theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ```
 
@@ -203,7 +202,7 @@ read_csv("../../../../../materials/Data/pronouns.csv") %>%
 #| echo: false
 
 library(patchwork)
-
+library(hrbrthemes)
 data <- read.table("https://raw.githubusercontent.com/zonination/perceptions/master/probly.csv", header=TRUE, sep=",")
 
 # Data is at wide format, we need to make it 'tidy' or 'long'
@@ -266,8 +265,9 @@ Let us see what this looks like!
 ```{r}
 #| label: fig-normal-violins
 #| fig-cap: "Violin Plots for Normal Variables" 
-#| #| echo: false
+#| echo: false
 #| warning: false
+ggplot2::theme_set(new = theme_custom())
 
 library(ggnormalviolin)
 # Make data
@@ -314,6 +314,7 @@ In @fig-normal-violins, the plots show (very artificial!) distributions of a *si
 ```{r}
 #| label: Violin-plots-with-ggformula-1
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 gf_violin(price ~ "All Diamonds", data = diamonds, 
           draw_quantiles = c(0,.25,.50,.75)) %>%
@@ -339,6 +340,7 @@ gf_violin(price ~ "All Diamonds", data = diamonds,
 ```{r}
 #| label: Violin-plots-with-ggformula-2
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 diamonds %>% 
   gf_violin(price ~ cut,
@@ -364,6 +366,7 @@ diamonds %>%
 ```{r}
 #| label: Violin-plots-with-ggformula-3
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 diamonds %>% 
   gf_violin(price ~ cut, 
@@ -389,6 +392,7 @@ diamonds %>%
 ```{r}
 #| label: Violin-plots-with-ggformula-4
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 diamonds %>% 
   gf_violin(price ~ cut, 
@@ -421,6 +425,7 @@ diamonds %>%
 ```{r}
 #| label: Violin plots with ggplot
 #| layout-ncol: 2
+ggplot2::theme_set(new = theme_custom())
 
 diamonds %>% ggplot() + 
   geom_violin(aes(y = price, x = ""),
@@ -460,6 +465,7 @@ diamonds %>% ggplot() +
 ```{webr-r}
 #| label: Violin plots with ggformula webr
 #| collapse: true
+ggplot2::theme_set(new = theme_custom())
 
 gf_violin(price ~ "", data = diamonds, 
           draw_quantiles = c(0,.25,.50,.75)) %>%
@@ -468,6 +474,7 @@ gf_violin(price ~ "", data = diamonds,
 ```
 
 ```{webr-r}
+ggplot2::theme_set(new = theme_custom())
 
 gf_violin(price ~ cut,
             draw_quantiles = c(0,.25,.50,.75)) %>% 
@@ -476,6 +483,7 @@ gf_violin(price ~ cut,
 ```
 
 ```{webr-r}
+ggplot2::theme_set(new = theme_custom())
 
 diamonds %>% 
   gf_violin(price ~ cut, 
@@ -488,6 +496,7 @@ diamonds %>%
 ```
 
 ```{webr-r}
+ggplot2::theme_set(new = theme_custom())
 
 diamonds %>% 
   gf_violin(price ~ cut, 
@@ -504,6 +513,7 @@ diamonds %>%
 #| label: Violin plots with ggplot webr
 #| layout-ncol: 2
 #| collapse: true
+ggplot2::theme_set(new = theme_custom())
 
 diamonds %>% ggplot() + 
   geom_violin(aes(y = price, x = ""),
@@ -513,6 +523,7 @@ diamonds %>% ggplot() +
 ```
 
 ```{webr-r}
+ggplot2::theme_set(new = theme_custom())
 
 diamonds %>% ggplot() + 
   geom_violin(aes(cut, price),
@@ -522,6 +533,7 @@ diamonds %>% ggplot() +
 ```
 
 ```{webr-r}
+ggplot2::theme_set(new = theme_custom())
 
 diamonds %>% ggplot() + 
   geom_violin(aes(cut, price, 
@@ -533,6 +545,7 @@ diamonds %>% ggplot() +
 ```
 
 ```{webr-r}
+ggplot2::theme_set(new = theme_custom())
 
 diamonds %>% ggplot() + 
   geom_violin(aes(cut, 
@@ -640,7 +653,7 @@ cite_packages(
   out.dir = ".",
   out.format = "html",
   pkgs = c("ggnormalviolin","ggridges", "NHANES", "TeachHist",
-           "TeachingDemos", "visualize", "tidyplots", "tinytable", "tinyplot")
+           "TeachingDemos", "visualize", "tinytable")
 ) %>%
   knitr::kable(format = "simple")
 

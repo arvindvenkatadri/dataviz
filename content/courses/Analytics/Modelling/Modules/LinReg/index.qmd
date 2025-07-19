@@ -71,6 +71,7 @@ library(reghelper)
 ```{r}
 #| label: plot-theme
 #| echo: true
+#| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
@@ -142,7 +143,7 @@ theme_custom <- function(){
 }
 
 ## Use available fonts in ggplot text geoms too!
-update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text",new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -151,7 +152,7 @@ update_geom_defaults(geom = "text",new = list(
 )
 
 ## Set the theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ```
 
@@ -376,10 +377,7 @@ Let us select a few sets of Quantitative and Qualitative features, along
 with the target variable `cmedv` and do a pairs-plots with them:
 
 ```{r}
-
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
 
 housing %>%
   # Target variable cmedv
@@ -445,10 +443,10 @@ Let us plot (again) scatter plots of Quant Variables that have strong
 correlation with `cmedv`:
 
 ```{r}
+#| label: quant-predictors
 #| layout-ncol: 2
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 gf_point(
   data = housing,
   cmedv ~ age,
@@ -485,9 +483,9 @@ Let us also check the *Qualitative predictor variables*: Access to the
 Charles river (`chas`) does seem to affect the prices somewhat.
 
 ```{r}
-# Set graph theme
-theme_set(new = theme_custom())
-#
+#| label: qual-predictors
+ggplot2::theme_set(new = theme_custom())
+
 housing %>%
   # Target variable cmedv
   # Predictor Access to Charles River
@@ -526,9 +524,8 @@ respect to `cmedv`, tidy these up using `broom::tidy`, and then plot
 these:
 
 ```{r}
-# Set graph theme
-theme_set(new = theme_custom())
-#
+#| label: cor-test-purrr
+ggplot2::theme_set(new = theme_custom())
 
 all_corrs <- housing %>% 
   select(where(is.numeric)) %>% 
@@ -634,18 +631,44 @@ $$ {#eq-rm-model}
     variation in `cmedv` that is still left to explain, an indication that      we should perhaps use a richer model, with more predictors. These aspects are explored in the Tutorials.
 :::
 
+
+#### {{< iconify carbon forecast-hail >}} Forecasting with the Linear Model
+
+In practice, we use the `broom` package functions (`tidy`, `glance` and
+`augment`) to obtain a clear view of the model parameters and
+predictions of `cmedv` for all *existing* values of `rm`. We see
+estimates for the intercept and slope (`rm`) for the linear model, along
+with the *standard errors* and *p.values* for these estimated
+parameters. And we see the fitted values of `cmedv` for the existing
+`rm`; these values will naturally lie **on** the straight-line depicting
+the model. We will examine this `augment`-ed data more the section on Diagnostics. 
+
+To predict `cmedv` with *new* values of `rm`, we use `predict`. Let us
+now try to make predictions with some new data:
+
+```{r}
+#| label: housing-lm-predict
+new <- tibble(rm = seq(3, 10)) # must be named "rm"
+new %>% mutate(predictions =
+                 stats::predict(
+                   object = housing_lm,
+                   newdata = .,
+                   se.fit = FALSE
+                 ))
+```
+
+Note that "negative values" for predicted `cmedv` would have no meaning!
+
 We can plot the scatter plot of these two variables with the model also
 over-plotted.
 
 ```{r}
-
+#| label: housing-lm-plot
 #| layout-ncol: 3
 #| fig-width: 5
 #| fig-height: 4
+ggplot2::theme_set(new = theme_custom())
 
-# Set graph theme
-theme_set(new = theme_custom())
-#
 # Tidy Data frame for the model using `broom`
 housing_lm_tidy <- 
   housing_lm %>% 
@@ -722,33 +745,6 @@ For any new value of `rm`, we go up to the vertical blue line and read
 off the predicted median price by following the horizontal blue line.
 That is how the model is used (by hand).
 
-#### {{< iconify carbon forecast-hail >}} Forecasting with the Linear Model
-
-In practice, we use the `broom` package functions (`tidy`, `glance` and
-`augment`) to obtain a clear view of the model parameters and
-predictions of `cmedv` for all *existing* values of `rm`. We see
-estimates for the intercept and slope (`rm`) for the linear model, along
-with the *standard errors* and *p.values* for these estimated
-parameters. And we see the fitted values of `cmedv` for the existing
-`rm`; these values will naturally lie **on** the straight-line depicting
-the model. We will examine this `augment`-ed data more the section on Diagnostics. 
-
-To predict `cmedv` with *new* values of `rm`, we use `predict`. Let us
-now try to make predictions with some new data:
-
-```{r}
-
-new <- tibble(rm = seq(3, 10)) # must be named "rm"
-new %>% mutate(predictions =
-                 stats::predict(
-                   object = housing_lm,
-                   newdata = .,
-                   se.fit = FALSE
-                 ))
-```
-
-Note that "negative values" for predicted `cmedv` would have no meaning!
-
 #### {{< iconify mdi thinking >}} Linear Model Intuitive {#sec-lm-intuitive}
 
 All that is very well, but what is happening under the hood of the `lm`
@@ -767,10 +763,12 @@ can use to fit to the data. Here are 6 lines of varying slopes (and
 intercepts ) that we can try as candidates for the best fit line:
 
 ```{r}
+#| label: housing-lm-intuitive-1
 #| echo: false
 # This code is not to be dissected in class
 # For exposition purposes only
 # Discuss the results only (graphs)
+ggplot2::theme_set(new = theme_custom())
 
 set.seed(1234)
 housing_sample <- housing_lm_augment %>% 
@@ -836,10 +834,12 @@ variables. Any of the other lines could be a decent candidate, so how do
 we decide?
 
 ```{r}
+#| label: housing-lm-intuitive-2
 #| echo: false
 #| layout-ncol: 2
 #| warning: false
-#| 
+ggplot2::theme_set(new = theme_custom())
+
 housing_sample %>% 
   gf_hline(yintercept =  ~ mean_cmedv_sample,
            color = "dodgerblue", linewidth = 2) %>%
@@ -902,8 +902,10 @@ How do we get the optimum slope + intercept? If we plot the $SSE$ as a
 function of varying slope, we get:
 
 ```{r}
-
+#| label: housing-lm-intuitive-3
 #| echo: false
+ggplot2::theme_set(new = theme_custom())
+
 sim_model <- tibble(b = slope + seq(-5,5),
                   a = intercept,
                   dat = list(tibble(cmedv = housing_sample$cmedv, 
@@ -1087,6 +1089,8 @@ plot very comprehensive statistical graphs. Let us quickly do this:
 
 ```{r}
 #| message: false
+ggplot2::theme_set(new = theme_custom())
+
 library(ggstatsplot)
 housing_lm %>%
   ggstatsplot::ggcoefstats(title = "Linear Model for Boston Housing", 
@@ -1169,11 +1173,8 @@ Plotting this is simple too:
 #| layout-ncol: 2
 #| warn: false
 #| message: false
+ggplot2::theme_set(new = theme_custom())
 
-
-# Set graph theme
-theme_set(new = theme_custom())
-#
 housing_lm_tidy %>%
   gf_col(estimate ~ term, fill = ~ term, width = 0.25) %>% 
   gf_hline(yintercept = 0) %>% 
@@ -1211,6 +1212,7 @@ variation in their range
 #| label: Looking-at-Residuals
 #| layout-ncol: 2
 #| warning: false
+ggplot2::theme_set(new = theme_custom())
 
 housing_lm_augment %>% 
   gf_point(.resid ~ .fitted, title = "Residuals vs Fitted") %>%
@@ -1261,9 +1263,8 @@ also has a crisp command to plot these diagnostic graphs.
 ```{r}
 #| label: using-lindia-package
 #| message: false
-# Set graph theme
-theme_set(new = theme_custom())
-#
+ggplot2::theme_set(new = theme_custom())
+
 library(lindia)
 gg_diagnose(housing_lm, 
             mode = "base_r", # plots like those with base-r

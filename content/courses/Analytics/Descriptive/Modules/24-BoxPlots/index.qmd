@@ -27,13 +27,6 @@ webr:
 
 ---
 
-## {{< fa folder-open >}} Slides and Tutorials
-
-|                                                                                                 |                                                                                                    |                                                                                        |
-|------------------------|------------------------|------------------------|
-| <a href="./files/distributions.qmd"><i class="fa-brands fa-r-project"></i> R (Static Viz)</a>   | <a href="./files/distributions.rda"> <i class="fa-solid fa-person-rays"></i> Radiant Tutorial</a>  | <a href="./files/data/qdd-data.zip"> <i class="fa-solid fa-database"></i> Datasets</a> |
-
-
 :::: {.pa4}
 ::: {.athelas .ml0 .mt0 .pl4 .black-90 .bl .bw2 .b--blue}
 ["In keeping silent about evil, in burying it so deep within us that no sign of it appears on the surface, we are implanting it, and it will rise up a thousand fold in the future."]{.f5 .f4-m .f3-l .lh-copy .measure .mt0}
@@ -57,9 +50,7 @@ library(ggformula)
 library(skimr)
 library(visStatistics) # All in one plot + stats test package
 library(palmerpenguins) # Our new favourite dataset
-##
-library(tidyplots) # Easily Produced Publication-Ready Plots
-library(tinyplot) # Plots with Base R
+
 library(tinytable) # Elegant Tables for our data
 
 ```
@@ -86,6 +77,7 @@ library(embedr) # Embed multimedia in HTML files
 ```{r}
 #| label: plot-theme
 #| echo: true
+#| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
@@ -157,7 +149,7 @@ theme_custom <- function(){
 }
 
 ## Use available fonts in ggplot text geoms too!
-update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text",new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -166,7 +158,7 @@ update_geom_defaults(geom = "text",new = list(
 )
 
 ## Set the theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ```
 
@@ -211,9 +203,11 @@ Box Plots are an extremely useful data visualization that gives us an idea of th
 #| fig-cap: "Box Plot Definitions"
 #| fig-height: 4
 
+ggplot2::theme_set(theme_custom()) # does not work here
+
 set.seed(123)
 data <- rt(150, df = 10)
-MKdescr::illustrate.boxplot(data) + theme_custom()
+MKdescr::illustrate.boxplot(data)
 
 ```
 
@@ -257,6 +251,8 @@ Box plots can show skew in distributions, with a large number of outliers on one
 #| warning: false
 #| fig-cap:
 #| - "Skewed Distributions and Boxplots"
+
+ggplot2::theme_set(new = theme_custom())
 
 rand_data <- tibble(
 #left  = rsn(n=5000, xi=0, omega=1, alpha=-8, tau=0, dp=NULL), 
@@ -466,6 +462,7 @@ wages_clean <-  wages %>% tidyr::drop_na(realinc)
 ```{r}
 #| label: realincome-ggformula
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 wages_clean %>% 
   gf_boxplot(realrinc ~ "Income") %>% # Dummy X-axis "variable"
@@ -485,6 +482,7 @@ wages_clean %>%
 ### Using ggplot
 ```{r}
 #| label: realincome-ggplot
+ggplot2::theme_set(new = theme_custom())
 
 wages_clean %>% 
   ggplot() + 
@@ -495,6 +493,7 @@ wages_clean %>%
 
 ### {{< iconify noto-v1 spider-web >}} web-r
 ```{webr-r}
+ggplot2::theme_set(new = theme_custom())
 
 wages %>% 
   tidyr::drop_na(realrinc) %>% 
@@ -533,6 +532,7 @@ wages %>%
 ```{r}
 #| label: fig-income-by-gender-ggformula-1
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 wages_clean %>% 
   gf_boxplot(gender ~ realrinc) %>% 
@@ -556,10 +556,12 @@ wages_clean %>%
 ```{r}
 #| label: fig-income-by-gender-ggformula-2
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 wages_clean %>% 
   gf_boxplot(gender ~ log10(realrinc)) %>% 
   gf_labs(title = "Plot 2B: Log(Income) by Gender")
+
 ```
 :::
 ::: {.column}
@@ -579,6 +581,7 @@ wages_clean %>%
 ```{r}
 #| label: fig-income-by-gender-ggformula-3
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 wages_clean %>% 
   gf_boxplot(gender ~ realrinc, fill = ~ gender) %>% 
@@ -607,6 +610,7 @@ wages_clean %>%
 #|   - "Split by Gender"
 #|   - "With log income"
 #|   - "With log scale"
+ggplot2::theme_set(new = theme_custom())
 
 wages_clean %>% 
   ggplot() + 
@@ -630,8 +634,7 @@ wages_clean %>%
 ### web-r
 
 ```{webr-r}
-
-# ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
+ggplot2::theme_set(new = theme_custom())
 
 wages %>% 
   tidyr::drop_na(realrinc) %>% 
@@ -673,8 +676,7 @@ wages %>%
 ```{r}
 #| label: fig-income-by-educcat-ggformula-1
 #| eval: false
-
-# ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
+ggplot2::theme_set(new = theme_custom())
 
 wages_clean %>% 
   gf_boxplot(educcat ~ realrinc) %>% 
@@ -698,8 +700,7 @@ wages_clean %>%
 ```{r}
 #| label: fig-income-by-educcat-ggformula-2
 #| eval: false
-
-# ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
+ggplot2::theme_set(new = theme_custom())
 
 wages_clean %>% 
   gf_boxplot(educcat ~ log10(realrinc)) %>% 
@@ -723,6 +724,7 @@ wages_clean %>%
 ```{r}
 #| label: fig-income-by-educcat-ggformula-3
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 wages_clean %>% 
   gf_boxplot(
@@ -751,8 +753,7 @@ wages_clean %>%
 ```{r}
 #| label: fig-income-by-educcat-ggformula-4
 #| eval: false
-
-# ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
+ggplot2::theme_set(new = theme_custom())
 
 wages_clean %>% 
   gf_boxplot(reorder(educcat, realrinc, FUN = median) ~ realrinc, 
@@ -789,6 +790,7 @@ wages_clean %>%
 #|   - "Split by Education Category"
 #|   - "With log income"
 #|   - "With log scale"
+ggplot2::theme_set(new = theme_custom())
 
 wages_clean %>% 
   ggplot() +
@@ -825,8 +827,7 @@ wages_clean %>%
 ### web-r
 
 ```{webr-r}
-
-# ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
+ggplot2::theme_set(new = theme_custom())
 
 wages %>% 
   tidyr::drop_na(realrinc) %>% 
@@ -896,6 +897,7 @@ We will also drop NA values all around this time, to avoid seeing boxplots for u
 ```{r}
 #| label: fig-income-by-educcat-childs-ggformula-1
 #| eval: false
+ggplot2::theme_set(new = theme_custom())
 
 wages %>% 
   drop_na() %>% 
@@ -927,8 +929,7 @@ wages %>%
 ```{r}
 #| label: fig-income-by-educcat-childs-ggformula-2
 #| eval: false
-
-# ggplot2::theme_set(new = theme_classic(base_family = "Roboto Condensed")) # Set consistent graph theme
+ggplot2::theme_set(new = theme_custom())
 
 wages %>% 
   drop_na() %>% 
@@ -965,6 +966,7 @@ wages %>%
 #| fig-subcap: 
 #|   - "Split by Education Category and Family Size"
 #|   - "Split by Gender and Family Size"
+ggplot2::theme_set(new = theme_custom())
 
 wages %>% 
   drop_na() %>%
@@ -996,6 +998,7 @@ wages %>%
 
 ```{webr-r}
 #| label: fig-income-by-educcat-childs-webr
+ggplot2::theme_set(new = theme_custom())
 
 wages %>% 
   drop_na() %>% 

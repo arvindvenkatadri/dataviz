@@ -27,9 +27,6 @@ webr:
 
 ---
 
-## {{< fa folder-open >}} Slides and Tutorials
-
-
 :::: {.pa4}
 ::: {.athelas .ml0 .mt0 .pl4 .black-90 .bl .bw2 .b--blue}
 ["No matter what happens in life, be good to people. Being good to people is a wonderful legacy to leave behind."]{.f5 .f4-m .f3-l .lh-copy .measure .mt0}
@@ -49,9 +46,6 @@ library(tidyverse)
 library(mosaic)
 library(ggformula)
 library(skimr)
-##
-library(tidyplots) # Easily Produced Publication-Ready Plots
-library(tinyplot) # Plots with Base R
 library(tinytable) # Elegant Tables for our data
 
 ```
@@ -101,56 +95,42 @@ library(embedr) # Embed multimedia in HTML files
 
 ```{r}
 #| label: plot-theme
-#| echo: true
+#| echo: fenced
+#| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
 
-library(systemfonts)
 library(showtext)
-## Clean the slate
-systemfonts::clear_local_fonts()
-systemfonts::clear_registry()
-##
-showtext_opts(dpi = 96) #set DPI for showtext
-sysfonts::font_add(family = "Alegreya",
-  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
-  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
-  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
-  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
-
-sysfonts::font_add(family = "Roboto Condensed", 
-  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
-  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
-  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
-  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+font_add(family = "Alegreya", regular = "../../../../fonts/Alegreya/Alegreya-Regular.ttf")
+font_add(family = "Roboto Condensed", regular = "../../../../fonts/RobotoCondensed-Regular.ttf")
 showtext_auto(enable = TRUE) #enable showtext
 ##
 theme_custom <- function(){ 
     font <- "Alegreya"   #assign font family up front
     
-    theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
+    theme_classic(base_size = 14) %+replace%    #replace elements we want to change
     
     theme(
       text = element_text(family = font),  #set base font family
       
       #text elements
       plot.title = element_text(                 #title
-                   family = font,          #set font family
-                   size = 24,                    #set font size
+                   family = "Alegreya",          #set font family
+                   size = 18,                    #set font size
                    face = 'bold',                #bold typeface
                    hjust = 0,                    #left align
                    margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
       plot.title.position = "plot", 
       
       plot.subtitle = element_text(              #subtitle
-                   family = font,          #font family
+                   family = "Alegreya",          #font family
                    size = 14,                   #font size
                    hjust = 0,                   #left align
                    margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
       
       plot.caption = element_text(               #caption
-                   family = font,          #font family
+                   family = "Alegreya",          #font family
                    size = 9,                     #font size
                    hjust = 1),                   #right align
       
@@ -173,7 +153,7 @@ theme_custom <- function(){
 }
 
 ## Use available fonts in ggplot text geoms too!
-update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text",new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -182,9 +162,10 @@ update_geom_defaults(geom = "text",new = list(
 )
 
 ## Set the theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ```
+
 
 
 
@@ -514,7 +495,7 @@ choose **Qual** variables to count with! In each case, we will state a Hypothesi
 #| label: fig-bar-tip-ggformula
 #| code-fold: true
 #| 
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 gf_bar(~ tip, data = taxi_modified) %>%
   gf_labs(title = "Plot 1A: Counts of Tips")
@@ -528,7 +509,7 @@ gf_bar(~ tip, data = taxi_modified) %>%
 #| label: fig-bar-tip-ggplot
 #| code-fold: true
 
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ggplot(taxi_modified)  + 
   geom_bar(aes(x = tip)) + 
@@ -537,45 +518,11 @@ ggplot(taxi_modified)  +
 ```
 
 
-#### tidyplots-1
-
-```{r}
-#| label: fig-bar-tip-tidyplots
-#| code-fold: true
-
-tidyplot(x = tip, data = taxi_modified) %>% 
-  add_count_bar() %>% 
-  add_title("Plot 1A: Counts of Tips") %>% 
-  adjust_size(height = 50, width = 85, unit = "mm") %>% 
-  adjust_colors(colors_discrete_friendly)
-
-
-```
-
-#### tinyplot-1
-
-```{r}
-#| label: fig-bar-tip-tinyplot
-#| code-fold: true
-#| 
-
-tinyplot(~ tip, data = taxi_modified,
-        type = "barplot",
-        main = "Plot 1A: Counts of Tips")
-
-```
-
 #### {{< iconify noto-v1 spider-web >}} web-r-1
 
 ```{webr-r}
 #| label: bar-charts-ggformula-webr
 #| layout-ncol: 3
-
-tidyplot(x = tip, data = taxi_modified) %>% 
-  add_count_bar() %>% 
-  add_title("Plot 1A: Counts of Tips") %>% 
-  adjust_size(height = 50, width = 85, unit = "mm") %>% 
-  adjust_colors(colors_discrete_seaside) 
 
 gf_bar(~ tip, data = taxi_modified) %>%
   gf_labs(title = "Plot 1A: Counts of Tips")
@@ -613,7 +560,7 @@ ggplot(taxi_modified)  +
 #| label: fig-ggformula-2-1
 #| eval: false
 
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 taxi_modified %>% 
   gf_bar(~ local, fill = ~ tip, 
@@ -638,7 +585,7 @@ taxi_modified %>%
 #| label: fig-ggformula-2-2
 #| eval: false
 
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 taxi_modified %>% 
   gf_bar(~ local, fill = ~ tip, 
@@ -665,7 +612,7 @@ taxi_modified %>%
 #| label: fig-ggformula-2-3
 #| eval: false
 
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ## Showing "per capita" percentages
 taxi_modified %>% 
@@ -694,7 +641,7 @@ taxi_modified %>%
 #| label: fig-ggformula-2-4
 #| eval: false
 
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ## Showing "per capita" percentages
 ## Better labelling of Y-axis 
@@ -715,13 +662,14 @@ taxi_modified %>%
 ```
 
 :::
+
 ::::
 
 #### ggplot-2
 ```{r}
 #| layout-ncol: 2
 
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 taxi_modified %>%
   ggplot() +
@@ -755,133 +703,6 @@ taxi_modified %>%
 
 ```
 
-#### tidyplots-2
-
-:::: {.columns}
-::: {.column}
-```{r}
-#| label: fig-tidyplots-2-1
-#| eval: false
-tidyplots::tidyplot(local, colour = tip,
-                    data = taxi_modified) %>% 
-  add_count_bar() %>% 
-  add_title("Plot 2A: Dodged Bar Chart") %>% 
-  adjust_size(height = 50, width = 80, unit = "mm") %>% 
-  adjust_colors(colors_discrete_friendly) 
-
-```
-
-:::
-::: {.column}
-
-```{r}
-#| ref-label: fig-tidyplots-2-1
-#| echo: false
-```
-:::
-::::
-
-:::: {.columns}
-::: {.column}
-```{r}
-#| label: fig-tidyplots-2-2
-#| eval: false
-tidyplots::tidyplot(local, colour = tip, data = taxi_modified) %>% 
-  add_barstack_absolute() %>%                     
-  add_title("Plot 2B: Stacked Bar Chart") %>% 
-  adjust_size(height = 50, width = 80, unit = "mm") %>% 
-  adjust_colors(colors_discrete_friendly) 
-
-```
-:::
-
-::: {.column}
-```{r}
-#| ref-label: fig-tidyplots-2-2
-#| echo: false
-```
-:::
-::::
-
-
-:::: {.columns}
-::: {.column}
-```{r}
-#| label: fig-tidyplots-2-3
-#| eval: false
-tidyplots::tidyplot(local, colour = tip,
-                    data = taxi_modified) %>% 
-  add_barstack_relative() %>%  
-  add_title("Plot 2C: Dodged Bar Chart") %>% 
-  adjust_size(height = 50, width = 80, unit = "mm") %>% 
-  adjust_colors(colors_discrete_friendly) 
-
-```
-:::
-::: {.column}
-```{r}
-#| ref-label: fig-tidyplots-2-3
-#| echo: false
-```
-:::
-::::
-
-
-
-
-#### tinyplot-2
-
-:::: {.columns}
-::: {.column}
-```{r}
-#| label: fig-tinyplot-2-1
-#| eval: false
-
-tinyplot(~ local | tip, data = taxi_modified,
-  type = "barplot", palette = "tableau",
-  beside = TRUE, # for placing bars beside one another
-  main = "Plot 2A: Dodged Bar Chart",
-  legend = "right!") # Outside, to the right
-
-```
-:::
-
-::: {.column}
-```{r}
-#| ref-label: fig-tinyplot-2-1
-#| echo: false
-```
-:::
-::::
-
-:::: {.columns}
-::: {.column}
-```{r}
-#| label: fig-tinyplot-2-2
-#| eval: false
-
-tinyplot(~ local | tip, data = taxi_modified,
-  type = "barplot", palette = "tableau",
-  beside = FALSE,                                  
-  xlevels = c("no","yes"), # try reversing
-  main = "Plot 2B: Stacked Bar Chart",
-  sub = "Can we spot per group differences in proportions??",
-  legend = "right!")
-
-
-```
-:::
-
-::: {.column}
-```{r}
-#| ref-label: fig-tinyplot-2-2
-#| echo: false
-```
-
-:::
-
-
-::::
 
 
 #### {{< iconify noto-v1 spider-web >}} web-r-2
@@ -915,6 +736,7 @@ taxi_modified %>%
 :::
 
 
+
 #### Business Insights-2
 - Counting the frequency of `tip` by `local` gives us grouped counts, but we cannot tell the percentage per group (local or not) of those who tip and those who do not. 
 - We need per-group percentages because the number of `local` trips are not balanced
@@ -923,7 +745,6 @@ taxi_modified %>%
 - We see that the percentage of tippers is somewhat higher with people who make non-local trips. Not surprising. 
 
 :::
-
 
 ### {{< iconify el question-sign >}} Question-3: Do some cab `company`-ies get more `tips` than others?
 
@@ -940,7 +761,7 @@ taxi_modified %>%
 #| label: fig-ggformula-3-1
 #| eval: false
 
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 taxi_modified %>% 
   gf_bar(~ company, fill = ~ tip, position = "dodge") %>% 
@@ -965,7 +786,7 @@ taxi_modified %>%
 #| label: fig-ggformula-3-2
 #| eval: false
 
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 taxi_modified %>% 
   gf_bar(~ company, fill = ~ tip, position = "stack") %>% 
@@ -990,7 +811,7 @@ taxi_modified %>%
 #| label: fig-ggformula-3-3
 #| eval: false
 
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ## Showing "per capita" percentages
 taxi_modified %>% 
@@ -1015,7 +836,7 @@ taxi_modified %>%
 ```{r}
 #| label: fig-ggformula-3-4
 #| eval: false
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ## Showing "per capita" percentages
 ## Better labelling of Y-axis
@@ -1042,7 +863,7 @@ taxi_modified %>%
 ```{r}
 #| layout-ncol: 2
 
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 taxi_modified %>% 
   ggplot() + 
@@ -1076,91 +897,12 @@ taxi_modified %>%
 ```
 
 
-#### tidyplots-3
 
-:::: {.columns}
-::: {.column}
-```{r}
-#| label: fig-tidyplots-3-1
-#| eval: false
-tidyplots::tidyplot(company, colour = tip,
-                    data = taxi_modified) %>% 
-  add_count_bar() %>% 
-  add_title("Plot 3A: Dodged Bar Chart") %>% 
-  adjust_size(height = 50, width = 80, unit = "mm") %>%
-  adjust_x_axis(rotate_labels = 45) 
-
-```
-:::
-::: {.column}
-```{r}
-#| ref-label: fig-tidyplots-3-1
-#| echo: false
-```
-
-:::
-::::
-
-:::: {.columns}
-::: {.column}
-```{r}
-#| label: fig-tidyplots-3-2
-#| eval: false
-
-tidyplots::tidyplot(company, colour = tip,
-                    data = taxi_modified) %>% 
-  add_barstack_absolute() %>% 
-  add_title("Plot 3B: Stacked Bar Chart") %>% 
-  adjust_size(height = 50, width = 80, unit = "mm") %>%
-  adjust_x_axis(rotate_labels = 45) 
-```
-:::
-::: {.column}
-```{r}
-#| ref-label: fig-tidyplots-3-2
-#| echo: false
-```
-
-:::
-::::
-
-:::: {.columns}
-::: {.column}
-```{r}
-#| label: fig-tidyplots-3-3
-#| eval: false
-tidyplots::tidyplot(company, colour = tip,
-                    data = taxi_modified) %>% 
-  add_barstack_relative() %>% 
-  add_title("Plot 3C: Stacked Bar Chart") %>% 
-  add_annotation_text(text = "Proportions of Tippers per Company", 
-                      x = 4.25,  y = 1.25) %>% 
-  adjust_size(height = 50, width = 80, unit = "mm") %>%
-  adjust_x_axis(title = "", rotate_labels = 45) %>%
-  adjust_y_axis(title = "Proportions") # Not happening??
-
-  
-```
-
-:::
-::: {.column}
-```{r}
-#| ref-label: fig-tidyplots-3-3
-#| echo: false
-```
-
-:::
-::::
-
-
-#### tinyplot-3
-
-To be Coded!!
 
 #### {{< iconify noto-v1 spider-web >}} web-r-3
 ```{webr-r}
 
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 taxi_modified %>% 
   gf_bar(~ company, fill = ~ tip, position = "dodge") %>% 
@@ -1215,8 +957,7 @@ taxi_modified %>%
 ```{r}
 #| label: bar-tip-others-ggformula-4-1
 #| eval: false
-
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 gf_bar(~ hour, fill = ~ tip, data = taxi_modified) %>%
   gf_labs(title = "Plot 4A: Counts of Tips by Hour") %>% gf_refine(scale_fill_brewer(palette = "Set1"))
@@ -1242,7 +983,7 @@ gf_bar(~ hour, fill = ~ tip, data = taxi_modified) %>%
 #| label: bar-tip-others-ggformula-4-2
 #| eval: false
 
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 gf_bar(~ dow, fill = ~ tip, data = taxi_modified) %>%
   gf_labs(title = "Plot 4B: Counts of Tips by Day of Week") %>% gf_refine(scale_fill_brewer(palette = "Set1"))
@@ -1268,7 +1009,7 @@ gf_bar(~ dow, fill = ~ tip, data = taxi_modified) %>%
 #| label: bar-tip-others-ggformula-4-3
 #| eval: false
 
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 gf_bar(~ month, fill = ~ tip, data = taxi_modified) %>%
   gf_labs(title = "Plot 4C: Counts of Tips by Month") %>% gf_refine(scale_fill_brewer(palette = "Set1"))
@@ -1294,7 +1035,7 @@ gf_bar(~ month, fill = ~ tip, data = taxi_modified) %>%
 #| label: bar-tip-others-ggformula-4-4
 #| eval: false
 
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 gf_bar(~ month | dow, fill = ~ tip, data = taxi_modified) %>%
   gf_labs(title = "Plot 4D: Counts of Tips by Day of Week and Month") %>% gf_refine(scale_fill_brewer(palette = "Set1"))
@@ -1320,7 +1061,7 @@ gf_bar(~ month | dow, fill = ~ tip, data = taxi_modified) %>%
 #| label: bar-tip-others-ggformula-4-5
 #| eval: false
 
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ## This may be too busy a graph...
 gf_bar(~ dow | hour, fill = ~ tip, data = taxi_modified) %>%
@@ -1348,7 +1089,7 @@ gf_bar(~ dow | hour, fill = ~ tip, data = taxi_modified) %>%
 #| label: bar-tip-others-ggformula-4-6
 #| eval: false
 
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ## This is better!
 gf_bar(~ hour | dow, fill = ~ tip, data = taxi_modified) %>%
@@ -1374,7 +1115,7 @@ gf_bar(~ hour | dow, fill = ~ tip, data = taxi_modified) %>%
 #| layout-ncol: 2
 #| layout-nrow: 2
 
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 gf_bar(~ hour, fill = ~ tip, data = taxi_modified) %>%
   gf_labs(title = "Plot 4A: Counts of Tips by Hour") %>% gf_refine(scale_fill_brewer(palette = "Set1"))
@@ -1405,161 +1146,12 @@ ggplot(taxi_modified) +
        subtitle = "Swapped the Facets") + scale_fill_brewer(palette = "Set1")
 ```
 
-#### tidyplots-4
-
-:::: {.columns}
-::: {.column}
-
-```{r}
-#| label: fig-tidyplots-4-1
-#| eval: false
-tidyplots::tidyplot(hour, colour = tip,
-                    data = taxi_modified) %>% 
-  add_count_bar() %>% 
-  add_title("Plot 4A: Counts of Tips by Hour") %>% 
-  adjust_size(height = 50, width = 80, unit = "mm") %>% 
-  adjust_colors(colors_discrete_friendly) 
-  
-```
-
-:::
-
-::: {.column}
-
-```{r}
-#| ref-label: fig-tidyplots-4-1
-#| echo: false
-```
-
-:::
-
-::::
-
-
-:::: {.columns}
-
-::: {.column}
-
-```{r}
-#| label: fig-tidyplots-4-2
-#| eval: false
-tidyplots::tidyplot(hour, colour = tip,
-                    data = taxi_modified) %>% 
-  add_barstack_absolute() %>% 
-  add_title("Plot 4B: Counts of Tips by Hour") %>% 
-  adjust_size(height = 50, width = 80, unit = "mm") %>% 
-  adjust_colors(colors_discrete_friendly)
-  
-```
-
-:::
-
-::: {.column}
-```{r}
-#| ref-label: fig-tidyplots-4-2
-#| echo: false
-```
-
-:::
-
-::::
-
-
-:::: {.columns}
-
-::: {.column}
-
-```{r}
-#| label: fig-tidyplots-4-3
-#| eval: false
-tidyplots::tidyplot(hour, colour = tip,
-                    data = taxi_modified) %>% 
-  add_barstack_relative() %>% 
-  add_title("Plot 4C: Counts of Tips by Hour") %>% 
-  adjust_size(height = 50, width = 80, unit = "mm") %>% 
-  adjust_colors(colors_discrete_friendly) 
-  
-```
-
-:::
-
-::: {.column}
-```{r}
-#| ref-label: fig-tidyplots-4-3
-#| echo: false
-```
-
-:::
-
-::::
-
-
-:::: {.columns}
-::: {.column}
-```{r}
-#| label: fig-tidyplots-4-4
-#| eval: false
-##
-tidyplots::tidyplot(month, colour = tip,
-                    data = taxi_modified) %>% 
-  add_barstack_absolute() %>% 
-  add_title("Plot 4D: Counts of Tips by Day of Week and Month") %>% 
-  adjust_size(height = 50, width = 80, unit = "mm") %>% 
-  adjust_colors(colors_discrete_friendly) %>% 
-  split_plot(by = dow, 
-             ncol = 3, nrow = 3, guides = "collect") 
-  
-```
-:::
-
-:::{.column}
-```{r}
-#| ref-label: fig-tidyplots-4-4
-#| echo: false
-```
-
-:::
-::::
-
-
-:::: {.columns}
-::: {.column}
-```{r}
-#| label: fig-tidyplots-4-5
-#| eval: false
-##
-tidyplots::tidyplot(dow, colour = tip,
-                    data = taxi_modified) %>% 
-  add_barstack_absolute() %>% 
-  add_title("Plot 4D: Counts of Tips by Day of Week and Month") %>% 
-  adjust_size(height = 50, width = 80, unit = "mm") %>% 
-  adjust_colors(colors_discrete_friendly) %>%
-  adjust_x_axis(rotate_labels = 45) %>%
-  split_plot(by = hour, 
-             ncol = 3, nrow = 8, guides = "collect") 
-  
-```
-:::
-
-:::{.column}
-```{r}
-#| ref-label: fig-tidyplots-4-5
-#| echo: false
-```
-
-:::
-::::
-
-
-#### tinyplot-4
-
-To be Coded. 
 
 #### {{< iconify noto-v1 spider-web >}} web-r-4
 
 ```{webr-r}
 
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 gf_bar(~ hour, fill = ~ tip, data = taxi_modified) %>%
   gf_labs(title = "Plot 4A: Counts of Tips by Hour") %>% 
@@ -1626,7 +1218,7 @@ We have already seen `gf_props` in our two case studies above. Also check out `g
 ```{r}
 #| label: props-chart-1
 #| eval: false
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 gf_props(~ substance,
   data = mosaicData::HELPrct, fill = ~ sex,
@@ -1656,7 +1248,7 @@ gf_props(~ substance,
 #| label: props-chart-2
 #| eval: false
 
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 gf_props(~ substance,
   data = mosaicData::HELPrct, fill = ~ sex,
@@ -1686,8 +1278,7 @@ gf_props(~ substance,
 ```{r}
 #| label: percents-chart
 #| eval: false
-
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 gf_percents(~ substance,
   data = mosaicData::HELPrct, fill = ~ sex,

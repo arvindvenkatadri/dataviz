@@ -23,6 +23,98 @@ library(mosaicData)
 
 ```
 
+#### Plot Fonts and Theme
+
+```{r}
+#| label: plot-theme
+#| echo: true
+#| cache: false
+#| code-fold: true
+#| messages: false
+#| warning: false
+
+library(systemfonts)
+library(showtext)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+showtext_auto(enable = TRUE) #enable showtext
+##
+theme_custom <- function(){ 
+    font <- "Alegreya"   #assign font family up front
+    
+    theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
+    
+    theme(
+      text = element_text(family = font),  #set base font family
+      
+      #text elements
+      plot.title = element_text(                 #title
+                   family = font,          #set font family
+                   size = 24,                    #set font size
+                   face = 'bold',                #bold typeface
+                   hjust = 0,                    #left align
+                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
+      plot.title.position = "plot", 
+      
+      plot.subtitle = element_text(              #subtitle
+                   family = font,          #font family
+                   size = 14,                   #font size
+                   hjust = 0,                   #left align
+                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
+      
+      plot.caption = element_text(               #caption
+                   family = font,          #font family
+                   size = 9,                     #font size
+                   hjust = 1),                   #right align
+      
+      plot.caption.position = "plot",            #right align
+      
+      axis.title = element_text(                 #axis titles
+                   family = "Roboto Condensed",  #font family
+                   size = 12),                   #font size
+      
+      axis.text = element_text(                  #axis text
+                   family = "Roboto Condensed",  #font family
+                   size = 9),                    #font size
+      
+      axis.text.x = element_text(                #margin for axis text
+                    margin = margin(5, b = 10))
+      
+      #since the legend often requires manual tweaking 
+      #based on plot content, don't define it here
+    )
+}
+
+## Use available fonts in ggplot text geoms too!
+ggplot2::update_geom_defaults(geom = "text",new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
+
+```
+
+
+
 ## Introduction: The Lady who Drank Tea
 
 > There is a famous story about a lady who claimed that tea with milk
@@ -95,15 +187,25 @@ Back to the Lady who drank Tea !!
 > 10000 times. We'll call the heads correct guesses and the tails
 > incorrect guesses.
 
-```{r,echo = FALSE}
+```{r}
+#| label: fig-all-10-heads
+#| caption: "Can we get 10/10 heads?"
+#| echo: false
+
+theme_set(new = theme_custom())
+
 set.seed(1234)
 random_ladies <- do(10000) * rflip(10)
 tally(~ heads, data = random_ladies)
 gf_histogram(~ heads, data = random_ladies,
-             width = 1, 
-             type = "percent", 
-             fill = ~ heads>=10) %>% 
-  gf_theme(theme = theme_bw())
+             binwidth = 1, origin = -0.5, # centering the bars
+             fill = ~ heads>=10, 
+             colour = "black", linewidth = 0.2) %>%
+  gf_refine(scale_x_continuous(breaks = c(1:10)),
+            scale_fill_brewer(palette = "Set1")) %>%
+  gf_labs(title = "10 Coin Flips, 10000 times",
+          subtitle = "Can we get all 10 Heads?")
+
 ```
 
 So what do we conclude? It is possible that the lady could get 9 or 10
@@ -209,21 +311,16 @@ From Chihara and Hesterberg:
     in [Introduction to Modern Statistics (1st
     Ed)](https://openintro-ims.netlify.app/index.html) by Mine
     Çetinkaya-Rundel and Johanna Hardin.
-
 2.  [Allen Downey, There is still only one
     test](https://allendowney.blogspot.com/2016/06/there-is-still-only-one-test.html)
-
 3.  R.A. Fisher. *Statistical Methods for Research Workers*. Oliver &
     Boyd, 1925
-
 4.  <https://timesofindia.indiatimes.com/sports/cricket/icc-mens-t20-world-cup/in-numbers-virat-kohli-and-his-strange-luck-with-the-coin-toss/articleshow/87538443.cms>
-
 5.  Laura Chihara, Tim Hesterberg, *Mathematical Statistics with
     Resampling and R*, Wiley, 2019.
-
 6.  D. Salsburg. *The Lady Tasting Tea: How statistics revolutionized
     science in the twentieth century.* W.H. Freeman, New York, 2001
-
 7.  Daniel Kaplan, Nicholas J. Horton, and Randall Pruim,
     *Simulation-based inference with mosaic*
     <https://www.mosaic-web.org/mosaic/articles/Resampling.html>
+

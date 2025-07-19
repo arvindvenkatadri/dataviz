@@ -59,6 +59,7 @@ library(timetk)
 library(tsbox)
 library(gghighlight) # Highlight specific parts of charts
 library(ggtime) # Mitchell Ohara-Wild June 2025
+
 ```
 
 The `fpp3` packages loads a good few other packages:
@@ -111,70 +112,97 @@ library(downloadthis)
 #    
 ```
 
+#### Plot Fonts and Theme
 
 ```{r}
-#| label: Plot Sizing and theming
-#| echo: false
-#| message: false
-#| results: hide
+#| label: plot-theme
+#| echo: true
+#| cache: false
+#| code-fold: true
+#| messages: false
+#| warning: false
 
-# https://stackoverflow.com/questions/74491138/ggplot-custom-fonts-not-working-in-quarto
+library(systemfonts)
+library(showtext)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
 
-# Chunk options
-knitr::opts_chunk$set(
- fig.width = 7,
- fig.asp = 0.618, # Golden Ratio
- #out.width = "80%",
- fig.align = "center"
-)
-### Ggplot Theme
-### https://rpubs.com/mclaire19/ggplot2-custom-themes
-
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+showtext_auto(enable = TRUE) #enable showtext
+##
 theme_custom <- function(){ 
-    font <- "Roboto Condensed"   #assign font family up front
+    font <- "Alegreya"   #assign font family up front
     
-    theme_classic(base_size = 14) %+replace%    #replace elements we want to change
+    theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
     
     theme(
-      panel.grid.minor = element_blank(),    #strip minor gridlines
+      text = element_text(family = font),  #set base font family
       
       #text elements
-      plot.title = element_text(             #title
-                   family = font,            #set font family
-                   #size = 20,               #set font size
-                   face = 'bold',            #bold typeface
-                   hjust = 0,                #left align
-                   #vjust = 2                #raise slightly
-                   margin=margin(0,0,10,0)
-),    plot.title.position = "plot",                
+      plot.title = element_text(                 #title
+                   family = font,          #set font family
+                   size = 24,                    #set font size
+                   face = 'bold',                #bold typeface
+                   hjust = 0,                    #left align
+                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
+      plot.title.position = "plot", 
       
-      plot.subtitle = element_text(          #subtitle
-                   family = font,            #font family
-                   #size = 14,                #font size
-                   hjust = 0,
-                   margin=margin(2,0,5,0)
-),               
+      plot.subtitle = element_text(              #subtitle
+                   family = font,          #font family
+                   size = 14,                   #font size
+                   hjust = 0,                   #left align
+                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
       
-      plot.caption = element_text(           #caption
-                   family = font,            #font family
-                   size = 8,                 #font size
-                   hjust = 1),               #right align
+      plot.caption = element_text(               #caption
+                   family = font,          #font family
+                   size = 9,                     #font size
+                   hjust = 1),                   #right align
       
-      axis.title = element_text(             #axis titles
-                   family = font,            #font family
-                   size = 10                 #font size
-),
+      plot.caption.position = "plot",            #right align
       
-      axis.text = element_text(              #axis text
-                   family = font,            #axis family
-                   size = 8)               #font size
+      axis.title = element_text(                 #axis titles
+                   family = "Roboto Condensed",  #font family
+                   size = 12),                   #font size
+      
+      axis.text = element_text(                  #axis text
+                   family = "Roboto Condensed",  #font family
+                   size = 9),                    #font size
+      
+      axis.text.x = element_text(                #margin for axis text
+                    margin = margin(5, b = 10))
+      
+      #since the legend often requires manual tweaking 
+      #based on plot content, don't define it here
     )
 }
 
-# Set graph theme
-theme_set(new = theme_custom())
+## Use available fonts in ggplot text geoms too!
+ggplot2::update_geom_defaults(geom = "text",new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
 
 ```
+
+
 
 
 ## {{< iconify fxemoji japanesesymbolforbeginner >}} What graphs will we see today?
@@ -517,9 +545,7 @@ births over time, colouring by `day_of_week`, for example:
 ```{r}
 #| label: using-ggformula-1
 #| eval: false
-
-# Set graph theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 # grouping by day_of_week
 births_2000_2014 %>% 
@@ -565,9 +591,7 @@ month** in each year and plot that:
 #| label: using-tibble-data-3
 #| message: false
 #| layout-ncol: 2
-
-# Set graph theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 births_2000_2014_monthly <- births_2000_2014 %>% 
   
@@ -580,8 +604,8 @@ births_2000_2014_monthly <- births_2000_2014 %>%
 
 # `month.abb` is a built-in dataset containing names of months.
 
-  group_by(year, month) %>% 
-  summarise(mean_monthly_births = mean(births, na.rm = TRUE))
+  dplyr::group_by(year, month) %>% 
+  dplyr::summarise(mean_monthly_births = mean(births, na.rm = TRUE))
 births_2000_2014_monthly
 
 ####
@@ -613,16 +637,14 @@ instead of month:
 #| message: false
 #| warning: false
 #| layout-ncol: 2
-
-# Set graph theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 births_2000_2014_weekly <- births_2000_2014 %>% 
   mutate(day_of_week = base::factor(day_of_week,
           levels = c(1,2,3,4,5,6,7), 
           labels = c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"))) %>% 
   group_by(year, day_of_week) %>% 
-  summarise(mean_daily_births = mean(births, na.rm = TRUE))
+  dplyr::summarise(mean_daily_births = mean(births, na.rm = TRUE))
 ##
 births_2000_2014_weekly
 ##
@@ -648,9 +670,7 @@ can plot births over time, colouring by `day_of_week`, for example:
 ```{r}
 #| label: using ggplot
 #| layout-ncol: 2
-
-# Set graph theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 # grouping by day_of_week
 births_2000_2014 %>% 
@@ -680,9 +700,7 @@ births_2000_2014 %>%
 #| label: using-tibble-data-3b
 #| message: false
 #| layout-ncol: 2
-
-# Set graph theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 births_2000_2014_monthly <- births_2000_2014 %>% 
   
@@ -694,7 +712,7 @@ births_2000_2014_monthly <- births_2000_2014 %>%
 # `month.abb` is a built-in dataset containing names of months.
 
   group_by(year, month) %>% 
-  summarise(mean_monthly_births = mean(births, na.rm = TRUE))
+  dplyr::summarise(mean_monthly_births = mean(births, na.rm = TRUE))
 births_2000_2014_monthly
 
 births_2000_2014_monthly %>% 
@@ -715,16 +733,14 @@ births_2000_2014_monthly %>%
 #| message: false
 #| warning: false
 #| layout-ncol: 2
-
-# Set graph theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 births_2000_2014_weekly <- births_2000_2014 %>% 
   mutate(day_of_week = base::factor(day_of_week,
           levels = c(1,2,3,4,5,6,7), 
           labels = c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"))) %>% 
   group_by(year, day_of_week) %>% 
-  summarise(mean_daily_births = mean(births, na.rm = TRUE))
+  dplyr::summarise(mean_daily_births = mean(births, na.rm = TRUE))
 births_2000_2014_weekly
 
 births_2000_2014_weekly %>%
@@ -754,10 +770,7 @@ Instead of looking at multiple overlapping time series graphs, we could split th
 ```{r}
 #| label: gghighlight-1
 #| eval: false
-#library(gghighlight)
-
-# Set graph theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 births_2000_2014_monthly
 ###
@@ -793,9 +806,7 @@ births_2000_2014_monthly %>% ggplot() +
 ```{r}
 #| label: gghighlight-2
 #| eval: false
-
-# Set graph theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 births_2000_2014_weekly
 ###
@@ -851,6 +862,7 @@ Now, we *can* convert the time-oriented columns in this dataset into a
 single `date` variable, giving us a proper tibble time-series:
 
 ```{r}
+
 births_tibble_timeseries <- 
   births_2000_2014 %>%
   mutate(date = lubridate::make_date( year, month, date_of_month)) %>%
@@ -871,9 +883,7 @@ this with `ggformula/ggplot` as we have done before, and with now with
 ```{r}
 #| eval: false
 #| include: false
-
-# Set graph theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 births_tibble_timeseries %>%
   gf_line(births ~ date)
@@ -888,8 +898,7 @@ births_tibble_timeseries %>%
 ```{r}
 #| label: time-series-timetk
 #| eval: false
-# Set graph theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 births_tibble_timeseries %>%
   timetk::plot_time_series(
@@ -899,6 +908,7 @@ births_tibble_timeseries %>%
     .title = "Births over Time",
     .x_lab = "Time",
     .y_lab = "Births")
+
 ```
 :::
 :::{.column}
@@ -982,9 +992,7 @@ Let us simply plot `Cost` over time:
 ```{r}
 #| label:  PBS-Cost-ggformula
 #| eval: false
-
-# Set graph theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 PBS %>%
   gf_point(Cost ~ Month, data = .) %>% 
@@ -1005,9 +1013,7 @@ PBS %>%
 
 ```{r}
 #| label:  PBS-Cost-ggplot
-
-# Set graph theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 PBS %>% 
   ggplot(aes(Month, Cost)) + 
@@ -1020,9 +1026,7 @@ PBS %>%
 ### Using timetk
 
 ```{r}
-
-# Set graph theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 PBS %>%
   timetk::plot_time_series(.date_var = Month, .value = Cost, 
@@ -1048,9 +1052,7 @@ number of births (low, fine, high) and use that to create a heatmap:
 ```{r}
 #| label:  births-heat-map
 #| eval: false
-
-# Set graph theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 births_2000_2014 %>%
   mutate(birthrate = case_when(births >= 10000 ~ "high",
@@ -1066,6 +1068,8 @@ births_2000_2014 %>%
     fill = ~ birthrate,
     color = "black"
   ) %>%
+
+gf_labs(title = "Heatmap as a Time Series Representation") %>%
   
   gf_theme(scale_x_time(
     breaks = 1:12,
@@ -1074,7 +1078,8 @@ births_2000_2014 %>%
                "Sep","Oct","Nov","Dec")
   )) %>%
   
-  gf_theme(scale_fill_brewer(type = "qual", palette = "OrRd", direction = -1)) 
+  gf_theme(scale_fill_brewer(name = "Birth Rate", type = "qual", palette = "OrRd", 
+direction = -1)) 
 
 ```
 
