@@ -1,9 +1,9 @@
+library(mosaic) # Our all-in-one package
+library(skimr) # Looking at data
+library(tinytable) # Printing Tables for our data
 library(tidyverse)
-library(mosaic)
-library(skimr)
 
 
-ggplot2::theme_set(new = theme_classic(base_size = 14, base_family = "roboto"))
 library(checkdown)
 library(epoxy)
 library(explore) # fake data generation
@@ -37,7 +37,8 @@ showtext_auto(enable = TRUE) #enable showtext
 ##
 theme_custom <- function(){ 
     font <- "Alegreya"   #assign font family up front
-    
+    '%+replace%' <- ggplot2::'%+replace%' # nolint
+        
     theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
     
     theme(
@@ -81,6 +82,7 @@ theme_custom <- function(){
     )
 }
 
+
 ## Use available fonts in ggplot text geoms too!
 update_geom_defaults(geom = "text",new = list(
   family = "Roboto Condensed",
@@ -119,6 +121,15 @@ read_csv("../../../../../materials/Data/pronouns.csv") %>%
   kbl() %>%
   kable_paper(c("striped","hover","responsive"), full_width = T)
   
+
+# mpg %>%
+#   head(10) %>%
+#   tt(theme = c("striped")) %>%
+#   setNames(c("Manufacturer", "Model", "Engine\nDisplacement",
+#                     "Model\n Year", "Cylinders", "Transmission",
+#                     "Drivetrain", "City\n Mileage", "Highway\n Mileage",
+#                     "Fuel", "Class\nOf\nVehicle"))
+# 
 
 mpg %>% 
   head(10) %>%
@@ -261,6 +272,15 @@ docVisits_modified %>%
 ##
 docVisits_modified %>% 
   mosaic::favstats(income ~ freepoor + nchronic, data = .) # Don't use fav_stats with formula!!!
+
+
+mpg %>%
+  head(10) %>% 
+  tt(theme = c("striped")) %>%
+  setNames(c("Manufacturer", "Model", "Engine\nDisplacement", 
+                    "Model\n Year", "Cylinders", "Transmission",
+                    "Drivetrain", "City\n Mileage", "Highway\n Mileage",
+                    "Fuel", "Class\nOf\nVehicle")) 
 
 
 mpg %>% 
