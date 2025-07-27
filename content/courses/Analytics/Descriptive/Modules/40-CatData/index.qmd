@@ -24,9 +24,9 @@ citation: true
 editor: 
   markdown: 
     wrap: 72
-webr:
-  packages: ['readr', 'dplyr','mosaic', 'skimr', 'ggformula','GGally','kableExtra', 'vcd', 'vcdExtra', 'ggmosaic', 'resampledata', 'ggpubr']
+
 ---
+
 :::: {.pa4}
 ::: {.athelas .ml0 .mt0 .pl4 .black-90 .bl .bw2 .b--blue}
 […"Thinking is difficult, that’s why most people judge."]{.f5 .f4-m .f3-l .lh-copy .measure .mt0}
@@ -45,21 +45,14 @@ webr:
 library(tidyverse)
 library(mosaic) # Our trusted friend
 library(skimr)
+library(ggformula) # Formula interface to ggplot2
 library(vcd) # Michael Friendly's package, Visualizing Categorical Data
-library(vcdExtra) # Categorical Data Sets
-
-library(resampledata) # More datasets
-
-library(GGally) # Correlation Plots
 library(visStatistics) # Comprehensive all-in-one stats viz/test package
-library(ca) # Correspondence Analysis, for use some day
-
-library(ggmosaic) # Mosaic Plots
+library(ggmosaic) # Tidy Mosaic Plots
 library(ggpubr) # Colours, Themes and new geometries in ggplot
-##
-library(tidyplots) # Easily Produced Publication-Ready Plots
-library(tinyplot) # Plots with Base R
-library(tinytable) # Elegant Tables for our data
+
+library(vcdExtra) # Categorical Data Sets
+library(resampledata) # More datasets
 
 ```
 
@@ -74,6 +67,7 @@ library(epoxy)
 # library(TeachHist)
 # library(TeachingDemos)
 library(grateful)
+library(tidyverse)
 
 ```
 
@@ -187,7 +181,7 @@ ggplot2::theme_set(new = theme_custom())
 #| warning: false
 read_csv("../../../../../materials/Data/pronouns.csv") %>% 
   filter(No == "3") %>% 
-  tt(theme = "striped")
+  knitr::kable(theme = "striped")
   
 ```
 :::
@@ -255,6 +249,7 @@ six countries (India, Russia, Indonesia, United States, Brazil, and
 Mexico) accounted for over 60 percent of the total additional deaths in
 the first two years of the pandemic.
 
+
 ## {{< iconify mdi food-processor-outline >}} How do these Chart(s) Work?
 
 We saw with [Bar Charts](../20-BarPlots/index.qmd) that when we deal
@@ -293,6 +288,7 @@ From the `{vcd package}` vignette:
 Let us first see examples of each.
 
 ::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
 ### Case Form
 
 From Michael Friendly [Discrete Data Analysis and
@@ -305,9 +301,6 @@ Visualization](http://ddar.datavis.ca/pages/home) :
 > number of observations is `nrow(X)`, and the number of variables is
 > `ncol(X)`.
 
-::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
-### {{< iconify la r-project >}} R
-
 ```{r}
 #| label: arthritis-table
 
@@ -315,35 +308,18 @@ class(Arthritis)
 # Tibble as HTML for presentation
 Arthritis %>%  
   head(10) %>% 
-  tt(theme = "striped", caption = "Arthritis Treatments and Effects<br> First 10 Observations",centering = TRUE)
+  knitr::kable(theme = "striped", caption = "Arthritis Treatments and Effects<br> First 10 Observations",centering = TRUE)
      
 ```
-
-### {{< iconify noto-v1 spider-web >}} web-r
-
-```{webr-r}
-#| label: case-form-data-webr
-#| layout-ncol: 2
-
-class(Arthritis)
-
-# Tibble as HTML for presentation
-Arthritis %>%  
-  head(10) %>% 
-  tt(theme = "striped",. caption = "Arthritis Treatments and Effects<br> First 10 Observations",centering = TRUE)
-
-
-```
-:::
 
 The `Arthritis` data set has three factors and two *integer* variables.
 One of the three factors `Improved` is an **ordered factor**.
 
-1)  ID
-2)  Treatment: a factor; Placebo or Treated
-3)  Sex: a factor, M / F
-4)  Age: integer
-5)  Improved: **Ordinal factor**; None \< Some \< Marked
+1)  `ID`:` integer; a unique identifier for each case
+2)  `Treatment`: a factor; Placebo or Treated
+3)  `Sex`: a factor, M / F
+4)  `Age`: integer; age of the patient
+5)  `Improved`: **Ordinal factor**; None \< Some \< Marked
 
 Each row in the `Arthritis` dataset is a separate case or observation.
 
@@ -360,9 +336,6 @@ Frequency Data is usually a data frame, with columns of categorical
 variables and at least one column containing `frequency` or `count`
 information.
 
-::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
-### {{< iconify la r-project >}} R
-
 ::: columns
 ::: column
 ```{r}
@@ -374,6 +347,7 @@ str(GSS)
 GSS %>%
   tt(theme = "striped", caption = "General Social Survey", 
 centering = TRUE)
+
 ```
 :::
 
@@ -386,19 +360,6 @@ centering = TRUE)
 :::
 :::
 
-### {{< iconify noto-v1 spider-web >}} web-r
-
-```{webr-r}
-
-str(GSS)
-
-# Tibble as HTML for presentation
-GSS %>%
-  tt(theme = "striped", caption = "General Social Survey", 
-centering = TRUE)
-
-```
-:::
 
 Respondents in the GSS survey were classified by `sex` and `party`
 identification. As can be seen, there is a **count** for every
@@ -491,7 +452,7 @@ HairEyeColor %>%
 # Tibble as HTML for presentation
 HairEyeColor %>% 
   as_tibble() %>%  # Convert
-  tt(theme = "striped", caption = "Hair Eye and Color<br> as a Data Frame",
+  knitr::kable(theme = "striped", caption = "Hair Eye and Color<br> as a Data Frame",
 centering = TRUE)
 
 ```
@@ -538,262 +499,154 @@ Alpha](https://www.wolframalpha.com/input/?i=contingency+table):
 > arranged into $r$ rows and $c$ columns. The intersection of a row and
 > a column of a contingency table is called a cell.
 
-In this section we understand how to make Contingency Tables from each
+In this section we understand how to make Contingency Tables(CT) from each
 of the three forms. We will use `vcd`, `mosaic` and the `tidyverse`
-packages for our purposes. Then we will see how they can be visualized.
+packages for our purposes. Then we will see how they can be visualized. In most cases, we will also see how we can create the Contingency Table as a `tibble` or `data frame` for further analysis.
 
 ::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
-### Using mosaic
 
-I think this is the **simplest and most elegant way** of obtaining
-Contingency Tables:
+### Case Form Data
 
-```{r}
-#| label: fig-sample-contingency-table
-#| fig-cap: "Contingency Table"
-#| echo: true
-data("GSS2002", package = "resampledata")
-gss2002 <- GSS2002 %>% 
-  dplyr::select(Education, DeathPenalty) %>% 
-  tidyr::drop_na(., c(Education, DeathPenalty))
-##
-mosaic::tally(DeathPenalty ~ Education, data = gss2002) %>% 
-  addmargins() 
 
-```
-
-Plotting this as an HTML table, we get:
+1. **vcd**: For Case Form data, `vcd::structable()` is a good option, as it can also add margins to the table. The Table can also be converted to a tibble, preserving the rownames.
 
 ```{r}
-#| label: fig-sample-contingency-table-picture
-#| fig-cap: "Contingency Table Picture"
-#| echo: false
-
-data("GSS2002", package = "resampledata")
-gss2002 <- GSS2002 %>% 
-  dplyr::select(Education, DeathPenalty) %>% 
-  tidyr::drop_na(., c(Education, DeathPenalty))
-
-mosaic::tally(DeathPenalty ~ Education, data = gss2002) %>% 
-  addmargins() %>% 
-  as_tibble() %>% 
-  pivot_wider(id_cols = DeathPenalty, names_from = Education, values_from = n) %>% 
-  tt(caption = "GSS Social Survey") %>% 
-  style_tt(color = "grey") %>% 
-  style_tt(i = 1, j = 2, color = "black", bold = TRUE, background = "yellow") %>% 
-  style_tt(i = 2, j = 5, color = "black", bold = TRUE, background = "yellow") %>% 
-   style_tt(i = 3, color = "black", bold = TRUE, background = "palegreen") 
-
+vcd::structable(data = Arthritis, Improved ~ Treatment) %>% 
+  addmargins() # Add margins to the table
+  
+vcd::structable(data = Arthritis, Improved ~ Treatment) %>% 
+  addmargins() %>% # Add margins to the table
+  as_tibble(rownames = "Treatment") # Convert to tibble; ensure row names!
+  
 ```
 
-How was this computed?
-
-So $117$ is the number of people who `Left HS` *and* `Favor` the death
-penalty, and $71$ is the count for `Bachelors` who `Oppose` the death
-penalty. And so on.
-
-### Using base R
+2. **Base R**: Base R also provides very compact formula-based smethods for Case Form Data:
 
 ```{r}
-#| label: base-R-one-way-two-way
-
-# One Way Table ( one variable )
-table(Arthritis$Treatment) # Contingency Table
-
-# 1-way Contingency Table
-table(Arthritis$Treatment) %>% addmargins() # Contingency Table with margins
-
-# 2-Way Contingency Tables
-# Choosing Treatment and Improved
-table(Arthritis$Treatment, Arthritis$Improved) %>% addmargins() 
-
-# Choosing Treatment and Sex
-table(Arthritis$Sex, Arthritis$Improved) %>% addmargins()
-
+  
+ftable(data = Arthritis, 
+       Improved ~ Treatment) %>% # Two-way table
+  as.matrix() %>% # Keeps the names
+  addmargins() # Add margins to the table
+  
+ftable(data = Arthritis, 
+       Improved ~ Treatment) %>% # Two-way table)
+  as.matrix() %>% # Keeps the names
+  addmargins() %>% # Add margins to the table
+  as_tibble(rownames = "Treatment") # Convert to tibble; ensure row names!
+  
 ```
 
-We can use `table()` ( and also `xtabs()` ) to generate
-multi-dimensional tables too (More than 2-way) These will be printed out
-as **a series of 2D tables**, one for each value/level of the "third"
-parameter. We can then *flatten* this set of tables using **ftable()**
-and add margins to convert into a Contingency Table:
-
-```{r}
-#| label: r-base-three-way-table
-my_arth_table <- table(Arthritis$Treatment, Arthritis$Sex, Arthritis$Improved)
-my_arth_table
 
 
-# Now flatten 
-ftable(my_arth_table) 
-ftable(my_arth_table) %>% addmargins()
-
-```
-
-A bit strange that the column labels disappear in the `ftable` when
-margins are added...maybe need to investigate the `FUN` argument to
-`add_margins()`.
-
-### Using vcd
-
-The `vcd` ( Visualize Categorical Data ) package by Michael Friendly has
-a convenient function to create Contingency Tables: `structable()`; this
-function produces a 'flat' representation of a high-dimensional
-contingency table constructed by recursive splits (similar to the
-construction of mosaic charts/graphs). `structable` tends to render
-**flat tables**, of the kind that can be thought of as a *"text
-representation" of the `vcd::mosaic` plot*:
-
-The arguments of `structable` are:
-
--   a formula $y + p \sim x + z$ which shows which variables are to be
-    included as *columns* and *rows* respectively on a table;
--   a `data` argument, which can indicate a `data frame` from where the
-    variables are drawn.
-
-```{r}
-#| label: vcd-data-frame-to-contingency-table
-#| results: hold
-#| layout-ncol: 2
-
-arth_vcd <- vcd::structable(data = Arthritis, Treatment ~ Improved)
-arth_vcd
-class(arth_vcd)
-arth_vcd %>% addmargins()
-
-```
-
-```{r}
-#| layout-ncol: 2
-#| results: hold
-# With Margins
-arth_vcd %>% as.matrix() %>% addmargins()
-
-```
-
-```{r}
-#| label: vcd-multitable-to-contingency-table
-#| layout-ncol: 2
-
-# HairEyeColor is in multiple table form
-HairEyeColor
-
-# structable flattens these into one, as for a mosaic chart
-vcd::structable(HairEyeColor)
-
-# As tibble
-vcd::structable(HairEyeColor) %>% as_tibble()
-
-```
+### Freq Form Data
 
 `UCBAdmissions` is already in Frequency Form i.e. a Contingency Table.
-But it is a **set** of (two-way) Contingency Tables:
+But it is a **set** of (two-way) Contingency Tables. So let us try!
+
+1. **vcd**: For Frequency Form data, `vcd::structable()` can again work nicely for us:
+
 
 ```{r}
+#| label: vcd-freq-form-ct
 #| layout-ncol: 2
-UCBAdmissions
-###
-vcd::structable(UCBAdmissions)
-###
-structable(UCBAdmissions) %>% as.matrix() %>% addmargins()
+
+UCBAdmissions %>% class()
+vcd::structable(UCBAdmissions) %>% class()
+
+## Add margin sums
+## Must convert to matrix first
+structable(UCBAdmissions, Admit + Dept ~ Gender) %>% 
+as.matrix() %>% 
+addmargins() 
+
+structable(UCBAdmissions, Admit + Dept ~ Gender) %>% 
+as.matrix() %>% 
+addmargins() %>% # Is this step not counterintuitive for Freq data?
+as_tibble(rownames = "Admit-Dept") # Convert to tibble; ensure row names!
 
 ```
+
+2. **Base R**: Base R also provides a very compact method for Frequency Form Data:
+
+```{r}
+UCBAdmissions %>% class()
+ftable(data = UCBAdmissions, Gender ~ Admit + Dept)
+
+ftable(data = UCBAdmissions, Gender ~ Admit + Dept) %>% class()
+
+ftable(data = UCBAdmissions, Gender ~ Admit + Dept) %>% 
+as.matrix() %>% # Keeps the names
+addmargins() %>% # Add margins to the table
+as_tibble(rownames = "Admit-Dept")
+
+```
+
+### Table Form Data
+
+How about a multi-table dataset, like `HairEyeColor`?
+
+1. **vcd**: For Table Form data, `vcd::structable()` can readily be used: 
+
+```{r}
+#| label: vcd-multitable-data-ct
+#| layout-ncol: 2
+
+# HairEyeColor is in multiple table form data
+HairEyeColor
+HairEyeColor %>% class()
+
+## Option#1 vcd:structable()
+vcd::structable(HairEyeColor) %>% 
+   as.matrix() %>%
+   addmargins() # Add margins to the table
+
+vcd::structable(data = HairEyeColor, Sex ~ Hair + Eye) %>% 
+  as.matrix() %>%
+  addmargins() %>% # Add margins to the table
+  as_tibble(rownames = "Hair-Eye") # Convert to tibble; ensure row names!
+
+```
+
+
+2. **Base R** also offers the `ftable()` option again:
+
+```{r}
+## Option#2 base::ftable()
+HairEyeColor %>% ftable(Hair + Eye ~ Sex)
+
+HairEyeColor %>% 
+  ftable(Hair + Eye ~ Sex) %>% 
+  as.matrix() %>%
+  addmargins()
+
+HairEyeColor %>% 
+  ftable(Hair + Eye ~ Sex) %>% 
+  as.matrix() %>%
+  addmargins() %>% 
+  as_tibble(rownames = "Hair-Eye")
+
+```
+
+
+:::
 
 ::: callout-important
-Note that `structable` does not permit the adding of margins directly;
-it needs to be converted to a matrix for `addmargins()` to do its work.
+### Workflow
+So...in the end, it does seem that we could use mostly `vcd::structable()` or `ftable()` to create Contingency Tables, and then convert them to `tibble` form if needed.
+
 :::
 
 
-### Using tidyverse
 
-So far these packages give Contingency Tables that are **easy to see for humans**; some of these structures are also capable being passed directly to commands such as `stats::chisq.test()` or `janitor::chisq.test()`.
 
-Often we need Contingency Tables that are in `tibble` form, and we need to perform some data processing using `dplyr` to get there. Doing this with the `tidyverse` set of packages may seem [counter-intuitive and
-long-winded](https://isha.sadhguru.org/en/wisdom/audio/the-story-of-ashtavakra-and-janaka), but the workflow is easily understandable.
+### {{< iconify material-symbols auto-awesome-mosaic-outline-sharp >}} Mosaic Plots
 
-First we develop the counts:
-
-```{r}
-#| label: tidyverse-for-Contingency-Tables
-#| layout-ncol: 2
-#| message: false
-
-diamonds %>% count(cut)
-diamonds %>% count(clarity)
-
-diamonds %>% 
-  group_by(cut, clarity) %>% 
-  dplyr::summarise( count = n())
-
-```
-
-We need to have the individual levels of `cut` as rows and the
-individual levels of `clarity` as columns. This means that we need to
-pivot this from "long to wide"[^1] to obtain a Contingency Table:
-
-```{r}
-#| message: false
-#| label: pivoting-long-to-wide
-
-diamonds %>% 
-  group_by(cut, clarity) %>% 
-  dplyr::summarise( count = n()) %>% 
-  
-  pivot_wider(id_cols = cut, 
-              names_from = clarity, 
-              values_from = count) %>% 
-  
-  # Now add the row and column totals using the `janitor` package
-  janitor::adorn_totals(where = c("row", "col")) %>%
-  
-  # Recover to tibble since janitor gives a "tabyl" format 
-  # ( which can be useful too !)
-  as_tibble() -> diamonds_ct
-diamonds_ct
-
-### Another Way 
-diamonds %>% 
-  group_by(cut, clarity) %>% 
-  dplyr::summarise( count = n()) %>% 
-  
-  pivot_wider(id_cols = cut, 
-              names_from = clarity, 
-              values_from = count) %>% 
-  
-  # Now add the row and column totals using the `dplyr` package
-  # From: https://stackoverflow.com/a/67885521
-  mutate("row_totals"  = sum(across(where(is.integer)))) %>% 
-  ungroup() %>% 
-  add_row(cut = "col_total", summarize(., across(where(is.integer), sum)))
-
-```
-
-```{r}
-#| include: false
-#How about the data/tables we saw earlier?
-# Convert to tibble
-ftable(my_arth_table) %>% addmargins() %>% as_tibble()
-
-# We can convert this to a tibble
-arth_vcd %>% as_tibble()
-
-# with margins? Ummm...
-arth_vcd %>% as.matrix() %>% addmargins() %>% as_tibble()
-
-tally(~ sex | substance, data = HELPrct, margins = TRUE) %>% as_tibble()
-
-```
-:::
-
-[^1]: <https://tidyr.tidyverse.org/articles/pivot.html>
-
-Now then, how does one plot a set of data that looks like this, a
+All right then, how does one plot a set of data that looks like this, a
 matrix? No column is a single variable, nor is each row a single
 observation, which is what we understand with the idea of [tidy
 data](../05-NatureData/index.qmd#what-are-data-types).
 
-### {{< iconify material-symbols auto-awesome-mosaic-outline-sharp >}} Mosaic Plots
 
 The answer is provided in *the very shape of the data*: we plot this as
 a set of *tiles*, where $$ \pmb{area~of~tile \sim count} $$ We
@@ -874,7 +727,7 @@ vcd::mosaic(arthritis_table,
 
 ```
 
-
+::: {.content-hidden}
 #### Using ggmosaic
 
 `ggmosaic` takes a tibble with Qualitative variables, internally
@@ -923,6 +776,11 @@ scale_fill_brewer(palette = "Set1")
 :::
 :::
 
+:::
+
+
+
+::: {.content-hidden}
 #### Using ggformula
 
 This needs quite some work, to convert the Contingency Table into a
@@ -991,6 +849,9 @@ gf_col(edu_prop ~ Education, data = gss_summary,
 :::
 :::
 
+:::
+
+
 #### Using visStatistics
 
 `visStatistics` is a recent package that allows a very wide variety of statistical charts to be created **automagically** based on the variables chosen. Let us plot a mosaic chart directly with this package
@@ -1004,7 +865,7 @@ visstat(gss2002$DeathPenalty, gss2002$Education)
 
 :::
 
-## Coloured Tiles: **Actual** and **Expected** Contingency Tables
+### Coloured Tiles: **Actual** and **Expected** Contingency Tables
 
 We notice that the mosaic plots has coloured some tiles blue and some red. Why was this done? Consider the set of mosaic plots below:
 
@@ -1041,7 +902,7 @@ The higher the absolute values of these differences, the greater the effect of o
 
 
 ::: {.content-hidden when-format="html"}
-## Pearson Residuals in Mosaic Plots
+### Pearson Residuals in Mosaic Plots
 
 The mosaic chart provides more additional information than does the
 corresponding bar chart. The individual tiles are coloured based on the
@@ -1500,7 +1361,7 @@ cite_packages(
   output = "table",
   out.dir = ".",
   out.format = "html",
-  pkgs = c("ggmosaic", "ggpubr", "tinytable", "vcd", "tidyplots", "tinyplot", "vcdExtra", "visStatistics")) %>%
+  pkgs = c("ggmosaic", "ggpubr", "tinytable", "vcd", "vcdExtra", "visStatistics")) %>%
   knitr::kable(format = "simple")
 
 ```

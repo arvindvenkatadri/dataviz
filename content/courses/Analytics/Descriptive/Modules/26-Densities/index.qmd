@@ -47,14 +47,11 @@ webr:
 library(tidyverse)
 library(mosaic)
 library(ggformula)
-
 #install.packages("remotes")
 #library(remotes)
 #remotes::install_github("wilkelab/ggridges")
 library(ggridges)
 library(skimr)
-library(palmerpenguins) # Our new favourite dataset
-
 library(tinytable) # Elegant Tables for our data
 
 ```
@@ -73,6 +70,7 @@ library(visualize) # Plot Densities, Histograms and Probabilities as areas under
 library(grateful)
 library(MKdescr)
 library(downloadthis)
+library(ggplot2)
 
 ```
 
@@ -221,8 +219,17 @@ histograms, especially with default bucket widths. The *chunkiness* that we see 
 
 ## {{< iconify grommet-icons test >}} Case Study-1: `penguins` dataset
 
-We will first look at at a dataset that is directly available in R, the
+We will first look at at a dataset that is available as a part of the `palmerpenguins` package (and also directly available in R now), the
 `penguins` dataset. Data were collected and made available by [Dr. Kristen Gorman](https://www.uaf.edu/cfos/people/faculty/detail/kristen-gorman.php) and the [Palmer Station, Antarctica LTER](https://pallter.marine.rutgers.edu/), a member of the [Long Term Ecological Research Network](https://lternet.edu/).
+
+### {{< iconify la r-project >}} Read the Data
+
+```{r}
+
+data(penguins, package = "palmerpenguins")
+names(penguins)
+
+```
 
 ### {{< iconify file-icons influxdata >}} Examine the Data
 
@@ -289,7 +296,7 @@ skim(penguins)
 - `bill_length_mm`: The length of the penguins' bills
 - `bill_depth_mm`: See the picture!!
 - `flipper_length_mm`: Flippers! Penguins have "hands"!!
-- `body_mass_gm`: Grams? Grams??? Why, these penguins are like human babies!!`r emoji::emoji("heart")`
+- `body_mass_g`: Mass in grams. Grams? Grams??? Why, these penguins are like human babies!!`r emoji::emoji("heart")`
 
 ::: {.column-margin}
 ![Penguin Features](../../../../../materials/images/culmen_depth.png){#fig-penguin-features}
@@ -355,6 +362,7 @@ penguins %>% gf_density( ~ body_mass_g,
                                   aesthetics = c("colour", "fill"))) %>%
   gf_labs(title = "Plot B: Penguin Body Mass by Species", 
           caption = "ggformula")
+
 ```
 :::
 ::: {.column}
@@ -382,6 +390,7 @@ penguins %>%
   ) %>%
   gf_facet_wrap(vars(sex)) %>%
   gf_labs(title = "Plot C: Penguin Body Mass by Species and facetted by Sex", caption = "ggformula")
+
 ```
 :::
 ::: {.column}
@@ -436,6 +445,7 @@ penguins <- penguins %>% drop_na()
 ggplot(data = penguins) + 
   geom_density(aes(x = body_mass_g)) + 
   labs(title = "Plot A: Penguin Masses",caption = "ggplot")
+
 ```
 
 :::
@@ -489,6 +499,7 @@ penguins %>% ggplot() +
                    alpha = 0.3) + 
   facet_wrap(vars(sex)) + 
   labs(title = "Plot C: Penguin Body Mass by Species and facetted by Sex",caption = "ggplot") 
+
 ```
 :::
 ::: {.column}
@@ -674,13 +685,12 @@ ggplot2::theme_set(new = theme_custom())
 
 gf_density_ridges(drv ~ hwy, fill = ~ drv, 
                   alpha = 0.5, # colour saturation
-                  rel_min_height = 0.005, # separation between plots
                   data = mpg) %>% 
-  gf_refine(scale_y_discrete(expand = c(0.01, 0)),
-            scale_x_continuous(expand = c(0.01, 0)),
-            scale_fill_brewer(name = "Drive Type",
+  gf_refine(scale_fill_brewer(name = "Drive Type",
                               palette = "Spectral")) %>% 
-  gf_labs(title = "Ridge Plot", x = "Highway Mileage", 
+  gf_labs(title = "Mileage vs Drive Type",
+          subtitle = "Ridge Plot", 
+          x = "Highway Mileage", 
           y = "Drive Type")
 
 ```
@@ -704,15 +714,14 @@ gf_density_ridges(drv ~ hwy, fill = ~ drv,
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-gf_density_ridges(drv ~ hwy, fill = ~ drv, 
-                  alpha = 0.5, # colour saturation
-                  rel_min_height = 0.005, data = mpg) %>% 
-  gf_refine(scale_y_discrete(expand = c(0.01, 0)),
-            scale_x_continuous(expand = c(0.01, 0)),
-            scale_fill_brewer(name = "Drive Type", 
-palette = "Spectral")) %>% 
-  gf_labs(title = "Ridge Plot", x = "Highway Mileage", 
+ggplot(data = mpg, mapping = aes(x = hwy, y = drv, fill = drv)) + 
+  geom_density_ridges(alpha = 0.5) + 
+  scale_fill_brewer(name = "Drive Type", palette = "Spectral") +  
+  labs(title = "Mileage vs Drive Type",
+          subtitle = "Ridge Plot", 
+          x = "Highway Mileage", 
           y = "Drive Type")
+
 
 ```
 :::

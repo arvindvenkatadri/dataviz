@@ -54,7 +54,6 @@ library(ggExtra) # Making Combination Plots
 # library(devetools)
 # devtools::install_github("rpruim/Lock5withR")
 library(Lock5withR) # Datasets
-library(palmerpenguins) # A famous dataset
 
 library(easystats) # Easy Statistical Analysis and Charts
 library(correlation) # Different Types of Correlations
@@ -78,29 +77,8 @@ library(downloadthis)
 library(latex2exp)
 #devtools::install_github("mccarthy-m-g/embedr")
 library(embedr) # Embed multimedia in HTML files
+library(ggplot2)
 
-## Figures
-## A. Markdown
-##![A nice image.](foo/bar.png){width=300}{#fig-nice}
-# This is illustrated well by @fig-nice.
-##B. html
-##<img src="foo/bar.png" width="300">
-##C: knitr
-##```{r, out.width="300px"}
-##knitr::includegraphics("foo/bar.png")
-## ```
-## ## Markdown boiler plate stuff!!
-# ### Figure Panel Divs
-#     ::: {#fig-elephants layout-ncol=2}
-#     ![Surus](surus.png){#fig-surus}
-#     ![Hanno](hanno.png){#fig-hanno}
-#      Famous Elephants
-#     :::
-# Adding download buttons
-# Data that has been read in
-#     {{< downloadthis ../../../../materials/Data/housing_train.csv dname="house_prices" label="Download the House Prices Dataset" icon="database-fill-down" type="info" >}}
-# Existing file
-#    {{< downloadthis Orange/grouped-summaries.ows dname="grouped_summaries" label="Download the Orange Workflow" icon="database-fill-down" type="info" >}} 
 ```
 
 #### Plot Fonts and Theme
@@ -863,11 +841,11 @@ a formal **correlation test** with the `mosaic` package.
 
 ### Using GGally
 
-By default, [`GGally::ggpairs()`](https://ggobi.github.io/ggally/reference/ggpairs.html) provides:\
+By default, [`GGally::ggpairs()`](https://ggobi.github.io/ggally/reference/ggpairs.html) provides:\
 
 -   two different comparisons of each pair of columns
 -   displays either the density or count of the respective variable
-    along the diagonal. 
+    along the diagonal.
 -   With different parameter settings, the diagonal can be replaced with
     the axis values and variable labels.\
     
@@ -922,7 +900,7 @@ GGally::ggpairs(
 ### Business Insight from Pairs Plot#1
 - As we saw earlier from the Scatter Plot, `AudienceScore` and `RottenTomatoes` are well correlated, with a correlation score of $0.833$
 - `DomesticGross` and `ForeignGross` are also extremely well correlated, with a score of $0.873$. 
-- Both these correlation scores are highly significant, with three stars. (We will speak of significance in a while.)
+- Both these correlation scores are highly *significant*, with three stars. (We will speak of *significance* in a while.)
 - None of the other *pairs* of variables have good correlation scores. 
 - Note in passing that both the "Gross" related variables have highly skewed distributions. That is the nature of the movie business!
 
@@ -1148,7 +1126,11 @@ corrplot.mixed(mydata_cor,
 
 ### Doing a Correlation Test
 
-Correlations scores can be obtained by conducting a formal test in R. We will use the `mosaic` function `cor_test` to get these results:
+We must always keep in mind that we are looking at a dataset, a ***sample***, and not the entire population. So, we need to be careful about making claims about the population based on our sample. What this means is that our sample-estimated correlation scores $r$ are not the final word on the correlation between two population-variables, $\rho$.
+
+We need to conduct a **statistical test** to see if the correlation is ***significant***, i.e. if it is likely to be true for the entire population from which our sample was drawn, and also assign numbers to the uncertainty that we must have in our correlation estimate.
+
+Both correlations scores, and the uncertainty we have can be obtained by conducting a formal test in R. We will use the `mosaic` function `cor_test` to get these results:
 
 ```{r}
 
@@ -1255,10 +1237,9 @@ penguins %>%
   gf_smooth(method = "lm") %>% 
   gf_refine(scale_colour_brewer(palette = "Accent")) %>% 
   gf_labs(title = "Scatter Plot with Marginal Densities") %>% 
+
   ggExtra::ggMarginal(type = "density", groupColour = TRUE, 
                       groupFill = TRUE, margins = "both") 
-  
-
 
 ```
 
