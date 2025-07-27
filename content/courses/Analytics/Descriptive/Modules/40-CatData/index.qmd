@@ -3,21 +3,18 @@ title: <iconify-icon icon="icon-park-outline:proportional-scaling"></iconify-ico
 author: "Arvind V."
 date: 27/Dec/2022
 date-modified: '`r Sys.Date()`'
-abstract: Types, Categories, and Counts
+abstract: Types, Categories, Counts, and Associations
 order: 40
 warning: true
 categories:
 - Proportions
 - Frequency Tables
 - Contingency Tables
-- Numerical Data in Groups
 - Margins
-- Likert Scale data
-- Bar Plots (for Contingency Tables)
+- Bar Plots
 - Mosaic Plots
 - Balloon Plots
 - Pie Charts
-- Correspondence Analysis
 bibliography: 
   - grateful-refs.bib
 citation: true
@@ -64,10 +61,7 @@ library(resampledata) # More datasets
 knitr::opts_chunk$set(tidy = TRUE)
 library(checkdown)
 library(epoxy)
-# library(TeachHist)
-# library(TeachingDemos)
 library(grateful)
-library(tidyverse)
 
 ```
 
@@ -83,6 +77,7 @@ library(tidyverse)
 
 library(systemfonts)
 library(showtext)
+library(tidyverse)
 ## Clean the slate
 systemfonts::clear_local_fonts()
 systemfonts::clear_registry()
@@ -105,7 +100,7 @@ theme_custom <- function(){
     font <- "Alegreya"   #assign font family up front
     '%+replace%' <- ggplot2::'%+replace%' # nolint
         
-    theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
+    ggplot2::theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
     
     theme(
       text = element_text(family = font),  #set base font family
@@ -181,7 +176,7 @@ ggplot2::theme_set(new = theme_custom())
 #| warning: false
 read_csv("../../../../../materials/Data/pronouns.csv") %>% 
   filter(No == "3") %>% 
-  knitr::kable(theme = "striped")
+  knitr::kable(theme = "striped", caption = "Which Variables?", centering = TRUE)
   
 ```
 :::
@@ -345,7 +340,7 @@ str(GSS)
 
 # Tibble as HTML for presentation
 GSS %>%
-  tt(theme = "striped", caption = "General Social Survey", 
+  knitr::kable(theme = "striped", caption = "General Social Survey", 
 centering = TRUE)
 
 ```
@@ -363,7 +358,7 @@ centering = TRUE)
 
 Respondents in the GSS survey were classified by `sex` and `party`
 identification. As can be seen, there is a **count** for every
-combination of the two *categorical* variables, `sex` and `party`.
+combination of the two *categorical* variables, `sex` and `party`. This is still a `data.frame`. 
 
 ### Table form
 
@@ -419,7 +414,7 @@ Each of the edges is an *Ordinal Variable*, each segment represents a
 ordinal variables. Any segment is at the intersection of two
 (independent) levels of two variables, and the colour may be visualized
 as a *count*. This array of counts on a face is a 2D or **2-Way Table**.
-( More on this later )
+
 :::
 
 Since we can only print 2D tables, we hold one face in front and the
@@ -428,10 +423,9 @@ another face with 2 variables, with one variable in common with the
 previous face. If we consider two faces together, we get two 2-way
 tables, effectively allowing us to contemplate 3 categorical variables.
 
-Multiple 2-Way tables can be **flattened** into a single long table that
-contains all counts for all combinations of categorical variables. This
-can be visualized as "opening up" and laying flat the Rubik's cube, as
-with a cardboard model of it.
+Multiple 2-Way tables ( such as `HairEyeColor`) can be **flattened** into 
+a single long table that contains all counts for all combinations of categorical variables. This can be visualized as "opening up" and laying flat the 
+Rubik's cube, as with a cardboard model of it.
 
 ```{r}
 #| label: flattened-table
@@ -439,8 +433,7 @@ ftable(HairEyeColor)
 
 ```
 
-Finally, we may need to convert the (multiple) tables into a data frame
-or tibble:
+Converting these (multiple) tables into a data frame or tibble:
 
 ```{r}
 #| label: tables-to-data-frame
@@ -500,8 +493,10 @@ Alpha](https://www.wolframalpha.com/input/?i=contingency+table):
 > a column of a contingency table is called a cell.
 
 In this section we understand how to make Contingency Tables(CT) from each
-of the three forms. We will use `vcd`, `mosaic` and the `tidyverse`
-packages for our purposes. Then we will see how they can be visualized. In most cases, we will also see how we can create the Contingency Table as a `tibble` or `data frame` for further analysis.
+of the three forms. We will use `base-R` and the `vcd` package for our 
+purposes. Then we will see how they can be visualized. In most cases, 
+we will also see how we can create the Contingency Table as a `tibble` 
+or `data frame` for further analysis.
 
 ::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
 
@@ -511,11 +506,23 @@ packages for our purposes. Then we will see how they can be visualized. In most 
 1. **vcd**: For Case Form data, `vcd::structable()` is a good option, as it can also add margins to the table. The Table can also be converted to a tibble, preserving the rownames.
 
 ```{r}
+#| label: fig-vcd-case-form-ct
+#| fig-cap: Creating Contingency Tables from Case Form Data with `vcd`
+#| layout-ncol: 2
+#| output: true
+
+Arthritis %>% class()
+
+vcd::structable(data = Arthritis, Improved ~ Treatment)
+
 vcd::structable(data = Arthritis, Improved ~ Treatment) %>% 
-  addmargins() # Add margins to the table
-  
+  as.matrix() %>% # Convert to matrix; 
+  addmargins() %>% # Add margins to the table; matrix output
+  class() 
+
 vcd::structable(data = Arthritis, Improved ~ Treatment) %>% 
-  addmargins() %>% # Add margins to the table
+  as.matrix() %>% # Convert to matrix;
+  addmargins() %>% # Add margins to the table; matrix output
   as_tibble(rownames = "Treatment") # Convert to tibble; ensure row names!
   
 ```
@@ -523,15 +530,28 @@ vcd::structable(data = Arthritis, Improved ~ Treatment) %>%
 2. **Base R**: Base R also provides very compact formula-based smethods for Case Form Data:
 
 ```{r}
-  
+#| label: fig-base-case-form-ct
+#| fig-cap: Creating Contingency Tables from Case Form Data with `base::ftable()`
+#| layout-ncol: 2
+Arthritis %>% class()
+
 ftable(data = Arthritis, 
-       Improved ~ Treatment) %>% # Two-way table
-  as.matrix() %>% # Keeps the names
+       Improved ~ Treatment) %>%  # Two-way table
+  as.matrix() %>% # ftable to matrix; 
+# Keeps the names when margins are added
   addmargins() # Add margins to the table
-  
+
+ftable(data = Arthritis, 
+       Improved ~ Treatment) %>%  # Two-way table
+  as.matrix() %>% # ftable to matrix; 
+# Keeps the names when margins are added
+  addmargins() %>% # Add margins to the table
+  class()
+
 ftable(data = Arthritis, 
        Improved ~ Treatment) %>% # Two-way table)
-  as.matrix() %>% # Keeps the names
+  as.matrix() %>% # ftable to matrix; 
+# Keeps the names when margins are added
   addmargins() %>% # Add margins to the table
   as_tibble(rownames = "Treatment") # Convert to tibble; ensure row names!
   
@@ -548,14 +568,15 @@ But it is a **set** of (two-way) Contingency Tables. So let us try!
 
 
 ```{r}
-#| label: vcd-freq-form-ct
+#| label: fig-vcd-freq-form-ct
+#| fig-cap: Creating Contingency Tables from Frequency Form Data with `vcd`
 #| layout-ncol: 2
 
 UCBAdmissions %>% class()
 vcd::structable(UCBAdmissions) %>% class()
 
 ## Add margin sums
-## Must convert to matrix first
+## Must flatten to matrix first since it is 3-WAY
 structable(UCBAdmissions, Admit + Dept ~ Gender) %>% 
 as.matrix() %>% 
 addmargins() 
@@ -570,13 +591,16 @@ as_tibble(rownames = "Admit-Dept") # Convert to tibble; ensure row names!
 2. **Base R**: Base R also provides a very compact method for Frequency Form Data:
 
 ```{r}
+#| label: fig-base-freq-form-ct
+#| fig-cap: Creating Contingency Tables from Frequency Form Data with `base::ftable()`
+#| layout-ncol: 2
 UCBAdmissions %>% class()
 ftable(data = UCBAdmissions, Gender ~ Admit + Dept)
 
 ftable(data = UCBAdmissions, Gender ~ Admit + Dept) %>% class()
 
 ftable(data = UCBAdmissions, Gender ~ Admit + Dept) %>% 
-as.matrix() %>% # Keeps the names
+as.matrix() %>% # Keeps the names when margins are added
 addmargins() %>% # Add margins to the table
 as_tibble(rownames = "Admit-Dept")
 
@@ -589,7 +613,8 @@ How about a multi-table dataset, like `HairEyeColor`?
 1. **vcd**: For Table Form data, `vcd::structable()` can readily be used: 
 
 ```{r}
-#| label: vcd-multitable-data-ct
+#| label: fig-vcd-multitable-data-ct
+#| fig-cap: Creating Contingency Tables from Table Form Data with `vcd`
 #| layout-ncol: 2
 
 # HairEyeColor is in multiple table form data
@@ -598,7 +623,7 @@ HairEyeColor %>% class()
 
 ## Option#1 vcd:structable()
 vcd::structable(HairEyeColor) %>% 
-   as.matrix() %>%
+   as.matrix() %>% # Flatten
    addmargins() # Add margins to the table
 
 vcd::structable(data = HairEyeColor, Sex ~ Hair + Eye) %>% 
@@ -612,7 +637,9 @@ vcd::structable(data = HairEyeColor, Sex ~ Hair + Eye) %>%
 2. **Base R** also offers the `ftable()` option again:
 
 ```{r}
-## Option#2 base::ftable()
+#| label: fig-base-multitable-data-ct
+#| fig-cap: Creating Contingency Tables from Table Form Data with `base::ftable()`
+#| layout-ncol: 2
 HairEyeColor %>% ftable(Hair + Eye ~ Sex)
 
 HairEyeColor %>% 
@@ -633,7 +660,7 @@ HairEyeColor %>%
 
 ::: callout-important
 ### Workflow
-So...in the end, it does seem that we could use mostly `vcd::structable()` or `ftable()` to create Contingency Tables, and then convert them to `tibble` form if needed.
+So, it does seem that we could use mostly `vcd::structable()` or `ftable()` to create Contingency Tables, and then convert them to `tibble` form if needed. The usage is identical!
 
 :::
 
@@ -647,85 +674,135 @@ matrix? No column is a single variable, nor is each row a single
 observation, which is what we understand with the idea of [tidy
 data](../05-NatureData/index.qmd#what-are-data-types).
 
+Let us take the `GSS2002` dataset, and create a Contingency Table out of it. We will use the `Education` and `DeathPenalty` variables, which are both Qualitative. The `GSS2002` dataset is a part of the `resampledata` package, and contains data from the General Social Survey (GSS) for the year 2002.
 
-The answer is provided in *the very shape of the data*: we plot this as
+
+```{r}
+#| label: fig-gss2002-data
+#| fig-cap: GSS 2002 Data
+#| echo: false
+#| warning: false
+
+data("GSS2002", package = "resampledata")
+GSS2002 %>% head() 
+```
+
+
+```{r}
+#| label: fig-gss2002-ct
+#| fig-cap: GSS 2002 Contingency Table
+#| echo: false
+#| warning: false
+gss_table <- vcd::structable(Education ~ DeathPenalty, data = GSS2002)
+gss_table %>% addmargins() %>% 
+  as_tibble(rownames = "Education")
+
+```
+
+
+
+The answer is provided in *the very shape of the CT*: we plot this as
 a set of *tiles*, where $$ \pmb{area~of~tile \sim count} $$ We
 *recursively* partition off a (usually) square area into vertical and
 horizontal pieces whose area is proportional to the count at a specific
 combination of levels of the two Qual variables. So we might follow the
 process as shown below:\
 
--   Take the [bottom row]{.bg-light-green .black} of per-column totals and create vertical
+-   Take the [bottom row]{.bg-light-green .black} of the CT (i.e.per-column totals) and create vertical
     rectangles with these widths\
 -   Take the individual counts in the rows and partition each rectangle
     based in the counts in these rows.
+    
+```{r}
+#| label: fig-mosaic-plot-steps
+#| fig-cap: Mosaic Chart Steps for GSS2002 Data
+#| fig-subcap:
+#| - "Step#1: Education"
+#| - "Step#2: DeathPenalty"
+#| echo: false
+#| warning: false
+#| layout-nrow: 1
 
-::: {#fig-mosaic-plot-steps layout-ncol="2"}
-![GSS Mosaic Chart Step
-#1](../../../../../materials/images/Orange/gss-mosaic-chart-1.png){#fig-gss-mosaic-chart-step1}
+vcd::structable(Education ~ 0, data = GSS2002) %>% vcd::mosaic(
+  gp = shading_Friendly,
+  main = "GSS2002 Education Mosaic Chart Step#1")
 
-![GSS Mosaic Chart Step
-#2](../../../../../materials/images/Orange/gss-mosaic-chart-2.png){#fig-gss-mosaic-chart-step2}
+vcd::structable(DeathPenalty ~ Education, data = GSS2002) %>% 
+vcd::mosaic(
+  gp = shading_hsv, direction = "v",
+  main = "GSS2002 Education Mosaic Chart Step#2")
+  
+```
 
-Mosaic Chart for GSS Data
-:::
 
 The first split shows the various levels of `Education` and their counts
 as widths. *Order is alphabetical!* This splitting corresponds to the
-bottom ROW of the @fig-sample-contingency-table-picture. HS is clearly
+bottom ROW of the @fig-gss2002-ct. HS is clearly
 the largest subgroup in `Education`.
 
-In the second step, the columns from @fig-gss-mosaic-chart-step1 are
+In the second step, the columns from @fig-mosaic-plot-steps-1 are
 sliced horizontally into tiles, in proportion to the number of people in
 each `Education` category/level who support/do not support
 `DeathPenalty`. This is done in proportion to all the entries in each
-COLUMN, giving us @fig-gss-mosaic-chart-step2.
+COLUMN, giving us @fig-mosaic-plot-steps-2.
 
-Let us now make this plot with a variety of approaches.
+Let us now make this plot with `vcd`, and with a new package called `visStatistics`, which allows us to create a wide variety of statistical charts, including Mosaic Charts, with very little code.
 
 ::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
 
 #### Using vcd
 
 The `vcd::mosaic()` function needs the data in *contingency table* form.
-We already built one using `mosaic::tally()` and that is easily plotted:
+Of course, `vcd::structable()` gives us one!
 
 ```{r}
-
-# Code used earlier
-data("GSS2002", package = "resampledata")
-gss2002 <- GSS2002 %>% 
-  # select two categorical variables from the dataset
-  dplyr::select(Education, DeathPenalty) %>% 
-  drop_na(Education, DeathPenalty)
-gss2002
-# make a tally table
-gss_table <- mosaic::tally(DeathPenalty ~ Education, data = gss2002)
-gss_table %>% addmargins()
-
-# gss_table is *not* a tibble, but a *table* object.
- 
-vcd::mosaic(gss_table, gp = shading_hsv,
-main = "mosaic::tally() + vcd::mosaic()")
-
-```
-
-There is also a command within `vcd` itself to create a Contingency Table, `vcd::structable()`: 
-
-```{r}
-#| label:  mosaic-plot-using-vcd
+#| label:  fig-mosaic-plot-arthritis-vcd
+#| fig-cap: Arthritis Mosaic Plot
 #| layout-ncol: 2
 
-arthritis_table <- vcd::structable(~ Treatment + Improved, 
+arthritis_table <- vcd::structable(Improved ~ Treatment,
                                    data = Arthritis)
 arthritis_table
 
 vcd::mosaic(arthritis_table, 
-            gp = shading_max, 
-            main = "Arthritis Treatment Dataset")
+            gp = shading_max, direction = "v",
+            main = "Arthritis Treatment Dataset",
+labeling = labeling_border(
+                varnames = c("F", "F"), # Remove variable name labels
+                rot_labels = c(90,0,0,0), #t,r,b,l
+                just_labels = c("left", 
+                                "left", 
+                                "left", 
+                                "right"))) # How?
+
 
 
 ```
+There are visible differences in the counts for the `Improved` variable, based on the `Treatment` variable. The `Placebo` treatment has a much lower count for `Marked` improvement, and a higher count for `None` improvement. The `Treated` group has a higher count for `Marked` improvement, and a lower count for `None` improvement. We can make a hypothesis that the `Treatment` variable is related to the `Improved` variable, and that the `Treated` group has a higher chance of improvement than the `Placebo` group.
+
+
+```{r}
+#| label: fig-mosaic-plot-nhanes-vcd
+#| fig-cap: NHANES Mosaic Plot
+#| layout-nrow: 2
+library(NHANES)
+ 
+nhanes_ct <- vcd::structable(data = NHANES, Race1 ~ Education)
+nhanes_ct
+vcd::mosaic(nhanes_ct, 
+            gp = shading_max, direction = "v",
+            main = "",
+labeling = labeling_border(
+                varnames = c("F", "F"),
+                rot_labels = c(90,0,0,0), #Rotation, t,r,b,l
+                just_labels = c("left", # How?
+                                "center", # Don't Care
+                                "center", # Don't Care
+                                "right"))) # How?
+
+```
+
+Based on this mosaic chart, we can say that `White` people have had more `College` education than `Black` or `Hispanic` people, and that `Black` people have had more `High School` education than `Hispanic` people. The `Hispanic` group has the lowest count for `College` education. So we can hypothesize that the Qual variables `Race1` and `Education` are related. 
 
 ::: {.content-hidden}
 #### Using ggmosaic
@@ -798,7 +875,7 @@ post](https://stackoverflow.com/questions/19233365/how-to-create-a-marimekko-mos
 # Reference
 # https://stackoverflow.com/questions/19233365/how-to-create-a-marimekko-mosaic-plot-in-ggplot2
 
-gss_summary <- gss2002 %>% 
+gss_summary <- GSS2002 %>% 
   dplyr::group_by(Education, DeathPenalty) %>%
   dplyr::summarise(count = n()) %>% # This is good for a chisq test
   
@@ -854,14 +931,15 @@ gf_col(edu_prop ~ Education, data = gss_summary,
 
 #### Using visStatistics
 
-`visStatistics` is a recent package that allows a very wide variety of statistical charts to be created **automagically** based on the variables chosen. Let us plot a mosaic chart directly with this package
+`visStatistics` is a recent package that allows a very wide variety of statistical charts to be created **automagically** based on the variables chosen. Let us plot a mosaic chart directly with this package:
 
 ```{r}
 #| label: visstat-1
 
-visstat(gss2002$DeathPenalty, gss2002$Education)
-```
+visstat(GSS2002$DeathPenalty, GSS2002$Education)
 
+```
+The `visStatistics` package is a very powerful package that can be used to create a wide variety of statistical charts, including Mosaic Charts, with very little code. This "universal" command `visstat()` computes a good many statistics and plots, all in one. Try doing an `str()` after this command to see what (else) it has computed. 
 
 :::
 
@@ -879,11 +957,12 @@ We notice that the mosaic plots has coloured some tiles blue and some red. Why w
 #|   - "Tile-Wise Differences"
 #| layout-ncol: 3
 
-vcd::mosaic(arthritis_table, gp = shading_max, legend = FALSE)
-vcd::mosaic(arthritis_table, type = "expected")
-vcd::assoc(arthritis_table)
+vcd::mosaic(Improved ~ Treatment, data = Arthritis, direction = "v", gp = shading_max, legend = FALSE)
+vcd::mosaic(Improved ~ Treatment, data = Arthritis, type = "expected", direction = "v", gp = shading_max)
+vcd::assoc(Treatment ~ Improved, data = Arthritis, gp = shading_max) # Note formula direction!
 
 ```
+
 :::
 
 
@@ -894,9 +973,9 @@ The graph on the left show the mosaic plot of the **actual** Contingency Table.
 
 The graph in the middle shows a similar but fictitious plot but with the cuts neatly horizontal or vertical. This mosaic would be what we would **expect**, if `Education` and the opinion on `Death Penalty` were independent!!
 
-Clearly, there are differences in area of the corresponding tiles in the two mosaics, *actual* and *expected*, as shown in the graph on the right. Some differences are positive, and some negative. In the *actual mosaic*, @fig-contingency-expected-actual-diff-1, tiles with large positive differences are coloured blue, and those with large negative differences are coloured red.
+Clearly, there are differences in area of the corresponding tiles in the two mosaics, *actual* and *expected*, as shown in the graph on the right. Some differences are positive, and some negative. In the *actual mosaic*, @fig-contingency-expected-actual-diff-1, tiles with large positive differences are coloured blue, and those with large negative differences are coloured red. These are called the ***Pearson Residuals***, and they indicate the *extent* to which the actual counts differ from the expected counts, if the two Qual variables were independent. The higher the absolute values of these differences, the greater the effect of one Qual on the other. 
 
-The higher the absolute values of these differences, the greater the effect of one Qual on the other. More when we get into [Inference for Two Proportions.](../../../Inference/Modules/190-TwoProp/index.qmd)
+More when we get into [Inference for Two Proportions.](../../../Inference/Modules/190-TwoProp/index.qmd)
 
 
 
@@ -993,10 +1072,10 @@ Tables*.
 
 ## {{< iconify fluent people-list-28-filled >}} Dataset: Titanic
 
-Banzai!!! That was quite some journey! Let us end it by quickly looking
-at a sadly famous dataset:
+Banzai!!! That was quite some journey! Let us wrap it up by quickly looking at a sadly famous dataset:
 
 ```{r}
+# library(ggmosaic)
 data("titanic", package = "ggmosaic")
 titanic
 ```
