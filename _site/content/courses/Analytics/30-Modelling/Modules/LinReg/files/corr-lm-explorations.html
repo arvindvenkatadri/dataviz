@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Arvind V">
+<title>Correlation and Regression Explorations – The Mad Hatter’s Guide to Data Viz and Stats in R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="../../../../../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../../../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../../../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../../../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../../../../../">
+<link href="../../../../../../../content/materials/icon-park-twotone--concept-sharing.svg" rel="icon" type="image/svg+xml">
+<script src="../../../../../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../../../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-1b3e43c72e8be34557c75123b0b69e0d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../../../../../site_libs/bootstrap/bootstrap-568c5ee9ec4531743a00a9bacd4917ba.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../../../../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.css" rel="stylesheet">
+<script src="../../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
+<script src="../../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../../../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<link href="../../../../../../../site_libs/quarto-contrib/tachyons-4.12.0/tachyons.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><style>html{ scroll-behavior: smooth; }</style>
+<link href="../../../../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../../../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><link rel="stylesheet" href="../../../../../../../css/fira.css">
+<link rel="stylesheet" href="../../../../../../../css/roboto-condensed.css">
+<link rel="stylesheet" href="../../../../../../../css/vollkorn.css">
+<link rel="stylesheet" href="../../../../../../../css/fraunces.css">
+<link rel="stylesheet" href="../../../../../../../css/styles.css">
+<meta property="og:title" content="Correlation and Regression Explorations – The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta property="og:description" content="This is Arvind V.’s website for teaching Data Viz and Stats in R">
+<meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/30-Modelling/Modules/LinReg/files/corr-lm-explorations_files/figure-html/unnamed-chunk-2-1.png">
+<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
+<meta property="og:image:height" content="3000">
+<meta property="og:image:width" content="4200">
+<meta name="twitter:title" content="Correlation and Regression Explorations – The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta name="twitter:description" content="This is Arvind V.’s website for teaching Data Viz and Stats in R">
+<meta name="twitter:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/30-Modelling/Modules/LinReg/files/corr-lm-explorations_files/figure-html/unnamed-chunk-2-1.png">
+<meta name="twitter:image-height" content="3000">
+<meta name="twitter:image-width" content="4200">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../../../../../index.html">
+    <span class="navbar-title">The Mad Hatter’s Guide to Data Viz and Stats in R</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/arvindvenkatadri/dataviz"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/arvind_v"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/arvindvenkatadri"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="mailto:arvind.venkatadri@gmail.com"> <i class="bi bi-envelope" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+</div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Correlation and Regression Explorations</li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+      <a href="../../../../../../../index.html" class="sidebar-logo-link">
+      <img src="../../../../../../../content/materials/images/1book25.jpg" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../../content/courses/Analytics/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Viz and Stats</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../../content/courses/Analytics/05-Tools/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tools</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/05-Tools/10-Intro-to-R/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa-brands:r-project"></iconify-icon> Introduction to R and RStudio</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../../content/courses/Analytics/10-Descriptive/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Descriptive Analytics</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/05-NatureData/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icon-park-twotone:data-user" width="1.2em" height="1.2em"></iconify-icon> Data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/07-Graphs/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="carbon:chart-3d" width="1.2em" height="1.2em"></iconify-icon> Graphs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/10-FavStats/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="carbon:summary-kpi" width="1.2em" height="1.2em"></iconify-icon> Summaries</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/20-BarPlots/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="eos-icons:counting" width="1.2em" height="1.2em"></iconify-icon> Counts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/22-Histograms/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fluent-mdl2:quantity" width="1.2em" height="1.2em"></iconify-icon> Quantities</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/24-BoxPlots/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="lucide:group" width="1.2em" height="1.2em"></iconify-icon> Groups</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/26-Densities/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="clarity:bell-curve-line" width="1.2em" height="1.2em"></iconify-icon> Densities</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/28-Violins/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="material-symbols:light-group-rounded" width="1.2em" height="1.2em"></iconify-icon> Groups and Densities</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/30-Correlations/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icon-park-outline:change" width="1.2em" height="1.2em"></iconify-icon> Change</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/40-CatData/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icon-park-outline:proportional-scaling"></iconify-icon> Proportions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/60-PartWhole/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="ic:round-pie-chart-outline"></iconify-icon> Parts of a Whole</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/70-EvolutionFlow/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="carbon:sankey-diagram"></iconify-icon> Evolution and Flow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/80-Ranking/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="ph:ranking-bold" width="1.2em" height="1.2em"></iconify-icon> Ratings and Rankings</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/45-SurveyData/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="wpf:survey" width="1.2em" height="1.2em"></iconify-icon> Surveys</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/50-Time/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fluent-mdl2:hour-glass" width="1.2em" height="1.2em"></iconify-icon> Time</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> Space</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/100-Networks/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="bx:network-chart" width="1.2em" height="1.2em"></iconify-icon> Networks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/1000-NoFreeHunch/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="game-icons:sherlock-holmes" width="1.2em" height="1.2em"></iconify-icon> Experiments</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/180-RefMat/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="eos-icons:miscellaneous"></iconify-icon> Miscellaneous Graphing Tools, and References</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../../content/courses/Analytics/20-Inference/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inference</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/20-Inference/Modules/10-Intro/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🧭 Basics of Statistical Inference</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/20-Inference/Modules/20-SampProb/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🎲 Samples, Populations, Statistics and Inference</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/20-Inference/Modules/60-SimTest/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Basics of Randomization Tests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/20-Inference/Modules/100-OneMean/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🃏 Inference for a Single Mean</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/20-Inference/Modules/110-TwoMeans/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🃏 Inference for Two Independent Means</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/20-Inference/Modules/120-PairedMeans/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🃏 Inference for Comparing Two Paired Means</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/20-Inference/Modules/130-ThreeMeansOrMore/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Comparing Multiple Means with ANOVA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/20-Inference/Modules/150-Correlation/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inference for Correlation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/20-Inference/Modules/180-OneProp/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🃏 Testing a Single Proportion</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/20-Inference/Modules/190-TwoProp/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🃏 Inference Test for Two Proportions</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../../content/courses/Analytics/30-Modelling/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modelling</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/30-Modelling/Modules/LinReg/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modelling with Linear Regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/30-Modelling/Modules/LogReg/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modelling with Logistic Regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/30-Modelling/Modules/ModelTimeSeries/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🕔 Modelling and Predicting Time Series</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../../content/courses/Analytics/40-Workflow/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Workflow</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/40-Workflow/Modules/200-EDA-Workflow/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="guidance:falling-rocks" width="1.2em" height="1.2em"></iconify-icon><iconify-icon icon="game-icons:falling" width="1.2em" height="1.2em"></iconify-icon> Facing the Abyss</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/40-Workflow/Modules/30-BlogSite/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="entypo:publish" width="1.2rem" height="1.2rem"></iconify-icon> I Publish, therefore I Am</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../../content/courses/Analytics/50-Arts/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Arts</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/50-Arts/Modules/05-themes/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fonts in ggplot and on websites</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/50-Arts/Modules/10-Colour/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 05: Colors with Penguins</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/50-Arts/Modules/20-Fonts/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fonts in ggplot and on websites</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/50-Arts/Modules/30-Annotations1/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Annotating Plots: Text, Labels, and Boxes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/50-Arts/Modules/35-Annotations2/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Annotations: Drawing Attention to Parts of the Graph</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+ <span class="menu-text">content/courses/Analytics/50-Arts/Modules/40-Highlighting/index.qmd</span>
+  </li>
+          <li class="sidebar-item">
+ <span class="menu-text">content/courses/Analytics/50-Arts/Modules/50-Scales/index.qmd</span>
+  </li>
+          <li class="sidebar-item">
+ <span class="menu-text">content/courses/Analytics/50-Arts/Modules/60-Assembly/index.qmd</span>
+  </li>
+          <li class="sidebar-item">
+ <span class="menu-text">content/courses/Analytics/50-Arts/Modules/70-Diagrams/index.qmd</span>
+  </li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../../content/courses/Analytics/60-AI-tools/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">AI Tools</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/60-AI-tools/Modules/10-LLMs/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using gander and ellmer</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/60-AI-tools/Modules/20-Github-Pilot/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using Github Pilot in RStudio</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+ <span class="menu-text">content/courses/Analytics/60-AI-tools/Modules/30-Explain/index.qmd</span>
+  </li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Case Studies</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/05-Demo/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="healthicons:elderly-outline" width="1.2em" height="1.2em"></iconify-icon> Demo:Product Packaging and Elderly People</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/10-IkeaFurniture/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="simple-icons:ikea" width="1.2em" height="1.2em"></iconify-icon> Ikea Furniture</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/20-MovieProfits/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="noto:movie-camera" width="1.2em" height="1.2em"></iconify-icon> Movie Profits</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/30-GenderWorkplace/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icons8:gender" width="1.2em" height="1.2em"></iconify-icon> Gender at the Work Place</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/40-Heptathlon/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icon-park-outline:sport" width="1.2em" height="1.2em"></iconify-icon> Heptathlon</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/60-SchoolScores/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="ic:twotone-school" width="1.2em" height="1.2em"></iconify-icon> School Scores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/80-ChildrensGames/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa6-solid:children"></iconify-icon><iconify-icon icon="icon-park-solid:play-basketball"></iconify-icon> Children's Games</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/90-ValentinesDay/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="mingcute:hand-heart-line"></iconify-icon> Valentine’s Day Spending</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/100-WomenLiveMen/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="noto:mage-light-skin-tone"></iconify-icon> Women Live Longer?</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/110-ChildrenHearingLoss/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa6-solid:ear-deaf"></iconify-icon><iconify-icon icon="fa-regular:sad-tear"></iconify-icon> Hearing Loss in Children</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/200-CaliforniaTransitPayments/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="openmoji:california-flag"></iconify-icon><iconify-icon icon="material-symbols:transit-ticket-outline-sharp"></iconify-icon> California Transit Payments</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/250-Seaweed/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="iconoir:sea-waves"></iconify-icon><iconify-icon icon="mdi:weed"></iconify-icon> Seaweed Nutrients</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/300-Coffee/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa:coffee"></iconify-icon> Coffee Flavours</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/350-LegionnairesDisease/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa6-solid:disease"></iconify-icon> Legionnaire’s Disease in the USA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/400-AntarcticSeaIce/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="iconoir:sea-waves"></iconify-icon><iconify-icon icon="openmoji:floating-ice"></iconify-icon>  Antarctic Sea ice</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/450-CholeraInLondon/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="simple-icons:transportforlondon"></iconify-icon><iconify-icon icon="hugeicons:water-pump"></iconify-icon>  William Farr's Observations on Cholera in London</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#packages" id="toc-packages" class="nav-link active" data-scroll-target="#packages">Packages</a></li>
+  <li><a href="#intro" id="toc-intro" class="nav-link" data-scroll-target="#intro">Intro</a></li>
+  <li>
+<a href="#explorations-into-diagnostic-plots" id="toc-explorations-into-diagnostic-plots" class="nav-link" data-scroll-target="#explorations-into-diagnostic-plots">Explorations into Diagnostic Plots</a>
+  <ul class="collapse">
+<li><a href="#normal-errors" id="toc-normal-errors" class="nav-link" data-scroll-target="#normal-errors">Normal Errors</a></li>
+  <li><a href="#uniform-errors" id="toc-uniform-errors" class="nav-link" data-scroll-target="#uniform-errors">Uniform Errors</a></li>
+  <li><a href="#negative-binom-errors" id="toc-negative-binom-errors" class="nav-link" data-scroll-target="#negative-binom-errors">Negative Binom Errors</a></li>
+  <li><a href="#gamma-errors" id="toc-gamma-errors" class="nav-link" data-scroll-target="#gamma-errors">Gamma Errors</a></li>
+  </ul>
+</li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">Correlation and Regression Explorations</h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-body">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Arvind V </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header><section id="packages" class="level2"><h2 class="anchored" data-anchor-id="packages">Packages</h2>
+<div class="cell">
+<div class="sourceCode" id="cb1" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ProjectMOSAIC/mosaic">mosaic</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://broom.tidymodels.org/">broom</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ProjectMOSAIC/ggformula">ggformula</a></span><span class="op">)</span></span>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_classic</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="intro" class="level2"><h2 class="anchored" data-anchor-id="intro">Intro</h2>
+<p>I will work through and “unify” at least two things:</p>
+<ul>
+<li>Hadley Wickham’s chapter on modelling and his analysis of the linear model for the diamonds dataset</li>
+<li>The diagnostic aspects of Linear Regression as detailed in Crawley’s book</li>
+</ul></section><section id="explorations-into-diagnostic-plots" class="level2"><h2 class="anchored" data-anchor-id="explorations-into-diagnostic-plots">Explorations into Diagnostic Plots</h2>
+<p>Let us create dependent y* variables with different sorts of errors:</p>
+<div class="cell">
+<div class="sourceCode" id="cb2" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fl">0</span><span class="op">:</span><span class="fl">300</span></span>
+<span><span class="va">en</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">301</span>, mean <span class="op">=</span> <span class="fl">0</span>, sd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">eu</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">301</span><span class="op">)</span> <span class="op">-</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">*</span> <span class="fl">20</span></span>
+<span><span class="va">eb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/NegBinomial.html">rnbinom</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">301</span>, prob <span class="op">=</span> <span class="fl">0.3</span>, size <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">eg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/GammaDist.html">rgamma</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">301</span>, shape <span class="op">=</span> <span class="fl">1</span>, rate <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="va">x</span><span class="op">)</span></span>
+<span><span class="va">yn</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op">+</span> <span class="fl">10</span> <span class="op">+</span> <span class="va">en</span></span>
+<span><span class="va">yu</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op">+</span> <span class="fl">10</span> <span class="op">+</span> <span class="va">eu</span></span>
+<span><span class="va">yb</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op">+</span> <span class="fl">10</span> <span class="op">+</span> <span class="va">eb</span></span>
+<span><span class="va">yg</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op">+</span> <span class="fl">10</span> <span class="op">+</span> <span class="va">eg</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">yn</span>, <span class="va">yu</span>, <span class="va">yb</span>, <span class="va">yg</span><span class="op">)</span></span>
+<span><span class="va">data</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["x"],"name":[1],"type":["int"],"align":["right"]},{"label":["yn"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["yu"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["yb"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["yg"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"0","2":"10.603717","3":"10.70187","4":"13","5":"10.00000"},{"1":"1","2":"17.191314","3":"14.49560","4":"14","5":"11.28090"},{"1":"2","2":"14.240317","3":"16.48409","4":"15","5":"13.60947"},{"1":"3","2":"7.910487","3":"6.11842","4":"18","5":"14.10591"},{"1":"4","2":"15.396526","3":"20.77813","4":"15","5":"14.24763"},{"1":"5","2":"15.670975","3":"11.27282","4":"22","5":"17.44382"},{"1":"6","2":"15.867888","3":"12.33266","4":"22","5":"20.91123"},{"1":"7","2":"16.479328","3":"10.81123","4":"19","5":"26.15608"},{"1":"8","2":"20.121894","3":"12.02262","4":"25","5":"19.62293"},{"1":"9","2":"15.976845","3":"11.27349","4":"26","5":"21.73196"},{"1":"10","2":"23.549550","3":"13.64750","4":"23","5":"39.69323"},{"1":"11","2":"19.247184","3":"11.90944","4":"26","5":"33.06643"},{"1":"12","2":"28.137372","3":"30.65664","4":"23","5":"27.63846"},{"1":"13","2":"11.307189","3":"28.66990","4":"38","5":"24.61989"},{"1":"14","2":"23.180984","3":"24.24086","4":"24","5":"32.03423"},{"1":"15","2":"37.612478","3":"19.26146","4":"44","5":"31.47196"},{"1":"16","2":"29.709499","3":"32.61826","4":"34","5":"27.61601"},{"1":"17","2":"27.381501","3":"33.48084","4":"29","5":"32.03490"},{"1":"18","2":"26.276545","3":"33.05730","4":"30","5":"28.10640"},{"1":"19","2":"31.951771","3":"26.42565","4":"38","5":"36.80581"},{"1":"20","2":"30.490073","3":"37.01370","4":"38","5":"42.07115"},{"1":"21","2":"33.013893","3":"30.64673","4":"35","5":"54.81262"},{"1":"22","2":"26.621317","3":"30.81120","4":"33","5":"154.87838"},{"1":"23","2":"28.511065","3":"42.19159","4":"42","5":"39.03764"},{"1":"24","2":"33.157685","3":"31.62865","4":"35","5":"178.47436"},{"1":"25","2":"31.133957","3":"27.16707","4":"40","5":"39.77272"},{"1":"26","2":"36.711992","3":"43.21656","4":"37","5":"37.24539"},{"1":"27","2":"43.511197","3":"32.81645","4":"47","5":"38.56475"},{"1":"28","2":"41.024529","3":"32.57558","4":"45","5":"81.09902"},{"1":"29","2":"43.777592","3":"32.45936","4":"45","5":"39.78904"},{"1":"30","2":"40.387391","3":"40.92935","4":"49","5":"62.92264"},{"1":"31","2":"40.741849","3":"49.18278","4":"53","5":"63.25006"},{"1":"32","2":"44.078861","3":"49.38587","4":"48","5":"87.26624"},{"1":"33","2":"36.081564","3":"50.32579","4":"46","5":"51.40230"},{"1":"34","2":"41.006920","3":"44.85934","4":"51","5":"80.07198"},{"1":"35","2":"42.669897","3":"43.84438","4":"49","5":"46.63761"},{"1":"36","2":"40.628933","3":"50.08133","4":"51","5":"52.92383"},{"1":"37","2":"45.739752","3":"47.48423","4":"49","5":"55.13496"},{"1":"38","2":"59.899835","3":"52.60641","4":"67","5":"99.11676"},{"1":"39","2":"44.121988","3":"43.89690","4":"56","5":"53.06990"},{"1":"40","2":"49.037162","3":"44.88043","4":"51","5":"66.67383"},{"1":"41","2":"49.280625","3":"41.42944","4":"59","5":"92.76839"},{"1":"42","2":"50.679009","3":"47.55281","4":"52","5":"94.16213"},{"1":"43","2":"54.679579","3":"55.49172","4":"55","5":"56.41996"},{"1":"44","2":"52.775673","3":"45.49274","4":"62","5":"151.09255"},{"1":"45","2":"59.627544","3":"56.77050","4":"62","5":"55.77548"},{"1":"46","2":"48.810021","3":"60.00678","4":"68","5":"67.63249"},{"1":"47","2":"54.147055","3":"53.93926","4":"61","5":"75.80436"},{"1":"48","2":"61.312525","3":"58.32923","4":"63","5":"59.23173"},{"1":"49","2":"55.593035","3":"60.79989","4":"64","5":"67.49595"},{"1":"50","2":"69.319917","3":"63.54114","4":"74","5":"159.43945"},{"1":"51","2":"62.841659","3":"58.29514","4":"70","5":"68.73752"},{"1":"52","2":"58.707924","3":"60.21224","4":"66","5":"121.80852"},{"1":"53","2":"67.310057","3":"58.20965","4":"64","5":"80.75221"},{"1":"54","2":"60.372196","3":"68.68247","4":"68","5":"99.87019"},{"1":"55","2":"61.256008","3":"67.95629","4":"65","5":"257.82039"},{"1":"56","2":"70.038665","3":"71.21514","4":"72","5":"188.98755"},{"1":"57","2":"62.973344","3":"66.18968","4":"70","5":"118.94625"},{"1":"58","2":"70.257917","3":"74.84068","4":"76","5":"191.23815"},{"1":"59","2":"66.039734","3":"78.00289","4":"74","5":"141.41660"},{"1":"60","2":"79.326252","3":"77.95812","4":"97","5":"134.92259"},{"1":"61","2":"66.779219","3":"76.54284","4":"80","5":"95.72360"},{"1":"62","2":"62.016203","3":"81.10977","4":"73","5":"105.10030"},{"1":"63","2":"70.631457","3":"70.57797","4":"76","5":"94.86070"},{"1":"64","2":"68.852450","3":"74.53558","4":"77","5":"146.50213"},{"1":"65","2":"75.606615","3":"66.59208","4":"79","5":"136.53875"},{"1":"66","2":"83.928981","3":"77.47681","4":"88","5":"93.46216"},{"1":"67","2":"74.484705","3":"79.81951","4":"83","5":"85.09200"},{"1":"68","2":"76.095274","3":"75.78405","4":"85","5":"169.44576"},{"1":"69","2":"75.731557","3":"84.31324","4":"80","5":"243.61356"},{"1":"70","2":"80.512732","3":"87.41361","4":"83","5":"196.68124"},{"1":"71","2":"78.054538","3":"79.05886","4":"85","5":"104.30932"},{"1":"72","2":"78.977361","3":"82.80085","4":"93","5":"129.54888"},{"1":"73","2":"82.615632","3":"88.78887","4":"88","5":"215.80930"},{"1":"74","2":"89.773797","3":"77.45423","4":"98","5":"103.52894"},{"1":"75","2":"81.360170","3":"83.66727","4":"96","5":"133.91394"},{"1":"76","2":"88.301959","3":"81.84146","4":"90","5":"278.55672"},{"1":"77","2":"93.697918","3":"92.04264","4":"89","5":"111.05621"},{"1":"78","2":"89.664114","3":"89.00433","4":"94","5":"230.99916"},{"1":"79","2":"95.664376","3":"89.49874","4":"90","5":"90.26104"},{"1":"80","2":"92.750644","3":"97.86569","4":"95","5":"196.59324"},{"1":"81","2":"92.785907","3":"87.52946","4":"96","5":"130.03722"},{"1":"82","2":"84.812079","3":"91.20061","4":"98","5":"109.81757"},{"1":"83","2":"97.147031","3":"93.13733","4":"94","5":"125.24861"},{"1":"84","2":"95.579728","3":"93.58921","4":"95","5":"218.30839"},{"1":"85","2":"93.058598","3":"100.90817","4":"99","5":"291.62551"},{"1":"86","2":"97.510163","3":"103.92910","4":"101","5":"126.33699"},{"1":"87","2":"97.016548","3":"88.74339","4":"103","5":"110.60726"},{"1":"88","2":"102.563474","3":"96.38758","4":"99","5":"108.77111"},{"1":"89","2":"84.951087","3":"97.53290","4":"102","5":"630.27979"},{"1":"90","2":"98.137224","3":"95.65607","4":"102","5":"260.20202"},{"1":"91","2":"101.490900","3":"103.79007","4":"105","5":"333.21650"},{"1":"92","2":"98.682895","3":"102.50452","4":"103","5":"301.17923"},{"1":"93","2":"109.265405","3":"110.31518","4":"112","5":"149.16279"},{"1":"94","2":"97.076106","3":"95.19294","4":"106","5":"222.78625"},{"1":"95","2":"101.735858","3":"101.18126","4":"107","5":"116.19114"},{"1":"96","2":"111.823742","3":"106.06333","4":"113","5":"317.62085"},{"1":"97","2":"104.442555","3":"110.80945","4":"107","5":"349.90201"},{"1":"98","2":"112.396487","3":"114.94241","4":"110","5":"212.91496"},{"1":"99","2":"103.511173","3":"111.41397","4":"115","5":"154.91247"},{"1":"100","2":"110.549639","3":"119.60703","4":"113","5":"200.11420"},{"1":"101","2":"118.545997","3":"104.45602","4":"123","5":"186.49984"},{"1":"102","2":"112.398264","3":"112.52636","4":"112","5":"167.05871"},{"1":"103","2":"124.488587","3":"108.32919","4":"122","5":"157.44337"},{"1":"104","2":"106.315684","3":"119.76475","4":"122","5":"252.87933"},{"1":"105","2":"118.737815","3":"114.13723","4":"127","5":"157.91835"},{"1":"106","2":"114.893118","3":"107.78013","4":"116","5":"140.48476"},{"1":"107","2":"116.196701","3":"124.68714","4":"119","5":"329.89790"},{"1":"108","2":"119.372782","3":"112.41479","4":"126","5":"203.95771"},{"1":"109","2":"117.301788","3":"113.29410","4":"122","5":"331.82800"},{"1":"110","2":"119.052443","3":"128.80204","4":"120","5":"138.60428"},{"1":"111","2":"124.032215","3":"122.18705","4":"128","5":"198.86199"},{"1":"112","2":"125.435678","3":"117.66447","4":"122","5":"418.54598"},{"1":"113","2":"123.345202","3":"122.50530","4":"130","5":"151.71393"},{"1":"114","2":"125.206818","3":"119.53286","4":"128","5":"147.83020"},{"1":"115","2":"122.562565","3":"127.09393","4":"130","5":"214.87178"},{"1":"116","2":"128.523303","3":"122.07370","4":"127","5":"224.33571"},{"1":"117","2":"128.241746","3":"124.92907","4":"138","5":"127.66300"},{"1":"118","2":"121.097563","3":"118.51882","4":"131","5":"188.57172"},{"1":"119","2":"136.093651","3":"120.84155","4":"130","5":"718.66968"},{"1":"120","2":"128.699132","3":"121.06715","4":"137","5":"191.74546"},{"1":"121","2":"130.558210","3":"129.87577","4":"142","5":"176.58441"},{"1":"122","2":"134.422938","3":"140.98251","4":"133","5":"207.66864"},{"1":"123","2":"131.538812","3":"127.87902","4":"146","5":"341.66089"},{"1":"124","2":"129.553087","3":"134.90586","4":"138","5":"248.90980"},{"1":"125","2":"138.341489","3":"143.98679","4":"139","5":"197.72472"},{"1":"126","2":"134.044577","3":"143.94460","4":"145","5":"140.40367"},{"1":"127","2":"144.380841","3":"134.55001","4":"140","5":"151.52619"},{"1":"128","2":"136.969912","3":"140.11055","4":"138","5":"419.10385"},{"1":"129","2":"137.457727","3":"132.50385","4":"143","5":"320.63950"},{"1":"130","2":"134.488260","3":"147.91279","4":"150","5":"275.93618"},{"1":"131","2":"141.160452","3":"138.61358","4":"148","5":"162.71905"},{"1":"132","2":"144.822647","3":"145.67116","4":"151","5":"228.99443"},{"1":"133","2":"151.799091","3":"145.31237","4":"151","5":"372.63448"},{"1":"134","2":"143.662215","3":"134.24727","4":"149","5":"149.42825"},{"1":"135","2":"151.634469","3":"147.05637","4":"152","5":"385.30669"},{"1":"136","2":"146.076503","3":"145.73421","4":"159","5":"259.66136"},{"1":"137","2":"150.814726","3":"150.79166","4":"151","5":"523.99806"},{"1":"138","2":"146.120777","3":"154.37308","4":"150","5":"152.65901"},{"1":"139","2":"154.635689","3":"150.31182","4":"150","5":"383.20513"},{"1":"140","2":"152.652696","3":"146.09531","4":"151","5":"170.34951"},{"1":"141","2":"148.475625","3":"144.89060","4":"154","5":"430.36458"},{"1":"142","2":"151.270989","3":"157.51911","4":"162","5":"172.46454"},{"1":"143","2":"157.336960","3":"148.63364","4":"163","5":"238.37421"},{"1":"144","2":"152.557057","3":"153.69628","4":"157","5":"261.01961"},{"1":"145","2":"157.815465","3":"155.17443","4":"156","5":"195.99880"},{"1":"146","2":"157.182319","3":"146.88517","4":"157","5":"554.54230"},{"1":"147","2":"152.865210","3":"150.15934","4":"173","5":"588.32171"},{"1":"148","2":"147.856769","3":"166.57204","4":"163","5":"198.83752"},{"1":"149","2":"158.091978","3":"160.84337","4":"163","5":"159.65145"},{"1":"150","2":"160.738196","3":"161.97945","4":"165","5":"415.78383"},{"1":"151","2":"160.815109","3":"151.14962","4":"162","5":"695.55190"},{"1":"152","2":"165.708832","3":"167.37739","4":"162","5":"249.74168"},{"1":"153","2":"163.633305","3":"156.06186","4":"167","5":"345.40241"},{"1":"154","2":"159.245381","3":"160.05234","4":"169","5":"218.02456"},{"1":"155","2":"170.432197","3":"169.49862","4":"170","5":"274.59330"},{"1":"156","2":"159.949510","3":"167.97300","4":"169","5":"262.13441"},{"1":"157","2":"165.002347","3":"166.50183","4":"169","5":"335.70810"},{"1":"158","2":"170.312491","3":"169.66351","4":"172","5":"236.79775"},{"1":"159","2":"173.265730","3":"165.45337","4":"170","5":"285.84194"},{"1":"160","2":"174.236545","3":"165.04218","4":"174","5":"250.60187"},{"1":"161","2":"167.616040","3":"180.22268","4":"173","5":"380.96757"},{"1":"162","2":"172.233213","3":"172.36778","4":"175","5":"232.66044"},{"1":"163","2":"170.617824","3":"178.91550","4":"175","5":"234.68827"},{"1":"164","2":"177.656851","3":"165.68764","4":"175","5":"295.53573"},{"1":"165","2":"169.445248","3":"174.74768","4":"177","5":"447.13726"},{"1":"166","2":"178.922451","3":"180.07380","4":"179","5":"401.34238"},{"1":"167","2":"182.310770","3":"185.72843","4":"177","5":"232.52003"},{"1":"168","2":"174.169612","3":"173.63384","4":"180","5":"193.08233"},{"1":"169","2":"170.482784","3":"179.47997","4":"180","5":"197.38752"},{"1":"170","2":"174.777009","3":"184.31211","4":"186","5":"341.25445"},{"1":"171","2":"177.498473","3":"172.09503","4":"184","5":"514.95979"},{"1":"172","2":"186.500722","3":"188.75129","4":"183","5":"248.73541"},{"1":"173","2":"183.800369","3":"178.11378","4":"185","5":"398.72974"},{"1":"174","2":"186.836502","3":"184.14354","4":"185","5":"512.19790"},{"1":"175","2":"186.222196","3":"180.41915","4":"188","5":"197.56315"},{"1":"176","2":"188.334653","3":"176.82184","4":"190","5":"215.98876"},{"1":"177","2":"196.497942","3":"180.73866","4":"197","5":"338.39621"},{"1":"178","2":"200.052050","3":"190.44106","4":"194","5":"562.54511"},{"1":"179","2":"186.006308","3":"191.03639","4":"192","5":"236.60829"},{"1":"180","2":"197.501379","3":"182.44429","4":"192","5":"246.72028"},{"1":"181","2":"187.780153","3":"200.01433","4":"193","5":"440.11574"},{"1":"182","2":"194.489406","3":"183.65980","4":"195","5":"229.74595"},{"1":"183","2":"191.464614","3":"187.36948","4":"194","5":"255.55652"},{"1":"184","2":"187.016259","3":"192.71516","4":"195","5":"555.41286"},{"1":"185","2":"193.000800","3":"191.65822","4":"200","5":"386.80792"},{"1":"186","2":"194.136769","3":"198.69253","4":"196","5":"260.70425"},{"1":"187","2":"199.296757","3":"189.30741","4":"206","5":"447.00700"},{"1":"188","2":"189.688602","3":"205.83279","4":"203","5":"445.09711"},{"1":"189","2":"202.220786","3":"189.06093","4":"207","5":"270.81331"},{"1":"190","2":"196.414842","3":"195.34078","4":"204","5":"297.96111"},{"1":"191","2":"199.306091","3":"192.10315","4":"204","5":"329.11513"},{"1":"192","2":"207.354127","3":"197.23026","4":"203","5":"246.57134"},{"1":"193","2":"206.871609","3":"200.79677","4":"207","5":"419.79191"},{"1":"194","2":"192.535028","3":"211.29237","4":"211","5":"278.76158"},{"1":"195","2":"213.750027","3":"199.13383","4":"210","5":"406.25865"},{"1":"196","2":"198.169051","3":"211.68497","4":"207","5":"253.28006"},{"1":"197","2":"203.096602","3":"197.28850","4":"210","5":"360.62540"},{"1":"198","2":"214.113346","3":"214.44647","4":"213","5":"555.13622"},{"1":"199","2":"206.333907","3":"218.38455","4":"209","5":"218.92330"},{"1":"200","2":"218.523175","3":"217.62880","4":"215","5":"210.28820"},{"1":"201","2":"205.675921","3":"209.78173","4":"211","5":"927.50208"},{"1":"202","2":"211.884361","3":"220.48220","4":"213","5":"469.00604"},{"1":"203","2":"214.014222","3":"212.98074","4":"221","5":"345.18829"},{"1":"204","2":"214.618591","3":"223.14428","4":"221","5":"343.36527"},{"1":"205","2":"219.670961","3":"220.13878","4":"217","5":"250.26572"},{"1":"206","2":"218.249326","3":"213.88639","4":"233","5":"766.41972"},{"1":"207","2":"220.313682","3":"217.98759","4":"219","5":"273.73046"},{"1":"208","2":"212.147992","3":"217.47410","4":"226","5":"871.96702"},{"1":"209","2":"218.630321","3":"217.87294","4":"223","5":"400.45756"},{"1":"210","2":"218.685596","3":"218.44273","4":"224","5":"230.56640"},{"1":"211","2":"217.450604","3":"218.65232","4":"225","5":"299.08252"},{"1":"212","2":"203.329509","3":"220.77535","4":"227","5":"349.74542"},{"1":"213","2":"226.345029","3":"213.36649","4":"228","5":"354.66418"},{"1":"214","2":"227.976026","3":"226.64280","4":"226","5":"295.01187"},{"1":"215","2":"225.705760","3":"228.33314","4":"228","5":"499.65296"},{"1":"216","2":"235.174145","3":"229.06477","4":"231","5":"417.74357"},{"1":"217","2":"230.184471","3":"217.32808","4":"234","5":"368.32030"},{"1":"218","2":"220.248480","3":"234.18922","4":"231","5":"787.90388"},{"1":"219","2":"235.440367","3":"224.62843","4":"231","5":"883.44514"},{"1":"220","2":"233.155229","3":"224.19376","4":"241","5":"299.09946"},{"1":"221","2":"227.304006","3":"239.30515","4":"232","5":"338.56390"},{"1":"222","2":"227.485442","3":"240.68087","4":"234","5":"580.38193"},{"1":"223","2":"229.962057","3":"231.39703","4":"242","5":"346.13478"},{"1":"224","2":"232.314444","3":"227.19240","4":"235","5":"248.46621"},{"1":"225","2":"231.327332","3":"228.85745","4":"243","5":"912.23662"},{"1":"226","2":"236.253492","3":"245.78454","4":"250","5":"353.02387"},{"1":"227","2":"240.770497","3":"236.70234","4":"242","5":"328.95667"},{"1":"228","2":"231.449833","3":"231.21005","4":"244","5":"881.42512"},{"1":"229","2":"231.181614","3":"242.47355","4":"241","5":"986.44923"},{"1":"230","2":"241.370172","3":"249.19709","4":"243","5":"279.84689"},{"1":"231","2":"237.990705","3":"231.50786","4":"251","5":"456.77511"},{"1":"232","2":"242.510144","3":"239.29933","4":"242","5":"384.97287"},{"1":"233","2":"239.823993","3":"238.62122","4":"245","5":"435.26298"},{"1":"234","2":"244.110127","3":"240.95048","4":"245","5":"431.54373"},{"1":"235","2":"250.384220","3":"246.40068","4":"246","5":"321.33684"},{"1":"236","2":"243.487587","3":"252.98113","4":"254","5":"370.59204"},{"1":"237","2":"252.438607","3":"241.91980","4":"258","5":"401.47290"},{"1":"238","2":"246.963255","3":"256.76291","4":"249","5":"555.97967"},{"1":"239","2":"250.659361","3":"251.56486","4":"251","5":"251.97814"},{"1":"240","2":"246.974978","3":"245.68885","4":"250","5":"616.54031"},{"1":"241","2":"250.699982","3":"254.55249","4":"254","5":"442.13406"},{"1":"242","2":"258.911974","3":"258.95672","4":"252","5":"889.76557"},{"1":"243","2":"258.243710","3":"248.11530","4":"255","5":"314.29397"},{"1":"244","2":"252.181693","3":"254.58830","4":"259","5":"405.97304"},{"1":"245","2":"254.007653","3":"263.22307","4":"267","5":"830.09204"},{"1":"246","2":"261.519200","3":"255.65586","4":"258","5":"513.54017"},{"1":"247","2":"258.717911","3":"255.03185","4":"264","5":"468.66570"},{"1":"248","2":"265.020241","3":"251.56314","4":"260","5":"422.60334"},{"1":"249","2":"258.165958","3":"259.22405","4":"265","5":"373.32318"},{"1":"250","2":"255.225300","3":"266.04163","4":"260","5":"545.45825"},{"1":"251","2":"265.675854","3":"265.74739","4":"264","5":"408.07572"},{"1":"252","2":"258.212523","3":"254.21387","4":"263","5":"272.51484"},{"1":"253","2":"256.397417","3":"256.92054","4":"272","5":"402.12516"},{"1":"254","2":"266.716721","3":"262.51618","4":"278","5":"402.09638"},{"1":"255","2":"272.863418","3":"262.15523","4":"266","5":"773.37707"},{"1":"256","2":"268.228163","3":"270.01510","4":"267","5":"712.95621"},{"1":"257","2":"267.002572","3":"261.27225","4":"270","5":"1050.25174"},{"1":"258","2":"269.882826","3":"263.27676","4":"269","5":"491.31690"},{"1":"259","2":"264.914938","3":"275.94920","4":"285","5":"469.54124"},{"1":"260","2":"266.794472","3":"265.52998","4":"282","5":"326.68844"},{"1":"261","2":"267.892029","3":"261.34834","4":"275","5":"768.18459"},{"1":"262","2":"273.296785","3":"266.98657","4":"273","5":"476.38711"},{"1":"263","2":"269.219227","3":"277.63793","4":"280","5":"319.37052"},{"1":"264","2":"268.543527","3":"281.93554","4":"280","5":"998.20757"},{"1":"265","2":"270.885573","3":"278.95821","4":"279","5":"522.14593"},{"1":"266","2":"270.592050","3":"279.83093","4":"277","5":"553.11293"},{"1":"267","2":"278.545612","3":"285.40856","4":"282","5":"1080.53123"},{"1":"268","2":"281.747032","3":"272.52841","4":"278","5":"718.62750"},{"1":"269","2":"276.234212","3":"272.82272","4":"284","5":"325.46101"},{"1":"270","2":"275.644969","3":"272.10733","4":"284","5":"287.85787"},{"1":"271","2":"278.320690","3":"282.18138","4":"288","5":"302.42314"},{"1":"272","2":"283.512636","3":"283.51666","4":"292","5":"647.32851"},{"1":"273","2":"281.615765","3":"291.43380","4":"293","5":"533.43069"},{"1":"274","2":"285.559678","3":"289.69563","4":"286","5":"324.73793"},{"1":"275","2":"284.015655","3":"286.37832","4":"291","5":"303.11246"},{"1":"276","2":"277.505033","3":"276.03609","4":"287","5":"329.41489"},{"1":"277","2":"283.051996","3":"290.61702","4":"288","5":"617.19157"},{"1":"278","2":"297.123429","3":"295.51752","4":"293","5":"724.32538"},{"1":"279","2":"287.141538","3":"284.95982","4":"293","5":"340.16725"},{"1":"280","2":"289.283842","3":"297.71992","4":"292","5":"656.26462"},{"1":"281","2":"293.652527","3":"300.03512","4":"292","5":"758.51036"},{"1":"282","2":"291.747239","3":"291.06670","4":"297","5":"322.15201"},{"1":"283","2":"298.359065","3":"299.23796","4":"296","5":"362.17865"},{"1":"284","2":"289.008557","3":"284.72820","4":"298","5":"331.27951"},{"1":"285","2":"292.941902","3":"293.45795","4":"302","5":"363.89658"},{"1":"286","2":"292.540149","3":"303.88814","4":"299","5":"446.78105"},{"1":"287","2":"299.892820","3":"301.93854","4":"307","5":"476.58299"},{"1":"288","2":"298.684166","3":"291.02774","4":"305","5":"345.89695"},{"1":"289","2":"297.465192","3":"301.41897","4":"304","5":"474.97549"},{"1":"290","2":"308.359343","3":"298.63934","4":"303","5":"354.94094"},{"1":"291","2":"298.003144","3":"295.49541","4":"303","5":"358.01206"},{"1":"292","2":"301.572396","3":"292.74136","4":"303","5":"496.29590"},{"1":"293","2":"303.237447","3":"303.31561","4":"304","5":"1044.03608"},{"1":"294","2":"297.901460","3":"313.83388","4":"304","5":"753.10570"},{"1":"295","2":"305.425433","3":"296.00987","4":"307","5":"427.10714"},{"1":"296","2":"297.468049","3":"297.85719","4":"311","5":"832.11024"},{"1":"297","2":"307.624312","3":"315.26870","4":"321","5":"653.78213"},{"1":"298","2":"312.244421","3":"298.29540","4":"308","5":"516.00558"},{"1":"299","2":"306.734317","3":"315.36784","4":"311","5":"928.54060"},{"1":"300","2":"308.804254","3":"319.90603","4":"310","5":"638.96669"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<section id="normal-errors" class="level3"><h3 class="anchored" data-anchor-id="normal-errors">Normal Errors</h3>
+<div class="cell">
+<div class="sourceCode" id="cb3" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lm_norm_aug</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">yn</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/augment.html">augment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">lm_norm_aug</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_point.html">gf_point</a></span><span class="op">(</span><span class="va">.resid</span> <span class="op">~</span> <span class="va">.fitted</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="corr-lm-explorations_files/figure-html/unnamed-chunk-2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="corr-lm-explorations_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode" id="cb4" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lm_norm_aug</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_qq.html">gf_qq</a></span><span class="op">(</span><span class="op">~</span><span class="va">.resid</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_qq.html">gf_qqline</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="corr-lm-explorations_files/figure-html/unnamed-chunk-2-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="corr-lm-explorations_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="uniform-errors" class="level3"><h3 class="anchored" data-anchor-id="uniform-errors">Uniform Errors</h3>
+<div class="cell">
+<div class="sourceCode" id="cb5" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lm_unif_aug</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">yu</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/augment.html">augment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">lm_unif_aug</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_point.html">gf_point</a></span><span class="op">(</span><span class="va">.resid</span> <span class="op">~</span> <span class="va">.fitted</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="corr-lm-explorations_files/figure-html/unnamed-chunk-3-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="corr-lm-explorations_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode" id="cb6" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lm_unif_aug</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_qq.html">gf_qq</a></span><span class="op">(</span><span class="op">~</span><span class="va">.resid</span>, distribution <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/stats/Normal.html">qnorm</a></span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_qq.html">gf_qqline</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="corr-lm-explorations_files/figure-html/unnamed-chunk-3-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="corr-lm-explorations_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="negative-binom-errors" class="level3"><h3 class="anchored" data-anchor-id="negative-binom-errors">Negative Binom Errors</h3>
+<div class="cell">
+<div class="sourceCode" id="cb7" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lm_nbinom_aug</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">yb</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/augment.html">augment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">lm_nbinom_aug</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_point.html">gf_point</a></span><span class="op">(</span><span class="va">.resid</span> <span class="op">~</span> <span class="va">.fitted</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="corr-lm-explorations_files/figure-html/unnamed-chunk-4-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="corr-lm-explorations_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode" id="cb8" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lm_nbinom_aug</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_qq.html">gf_qq</a></span><span class="op">(</span><span class="op">~</span><span class="va">.resid</span>, distribution <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/stats/Normal.html">qnorm</a></span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_qq.html">gf_qqline</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="corr-lm-explorations_files/figure-html/unnamed-chunk-4-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="corr-lm-explorations_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="gamma-errors" class="level3"><h3 class="anchored" data-anchor-id="gamma-errors">Gamma Errors</h3>
+<div class="cell">
+<div class="sourceCode" id="cb9" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lm_gamm_aug</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">yg</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/augment.html">augment</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">lm_gamm_aug</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_point.html">gf_point</a></span><span class="op">(</span><span class="va">.resid</span> <span class="op">~</span> <span class="va">.fitted</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="corr-lm-explorations_files/figure-html/unnamed-chunk-5-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="corr-lm-explorations_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode" id="cb10" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lm_gamm_aug</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_qq.html">gf_qq</a></span><span class="op">(</span><span class="op">~</span><span class="va">.resid</span>, distribution <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/stats/Normal.html">qnorm</a></span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_qq.html">gf_qqline</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="corr-lm-explorations_files/figure-html/unnamed-chunk-5-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="corr-lm-explorations_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section></section><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/madhatterguide\.netlify\.app");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>License: <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</a></p>
+</div>   
+    <div class="nav-footer-center">
+<p>Website made with ❤️ and <a href="https://quarto.org/">Quarto</a>, by Arvind V.</p>
+</div>
+    <div class="nav-footer-right">
+<p>Hosted by Netlify <a href="https://www.netlify.com"><iconify-icon inline="" icon="simple-icons:netlify" aria-label="Icon netlify from simple-icons Iconify.design set." title="Icon netlify from simple-icons Iconify.design set."></iconify-icon></a>.</p>
+</div>
+  </div>
+</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"right","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+<script src="../../../../../../../site_libs/quarto-html/zenscroll-min.js"></script>
+<script src="../../../../../../../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.js" defer="true"></script>
+</body></html>

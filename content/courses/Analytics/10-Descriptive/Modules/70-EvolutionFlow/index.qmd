@@ -1,0 +1,896 @@
+---
+title: <iconify-icon icon="carbon:sankey-diagram"></iconify-icon> Evolution and Flow
+author: "Arvind V."
+date: 22/Nov/2022
+date-modified: "`r Sys.Date()`"
+order: 70
+abstract: "Changes in Information over Space and Time"
+image: preview.jpg
+image-alt: image from rawpixel.com
+categories:
+- Line and Area Plots
+- Dumbbell Plots
+- Parallel Set Plots
+- Alluvial Plots
+- Sankey Diagrams
+- Chord Diagrams
+- Bump Charts
+bibliography: 
+  - grateful-refs.bib
+citation: true
+#suppress-bibliography: true
+---
+
+
+:::: {.pa4}
+::: {.athelas .ml0 .mt0 .pl4 .black-90 .bl .bw2 .b--blue}
+["My stories run up and bite me in the leg -- I respond by writing them down -- everything that goes on during the bite. When I finish, the idea lets go and runs off."]{.f5 .f4-m .f3-l .lh-copy .measure .mt0}
+
+[ --- Ray Bradbury, science-fiction writer (22 Aug 1920-2012)]{.f6 .ttu .tracked .fs-normal}
+:::
+::::
+
+## {{< iconify noto-v1 package >}} Setting up R Packages
+
+```{r}
+#| label: setup
+#| echo: true
+#| message: false
+#| warning: false
+#| 
+library(tidyverse)
+library(ggstream)
+library(ggformula)
+#remotes::install_github("corybrunson/ggalluvial@main", build_vignettes = TRUE)
+library(ggalluvial)
+library(ggsankeyfier)
+# install.packages("devtools")
+#devtools::install_github("davidsjoberg/ggsankey")
+library(ggsankey)
+library(networkD3)
+library(echarts4r) # Interactive graphs
+
+##
+library(tidyplots) # Easily Produced Publication-Ready Plots
+library(tinyplot) # Plots with Base R
+library(tinytable) # Elegant Tables for our data
+```
+
+```{r}
+#| label: Extra Pedagogical Packages
+#| echo: false
+#| message: false
+
+library(checkdown)
+library(epoxy)
+library(grateful)
+
+```
+
+#### Plot Fonts and Theme
+
+```{r}
+#| label: plot-theme
+#| echo: true
+#| cache: false
+#| code-fold: true
+#| messages: false
+#| warning: false
+
+library(systemfonts)
+library(showtext)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+showtext_auto(enable = TRUE) #enable showtext
+##
+theme_custom <- function(){ 
+    font <- "Alegreya"   #assign font family up front
+    
+    theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
+    
+    theme(
+      text = element_text(family = font),  #set base font family
+      
+      #text elements
+      plot.title = element_text(                 #title
+                   family = font,          #set font family
+                   size = 24,                    #set font size
+                   face = 'bold',                #bold typeface
+                   hjust = 0,                    #left align
+                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
+      plot.title.position = "plot", 
+      
+      plot.subtitle = element_text(              #subtitle
+                   family = font,          #font family
+                   size = 14,                   #font size
+                   hjust = 0,                   #left align
+                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
+      
+      plot.caption = element_text(               #caption
+                   family = font,          #font family
+                   size = 9,                     #font size
+                   hjust = 1),                   #right align
+      
+      plot.caption.position = "plot",            #right align
+      
+      axis.title = element_text(                 #axis titles
+                   family = "Roboto Condensed",  #font family
+                   size = 12),                   #font size
+      
+      axis.text = element_text(                  #axis text
+                   family = "Roboto Condensed",  #font family
+                   size = 9),                    #font size
+      
+      axis.text.x = element_text(                #margin for axis text
+                    margin = margin(5, b = 10))
+      
+      #since the legend often requires manual tweaking 
+      #based on plot content, don't define it here
+    )
+}
+
+## Use available fonts in ggplot text geoms too!
+ggplot2::update_geom_defaults(geom = "text",new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
+
+```
+
+
+## {{< iconify entypo line-graph >}} What Time Evolution Charts can we plot?
+
+In these cases, the x-axis is typically *time*...and we chart the
+variable of another Quant variable with respect to time, using a *line*
+geometry.
+
+Let is take a healthcare budget dataset from [Our World in
+Data](https://ourworldindata.org/grapher/public-health-expenditure-share-GDP-OWID):
+We will plot graphs for 5 countries (India, China, Brazil, Russia,
+Canada ).
+
+:::callout-important
+### And Introducting `echarts4r`
+We will also build interactive versions of these charts using `echarts4r`!
+:::
+
+Download this data by clicking on the button below:
+
+{{< downloadthis data/public-health-expenditure-share-GDP-OWID.csv dname="public-health-expenditure-share-GDP-OWID" label="Download the Health data" icon="database-fill-down" type="info" >}}
+
+```{r}
+health <-
+  read_csv("data/public-health-expenditure-share-GDP-OWID.csv")
+
+health_filtered <- health %>%
+  filter(Entity %in% c(
+    "India",
+    "China",
+    "United States",
+    "United Kingdom",
+    "Russia",
+    "Sweden"
+  ))
+
+```
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+### Using ggformula
+
+```{r}
+#| layout-ncol: 2
+#| results: hold
+ggplot2::theme_set(new = theme_custom())
+
+gf_point(data = health_filtered,
+             public_health_expenditure_pc_gdp ~ Year, 
+             colour = ~ Entity, 
+             ylab = "Healthcare Budget\n as % of GDP",
+         title = "Line Charts to show Evolution (over Time )") %>% 
+  gf_line() %>%
+  gf_refine(scale_colour_brewer(palette = "Set1"))
+
+###
+gf_area(data = health_filtered,
+          public_health_expenditure_pc_gdp ~ Year, 
+          fill = ~ Entity, alpha = 0.3, 
+          ylab = "Healthcare Budget\n as % of GDP",
+        title = "Area Charts to show Evolution (over Time )") %>% 
+  gf_line(colour = ~ Entity) 
+
+```
+
+### Using echarts4r
+
+```{r}
+#| results: hold
+
+health_filtered %>% group_by(Entity) %>% 
+  e_charts(Year) %>% 
+  e_scatter(public_health_expenditure_pc_gdp) %>% 
+  e_line(public_health_expenditure_pc_gdp) %>% 
+  e_x_axis(name = "Year", min = 1850, max = 2050) %>% 
+  e_y_axis(name = "Public Health Expenditure", 
+           nameLocation = "middle", nameGap = 25) %>% 
+  e_tooltip()
+###
+health_filtered %>% group_by(Entity) %>% 
+  e_charts(Year) %>% 
+  e_scatter(public_health_expenditure_pc_gdp) %>% 
+  e_area(public_health_expenditure_pc_gdp) %>% 
+  e_x_axis(name = "Year", min = 1850, max = 2050) %>% 
+  e_y_axis(name = "Public Health Expenditure", 
+           nameLocation = "middle",nameGap = 25) %>% 
+  e_tooltip()
+
+```
+:::
+
+## {{< iconify carbon sankey-diagram-alt >}} What Space Evolution Charts can we plot?
+
+Here, the *space* can be any Qual variable, and we can chart another
+Quant or Qual variable move across levels of the first chosen Qual
+variable.
+
+For instance we can contemplate enrollment at a University, and show how
+students move from course to course in a University. Or how customers
+drift from one category of products or brands to another....or the
+movement of cricket players from one IPL Team to another !!
+
+Here is what [Thomas Lin
+Pedersen](https://ggforce.data-imaginist.com/reference/geom_parallel_sets.html)
+says:
+
+> A **parallel sets diagram** is a type of visualisation showing the
+> interaction between multiple categorical variables. If the variables
+> have an **intrinsic order** the representation can be thought of as a
+> **Sankey Diagram**. If each variable is a point in time it will
+> resemble an **Alluvial diagram**.
+
+
+::: {#fig-elephants layout-ncol=2}
+![ggsankey aesthetics](images/sankey.png){#fig-ggsankey}
+
+![ggsankeyfier aesthetics](images/important_aspects.svg){#fig-sankeyfier}
+
+Geometric Aesthetics from two Sankey Plot Packages
+:::
+
+
+-   The Qualitative variables being connected are mapped to
+    `stages/axes`
+-   Each *level* within a Qual variable is mapped to
+    `nodes / strata / lodes`;
+-   And the connections between the `strata` of the `axes` are called
+    `flows / edges / links / alluvia`.\
+
+Such diagrams are best used when you want to show a many-to-many mapping
+between two domains or multiple paths through a set of stages E.g
+`Students` pursruing different `degrees` going through multiple `courses` with multiple `departments` during a semester of study. Here `students`, `degrees`, `courses`, `departments` would be some variables we would plot and we would visualize the number of students moving across `courses` and `deparments` based on their `degree` etc. 
+
+Here is an example of a Sankey Diagram: This diagram show how energy is
+converted or transmitted before being consumed or lost: supplies are on
+the left, and demands are on the right. (Data: Department of Energy &
+Climate Change via Tom Counsell)[^1]:
+
+<iframe width="100%" height="684" frameborder="0" src="https://observablehq.com/embed/@d3/sankey?cells=chart">
+
+</iframe>
+
+::: callout-note
+## Switching to ggplot here
+
+For the next few charts, there are (as yet) no equivalents in
+`ggformula`. Hence we will use `ggplot`.
+:::
+
+## {{< iconify pajamas issue-type-test-case >}} Case Study-1: Titanic Dataset
+
+::::{.columns}
+:::{.column}
+```{r}
+#| label: titanic-data
+#| eval: false
+
+data(Titanic, package = "datasets")
+Titanic <- Titanic %>% as_tibble()
+Titanic
+```
+:::
+:::{.column}
+```{r}
+#| ref.label: titanic-data
+#| echo: false
+```
+
+
+:::
+::::
+
+
+::: callout-note
+## Table Form Data
+
+Note that this data is in **tidy wide** / **table** form, with separate
+columns for each Qualitative variable and a separate `count` column,
+which we saw when we examined Categorical Data. This is, in my opinion,
+intuitively the best form of data to plot a Sankey plot with. Each variable gives us "**one part in the flow**". But there
+are other forms such as the **tidy long** form which we have been using
+practically all this while. You will find examples of on the
+`ggalluvial` website using **tidy long** form data.
+<https://corybrunson.github.io/ggalluvial/>
+:::
+
+::: column-page-right
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+### Using ggplot
+
+::::{.columns}
+:::{.column}
+```{r}
+#| label: titanic-plot
+#| eval: false
+ggplot2::theme_set(new = theme_custom())
+
+Titanic %>% ggplot(data = .,
+    
+# Select the Categorical Variables for the vertical Axes / Stages
+       aes(axis1 = Class, 
+           axis2 = Sex, 
+           axis3 = Age,
+           axis4 = Survived,
+           y = n), fill = "white") +
+  
+# Alluvials between Categorical Axes
+  geom_alluvium(aes(fill = Survived), 
+                colour = "black", 
+                linewidth = 0.25) +
+  
+# Vertical segments for each Categorical Variable2 
+  geom_stratum(colour = "black", 
+               linewidth = 1, 
+               fill = "white") + 
+  
+# Labels for each "level" of the Categorical Axes
+  geom_text(stat = "stratum", size = 3,
+            aes(label = after_stat(stratum))) +
+  
+
+  
+# Scales and Colours
+  scale_x_discrete(limits = c("Class", "Sex", "Age", "Survived"), 
+                   expand = c(0.1, 0.1)) +
+  scale_fill_brewer(palette = "Set1") + 
+  
+  xlab("Demographic") +
+  ggtitle("Passengers on the maiden voyage of the Titanic",
+          "Stratified by demographics and survival")
+
+```
+:::
+:::{.column}
+```{r}
+#| ref.label: titanic-plot
+#| echo: false
+```
+
+:::
+::::
+
+
+
+> Here is how the package `ggalluvial` defines the elements of a typical
+> alluvial plot:
+>
+> -   An **axis** is a dimension (variable) along which the data are
+>     vertically arranged at a fixed horizontal position. The plot above
+>     uses three categorical axes: Class, Sex, and Age.
+> -   The groups at each axis are depicted as opaque blocks called
+>     **strata**. For example, the Class axis contains four strata: 1st,
+>     2nd, 3rd, and Crew.
+> -   Horizontal (x-) splines called **alluvia** span the **entire**
+>     width of the plot. In this plot, each alluvium corresponds to a
+>     fixed **strata** value of each axis variable, indicated by its
+>     vertical position at the axis, as well as of the Survived
+>     variable, indicated by its fill color.
+> -   The segments of the **alluvia** between pairs of adjacent axes are
+>     **flows**.
+> -   The **alluvia** intersect the **strata** at **lodes**. The
+>     **lodes** are not visualized in the above plot, but they can be
+>     inferred as *filled rectangles* extending the flows through the
+>     strata at each end of the plot or connecting the flows on either
+>     side of the center stratum.
+
+
+
+### Using ggsankeyfier
+
+The `ggsankeyfier` also plots alluvial and sankey diagrams. This package takes data in **long-form**. See [this article.](https://pepijn-devries.github.io/ggsankeyfier/articles/data_management.html#wide-or-long-format). `ggsankeyfier` has builtin commands to convert data from wide to long: 
+
+::::{.columns}
+:::{.column}
+```{r}
+#| label: titanic-long-sankeyfier
+#| eval: false
+ggplot2::theme_set(new = theme_custom())
+
+Titanic %>% 
+  as_tibble() %>% 
+  ggsankeyfier::pivot_stages_longer(data=.,
+      stages_from = c("Class", "Sex", "Age", "Survived"),
+      values_from = "n",
+      additional_aes_from = "Survived") -> Titanic_long
+Titanic_long
+
+```
+:::
+:::{.column}
+```{r}
+#| ref.label: titanic-long-sankeyfier
+#| echo: false
+```
+
+:::
+::::
+
+
+This data is in long form, with `stages` defining the *axes* in the graph, and the `node` variable giving us *levels* within each (Qualitative) axis. The `edge_id` labels **both ends** (from and to) of each `connector` or edge/flow/alluvium. 
+
+Let us plot this now:
+
+::::{.columns}
+:::{.column}
+```{r}
+#| label: titanic-ggsankeyfier
+#| eval: false
+ggplot2::theme_set(new = theme_custom())
+
+Titanic_long %>% 
+  ggplot(aes(x = stage, y = n, 
+             group = node, connector = connector, 
+             edge_id = edge_id)) +
+    geom_sankeynode(v_space = "auto") +
+    geom_sankeyedge(aes(fill = Survived), v_space = "auto") +
+    scale_fill_brewer(palette = "Set1") +
+    labs(x = "", title = "Titanic Survival")
+
+```
+:::
+:::{.column}
+
+```{r}
+#| ref.label: titanic-ggsankeyfier
+#| echo: false
+```
+
+:::
+::::
+
+### Using echarts4r
+
+Let us make an interactive graph for this dataset using `echarts4`.
+
+
+```{r}
+#| label: ashtavakra
+#| message: false
+#| warning: false
+
+
+ClassSex <- 
+  Titanic %>% dplyr::group_by(Class, Sex) %>% 
+  dplyr::summarise(cs = sum(n)) %>% 
+  ungroup() %>% 
+  rename("source" = Class, "target" = Sex, "value" = cs)
+            
+SexAge <- 
+  Titanic %>% dplyr::group_by(Sex,Age) %>% 
+  dplyr::summarise(sa = sum(n)) %>% 
+  ungroup() %>% 
+  rename("source" = Sex, "target" = Age, "value" = sa)
+
+AgeSurvived <- 
+  Titanic %>% dplyr::group_by(Age,Survived) %>% 
+  dplyr::summarise(as = sum(n)) %>% 
+  ungroup() %>% 
+  rename("source" = Age, "target" = Survived, "value" = as)
+
+Combo <- rbind(ClassSex, SexAge, AgeSurvived)
+Combo
+
+Combo %>% e_charts() %>% 
+  e_sankey(source, target, value) %>% 
+  e_title("Titanic: Who lived, and who didn't?") %>% 
+  e_tooltip()
+
+```
+
+
+The process with `echarts4r` is quite different, since the data
+structure used by this package is different:
+
+-   The `echarts4r` package needs to have `source` and `target` columns
+    for *axes*, along with a `value` to determine the *width* of the
+    alluvium. 
+-   The names in the source and target **can repeat, and can appear in
+    both source and target columns** in order to create a multi-axis
+    diagram. Hence the data needs to be inherently in **long** form.
+-   However, for the **values**, we need to manually calculate the
+    aggregate totals for alluvia between each consecutive pairs of axes
+    (i.e Qual variables). This is not done automatically in `echarts4r`,
+    but it is with `ggalluvial`.
+-   So we create *grouped* aggregate *summaries* for each pair of
+    Qualitative variables that we wish to plot *consecutively* ( i.e as
+    axis1, axis2...)
+-   Stack these pair-wise alluvia totals into one combo data frame using
+    `rbind()`, after renaming the variables to "source", "target" and
+    "value".
+
+Phew! seems like too much work to do...I wonder if good, old-fashioned
+`pivot-longer` will get us here...
+
+
+:::
+
+:::
+
+
+## {{< iconify icon-park-outline chart-histogram >}} Chord Diagram
+
+![](images/chord.png){fig-align="center"}
+
+We will explore this diagram when we explore network graphs with the
+`tidygraph` and `ggraph` packages.
+
+
+## {{< iconify icon-park-outline chart-histogram >}} Dumbbell Plots
+
+A simple plot that can quickly indicate changes in multiple variables/aspects over either a time or a space variable is a dumbbell plot. This is a combination of scatter plot + a segment plot. 
+Let us take our previously loaded `health` dataset and plot just the change in expenditure for multiple countries, across a time span of 8 years (2010 - 2018)
+
+::: column-page-right
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+### Using ggformula
+
+::::{.columns}
+:::{.column}
+
+```{r}
+#| label: health-data
+#| eval: false
+
+health_2010_2018 <- health %>%
+  # select Years 2010 and 2018
+  filter(Year %in% c(2010, 2018)) %>%
+
+  # Make separate columns for each year, easier that way
+  # Though not essential
+  pivot_wider(
+    id_cols = c(Entity, Code),
+    names_from = Year,
+    names_prefix = "Year",
+    values_from = public_health_expenditure_pc_gdp
+  )
+health_2010_2018
+
+```
+
+:::
+:::{.column}
+```{r}
+#| ref.label: health-data
+#| echo: false
+```
+
+:::
+::::
+
+
+::::{.columns}
+:::{.column}
+```{r}
+#| label: health-plot-1
+#| eval: false
+ggplot2::theme_set(new = theme_custom())
+
+health_2010_2018 %>%   
+  # remove NA data across the data set
+  drop_na() %>%
+  
+  # take the top 20 countries based on 2018 allocation
+  slice_max(n = 20, order_by = Year2018) %>% 
+  
+  gf_segment(Entity + Entity ~ Year2010 + Year2018,
+             colour = "grey",
+             linewidth = 2) %>%
+  gf_point(Entity ~ Year2018, size = 2,
+           colour = ~ "2018") %>%
+  gf_point(Entity ~ Year2010, size = 2,
+           colour = ~ "2010") %>%
+gf_refine(scale_colour_manual(name = "Year", 
+values = c("dodgerblue", "gold"))) %>%
+
+gf_labs(title = "Healthcare Budget Variation over 8 years")
+```
+
+
+
+
+
+:::
+:::{.column}
+```{r}
+#| ref.label: health-plot-1
+#| echo: false
+```
+
+:::
+::::
+
+
+::::{.columns}
+:::{.column}
+```{r}
+#| label: health-plot-2
+#| eval: false
+
+ggplot2::theme_set(new = theme_custom())
+
+## Can we do better? Sort the bars, improve axis ticks, title..
+
+health_2010_2018 %>%
+    # remove NA data across the data set
+  drop_na() %>%
+    
+# take the top 20 countries based on 2018 allocation
+  slice_max(n = 20, order_by = Year2018) %>% 
+  
+# plot segments first
+  gf_segment(
+    reorder(Entity, Year2018) + reorder(Entity, Year2018) ~
+      Year2010 + Year2018,
+    colour = "grey",
+    linewidth = 2) %>%
+  
+# Then plot points
+  gf_point(reorder(Entity, Year2018) ~ Year2018,
+           colour = ~ "2018",
+           size = 3) %>%
+  gf_point(
+    reorder(Entity, Year2018) ~ Year2010,
+    colour = ~ "2010", size = 3,
+    xlab = "Health Expenditure as Percentage of GDP",
+    ylab = "Country",
+title = "Healthcare Budgets Changes between 2010 to 2018",
+subtitle = "Bars are Sorted",
+caption = "And the X-Axis is in percentage") %>% 
+  gf_refine(scale_x_continuous(
+    breaks = scales::breaks_width(2), 
+    labels = scales::label_percent(suffix = "%", scale = 1)),
+scale_colour_manual(name = "Year", 
+                    values = c("dodgerblue", "gold")))
+            
+```
+
+
+
+
+:::
+:::{.column}
+```{r}
+#| ref.label: health-plot-2
+#| echo: false
+```
+
+:::
+::::
+
+
+### Using ggplot
+
+```{r}
+#| layout-ncol: 2
+ggplot2::theme_set(new = theme_custom())
+
+health_2010_2018 <- health %>%
+  # select Years 2010 and 2018
+  filter(Year %in% c(2010, 2018)) %>%
+
+  # Make separate columns for each year, easier that way
+  # Though not essential
+  pivot_wider(
+    id_cols = c(Entity, Code),
+    names_from = Year,
+    names_prefix = "Year",
+    values_from = public_health_expenditure_pc_gdp
+  )
+
+health_2010_2018 %>%   
+  # remove NA data across the data set
+  drop_na() %>%
+  
+  # take the top 20 countries based on 2018 allocation
+  slice_max(n = 20, order_by = Year2018) %>% 
+  
+  ggplot() + 
+  geom_segment(aes(y = Entity, yend = Entity, 
+                   x = Year2010, xend = Year2018),
+             colour = "grey",
+             linewidth = 2) + 
+  
+  geom_point(aes(y = Entity, x = Year2018, colour = "2018")) + 
+  geom_point(aes(y = Entity, x = Year2010, colour = "2010"))
+
+## Can we do better?
+
+health_2010_2018 %>%
+    # remove NA data across the data set
+  drop_na() %>%
+    
+# take the top 20 countries based on 2018 allocation
+  slice_max(n = 20, order_by = Year2018) %>% 
+  ggplot() + 
+# plot segments first
+  geom_segment(
+    aes(y = reorder(Entity, Year2018), yend = reorder(Entity, Year2018),
+      x = Year2010, xend = Year2018),
+    colour = "grey",
+    linewidth = 2
+  ) + 
+  
+# Then plot points
+  geom_point(aes(y = reorder(Entity, Year2018), x = Year2018, 
+                 colour = "2018"),size = 3) + 
+  geom_point(aes(y = reorder(Entity, Year2018), x = Year2010, 
+                 colour = "2010"), size = 3) + 
+    labs(x = "Health Expenditure as Percentage of GDP",
+    y = "Country",title = "Healthcare Budgets", 
+    subtitle = "Changes between 2010 to 2018") + 
+  scale_x_continuous(
+    breaks = scales::breaks_width(2), 
+    labels = scales::label_percent(suffix = "%", scale = 1)) + 
+    
+    scale_colour_manual(name = "Year",values = c("dodgerblue", "gold"))
+           
+
+```
+
+:::
+
+:::
+
+## {{< iconify mingcute thought-line >}} Wait, But Why?
+
+- Changes can be over `time`, or over "space"
+- In the latter case, we can think of some Quantity changing over (multiple levels of) multiple Qualitative variables. E.g. `Sales` over `Product Type` over `Showroom Location` over `Festival Season`...
+- When a *single Quant* varies over *a single multi-level Qual*, the Chord Diagram may be simpler than the Sankey/Alluvial. E.g `Bird` migration across `Multiple Locations`. This can even show bidirectional changes. ( Sankeys with loops are also possible, however)
+- When you have a Quant that changes over only *one two-level Qual variable*, the Dumbbell plot becomes an option.
+
+
+## {{< iconify fluent-mdl2 decision-solid >}} Conclusion
+
+We see that we can visualize "evolutions" over time and space. The
+evolutions can represent changes in the **quantities** of things, or
+their **categorical** affiliations or groups.
+
+What business/design data would you depict in this way? Revenue streams? Employment? Expenditures over time and market? Migration? App usage patterns? There are many possibilities!
+
+Note also that the [Bump Charts](/content/courses/Analytics/10-Descriptive/Modules/80-Ranking/index.qmd#bump-charts) are a special case of Alluvial/Sankey charts where each node connects/flows to **only** one other node.
+
+:::{.hidden}
+```{.d2}
+logs: {
+  shape: page
+  style.multiple: true
+}
+user: User {shape: person}
+network: Network {
+  tower: Cell Tower {
+    satellites: {
+      shape: stored_data
+      style.multiple: true
+    }
+
+    satellites -> transmitter
+    satellites -> transmitter
+    satellites -> transmitter
+    transmitter
+  }
+  processor: Data Processor {
+    storage: Storage {
+      shape: cylinder
+      style.multiple: true
+    }
+  }
+  portal: Online Portal {
+    UI
+  }
+
+  tower.transmitter -> processor: phone logs
+}
+server: API Server
+
+user -> network.tower: Make call
+network.processor -> server
+network.processor -> server
+network.processor -> server
+
+server -> logs
+server -> logs
+server -> logs: persist
+
+server -> network.portal.UI: display
+user -> network.portal.UI: access {
+  style.stroke-dash: 3
+}
+
+```
+:::
+
+
+## {{< iconify openmoji person >}} Your Turn
+
+1.  Within the `ggalluvial` package are two datasets, `majors` and
+    `vaccinations`. Plot alluvial charts for both of these.
+2.  Go to the [American Life Panel
+    Website](https://alpdata.rand.org/index.php?page=data) where you
+    will find many public datasets. Try to take one and make charts from
+    it that we have learned in this Module.
+
+## {{< iconify ooui references-ltr >}} References
+
+1. Global Migration, <https://download.gsb.bund.de/BIB/global_flow/> A good
+example of the use of a Chord Diagram.\
+1. `ggalluvial`
+cheatsheet,<https://cheatography.com/seleven/cheat-sheets/ggalluvial/>\
+1. John Coene, Sankey plots with `echarts4r`,
+<https://echarts4r.john-coene.com/articles/chart_types.html#sankey>\
+1. Other packages: [Sankey plot \| the R Graph Gallery
+(r-graph-gallery.com)](https://r-graph-gallery.com/sankey-diagram.html)\
+1. Another package: [Sankey diagrams in ggplot2 with ggsankey \| RCHARTS
+(r-charts.com)](https://r-charts.com/flow/sankey-diagram-ggplot2/)\
+1. Sankey Charts using `networkD3`:
+<http://christophergandrud.github.io/networkD3>\
+
+::: {#refs style="font-size: 60%;"}
+###### {{< iconify lucide package-check >}} R Package Citations
+
+```{r}
+#| echo: false
+#scan_packages()
+cite_packages(
+  output = "table",
+  out.dir = ".",
+  out.format = "html",
+  pkgs = c("echarts4r", "ggalluvial", "ggstream", 
+           "ggsankey","ggsankeyfier", "networkD3", "scales")) %>%
+  knitr::kable(format = "simple")
+
+```
+:::
+
+[^1]: D3 JavaScript Network Graphs from R:
+    [christophergandrud.github.io/networkD3/](http://christophergandrud.github.io/networkD3/)

@@ -1,0 +1,2102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Arvind Venkatadri">
+<meta name="dcterms.date" content="2022-11-26">
+<title>Bootstrap Case Studies – The Mad Hatter's Guide to Data Viz and Stats in R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="../../../../../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../../../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../../../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../../../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../../../../../">
+<link href="../../../../../../../content/materials/icon-park-twotone--concept-sharing.svg" rel="icon" type="image/svg+xml">
+<script src="../../../../../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../../../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-1b3e43c72e8be34557c75123b0b69e0d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../../../../../site_libs/bootstrap/bootstrap-568c5ee9ec4531743a00a9bacd4917ba.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../../../../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.css" rel="stylesheet">
+<script src="../../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
+<script src="../../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../../../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<link href="../../../../../../../site_libs/quarto-contrib/tachyons-4.12.0/tachyons.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><style>html{ scroll-behavior: smooth; }</style>
+<link href="../../../../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../../../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><link rel="stylesheet" href="../../../../../../../css/fira.css">
+<link rel="stylesheet" href="../../../../../../../css/roboto-condensed.css">
+<link rel="stylesheet" href="../../../../../../../css/vollkorn.css">
+<link rel="stylesheet" href="../../../../../../../css/fraunces.css">
+<link rel="stylesheet" href="../../../../../../../css/styles.css">
+<meta property="og:title" content="Bootstrap Case Studies – The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta property="og:description" content="Using Bootstrap Samples to make Decisions">
+<meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/20-Inference/Modules/50-Bootstrap/files/bootstrap_files/figure-html/unnamed-chunk-1-1.png">
+<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
+<meta property="og:image:height" content="3000">
+<meta property="og:image:width" content="4200">
+<meta name="twitter:title" content="Bootstrap Case Studies – The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta name="twitter:description" content="Using Bootstrap Samples to make Decisions">
+<meta name="twitter:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/20-Inference/Modules/50-Bootstrap/files/bootstrap_files/figure-html/unnamed-chunk-1-1.png">
+<meta name="twitter:image-height" content="3000">
+<meta name="twitter:image-width" content="4200">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../../../../../index.html">
+    <span class="navbar-title">The Mad Hatter’s Guide to Data Viz and Stats in R</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/arvindvenkatadri/dataviz"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/arvind_v"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/arvindvenkatadri"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="mailto:arvind.venkatadri@gmail.com"> <i class="bi bi-envelope" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+</div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Bootstrap Case Studies</li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+      <a href="../../../../../../../index.html" class="sidebar-logo-link">
+      <img src="../../../../../../../content/materials/images/1book25.jpg" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../../content/courses/Analytics/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Viz and Stats</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../../content/courses/Analytics/05-Tools/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tools</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/05-Tools/10-Intro-to-R/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa-brands:r-project"></iconify-icon> Introduction to R and RStudio</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../../content/courses/Analytics/10-Descriptive/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Descriptive Analytics</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/05-NatureData/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icon-park-twotone:data-user" width="1.2em" height="1.2em"></iconify-icon> Data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/07-Graphs/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="carbon:chart-3d" width="1.2em" height="1.2em"></iconify-icon> Graphs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/10-FavStats/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="carbon:summary-kpi" width="1.2em" height="1.2em"></iconify-icon> Summaries</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/20-BarPlots/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="eos-icons:counting" width="1.2em" height="1.2em"></iconify-icon> Counts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/22-Histograms/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fluent-mdl2:quantity" width="1.2em" height="1.2em"></iconify-icon> Quantities</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/24-BoxPlots/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="lucide:group" width="1.2em" height="1.2em"></iconify-icon> Groups</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/26-Densities/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="clarity:bell-curve-line" width="1.2em" height="1.2em"></iconify-icon> Densities</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/28-Violins/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="material-symbols:light-group-rounded" width="1.2em" height="1.2em"></iconify-icon> Groups and Densities</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/30-Correlations/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icon-park-outline:change" width="1.2em" height="1.2em"></iconify-icon> Change</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/40-CatData/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icon-park-outline:proportional-scaling"></iconify-icon> Proportions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/60-PartWhole/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="ic:round-pie-chart-outline"></iconify-icon> Parts of a Whole</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/70-EvolutionFlow/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="carbon:sankey-diagram"></iconify-icon> Evolution and Flow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/80-Ranking/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="ph:ranking-bold" width="1.2em" height="1.2em"></iconify-icon> Ratings and Rankings</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/45-SurveyData/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="wpf:survey" width="1.2em" height="1.2em"></iconify-icon> Surveys</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/50-Time/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fluent-mdl2:hour-glass" width="1.2em" height="1.2em"></iconify-icon> Time</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> Space</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/100-Networks/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="bx:network-chart" width="1.2em" height="1.2em"></iconify-icon> Networks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/1000-NoFreeHunch/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="game-icons:sherlock-holmes" width="1.2em" height="1.2em"></iconify-icon> Experiments</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/10-Descriptive/Modules/180-RefMat/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="eos-icons:miscellaneous"></iconify-icon> Miscellaneous Graphing Tools, and References</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../../content/courses/Analytics/20-Inference/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inference</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/20-Inference/Modules/10-Intro/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🧭 Basics of Statistical Inference</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/20-Inference/Modules/20-SampProb/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🎲 Samples, Populations, Statistics and Inference</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/20-Inference/Modules/60-SimTest/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Basics of Randomization Tests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/20-Inference/Modules/100-OneMean/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🃏 Inference for a Single Mean</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/20-Inference/Modules/110-TwoMeans/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🃏 Inference for Two Independent Means</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/20-Inference/Modules/120-PairedMeans/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🃏 Inference for Comparing Two Paired Means</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/20-Inference/Modules/130-ThreeMeansOrMore/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Comparing Multiple Means with ANOVA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/20-Inference/Modules/150-Correlation/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inference for Correlation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/20-Inference/Modules/180-OneProp/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🃏 Testing a Single Proportion</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/20-Inference/Modules/190-TwoProp/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🃏 Inference Test for Two Proportions</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../../content/courses/Analytics/30-Modelling/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modelling</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/30-Modelling/Modules/LinReg/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modelling with Linear Regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/30-Modelling/Modules/LogReg/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modelling with Logistic Regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/30-Modelling/Modules/ModelTimeSeries/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🕔 Modelling and Predicting Time Series</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../../content/courses/Analytics/40-Workflow/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Workflow</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/40-Workflow/Modules/200-EDA-Workflow/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="guidance:falling-rocks" width="1.2em" height="1.2em"></iconify-icon><iconify-icon icon="game-icons:falling" width="1.2em" height="1.2em"></iconify-icon> Facing the Abyss</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/40-Workflow/Modules/30-BlogSite/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="entypo:publish" width="1.2rem" height="1.2rem"></iconify-icon> I Publish, therefore I Am</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../../content/courses/Analytics/50-Arts/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Arts</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/50-Arts/Modules/05-themes/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fonts in ggplot and on websites</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/50-Arts/Modules/10-Colour/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 05: Colors with Penguins</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/50-Arts/Modules/20-Fonts/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fonts in ggplot and on websites</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/50-Arts/Modules/30-Annotations1/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Annotating Plots: Text, Labels, and Boxes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/50-Arts/Modules/35-Annotations2/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Annotations: Drawing Attention to Parts of the Graph</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+ <span class="menu-text">content/courses/Analytics/50-Arts/Modules/40-Highlighting/index.qmd</span>
+  </li>
+          <li class="sidebar-item">
+ <span class="menu-text">content/courses/Analytics/50-Arts/Modules/50-Scales/index.qmd</span>
+  </li>
+          <li class="sidebar-item">
+ <span class="menu-text">content/courses/Analytics/50-Arts/Modules/60-Assembly/index.qmd</span>
+  </li>
+          <li class="sidebar-item">
+ <span class="menu-text">content/courses/Analytics/50-Arts/Modules/70-Diagrams/index.qmd</span>
+  </li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../../content/courses/Analytics/60-AI-tools/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">AI Tools</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/60-AI-tools/Modules/10-LLMs/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using gander and ellmer</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/60-AI-tools/Modules/20-Github-Pilot/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using Github Pilot in RStudio</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+ <span class="menu-text">content/courses/Analytics/60-AI-tools/Modules/30-Explain/index.qmd</span>
+  </li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Case Studies</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/05-Demo/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="healthicons:elderly-outline" width="1.2em" height="1.2em"></iconify-icon> Demo:Product Packaging and Elderly People</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/10-IkeaFurniture/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="simple-icons:ikea" width="1.2em" height="1.2em"></iconify-icon> Ikea Furniture</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/20-MovieProfits/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="noto:movie-camera" width="1.2em" height="1.2em"></iconify-icon> Movie Profits</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/30-GenderWorkplace/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icons8:gender" width="1.2em" height="1.2em"></iconify-icon> Gender at the Work Place</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/40-Heptathlon/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icon-park-outline:sport" width="1.2em" height="1.2em"></iconify-icon> Heptathlon</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/60-SchoolScores/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="ic:twotone-school" width="1.2em" height="1.2em"></iconify-icon> School Scores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/80-ChildrensGames/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa6-solid:children"></iconify-icon><iconify-icon icon="icon-park-solid:play-basketball"></iconify-icon> Children's Games</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/90-ValentinesDay/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="mingcute:hand-heart-line"></iconify-icon> Valentine’s Day Spending</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/100-WomenLiveMen/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="noto:mage-light-skin-tone"></iconify-icon> Women Live Longer?</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/110-ChildrenHearingLoss/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa6-solid:ear-deaf"></iconify-icon><iconify-icon icon="fa-regular:sad-tear"></iconify-icon> Hearing Loss in Children</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/200-CaliforniaTransitPayments/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="openmoji:california-flag"></iconify-icon><iconify-icon icon="material-symbols:transit-ticket-outline-sharp"></iconify-icon> California Transit Payments</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/250-Seaweed/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="iconoir:sea-waves"></iconify-icon><iconify-icon icon="mdi:weed"></iconify-icon> Seaweed Nutrients</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/300-Coffee/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa:coffee"></iconify-icon> Coffee Flavours</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/350-LegionnairesDisease/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa6-solid:disease"></iconify-icon> Legionnaire’s Disease in the USA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/400-AntarcticSeaIce/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="iconoir:sea-waves"></iconify-icon><iconify-icon icon="openmoji:floating-ice"></iconify-icon>  Antarctic Sea ice</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../../content/courses/Analytics/70-CaseStudies/Modules/450-CholeraInLondon/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="simple-icons:transportforlondon"></iconify-icon><iconify-icon icon="hugeicons:water-pump"></iconify-icon>  William Farr's Observations on Cholera in London</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#example-5.2" id="toc-example-5.2" class="nav-link active" data-scroll-target="#example-5.2">Example 5.2</a></li>
+  <li><a href="#example-5.3" id="toc-example-5.3" class="nav-link" data-scroll-target="#example-5.3">Example 5.3</a></li>
+  <li><a href="#example-5.4-skateboard" id="toc-example-5.4-skateboard" class="nav-link" data-scroll-target="#example-5.4-skateboard">Example 5.4 Skateboard</a></li>
+  <li><a href="#permutation-test-for-skateboard-means" id="toc-permutation-test-for-skateboard-means" class="nav-link" data-scroll-target="#permutation-test-for-skateboard-means">Permutation test for Skateboard means</a></li>
+  <li><a href="#section-5.4.1-matched-pairs-for-diving-data" id="toc-section-5.4.1-matched-pairs-for-diving-data" class="nav-link" data-scroll-target="#section-5.4.1-matched-pairs-for-diving-data">Section 5.4.1 Matched pairs for Diving data</a></li>
+  <li><a href="#example-5.5-verizon-cont.-bootstrap-means-for-the-ilec-data-and-for-the-clec-data" id="toc-example-5.5-verizon-cont.-bootstrap-means-for-the-ilec-data-and-for-the-clec-data" class="nav-link" data-scroll-target="#example-5.5-verizon-cont.-bootstrap-means-for-the-ilec-data-and-for-the-clec-data">Example 5.5 Verizon cont. Bootstrap means for the ILEC data and for the CLEC data</a></li>
+  <li><a href="#section-5.5-verizon-cont." id="toc-section-5.5-verizon-cont." class="nav-link" data-scroll-target="#section-5.5-verizon-cont.">Section 5.5 Verizon cont.</a></li>
+  <li><a href="#section-5.5-other-statistics-verizon-cont" id="toc-section-5.5-other-statistics-verizon-cont" class="nav-link" data-scroll-target="#section-5.5-other-statistics-verizon-cont">Section 5.5 Other statistics Verizon cont:</a></li>
+  <li><a href="#example-5.7-relative-risk-example" id="toc-example-5.7-relative-risk-example" class="nav-link" data-scroll-target="#example-5.7-relative-risk-example">Example 5.7 Relative risk example</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Bootstrap Case Studies</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta column-body">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Arvind Venkatadri </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 26, 2022</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+<div>
+  <div class="abstract">
+    <div class="block-title">Abstract</div>
+    Using Bootstrap Samples to make Decisions
+  </div>
+</div>
+
+
+</header><section id="example-5.2" class="level3"><h3 class="anchored" data-anchor-id="example-5.2">Example 5.2</h3>
+<div class="cell">
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb1" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>my.sample <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(<span class="dv">16</span>, <span class="dv">1</span>, <span class="dv">1</span> <span class="sc">/</span> <span class="dv">2</span>)</span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a>N <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">5</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a>my.boot <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N)</span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N)</span>
+<span id="cb1-6"><a href="#cb1-6"></a>{</span>
+<span id="cb1-7"><a href="#cb1-7"></a>  x <span class="ot">&lt;-</span> <span class="fu">sample</span>(my.sample, <span class="dv">16</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>) <span class="co"># draw resample</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a>  my.boot[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(x) <span class="co"># compute mean, store in my.boot</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a>}</span>
+<span id="cb1-10"><a href="#cb1-10"></a></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(my.boot), <span class="at">bins =</span> <span class="dv">15</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="bootstrap_files/figure-html/unnamed-chunk-1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="bootstrap_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb2" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">mean</span>(my.boot) <span class="co"># mean</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>[1] 2.633423</code></pre>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb4" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">sd</span>(my.boot) <span class="co"># bootstrap SE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>[1] 0.7370551</code></pre>
+</div>
+</div>
+</section><section id="example-5.3" class="level3"><h3 class="anchored" data-anchor-id="example-5.3">Example 5.3</h3>
+<p>Arsenic in wells in Bangladesh</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb6" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>Bangladesh <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"../../../../../../materials/data/resampling/Bangladesh.csv"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="fu">ggplot</span>(Bangladesh, <span class="fu">aes</span>(Arsenic)) <span class="sc">+</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">15</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="bootstrap_files/figure-html/unnamed-chunk-2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="bootstrap_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb7" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">ggplot</span>(Bangladesh, <span class="fu">aes</span>(<span class="at">sample =</span> Arsenic)) <span class="sc">+</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a>  <span class="fu">stat_qq_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="bootstrap_files/figure-html/unnamed-chunk-2-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="bootstrap_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb8" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>Arsenic <span class="ot">&lt;-</span> <span class="fu">pull</span>(Bangladesh, Arsenic)</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="co"># Alternatively</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="co"># Arsenic &lt;- Bangladesh$Arsenic</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a></span>
+<span id="cb8-5"><a href="#cb8-5"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(Arsenic)</span>
+<span id="cb8-6"><a href="#cb8-6"></a>N <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">4</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a></span>
+<span id="cb8-8"><a href="#cb8-8"></a>arsenic.mean <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N)</span>
+<span id="cb8-9"><a href="#cb8-9"></a></span>
+<span id="cb8-10"><a href="#cb8-10"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N)</span>
+<span id="cb8-11"><a href="#cb8-11"></a>{</span>
+<span id="cb8-12"><a href="#cb8-12"></a>  x <span class="ot">&lt;-</span> <span class="fu">sample</span>(Arsenic, n, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-13"><a href="#cb8-13"></a>  arsenic.mean[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(x)</span>
+<span id="cb8-14"><a href="#cb8-14"></a>}</span>
+<span id="cb8-15"><a href="#cb8-15"></a></span>
+<span id="cb8-16"><a href="#cb8-16"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb8-17"><a href="#cb8-17"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(arsenic.mean), <span class="at">bins =</span> <span class="dv">15</span>) <span class="sc">+</span></span>
+<span id="cb8-18"><a href="#cb8-18"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Bootstrap distribution of means"</span>) <span class="sc">+</span></span>
+<span id="cb8-19"><a href="#cb8-19"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(Arsenic), <span class="at">colour =</span> <span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="bootstrap_files/figure-html/unnamed-chunk-2-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="bootstrap_files/figure-html/unnamed-chunk-2-3.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb9" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> arsenic.mean)</span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">sample =</span> x)) <span class="sc">+</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a>  <span class="fu">stat_qq_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="bootstrap_files/figure-html/unnamed-chunk-2-4.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="bootstrap_files/figure-html/unnamed-chunk-2-4.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb10" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">mean</span>(arsenic.mean) <span class="co"># bootstrap mean</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>[1] 125.2435</code></pre>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb12" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">mean</span>(arsenic.mean) <span class="sc">-</span> <span class="fu">mean</span>(Arsenic) <span class="co"># bias</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>[1] -0.07646587</code></pre>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb14" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">sd</span>(arsenic.mean) <span class="co"># bootstrap SE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>[1] 17.98589</code></pre>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb16" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">sum</span>(arsenic.mean <span class="sc">&gt;</span> <span class="fl">161.3224</span>) <span class="sc">/</span> N</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>[1] 0.0298</code></pre>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb18" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">sum</span>(arsenic.mean <span class="sc">&lt;</span> <span class="fl">89.75262</span>) <span class="sc">/</span> N</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>[1] 0.0145</code></pre>
+</div>
+</div>
+</section><section id="example-5.4-skateboard" class="level3"><h3 class="anchored" data-anchor-id="example-5.4-skateboard">Example 5.4 Skateboard</h3>
+<div class="cell">
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb20" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>Skateboard <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"../../../../../../materials/data/resampling/Skateboard.csv"</span>)</span>
+<span id="cb20-2"><a href="#cb20-2"></a></span>
+<span id="cb20-3"><a href="#cb20-3"></a>testF <span class="ot">&lt;-</span> Skateboard <span class="sc">%&gt;%</span></span>
+<span id="cb20-4"><a href="#cb20-4"></a>  <span class="fu">filter</span>(Experimenter <span class="sc">==</span> <span class="st">"Female"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-5"><a href="#cb20-5"></a>  <span class="fu">pull</span>(Testosterone)</span>
+<span id="cb20-6"><a href="#cb20-6"></a>testM <span class="ot">&lt;-</span> Skateboard <span class="sc">%&gt;%</span></span>
+<span id="cb20-7"><a href="#cb20-7"></a>  <span class="fu">filter</span>(Experimenter <span class="sc">==</span> <span class="st">"Male"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-8"><a href="#cb20-8"></a>  <span class="fu">pull</span>(Testosterone)</span>
+<span id="cb20-9"><a href="#cb20-9"></a></span>
+<span id="cb20-10"><a href="#cb20-10"></a>observed <span class="ot">&lt;-</span> <span class="fu">mean</span>(testF) <span class="sc">-</span> <span class="fu">mean</span>(testM)</span>
+<span id="cb20-11"><a href="#cb20-11"></a></span>
+<span id="cb20-12"><a href="#cb20-12"></a>nf <span class="ot">&lt;-</span> <span class="fu">length</span>(testF)</span>
+<span id="cb20-13"><a href="#cb20-13"></a>nm <span class="ot">&lt;-</span> <span class="fu">length</span>(testM)</span>
+<span id="cb20-14"><a href="#cb20-14"></a></span>
+<span id="cb20-15"><a href="#cb20-15"></a>N <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">4</span></span>
+<span id="cb20-16"><a href="#cb20-16"></a></span>
+<span id="cb20-17"><a href="#cb20-17"></a>TestMean <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N)</span>
+<span id="cb20-18"><a href="#cb20-18"></a></span>
+<span id="cb20-19"><a href="#cb20-19"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N)</span>
+<span id="cb20-20"><a href="#cb20-20"></a>{</span>
+<span id="cb20-21"><a href="#cb20-21"></a>  sampleF <span class="ot">&lt;-</span> <span class="fu">sample</span>(testF, nf, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb20-22"><a href="#cb20-22"></a>  sampleM <span class="ot">&lt;-</span> <span class="fu">sample</span>(testM, nm, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb20-23"><a href="#cb20-23"></a>  TestMean[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(sampleF) <span class="sc">-</span> <span class="fu">mean</span>(sampleM)</span>
+<span id="cb20-24"><a href="#cb20-24"></a>}</span>
+<span id="cb20-25"><a href="#cb20-25"></a></span>
+<span id="cb20-26"><a href="#cb20-26"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(TestMean)</span>
+<span id="cb20-27"><a href="#cb20-27"></a><span class="fu">ggplot</span>(df) <span class="sc">+</span></span>
+<span id="cb20-28"><a href="#cb20-28"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(TestMean), <span class="at">bins =</span> <span class="dv">15</span>) <span class="sc">+</span></span>
+<span id="cb20-29"><a href="#cb20-29"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Bootstrap distribution of difference in means"</span>, <span class="at">xlab =</span> <span class="st">"means"</span>) <span class="sc">+</span></span>
+<span id="cb20-30"><a href="#cb20-30"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> observed, <span class="at">colour =</span> <span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="bootstrap_files/figure-html/unnamed-chunk-3-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="bootstrap_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb21" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">sample =</span> TestMean)) <span class="sc">+</span></span>
+<span id="cb21-2"><a href="#cb21-2"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
+<span id="cb21-3"><a href="#cb21-3"></a>  <span class="fu">stat_qq_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="bootstrap_files/figure-html/unnamed-chunk-3-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="bootstrap_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb22" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="fu">mean</span>(testF) <span class="sc">-</span> <span class="fu">mean</span>(testM)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>[1] 83.0692</code></pre>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb24" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="fu">mean</span>(TestMean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>[1] 82.872</code></pre>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb26" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="fu">sd</span>(TestMean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>[1] 29.36737</code></pre>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb28" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="fu">quantile</span>(TestMean, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>     2.5%     97.5% 
+ 24.64665 138.85090 </code></pre>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb30" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a><span class="fu">mean</span>(TestMean) <span class="sc">-</span> observed <span class="co"># bias</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>[1] -0.1972036</code></pre>
+</div>
+</div>
+</section><section id="permutation-test-for-skateboard-means" class="level3"><h3 class="anchored" data-anchor-id="permutation-test-for-skateboard-means">Permutation test for Skateboard means</h3>
+<div class="cell">
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb32" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a>testAll <span class="ot">&lt;-</span> <span class="fu">pull</span>(Skateboard, Testosterone)</span>
+<span id="cb32-2"><a href="#cb32-2"></a><span class="co"># testAll &lt;- Skateboard$Testosterone</span></span>
+<span id="cb32-3"><a href="#cb32-3"></a></span>
+<span id="cb32-4"><a href="#cb32-4"></a>N <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">4</span> <span class="sc">-</span> <span class="dv">1</span> <span class="co"># set number of times to repeat this process</span></span>
+<span id="cb32-5"><a href="#cb32-5"></a></span>
+<span id="cb32-6"><a href="#cb32-6"></a><span class="co"># set.seed(99)</span></span>
+<span id="cb32-7"><a href="#cb32-7"></a>result <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N) <span class="co"># space to save the random differences</span></span>
+<span id="cb32-8"><a href="#cb32-8"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N)</span>
+<span id="cb32-9"><a href="#cb32-9"></a>{</span>
+<span id="cb32-10"><a href="#cb32-10"></a>  index <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">71</span>, <span class="at">size =</span> nf, <span class="at">replace =</span> <span class="cn">FALSE</span>) <span class="co"># sample of numbers from 1:71</span></span>
+<span id="cb32-11"><a href="#cb32-11"></a>  result[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(testAll[index]) <span class="sc">-</span> <span class="fu">mean</span>(testAll[<span class="sc">-</span>index])</span>
+<span id="cb32-12"><a href="#cb32-12"></a>}</span>
+<span id="cb32-13"><a href="#cb32-13"></a></span>
+<span id="cb32-14"><a href="#cb32-14"></a>(<span class="fu">sum</span>(result <span class="sc">&gt;=</span> observed) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> (N <span class="sc">+</span> <span class="dv">1</span>) <span class="co"># P-value</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>[1] 0.0062</code></pre>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb34" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb34-2"><a href="#cb34-2"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(result), <span class="at">bins =</span> <span class="dv">15</span>) <span class="sc">+</span></span>
+<span id="cb34-3"><a href="#cb34-3"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"xbar1-xbar2"</span>, <span class="at">title =</span> <span class="st">"Permutation distribution for testosterone levels"</span>) <span class="sc">+</span></span>
+<span id="cb34-4"><a href="#cb34-4"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> observed, <span class="at">colour =</span> <span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="bootstrap_files/figure-html/unnamed-chunk-4-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="bootstrap_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb35" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(result)</span>
+<span id="cb35-2"><a href="#cb35-2"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">sample =</span> result)) <span class="sc">+</span></span>
+<span id="cb35-3"><a href="#cb35-3"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
+<span id="cb35-4"><a href="#cb35-4"></a>  <span class="fu">stat_qq_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="bootstrap_files/figure-html/unnamed-chunk-4-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="bootstrap_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="section-5.4.1-matched-pairs-for-diving-data" class="level3"><h3 class="anchored" data-anchor-id="section-5.4.1-matched-pairs-for-diving-data">Section 5.4.1 Matched pairs for Diving data</h3>
+<div class="cell">
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb36" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a>Diving2017 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"../../../../../../materials/data/resampling/Diving2017.csv"</span>)</span>
+<span id="cb36-2"><a href="#cb36-2"></a>Diff <span class="ot">&lt;-</span> Diving2017 <span class="sc">%&gt;%</span></span>
+<span id="cb36-3"><a href="#cb36-3"></a>  <span class="fu">mutate</span>(<span class="at">Diff =</span> Final <span class="sc">-</span> Semifinal) <span class="sc">%&gt;%</span></span>
+<span id="cb36-4"><a href="#cb36-4"></a>  <span class="fu">pull</span>(Diff)</span>
+<span id="cb36-5"><a href="#cb36-5"></a><span class="co"># alternatively</span></span>
+<span id="cb36-6"><a href="#cb36-6"></a><span class="co"># Diff &lt;- Diving2017$Final - Diving2017$Semifinal</span></span>
+<span id="cb36-7"><a href="#cb36-7"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(Diff)</span>
+<span id="cb36-8"><a href="#cb36-8"></a></span>
+<span id="cb36-9"><a href="#cb36-9"></a>N <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">5</span></span>
+<span id="cb36-10"><a href="#cb36-10"></a>result <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N)</span>
+<span id="cb36-11"><a href="#cb36-11"></a></span>
+<span id="cb36-12"><a href="#cb36-12"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N)</span>
+<span id="cb36-13"><a href="#cb36-13"></a>{</span>
+<span id="cb36-14"><a href="#cb36-14"></a>  dive.sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(Diff, n, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb36-15"><a href="#cb36-15"></a>  result[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(dive.sample)</span>
+<span id="cb36-16"><a href="#cb36-16"></a>}</span>
+<span id="cb36-17"><a href="#cb36-17"></a></span>
+<span id="cb36-18"><a href="#cb36-18"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb36-19"><a href="#cb36-19"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(result), <span class="at">bins =</span> <span class="dv">15</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="bootstrap_files/figure-html/unnamed-chunk-5-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img src="bootstrap_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb37" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1"></a><span class="fu">quantile</span>(result, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>    2.5%    97.5% 
+-6.65000 30.95427 </code></pre>
+</div>
+</div>
+</section><section id="example-5.5-verizon-cont.-bootstrap-means-for-the-ilec-data-and-for-the-clec-data" class="level3"><h3 class="anchored" data-anchor-id="example-5.5-verizon-cont.-bootstrap-means-for-the-ilec-data-and-for-the-clec-data">Example 5.5 Verizon cont. Bootstrap means for the ILEC data and for the CLEC data</h3>
+<p>Bootstrap difference of means.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb39" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a>Verizon <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"../../../../../../materials/data/resampling/Verizon.csv"</span>)</span>
+<span id="cb39-2"><a href="#cb39-2"></a></span>
+<span id="cb39-3"><a href="#cb39-3"></a>Time.ILEC <span class="ot">&lt;-</span> Verizon <span class="sc">%&gt;%</span></span>
+<span id="cb39-4"><a href="#cb39-4"></a>  <span class="fu">filter</span>(Group <span class="sc">==</span> <span class="st">"ILEC"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb39-5"><a href="#cb39-5"></a>  <span class="fu">pull</span>(Time)</span>
+<span id="cb39-6"><a href="#cb39-6"></a>Time.CLEC <span class="ot">&lt;-</span> Verizon <span class="sc">%&gt;%</span></span>
+<span id="cb39-7"><a href="#cb39-7"></a>  <span class="fu">filter</span>(Group <span class="sc">==</span> <span class="st">"CLEC"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb39-8"><a href="#cb39-8"></a>  <span class="fu">pull</span>(Time)</span>
+<span id="cb39-9"><a href="#cb39-9"></a></span>
+<span id="cb39-10"><a href="#cb39-10"></a>observed <span class="ot">&lt;-</span> <span class="fu">mean</span>(Time.ILEC) <span class="sc">-</span> <span class="fu">mean</span>(Time.CLEC)</span>
+<span id="cb39-11"><a href="#cb39-11"></a></span>
+<span id="cb39-12"><a href="#cb39-12"></a>n.ILEC <span class="ot">&lt;-</span> <span class="fu">length</span>(Time.ILEC)</span>
+<span id="cb39-13"><a href="#cb39-13"></a>n.CLEC <span class="ot">&lt;-</span> <span class="fu">length</span>(Time.CLEC)</span>
+<span id="cb39-14"><a href="#cb39-14"></a></span>
+<span id="cb39-15"><a href="#cb39-15"></a>N <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">4</span></span>
+<span id="cb39-16"><a href="#cb39-16"></a></span>
+<span id="cb39-17"><a href="#cb39-17"></a>time.ILEC.boot <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N)</span>
+<span id="cb39-18"><a href="#cb39-18"></a>time.CLEC.boot <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N)</span>
+<span id="cb39-19"><a href="#cb39-19"></a>time.diff.mean <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N)</span>
+<span id="cb39-20"><a href="#cb39-20"></a></span>
+<span id="cb39-21"><a href="#cb39-21"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb39-22"><a href="#cb39-22"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N)</span>
+<span id="cb39-23"><a href="#cb39-23"></a>{</span>
+<span id="cb39-24"><a href="#cb39-24"></a>  ILEC.sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(Time.ILEC, n.ILEC, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb39-25"><a href="#cb39-25"></a>  CLEC.sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(Time.CLEC, n.CLEC, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb39-26"><a href="#cb39-26"></a>  time.ILEC.boot[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(ILEC.sample)</span>
+<span id="cb39-27"><a href="#cb39-27"></a>  time.CLEC.boot[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(CLEC.sample)</span>
+<span id="cb39-28"><a href="#cb39-28"></a>  time.diff.mean[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(ILEC.sample) <span class="sc">-</span> <span class="fu">mean</span>(CLEC.sample)</span>
+<span id="cb39-29"><a href="#cb39-29"></a>}</span>
+<span id="cb39-30"><a href="#cb39-30"></a></span>
+<span id="cb39-31"><a href="#cb39-31"></a><span class="co"># bootstrap for ILEC</span></span>
+<span id="cb39-32"><a href="#cb39-32"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb39-33"><a href="#cb39-33"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(time.ILEC.boot), <span class="at">bins =</span> <span class="dv">15</span>) <span class="sc">+</span></span>
+<span id="cb39-34"><a href="#cb39-34"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Bootstrap distribution of ILEC means"</span>, <span class="at">x =</span> <span class="st">"means"</span>) <span class="sc">+</span></span>
+<span id="cb39-35"><a href="#cb39-35"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(Time.ILEC), <span class="at">colour =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb39-36"><a href="#cb39-36"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(time.ILEC.boot), <span class="at">colour =</span> <span class="st">"red"</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="bootstrap_files/figure-html/unnamed-chunk-6-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11"><img src="bootstrap_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb40" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a><span class="fu">summary</span>(time.ILEC.boot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  7.036   8.156   8.400   8.406   8.642   9.832 </code></pre>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb42" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> time.ILEC.boot)</span>
+<span id="cb42-2"><a href="#cb42-2"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">sample =</span> x)) <span class="sc">+</span></span>
+<span id="cb42-3"><a href="#cb42-3"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
+<span id="cb42-4"><a href="#cb42-4"></a>  <span class="fu">stat_qq_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="bootstrap_files/figure-html/unnamed-chunk-6-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12"><img src="bootstrap_files/figure-html/unnamed-chunk-6-2.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb43" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1"></a><span class="co"># bootstrap for CLEC</span></span>
+<span id="cb43-2"><a href="#cb43-2"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb43-3"><a href="#cb43-3"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(time.CLEC.boot), <span class="at">bins =</span> <span class="dv">15</span>) <span class="sc">+</span></span>
+<span id="cb43-4"><a href="#cb43-4"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Bootstrap distribution of CLEC means"</span>, <span class="at">x =</span> <span class="st">"means"</span>) <span class="sc">+</span></span>
+<span id="cb43-5"><a href="#cb43-5"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(Time.CLEC), <span class="at">colour =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb43-6"><a href="#cb43-6"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(time.CLEC.boot), <span class="at">colour =</span> <span class="st">"red"</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="bootstrap_files/figure-html/unnamed-chunk-6-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13"><img src="bootstrap_files/figure-html/unnamed-chunk-6-3.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb44" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> time.CLEC.boot)</span>
+<span id="cb44-2"><a href="#cb44-2"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">sample =</span> x)) <span class="sc">+</span></span>
+<span id="cb44-3"><a href="#cb44-3"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
+<span id="cb44-4"><a href="#cb44-4"></a>  <span class="fu">stat_qq_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="bootstrap_files/figure-html/unnamed-chunk-6-4.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14"><img src="bootstrap_files/figure-html/unnamed-chunk-6-4.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb45" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1"></a><span class="co"># Different in means</span></span>
+<span id="cb45-2"><a href="#cb45-2"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb45-3"><a href="#cb45-3"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(time.diff.mean), <span class="at">bins =</span> <span class="dv">15</span>) <span class="sc">+</span></span>
+<span id="cb45-4"><a href="#cb45-4"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Bootstrap distribution of difference in means"</span>, <span class="at">x =</span> <span class="st">"means"</span>) <span class="sc">+</span></span>
+<span id="cb45-5"><a href="#cb45-5"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(time.diff.mean), <span class="at">colour =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb45-6"><a href="#cb45-6"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(observed), <span class="at">colour =</span> <span class="st">"red"</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="bootstrap_files/figure-html/unnamed-chunk-6-5.png" class="lightbox" data-gallery="quarto-lightbox-gallery-15"><img src="bootstrap_files/figure-html/unnamed-chunk-6-5.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb46" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> time.diff.mean)</span>
+<span id="cb46-2"><a href="#cb46-2"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">sample =</span> x)) <span class="sc">+</span></span>
+<span id="cb46-3"><a href="#cb46-3"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
+<span id="cb46-4"><a href="#cb46-4"></a>  <span class="fu">stat_qq_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="bootstrap_files/figure-html/unnamed-chunk-6-6.png" class="lightbox" data-gallery="quarto-lightbox-gallery-16"><img src="bootstrap_files/figure-html/unnamed-chunk-6-6.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb47" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1"></a><span class="fu">mean</span>(time.diff.mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>[1] -8.096489</code></pre>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb49" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1"></a><span class="fu">quantile</span>(time.diff.mean, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>      2.5%      97.5% 
+-16.970068  -1.690859 </code></pre>
+</div>
+</div>
+</section><section id="section-5.5-verizon-cont." class="level3"><h3 class="anchored" data-anchor-id="section-5.5-verizon-cont.">Section 5.5 Verizon cont.</h3>
+<p>Bootstrap difference in trimmed means</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb51" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1"></a>Time.ILEC <span class="ot">&lt;-</span> Verizon <span class="sc">%&gt;%</span></span>
+<span id="cb51-2"><a href="#cb51-2"></a>  <span class="fu">filter</span>(Group <span class="sc">==</span> <span class="st">"ILEC"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb51-3"><a href="#cb51-3"></a>  <span class="fu">pull</span>(Time)</span>
+<span id="cb51-4"><a href="#cb51-4"></a>Time.CLEC <span class="ot">&lt;-</span> Verizon <span class="sc">%&gt;%</span></span>
+<span id="cb51-5"><a href="#cb51-5"></a>  <span class="fu">filter</span>(Group <span class="sc">==</span> <span class="st">"CLEC"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb51-6"><a href="#cb51-6"></a>  <span class="fu">pull</span>(Time)</span>
+<span id="cb51-7"><a href="#cb51-7"></a>n.ILEC <span class="ot">&lt;-</span> <span class="fu">length</span>(Time.ILEC)</span>
+<span id="cb51-8"><a href="#cb51-8"></a>n.CLEC <span class="ot">&lt;-</span> <span class="fu">length</span>(Time.CLEC)</span>
+<span id="cb51-9"><a href="#cb51-9"></a></span>
+<span id="cb51-10"><a href="#cb51-10"></a>N <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">4</span></span>
+<span id="cb51-11"><a href="#cb51-11"></a>time.diff.trim <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N)</span>
+<span id="cb51-12"><a href="#cb51-12"></a></span>
+<span id="cb51-13"><a href="#cb51-13"></a><span class="co"># set.seed(100)</span></span>
+<span id="cb51-14"><a href="#cb51-14"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N)</span>
+<span id="cb51-15"><a href="#cb51-15"></a>{</span>
+<span id="cb51-16"><a href="#cb51-16"></a>  x.ILEC <span class="ot">&lt;-</span> <span class="fu">sample</span>(Time.ILEC, n.ILEC, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb51-17"><a href="#cb51-17"></a>  x.CLEC <span class="ot">&lt;-</span> <span class="fu">sample</span>(Time.CLEC, n.CLEC, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb51-18"><a href="#cb51-18"></a>  time.diff.trim[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(x.ILEC, <span class="at">trim =</span> .<span class="dv">25</span>) <span class="sc">-</span> <span class="fu">mean</span>(x.CLEC, <span class="at">trim =</span> .<span class="dv">25</span>)</span>
+<span id="cb51-19"><a href="#cb51-19"></a>}</span>
+<span id="cb51-20"><a href="#cb51-20"></a></span>
+<span id="cb51-21"><a href="#cb51-21"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb51-22"><a href="#cb51-22"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(time.diff.trim), <span class="at">bins =</span> <span class="dv">15</span>) <span class="sc">+</span></span>
+<span id="cb51-23"><a href="#cb51-23"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"difference in trimmed means"</span>) <span class="sc">+</span></span>
+<span id="cb51-24"><a href="#cb51-24"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(time.diff.trim), <span class="at">colour =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb51-25"><a href="#cb51-25"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(Time.ILEC, <span class="at">trim =</span> .<span class="dv">25</span>) <span class="sc">-</span> <span class="fu">mean</span>(Time.CLEC, <span class="at">trim =</span> .<span class="dv">25</span>), <span class="at">colour =</span> <span class="st">"red"</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="bootstrap_files/figure-html/unnamed-chunk-7-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-17"><img src="bootstrap_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb52" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> time.diff.trim)</span>
+<span id="cb52-2"><a href="#cb52-2"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">sample =</span> x)) <span class="sc">+</span></span>
+<span id="cb52-3"><a href="#cb52-3"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
+<span id="cb52-4"><a href="#cb52-4"></a>  <span class="fu">stat_qq_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="bootstrap_files/figure-html/unnamed-chunk-7-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-18"><img src="bootstrap_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb53" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1"></a><span class="fu">mean</span>(time.diff.trim)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>[1] -10.32079</code></pre>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb55" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1"></a><span class="fu">quantile</span>(time.diff.trim, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>     2.5%     97.5% 
+-15.47049  -4.97130 </code></pre>
+</div>
+</div>
+</section><section id="section-5.5-other-statistics-verizon-cont" class="level3"><h3 class="anchored" data-anchor-id="section-5.5-other-statistics-verizon-cont">Section 5.5 Other statistics Verizon cont:</h3>
+<p>Bootstrap of the ratio of means</p>
+<p><tt><code>Time.ILEC</code></tt> and <tt><code>Time.CLEC</code></tt> created above.</p>
+<p><tt><code>n.ILEC</code></tt>, <tt><code>n.CLEC</code></tt> created above</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb57" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1"></a>N <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">4</span></span>
+<span id="cb57-2"><a href="#cb57-2"></a>time.ratio.mean <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N)</span>
+<span id="cb57-3"><a href="#cb57-3"></a></span>
+<span id="cb57-4"><a href="#cb57-4"></a><span class="co"># set.seed(100)</span></span>
+<span id="cb57-5"><a href="#cb57-5"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N)</span>
+<span id="cb57-6"><a href="#cb57-6"></a>{</span>
+<span id="cb57-7"><a href="#cb57-7"></a>  ILEC.sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(Time.ILEC, n.ILEC, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb57-8"><a href="#cb57-8"></a>  CLEC.sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(Time.CLEC, n.CLEC, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb57-9"><a href="#cb57-9"></a>  time.ratio.mean[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(ILEC.sample) <span class="sc">/</span> <span class="fu">mean</span>(CLEC.sample)</span>
+<span id="cb57-10"><a href="#cb57-10"></a>}</span>
+<span id="cb57-11"><a href="#cb57-11"></a></span>
+<span id="cb57-12"><a href="#cb57-12"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb57-13"><a href="#cb57-13"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(time.ratio.mean), <span class="at">bins =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb57-14"><a href="#cb57-14"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"bootstrap distribution of ratio of means"</span>, <span class="at">x =</span> <span class="st">"ratio of means"</span>) <span class="sc">+</span></span>
+<span id="cb57-15"><a href="#cb57-15"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(time.ratio.mean), <span class="at">colour =</span> <span class="st">"red"</span>, <span class="at">lty =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb57-16"><a href="#cb57-16"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(Time.ILEC) <span class="sc">/</span> <span class="fu">mean</span>(Time.CLEC), <span class="at">col =</span> <span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="bootstrap_files/figure-html/unnamed-chunk-8-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-19"><img src="bootstrap_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb58" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> time.ratio.mean)</span>
+<span id="cb58-2"><a href="#cb58-2"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">sample =</span> x)) <span class="sc">+</span></span>
+<span id="cb58-3"><a href="#cb58-3"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
+<span id="cb58-4"><a href="#cb58-4"></a>  <span class="fu">stat_qq_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="bootstrap_files/figure-html/unnamed-chunk-8-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-20"><img src="bootstrap_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb59" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1"></a><span class="fu">mean</span>(time.ratio.mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>[1] 0.5429164</code></pre>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb61" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1"></a><span class="fu">sd</span>(time.ratio.mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>[1] 0.1354238</code></pre>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb63" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1"></a><span class="fu">quantile</span>(time.ratio.mean, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>     2.5%     97.5% 
+0.3283862 0.8517156 </code></pre>
+</div>
+</div>
+</section><section id="example-5.7-relative-risk-example" class="level3"><h3 class="anchored" data-anchor-id="example-5.7-relative-risk-example">Example 5.7 Relative risk example</h3>
+<div class="cell">
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb65" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1"></a>highbp <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>), <span class="fu">c</span>(<span class="dv">55</span>, <span class="dv">3283</span>)) <span class="co"># high blood pressure</span></span>
+<span id="cb65-2"><a href="#cb65-2"></a>lowbp <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>), <span class="fu">c</span>(<span class="dv">21</span>, <span class="dv">2655</span>)) <span class="co"># low blood pressure</span></span>
+<span id="cb65-3"><a href="#cb65-3"></a></span>
+<span id="cb65-4"><a href="#cb65-4"></a>N <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">4</span></span>
+<span id="cb65-5"><a href="#cb65-5"></a>boot.rr <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N)</span>
+<span id="cb65-6"><a href="#cb65-6"></a>high.prop <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N)</span>
+<span id="cb65-7"><a href="#cb65-7"></a>low.prop <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N)</span>
+<span id="cb65-8"><a href="#cb65-8"></a></span>
+<span id="cb65-9"><a href="#cb65-9"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N)</span>
+<span id="cb65-10"><a href="#cb65-10"></a>{</span>
+<span id="cb65-11"><a href="#cb65-11"></a>  x.high <span class="ot">&lt;-</span> <span class="fu">sample</span>(highbp, <span class="dv">3338</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb65-12"><a href="#cb65-12"></a>  x.low <span class="ot">&lt;-</span> <span class="fu">sample</span>(lowbp, <span class="dv">2676</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb65-13"><a href="#cb65-13"></a>  high.prop[i] <span class="ot">&lt;-</span> <span class="fu">sum</span>(x.high) <span class="sc">/</span> <span class="dv">3338</span></span>
+<span id="cb65-14"><a href="#cb65-14"></a>  low.prop[i] <span class="ot">&lt;-</span> <span class="fu">sum</span>(x.low) <span class="sc">/</span> <span class="dv">2676</span></span>
+<span id="cb65-15"><a href="#cb65-15"></a>  boot.rr[i] <span class="ot">&lt;-</span> high.prop[i] <span class="sc">/</span> low.prop[i]</span>
+<span id="cb65-16"><a href="#cb65-16"></a>}</span>
+<span id="cb65-17"><a href="#cb65-17"></a></span>
+<span id="cb65-18"><a href="#cb65-18"></a>ci <span class="ot">&lt;-</span> <span class="fu">quantile</span>(boot.rr, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<span id="cb65-19"><a href="#cb65-19"></a></span>
+<span id="cb65-20"><a href="#cb65-20"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb65-21"><a href="#cb65-21"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(boot.rr), <span class="at">bins =</span> <span class="dv">15</span>) <span class="sc">+</span></span>
+<span id="cb65-22"><a href="#cb65-22"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Bootstrap distribution of relative risk"</span>, <span class="at">x =</span> <span class="st">"relative risk"</span>) <span class="sc">+</span></span>
+<span id="cb65-23"><a href="#cb65-23"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(boot.rr), <span class="at">colour =</span> <span class="st">"mean of bootstrap"</span>)) <span class="sc">+</span></span>
+<span id="cb65-24"><a href="#cb65-24"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> <span class="fl">2.12</span>, <span class="at">colour =</span> <span class="st">"observed rr"</span>), <span class="at">lty =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb65-25"><a href="#cb65-25"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">name =</span> <span class="st">""</span>, <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"mean of bootstrap"</span> <span class="ot">=</span> <span class="st">"blue"</span>, <span class="st">"observed rr"</span> <span class="ot">=</span> <span class="st">"red"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="bootstrap_files/figure-html/unnamed-chunk-9-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-21"><img src="bootstrap_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode cell-code" id="cb66" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1"></a>temp <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(high.prop <span class="sc">&lt;</span> <span class="fl">1.31775</span> <span class="sc">*</span> low.prop, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb66-2"><a href="#cb66-2"></a>temp2 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(high.prop <span class="sc">&gt;</span> <span class="fl">3.687</span> <span class="sc">*</span> low.prop, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb66-3"><a href="#cb66-3"></a>temp3 <span class="ot">&lt;-</span> temp <span class="sc">+</span> temp2</span>
+<span id="cb66-4"><a href="#cb66-4"></a></span>
+<span id="cb66-5"><a href="#cb66-5"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">y =</span> high.prop, <span class="at">x =</span> low.prop, temp, temp2, temp3)</span>
+<span id="cb66-6"><a href="#cb66-6"></a>df1 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(temp <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb66-7"><a href="#cb66-7"></a>df2 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(temp2 <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb66-8"><a href="#cb66-8"></a>df3 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(temp3 <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb66-9"><a href="#cb66-9"></a></span>
+<span id="cb66-10"><a href="#cb66-10"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb66-11"><a href="#cb66-11"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> df1, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">colour =</span> <span class="st">"green"</span>) <span class="sc">+</span></span>
+<span id="cb66-12"><a href="#cb66-12"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> df2, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">colour =</span> <span class="st">"green"</span>) <span class="sc">+</span></span>
+<span id="cb66-13"><a href="#cb66-13"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> df3, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb66-14"><a href="#cb66-14"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(low.prop)), <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb66-15"><a href="#cb66-15"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">mean</span>(high.prop), <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb66-16"><a href="#cb66-16"></a>  <span class="fu">geom_abline</span>(<span class="fu">aes</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="fl">2.12</span>, <span class="at">colour =</span> <span class="st">"observed rr"</span>), <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb66-17"><a href="#cb66-17"></a>  <span class="fu">geom_abline</span>(<span class="fu">aes</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> ci[<span class="dv">1</span>], <span class="at">colour =</span> <span class="st">"bootstrap CI"</span>), <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb66-18"><a href="#cb66-18"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> ci[<span class="dv">2</span>], <span class="at">colour =</span> <span class="st">"blue"</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb66-19"><a href="#cb66-19"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">name =</span> <span class="st">""</span>, <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"observed rr"</span> <span class="ot">=</span> <span class="st">"black"</span>, <span class="st">"bootstrap CI"</span> <span class="ot">=</span> <span class="st">"blue"</span>)) <span class="sc">+</span></span>
+<span id="cb66-20"><a href="#cb66-20"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Proportion in low blood pressure group"</span>, <span class="at">y =</span> <span class="st">"Proportion in high blood pressure group"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="bootstrap_files/figure-html/unnamed-chunk-9-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-22"><img src="bootstrap_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+<!-- -->
+
+</section><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/madhatterguide\.netlify\.app");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb67" data-shortcodes="false" data-code-line-numbers=""><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb67-1"><a href="#cb67-1"></a><span class="co">---</span></span>
+<span id="cb67-2"><a href="#cb67-2"></a><span class="an">title:</span><span class="co"> "Bootstrap  Case Studies"</span></span>
+<span id="cb67-3"><a href="#cb67-3"></a><span class="an">author:</span><span class="co"> "Arvind Venkatadri"</span></span>
+<span id="cb67-4"><a href="#cb67-4"></a><span class="an">date:</span><span class="co"> "26/Nov/2022"</span></span>
+<span id="cb67-5"><a href="#cb67-5"></a><span class="an">abstract:</span><span class="co"> "Using Bootstrap Samples to make Decisions"</span></span>
+<span id="cb67-6"><a href="#cb67-6"></a><span class="an">code-fold:</span><span class="co"> true</span></span>
+<span id="cb67-7"><a href="#cb67-7"></a><span class="an">code-summary:</span><span class="co"> "Show the Code"</span></span>
+<span id="cb67-8"><a href="#cb67-8"></a><span class="an">code-copy:</span><span class="co"> true</span></span>
+<span id="cb67-9"><a href="#cb67-9"></a><span class="an">code-tools:</span><span class="co"> true</span></span>
+<span id="cb67-10"><a href="#cb67-10"></a><span class="an">code-line-numbers:</span><span class="co"> true</span></span>
+<span id="cb67-11"><a href="#cb67-11"></a><span class="an">df-print:</span><span class="co"> paged</span></span>
+<span id="cb67-12"><a href="#cb67-12"></a><span class="an">execute:</span><span class="co"> </span></span>
+<span id="cb67-13"><a href="#cb67-13"></a><span class="co">  freeze: auto</span></span>
+<span id="cb67-14"><a href="#cb67-14"></a><span class="co">---</span></span>
+<span id="cb67-15"><a href="#cb67-15"></a></span>
+<span id="cb67-16"><a href="#cb67-16"></a><span class="in">```{r setup, include=FALSE}</span></span>
+<span id="cb67-17"><a href="#cb67-17"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">echo =</span> <span class="cn">TRUE</span>, <span class="at">out.width =</span> <span class="st">"50%"</span>)</span>
+<span id="cb67-18"><a href="#cb67-18"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb67-19"><a href="#cb67-19"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb67-20"><a href="#cb67-20"></a><span class="in">```</span></span>
+<span id="cb67-21"><a href="#cb67-21"></a></span>
+<span id="cb67-22"><a href="#cb67-22"></a><span class="fu">### Example 5.2</span></span>
+<span id="cb67-23"><a href="#cb67-23"></a></span>
+<span id="cb67-26"><a href="#cb67-26"></a><span class="in">```{r}</span></span>
+<span id="cb67-27"><a href="#cb67-27"></a>my.sample <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(<span class="dv">16</span>, <span class="dv">1</span>, <span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>)</span>
+<span id="cb67-28"><a href="#cb67-28"></a></span>
+<span id="cb67-29"><a href="#cb67-29"></a>N <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">5</span></span>
+<span id="cb67-30"><a href="#cb67-30"></a>my.boot <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N)</span>
+<span id="cb67-31"><a href="#cb67-31"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N)</span>
+<span id="cb67-32"><a href="#cb67-32"></a> {</span>
+<span id="cb67-33"><a href="#cb67-33"></a>  x <span class="ot">&lt;-</span> <span class="fu">sample</span>(my.sample, <span class="dv">16</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)  <span class="co">#draw resample</span></span>
+<span id="cb67-34"><a href="#cb67-34"></a>  my.boot[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(x)                     <span class="co">#compute mean, store in my.boot</span></span>
+<span id="cb67-35"><a href="#cb67-35"></a>  }</span>
+<span id="cb67-36"><a href="#cb67-36"></a></span>
+<span id="cb67-37"><a href="#cb67-37"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(my.boot), <span class="at">bins=</span><span class="dv">15</span>)</span>
+<span id="cb67-38"><a href="#cb67-38"></a></span>
+<span id="cb67-39"><a href="#cb67-39"></a><span class="fu">mean</span>(my.boot)  <span class="co">#mean</span></span>
+<span id="cb67-40"><a href="#cb67-40"></a><span class="fu">sd</span>(my.boot)    <span class="co">#bootstrap SE</span></span>
+<span id="cb67-41"><a href="#cb67-41"></a><span class="in">```</span></span>
+<span id="cb67-42"><a href="#cb67-42"></a></span>
+<span id="cb67-43"><a href="#cb67-43"></a><span class="fu">### Example 5.3</span></span>
+<span id="cb67-44"><a href="#cb67-44"></a></span>
+<span id="cb67-45"><a href="#cb67-45"></a>Arsenic in wells in Bangladesh</span>
+<span id="cb67-46"><a href="#cb67-46"></a></span>
+<span id="cb67-49"><a href="#cb67-49"></a><span class="in">```{r}</span></span>
+<span id="cb67-50"><a href="#cb67-50"></a>Bangladesh <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"../../../../../../materials/data/resampling/Bangladesh.csv"</span>)</span>
+<span id="cb67-51"><a href="#cb67-51"></a></span>
+<span id="cb67-52"><a href="#cb67-52"></a><span class="fu">ggplot</span>(Bangladesh, <span class="fu">aes</span>(Arsenic)) <span class="sc">+</span> <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">15</span>)</span>
+<span id="cb67-53"><a href="#cb67-53"></a></span>
+<span id="cb67-54"><a href="#cb67-54"></a><span class="fu">ggplot</span>(Bangladesh, <span class="fu">aes</span>(<span class="at">sample =</span> Arsenic)) <span class="sc">+</span> <span class="fu">stat_qq</span>() <span class="sc">+</span> <span class="fu">stat_qq_line</span>()</span>
+<span id="cb67-55"><a href="#cb67-55"></a></span>
+<span id="cb67-56"><a href="#cb67-56"></a>Arsenic <span class="ot">&lt;-</span> <span class="fu">pull</span>(Bangladesh, Arsenic)</span>
+<span id="cb67-57"><a href="#cb67-57"></a><span class="co">#Alternatively</span></span>
+<span id="cb67-58"><a href="#cb67-58"></a><span class="co">#Arsenic &lt;- Bangladesh$Arsenic</span></span>
+<span id="cb67-59"><a href="#cb67-59"></a></span>
+<span id="cb67-60"><a href="#cb67-60"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(Arsenic)</span>
+<span id="cb67-61"><a href="#cb67-61"></a>N <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">4</span></span>
+<span id="cb67-62"><a href="#cb67-62"></a></span>
+<span id="cb67-63"><a href="#cb67-63"></a>arsenic.mean <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N)</span>
+<span id="cb67-64"><a href="#cb67-64"></a></span>
+<span id="cb67-65"><a href="#cb67-65"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N)</span>
+<span id="cb67-66"><a href="#cb67-66"></a>{</span>
+<span id="cb67-67"><a href="#cb67-67"></a>   x <span class="ot">&lt;-</span> <span class="fu">sample</span>(Arsenic, n, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb67-68"><a href="#cb67-68"></a>   arsenic.mean[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(x)</span>
+<span id="cb67-69"><a href="#cb67-69"></a>}</span>
+<span id="cb67-70"><a href="#cb67-70"></a></span>
+<span id="cb67-71"><a href="#cb67-71"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(arsenic.mean), <span class="at">bins =</span> <span class="dv">15</span>) <span class="sc">+</span> </span>
+<span id="cb67-72"><a href="#cb67-72"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"Bootstrap distribution of means"</span>) <span class="sc">+</span> </span>
+<span id="cb67-73"><a href="#cb67-73"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(Arsenic), <span class="at">colour =</span> <span class="st">"blue"</span>)</span>
+<span id="cb67-74"><a href="#cb67-74"></a></span>
+<span id="cb67-75"><a href="#cb67-75"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> arsenic.mean)</span>
+<span id="cb67-76"><a href="#cb67-76"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">sample =</span> x)) <span class="sc">+</span> <span class="fu">stat_qq</span>() <span class="sc">+</span> <span class="fu">stat_qq_line</span>()</span>
+<span id="cb67-77"><a href="#cb67-77"></a></span>
+<span id="cb67-78"><a href="#cb67-78"></a><span class="fu">mean</span>(arsenic.mean)                 <span class="co">#bootstrap mean</span></span>
+<span id="cb67-79"><a href="#cb67-79"></a><span class="fu">mean</span>(arsenic.mean) <span class="sc">-</span> <span class="fu">mean</span>(Arsenic) <span class="co">#bias</span></span>
+<span id="cb67-80"><a href="#cb67-80"></a><span class="fu">sd</span>(arsenic.mean)                   <span class="co">#bootstrap SE</span></span>
+<span id="cb67-81"><a href="#cb67-81"></a></span>
+<span id="cb67-82"><a href="#cb67-82"></a><span class="fu">sum</span>(arsenic.mean <span class="sc">&gt;</span> <span class="fl">161.3224</span>)<span class="sc">/</span>N</span>
+<span id="cb67-83"><a href="#cb67-83"></a><span class="fu">sum</span>(arsenic.mean <span class="sc">&lt;</span> <span class="fl">89.75262</span>)<span class="sc">/</span>N</span>
+<span id="cb67-84"><a href="#cb67-84"></a><span class="in">```</span></span>
+<span id="cb67-85"><a href="#cb67-85"></a></span>
+<span id="cb67-86"><a href="#cb67-86"></a><span class="fu">### Example 5.4 Skateboard</span></span>
+<span id="cb67-87"><a href="#cb67-87"></a></span>
+<span id="cb67-90"><a href="#cb67-90"></a><span class="in">```{r}</span></span>
+<span id="cb67-91"><a href="#cb67-91"></a>Skateboard <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"../../../../../../materials/data/resampling/Skateboard.csv"</span>)</span>
+<span id="cb67-92"><a href="#cb67-92"></a></span>
+<span id="cb67-93"><a href="#cb67-93"></a>testF <span class="ot">&lt;-</span> Skateboard <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Experimenter <span class="sc">==</span> <span class="st">"Female"</span>) <span class="sc">%&gt;%</span> <span class="fu">pull</span>(Testosterone)</span>
+<span id="cb67-94"><a href="#cb67-94"></a>testM <span class="ot">&lt;-</span> Skateboard <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Experimenter <span class="sc">==</span> <span class="st">"Male"</span>) <span class="sc">%&gt;%</span> <span class="fu">pull</span>(Testosterone)</span>
+<span id="cb67-95"><a href="#cb67-95"></a></span>
+<span id="cb67-96"><a href="#cb67-96"></a>observed <span class="ot">&lt;-</span> <span class="fu">mean</span>(testF) <span class="sc">-</span> <span class="fu">mean</span>(testM)</span>
+<span id="cb67-97"><a href="#cb67-97"></a></span>
+<span id="cb67-98"><a href="#cb67-98"></a>nf <span class="ot">&lt;-</span> <span class="fu">length</span>(testF)</span>
+<span id="cb67-99"><a href="#cb67-99"></a>nm <span class="ot">&lt;-</span> <span class="fu">length</span>(testM)</span>
+<span id="cb67-100"><a href="#cb67-100"></a></span>
+<span id="cb67-101"><a href="#cb67-101"></a>N <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">4</span></span>
+<span id="cb67-102"><a href="#cb67-102"></a></span>
+<span id="cb67-103"><a href="#cb67-103"></a>TestMean <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N)</span>
+<span id="cb67-104"><a href="#cb67-104"></a></span>
+<span id="cb67-105"><a href="#cb67-105"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N)</span>
+<span id="cb67-106"><a href="#cb67-106"></a>{</span>
+<span id="cb67-107"><a href="#cb67-107"></a>  sampleF <span class="ot">&lt;-</span> <span class="fu">sample</span>(testF, nf, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb67-108"><a href="#cb67-108"></a>  sampleM <span class="ot">&lt;-</span> <span class="fu">sample</span>(testM, nm, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb67-109"><a href="#cb67-109"></a>  TestMean[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(sampleF) <span class="sc">-</span> <span class="fu">mean</span>(sampleM)</span>
+<span id="cb67-110"><a href="#cb67-110"></a>}</span>
+<span id="cb67-111"><a href="#cb67-111"></a></span>
+<span id="cb67-112"><a href="#cb67-112"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(TestMean)</span>
+<span id="cb67-113"><a href="#cb67-113"></a><span class="fu">ggplot</span>(df) <span class="sc">+</span> <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(TestMean), <span class="at">bins =</span> <span class="dv">15</span>) <span class="sc">+</span> </span>
+<span id="cb67-114"><a href="#cb67-114"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Bootstrap distribution of difference in means"</span>, <span class="at">xlab =</span> <span class="st">"means"</span>) <span class="sc">+</span></span>
+<span id="cb67-115"><a href="#cb67-115"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> observed, <span class="at">colour =</span> <span class="st">"blue"</span>)</span>
+<span id="cb67-116"><a href="#cb67-116"></a></span>
+<span id="cb67-117"><a href="#cb67-117"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">sample =</span> TestMean))  <span class="sc">+</span> <span class="fu">stat_qq</span>() <span class="sc">+</span> <span class="fu">stat_qq_line</span>()</span>
+<span id="cb67-118"><a href="#cb67-118"></a></span>
+<span id="cb67-119"><a href="#cb67-119"></a><span class="fu">mean</span>(testF) <span class="sc">-</span> <span class="fu">mean</span>(testM)</span>
+<span id="cb67-120"><a href="#cb67-120"></a><span class="fu">mean</span>(TestMean)</span>
+<span id="cb67-121"><a href="#cb67-121"></a><span class="fu">sd</span>(TestMean)</span>
+<span id="cb67-122"><a href="#cb67-122"></a></span>
+<span id="cb67-123"><a href="#cb67-123"></a><span class="fu">quantile</span>(TestMean,<span class="fu">c</span>(<span class="fl">0.025</span>,<span class="fl">0.975</span>))</span>
+<span id="cb67-124"><a href="#cb67-124"></a></span>
+<span id="cb67-125"><a href="#cb67-125"></a><span class="fu">mean</span>(TestMean)<span class="sc">-</span> observed  <span class="co">#bias</span></span>
+<span id="cb67-126"><a href="#cb67-126"></a><span class="in">```</span></span>
+<span id="cb67-127"><a href="#cb67-127"></a></span>
+<span id="cb67-128"><a href="#cb67-128"></a><span class="fu">### Permutation test for Skateboard means</span></span>
+<span id="cb67-129"><a href="#cb67-129"></a></span>
+<span id="cb67-132"><a href="#cb67-132"></a><span class="in">```{r}</span></span>
+<span id="cb67-133"><a href="#cb67-133"></a>testAll <span class="ot">&lt;-</span> <span class="fu">pull</span>(Skateboard, Testosterone)</span>
+<span id="cb67-134"><a href="#cb67-134"></a><span class="co">#testAll &lt;- Skateboard$Testosterone</span></span>
+<span id="cb67-135"><a href="#cb67-135"></a></span>
+<span id="cb67-136"><a href="#cb67-136"></a>N <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">4</span> <span class="sc">-</span> <span class="dv">1</span>  <span class="co">#set number of times to repeat this process</span></span>
+<span id="cb67-137"><a href="#cb67-137"></a></span>
+<span id="cb67-138"><a href="#cb67-138"></a><span class="co">#set.seed(99)</span></span>
+<span id="cb67-139"><a href="#cb67-139"></a>result <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N) <span class="co"># space to save the random differences</span></span>
+<span id="cb67-140"><a href="#cb67-140"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N)</span>
+<span id="cb67-141"><a href="#cb67-141"></a>  {</span>
+<span id="cb67-142"><a href="#cb67-142"></a>  index <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">71</span>, <span class="at">size =</span> nf, <span class="at">replace =</span> <span class="cn">FALSE</span>) <span class="co">#sample of numbers from 1:71</span></span>
+<span id="cb67-143"><a href="#cb67-143"></a>  result[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(testAll[index]) <span class="sc">-</span> <span class="fu">mean</span>(testAll[<span class="sc">-</span>index])</span>
+<span id="cb67-144"><a href="#cb67-144"></a>}</span>
+<span id="cb67-145"><a href="#cb67-145"></a></span>
+<span id="cb67-146"><a href="#cb67-146"></a>(<span class="fu">sum</span>(result <span class="sc">&gt;=</span> observed)<span class="sc">+</span><span class="dv">1</span>)<span class="sc">/</span>(N <span class="sc">+</span> <span class="dv">1</span>)  <span class="co">#P-value</span></span>
+<span id="cb67-147"><a href="#cb67-147"></a></span>
+<span id="cb67-148"><a href="#cb67-148"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(result), <span class="at">bins =</span> <span class="dv">15</span>) <span class="sc">+</span> </span>
+<span id="cb67-149"><a href="#cb67-149"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"xbar1-xbar2"</span>, <span class="at">title=</span><span class="st">"Permutation distribution for testosterone levels"</span>) <span class="sc">+</span></span>
+<span id="cb67-150"><a href="#cb67-150"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> observed, <span class="at">colour =</span> <span class="st">"blue"</span>)</span>
+<span id="cb67-151"><a href="#cb67-151"></a></span>
+<span id="cb67-152"><a href="#cb67-152"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(result)</span>
+<span id="cb67-153"><a href="#cb67-153"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">sample =</span> result)) <span class="sc">+</span> <span class="fu">stat_qq</span>() <span class="sc">+</span> <span class="fu">stat_qq_line</span>()</span>
+<span id="cb67-154"><a href="#cb67-154"></a></span>
+<span id="cb67-155"><a href="#cb67-155"></a><span class="in">```</span></span>
+<span id="cb67-156"><a href="#cb67-156"></a></span>
+<span id="cb67-157"><a href="#cb67-157"></a><span class="fu">### Section 5.4.1 Matched pairs for Diving data</span></span>
+<span id="cb67-158"><a href="#cb67-158"></a></span>
+<span id="cb67-161"><a href="#cb67-161"></a><span class="in">```{r}</span></span>
+<span id="cb67-162"><a href="#cb67-162"></a>Diving2017 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"../../../../../../materials/data/resampling/Diving2017.csv"</span>)</span>
+<span id="cb67-163"><a href="#cb67-163"></a>Diff <span class="ot">&lt;-</span> Diving2017 <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Diff =</span> Final <span class="sc">-</span> Semifinal) <span class="sc">%&gt;%</span> <span class="fu">pull</span>(Diff)</span>
+<span id="cb67-164"><a href="#cb67-164"></a><span class="co">#alternatively</span></span>
+<span id="cb67-165"><a href="#cb67-165"></a><span class="co">#Diff &lt;- Diving2017$Final - Diving2017$Semifinal</span></span>
+<span id="cb67-166"><a href="#cb67-166"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(Diff)</span>
+<span id="cb67-167"><a href="#cb67-167"></a></span>
+<span id="cb67-168"><a href="#cb67-168"></a>N <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">5</span></span>
+<span id="cb67-169"><a href="#cb67-169"></a>result <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N)</span>
+<span id="cb67-170"><a href="#cb67-170"></a></span>
+<span id="cb67-171"><a href="#cb67-171"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N)</span>
+<span id="cb67-172"><a href="#cb67-172"></a>{</span>
+<span id="cb67-173"><a href="#cb67-173"></a>  dive.sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(Diff, n, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb67-174"><a href="#cb67-174"></a>  result[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(dive.sample)</span>
+<span id="cb67-175"><a href="#cb67-175"></a>}</span>
+<span id="cb67-176"><a href="#cb67-176"></a></span>
+<span id="cb67-177"><a href="#cb67-177"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(result), <span class="at">bins =</span> <span class="dv">15</span>)</span>
+<span id="cb67-178"><a href="#cb67-178"></a></span>
+<span id="cb67-179"><a href="#cb67-179"></a><span class="fu">quantile</span>(result, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<span id="cb67-180"><a href="#cb67-180"></a><span class="in">```</span></span>
+<span id="cb67-181"><a href="#cb67-181"></a></span>
+<span id="cb67-182"><a href="#cb67-182"></a><span class="fu">### Example 5.5 Verizon cont. Bootstrap means for the ILEC data and for the CLEC data</span></span>
+<span id="cb67-183"><a href="#cb67-183"></a></span>
+<span id="cb67-184"><a href="#cb67-184"></a>Bootstrap difference of means.</span>
+<span id="cb67-185"><a href="#cb67-185"></a></span>
+<span id="cb67-188"><a href="#cb67-188"></a><span class="in">```{r}</span></span>
+<span id="cb67-189"><a href="#cb67-189"></a>Verizon <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"../../../../../../materials/data/resampling/Verizon.csv"</span>)</span>
+<span id="cb67-190"><a href="#cb67-190"></a></span>
+<span id="cb67-191"><a href="#cb67-191"></a>Time.ILEC <span class="ot">&lt;-</span> Verizon <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Group <span class="sc">==</span> <span class="st">"ILEC"</span>) <span class="sc">%&gt;%</span> <span class="fu">pull</span>(Time)</span>
+<span id="cb67-192"><a href="#cb67-192"></a>Time.CLEC <span class="ot">&lt;-</span> Verizon <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Group <span class="sc">==</span> <span class="st">"CLEC"</span>) <span class="sc">%&gt;%</span> <span class="fu">pull</span>(Time)</span>
+<span id="cb67-193"><a href="#cb67-193"></a></span>
+<span id="cb67-194"><a href="#cb67-194"></a>observed <span class="ot">&lt;-</span> <span class="fu">mean</span>(Time.ILEC) <span class="sc">-</span> <span class="fu">mean</span>(Time.CLEC)</span>
+<span id="cb67-195"><a href="#cb67-195"></a></span>
+<span id="cb67-196"><a href="#cb67-196"></a>n.ILEC <span class="ot">&lt;-</span> <span class="fu">length</span>(Time.ILEC)</span>
+<span id="cb67-197"><a href="#cb67-197"></a>n.CLEC <span class="ot">&lt;-</span> <span class="fu">length</span>(Time.CLEC)</span>
+<span id="cb67-198"><a href="#cb67-198"></a></span>
+<span id="cb67-199"><a href="#cb67-199"></a>N <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">4</span></span>
+<span id="cb67-200"><a href="#cb67-200"></a></span>
+<span id="cb67-201"><a href="#cb67-201"></a>time.ILEC.boot <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N)</span>
+<span id="cb67-202"><a href="#cb67-202"></a>time.CLEC.boot <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N)</span>
+<span id="cb67-203"><a href="#cb67-203"></a>time.diff.mean <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N)</span>
+<span id="cb67-204"><a href="#cb67-204"></a></span>
+<span id="cb67-205"><a href="#cb67-205"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb67-206"><a href="#cb67-206"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N)</span>
+<span id="cb67-207"><a href="#cb67-207"></a> {</span>
+<span id="cb67-208"><a href="#cb67-208"></a>  ILEC.sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(Time.ILEC, n.ILEC, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb67-209"><a href="#cb67-209"></a>  CLEC.sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(Time.CLEC, n.CLEC, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb67-210"><a href="#cb67-210"></a>  time.ILEC.boot[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(ILEC.sample)</span>
+<span id="cb67-211"><a href="#cb67-211"></a>  time.CLEC.boot[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(CLEC.sample)</span>
+<span id="cb67-212"><a href="#cb67-212"></a>  time.diff.mean[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(ILEC.sample) <span class="sc">-</span> <span class="fu">mean</span>(CLEC.sample)</span>
+<span id="cb67-213"><a href="#cb67-213"></a>}</span>
+<span id="cb67-214"><a href="#cb67-214"></a></span>
+<span id="cb67-215"><a href="#cb67-215"></a><span class="co">#bootstrap for ILEC</span></span>
+<span id="cb67-216"><a href="#cb67-216"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(time.ILEC.boot), <span class="at">bins =</span> <span class="dv">15</span>) <span class="sc">+</span> </span>
+<span id="cb67-217"><a href="#cb67-217"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Bootstrap distribution of ILEC means"</span>, <span class="at">x =</span> <span class="st">"means"</span>) <span class="sc">+</span> </span>
+<span id="cb67-218"><a href="#cb67-218"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(Time.ILEC), <span class="at">colour =</span> <span class="st">"blue"</span>) <span class="sc">+</span> </span>
+<span id="cb67-219"><a href="#cb67-219"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(time.ILEC.boot), <span class="at">colour =</span> <span class="st">"red"</span>, <span class="at">lty=</span><span class="dv">2</span>)</span>
+<span id="cb67-220"><a href="#cb67-220"></a></span>
+<span id="cb67-221"><a href="#cb67-221"></a><span class="fu">summary</span>(time.ILEC.boot)</span>
+<span id="cb67-222"><a href="#cb67-222"></a></span>
+<span id="cb67-223"><a href="#cb67-223"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> time.ILEC.boot)</span>
+<span id="cb67-224"><a href="#cb67-224"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">sample =</span> x)) <span class="sc">+</span> <span class="fu">stat_qq</span>() <span class="sc">+</span> <span class="fu">stat_qq_line</span>()</span>
+<span id="cb67-225"><a href="#cb67-225"></a></span>
+<span id="cb67-226"><a href="#cb67-226"></a><span class="co">#bootstrap for CLEC</span></span>
+<span id="cb67-227"><a href="#cb67-227"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(time.CLEC.boot), <span class="at">bins =</span> <span class="dv">15</span>) <span class="sc">+</span> </span>
+<span id="cb67-228"><a href="#cb67-228"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Bootstrap distribution of CLEC means"</span>, <span class="at">x =</span> <span class="st">"means"</span>) <span class="sc">+</span> </span>
+<span id="cb67-229"><a href="#cb67-229"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(Time.CLEC), <span class="at">colour =</span> <span class="st">"blue"</span>) <span class="sc">+</span> </span>
+<span id="cb67-230"><a href="#cb67-230"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(time.CLEC.boot), <span class="at">colour =</span> <span class="st">"red"</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb67-231"><a href="#cb67-231"></a></span>
+<span id="cb67-232"><a href="#cb67-232"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> time.CLEC.boot)</span>
+<span id="cb67-233"><a href="#cb67-233"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">sample =</span> x)) <span class="sc">+</span> <span class="fu">stat_qq</span>() <span class="sc">+</span> <span class="fu">stat_qq_line</span>()</span>
+<span id="cb67-234"><a href="#cb67-234"></a></span>
+<span id="cb67-235"><a href="#cb67-235"></a><span class="co">#Different in means</span></span>
+<span id="cb67-236"><a href="#cb67-236"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(time.diff.mean), <span class="at">bins =</span> <span class="dv">15</span>) <span class="sc">+</span> </span>
+<span id="cb67-237"><a href="#cb67-237"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Bootstrap distribution of difference in means"</span>, <span class="at">x =</span> <span class="st">"means"</span>) <span class="sc">+</span></span>
+<span id="cb67-238"><a href="#cb67-238"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(time.diff.mean), <span class="at">colour =</span> <span class="st">"blue"</span>) <span class="sc">+</span> </span>
+<span id="cb67-239"><a href="#cb67-239"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(observed), <span class="at">colour =</span> <span class="st">"red"</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb67-240"><a href="#cb67-240"></a></span>
+<span id="cb67-241"><a href="#cb67-241"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> time.diff.mean)</span>
+<span id="cb67-242"><a href="#cb67-242"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">sample =</span> x)) <span class="sc">+</span> <span class="fu">stat_qq</span>() <span class="sc">+</span> <span class="fu">stat_qq_line</span>()</span>
+<span id="cb67-243"><a href="#cb67-243"></a></span>
+<span id="cb67-244"><a href="#cb67-244"></a><span class="fu">mean</span>(time.diff.mean)</span>
+<span id="cb67-245"><a href="#cb67-245"></a><span class="fu">quantile</span>(time.diff.mean, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<span id="cb67-246"><a href="#cb67-246"></a></span>
+<span id="cb67-247"><a href="#cb67-247"></a><span class="in">```</span></span>
+<span id="cb67-248"><a href="#cb67-248"></a></span>
+<span id="cb67-249"><a href="#cb67-249"></a><span class="fu">### Section 5.5 Verizon cont.</span></span>
+<span id="cb67-250"><a href="#cb67-250"></a></span>
+<span id="cb67-251"><a href="#cb67-251"></a>Bootstrap difference in trimmed means</span>
+<span id="cb67-252"><a href="#cb67-252"></a></span>
+<span id="cb67-255"><a href="#cb67-255"></a><span class="in">```{r}</span></span>
+<span id="cb67-256"><a href="#cb67-256"></a>Time.ILEC <span class="ot">&lt;-</span> Verizon <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Group <span class="sc">==</span> <span class="st">"ILEC"</span>) <span class="sc">%&gt;%</span> <span class="fu">pull</span>(Time)</span>
+<span id="cb67-257"><a href="#cb67-257"></a>Time.CLEC <span class="ot">&lt;-</span> Verizon <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Group <span class="sc">==</span> <span class="st">"CLEC"</span>) <span class="sc">%&gt;%</span> <span class="fu">pull</span>(Time)</span>
+<span id="cb67-258"><a href="#cb67-258"></a>n.ILEC <span class="ot">&lt;-</span> <span class="fu">length</span>(Time.ILEC)</span>
+<span id="cb67-259"><a href="#cb67-259"></a>n.CLEC <span class="ot">&lt;-</span> <span class="fu">length</span>(Time.CLEC)</span>
+<span id="cb67-260"><a href="#cb67-260"></a></span>
+<span id="cb67-261"><a href="#cb67-261"></a>N <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">4</span></span>
+<span id="cb67-262"><a href="#cb67-262"></a>time.diff.trim <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N)</span>
+<span id="cb67-263"><a href="#cb67-263"></a></span>
+<span id="cb67-264"><a href="#cb67-264"></a><span class="co">#set.seed(100)</span></span>
+<span id="cb67-265"><a href="#cb67-265"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N)</span>
+<span id="cb67-266"><a href="#cb67-266"></a>{</span>
+<span id="cb67-267"><a href="#cb67-267"></a>  x.ILEC <span class="ot">&lt;-</span> <span class="fu">sample</span>(Time.ILEC, n.ILEC, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb67-268"><a href="#cb67-268"></a>  x.CLEC <span class="ot">&lt;-</span> <span class="fu">sample</span>(Time.CLEC, n.CLEC, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb67-269"><a href="#cb67-269"></a>  time.diff.trim[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(x.ILEC, <span class="at">trim =</span> .<span class="dv">25</span>) <span class="sc">-</span> <span class="fu">mean</span>(x.CLEC, <span class="at">trim =</span> .<span class="dv">25</span>)</span>
+<span id="cb67-270"><a href="#cb67-270"></a>}</span>
+<span id="cb67-271"><a href="#cb67-271"></a></span>
+<span id="cb67-272"><a href="#cb67-272"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(time.diff.trim), <span class="at">bins =</span> <span class="dv">15</span>) <span class="sc">+</span> </span>
+<span id="cb67-273"><a href="#cb67-273"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"difference in trimmed means"</span>) <span class="sc">+</span> </span>
+<span id="cb67-274"><a href="#cb67-274"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(time.diff.trim),<span class="at">colour =</span> <span class="st">"blue"</span>) <span class="sc">+</span> </span>
+<span id="cb67-275"><a href="#cb67-275"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(Time.ILEC, <span class="at">trim =</span> .<span class="dv">25</span>) <span class="sc">-</span> <span class="fu">mean</span>(Time.CLEC, <span class="at">trim =</span> .<span class="dv">25</span>), <span class="at">colour =</span> <span class="st">"red"</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb67-276"><a href="#cb67-276"></a></span>
+<span id="cb67-277"><a href="#cb67-277"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> time.diff.trim)</span>
+<span id="cb67-278"><a href="#cb67-278"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">sample =</span> x)) <span class="sc">+</span> <span class="fu">stat_qq</span>() <span class="sc">+</span> <span class="fu">stat_qq_line</span>()</span>
+<span id="cb67-279"><a href="#cb67-279"></a></span>
+<span id="cb67-280"><a href="#cb67-280"></a><span class="fu">mean</span>(time.diff.trim)</span>
+<span id="cb67-281"><a href="#cb67-281"></a><span class="fu">quantile</span>(time.diff.trim, <span class="fu">c</span>(<span class="fl">0.025</span>,<span class="fl">0.975</span>))</span>
+<span id="cb67-282"><a href="#cb67-282"></a><span class="in">```</span></span>
+<span id="cb67-283"><a href="#cb67-283"></a></span>
+<span id="cb67-284"><a href="#cb67-284"></a><span class="fu">### Section 5.5 Other statistics Verizon cont:</span></span>
+<span id="cb67-285"><a href="#cb67-285"></a></span>
+<span id="cb67-286"><a href="#cb67-286"></a>Bootstrap of the ratio of means</span>
+<span id="cb67-287"><a href="#cb67-287"></a></span>
+<span id="cb67-288"><a href="#cb67-288"></a><span class="dt">&lt;</span><span class="kw">tt</span><span class="dt">&gt;</span><span class="in">`Time.ILEC`</span><span class="dt">&lt;/</span><span class="kw">tt</span><span class="dt">&gt;</span> and <span class="dt">&lt;</span><span class="kw">tt</span><span class="dt">&gt;</span><span class="in">`Time.CLEC`</span><span class="dt">&lt;/</span><span class="kw">tt</span><span class="dt">&gt;</span> created above.</span>
+<span id="cb67-289"><a href="#cb67-289"></a></span>
+<span id="cb67-290"><a href="#cb67-290"></a><span class="dt">&lt;</span><span class="kw">tt</span><span class="dt">&gt;</span><span class="in">`n.ILEC`</span><span class="dt">&lt;/</span><span class="kw">tt</span><span class="dt">&gt;</span>, <span class="dt">&lt;</span><span class="kw">tt</span><span class="dt">&gt;</span><span class="in">`n.CLEC`</span><span class="dt">&lt;/</span><span class="kw">tt</span><span class="dt">&gt;</span> created above</span>
+<span id="cb67-291"><a href="#cb67-291"></a></span>
+<span id="cb67-294"><a href="#cb67-294"></a><span class="in">```{r}</span></span>
+<span id="cb67-295"><a href="#cb67-295"></a>N <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">4</span></span>
+<span id="cb67-296"><a href="#cb67-296"></a>time.ratio.mean <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N)</span>
+<span id="cb67-297"><a href="#cb67-297"></a></span>
+<span id="cb67-298"><a href="#cb67-298"></a><span class="co">#set.seed(100)</span></span>
+<span id="cb67-299"><a href="#cb67-299"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N)</span>
+<span id="cb67-300"><a href="#cb67-300"></a>{</span>
+<span id="cb67-301"><a href="#cb67-301"></a>  ILEC.sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(Time.ILEC, n.ILEC, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb67-302"><a href="#cb67-302"></a>  CLEC.sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(Time.CLEC, n.CLEC, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb67-303"><a href="#cb67-303"></a>  time.ratio.mean[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(ILEC.sample)<span class="sc">/</span><span class="fu">mean</span>(CLEC.sample)</span>
+<span id="cb67-304"><a href="#cb67-304"></a>}</span>
+<span id="cb67-305"><a href="#cb67-305"></a></span>
+<span id="cb67-306"><a href="#cb67-306"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(time.ratio.mean), <span class="at">bins =</span> <span class="dv">12</span>) <span class="sc">+</span> </span>
+<span id="cb67-307"><a href="#cb67-307"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"bootstrap distribution of ratio of means"</span>, <span class="at">x =</span> <span class="st">"ratio of means"</span>) <span class="sc">+</span></span>
+<span id="cb67-308"><a href="#cb67-308"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(time.ratio.mean), <span class="at">colour =</span> <span class="st">"red"</span>, <span class="at">lty =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb67-309"><a href="#cb67-309"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept  =</span> <span class="fu">mean</span>(Time.ILEC)<span class="sc">/</span><span class="fu">mean</span>(Time.CLEC), <span class="at">col =</span> <span class="st">"blue"</span>)</span>
+<span id="cb67-310"><a href="#cb67-310"></a></span>
+<span id="cb67-311"><a href="#cb67-311"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> time.ratio.mean)</span>
+<span id="cb67-312"><a href="#cb67-312"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">sample =</span> x)) <span class="sc">+</span> <span class="fu">stat_qq</span>() <span class="sc">+</span> <span class="fu">stat_qq_line</span>()</span>
+<span id="cb67-313"><a href="#cb67-313"></a></span>
+<span id="cb67-314"><a href="#cb67-314"></a><span class="fu">mean</span>(time.ratio.mean)</span>
+<span id="cb67-315"><a href="#cb67-315"></a><span class="fu">sd</span>(time.ratio.mean)</span>
+<span id="cb67-316"><a href="#cb67-316"></a><span class="fu">quantile</span>(time.ratio.mean, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<span id="cb67-317"><a href="#cb67-317"></a><span class="in">```</span></span>
+<span id="cb67-318"><a href="#cb67-318"></a></span>
+<span id="cb67-319"><a href="#cb67-319"></a><span class="fu">### Example 5.7 Relative risk example</span></span>
+<span id="cb67-320"><a href="#cb67-320"></a></span>
+<span id="cb67-323"><a href="#cb67-323"></a><span class="in">```{r}</span></span>
+<span id="cb67-324"><a href="#cb67-324"></a>highbp <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>),<span class="fu">c</span>(<span class="dv">55</span>,<span class="dv">3283</span>))   <span class="co">#high blood pressure</span></span>
+<span id="cb67-325"><a href="#cb67-325"></a>lowbp <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>),<span class="fu">c</span>(<span class="dv">21</span>,<span class="dv">2655</span>))    <span class="co">#low blood pressure</span></span>
+<span id="cb67-326"><a href="#cb67-326"></a></span>
+<span id="cb67-327"><a href="#cb67-327"></a>N <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">4</span></span>
+<span id="cb67-328"><a href="#cb67-328"></a>boot.rr <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N)</span>
+<span id="cb67-329"><a href="#cb67-329"></a>high.prop <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N)</span>
+<span id="cb67-330"><a href="#cb67-330"></a>low.prop <span class="ot">&lt;-</span> <span class="fu">numeric</span>(N)</span>
+<span id="cb67-331"><a href="#cb67-331"></a></span>
+<span id="cb67-332"><a href="#cb67-332"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N)</span>
+<span id="cb67-333"><a href="#cb67-333"></a>{</span>
+<span id="cb67-334"><a href="#cb67-334"></a>   x.high <span class="ot">&lt;-</span> <span class="fu">sample</span>(highbp,<span class="dv">3338</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb67-335"><a href="#cb67-335"></a>   x.low  <span class="ot">&lt;-</span> <span class="fu">sample</span>(lowbp, <span class="dv">2676</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb67-336"><a href="#cb67-336"></a>   high.prop[i] <span class="ot">&lt;-</span> <span class="fu">sum</span>(x.high)<span class="sc">/</span><span class="dv">3338</span></span>
+<span id="cb67-337"><a href="#cb67-337"></a>   low.prop[i]  <span class="ot">&lt;-</span> <span class="fu">sum</span>(x.low)<span class="sc">/</span><span class="dv">2676</span></span>
+<span id="cb67-338"><a href="#cb67-338"></a>   boot.rr[i] <span class="ot">&lt;-</span> high.prop[i]<span class="sc">/</span>low.prop[i]</span>
+<span id="cb67-339"><a href="#cb67-339"></a>}</span>
+<span id="cb67-340"><a href="#cb67-340"></a></span>
+<span id="cb67-341"><a href="#cb67-341"></a>ci <span class="ot">&lt;-</span> <span class="fu">quantile</span>(boot.rr, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<span id="cb67-342"><a href="#cb67-342"></a></span>
+<span id="cb67-343"><a href="#cb67-343"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(boot.rr), <span class="at">bins =</span> <span class="dv">15</span>) <span class="sc">+</span> </span>
+<span id="cb67-344"><a href="#cb67-344"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Bootstrap distribution of relative risk"</span>, <span class="at">x =</span> <span class="st">"relative risk"</span>) <span class="sc">+</span></span>
+<span id="cb67-345"><a href="#cb67-345"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(boot.rr), <span class="at">colour =</span> <span class="st">"mean of bootstrap"</span>)) <span class="sc">+</span></span>
+<span id="cb67-346"><a href="#cb67-346"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> <span class="fl">2.12</span>, <span class="at">colour=</span><span class="st">"observed rr"</span>), <span class="at">lty =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb67-347"><a href="#cb67-347"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">name=</span><span class="st">""</span>, <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"mean of bootstrap"</span><span class="ot">=</span><span class="st">"blue"</span>, <span class="st">"observed rr"</span> <span class="ot">=</span> <span class="st">"red"</span>))</span>
+<span id="cb67-348"><a href="#cb67-348"></a></span>
+<span id="cb67-349"><a href="#cb67-349"></a>temp <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(high.prop <span class="sc">&lt;</span> <span class="fl">1.31775</span><span class="sc">*</span>low.prop, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb67-350"><a href="#cb67-350"></a>temp2 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(high.prop <span class="sc">&gt;</span> <span class="fl">3.687</span><span class="sc">*</span>low.prop, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb67-351"><a href="#cb67-351"></a>temp3 <span class="ot">&lt;-</span> temp <span class="sc">+</span> temp2</span>
+<span id="cb67-352"><a href="#cb67-352"></a></span>
+<span id="cb67-353"><a href="#cb67-353"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">y=</span>high.prop, <span class="at">x=</span>low.prop, temp, temp2, temp3)</span>
+<span id="cb67-354"><a href="#cb67-354"></a>df1 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(temp <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb67-355"><a href="#cb67-355"></a>df2 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">filter</span> (temp2 <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb67-356"><a href="#cb67-356"></a>df3 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(temp3 <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb67-357"><a href="#cb67-357"></a></span>
+<span id="cb67-358"><a href="#cb67-358"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y =</span> y)) <span class="sc">+</span> </span>
+<span id="cb67-359"><a href="#cb67-359"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span>df1, <span class="fu">aes</span>(<span class="at">x=</span> x, <span class="at">y =</span> y), <span class="at">colour =</span> <span class="st">"green"</span>) <span class="sc">+</span> </span>
+<span id="cb67-360"><a href="#cb67-360"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> df2, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">colour =</span> <span class="st">"green"</span>) <span class="sc">+</span> </span>
+<span id="cb67-361"><a href="#cb67-361"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> df3, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span> </span>
+<span id="cb67-362"><a href="#cb67-362"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(low.prop)), <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb67-363"><a href="#cb67-363"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">mean</span>(high.prop), <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span> </span>
+<span id="cb67-364"><a href="#cb67-364"></a>  <span class="fu">geom_abline</span>(<span class="fu">aes</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="fl">2.12</span>, <span class="at">colour =</span> <span class="st">"observed rr"</span>), <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb67-365"><a href="#cb67-365"></a>  <span class="fu">geom_abline</span>(<span class="fu">aes</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> ci[<span class="dv">1</span>], <span class="at">colour =</span> <span class="st">"bootstrap CI"</span>), <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb67-366"><a href="#cb67-366"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> ci[<span class="dv">2</span>], <span class="at">colour =</span> <span class="st">"blue"</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb67-367"><a href="#cb67-367"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">name=</span><span class="st">""</span>, <span class="at">values=</span><span class="fu">c</span>(<span class="st">"observed rr"</span><span class="ot">=</span><span class="st">"black"</span>, <span class="st">"bootstrap CI"</span> <span class="ot">=</span> <span class="st">"blue"</span>)) <span class="sc">+</span></span>
+<span id="cb67-368"><a href="#cb67-368"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Proportion in low blood pressure group"</span>, <span class="at">y =</span> <span class="st">"Proportion in high blood pressure group"</span>)</span>
+<span id="cb67-369"><a href="#cb67-369"></a><span class="in">```</span></span>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>License: <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</a></p>
+</div>   
+    <div class="nav-footer-center">
+<p>Website made with ❤️ and <a href="https://quarto.org/">Quarto</a>, by Arvind V.</p>
+</div>
+    <div class="nav-footer-right">
+<p>Hosted by Netlify <a href="https://www.netlify.com"><iconify-icon inline="" icon="simple-icons:netlify" aria-label="Icon netlify from simple-icons Iconify.design set." title="Icon netlify from simple-icons Iconify.design set."></iconify-icon></a>.</p>
+</div>
+  </div>
+</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"right","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+<script src="../../../../../../../site_libs/quarto-html/zenscroll-min.js"></script>
+<script src="../../../../../../../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.js" defer="true"></script>
+</body></html>

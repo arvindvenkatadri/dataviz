@@ -1,0 +1,1140 @@
+---
+title: <iconify-icon icon="carbon:summary-kpi" width="1.2em" height="1.2em"></iconify-icon> Summaries
+subtitle:  "Throwing away data to grasp it"
+abstract: "Bill Gates walked into a bar, and everyone's salary went up on average."
+author: "Arvind V."
+date: 15/Oct/2023
+date-modified: "`r Sys.Date()`"
+order: 10
+image: preview.png
+image-alt: Image by rawpixel.com
+categories:
+- Qual Variables
+- Quant Variables
+- Mean
+- Median
+- Standard Deviation
+- Quartiles
+bibliography: 
+  - references.bib
+  - grateful-refs.bib
+citation: true
+editor: 
+  markdown: 
+    wrap: 72
+webr:
+  packages: ['readr', 'dplyr','forcats','mosaic', 'skimr', 'ggformula']
+---
+
+
+:::: {.pa4}
+::: {.athelas .ml0 .mt0 .pl4 .black-90 .bl .bw2 .b--blue}
+["The most certain sign of wisdom is cheerfulness."]{.f5 .f4-m .f3-l .lh-copy .measure .mt0}
+
+[ --- Michel de Montaigne, Writer and philosopher]{.f6 .ttu .tracked .fs-normal}
+:::
+::::
+
+
+## {{< iconify mdi web-check >}} Using web-R
+This tutorial uses `web-r` that allows you to run all code within your browser, on all devices. Most code chunks herein are formatted in a tabbed structure (like in an old-fashioned library) with duplicated code. The tabs in front have regular R code that will work when copy-pasted in your RStudio session. The tab "behind" has the `web-R` code that can work directly in your browser, and can be modified as well. The R code is also there to make sure you have original code to go back to, when you have made several modifications to the code on the `web-r` tabs and need to compare your code with the original!
+
+#### Keyboard Shortcuts
+
+- Run selected code using either:
+  - macOS: <kbd>⌘</kbd> + <kbd>↩/Return</kbd>
+  - Windows/Linux: <kbd>Ctrl</kbd> + <kbd>↩/Enter</kbd>
+- Run the entire code by clicking the "Run code" button or pressing <kbd>Shift</kbd>+<kbd>↩</kbd>. 
+
+:::: {.pa4}
+::: {.athelas .ml0 .mt0 .pl4 .black-90 .bl .bw2 .b--blue}
+["The best attitude to adopt is one of compassionate patience, which has to include a tolerance for failure."]{.f5 .f4-m .f3-l .lh-copy .measure .mt0}
+
+[ --- Gabor Maté]{.f6 .ttu .tracked .fs-normal}
+:::
+::::
+
+
+## {{< iconify noto-v1 package >}} Setting up R Packages
+
+```{r}
+#| label: setup
+#| include: true
+#| message: false
+#| warning: false
+
+library(mosaic) # Our all-in-one package
+library(skimr) # Looking at data
+library(tinytable) # Printing Tables for our data
+library(tidyverse)
+
+```
+
+```{r}
+#| label: Themes and Extra Packages
+#| echo: false
+#| message: false
+library(checkdown)
+library(epoxy)
+library(explore) # fake data generation
+library(grateful)
+# library(conflicted)
+# conflicts_prefer(dplyr::filter, dplyr::last, dplyr::glimpse, base::max)
+library(downloadthis)
+#devtools::install_github("mccarthy-m-g/embedr")
+library(embedr) # Embed multimedia in HTML files
+
+```
+
+```{webr-r}
+#| context: setup
+# Read the data
+docVisits <- read.csv("https://vincentarelbundock.github.io/Rdatasets/csv/AER/DoctorVisits.csv")
+
+```
+
+#### Plot Fonts and Theme
+
+```{r}
+#| label: plot-theme
+#| echo: true
+#| code-fold: true
+#| messages: false
+#| warning: false
+
+library(systemfonts)
+library(showtext)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+showtext_auto(enable = TRUE) #enable showtext
+##
+theme_custom <- function(){ 
+    font <- "Alegreya"   #assign font family up front
+    '%+replace%' <- ggplot2::'%+replace%' # nolint
+        
+    theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
+    
+    theme(
+      text = element_text(family = font),  #set base font family
+      
+      #text elements
+      plot.title = element_text(                 #title
+                   family = font,          #set font family
+                   size = 24,                    #set font size
+                   face = 'bold',                #bold typeface
+                   hjust = 0,                    #left align
+                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
+      plot.title.position = "plot", 
+      
+      plot.subtitle = element_text(              #subtitle
+                   family = font,          #font family
+                   size = 14,                   #font size
+                   hjust = 0,                   #left align
+                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
+      
+      plot.caption = element_text(               #caption
+                   family = font,          #font family
+                   size = 9,                     #font size
+                   hjust = 1),                   #right align
+      
+      plot.caption.position = "plot",            #right align
+      
+      axis.title = element_text(                 #axis titles
+                   family = "Roboto Condensed",  #font family
+                   size = 12),                   #font size
+      
+      axis.text = element_text(                  #axis text
+                   family = "Roboto Condensed",  #font family
+                   size = 9),                    #font size
+      
+      axis.text.x = element_text(                #margin for axis text
+                    margin = margin(5, b = 10))
+      
+      #since the legend often requires manual tweaking 
+      #based on plot content, don't define it here
+    )
+}
+
+## Use available fonts in ggplot text geoms too!
+update_geom_defaults(geom = "text",new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+## Set the theme
+theme_set(new = theme_custom())
+
+```
+
+
+
+
+## {{< iconify fxemoji japanesesymbolforbeginner >}} How do we Grasp Data?
+
+We spoke of Experiments and Data Gathering in the first module [Nature of Data](../05-NatureData/index.qmd#sec-where-data). This helped us to **obtain** data.
+
+As we discussed in that same Module, for us to grasp the significance of
+the data, we need to **describe** it; the actual data is usually too
+vast for us to comprehend in its entirety. Anything more than a handful
+of observations in a dataset is enough for us to require other ways of
+grasping it.
+
+The first thing we need to do, therefore, is to reduce it to a few
+salient numbers that allow us to summarize the data.
+
+::: callout-important
+## Reduction is Addition
+
+Such a **reduction** may seem paradoxical but is one of the important
+tenets of statistics: reduction, while taking away information, ends up
+*adding* to insight.
+
+Steven @stigler2016 is the author of the book "*The Seven Pillars of
+Statistical Wisdom*". One of the *Big Ideas in Statistics* from that
+book is: **Aggregation**
+
+> The first pillar I will call Aggregation, although it could just as
+> well be given the nineteenth-century name, "The Combination of
+> Observations," or even reduced to the simplest example, taking a mean.
+> Those simple names are misleading, in that I refer to an idea that is
+> now old but was truly revolutionary in an earlier day---and it still
+> is so today, whenever it reaches into a new area of application. How
+> is it revolutionary? By stipulating that, given a number of
+> observations, you can actually gain information by **throwing
+> information away**! In taking a simple arithmetic mean, we discard the
+> individuality of the measures, subsuming them to one summary.
+:::
+
+Let us get some inspiration from Brad Pitt, from the movie [Moneyball](https://www.netflix.com/in/title/70201437), which is about applying Data Analytics to the game of baseball.
+
+{{< video https://www.youtube-nocookie.com/embed/PlKDQqKh03Y >}}
+And then, an example from a more sombre story:
+
+```{r}
+#| echo: false
+#| label: tbl-table-1
+literacy <- readxl::read_xlsx("../../../../../materials/Data/US_literacy_SETables.xlsx",sheet = "S1",skip = 3) %>% 
+  select(-c(2,3),-contains("S.E.")) %>% 
+  rename("Numbers" = `...1`,
+         "BelowLevel1" = `Estimate...4`,
+         "Level1" = `Estimate...6`,
+         "Level2" = `Estimate...8`,
+         "Level3" = `Estimate...10`,
+         "Level4/5" = `Estimate...12`) %>% 
+  filter(str_detect(pattern = "Number",Numbers))
+
+literacy %>% 
+  kbl(caption = "US Population: Reading and Numeracy Levels", digits = 2,
+      align = "c",centering = T,
+      col.names = c("Year", "Below Level #1", "Level #1", "Level #2", "Level #3", "Levels #4 and #5")) %>% 
+  kable_paper(full_width = F, html_font = "Noto") %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), position = "float_right") %>% 
+  column_spec(2:4, bold = T) %>%
+  row_spec(1:2, bold = T, color = "white", background = "#D7261E") %>% 
+    footnote(general = "SOURCE: U.S. Department of Education, National Center for Education Statistics, Program for the International Assessment of Adult Competencies (PIAAC), U.S. PIAAC 2017, U.S. PIAAC 2012/2014.")
+```
+
+This ghastly-looking @tbl-table-1 examines U.S. adults with **low English literacy and numeracy skills**—or low-skilled adults—at two points in the 2010s, in the years 2012/20141 and 2017, using data from the Program for the [International Assessment of Adult Competencies (PIAAC)](https://gpseducation.oecd.org/Home). As can be seen the summary table is quite surprising in absolute terms, for a developed country like the US, and the numbers have *increased* from 2012/2014 to 2017!
+
+So why do we need to summarise data? Summarization is an act of *throwing away data to make more sense*, as stated by [@stigler2016] and also in the movie by [Brad Pitt aka Billy Beane](https://www.netflix.com/in/title/70201437). **To summarize is to understand**. Add to that the fact that our [Working Memories can hold maybe 7 items](https://www.wikiwand.com/en/The_Magical_Number_Seven,_Plus_or_Minus_Two), so it means information retention too.
+
+And if we don't summarise? [Jorge Luis Borges](https://www.wikiwand.com/en/Jorge_Luis_Borges), in a fantasy short story published in 1942, titled [“Funes the Memorious,”](https://www.sas.upenn.edu/~cavitch/pdf-library/Borges_FunesTheMemorious.pdf) he described a man, Ireneo Funes, who found after an accident that he could remember absolutely everything. He could reconstruct every day in the smallest detail, and he could even later reconstruct the reconstruction, but he was incapable of understanding. Borges wrote, “To think is to **forget details, generalize, make abstractions**. In the teeming world of Funes, there were only details.” (emphasis mine)
+
+Aggregation can yield great gains above the individual components in data. Funes was big data without Statistics.
+
+## {{< iconify fe beginner >}} What graphs / numbers will we see today?
+
+| Variable #1 | Variable #2 |       Chart Names        |                                                                             "Chart Shape"                                                                              |
+|:-----------:|:-----------:|:------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+|     All     |     All     | Tables and Stat Measures | {{< iconify material-symbols table-chart-outline size=4x >}} {{< iconify tabler ruler-measure size=4x >}} {{< iconify lucide square-sigma size=4x >}}|
+
+Before we plot a single chart, it is wise to take a look at several numbers that summarize the dataset under consideration. What might these be? Some obviously useful numbers are:
+
+-   Dataset length: How many rows/observations?
+-   Dataset breadth: How many columns/variables?
+-   How many Quant variables?
+-   How many Qual variables?
+-   Quant variables: min, max, mean, median, sd
+-   Qual variables: levels, counts per level
+-   Both: means, medians for each level of a Qual variable...
+
+## {{< iconify tabler variable >}} What kind of Data Variables will we choose?
+
+::: column-page-inset-right
+```{r}
+#| message: false
+#| echo: false
+#| warning: false
+read_csv("../../../../../materials/Data/pronouns.csv") %>% 
+  #filter(No == "1") %>% 
+  kbl() %>%
+  kable_paper(c("striped","hover","responsive"), full_width = T)
+  
+```
+:::
+
+We will obviously choose *all* variables in the dataset, unless they are unrelated ones such as `row number` or `ID` which (we think) may not contribute any information and we can disregard.
+
+
+## {{< iconify mdi food-processor-outline >}} How do these Summaries Work?
+
+**Quant variables**: Inspecting the `min`, `max`, [`mean`](https://openintro-ims.netlify.app/explore-numerical#sec-dotplots), [`median`](https://openintro-ims.netlify.app/explore-numerical#sec-boxplots), [`variance` and `sd`](https://openintro-ims.netlify.app/explore-numerical#sec-variance-sd) of each of the Quant variables tells us straightaway what the ranges of the variables are, and if there are some outliers, which could be normal, or maybe due to data entry error! Comparing two Quant variables for their ranges also tells us that we may have to $scale/normalize$ them for computational ease, if one variable has large numbers and the other has very small ones.
+
+**Qual variables**: With Qual variables, we understand the `levels` within each, and understand the total number of combinations of the levels across these. `Counts` **across levels, and across combinations of levels** tells us whether the data has sufficient readings for graphing, inference, and decision-making, of if certain levels/classes of data are under or over represented. 
+
+**Together?**: We can use Quant and Qual together, to develop the above summaries (`min`, `max`,`mean`, `median` and `sd`) for Quant variables, again **across levels, and across combinations of levels** of single or multiple Quals, along with `counts` if we are interested in that. 
+
+For both types of variables, we need to keep an eye open for data entries that are *missing*! This may point to data gathering errors, which may be fixable. Or we will have to take a decision to let go of that entire observation (i.e. a row). Or even do what is called *imputation* to fill in values that are based on the other values in the same column, which sounds like we are making up data, but isn't so really. 
+
+And this may also tell us if we are witnessing a [Simpson's Paradox situation](../30-Correlations/index.qmd#simpsons-paradox).  You may have to decide on what to do with this data sparseness, or just check your biases!
+
+
+## {{< iconify wpf define-location >}} Some Quick Definitions
+
+::: callout-important
+### Mean
+The sample mean, or average, of a Quantitative data variable can be calculated as the sum of the observed values divided by the number of observations:
+
+$$
+mean = \bar{x} = \frac{x_1 + x_2+ x_3....+x_n}{n}
+$$
+:::
+
+::: callout-important
+### Variance and Standard Deviation
+Observations can be on either side of the mean, naturally. To measure the extent of these differences, we square and sum the differences between individual values and their mean, and take **their** average to obtain the (sample) `variance`:
+
+$$
+variance = s^2 = \frac{(x_1 - \bar{x})^2 + (x_2 - \bar{x})^2 + (x_2 - \bar{x})^2 +...(x_n - \bar{x})^2 +}{n-1}
+$$
+The standard deviation $s$ is just the square root of the variance. 
+
+:::
+
+(The $n-1$ is a [*mathematical nuance*](https://openintro-ims.netlify.app/explore-numerical#sec-variance-sd) to allow for the fact that we have used the data to calculate the mean before we get to $s^2$, and hence have "used up" one degree of randomness in the data. It gets us more robust results.)
+
+::: callout-important
+### Median
+When the observations in a Quant variable are placed in order of their maginitude, the observation in tke middle is the `median`. Half the observations are below, and half are above, the `median`
+:::
+
+## {{< iconify grommet-icons test >}} Case Study-1
+
+We will first use a dataset `mpg` that is available in R as part of one
+of the R packages that we have loaded with the `library()` command.
+
+### {{< iconify file-icons influxdata >}} Examine the Data
+
+It is usually a good idea to make crisp business-like tables, for the
+data itself, and the *schema* as revealed by one of the outputs of the
+three methods to be presented below. There are many methods to do this; 
+one of the simplest and effective ones is to use the `kable` set of commands from the `knitr` and [`kableExtra` package](https://bookdown.org/yihui/rmarkdown-cookbook/kableextra.html )package:
+
+
+```{r}
+#| label: tinytable-for-data-1
+#| eval: false
+mpg %>%
+  head(10) %>% 
+  tt(theme = c("striped")) %>%
+  setNames(c("Manufacturer", "Model", "Engine\nDisplacement", 
+                    "Model\n Year", "Cylinders", "Transmission",
+                    "Drivetrain", "City\n Mileage", "Highway\n Mileage",
+                    "Fuel", "Class\nOf\nVehicle")) 
+
+```
+
+```{r}
+#| label: kable-for-data-1
+mpg %>% 
+  head(10) %>%
+  kbl(
+    # add Human Readable column names
+    col.names = c("Manufacturer", "Model", "Engine\nDisplacement", 
+                    "Model\n Year", "Cylinders", "Transmission",
+                    "Drivetrain", "City\n Mileage", "Highway\n Mileage",
+                    "Fuel", "Class\nOf\nVehicle"), 
+    caption = "MPG Dataset") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", 
+                                      "condensed", "responsive"),
+                full_width = F, position = "center")
+
+```
+
+Next we will look at a few *favourite statistics* or
+"favstats" that we can derive from data. R is full of packages that can
+provide very evocative and effective summaries of data. We will first
+start with the `dplyr` package from the tidyverse, the `skimr` package,
+then the `mosaic` package. We will look at the summary outputs from
+these and learn how to interpret them.
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
+
+#### Using dplyr::glimpse()
+
+The `dplyr` package offers a convenient command called `glimpse`:
+
+```{r}
+#| label: glimpse-1
+glimpse(mpg)
+
+```
+
+::: callout-note
+
+- Very crisp output, giving us the size of the dataset (234 X 11) and the
+nature of the variable columns, along with their first few entries. 
+- The `chr` variables are usually *Categorical/Qualitative*.
+- The `int` or `dbl` (double precision) are usually *Numerical/Quantitative*. 
+- But be careful! *Verify that this is as per your intent, interpret the variables and modify their encoding as needed.*
+:::
+
+
+#### Using skimr::skim()
+
+Let us look at `mpg`using `skimr::skim()`.
+
+From the output of `?skimr`:
+
+> The format of the results are a single wide data frame combining the
+> results, with some additional attributes and two metadata columns:
+
+-   `skim_variable`: name of the original variable
+-   `skim_type`: class of the variable
+
+We can use `skim(dataset)` directly as shown below:
+
+```{r}
+skimr::skim(mpg) # explicitly stating package name
+
+```
+
+Taken together, we have the following:
+
+::: callout-note
+
+-   A *Data Summary*: it lists the dimensions of the `mpg` dataset: 234
+    rows and 11 columns. 6 columns are character formatted, the
+    remaining 5 are numeric. The dataset is not "grouped" (more on this
+    later).
+
+-   The second part of the output shows a table with the `character`
+    variables which are therefore `factor` variables with `levels`.
+
+-   The third part shows a table listing the names and summary stats for
+    the `numerical` variables. We have `mean`, `sd`, all the quantiles
+    (p0, p25, p50(median), p75 and p100 percentiles) and **a neat little
+    histogram** for each. From the histogram we can see that `year` is
+    two-valued, `cyl` is three-valued, and `cty` and `hwy` are
+    continuous... Again check that this is as you intend them to be. We
+    may need to modify the encoding if needed.
+:::
+
+#### Using mosaic::inspect()
+
+We get very similar output from `mosaic::inspect()`:
+
+```{r}
+#| label: inspect-mpg
+
+inspect(mpg)
+
+```
+
+::: callout-note
+
+We see that the output of `mosaic::inspect()` is organized as follows:
+
+-   There are two dataframes/tables in the output, one describing the
+    *Qualitative Variables* and the other describing the *Quantitative
+    Variables*.
+-   In the table describing the Qual variables, we have:
+    -   `name`: Name of the variable in the (parent) dataset. i.e Column
+        Names
+    -   `class`: format of that column
+    -   `levels`: All these variables are factors, with levels shown
+        here. Some for example, `manufacturer` has 15 levels, and there
+        are 234 rows
+
+`inspect` also conveniently shows how much data is **missing** and in
+which variables. This is a very important consideration in the use of
+the data for analytics purposes.
+:::
+
+We can save and see the outputs separately:
+
+```{r mpg-inspect-2, eval=FALSE}
+
+mpg_describe <- inspect(mpg)
+mpg_describe$categorical
+mpg_describe$quantitative
+
+```
+
+
+#### {{< iconify noto-v1 spider-web >}} web-r
+
+```{webr-r}
+mpg %>% dplyr::glimpse()
+```
+
+```{webr-r}
+mpg %>% mosaic::inspect()
+```
+
+```{webr-r}
+mpg %>% skimr::skim()
+```
+
+:::
+
+### {{< iconify streamline dictionary-language-book-solid >}} Data Dictionary and Munging
+Using `skim`/`inspect`/`glimpse`, we can put together a (brief) data dictionary as follows:
+
+::: callout-note
+### Qualitative Data
+- `model`(chr): Car model name
+- `manufacturer`(chr): Car maker name
+- `fl`(chr): fuel type
+- `drv`(chr): type of drive(front, rear, 4W)
+- `class`(chr): type of vehicle ( sedan, pickup...)
+- `trans`(chr): type of transmission ( auto, manual..)
+
+:::
+
+::: callout-note
+### Quantitative Data
+- `hwy`(int): Highway Mileage
+- `cty`(int): City Mileage
+- `cyl`(int): Number of Cylinders. How do we understand this variable? Should this be Qual?
+- `displ`(dbl): Engine piston displacement
+- `year`(int): Year of model
+
+:::
+
+
+We see that there are certain variables that must be converted to **factors** for analytics purposes, since they are unmistakably **Qualitative** in nature. Let us do that now, for use later:
+
+
+```{r}
+mpg_modified <- mpg %>% 
+  dplyr::mutate(cyl = as_factor(cyl),
+                fl = as_factor(fl),
+                drv = as_factor(drv),
+                class = as_factor(class),
+                trans = as_factor(trans))
+glimpse(mpg_modified)
+
+```
+
+```{webr-r}
+mpg_modified <- mpg %>% 
+  dplyr::mutate(cyl = as_factor(cyl),
+                fl = as_factor(fl),
+                drv = as_factor(drv),
+                class = as_factor(class),
+                trans = as_factor(trans))
+glimpse(mpg_modified)
+
+```
+
+## {{< iconify grommet-icons test >}} Case Study-2
+
+Instead of taking a "built-in" dataset , i.e. one that is part of an R
+package that we can load with `library()`, let us try the above process
+with a data set that we obtain from the internet. We will use this
+superb repository of datasets created by Vincent Arel-Bundock:
+<https://vincentarelbundock.github.io/Rdatasets/articles/data.html>
+
+Let us choose a modest-sized dataset, say this dataset on
+`Doctor Visits`, which is available online
+<https://vincentarelbundock.github.io/Rdatasets/csv/AER/DoctorVisits.csv> and
+read it into R.
+
+::: callout-important
+### Reading external data into R
+
+The `read_csv()` command from R package `readr` allows us to read both locally saved data on our hard disk, or data available in a shared
+folder online.
+**Avoid using the `read.csv()` from base R **, though it will show up in your code auto-complete set of options! 
+:::
+
+```{r}
+#| message: true
+# From Vincent Arel-Bundock's dataset website
+# https://vincentarelbundock.github.io/Rdatasets
+# 
+# read_csv can read data directly from the net
+# Don't use read.csv()
+docVisits <- read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/AER/DoctorVisits.csv")
+
+```
+
+So, a data frame containing 5,190 observations on 12 variables.
+
+::: callout-note
+### How about a locally stored CSV file?
+We can also use a locally downloaded and stored CSV file. Assuming the file is stored in a subfolder called `data` inside your `R project` folder, we can proceed as follows:
+
+```{r}
+#| echo: fenced
+#| eval: false
+docVisits <- read_csv("data/DoctorVisits.csv")
+
+```
+
+:::
+Let us quickly report the data itself, as in a real report. Note that we can use the features of the `kableExtra` package to dress up this table too!!
+
+```{r}
+#| label: kable-for-data02
+docVisits %>%
+  head(10) %>%
+  kbl(caption = "Doctor Visits Dataset",
+      # Add Human Readable Names if desired
+      # col.names(..names that you may want..)
+      ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover",
+                          "condensed", "responsive"),
+    full_width = F, position = "center")
+
+```
+
+
+### {{< iconify file-icons influxdata >}} Examine the Data
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
+
+#### Using dplyr::glimpse()
+
+```{r}
+#| label: glimpse-2
+glimpse(docVisits)
+```
+
+::: callout-note
+#### Descriptive Stat Summary from `dplyr::glimpse()`
+
+Very crisp output, giving us the size of the dataset (5190 X 13) and the
+nature of the variable columns, along with their first few entries.
+There are several Quantitative variables: `visits`, `age`, `income`, `illness`, `reduced` and `health`; the rest seem to be Qualitative variables. 
+
+Always document your data with variable descriptions when you share it, a **data dictionary**!
+
+:::
+
+
+#### Using skimr::skim()
+
+```{r}
+#| label: skim-2
+skim(docVisits) %>% kbl()
+```
+
+::: callout-note
+### Descriptive Stat Summary from `skimr::skim()`
+
+-   A *Data Summary*: it lists the dimensions of the `docVisits`
+    dataset: 5190 rows and 13 columns. 6 columns are character
+    formatted, the remaining 7 are numeric. The dataset is not "grouped"
+    (more on this later).
+
+-   The second part of the output shows a table with the `character`
+    variables which are therefore `factor` variables with `levels`.
+
+-   The third part shows a table listing the names and summary stats for
+    the `numerical` variables. We have `mean`, `sd`, all the quantiles
+    (p0, p25, p50(median), p75 and p100 percentiles) and **a neat little
+    histogram** for each.
+    
+-   Can we consider the `health` Goldberg score a Qualitative variable, to be understood as "ranks" between a minimum and maximum? It is just possible...
+:::
+
+#### Using mosaic::inspect()
+
+```{r}
+#| label: inspect-2
+inspect(docVisits)
+```
+
+::: callout-note
+### Descriptive Stat Summary from `mosaic::inspect()`
+
+We see that the output of `mosaic::inspect()` is organized very
+similarly to the output from `skim`. Is there any missing data? Both
+`skim` and `mosaic` report on the data completion for each variable in
+the dataset.
+
+:::
+
+
+#### {{< iconify noto-v1 spider-web >}} web-r
+
+```{webr-r}
+docVisits %>% glimpse()
+```
+
+```{webr-r}
+docVisits %>% inspect()
+```
+
+```{webr-r}
+docVisits %>% skim()
+```
+
+
+:::
+
+### {{< iconify streamline dictionary-language-book-solid >}} Data Dictionary
+
+| Variable   | Description                                                                                                     |
+|------------|------------------------------------------------------------|
+| visits     | Number of doctor visits in past 2 weeks.                                                                        |
+| gender     | Factor indicating gender.                                                                                       |
+| age        | Age in years divided by 100.                                                                                    |
+| income     | Annual income in tens of thousands of dollars.                                                                  |
+| illness    | Number of illnesses in past 2 weeks.                                                                            |
+| reduced    | Number of days of reduced activity in past 2 weeks due to illness or injury.                                    |
+| health     | General health questionnaire score using Goldberg's method.                                                     |
+| private    | Factor. Does the individual have private health docVisits?                                                      |
+| freepoor   | Factor. Does the individual have free government health docVisits due to low income?                            |
+| freerepat  | Factor. Does the individual have free government health docVisits due to old age, disability or veteran status? |
+| nchronic   | Factor. Is there a chronic condition not limiting activity?                                                     |
+| lchronic   | Factor. Is there a chronic condition limiting activity?                                                         |
+
+Here too, we should convert the variables that are obviously Qualitative into *factors*, ordered or otherwise:
+
+```{r}
+docVisits_modified <-  docVisits %>% 
+  mutate(gender = as_factor(gender),
+         private = as_factor(private),
+         freepoor = as_factor(freepoor),
+         freerepat = as_factor(freerepat),
+         nchronic = as_factor(nchronic),
+         lchronic = as_factor(lchronic))
+docVisits_modified
+```
+
+
+```{webr-r}
+docVisits_modified <-  docVisits %>% 
+  mutate(gender = as_factor(gender),
+         private = as_factor(private),
+         freepoor = as_factor(freepoor),
+         freerepat = as_factor(freerepat),
+         nchronic = as_factor(nchronic),
+         lchronic = as_factor(lchronic))
+glimpse(docVisits_modified)
+
+```
+
+## {{< iconify mdi-light group >}} {{< iconify mdi counting-5 >}} Groups and Counts of Qualitative Variables
+
+What is the most important dialogue uttered in the movie ["Sholay"](https://youtu.be/chi9hsfYcDE)?
+
+Recall our discussion in [Types of Data Variables](.../../../05-NatureData/index.qmd#sec-data-types). We 
+have looked at *means, limits, and percentiles* of **Quantitative**
+variables. Another good idea to examine datasets is to look at *counts, proportions, and frequencies* with respect to **Qualitative** variables. 
+
+We typically do this with the `dplyr` package from the `tidyverse`.
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
+
+### mpg dataset
+
+```{r}
+#| label: mpg-counts-and-tables
+
+mpg_modified %>% dplyr::count(cyl)
+mpg_modified %>% mosaic::count(drv) # does the same thing! Counts!
+mpg_modified %>% count(fl)
+
+### All combinations of cut, color, clarity
+### Overwhelming??
+mpg_modified %>% 
+  count(across(where(is.factor)))
+
+```
+
+::: callout-note
+### Business Insights from Groups and Counts (`mpg`)
+
+- We see that the groups for each level of `cyl`, `drv`, and `fl`
+are not the same size: for instance the group with [the "r"-level `fl` type](https://stackoverflow.com/q/25548656) is
+largest at 168 observations, and the "r"-level  in `drv` has only 25 observations.
+
+- Group counts based on `cyl` are also not balanced.
+
+- Counting all combinations of these three `factors` shows counts of 1 for several combination and does not lead to any decent amount of aggregation. 
+
+These aspects may need to be factored into downstream modelling or
+machine learning tasks. (Usually by stratification wrt levels of the
+Qualitative variables)
+
+The levels are not too many, so tables work, and so would bar charts,
+which we will examine next. If there are too many levels in any factor,
+tables are a better option. Bar charts can still be plotted, but it may
+be preferable to `lump` smaller categories/levels together. (Using the
+`forcats` package)
+:::
+
+### docVisits dataset
+
+```{r}
+#| label: docVisits-counts-and-tables-1
+## Counting by the obvious factor variables
+docVisits %>% count(gender)
+docVisits %>% count(private)
+docVisits %>% count(freepoor)
+docVisits %>% count(freerepat)
+docVisits %>% count(lchronic)
+docVisits %>% count(nchronic)
+
+```
+
+```{r}
+#| label: docVisits-counts-and-tables-2
+# Now for all Combinations...
+# Maybe too much to digest...
+docVisits %>% count(across(where(is.character)))
+# Shall we try counting by some variables that might be factors?
+# Even if they are labeled as <dbl>?
+# 
+docVisits %>% count(illness)
+docVisits %>% count(health)
+
+```
+
+::: callout-note
+### Business Insights from Groups and Counts (`docVisits`)
+
+- Most of the counts are roughly balanced across the *levels* of the factors; however, `freepoor` and `lchronic` show unbalanced counts...
+
+- The factors are too numerous for a combination count table to very useful..
+
+- Counting by `illness` and `health` does show that these two columns have a limited set of integer entries across over 5000 rows!! So these can be thought of as factors if needed in the analysis. So not every integer variable is necessaily a number!!
+
+:::
+
+### {{< iconify noto-v1 spider-web >}} web-r
+```{webr-r}
+ mpg_modified %>% mosaic::count(cyl)
+```
+
+```{webr-r}
+docVisits_modified %>% count(illness)
+```
+
+```{webr-r}
+docVisits_modified %>% count(health)
+```
+
+```{webr-r}
+docVisits %>% 
+  count(across(where(is.character)))
+```
+
+
+:::
+
+## {{< iconify vaadin group >}} {{< iconify carbon summary-kpi >}} Groups and Summaries of Quantitative Variables
+
+We saw that we could obtain **numerical summary stats** such as `means, medians, quartiles, maximum/minimum` of **entire** Quantitative variables, i.e the complete column. However, we often need identical numerical summary stats of parts of a Quantitative variable. Why?
+
+Note that we have *Qualitative* variables as well in a typical dataset. These Qual variables help us to **group** the entire dataset based on their combinations of **levels**. We can now think of *summarizing Quant variables* within each such group. 
+
+Let us work through these ideas for both our familiar datasets.
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
+
+### mpg dataset
+
+```{r}
+#| label: mean-hwy-over-Qual-vars
+mpg_modified %>% 
+  group_by(cyl) %>% 
+  summarize(average_hwy = mean(hwy), count = n())
+
+mpg_modified %>% 
+  group_by(cyl, fl) %>% 
+  summarize(average_hwy = mean(hwy), count = n())
+
+# Perhaps the best method for us!
+mpg_modified %>% 
+  mosaic::favstats(hwy ~ cyl, data = .) # Don't use fav_stats with formula!!!
+
+# Be aware of the first column format here!
+mpg_modified %>% 
+  mosaic::favstats(hwy ~ cyl + fl, data = .) # Don't use fav_stats with formula!!!
+
+```
+::: callout-note
+### Business Insights from Grouped Quant Summaries (`mpg`)
+- We have quite some variation of mean_hwy mileage over `cyl` , though the groups/level are quite imbalanced. This is of course a small dataset. 
+- The number of groups are large enough (>> 7!) to warrant a chart, which we will make in our next module on [Distributions](.../../../22-Histograms/index.qmd).
+- Mean `price` varies quite some based on `cyl`and `fl`. Some groups are non-existent, hence we see "NA" and "NaN" in the output of `mosaic::favstats`.; and also on *combinations* of `cyl:fl`. This should point to the existence of some [*interaction effect*](https://www.jmp.com/en_in/statistics-knowledge-portal/what-is-multiple-regression/mlr-with-interactions.html) when modelling for price. 
+
+
+:::
+
+### docvisits dataset
+
+```{r}
+#| label: summaries-over-levels-of-Qual
+
+docVisits_modified %>%
+  group_by(gender) %>% 
+  summarize(average_visits = mean(visits), count = n())
+##
+docVisits_modified %>%
+  group_by(gender) %>% 
+  summarize(average_visits = mean(visits), count = n())
+##
+docVisits_modified %>% 
+  group_by(freepoor,nchronic) %>% 
+  summarise(mean_income = mean(income),
+            average_visits = mean(visits),
+            count = n())
+##
+docVisits_modified %>% 
+  mosaic::favstats(income ~ gender, data = .) # Don't use fav_stats with formula!!!
+##
+docVisits_modified %>% 
+  mosaic::favstats(income ~ freepoor + nchronic, data = .) # Don't use fav_stats with formula!!!
+
+```
+::: callout-note
+### Business Insights from Grouped Quant Summaries (`docVisits`)
+
+Clearly the people who are `freepoor` ( On Govt Insurance) AND with a chronic condition are those who have lower average income and a higher average number of visits to the doctor...but there are relatively few of them (n = 55) in this dataset. 
+
+:::
+
+
+### {{< iconify noto-v1 spider-web >}} web-r
+
+```{webr-r}
+
+mpg_modified %>% 
+  mosaic::favstats(hwy ~ cyl, data = .) # Don't use fav_stats with formula!!!
+##
+mpg_modified %>% 
+  mosaic::favstats(hwy ~ cyl + fl, data = .) # Don't use fav_stats with formula!!!
+
+##
+docVisits_modified %>% 
+  mosaic::favstats(income ~ gender, data = .)
+##
+docVisits_modified %>% 
+  mosaic::favstats(income ~ freepoor + nchronic, data = .)
+
+
+```
+:::
+
+
+## {{< fa folder-open >}} More on dplyr
+
+The `dplyr` package is capable of doing much more than just `count`, `group_by` and `summarize`. We will encounter this package many times more as we build our intuition about data visualization. A full tutorial on `dplyr` is linked to the icon below: 
+
+| <a href="https://av-quarto.netlify.app/content/labs/r-labs/tidy/dplyr"><iconify-icon icon="carbon:data-blob"></iconify-icon> `dplyr` Tutorial</a> |
+|--------------------------------------------------------------|
+
+## {{< iconify mdi table-star >}} Reporting Tables for Data and the Data Schema
+
+::: callout-important
+### Data and the Data Schema are Different!!
+
+Note that all the three methods (`dplyr::glimpse()`, `skimr::skim()`, and `mosaic::inspect()`)  report the **schema** of the original
+dataframe. The schema are also **formatted as data frames**! However
+they do not "contain" the original data! Do not confuse between the data
+and it's reported schema!
+:::
+
+As stated earlier, it is usually a good idea to make crisp business-like tables, for the data itself, and of the *schema* as revealed by one of the outputs of the
+three methods (`glimpse/skim/inspect`) presented above. There are many table-making methods in R to do this; one of
+the simplest and effective ones is to use the `kable` set of commands
+from the `knitr` and `kableExtra` packages that we have installed already:
+
+```{r}
+#| label: tinytable-for-data-1
+```
+
+```{r}
+#| label: kable-for-data-2
+mpg %>% 
+  head(10) %>%
+  kbl(col.names = c("Manufacturer", "Model", "Engine\nDisplacement", 
+                    "Model\n Year", "Cylinders", "Transmission",
+                    "Drivetrain", "City\n Mileage", "Highway\n Mileage",
+                    "Fuel", "Class\nOf\nVehicle"), 
+      longtable = FALSE, centering = TRUE,
+      caption = "MPG Dataset") %>%
+    kable_styling(bootstrap_options = c("striped", "hover", 
+                                        "condensed", "responsive"),
+                  full_width = F, position = "center")
+
+```
+
+And for the schema from `skim()`, with some extra bells and whistles on the table:
+
+```{r}
+
+skim(mpg) %>%
+  kbl(align = "c", caption = "Skim Output for mpg Dataset") %>%
+kable_paper(full_width = F)
+  
+```
+
+See <https://haozhu233.github.io/kableExtra/> for more options on formatting the table with kableExtra. 
+
+
+## {{< iconify material-symbols person >}} A Quick Quiz
+
+::: callout-warning
+It is always a good idea to look for variables in data that may be
+incorrectly formatted. For instance, a variable marked as *numerical*
+may have the values 1-2-3-4 which represent `options`, `sizes`, or say
+`months`. in which case it would have to be interpreted as a `factor`.
+:::
+
+Let us take a small test with the `mpg` dataset:
+
+-   What is the number of *qualitative/categorical* variables in the
+    `mpg` data?
+    `r checkdown::check_question(answer = 6, right = "correct", wrong = "not correct", placeholder = "enter a number")`
+    <br>
+-   How many manufacturers are named in this dataset?
+    `r checkdown::check_question(answer = 15, right = "correct", wrong = "not correct", placeholder = "enter a number")`
+    <br>
+-   How many levels does the variable `drv` have?
+    `r checkdown::check_question(answer = 3, right = "correct", wrong = "not correct", placeholder = "enter a number")`
+    <br>
+-   How many *quantitative/numerical* variables **shown** in the `mpg`
+    data?
+    `r checkdown::check_question(answer = 5, right = "correct", wrong = "not correct", placeholder = "enter a number")`
+    <br>
+-   But the
+    variable`r checkdown::check_question(answer = "cyl", options = c("hwy", "cty", "cyl", "displ"), type = "select", right = "correct", wrong = "not correct", placeholder = "select a variable name")`
+    is actually a **qualitative variable**.
+
+
+## {{< iconify bi person-up >}} Your Turn
+
+1. Try your hand at these datasets. Look at the data, state the data dictionary, contemplate a few Research Questions and answer them with Summaries and Tables in Quarto!
+
+1. Try adding more *summary functions* to the summary table? Which might you choose? Why?
+
+::: callout-note
+### Star Trek Books\
+```{r echo=FALSE}
+
+library(rtrek)
+star_trek_books <- stBooks
+star_trek_books %>% download_this(output_name = "star_trek_books", output_extension = ".csv", button_label = "Start Trek Book data", button_type = "default", icon = "fa fa-save")
+
+```
+
+Which would be the `Group By` variables here? And what would you summarize? With which function?
+:::
+
+::: callout-note
+### Math Anxiety! Hah!
+```{r echo=FALSE}
+
+library(resampledata3)
+data(MathAnxiety)
+MathAnxiety %>% 
+ download_this(output_name = "MathAnxiety", output_extension = ".csv", button_label = "Math Anxiety data", button_type = "default", icon = "fa fa-save")
+
+```
+:::
+
+
+## {{< iconify mingcute thought-line >}} Wait, But Why?
+
+- Data Summaries give you the essentials, without getting bogged down in the details(just yet).\
+- Summaries help you **"live with your data"**; this is an important step in understanding it, and deciding what to do with it.\
+- Summaries help evoke Questions and Hypotheses, which may lead to inquiries, analysis, and insights\
+- *Grouped* Summaries should tell you if:
+  - counts of groups in your target audience are lopsided/imbalanced; Go and [Get your data again.](https://www.youtube.com/watch?v=vptlTsgu9p0)
+  - there are visible differences in Quant data across groups, so your target audience could be nicely fractured;
+  - etc. 
+
+
+
+## {{< iconify fluent-mdl2 decision-solid >}} Conclusion
+
+- The three methods (glimpse/skim/inspect) given here give us a very comprehensive look into the **structure** of the dataset. 
+- The `favstats` method allows us to compute a whole lot of metrics for *Quant variables* for each level of one or more *Qual variables. 
+- Use the `kable` set of commands to make a smart-looking of the data and the outputs of any of the three methods. 
+
+Make these part of your *Workflow*.
+
+## {{< iconify eos-icons ai >}} AI Generated Summary and Podcast
+
+This is a tutorial on using the R programming language to perform descriptive statistical analysis on data sets. The tutorial focuses on summarizing data using various R packages like `dplyr`, `skimr`, and `mosaic`. It emphasizes the importance of understanding the data's structure, identifying different types of variables (qualitative and quantitative), and calculating summary statistics such as means, medians, and frequencies. The tutorial provides examples using real datasets and highlights the significance of data summaries in gaining initial insights, formulating research questions, and identifying potential issues with the data.
+
+<center>
+```{r}
+#| echo: false
+embedr::embed_audio("../../../../../materials/audio/Summaries.wav")
+``` 
+</center>
+
+
+::: {.content-hidden when-format="html"}
+## {{< iconify ri slash-commands-2>}} R Commands Used Here
+
+```{r}
+#| label: used-these
+#| echo: false
+#| message: false
+#| warning: false
+library(usedthese)
+used_here()
+
+```
+:::
+
+
+## {{< iconify ooui references-rtl >}} References
+1. Lock, Lock, Lock, Lock, and Lock. (2021). *Statistics: Unlocking the Power of Data, 3rd Edition)*. <https://media.wiley.com/product_data/excerpt/69/11196821/1119682169-32.pdf>
+
+::: {#refs style="font-size: 60%;"}
+###### {{< iconify lucide package-check >}} R Package Citations
+
+```{r}
+#| echo: false
+#scan_packages()
+cite_packages(
+  output = "table",
+  out.dir = ".",
+  out.format = "html",
+  pkgs = c("mosaic", "palmerpenguins", "skimr")
+) %>%
+  knitr::kable(format = "simple")
+
+```
+
+:::
+
+

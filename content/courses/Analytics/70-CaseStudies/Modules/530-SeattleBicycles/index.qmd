@@ -1,0 +1,292 @@
+---
+title: <iconify-icon icon="iconoir:sea-waves"></iconify-icon> <iconify-icon icon="mdi:weed"></iconify-icon>  Seattle Bicycle Zones
+order: 530
+---
+
+## Setting up R Packages
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+library(tidyverse)
+library(mosaic)
+library(skimr)
+library(ggformula)
+
+```
+
+
+```{r}
+#| label: pedagogical-packages
+#| echo: false
+library(downloadthis)
+library(glue)
+##
+###     Adding download buttons
+#     data that has been read in
+#     {{< downloadthis ../../../../materials/Data/housing_train.csv dname="house_prices" label="Download the House Prices Dataset" icon="database-fill-down" type="info" >}}
+#    existing file
+#    {{< downloadthis Orange/grouped-summaries.ows dname="grouped_summaries" label="Download the Orange Workflow" icon="database-fill-down" type="info" >}} 
+#    
+# # 
+# mtcars %>%
+#   downloadthis::download_this(
+#     output_name = "mtcars data set",
+#     output_extension = ".csv",
+#     button_label = "Download data",
+#     button_type = "warning",
+#     has_icon = TRUE,
+#     icon = "fa fa-save"
+#   )
+#   
+```
+
+```{r}
+#| label: Plot-Sizing-and-theming
+#| echo: false
+#| message: false
+#| results: hide
+
+# https://stackoverflow.com/questions/74491138/ggplot-custom-fonts-not-working-in-quarto
+
+# Chunk options
+knitr::opts_chunk$set(
+ fig.width = 7,
+ fig.asp = 0.618, # Golden Ratio
+ #out.width = "80%",
+ fig.align = "center"
+)
+### Ggplot Theme
+### https://rpubs.com/mclaire19/ggplot2-custom-themes
+
+theme_custom <- function(){ 
+    font <- "Roboto Condensed"   #assign font family up front
+    
+    theme_classic(base_size = 14) %+replace%    #replace elements we want to change
+    
+    theme(
+      panel.grid.minor = element_blank(),    #strip minor gridlines
+      text = element_text(family = font),
+      #text elements
+      plot.title = element_text(             #title
+                   family = font,            #set font family
+                   size = 20,               #set font size
+                   face = 'bold',            #bold typeface
+                   hjust = 0,                #left align
+                   #vjust = 2                #raise slightly
+                   margin=margin(0,0,10,0)
+),               
+      
+      plot.subtitle = element_text(          #subtitle
+                   family = font,            #font family
+                   size = 14,                #font size
+                   hjust = 0,
+                   margin=margin(2,0,5,0)
+),               
+      
+      plot.caption = element_text(           #caption
+                   family = font,            #font family
+                   size = 8,                 #font size
+                   hjust = 1),               #right align
+      
+      axis.title = element_text(             #axis titles
+                   family = font,            #font family
+                   size = 10                 #font size
+),
+      
+      axis.text = element_text(              #axis text
+                   family = font,            #axis family
+                   size = 8)               #font size
+    )
+}
+
+# Set graph theme
+theme_set(new = theme_custom())
+#
+```
+
+## Introduction
+
+This is data pertaining to hourly counts of bicycles and pedestrians at various locations in Seattle, Washington, USA. The data was collected by the City of Seattle and is available on the [City of Seattle Open Data Portal](https://data.seattle.gov/Transportation/Bicycle-Counts-2017-2018/2j3z-4y5g).
+The data includes information on the date and time of the count, the location of the count, and the number of bicycles and pedestrians counted. The data is useful for understanding patterns of bicycle and pedestrian traffic in Seattle, which can inform transportation planning and policy decisions.
+
+## Read the Data
+
+```{r}
+#| label: read-data
+#| echo: false
+#| message: false
+df_bikes <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-02/bike_traffic.csv")
+df_bikes
+
+df_bikes %>%
+  downloadthis::download_this(
+    output_name = "seattle-bikes",
+    output_extension = ".csv",
+    button_label = "Download Seattle Bikes data",
+    button_type = "warning",
+    has_icon = TRUE,
+    icon = "fa fa-save"
+  )
+```
+
+## Inspect the Data
+
+```{r}
+#| label: inspect-categorical
+#| echo: false
+glimpse(df_bikes)
+
+```
+
+
+## Data Dictionary
+::: callout-note
+### Quantitative Variables
+Write in.
+
+:::
+
+::: callout-note
+### Qualitative Variables
+Write in.
+
+:::
+
+::: callout-note
+### Observations
+Write in.
+
+:::
+
+
+## Data Munging
+
+We are going to develop three data-frames from this data, to capture different kinds of time and space averages. 
+
+1. `df_bikes_grouped` groups the data by `crossing` and calculates the **average bike count** for each crossing. It also creates new variables for `date`, `hour`, `day of the week`, `term (weekend/weekday)`, `month`, `season`, and a *cleaned-up version of the crossing names*. The data is filtered to remove extreme values (bike counts greater than 2000) and years after 2017. The average bike count for each crossing is calculated and stored in `crossing_avg`.
+
+```{r}
+#| label: data-munging-1
+#| echo: false
+###
+df_bikes_modified <- df_bikes %>%
+  mutate(
+    date = mdy_hms(date),
+    year = lubridate::year(date),
+    month = lubridate::month(date),
+    day = as.character(wday(date, label = T)),
+    hour = lubridate::hour(date),
+
+    type_of_day = if_else(day %in% c("Sat", "Sun"), 
+                          "Weekend", "Weekday"),
+    season = case_when(
+      month %in% 3:5 ~ "Spring",
+      month %in% 6:8 ~ "Summer",
+      month %in% 9:11 ~ "Autumn",
+      month %in% c(12, 1, 2) ~ "Winter"
+    ),
+    month = factor(month, levels = 1:12, 
+                   labels = month.abb),
+    
+    crossing = case_when(
+      crossing == "Broadway Cycle Track North Of E Union St" ~ "BCT",
+      crossing == "39th Ave NE Greenway at NE 62nd St" ~ "39AveG",
+      crossing == "NW 58th St Greenway at 22nd Ave" ~ "58StG",
+      crossing == "Burke Gilman Trail" ~ "BGT",
+      crossing == "Elliot Bay Trail" ~ "EBT",
+      crossing == "Sealth Trail" ~ "ST",
+      crossing == "MTS Trail" ~ "MTS"
+    )
+  ) 
+
+df_bikes_modified
+
+```
+
+
+```{r}
+
+df_bikes_crossing <- df_bikes_modified %>% 
+  filter(
+    bike_count < 2000,
+    lubridate::year(date) < 2018
+  ) %>% 
+  group_by(crossing) %>% 
+  # mutate(crossing_avg = mean(bike_count, na.rm = T))
+  summarize(bike_avg_crossing_overall = mean(bike_count, na.rm = T))
+
+df_bikes_crossing
+
+```
+
+2. `df_bikes_month` calculates the average bike count for each crossing, month, hour, and type_of_day (weekend/weekday). It also calculates the difference between the average bike count and the mean bike count for that crossing. The difference is capped at 2.5 to avoid extreme values.
+
+
+```{r}
+#| label: data-munging-2
+#| echo: false
+
+df_bikes_month <- df_bikes_modified %>% 
+  group_by(crossing, type_of_day, month, hour) %>% 
+  summarize(
+    bike_avg_mdy_crossing = mean(bike_count, na.rm = T)) %>% 
+  left_join(df_bikes_crossing, by = "crossing") %>% 
+  mutate(diff = -((bike_avg_crossing_overall - bike_avg_mdy_crossing) / bike_avg_crossing_overall)) %>% ungroup()
+
+df_bikes_month
+
+```
+
+
+## Research Question
+::: callout-note
+Write in! Look at the graph below and "reverse-engineer" the Research Question! 
+:::
+
+
+## Plot the Data
+    
+```{r}
+#| label: plot-data
+#| echo: false
+
+df_bikes_month %>% 
+  gf_tile(month ~ hour | type_of_day ~ crossing, fill = ~ diff) %>% 
+  gf_refine(scale_fill_fermenter("Difference", type = "div", palette = "RdBu")) %>% 
+  gf_labs(title = "Bicycle Traffic in Seattle",
+          subtitle = "Difference between Daily Traffic and Yearly Average", caption = "TidyTuesday Week 14, 2019",
+          y = "Month", x = "Hour of Day") %>% 
+  gf_theme(strip.text = element_text(face = "plain", size = 10, angle = 0),
+          panel.spacing.x = unit(10, "pt"), 
+          axis.text.x = element_text(family = "Roboto Mono", size = 8),
+          axis.text.y = element_text(size = 5.5),
+          axis.title.x = element_text(size = 12),
+          legend.title = element_text(size = 9.5),
+          legend.text = element_text(family = "Roboto Mono", size = 8),
+          legend.position = "bottom",
+          strip.text.x.top = element_text(size = 6))
+
+```
+
+## Tasks and Discussion
+
+- Complete the Data Dictionary.
+- Select and Transform the variables as shown.
+- Create the graphs shown and discuss the following questions:
+  -   Identify the type of charts
+  -   Identify the variables used for various geometrical aspects (x, y,
+    fill...). Name the variables appropriately.
+    
+The chart above depicts hourly, weekly, and monthly activity of bicycle traffic at several key intersections in the city of Seattle, Canada. 
+- Discuss the kind of chart. 
+- How were the small multiples obtained?
+- Discuss hourly, weekly, and monthly trends of the traffic. 
+- If a large street festival was to be planned, which street intersection and which day would you choose? Justify based on the chart.(heat map over time)
+
+
+  -   What research activity might have been carried out to obtain the data graphed here? Provide some details.
+  -   What might have been the Hypothesis/Research Question to which the response was Chart?
+  - Write a 2-line story based on the chart, describing your inference/surprise.
+  - Based on the diagram, discuss which one an elderly person might try if they are deficient in calcium. If you were trying to avoid carbs, which seaweed sushi would you try?

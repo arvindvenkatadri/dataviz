@@ -1,0 +1,1447 @@
+---
+title: <iconify-icon icon="icon-park-outline:proportional-scaling"></iconify-icon> Proportions
+author: "Arvind V."
+date: 27/Dec/2022
+date-modified: '`r Sys.Date()`'
+abstract: Types, Categories, Counts, and Associations
+order: 40
+warning: true
+categories:
+- Proportions
+- Frequency Tables
+- Contingency Tables
+- Margins
+- Bar Plots
+- Mosaic Plots
+- Balloon Plots
+- Pie Charts
+bibliography: 
+  - grateful-refs.bib
+citation: true
+editor: 
+  markdown: 
+    wrap: 72
+
+---
+
+:::: {.pa4}
+::: {.athelas .ml0 .mt0 .pl4 .black-90 .bl .bw2 .b--blue}
+[…"Thinking is difficult, that’s why most people judge."]{.f5 .f4-m .f3-l .lh-copy .measure .mt0}
+
+[ --- C.G. Jung]{.f6 .ttu .tracked .fs-normal}
+:::
+::::
+
+## {{< iconify noto-v1 package >}} Setting up R Packages {#sec-setting-up-r-packages}
+
+```{r}
+#| label: setup
+#| include: true
+#| message: false
+
+library(tidyverse)
+library(mosaic) # Our trusted friend
+library(skimr)
+library(ggformula) # Formula interface to ggplot2
+library(vcd) # Michael Friendly's package, Visualizing Categorical Data
+library(visStatistics) # Comprehensive all-in-one stats viz/test package
+library(ggmosaic) # Tidy Mosaic Plots
+library(ggpubr) # Colours, Themes and new geometries in ggplot
+
+library(vcdExtra) # Categorical Data Sets
+library(resampledata) # More datasets
+
+```
+
+```{r}
+#| label: Extra Pedagogical Packages
+#| echo: false
+#| message: false
+
+knitr::opts_chunk$set(tidy = TRUE)
+library(checkdown)
+library(epoxy)
+library(grateful)
+
+```
+
+#### Plot Fonts and Theme
+
+```{r}
+#| label: plot-theme
+#| echo: true
+#| cache: false
+#| code-fold: true
+#| messages: false
+#| warning: false
+
+library(systemfonts)
+library(showtext)
+library(tidyverse)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+showtext_auto(enable = TRUE) #enable showtext
+##
+theme_custom <- function(){ 
+    font <- "Alegreya"   #assign font family up front
+    '%+replace%' <- ggplot2::'%+replace%' # nolint
+        
+    ggplot2::theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
+    
+    theme(
+      text = element_text(family = font),  #set base font family
+      
+      #text elements
+      plot.title = element_text(                 #title
+                   family = font,          #set font family
+                   size = 24,                    #set font size
+                   face = 'bold',                #bold typeface
+                   hjust = 0,                    #left align
+                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
+      plot.title.position = "plot", 
+      
+      plot.subtitle = element_text(              #subtitle
+                   family = font,          #font family
+                   size = 14,                   #font size
+                   hjust = 0,                   #left align
+                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
+      
+      plot.caption = element_text(               #caption
+                   family = font,          #font family
+                   size = 9,                     #font size
+                   hjust = 1),                   #right align
+      
+      plot.caption.position = "plot",            #right align
+      
+      axis.title = element_text(                 #axis titles
+                   family = "Roboto Condensed",  #font family
+                   size = 12),                   #font size
+      
+      axis.text = element_text(                  #axis text
+                   family = "Roboto Condensed",  #font family
+                   size = 9),                    #font size
+      
+      axis.text.x = element_text(                #margin for axis text
+                    margin = margin(5, b = 10))
+      
+      #since the legend often requires manual tweaking 
+      #based on plot content, don't define it here
+    )
+}
+
+## Use available fonts in ggplot text geoms too!
+ggplot2::update_geom_defaults(geom = "text",new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
+
+```
+
+
+
+
+
+## {{< iconify fe beginner >}} What graphs will we see today?
+
+| Variable #1 | Variable #2 |       Chart Names       |                                            Chart Shape                                            |
+|:---------------:|:---------------:|:-----------------:|:------------------:|
+|    Qual     |    Qual     | Pies, and Mosaic Charts | {{< iconify teenyicons pie-chart-solid size=4x >}} {{< iconify carbon chart-marimekko size=4x >}} |
+
+## {{< iconify tabler variable >}} What kind of Data Variables will we choose?
+
+::: column-page-inset-right
+```{r}
+#| message: false
+#| echo: false
+#| warning: false
+read_csv("../../../../../materials/Data/pronouns.csv") %>% 
+  filter(No == "3") %>% 
+  knitr::kable(theme = "striped", caption = "Which Variables?", centering = TRUE)
+  
+```
+:::
+
+## {{< iconify openmoji japanese-symbol-for-beginner >}} Introduction
+
+To recall, a categorical **variable** is one for which the possible
+measured or assigned values consist of a discrete set of categories,
+which may be `ordered` or `unordered`. Some typical examples are:
+
+-   Gender, with categories "Male," "Female."
+-   Marital status, with categories "Never married," "Married,"
+    "Separated," "Divorced," "Widowed."
+-   Fielding position (in ~~baseball~~ cricket), with categories
+    "Slips,"Cover ","Mid-off "Deep Fine Leg", "Close-in", "Deep"...
+-   Side effects (in a pharmacological study), with categories "None,"
+    "Skin rash," "Sleep disorder," "Anxiety," . . ..
+-   Political attitude, with categories "Left," "Center," "Right."
+-   Party preference (in India), with categories "BJP" "Congress,"
+    "AAP," "TMC"...
+-   Treatment outcome, with categories "no improvement," "some
+    improvement," or "marked improvement."
+-   Age, with categories "0--9," "10--19," "20--29," "30--39," . . . .
+-   Number of children, with categories 0, 1, 2, . . . .
+
+As these examples suggest, categorical variables differ in the number of
+categories: we often distinguish binary variables (or dichotomous
+variables) such as Gender from those with more than two categories
+(called *polytomous* variables).
+
+## {{< iconify icons8 idea >}} Inspiration
+
+::: {#fig-proportion-inspiration layout-ncol="2"}
+![Obesity across the
+World](../../../../../materials/images/VORO_Obesity-Rates_Site.jpg){#fig-pie-inspiration}
+
+![Covid Deaths
+<https://datatopics.worldbank.org/sdgatlas/goal-3-good-health-and-well-being?lang=en>](../../../../../materials/images/covid-deaths.png){#fig-mosaic-inspiration}
+
+Depicting Proportions
+:::
+
+From @fig-pie-inspiration, it is seen that Egypt, Qatar, and the United
+States are the only countries with a population greater than 1 million
+on this list. Poor food habits are once again a factor, with some
+cultural differences. In Egypt, high food inflation has pushed residents
+to low-cost high-calorie meals. To combat food insecurity, the
+government subsidizes bread, wheat flour, sugar and cooking oil, many of
+which are the ingredients linked to weight gain. In Qatar, a country
+with one of the highest per capita GDPs in the world, a genetic
+predisposition towards obesity and sedentary lifestyles worsen the
+impact of rich diets. And in the U.S., bigger portions are one of the
+many reasons cited for rampant adult and child obesity. For example,
+Americans ate 20% more calories in the year 2000 than they did in 1983.
+They consume 195 lbs of meat annually compared to 138 lbs in 1953. And
+their grain intake has increased 45% since 1970.
+
+It’s worth noting however that this dataset is based on BMI values,
+which do not fully account for body types with larger bone and muscle
+mass.
+
+From @fig-mosaic-inspiration, according to [World
+Bank](https://datatopics.worldbank.org/sdgatlas/goal-3-good-health-and-well-being?lang=enS),
+six countries (India, Russia, Indonesia, United States, Brazil, and
+Mexico) accounted for over 60 percent of the total additional deaths in
+the first two years of the pandemic.
+
+
+## {{< iconify mdi food-processor-outline >}} How do these Chart(s) Work?
+
+We saw with [Bar Charts](../20-BarPlots/index.qmd) that when we deal
+with single Qual variables, we perform *counts* for each *level* of the
+variable. For a single Qual variable, even with multiple levels ( e.g.
+`Education Status`: High school, College, Post-Graduate, PhD), we can
+count the observations as with Bar Charts and plot Pies.
+
+We can also plot Pie Charts when the number of levels in a *single* Qual
+variable are not too many. Almost always, a Bar chart is preferred. The
+problem is that humans are pretty bad at reading angles. This ubiquitous
+chart is much vilified in the industry and `bar charts` that we have
+seen earlier, are viewed as better options. On the other hand, pie
+charts are ubiquitous in design and business circles, and are very much
+accepted! Do also read this spirited defense of pie charts here.
+<https://speakingppt.com/why-tufte-is-flat-out-wrong-about-pie-charts/>
+
+What if there are two Quals? Or even more? The answer is to take them
+pair-wise, make all combinations of *levels* for both and calculate
+counts for these. This is called a **Contingency Table**. Then we plot
+that table. We'll see.
+
+## {{< iconify mdi category-plus-outline >}} Categorical Data
+
+From the `{vcd package}` vignette:
+
+> The first thing you need to know is that categorical data can be
+> represented in **three different forms in R**, and it is sometimes
+> necessary to convert from one form to another, for carrying out
+> statistical tests, fitting models or visualizing the results.
+
+-   Case Data
+-   Frequency Data
+-   Cross-Tabular Count Data
+
+Let us first see examples of each.
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+### Case Form
+
+From Michael Friendly [Discrete Data Analysis and
+Visualization](http://ddar.datavis.ca/pages/home) :
+
+> In many circumstances, data is recorded on each individual or
+> experimental unit. Data in this form is called case data, or data in
+> case form. Containing *individual observations* with one or more
+> **categorical** factors, used as classifying variables. The total
+> number of observations is `nrow(X)`, and the number of variables is
+> `ncol(X)`.
+
+```{r}
+#| label: arthritis-table
+
+class(Arthritis)
+# Tibble as HTML for presentation
+Arthritis %>%  
+  head(10) %>% 
+  knitr::kable(theme = "striped", caption = "Arthritis Treatments and Effects<br> First 10 Observations",centering = TRUE)
+     
+```
+
+The `Arthritis` data set has three factors and two *integer* variables.
+One of the three factors `Improved` is an **ordered factor**.
+
+1)  `ID`:` integer; a unique identifier for each case
+2)  `Treatment`: a factor; Placebo or Treated
+3)  `Sex`: a factor, M / F
+4)  `Age`: integer; age of the patient
+5)  `Improved`: **Ordinal factor**; None \< Some \< Marked
+
+Each row in the `Arthritis` dataset is a separate case or observation.
+
+### Frequency Data Form
+
+Data in frequency form has already been tabulated and *aggregated* by
+**counting** over the (combinations of) categories of the table
+variables. When the data are in **case form**, we can always trace any
+observation back to its individual identifier or data record, since each
+row is a unique observation or *case*; the reverse, with the **Frequency
+Form** is rarely possible.
+
+Frequency Data is usually a data frame, with columns of categorical
+variables and at least one column containing `frequency` or `count`
+information.
+
+::: columns
+::: column
+```{r}
+#| label: GSS-table
+#| eval: false
+str(GSS)
+
+# Tibble as HTML for presentation
+GSS %>%
+  knitr::kable(theme = "striped", caption = "General Social Survey", 
+centering = TRUE)
+
+```
+:::
+
+::: column
+```{r}
+#| ref.label: GSS-table
+#| echo: false
+
+```
+:::
+:::
+
+
+Respondents in the GSS survey were classified by `sex` and `party`
+identification. As can be seen, there is a **count** for every
+combination of the two *categorical* variables, `sex` and `party`. This is still a `data.frame`. 
+
+### Table form
+
+Table Form Data can be a `matrix`, `array` or `table object`, whose
+elements are the frequencies in an **n-way table**. The variable names
+(factors) and their levels are given by `dimnames(X)`.
+
+::: columns
+::: column
+```{r}
+#| label:  Table-Form
+#| eval: false
+
+HairEyeColor
+class(HairEyeColor)
+
+```
+:::
+
+::: column
+```{r}
+#| ref.label: Table-Form
+#| echo: false
+```
+:::
+
+`HairEyeColor` is a "two-way" table, consisting of **two tables**, one
+for `Sex = Female` and the other for `Sex = Male`. The total number of
+observations is `sum(X)`. The number of dimensions of the table is
+`length(dimnames(X))`, and the table sizes are given by
+`sapply(dimnames(X), length)`. The data looks like a n-dimensional cube
+and needs n-way tables to represent.
+
+```{r}
+#| label: exploring-tables
+sum(HairEyeColor)
+dimnames(HairEyeColor)
+sapply(dimnames(HairEyeColor), length)
+
+```
+
+A good way to think of **tabular data** is to think of a Rubik's Cube.
+
+![Rubik's Cube model for Multi-Table
+Data](cube.jpg){fig-alt="Rubik's Cube model for Multi-Table Data"
+fig-align="center" width="352"}
+
+::: callout-tip
+#### Rubik's Cube and Categorical Data Tables
+
+Each of the edges is an *Ordinal Variable*, each segment represents a
+*level* in the variable. So each face of the Cube represents *two*
+ordinal variables. Any segment is at the intersection of two
+(independent) levels of two variables, and the colour may be visualized
+as a *count*. This array of counts on a face is a 2D or **2-Way Table**.
+
+:::
+
+Since we can only print 2D tables, we hold one face in front and the
+image we see is a 2-Way Table. Turning the Cube by 90 degrees gives us
+another face with 2 variables, with one variable in common with the
+previous face. If we consider two faces together, we get two 2-way
+tables, effectively allowing us to contemplate 3 categorical variables.
+
+Multiple 2-Way tables ( such as `HairEyeColor`) can be **flattened** into 
+a single long table that contains all counts for all combinations of categorical variables. This can be visualized as "opening up" and laying flat the 
+Rubik's cube, as with a cardboard model of it.
+
+```{r}
+#| label: flattened-table
+ftable(HairEyeColor)
+
+```
+
+Converting these (multiple) tables into a data frame or tibble:
+
+```{r}
+#| label: tables-to-data-frame
+#| layout-ncol: 2
+## Convert the two tables into a data frame
+HairEyeColor %>% 
+  as_tibble() 
+
+# Tibble as HTML for presentation
+HairEyeColor %>% 
+  as_tibble() %>%  # Convert
+  knitr::kable(theme = "striped", caption = "Hair Eye and Color<br> as a Data Frame",
+centering = TRUE)
+
+```
+:::
+:::
+
+## {{< iconify carbon chart-3d >}} Simple Plots for Categorical Data
+
+{{< video https://www.youtube.com/embed/7NhNeADL8fA >}}
+
+We have already examined [Bar Charts](../20-BarPlots/index.qmd).
+
+Pie Charts are discussed [here.](../60-PartWhole/index.qmd)
+
+These are both good for *single Qual variables*. Bars are more suited
+when there are many *levels* and/or when there is more than one Qual
+variable, as discussed earlier.
+
+## {{< iconify icon-park-outline nested-arrows >}} Plotting Nested Proportions
+
+When we want to visualize proportions based on Multiple Qual variables,
+we are looking at what [Claus
+Wilke](https://clauswilke.com/dataviz/nested-proportions.html) calls
+*nested proportions*: groups within groups. Making counts with
+combinations of levels for two Qual variables gives us a data structure
+called a
+[*Contingency*](https://www.pagebypagebooks.com/P_G_Wodehouse/Right_Ho_Jeeves/Chapter_13_p2.html)
+*Table*, which we will use to build our plot for nested proportions. The
+Statistical tests for Proportions ( the $\chi^2$ test ) also needs
+Contingency Tables. The *Frequency Table* we encountered earlier is very
+close to being a full-fledged Contingency Table; one only needs to add
+the margin counts! So what is a Contingency Table?
+
+### {{< iconify mdi rain-chance >}} {{< iconify grommet-icons table-add >}} Creating Contingency Tables {#sec-creating-contingency-tables}
+
+From [Wolfram
+Alpha](https://www.wolframalpha.com/input/?i=contingency+table):
+
+> A contingency table, sometimes called a **two-way frequency table**,
+> is a tabular mechanism with at least two rows and two columns used in
+> statistics to present categorical data in terms of frequency counts.
+> More precisely, an $r \times c$ contingency table shows the observed
+> frequency of two variables the observed frequencies of which are
+> arranged into $r$ rows and $c$ columns. The intersection of a row and
+> a column of a contingency table is called a cell.
+
+In this section we understand how to make Contingency Tables(CT) from each
+of the three forms. We will use `base-R` and the `vcd` package for our 
+purposes. Then we will see how they can be visualized. In most cases, 
+we will also see how we can create the Contingency Table as a `tibble` 
+or `data frame` for further analysis.
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+### Case Form Data
+
+
+1. **vcd**: For Case Form data, `vcd::structable()` is a good option, as it can also add margins to the table. The Table can also be converted to a tibble, preserving the rownames.
+
+```{r}
+#| label: fig-vcd-case-form-ct
+#| fig-cap: Creating Contingency Tables from Case Form Data with `vcd`
+#| layout-ncol: 2
+#| output: true
+
+Arthritis %>% class()
+
+vcd::structable(data = Arthritis, Improved ~ Treatment)
+
+vcd::structable(data = Arthritis, Improved ~ Treatment) %>% 
+  as.matrix() %>% # Convert to matrix; 
+  addmargins() %>% # Add margins to the table; matrix output
+  class() 
+
+vcd::structable(data = Arthritis, Improved ~ Treatment) %>% 
+  as.matrix() %>% # Convert to matrix;
+  addmargins() %>% # Add margins to the table; matrix output
+  as_tibble(rownames = "Treatment") # Convert to tibble; ensure row names!
+  
+```
+
+2. **Base R**: Base R also provides very compact formula-based smethods for Case Form Data:
+
+```{r}
+#| label: fig-base-case-form-ct
+#| fig-cap: Creating Contingency Tables from Case Form Data with `base::ftable()`
+#| layout-ncol: 2
+Arthritis %>% class()
+
+ftable(data = Arthritis, 
+       Improved ~ Treatment) %>%  # Two-way table
+  as.matrix() %>% # ftable to matrix; 
+# Keeps the names when margins are added
+  addmargins() # Add margins to the table
+
+ftable(data = Arthritis, 
+       Improved ~ Treatment) %>%  # Two-way table
+  as.matrix() %>% # ftable to matrix; 
+# Keeps the names when margins are added
+  addmargins() %>% # Add margins to the table
+  class()
+
+ftable(data = Arthritis, 
+       Improved ~ Treatment) %>% # Two-way table)
+  as.matrix() %>% # ftable to matrix; 
+# Keeps the names when margins are added
+  addmargins() %>% # Add margins to the table
+  as_tibble(rownames = "Treatment") # Convert to tibble; ensure row names!
+  
+```
+
+
+
+### Freq Form Data
+
+`UCBAdmissions` is already in Frequency Form i.e. a Contingency Table.
+But it is a **set** of (two-way) Contingency Tables. So let us try!
+
+1. **vcd**: For Frequency Form data, `vcd::structable()` can again work nicely for us:
+
+
+```{r}
+#| label: fig-vcd-freq-form-ct
+#| fig-cap: Creating Contingency Tables from Frequency Form Data with `vcd`
+#| layout-ncol: 2
+
+UCBAdmissions %>% class()
+vcd::structable(UCBAdmissions) %>% class()
+
+## Add margin sums
+## Must flatten to matrix first since it is 3-WAY
+structable(UCBAdmissions, Admit + Dept ~ Gender) %>% 
+as.matrix() %>% 
+addmargins() 
+
+structable(UCBAdmissions, Admit + Dept ~ Gender) %>% 
+as.matrix() %>% 
+addmargins() %>% # Is this step not counterintuitive for Freq data?
+as_tibble(rownames = "Admit-Dept") # Convert to tibble; ensure row names!
+
+```
+
+2. **Base R**: Base R also provides a very compact method for Frequency Form Data:
+
+```{r}
+#| label: fig-base-freq-form-ct
+#| fig-cap: Creating Contingency Tables from Frequency Form Data with `base::ftable()`
+#| layout-ncol: 2
+UCBAdmissions %>% class()
+ftable(data = UCBAdmissions, Gender ~ Admit + Dept)
+
+ftable(data = UCBAdmissions, Gender ~ Admit + Dept) %>% class()
+
+ftable(data = UCBAdmissions, Gender ~ Admit + Dept) %>% 
+as.matrix() %>% # Keeps the names when margins are added
+addmargins() %>% # Add margins to the table
+as_tibble(rownames = "Admit-Dept")
+
+```
+
+### Table Form Data
+
+How about a multi-table dataset, like `HairEyeColor`?
+
+1. **vcd**: For Table Form data, `vcd::structable()` can readily be used: 
+
+```{r}
+#| label: fig-vcd-multitable-data-ct
+#| fig-cap: Creating Contingency Tables from Table Form Data with `vcd`
+#| layout-ncol: 2
+
+# HairEyeColor is in multiple table form data
+HairEyeColor
+HairEyeColor %>% class()
+
+## Option#1 vcd:structable()
+vcd::structable(HairEyeColor) %>% 
+   as.matrix() %>% # Flatten
+   addmargins() # Add margins to the table
+
+vcd::structable(data = HairEyeColor, Sex ~ Hair + Eye) %>% 
+  as.matrix() %>%
+  addmargins() %>% # Add margins to the table
+  as_tibble(rownames = "Hair-Eye") # Convert to tibble; ensure row names!
+
+```
+
+
+2. **Base R** also offers the `ftable()` option again:
+
+```{r}
+#| label: fig-base-multitable-data-ct
+#| fig-cap: Creating Contingency Tables from Table Form Data with `base::ftable()`
+#| layout-ncol: 2
+HairEyeColor %>% ftable(Hair + Eye ~ Sex)
+
+HairEyeColor %>% 
+  ftable(Hair + Eye ~ Sex) %>% 
+  as.matrix() %>%
+  addmargins()
+
+HairEyeColor %>% 
+  ftable(Hair + Eye ~ Sex) %>% 
+  as.matrix() %>%
+  addmargins() %>% 
+  as_tibble(rownames = "Hair-Eye")
+
+```
+
+
+:::
+
+::: callout-important
+### Workflow
+So, it does seem that we could use mostly `vcd::structable()` or `ftable()` to create Contingency Tables, and then convert them to `tibble` form if needed. The usage is identical!
+
+:::
+
+
+
+
+### {{< iconify material-symbols auto-awesome-mosaic-outline-sharp >}} Mosaic Plots
+
+All right then, how does one plot a set of data that looks like this, a
+matrix? No column is a single variable, nor is each row a single
+observation, which is what we understand with the idea of [tidy
+data](../05-NatureData/index.qmd#what-are-data-types).
+
+Let us take the `GSS2002` dataset, and create a Contingency Table out of it. We will use the `Education` and `DeathPenalty` variables, which are both Qualitative. The `GSS2002` dataset is a part of the `resampledata` package, and contains data from the General Social Survey (GSS) for the year 2002.
+
+
+```{r}
+#| label: fig-gss2002-data
+#| fig-cap: GSS 2002 Data
+#| echo: false
+#| warning: false
+
+data("GSS2002", package = "resampledata")
+GSS2002 %>% head() 
+```
+
+
+```{r}
+#| label: fig-gss2002-ct
+#| fig-cap: GSS 2002 Contingency Table
+#| echo: false
+#| warning: false
+gss_table <- vcd::structable(Education ~ DeathPenalty, data = GSS2002)
+gss_table %>% addmargins() %>% 
+  as_tibble(rownames = "Education")
+
+```
+
+
+
+The answer is provided in *the very shape of the CT*: we plot this as
+a set of *tiles*, where $$ \pmb{area~of~tile \sim count} $$ We
+*recursively* partition off a (usually) square area into vertical and
+horizontal pieces whose area is proportional to the count at a specific
+combination of levels of the two Qual variables. So we might follow the
+process as shown below:\
+
+-   Take the [bottom row]{.bg-light-green .black} of the CT (i.e.per-column totals) and create vertical
+    rectangles with these widths\
+-   Take the individual counts in the rows and partition each rectangle
+    based in the counts in these rows.
+    
+```{r}
+#| label: fig-mosaic-plot-steps
+#| fig-cap: Mosaic Chart Steps for GSS2002 Data
+#| fig-subcap:
+#| - "Step#1: Education"
+#| - "Step#2: DeathPenalty"
+#| echo: false
+#| warning: false
+#| layout-nrow: 1
+
+vcd::structable(Education ~ 0, data = GSS2002) %>% vcd::mosaic(
+  gp = shading_Friendly,
+  main = "GSS2002 Education Mosaic Chart Step#1")
+
+vcd::structable(DeathPenalty ~ Education, data = GSS2002) %>% 
+vcd::mosaic(
+  gp = shading_hsv, direction = "v",
+  main = "GSS2002 Education Mosaic Chart Step#2")
+  
+```
+
+
+The first split shows the various levels of `Education` and their counts
+as widths. *Order is alphabetical!* This splitting corresponds to the
+bottom ROW of the @fig-gss2002-ct. HS is clearly
+the largest subgroup in `Education`.
+
+In the second step, the columns from @fig-mosaic-plot-steps-1 are
+sliced horizontally into tiles, in proportion to the number of people in
+each `Education` category/level who support/do not support
+`DeathPenalty`. This is done in proportion to all the entries in each
+COLUMN, giving us @fig-mosaic-plot-steps-2.
+
+Let us now make this plot with `vcd`, and with a new package called `visStatistics`, which allows us to create a wide variety of statistical charts, including Mosaic Charts, with very little code.
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+#### Using vcd
+
+The `vcd::mosaic()` function needs the data in *contingency table* form.
+Of course, `vcd::structable()` gives us one!
+
+```{r}
+#| label:  fig-mosaic-plot-arthritis-vcd
+#| fig-cap: Arthritis Mosaic Plot
+#| layout-ncol: 2
+
+arthritis_table <- vcd::structable(Improved ~ Treatment,
+                                   data = Arthritis)
+arthritis_table
+
+vcd::mosaic(arthritis_table, 
+            gp = shading_max, direction = "v",
+            main = "Arthritis Treatment Dataset",
+labeling = labeling_border(
+                varnames = c("F", "F"), # Remove variable name labels
+                rot_labels = c(90,0,0,0), #t,r,b,l
+                just_labels = c("left", 
+                                "left", 
+                                "left", 
+                                "right"))) # How?
+
+
+
+```
+There are visible differences in the counts for the `Improved` variable, based on the `Treatment` variable. The `Placebo` treatment has a much lower count for `Marked` improvement, and a higher count for `None` improvement. The `Treated` group has a higher count for `Marked` improvement, and a lower count for `None` improvement. We can make a hypothesis that the `Treatment` variable is related to the `Improved` variable, and that the `Treated` group has a higher chance of improvement than the `Placebo` group.
+
+
+```{r}
+#| label: fig-mosaic-plot-nhanes-vcd
+#| fig-cap: NHANES Mosaic Plot
+#| layout-nrow: 2
+library(NHANES)
+ 
+nhanes_ct <- vcd::structable(data = NHANES, Race1 ~ Education)
+nhanes_ct
+vcd::mosaic(nhanes_ct, 
+            gp = shading_max, direction = "v",
+            main = "",
+labeling = labeling_border(
+                varnames = c("F", "F"),
+                rot_labels = c(90,0,0,0), #Rotation, t,r,b,l
+                just_labels = c("left", # How?
+                                "center", # Don't Care
+                                "center", # Don't Care
+                                "right"))) # How?
+
+```
+
+Based on this mosaic chart, we can say that `White` people have had more `College` education than `Black` or `Hispanic` people, and that `Black` people have had more `High School` education than `Hispanic` people. The `Hispanic` group has the lowest count for `College` education. So we can hypothesize that the Qual variables `Race1` and `Education` are related. 
+
+::: {.content-hidden}
+#### Using ggmosaic
+
+`ggmosaic` takes a tibble with Qualitative variables, internally
+computes the counts/table, and plots the mosaic plot:
+
+::: columns
+::: column
+```{r}
+#| label: gss2002
+#| eval: false
+gss2002
+```
+:::
+
+::: column
+```{r}
+#| ref.label: gss2002
+#| echo: false
+```
+:::
+:::
+
+::: columns
+::: column
+```{r}
+#| label: ggmosaic-plot
+#| eval: false
+ggplot2::theme_set(new = theme_custom())
+##
+ggplot(data = gss2002) +
+  ggmosaic::geom_mosaic(
+      aes(x = product(DeathPenalty, Education), 
+          fill = DeathPenalty)) +
+labs(title = "Mosaic Plot with ggmosaic") + 
+theme(legend.position = "top") + 
+scale_fill_brewer(palette = "Set1")
+
+```
+:::
+
+::: column
+```{r}
+#| ref.label: ggmosaic-plot
+#| echo: false
+```
+:::
+:::
+
+:::
+
+
+
+::: {.content-hidden}
+#### Using ggformula
+
+This needs quite some work, to convert the Contingency Table into a
+mosaic plot; perhaps not the most intuitive of methods either. This code
+has been developed using this [Stackoverflow
+post](https://stackoverflow.com/questions/19233365/how-to-create-a-marimekko-mosaic-plot-in-ggplot2).
+
+```{r}
+#| label: gss_summary_ggformula
+#| fig-height: 6
+#| fig-asp: 0.816
+#| message: false
+#| warning: false
+
+# Reference
+# https://stackoverflow.com/questions/19233365/how-to-create-a-marimekko-mosaic-plot-in-ggplot2
+
+gss_summary <- GSS2002 %>% 
+  dplyr::group_by(Education, DeathPenalty) %>%
+  dplyr::summarise(count = n()) %>% # This is good for a chisq test
+  
+  # Data is still grouped by `Education`
+  # Add two more columns to facilitate mosaic Plot
+  # These two columns are quite unusual...
+  mutate(edu_count = sum(count), 
+         edu_prop = count / sum(count)) %>%
+  ungroup()
+gss_summary
+
+```
+
+::: columns
+::: column
+```{r}
+#| label: ggformula-marimekko
+#| eval: false
+# This works but is not very intuitive...
+ggplot2::theme_set(new = theme_custom())
+
+gf_col(edu_prop ~ Education, data = gss_summary,
+       width = ~ edu_count, # Not typically used in a column chart
+       fill = ~ DeathPenalty,
+       stat = "identity", 
+       position = "fill", 
+       color = "black") %>% 
+  gf_labs(title = "Mosaic Chart with ggformula") %>%
+  
+  gf_text(edu_prop ~ Education, 
+          label = ~ scales::percent(edu_prop),
+          position = position_stack(vjust = 0.5)) %>% 
+  
+  gf_facet_grid(~ Education, 
+                scales = "free_x", 
+                space = "free_x") %>% 
+  
+  gf_theme(scale_fill_brewer(palette = "Set1"))
+  
+```
+:::
+
+::: column
+```{r}
+#| ref.label: ggformula-marimekko
+#| echo: false
+```
+:::
+:::
+
+:::
+
+
+#### Using visStatistics
+
+`visStatistics` is a recent package that allows a very wide variety of statistical charts to be created **automagically** based on the variables chosen. Let us plot a mosaic chart directly with this package:
+
+```{r}
+#| label: visstat-1
+
+visstat(GSS2002$DeathPenalty, GSS2002$Education)
+
+```
+The `visStatistics` package is a very powerful package that can be used to create a wide variety of statistical charts, including Mosaic Charts, with very little code. This "universal" command `visstat()` computes a good many statistics and plots, all in one. Try doing an `str()` after this command to see what (else) it has computed. 
+
+:::
+
+### Coloured Tiles: **Actual** and **Expected** Contingency Tables
+
+We notice that the mosaic plots has coloured some tiles blue and some red. Why was this done? Consider the set of mosaic plots below:
+
+
+::: column-body-outset-right
+```{r}
+#| label: fig-contingency-expected-actual-diff
+#| fig-cap: 
+#|   - "Actual Contingency Table"
+#|   - "Expected Contingency Table"
+#|   - "Tile-Wise Differences"
+#| layout-ncol: 3
+
+vcd::mosaic(Improved ~ Treatment, data = Arthritis, direction = "v", gp = shading_max, legend = FALSE)
+vcd::mosaic(Improved ~ Treatment, data = Arthritis, type = "expected", direction = "v", gp = shading_max)
+vcd::assoc(Treatment ~ Improved, data = Arthritis, gp = shading_max) # Note formula direction!
+
+```
+
+:::
+
+
+From an inspection of these plots, we see the (**tile-wise**) difference between situations when Qualitative variables are *related* to that when
+they *not related*. 
+
+The graph on the left show the mosaic plot of the **actual** Contingency Table. 
+
+The graph in the middle shows a similar but fictitious plot but with the cuts neatly horizontal or vertical. This mosaic would be what we would **expect**, if `Education` and the opinion on `Death Penalty` were independent!!
+
+Clearly, there are differences in area of the corresponding tiles in the two mosaics, *actual* and *expected*, as shown in the graph on the right. Some differences are positive, and some negative. In the *actual mosaic*, @fig-contingency-expected-actual-diff-1, tiles with large positive differences are coloured blue, and those with large negative differences are coloured red. These are called the ***Pearson Residuals***, and they indicate the *extent* to which the actual counts differ from the expected counts, if the two Qual variables were independent. The higher the absolute values of these differences, the greater the effect of one Qual on the other. 
+
+More when we get into [Inference for Two Proportions.](../../../20-Inference/Modules/190-TwoProp/index.qmd)
+
+
+
+
+::: {.content-hidden when-format="html"}
+### Pearson Residuals in Mosaic Plots
+
+The mosaic chart provides more additional information than does the
+corresponding bar chart. The individual tiles are coloured based on the
+value of the *Pearson Residual* (explained below). The Pearson residual
+defines the (scaled) difference between the actual count in the cell,
+with what might be expected if there was no association between the two
+Qual variables. An uncoloured Mosaic Chart indicates that the residual differences are small and that there is no association.
+
+So what are Pearson Residuals?
+
+The mosaic chart is a visualization of the *obtained count* on which the
+tile is constructed.
+
+It is also possible to compute a per-cell *expected count*, if the
+categorical variables are independent. The
+*null hypothesis* is that the variables are independent. The test for
+independence, as any inferential test, is based on comparing the
+*observed counts* with the *expected counts*, under the null hypothesis.
+So, what might the expected frequency of a cell be in cross-tabulation
+table for cell $i,j$ given no relationship between the variables of
+interest?
+
+Represent the sum of row $i$ with $n_{+i}$, the sum of column $j$ with
+$n_{j+}$, and the grand total of all the observations with $n$. And
+[independence of variables means that their joint probability is the
+product of their
+probabilities](https://brilliant.org/wiki/probability-rule-of-product/).
+Therefore, the Expected Cell Frequency/Count is given by:
+
+$$
+\begin{array}{lcl} ~Expected~Count~ e_{i,j} & = & P(Row~and~Column) * n\\
+& = & P(row) \times P(column) * n\\
+& = & \frac{rowSum}{n} *\frac{colSum}{n} \times n\\
+& = &\frac{rowSum *colSum}{n}\\
+\end{array}
+$$
+
+
+and therefore:
+
+$$
+e_{i,j} = \frac{(n_{+i})(n_{j+})}{n}
+$$
+
+Now, the **Pearson Residual** in each cell is equivalent to the
+"z-score" of that cell.
+
+Recall the [z-score](../22-Histograms/index.qmd#z-scores) idea: we
+subtract the mean and divide by the std. deviation to get the z-score.
+In the Contingency Table, we have **counts** which are usually modeled
+as an (integer) *Poisson distribution*, for which **mean (i.e Expected
+value) and variance are identical**. Thus we get the Pearson Residual
+as:
+
+$$
+r_{i,j} = \frac{(Actual - Expected)}{\sqrt{\displaystyle Expected}}
+$$ 
+
+and therefore:
+
+
+$$
+r_{i,j} = \frac{(o_{i,j}- e_{i,j})}{\sqrt{\displaystyle e_{i,j}}}
+$$
+
+The comparison of what occurred to what is expected is based on their
+difference, scaled by the square root of the expected, the **Pearson
+Residual**.
+
+The sum of all the squared Pearson residuals is the chi-square
+statistic, χ2, upon which the inferential analysis follows. 
+
+$$
+χ2 = \sum_{i=1}^R\sum_{j=1}^C{r_{i,j}^2} 
+$$ 
+
+
+where R and C are number of rows and columns in the Contingency
+Table, the levels in the two Qual variables.
+
+We will treat the $X^2$ test in the Module on [Inference for Two
+Proportions.](../../../20-Inference/Modules/190-TwoProp/index.qmd#observed-statistic-the-x2-metric).
+See also the sub-section here below on *Actual and Expected Contingency
+Tables*.
+
+:::
+
+
+## {{< iconify fluent people-list-28-filled >}} Dataset: Titanic
+
+Banzai!!! That was quite some journey! Let us wrap it up by quickly looking at a sadly famous dataset:
+
+```{r}
+# library(ggmosaic)
+data("titanic", package = "ggmosaic")
+titanic
+```
+
+There were 2201 passengers, as per this dataset.
+
+### {{< iconify streamline dictionary-language-book-solid >}} Data Dictionary
+
+::: callout-note
+### Quantitative Data
+
+None.
+:::
+
+::: callout-note
+### Qualitative Data
+
+-   `Survived`: (chr) yes or no
+-   `Class`: (chr) Class of Travel, else "crew"
+-   `Age`: (chr) Adult, Child
+-   `Sex`: (chr) Male / Female.
+:::
+
+### {{< iconify material-symbols query-stats >}} Research Questions
+
+::: callout-note
+### Q.1. What is the dependence of `survived` upon `sex`?
+
+::: columns
+::: column
+```{r}
+#| label: vcd-titanic-1
+#| eval: false
+vcd::structable(Survived ~ Sex, data = titanic) %>% 
+  vcd::mosaic(gp = shading_max)
+
+```
+:::
+
+::: column
+```{r}
+#| ref.label: vcd-titanic-1
+#| echo: false 
+```
+:::
+:::
+
+Note the huge imbalance in `survived` with `sex`: men have clearly
+perished in larger numbers than women. Which is why the colouring by the
+Pearson Residuals show large [*positive*
+residuals]{style="color: blue;"} for men who died, and large [*negative*
+residuals]{style="color: red;"} for women who died.
+
+So sadly Jack is far more likely to have died than Rose.
+:::
+
+::: callout-note
+### Q.2. How does `Survived` depend upon `Class`?
+
+::: columns
+::: column
+```{r}
+#| label: vcd-titanic-2
+#| eval: false
+vcd::structable(Survived ~ Class, data = titanic) %>% 
+  vcd::mosaic(gp = shading_max)
+
+```
+:::
+
+::: column
+```{r}
+#| ref.label: vcd-titanic-2
+#| echo: false 
+```
+:::
+:::
+
+Crew has seen deaths in large numbers, as seen by the large [*negative*
+residual]{style="color: red;"} for crew-survivals. [First Class
+passengers have had speedy access to the
+boats](https://youtu.be/kQ8WsD9AGX4) and have survived in larger
+proportions than say second or third class. There is a large [*positive*
+residual]{style="color: blue;"} for first-class survivals.
+
+Rose travelled `first class` and Jack was `third class`. So again the
+odds are stacked against him.
+:::
+
+## {{< iconify fluent-mdl2 balloons >}} Balloon Plots
+
+There is another visualization of Categorical Data, called a Balloon
+Plot. We will use the `housetasks` dataset from the package `ggpubr`.
+
+### {{< iconify healthicons cleaning size = 2x >}} Dataset: Who Does the Housework?
+
+```{r}
+#| label: dataset-housetasks
+#| 
+housetasks <- read.delim(
+  system.file("demo-data/housetasks.txt", 
+              package = "ggpubr"), row.names = 1)
+housetasks
+
+inspect(housetasks)
+
+```
+
+We see that we have 13 observations.
+
+::: callout-important
+This data is already in Contingency Table form (without the margin
+totals)!
+:::
+
+### {{< iconify streamline dictionary-language-book-solid >}} Data Dictionary
+
+::: callout-note
+### Quantitative Data
+
+-   `Freq`: (int) No of times a task was carried out by specific people
+:::
+
+::: callout-note
+### Qualitative Data
+
+-   `Who`: (chr) Who carried out the task?
+-   `Task`: (chr) Task? Which task? Can't you see I'm tired?
+:::
+
+::: columns
+::: column
+```{r}
+#| label: balloon-plot-1
+#| eval: false
+
+ggpubr::ggballoonplot(housetasks, 
+        fill = "value", 
+        ggtheme = theme_pubr(base_family = "Alegreya")
+        ) +
+  scale_fill_viridis_c(option = "C") +
+  labs(title = "A Balloon Plot for Categorical Data")
+
+```
+:::
+
+::: column
+```{r}
+#| ref.label: balloon-plot-1
+#| echo: false 
+```
+:::
+:::
+
+And repeat with the familiar `HairEyeColor` dataset:
+
+::: columns
+::: column
+```{r}
+#| label: HairEyeColor-tibble
+#| eval: false
+
+df <- as_tibble(HairEyeColor)
+df
+```
+:::
+
+::: column
+```{r}
+#| ref.label: HairEyeColor-tibble
+#| echo: false 
+```
+:::
+:::
+
+::: columns
+::: column
+```{r}
+#| label: balloon-plot-2
+#| eval: false
+
+ggballoonplot(df, x = "Hair", 
+              y = "Eye", size = "n",
+              fill = "n",
+              ggtheme = theme_pubr(base_family = "Alegreya")
+              ) +
+  scale_fill_viridis_c(option = "C") + 
+  labs(title = "Balloon Plot")
+```
+:::
+
+::: column
+```{r}
+#| ref.label: balloon-plot-2
+#| echo: false 
+```
+:::
+:::
+
+::: columns
+::: column
+```{r}
+#| label: balloon-plot-3
+#| eval: false
+
+# Balloon Plot with facetting
+ggballoonplot(df, x = "Hair", 
+              y = "Eye", size = "n",
+              fill = "n", 
+              facet.by = "Sex",
+              ggtheme = theme_pubr(base_family = "Alegreya")
+              ) +
+  scale_fill_viridis_c(option = "C") + 
+  labs(title = "Balloon Plot with Facetting by Sex", 
+       subtitle = "Hair and Eye Color")
+
+```
+:::
+
+::: column
+```{r}
+#| ref.label: balloon-plot-3
+#| echo: false 
+```
+:::
+:::
+
+Note the somewhat different syntax with `ggballoonplot`: the variable
+names are enclosed in quotes.
+
+Balloon Plots work because they use color and size aesthetics to
+represent categories and counts respectively.
+
+## {{< iconify mingcute thought-line >}} Wait, But Why?
+
+-   We can detect *correlation* between Quant variables using the
+    [scatter plots and regression lines](../30-Correlations/index.qmd)
+-   And we can detect *association* between Qual variables using
+    mosaics, sieves (which we did not see here, but is possible in R),
+    and with balloon plots.
+-   Your project primary research data may be pure Qualitative too, as
+    with a Questionnaire / Survey instrument.
+-   One such Qual variable therein will be your [target
+    variable](https://orangedatamining.com/blog/machine-learning-jargon/)
+-   You will need to justify whether the target variable is dependent
+    upon the other Quals, and then to decide what to do about that.
+
+## {{< iconify eos-icons ai >}} AI Generated Summary and Podcast
+
+This excerpt from a course on Data Analysis using Metaphors focuses on the importance of understanding and visualizing *categorical data*. It discusses different ways to represent categorical data in R, including case data, frequency data, and cross-tabular count data. The text also explores various visualization techniques like bar plots, pie charts, mosaic plots, and balloon plots. It emphasizes the use of contingency tables for analyzing relationships between categorical variables, illustrating how to create them and visualize them using R packages. Additionally, the text delves into the concept of Pearson residuals, which help to identify associations between categorical variables and highlight deviations from independence.
+
+<br><br>
+<center>
+```{r}
+#| echo: false
+embedr::embed_audio("../../../../../materials/audio/Categorical Data.wav")
+
+``` 
+
+
+
+
+## {{< iconify fluent-mdl2 decision-solid >}} Conclusion
+
+How are the bar plots for categorical data different from histograms?
+Why don't "regular" scatter plots simply work for Categorical data?
+Discuss!
+
+There are quite a few things we can do with Qualitative/Categorical
+data:
+
+1)  Make simple bar charts with colours and facetting
+2)  Make Contingency Tables for a $X^2$-test
+3)  Make Mosaic Plots to show how the categories stack up
+4)  Make Balloon Charts as an alternative
+5)  Then, draw your inferences and tell the story!
+
+## {{< iconify openmoji person >}} Your Turn
+
+1.  Take some of the categorical datasets from the `vcd` and `vcdExtra`
+    packages and recreate the plots from this module. Go to
+    <https://vincentarelbundock.github.io/Rdatasets/articles/data.html>
+    and type "vcd" in the `search` box. You can directly load CSV files
+    from there, using `read_csv("url-to-csv")`.
+
+2.  Try the `housetasks` dataset that we used for Balloon Plots, to
+    create a mosaic plot with Pearson Residuals.
+
+::: callout-note
+### [Clothing and Intelligence Rating of Children!!](https://vincentarelbundock.github.io/Rdatasets/doc/vcdExtra/Gilby.html)
+
+Are well-dressed students actually smarter?
+
+{{< downloadthis data/Gilby.csv dname="gilby" label="Download the Gilby Study dataset" icon="database-fill-down" type="info" >}}
+:::
+
+::: callout-note
+### [Pre-marital Sex and Divorce](https://vincentarelbundock.github.io/Rdatasets/doc/vcd/PreSex.html).
+
+{{< downloadthis data/Presex.csv dname="premarital" label="Download the pre- and extra-marital sex and divorce dataset" icon="database-fill-down" type="info" >}}
+:::
+
+::: callout-note
+### [Are Emily and Greg More Employable Than Lakisha and Jamal?](https://vincentarelbundock.github.io/Rdatasets/doc/AER/ResumeNames.html)
+
+Are first names a basis for racial discrimination, in the US?
+
+This dataset was generated as part of a landmark research study done by
+[Marianne Bertrand and Senthil
+Mullainathan](https://sci-hub.se/10.1257/0002828042002561). Read the
+description therein to really understand how you can ***prove
+causality*** with a well-crafted research experiment.
+
+{{< downloadthis data/ResumeNames.csv dname="ResumeNames" label="Download the Resume Name dataset" icon="database-fill-down" type="info" >}}
+:::
+
+## {{< iconify eos-icons ai >}} AI Generated Summary and Podcast
+
+This module focuses on the importance of understanding and visualizing categorical data. It discusses different ways to represent categorical data in R, including *case data, frequency data, and cross-tabular count data*. The text also explores various visualization techniques like *bar plots, pie charts, mosaic plots, and balloon plots*. It emphasizes the use of *contingency tables* for analyzing relationships between categorical variables, illustrating how to create them and visualize them using R packages. Additionally, the text delves into the concept of *Pearson residuals*, which help to identify associations between categorical variables and highlight deviations from independence.
+
+<br><br>
+<center>
+```{r}
+#| echo: false
+embedr::embed_audio("../../../../../materials/audio/change.wav")
+
+``` 
+
+## {{< iconify ooui references-ltr >}} References
+
+1. Winston Chang (2024). *R Graphics Cookbook*. <https://r-graphics.org>
+1.  Nice Chi-square interactive story at
+    <https://statisticalstories.xyz/chi-square>
+2.  Chittaranjan Andrade(July 22, 2015). *Understanding Relative Risk,
+    Odds Ratio, and Related Terms: As Simple as It Can Get*.
+    <https://www.psychiatrist.com/jcp/understanding-relative-risk-odds-ratio-related-terms/>
+3.  Mine Cetinkaya-Rundel and Johanna Hardin. *An Introduction to Modern
+    Statistics*, Chapter 4.
+    <https://openintro-ims.netlify.app/explore-categorical.html>\
+4.  Using the `strcplot` command from `vcd`,
+    <https://cran.r-project.org/web/packages/vcd/vignettes/strucplot.pdf>\
+5.  Creating Frequency Tables with `vcd`,
+    <https://cran.r-project.org/web/packages/vcdExtra/vignettes/A_creating.html>\
+6.  Creating mosaic plots with `vcd`,
+    <https://cran.r-project.org/web/packages/vcdExtra/vignettes/D_mosaics.html>\
+7.  Michael Friendly, *Corrgrams: Exploratory displays for correlation
+    matrices*. The American Statistician August 19, 2002 (v1.5).
+    <https://www.datavis.ca/papers/corrgram.pdf>\
+8.  [Visualizing Categorical Data in
+    R](https://homepage.divms.uiowa.edu/~luke/classes/STAT4580/catone.html)\
+9.  H. Riedwyl & M. Schüpbach (1994), *Parquet diagram to plot
+    contingency tables*. In F. Faulbaum (ed.), Softstat '93: Advances in
+    Statistical Software, 293--299. Gustav Fischer, New York.
+
+::: {#refs style="font-size: 60%;"}
+###### {{< iconify lucide package-check >}} R Package Citations
+
+```{r}
+#| echo: false
+#scan_packages()
+cite_packages(
+  output = "table",
+  out.dir = ".",
+  out.format = "html",
+  pkgs = c("ggmosaic", "ggpubr", "tinytable", "vcd", "vcdExtra", "visStatistics")) %>%
+  knitr::kable(format = "simple")
+
+```
+:::

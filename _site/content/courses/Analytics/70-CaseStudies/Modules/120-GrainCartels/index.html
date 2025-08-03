@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Grain Transportation Cartels – The Mad Hatter’s Guide to Data Viz and Stats in R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="../../../../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../../../../">
+<link href="../../../../../../content/materials/icon-park-twotone--concept-sharing.svg" rel="icon" type="image/svg+xml">
+<script src="../../../../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-1b3e43c72e8be34557c75123b0b69e0d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../../../../site_libs/bootstrap/bootstrap-568c5ee9ec4531743a00a9bacd4917ba.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../../../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.css" rel="stylesheet">
+<script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
+<script src="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<link href="../../../../../../site_libs/quarto-contrib/tachyons-4.12.0/tachyons.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><style>html{ scroll-behavior: smooth; }</style>
+<link href="../../../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><link rel="stylesheet" href="../../../../../../css/fira.css">
+<link rel="stylesheet" href="../../../../../../css/roboto-condensed.css">
+<link rel="stylesheet" href="../../../../../../css/vollkorn.css">
+<link rel="stylesheet" href="../../../../../../css/fraunces.css">
+<link rel="stylesheet" href="../../../../../../css/styles.css">
+<meta property="og:title" content="Grain Transportation Cartels – The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta property="og:description" content="This is Arvind V.’s website for teaching Data Viz and Stats in R">
+<meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/70-CaseStudies/Modules/120-GrainCartels/index_files/figure-html/plot-data-1.png">
+<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
+<meta property="og:image:height" content="3000">
+<meta property="og:image:width" content="4200">
+<meta name="twitter:title" content="Grain Transportation Cartels – The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta name="twitter:description" content="This is Arvind V.’s website for teaching Data Viz and Stats in R">
+<meta name="twitter:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/70-CaseStudies/Modules/120-GrainCartels/index_files/figure-html/plot-data-1.png">
+<meta name="twitter:image-height" content="3000">
+<meta name="twitter:image-width" content="4200">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../../../../index.html">
+    <span class="navbar-title">The Mad Hatter’s Guide to Data Viz and Stats in R</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/arvindvenkatadri/dataviz"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/arvind_v"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/arvindvenkatadri"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="mailto:arvind.venkatadri@gmail.com"> <i class="bi bi-envelope" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+</div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Grain Transportation Cartels</li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+      <a href="../../../../../../index.html" class="sidebar-logo-link">
+      <img src="../../../../../../content/materials/images/1book25.jpg" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../content/courses/Analytics/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Viz and Stats</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../content/courses/Analytics/05-Tools/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tools</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/05-Tools/10-Intro-to-R/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa-brands:r-project"></iconify-icon> Introduction to R and RStudio</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../content/courses/Analytics/10-Descriptive/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Descriptive Analytics</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/05-NatureData/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icon-park-twotone:data-user" width="1.2em" height="1.2em"></iconify-icon> Data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/07-Graphs/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="carbon:chart-3d" width="1.2em" height="1.2em"></iconify-icon> Graphs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/10-FavStats/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="carbon:summary-kpi" width="1.2em" height="1.2em"></iconify-icon> Summaries</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/20-BarPlots/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="eos-icons:counting" width="1.2em" height="1.2em"></iconify-icon> Counts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/22-Histograms/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fluent-mdl2:quantity" width="1.2em" height="1.2em"></iconify-icon> Quantities</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/24-BoxPlots/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="lucide:group" width="1.2em" height="1.2em"></iconify-icon> Groups</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/26-Densities/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="clarity:bell-curve-line" width="1.2em" height="1.2em"></iconify-icon> Densities</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/28-Violins/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="material-symbols:light-group-rounded" width="1.2em" height="1.2em"></iconify-icon> Groups and Densities</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/30-Correlations/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icon-park-outline:change" width="1.2em" height="1.2em"></iconify-icon> Change</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/40-CatData/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icon-park-outline:proportional-scaling"></iconify-icon> Proportions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/60-PartWhole/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="ic:round-pie-chart-outline"></iconify-icon> Parts of a Whole</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/70-EvolutionFlow/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="carbon:sankey-diagram"></iconify-icon> Evolution and Flow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/80-Ranking/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="ph:ranking-bold" width="1.2em" height="1.2em"></iconify-icon> Ratings and Rankings</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/45-SurveyData/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="wpf:survey" width="1.2em" height="1.2em"></iconify-icon> Surveys</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/50-Time/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fluent-mdl2:hour-glass" width="1.2em" height="1.2em"></iconify-icon> Time</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> Space</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/100-Networks/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="bx:network-chart" width="1.2em" height="1.2em"></iconify-icon> Networks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/1000-NoFreeHunch/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="game-icons:sherlock-holmes" width="1.2em" height="1.2em"></iconify-icon> Experiments</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/180-RefMat/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="eos-icons:miscellaneous"></iconify-icon> Miscellaneous Graphing Tools, and References</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../content/courses/Analytics/20-Inference/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inference</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/20-Inference/Modules/10-Intro/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🧭 Basics of Statistical Inference</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/20-Inference/Modules/20-SampProb/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🎲 Samples, Populations, Statistics and Inference</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/20-Inference/Modules/60-SimTest/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Basics of Randomization Tests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/20-Inference/Modules/100-OneMean/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🃏 Inference for a Single Mean</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/20-Inference/Modules/110-TwoMeans/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🃏 Inference for Two Independent Means</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/20-Inference/Modules/120-PairedMeans/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🃏 Inference for Comparing Two Paired Means</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/20-Inference/Modules/130-ThreeMeansOrMore/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Comparing Multiple Means with ANOVA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/20-Inference/Modules/150-Correlation/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inference for Correlation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/20-Inference/Modules/180-OneProp/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🃏 Testing a Single Proportion</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/20-Inference/Modules/190-TwoProp/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🃏 Inference Test for Two Proportions</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../content/courses/Analytics/30-Modelling/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modelling</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/30-Modelling/Modules/LinReg/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modelling with Linear Regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/30-Modelling/Modules/LogReg/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modelling with Logistic Regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/30-Modelling/Modules/ModelTimeSeries/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🕔 Modelling and Predicting Time Series</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../content/courses/Analytics/40-Workflow/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Workflow</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/40-Workflow/Modules/200-EDA-Workflow/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="guidance:falling-rocks" width="1.2em" height="1.2em"></iconify-icon><iconify-icon icon="game-icons:falling" width="1.2em" height="1.2em"></iconify-icon> Facing the Abyss</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/40-Workflow/Modules/30-BlogSite/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="entypo:publish" width="1.2rem" height="1.2rem"></iconify-icon> I Publish, therefore I Am</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../content/courses/Analytics/50-Arts/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Arts</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/50-Arts/Modules/05-themes/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fonts in ggplot and on websites</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/50-Arts/Modules/10-Colour/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 05: Colors with Penguins</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/50-Arts/Modules/20-Fonts/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fonts in ggplot and on websites</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/50-Arts/Modules/30-Annotations1/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Annotating Plots: Text, Labels, and Boxes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/50-Arts/Modules/35-Annotations2/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Annotations: Drawing Attention to Parts of the Graph</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+ <span class="menu-text">content/courses/Analytics/50-Arts/Modules/40-Highlighting/index.qmd</span>
+  </li>
+          <li class="sidebar-item">
+ <span class="menu-text">content/courses/Analytics/50-Arts/Modules/50-Scales/index.qmd</span>
+  </li>
+          <li class="sidebar-item">
+ <span class="menu-text">content/courses/Analytics/50-Arts/Modules/60-Assembly/index.qmd</span>
+  </li>
+          <li class="sidebar-item">
+ <span class="menu-text">content/courses/Analytics/50-Arts/Modules/70-Diagrams/index.qmd</span>
+  </li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../content/courses/Analytics/60-AI-tools/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">AI Tools</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/60-AI-tools/Modules/10-LLMs/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using gander and ellmer</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/60-AI-tools/Modules/20-Github-Pilot/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using Github Pilot in RStudio</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+ <span class="menu-text">content/courses/Analytics/60-AI-tools/Modules/30-Explain/index.qmd</span>
+  </li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../content/courses/Analytics/70-CaseStudies/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Case Studies</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/05-Demo/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="healthicons:elderly-outline" width="1.2em" height="1.2em"></iconify-icon> Demo:Product Packaging and Elderly People</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/10-IkeaFurniture/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="simple-icons:ikea" width="1.2em" height="1.2em"></iconify-icon> Ikea Furniture</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/20-MovieProfits/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="noto:movie-camera" width="1.2em" height="1.2em"></iconify-icon> Movie Profits</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/30-GenderWorkplace/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icons8:gender" width="1.2em" height="1.2em"></iconify-icon> Gender at the Work Place</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/40-Heptathlon/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icon-park-outline:sport" width="1.2em" height="1.2em"></iconify-icon> Heptathlon</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/60-SchoolScores/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="ic:twotone-school" width="1.2em" height="1.2em"></iconify-icon> School Scores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/80-ChildrensGames/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa6-solid:children"></iconify-icon><iconify-icon icon="icon-park-solid:play-basketball"></iconify-icon> Children's Games</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/90-ValentinesDay/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="mingcute:hand-heart-line"></iconify-icon> Valentine’s Day Spending</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/100-WomenLiveMen/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="noto:mage-light-skin-tone"></iconify-icon> Women Live Longer?</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/110-ChildrenHearingLoss/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa6-solid:ear-deaf"></iconify-icon><iconify-icon icon="fa-regular:sad-tear"></iconify-icon> Hearing Loss in Children</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/200-CaliforniaTransitPayments/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="openmoji:california-flag"></iconify-icon><iconify-icon icon="material-symbols:transit-ticket-outline-sharp"></iconify-icon> California Transit Payments</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/250-Seaweed/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="iconoir:sea-waves"></iconify-icon><iconify-icon icon="mdi:weed"></iconify-icon> Seaweed Nutrients</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/300-Coffee/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa:coffee"></iconify-icon> Coffee Flavours</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/350-LegionnairesDisease/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa6-solid:disease"></iconify-icon> Legionnaire’s Disease in the USA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/400-AntarcticSeaIce/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="iconoir:sea-waves"></iconify-icon><iconify-icon icon="openmoji:floating-ice"></iconify-icon>  Antarctic Sea ice</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/450-CholeraInLondon/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="simple-icons:transportforlondon"></iconify-icon><iconify-icon icon="hugeicons:water-pump"></iconify-icon>  William Farr's Observations on Cholera in London</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#setting-up-r-packages" id="toc-setting-up-r-packages" class="nav-link active" data-scroll-target="#setting-up-r-packages">Setting up R Packages</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#read-the-data" id="toc-read-the-data" class="nav-link" data-scroll-target="#read-the-data">Read the Data</a></li>
+  <li><a href="#data-dictionary" id="toc-data-dictionary" class="nav-link" data-scroll-target="#data-dictionary">Data Dictionary</a></li>
+  <li><a href="#research-question" id="toc-research-question" class="nav-link" data-scroll-target="#research-question">Research Question</a></li>
+  <li><a href="#inspectanalysetransform-the-data" id="toc-inspectanalysetransform-the-data" class="nav-link" data-scroll-target="#inspectanalysetransform-the-data">Inspect/Analyse/Transform the Data</a></li>
+  <li><a href="#plot-the-data" id="toc-plot-the-data" class="nav-link" data-scroll-target="#plot-the-data">Plot the Data</a></li>
+  <li><a href="#task-and-discussion" id="toc-task-and-discussion" class="nav-link" data-scroll-target="#task-and-discussion">Task and Discussion</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">Grain Transportation Cartels</h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-body">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><section id="setting-up-r-packages" class="level2"><h2 class="anchored" data-anchor-id="setting-up-r-packages">Setting up R Packages</h2>
+<div class="cell">
+<div class="sourceCode" id="cb1" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ProjectMOSAIC/mosaic">mosaic</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/skimr/">skimr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ProjectMOSAIC/ggformula">ggformula</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="plot-theme" class="level4"><h4 class="anchored" data-anchor-id="plot-theme">Plot Theme</h4>
+<div class="cell">
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode" id="cb2" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># https://stackoverflow.com/questions/74491138/ggplot-custom-fonts-not-working-in-quarto</span></span>
+<span></span>
+<span><span class="co"># Chunk options</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/knitr/man/opts_chunk.html">opts_chunk</a></span><span class="op">$</span><span class="fu">set</span><span class="op">(</span></span>
+<span>  fig.width <span class="op">=</span> <span class="fl">7</span>,</span>
+<span>  fig.asp <span class="op">=</span> <span class="fl">0.618</span>, <span class="co"># Golden Ratio</span></span>
+<span>  <span class="co"># out.width = "80%",</span></span>
+<span>  fig.align <span class="op">=</span> <span class="st">"center"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">### Ggplot Theme</span></span>
+<span><span class="co">### https://rpubs.com/mclaire19/ggplot2-custom-themes</span></span>
+<span></span>
+<span><span class="va">theme_custom</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">font</span> <span class="op">&lt;-</span> <span class="st">"Roboto Condensed"</span> <span class="co"># assign font family up front</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_classic</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">14</span><span class="op">)</span> <span class="op"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">%+replace%</a></span> <span class="co"># replace elements we want to change</span></span>
+<span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span></span>
+<span>      panel.grid.minor <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>, <span class="co"># strip minor gridlines</span></span>
+<span>      text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>family <span class="op">=</span> <span class="va">font</span><span class="op">)</span>,</span>
+<span>      <span class="co"># text elements</span></span>
+<span>      plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># title</span></span>
+<span>        family <span class="op">=</span> <span class="va">font</span>, <span class="co"># set font family</span></span>
+<span>        size <span class="op">=</span> <span class="fl">16</span>, <span class="co"># set font size</span></span>
+<span>        face <span class="op">=</span> <span class="st">"bold"</span>, <span class="co"># bold typeface</span></span>
+<span>        hjust <span class="op">=</span> <span class="fl">0</span>, <span class="co"># left align</span></span>
+<span>        <span class="co"># vjust = 2                #raise slightly</span></span>
+<span>        margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">10</span>, <span class="fl">0</span><span class="op">)</span></span>
+<span>      <span class="op">)</span>,</span>
+<span>      plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># subtitle</span></span>
+<span>        family <span class="op">=</span> <span class="va">font</span>, <span class="co"># font family</span></span>
+<span>        size <span class="op">=</span> <span class="fl">14</span>, <span class="co"># font size</span></span>
+<span>        hjust <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>        margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">0</span><span class="op">)</span></span>
+<span>      <span class="op">)</span>,</span>
+<span>      plot.caption <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># caption</span></span>
+<span>        family <span class="op">=</span> <span class="va">font</span>, <span class="co"># font family</span></span>
+<span>        size <span class="op">=</span> <span class="fl">8</span>, <span class="co"># font size</span></span>
+<span>        hjust <span class="op">=</span> <span class="fl">1</span></span>
+<span>      <span class="op">)</span>, <span class="co"># right align</span></span>
+<span></span>
+<span>      axis.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># axis titles</span></span>
+<span>        family <span class="op">=</span> <span class="va">font</span>, <span class="co"># font family</span></span>
+<span>        size <span class="op">=</span> <span class="fl">10</span> <span class="co"># font size</span></span>
+<span>      <span class="op">)</span>,</span>
+<span>      axis.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># axis text</span></span>
+<span>        family <span class="op">=</span> <span class="va">font</span>, <span class="co"># axis family</span></span>
+<span>        size <span class="op">=</span> <span class="fl">8</span></span>
+<span>      <span class="op">)</span> <span class="co"># font size</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># Set graph theme</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section></section><section id="introduction" class="level2"><h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>From: Robert H. Porter (1983). <em>A Study of Cartel Stability: The Joint Executive Committee, 1880-1886</em>. The Bell Journal of Economics, Vol. 14, No.&nbsp;2 (Autumn, 1983), pp.&nbsp;301-314:</p>
+<p>The Joint Executive Committee (JEC) was a <a href="https://en.wikipedia.org/wiki/Cartel">cartel</a> (of railroad firms) which controlled eastbound freight shipments from Chicago to the Atlantic seaboard in the 1880’s. While different railroad firms in the JEC shipped grain to different port cities (for example, Baltimore and New York), most of the wheat handled by the cartel was subsequently exported overseas, and the rates charged by different firms (were) adjusted to compensate for differences in ocean shipping rates.</p>
+<p>Prices, rather than quantity, has typically been thought to be the strategic variable of firms in the rail-freight industry. Total demand was quite variable, and so the actual market share of any particular railroad firm would depend on both the prices charged by all the firms as well as unpredictable (random) forces. Price wars were not random, but precipitated by periods of slackened demand, which were <strong>presumably unpredictable</strong>, at least to some extent.</p>
+<p>On the other hand, the <strong>predictable</strong> fluctuations in demand that resulted from the annual opening and closing of the Great Lakes (Superior / Michigan / Huron / Ontario / Erie ) to shipping (because they were frozen in winter), which determined the degree of outside competition, did not disrupt industry conduct. Rather, rates adjusted systematically with the lake navigation season.</p>
+<p>This dataset is available on Vincent Arel-Bundock’s dataset repository, and is part of the R package <code>AER</code> (Applied Econometrics in R).</p>
+</section><section id="read-the-data" class="level2"><h2 class="anchored" data-anchor-id="read-the-data">Read the Data</h2>
+<div class="cell">
+<div class="sourceCode" id="cb3" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cartelstability</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span><span class="op">(</span><span class="st">"https://vincentarelbundock.github.io/Rdatasets/csv/AER/CartelStability.csv"</span><span class="op">)</span></span>
+<span><span class="va">cartelstability</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["rownames"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["price"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["cartel"],"name":[3],"type":["chr"],"align":["left"]},{"label":["quantity"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["season"],"name":[5],"type":["chr"],"align":["left"]},{"label":["ice"],"name":[6],"type":["chr"],"align":["left"]}],"data":[{"1":"1","2":"0.400","3":"yes","4":"13632","5":"Jan  1 - Jan 28","6":"yes"},{"1":"2","2":"0.400","3":"yes","4":"20035","5":"Jan  1 - Jan 28","6":"yes"},{"1":"3","2":"0.400","3":"yes","4":"16319","5":"Jan  1 - Jan 28","6":"yes"},{"1":"4","2":"0.400","3":"yes","4":"12603","5":"Jan  1 - Jan 28","6":"yes"},{"1":"5","2":"0.400","3":"yes","4":"23079","5":"Jan 29 - Feb 25","6":"yes"},{"1":"6","2":"0.400","3":"yes","4":"19652","5":"Jan 29 - Feb 25","6":"yes"},{"1":"7","2":"0.400","3":"yes","4":"16211","5":"Jan 29 - Feb 25","6":"yes"},{"1":"8","2":"0.400","3":"yes","4":"22914","5":"Jan 29 - Feb 25","6":"yes"},{"1":"9","2":"0.400","3":"yes","4":"23710","5":"Feb 26 - Mar 26","6":"yes"},{"1":"10","2":"0.350","3":"yes","4":"23036","5":"Feb 26 - Mar 26","6":"yes"},{"1":"11","2":"0.350","3":"yes","4":"38414","5":"Feb 26 - Mar 26","6":"yes"},{"1":"12","2":"0.350","3":"yes","4":"46906","5":"Feb 26 - Mar 26","6":"yes"},{"1":"13","2":"0.350","3":"yes","4":"58608","5":"Mar 27 - Apr 23","6":"yes"},{"1":"14","2":"0.350","3":"yes","4":"51225","5":"Mar 27 - Apr 23","6":"yes"},{"1":"15","2":"0.350","3":"yes","4":"37339","5":"Mar 27 - Apr 23","6":"no"},{"1":"16","2":"0.300","3":"yes","4":"20298","5":"Mar 27 - Apr 23","6":"no"},{"1":"17","2":"0.300","3":"yes","4":"13699","5":"Apr 24 - May 21","6":"no"},{"1":"18","2":"0.300","3":"yes","4":"11944","5":"Apr 24 - May 21","6":"no"},{"1":"19","2":"0.300","3":"yes","4":"10658","5":"Apr 24 - May 21","6":"no"},{"1":"20","2":"0.300","3":"yes","4":"9756","5":"Apr 24 - May 21","6":"no"},{"1":"21","2":"0.300","3":"yes","4":"9546","5":"May 22 - Jun 18","6":"no"},{"1":"22","2":"0.300","3":"yes","4":"16713","5":"May 22 - Jun 18","6":"no"},{"1":"23","2":"0.300","3":"yes","4":"16389","5":"May 22 - Jun 18","6":"no"},{"1":"24","2":"0.300","3":"yes","4":"23179","5":"May 22 - Jun 18","6":"no"},{"1":"25","2":"0.300","3":"yes","4":"34999","5":"Jun 19 - Jul 16","6":"no"},{"1":"26","2":"0.300","3":"yes","4":"35267","5":"Jun 19 - Jul 16","6":"no"},{"1":"27","2":"0.300","3":"yes","4":"20402","5":"Jun 19 - Jul 16","6":"no"},{"1":"28","2":"0.300","3":"yes","4":"21020","5":"Jun 19 - Jul 16","6":"no"},{"1":"29","2":"0.300","3":"yes","4":"16612","5":"Jul 17 - Aug 13","6":"no"},{"1":"30","2":"0.300","3":"yes","4":"14834","5":"Jul 17 - Aug 13","6":"no"},{"1":"31","2":"0.300","3":"yes","4":"11149","5":"Jul 17 - Aug 13","6":"no"},{"1":"32","2":"0.300","3":"yes","4":"16035","5":"Jul 17 - Aug 13","6":"no"},{"1":"33","2":"0.300","3":"yes","4":"18555","5":"Aug 14 - Sep 10","6":"no"},{"1":"34","2":"0.300","3":"yes","4":"17413","5":"Aug 14 - Sep 10","6":"no"},{"1":"35","2":"0.300","3":"yes","4":"19412","5":"Aug 14 - Sep 10","6":"no"},{"1":"36","2":"0.300","3":"yes","4":"20240","5":"Aug 14 - Sep 10","6":"no"},{"1":"37","2":"0.300","3":"yes","4":"11824","5":"Sep 11 - Oct  8","6":"no"},{"1":"38","2":"0.300","3":"yes","4":"17793","5":"Sep 11 - Oct  8","6":"no"},{"1":"39","2":"0.300","3":"yes","4":"20157","5":"Sep 11 - Oct  8","6":"no"},{"1":"40","2":"0.300","3":"yes","4":"18623","5":"Sep 11 - Oct  8","6":"no"},{"1":"41","2":"0.300","3":"yes","4":"19062","5":"Oct  9 - Nov  5","6":"no"},{"1":"42","2":"0.300","3":"yes","4":"20840","5":"Oct  9 - Nov  5","6":"no"},{"1":"43","2":"0.300","3":"yes","4":"18972","5":"Oct  9 - Nov  5","6":"no"},{"1":"44","2":"0.300","3":"yes","4":"19690","5":"Oct  9 - Nov  5","6":"no"},{"1":"45","2":"0.300","3":"yes","4":"20206","5":"Nov  6 - Dec  3","6":"no"},{"1":"46","2":"0.300","3":"yes","4":"23081","5":"Nov  6 - Dec  3","6":"no"},{"1":"47","2":"0.300","3":"yes","4":"21209","5":"Nov  6 - Dec  3","6":"no"},{"1":"48","2":"0.350","3":"yes","4":"13753","5":"Nov  6 - Dec  3","6":"no"},{"1":"49","2":"0.350","3":"yes","4":"14956","5":"Dec  4 - Dec 31","6":"yes"},{"1":"50","2":"0.350","3":"yes","4":"13295","5":"Dec  4 - Dec 31","6":"yes"},{"1":"51","2":"0.350","3":"yes","4":"16935","5":"Dec  4 - Dec 31","6":"yes"},{"1":"52","2":"0.350","3":"yes","4":"24499","5":"Dec  4 - Dec 31","6":"yes"},{"1":"53","2":"0.350","3":"yes","4":"20078","5":"Jan  1 - Jan 28","6":"yes"},{"1":"54","2":"0.350","3":"yes","4":"24144","5":"Jan  1 - Jan 28","6":"yes"},{"1":"55","2":"0.350","3":"yes","4":"26157","5":"Jan  1 - Jan 28","6":"yes"},{"1":"56","2":"0.350","3":"yes","4":"22055","5":"Jan  1 - Jan 28","6":"yes"},{"1":"57","2":"0.350","3":"yes","4":"21973","5":"Jan 29 - Feb 25","6":"yes"},{"1":"58","2":"0.350","3":"yes","4":"23794","5":"Jan 29 - Feb 25","6":"yes"},{"1":"59","2":"0.350","3":"yes","4":"23116","5":"Jan 29 - Feb 25","6":"yes"},{"1":"60","2":"0.350","3":"yes","4":"23578","5":"Jan 29 - Feb 25","6":"yes"},{"1":"61","2":"0.350","3":"yes","4":"21568","5":"Feb 26 - Mar 26","6":"yes"},{"1":"62","2":"0.350","3":"no","4":"17494","5":"Feb 26 - Mar 26","6":"yes"},{"1":"63","2":"0.350","3":"no","4":"16260","5":"Feb 26 - Mar 26","6":"yes"},{"1":"64","2":"0.350","3":"no","4":"26690","5":"Feb 26 - Mar 26","6":"yes"},{"1":"65","2":"0.350","3":"no","4":"21723","5":"Mar 27 - Apr 23","6":"yes"},{"1":"66","2":"0.350","3":"no","4":"30625","5":"Mar 27 - Apr 23","6":"yes"},{"1":"67","2":"0.350","3":"no","4":"36618","5":"Mar 27 - Apr 23","6":"yes"},{"1":"68","2":"0.300","3":"no","4":"42182","5":"Mar 27 - Apr 23","6":"yes"},{"1":"69","2":"0.250","3":"no","4":"47432","5":"Apr 24 - May 21","6":"yes"},{"1":"70","2":"0.300","3":"yes","4":"43822","5":"Apr 24 - May 21","6":"yes"},{"1":"71","2":"0.300","3":"yes","4":"36457","5":"Apr 24 - May 21","6":"yes"},{"1":"72","2":"0.300","3":"yes","4":"29093","5":"Apr 24 - May 21","6":"yes"},{"1":"73","2":"0.300","3":"yes","4":"21729","5":"May 22 - Jun 18","6":"no"},{"1":"74","2":"0.300","3":"yes","4":"21265","5":"May 22 - Jun 18","6":"no"},{"1":"75","2":"0.300","3":"yes","4":"18505","5":"May 22 - Jun 18","6":"no"},{"1":"76","2":"0.300","3":"no","4":"14540","5":"May 22 - Jun 18","6":"no"},{"1":"77","2":"0.300","3":"no","4":"19366","5":"Jun 19 - Jul 16","6":"no"},{"1":"78","2":"0.250","3":"no","4":"55732","5":"Jun 19 - Jul 16","6":"no"},{"1":"79","2":"0.150","3":"no","4":"42346","5":"Jun 19 - Jul 16","6":"no"},{"1":"80","2":"0.150","3":"no","4":"28960","5":"Jun 19 - Jul 16","6":"no"},{"1":"81","2":"0.150","3":"no","4":"30434","5":"Jul 17 - Aug 13","6":"no"},{"1":"82","2":"0.150","3":"no","4":"26139","5":"Jul 17 - Aug 13","6":"no"},{"1":"83","2":"0.150","3":"no","4":"31075","5":"Jul 17 - Aug 13","6":"no"},{"1":"84","2":"0.150","3":"no","4":"29433","5":"Jul 17 - Aug 13","6":"no"},{"1":"85","2":"0.150","3":"no","4":"29136","5":"Aug 14 - Sep 10","6":"no"},{"1":"86","2":"0.150","3":"no","4":"31126","5":"Aug 14 - Sep 10","6":"no"},{"1":"87","2":"0.150","3":"no","4":"35384","5":"Aug 14 - Sep 10","6":"no"},{"1":"88","2":"0.150","3":"no","4":"36701","5":"Aug 14 - Sep 10","6":"no"},{"1":"89","2":"0.150","3":"no","4":"37771","5":"Sep 11 - Oct  8","6":"no"},{"1":"90","2":"0.150","3":"no","4":"38247","5":"Sep 11 - Oct  8","6":"no"},{"1":"91","2":"0.150","3":"no","4":"39518","5":"Sep 11 - Oct  8","6":"no"},{"1":"92","2":"0.150","3":"no","4":"30603","5":"Sep 11 - Oct  8","6":"no"},{"1":"93","2":"0.125","3":"no","4":"28383","5":"Oct  9 - Nov  5","6":"no"},{"1":"94","2":"0.125","3":"no","4":"24678","5":"Oct  9 - Nov  5","6":"no"},{"1":"95","2":"0.125","3":"no","4":"27839","5":"Oct  9 - Nov  5","6":"no"},{"1":"96","2":"0.125","3":"no","4":"26767","5":"Oct  9 - Nov  5","6":"no"},{"1":"97","2":"0.125","3":"no","4":"24041","5":"Nov  6 - Dec  3","6":"no"},{"1":"98","2":"0.200","3":"no","4":"23355","5":"Nov  6 - Dec  3","6":"no"},{"1":"99","2":"0.200","3":"no","4":"26491","5":"Nov  6 - Dec  3","6":"no"},{"1":"100","2":"0.200","3":"no","4":"20900","5":"Nov  6 - Dec  3","6":"no"},{"1":"101","2":"0.200","3":"no","4":"26410","5":"Dec  4 - Dec 31","6":"yes"},{"1":"102","2":"0.200","3":"no","4":"26195","5":"Dec  4 - Dec 31","6":"yes"},{"1":"103","2":"0.200","3":"no","4":"22427","5":"Dec  4 - Dec 31","6":"yes"},{"1":"104","2":"0.125","3":"no","4":"27535","5":"Dec  4 - Dec 31","6":"yes"},{"1":"105","2":"0.125","3":"no","4":"25738","5":"Jan  1 - Jan 28","6":"yes"},{"1":"106","2":"0.125","3":"no","4":"23429","5":"Jan  1 - Jan 28","6":"yes"},{"1":"107","2":"0.125","3":"no","4":"32745","5":"Jan  1 - Jan 28","6":"yes"},{"1":"108","2":"0.125","3":"no","4":"37950","5":"Jan  1 - Jan 28","6":"yes"},{"1":"109","2":"0.200","3":"yes","4":"41466","5":"Jan 29 - Feb 25","6":"yes"},{"1":"110","2":"0.200","3":"yes","4":"49276","5":"Jan 29 - Feb 25","6":"yes"},{"1":"111","2":"0.200","3":"yes","4":"37850","5":"Jan 29 - Feb 25","6":"yes"},{"1":"112","2":"0.200","3":"yes","4":"32893","5":"Jan 29 - Feb 25","6":"yes"},{"1":"113","2":"0.200","3":"yes","4":"24410","5":"Feb 26 - Mar 26","6":"yes"},{"1":"114","2":"0.200","3":"yes","4":"15104","5":"Feb 26 - Mar 26","6":"yes"},{"1":"115","2":"0.200","3":"yes","4":"13819","5":"Feb 26 - Mar 26","6":"yes"},{"1":"116","2":"0.250","3":"yes","4":"22959","5":"Feb 26 - Mar 26","6":"yes"},{"1":"117","2":"0.250","3":"yes","4":"14486","5":"Mar 27 - Apr 23","6":"yes"},{"1":"118","2":"0.250","3":"yes","4":"15254","5":"Mar 27 - Apr 23","6":"yes"},{"1":"119","2":"0.250","3":"yes","4":"16607","5":"Mar 27 - Apr 23","6":"yes"},{"1":"120","2":"0.250","3":"yes","4":"17475","5":"Mar 27 - Apr 23","6":"no"},{"1":"121","2":"0.250","3":"yes","4":"12704","5":"Apr 24 - May 21","6":"no"},{"1":"122","2":"0.250","3":"yes","4":"14399","5":"Apr 24 - May 21","6":"no"},{"1":"123","2":"0.250","3":"yes","4":"12023","5":"Apr 24 - May 21","6":"no"},{"1":"124","2":"0.250","3":"yes","4":"9626","5":"Apr 24 - May 21","6":"no"},{"1":"125","2":"0.250","3":"yes","4":"6482","5":"May 22 - Jun 18","6":"no"},{"1":"126","2":"0.250","3":"yes","4":"10520","5":"May 22 - Jun 18","6":"no"},{"1":"127","2":"0.250","3":"yes","4":"12588","5":"May 22 - Jun 18","6":"no"},{"1":"128","2":"0.250","3":"yes","4":"12468","5":"May 22 - Jun 18","6":"no"},{"1":"129","2":"0.250","3":"yes","4":"10930","5":"Jun 19 - Jul 16","6":"no"},{"1":"130","2":"0.250","3":"yes","4":"10997","5":"Jun 19 - Jul 16","6":"no"},{"1":"131","2":"0.250","3":"yes","4":"8618","5":"Jun 19 - Jul 16","6":"no"},{"1":"132","2":"0.250","3":"yes","4":"4810","5":"Jun 19 - Jul 16","6":"no"},{"1":"133","2":"0.250","3":"yes","4":"5832","5":"Jul 17 - Aug 13","6":"no"},{"1":"134","2":"0.250","3":"yes","4":"8536","5":"Jul 17 - Aug 13","6":"no"},{"1":"135","2":"0.250","3":"yes","4":"11204","5":"Jul 17 - Aug 13","6":"no"},{"1":"136","2":"0.250","3":"yes","4":"10591","5":"Jul 17 - Aug 13","6":"no"},{"1":"137","2":"0.250","3":"yes","4":"9978","5":"Aug 14 - Sep 10","6":"no"},{"1":"138","2":"0.250","3":"yes","4":"9374","5":"Aug 14 - Sep 10","6":"no"},{"1":"139","2":"0.250","3":"yes","4":"19466","5":"Aug 14 - Sep 10","6":"no"},{"1":"140","2":"0.250","3":"yes","4":"23085","5":"Aug 14 - Sep 10","6":"no"},{"1":"141","2":"0.250","3":"yes","4":"18981","5":"Sep 11 - Oct  8","6":"no"},{"1":"142","2":"0.250","3":"yes","4":"16595","5":"Sep 11 - Oct  8","6":"no"},{"1":"143","2":"0.250","3":"yes","4":"13182","5":"Sep 11 - Oct  8","6":"no"},{"1":"144","2":"0.250","3":"yes","4":"11626","5":"Sep 11 - Oct  8","6":"no"},{"1":"145","2":"0.250","3":"yes","4":"12996","5":"Oct  9 - Nov  5","6":"no"},{"1":"146","2":"0.250","3":"yes","4":"14852","5":"Oct  9 - Nov  5","6":"no"},{"1":"147","2":"0.250","3":"yes","4":"11508","5":"Oct  9 - Nov  5","6":"no"},{"1":"148","2":"0.250","3":"yes","4":"12996","5":"Oct  9 - Nov  5","6":"no"},{"1":"149","2":"0.250","3":"yes","4":"17942","5":"Nov  6 - Dec  3","6":"no"},{"1":"150","2":"0.250","3":"yes","4":"15498","5":"Nov  6 - Dec  3","6":"no"},{"1":"151","2":"0.250","3":"yes","4":"18121","5":"Nov  6 - Dec  3","6":"no"},{"1":"152","2":"0.250","3":"yes","4":"17914","5":"Nov  6 - Dec  3","6":"no"},{"1":"153","2":"0.300","3":"yes","4":"21217","5":"Dec  4 - Dec 31","6":"yes"},{"1":"154","2":"0.300","3":"yes","4":"22418","5":"Dec  4 - Dec 31","6":"yes"},{"1":"155","2":"0.300","3":"yes","4":"26230","5":"Dec  4 - Dec 31","6":"yes"},{"1":"156","2":"0.300","3":"yes","4":"26458","5":"Dec  4 - Dec 31","6":"yes"},{"1":"157","2":"0.300","3":"yes","4":"36168","5":"Jan  1 - Jan 28","6":"yes"},{"1":"158","2":"0.300","3":"yes","4":"30721","5":"Jan  1 - Jan 28","6":"yes"},{"1":"159","2":"0.300","3":"yes","4":"41071","5":"Jan  1 - Jan 28","6":"yes"},{"1":"160","2":"0.300","3":"yes","4":"28865","5":"Jan  1 - Jan 28","6":"yes"},{"1":"161","2":"0.300","3":"yes","4":"29221","5":"Jan 29 - Feb 25","6":"yes"},{"1":"162","2":"0.300","3":"yes","4":"22245","5":"Jan 29 - Feb 25","6":"yes"},{"1":"163","2":"0.300","3":"yes","4":"20377","5":"Jan 29 - Feb 25","6":"yes"},{"1":"164","2":"0.300","3":"no","4":"36343","5":"Jan 29 - Feb 25","6":"yes"},{"1":"165","2":"0.300","3":"yes","4":"33227","5":"Feb 26 - Mar 26","6":"yes"},{"1":"166","2":"0.300","3":"yes","4":"33806","5":"Feb 26 - Mar 26","6":"yes"},{"1":"167","2":"0.300","3":"yes","4":"43998","5":"Feb 26 - Mar 26","6":"yes"},{"1":"168","2":"0.300","3":"yes","4":"45342","5":"Feb 26 - Mar 26","6":"yes"},{"1":"169","2":"0.300","3":"yes","4":"45659","5":"Mar 27 - Apr 23","6":"yes"},{"1":"170","2":"0.300","3":"yes","4":"30864","5":"Mar 27 - Apr 23","6":"yes"},{"1":"171","2":"0.300","3":"yes","4":"16522","5":"Mar 27 - Apr 23","6":"yes"},{"1":"172","2":"0.300","3":"yes","4":"20085","5":"Mar 27 - Apr 23","6":"no"},{"1":"173","2":"0.250","3":"no","4":"18262","5":"Apr 24 - May 21","6":"no"},{"1":"174","2":"0.250","3":"no","4":"19415","5":"Apr 24 - May 21","6":"no"},{"1":"175","2":"0.250","3":"yes","4":"22792","5":"Apr 24 - May 21","6":"no"},{"1":"176","2":"0.250","3":"yes","4":"23903","5":"Apr 24 - May 21","6":"no"},{"1":"177","2":"0.250","3":"yes","4":"14761","5":"May 22 - Jun 18","6":"no"},{"1":"178","2":"0.250","3":"yes","4":"10901","5":"May 22 - Jun 18","6":"no"},{"1":"179","2":"0.250","3":"yes","4":"14868","5":"May 22 - Jun 18","6":"no"},{"1":"180","2":"0.250","3":"yes","4":"17271","5":"May 22 - Jun 18","6":"no"},{"1":"181","2":"0.250","3":"yes","4":"16179","5":"Jun 19 - Jul 16","6":"no"},{"1":"182","2":"0.250","3":"yes","4":"15576","5":"Jun 19 - Jul 16","6":"no"},{"1":"183","2":"0.250","3":"yes","4":"12292","5":"Jun 19 - Jul 16","6":"no"},{"1":"184","2":"0.250","3":"yes","4":"7627","5":"Jun 19 - Jul 16","6":"no"},{"1":"185","2":"0.250","3":"yes","4":"9888","5":"Jul 17 - Aug 13","6":"no"},{"1":"186","2":"0.250","3":"yes","4":"11080","5":"Jul 17 - Aug 13","6":"no"},{"1":"187","2":"0.250","3":"yes","4":"13782","5":"Jul 17 - Aug 13","6":"no"},{"1":"188","2":"0.250","3":"yes","4":"15181","5":"Jul 17 - Aug 13","6":"no"},{"1":"189","2":"0.250","3":"yes","4":"11906","5":"Aug 14 - Sep 10","6":"no"},{"1":"190","2":"0.250","3":"yes","4":"14763","5":"Aug 14 - Sep 10","6":"no"},{"1":"191","2":"0.250","3":"yes","4":"22934","5":"Aug 14 - Sep 10","6":"no"},{"1":"192","2":"0.250","3":"no","4":"23252","5":"Aug 14 - Sep 10","6":"no"},{"1":"193","2":"0.200","3":"no","4":"25164","5":"Sep 11 - Oct  8","6":"no"},{"1":"194","2":"0.200","3":"yes","4":"33879","5":"Sep 11 - Oct  8","6":"no"},{"1":"195","2":"0.250","3":"yes","4":"32428","5":"Sep 11 - Oct  8","6":"no"},{"1":"196","2":"0.250","3":"yes","4":"31256","5":"Sep 11 - Oct  8","6":"no"},{"1":"197","2":"0.250","3":"yes","4":"27805","5":"Oct  9 - Nov  5","6":"no"},{"1":"198","2":"0.250","3":"yes","4":"34663","5":"Oct  9 - Nov  5","6":"no"},{"1":"199","2":"0.250","3":"yes","4":"30187","5":"Oct  9 - Nov  5","6":"no"},{"1":"200","2":"0.250","3":"yes","4":"27277","5":"Oct  9 - Nov  5","6":"no"},{"1":"201","2":"0.250","3":"yes","4":"29521","5":"Nov  6 - Dec  3","6":"no"},{"1":"202","2":"0.250","3":"yes","4":"31280","5":"Nov  6 - Dec  3","6":"no"},{"1":"203","2":"0.250","3":"yes","4":"30601","5":"Nov  6 - Dec  3","6":"no"},{"1":"204","2":"0.250","3":"yes","4":"31553","5":"Nov  6 - Dec  3","6":"no"},{"1":"205","2":"0.300","3":"yes","4":"42735","5":"Dec  4 - Dec 31","6":"yes"},{"1":"206","2":"0.300","3":"yes","4":"28241","5":"Dec  4 - Dec 31","6":"yes"},{"1":"207","2":"0.300","3":"yes","4":"29221","5":"Dec  4 - Dec 31","6":"yes"},{"1":"208","2":"0.300","3":"yes","4":"27894","5":"Dec  4 - Dec 31","6":"yes"},{"1":"209","2":"0.300","3":"yes","4":"21911","5":"Jan  1 - Jan 28","6":"yes"},{"1":"210","2":"0.300","3":"yes","4":"16685","5":"Jan  1 - Jan 28","6":"yes"},{"1":"211","2":"0.200","3":"yes","4":"23504","5":"Jan  1 - Jan 28","6":"yes"},{"1":"212","2":"0.300","3":"yes","4":"41210","5":"Jan  1 - Jan 28","6":"yes"},{"1":"213","2":"0.300","3":"yes","4":"35058","5":"Jan 29 - Feb 25","6":"yes"},{"1":"214","2":"0.300","3":"yes","4":"27065","5":"Jan 29 - Feb 25","6":"yes"},{"1":"215","2":"0.300","3":"no","4":"29404","5":"Jan 29 - Feb 25","6":"yes"},{"1":"216","2":"0.300","3":"no","4":"25269","5":"Jan 29 - Feb 25","6":"yes"},{"1":"217","2":"0.300","3":"no","4":"29219","5":"Feb 26 - Mar 26","6":"yes"},{"1":"218","2":"0.300","3":"no","4":"29291","5":"Feb 26 - Mar 26","6":"yes"},{"1":"219","2":"0.300","3":"no","4":"29217","5":"Feb 26 - Mar 26","6":"yes"},{"1":"220","2":"0.300","3":"no","4":"32643","5":"Feb 26 - Mar 26","6":"yes"},{"1":"221","2":"0.200","3":"no","4":"37902","5":"Mar 27 - Apr 23","6":"yes"},{"1":"222","2":"0.150","3":"no","4":"53282","5":"Mar 27 - Apr 23","6":"yes"},{"1":"223","2":"0.150","3":"no","4":"70793","5":"Mar 27 - Apr 23","6":"yes"},{"1":"224","2":"0.150","3":"no","4":"76407","5":"Mar 27 - Apr 23","6":"yes"},{"1":"225","2":"0.150","3":"no","4":"65944","5":"Apr 24 - May 21","6":"yes"},{"1":"226","2":"0.150","3":"no","4":"51242","5":"Apr 24 - May 21","6":"yes"},{"1":"227","2":"0.150","3":"no","4":"42464","5":"Apr 24 - May 21","6":"no"},{"1":"228","2":"0.150","3":"no","4":"36603","5":"Apr 24 - May 21","6":"no"},{"1":"229","2":"0.150","3":"no","4":"32376","5":"May 22 - Jun 18","6":"no"},{"1":"230","2":"0.150","3":"no","4":"37927","5":"May 22 - Jun 18","6":"no"},{"1":"231","2":"0.150","3":"no","4":"37905","5":"May 22 - Jun 18","6":"no"},{"1":"232","2":"0.150","3":"no","4":"34782","5":"May 22 - Jun 18","6":"no"},{"1":"233","2":"0.150","3":"no","4":"43146","5":"Jun 19 - Jul 16","6":"no"},{"1":"234","2":"0.150","3":"yes","4":"38104","5":"Jun 19 - Jul 16","6":"no"},{"1":"235","2":"0.200","3":"yes","4":"41901","5":"Jun 19 - Jul 16","6":"no"},{"1":"236","2":"0.200","3":"yes","4":"25829","5":"Jun 19 - Jul 16","6":"no"},{"1":"237","2":"0.200","3":"yes","4":"15480","5":"Jul 17 - Aug 13","6":"no"},{"1":"238","2":"0.200","3":"yes","4":"18461","5":"Jul 17 - Aug 13","6":"no"},{"1":"239","2":"0.250","3":"no","4":"20716","5":"Jul 17 - Aug 13","6":"no"},{"1":"240","2":"0.250","3":"no","4":"14492","5":"Jul 17 - Aug 13","6":"no"},{"1":"241","2":"0.250","3":"no","4":"13004","5":"Aug 14 - Sep 10","6":"no"},{"1":"242","2":"0.250","3":"no","4":"16754","5":"Aug 14 - Sep 10","6":"no"},{"1":"243","2":"0.250","3":"no","4":"23268","5":"Aug 14 - Sep 10","6":"no"},{"1":"244","2":"0.150","3":"no","4":"18972","5":"Aug 14 - Sep 10","6":"no"},{"1":"245","2":"0.150","3":"no","4":"15531","5":"Sep 11 - Oct  8","6":"no"},{"1":"246","2":"0.150","3":"no","4":"17154","5":"Sep 11 - Oct  8","6":"no"},{"1":"247","2":"0.150","3":"no","4":"23416","5":"Sep 11 - Oct  8","6":"no"},{"1":"248","2":"0.150","3":"no","4":"26541","5":"Sep 11 - Oct  8","6":"no"},{"1":"249","2":"0.150","3":"yes","4":"33592","5":"Oct  9 - Nov  5","6":"no"},{"1":"250","2":"0.250","3":"yes","4":"36235","5":"Oct  9 - Nov  5","6":"no"},{"1":"251","2":"0.250","3":"yes","4":"22372","5":"Oct  9 - Nov  5","6":"no"},{"1":"252","2":"0.250","3":"yes","4":"23876","5":"Oct  9 - Nov  5","6":"no"},{"1":"253","2":"0.250","3":"yes","4":"31600","5":"Nov  6 - Dec  3","6":"no"},{"1":"254","2":"0.250","3":"no","4":"31419","5":"Nov  6 - Dec  3","6":"no"},{"1":"255","2":"0.250","3":"yes","4":"27814","5":"Nov  6 - Dec  3","6":"no"},{"1":"256","2":"0.250","3":"yes","4":"32530","5":"Nov  6 - Dec  3","6":"no"},{"1":"257","2":"0.250","3":"yes","4":"33624","5":"Dec  4 - Dec 31","6":"no"},{"1":"258","2":"0.250","3":"yes","4":"34718","5":"Dec  4 - Dec 31","6":"yes"},{"1":"259","2":"0.250","3":"yes","4":"35812","5":"Dec  4 - Dec 31","6":"yes"},{"1":"260","2":"0.250","3":"yes","4":"26844","5":"Dec  4 - Dec 31","6":"yes"},{"1":"261","2":"0.250","3":"yes","4":"16938","5":"Jan  1 - Jan 28","6":"yes"},{"1":"262","2":"0.200","3":"yes","4":"19362","5":"Jan  1 - Jan 28","6":"yes"},{"1":"263","2":"0.200","3":"no","4":"29761","5":"Jan  1 - Jan 28","6":"yes"},{"1":"264","2":"0.200","3":"no","4":"43777","5":"Jan  1 - Jan 28","6":"yes"},{"1":"265","2":"0.200","3":"no","4":"32995","5":"Jan 29 - Feb 25","6":"yes"},{"1":"266","2":"0.200","3":"yes","4":"50340","5":"Jan 29 - Feb 25","6":"yes"},{"1":"267","2":"0.250","3":"yes","4":"52131","5":"Jan 29 - Feb 25","6":"yes"},{"1":"268","2":"0.250","3":"yes","4":"30913","5":"Jan 29 - Feb 25","6":"yes"},{"1":"269","2":"0.250","3":"yes","4":"22887","5":"Feb 26 - Mar 26","6":"yes"},{"1":"270","2":"0.250","3":"yes","4":"30911","5":"Feb 26 - Mar 26","6":"yes"},{"1":"271","2":"0.250","3":"no","4":"36354","5":"Feb 26 - Mar 26","6":"yes"},{"1":"272","2":"0.200","3":"no","4":"38989","5":"Feb 26 - Mar 26","6":"yes"},{"1":"273","2":"0.200","3":"no","4":"47087","5":"Mar 27 - Apr 23","6":"yes"},{"1":"274","2":"0.200","3":"no","4":"44805","5":"Mar 27 - Apr 23","6":"yes"},{"1":"275","2":"0.200","3":"no","4":"46694","5":"Mar 27 - Apr 23","6":"yes"},{"1":"276","2":"0.200","3":"no","4":"54188","5":"Mar 27 - Apr 23","6":"yes"},{"1":"277","2":"0.200","3":"no","4":"40650","5":"Apr 24 - May 21","6":"yes"},{"1":"278","2":"0.200","3":"no","4":"34674","5":"Apr 24 - May 21","6":"yes"},{"1":"279","2":"0.200","3":"no","4":"27430","5":"Apr 24 - May 21","6":"yes"},{"1":"280","2":"0.150","3":"no","4":"53360","5":"Apr 24 - May 21","6":"yes"},{"1":"281","2":"0.150","3":"no","4":"43018","5":"May 22 - Jun 18","6":"no"},{"1":"282","2":"0.150","3":"no","4":"33691","5":"May 22 - Jun 18","6":"no"},{"1":"283","2":"0.150","3":"no","4":"27424","5":"May 22 - Jun 18","6":"no"},{"1":"284","2":"0.150","3":"no","4":"30120","5":"May 22 - Jun 18","6":"no"},{"1":"285","2":"0.150","3":"no","4":"30488","5":"Jun 19 - Jul 16","6":"no"},{"1":"286","2":"0.150","3":"no","4":"31223","5":"Jun 19 - Jul 16","6":"no"},{"1":"287","2":"0.150","3":"no","4":"21562","5":"Jun 19 - Jul 16","6":"no"},{"1":"288","2":"0.150","3":"no","4":"24892","5":"Jun 19 - Jul 16","6":"no"},{"1":"289","2":"0.150","3":"no","4":"20864","5":"Jul 17 - Aug 13","6":"no"},{"1":"290","2":"0.150","3":"no","4":"19128","5":"Jul 17 - Aug 13","6":"no"},{"1":"291","2":"0.200","3":"no","4":"9778","5":"Jul 17 - Aug 13","6":"no"},{"1":"292","2":"0.200","3":"no","4":"7528","5":"Jul 17 - Aug 13","6":"no"},{"1":"293","2":"0.200","3":"no","4":"15773","5":"Aug 14 - Sep 10","6":"no"},{"1":"294","2":"0.150","3":"no","4":"10737","5":"Aug 14 - Sep 10","6":"no"},{"1":"295","2":"0.150","3":"no","4":"20881","5":"Aug 14 - Sep 10","6":"no"},{"1":"296","2":"0.150","3":"no","4":"20970","5":"Aug 14 - Sep 10","6":"no"},{"1":"297","2":"0.150","3":"no","4":"22835","5":"Sep 11 - Oct  8","6":"no"},{"1":"298","2":"0.150","3":"no","4":"30986","5":"Sep 11 - Oct  8","6":"no"},{"1":"299","2":"0.150","3":"no","4":"35308","5":"Sep 11 - Oct  8","6":"no"},{"1":"300","2":"0.150","3":"no","4":"40034","5":"Sep 11 - Oct  8","6":"no"},{"1":"301","2":"0.150","3":"no","4":"44776","5":"Oct  9 - Nov  5","6":"no"},{"1":"302","2":"0.200","3":"no","4":"36288","5":"Oct  9 - Nov  5","6":"no"},{"1":"303","2":"0.200","3":"no","4":"27158","5":"Oct  9 - Nov  5","6":"no"},{"1":"304","2":"0.200","3":"no","4":"14622","5":"Oct  9 - Nov  5","6":"no"},{"1":"305","2":"0.200","3":"no","4":"15259","5":"Nov  6 - Dec  3","6":"no"},{"1":"306","2":"0.200","3":"no","4":"14680","5":"Nov  6 - Dec  3","6":"no"},{"1":"307","2":"0.200","3":"no","4":"15114","5":"Nov  6 - Dec  3","6":"no"},{"1":"308","2":"0.200","3":"yes","4":"17686","5":"Nov  6 - Dec  3","6":"no"},{"1":"309","2":"0.200","3":"yes","4":"36336","5":"Dec  4 - Dec 31","6":"no"},{"1":"310","2":"0.200","3":"yes","4":"22569","5":"Dec  4 - Dec 31","6":"yes"},{"1":"311","2":"0.200","3":"yes","4":"23342","5":"Dec  4 - Dec 31","6":"yes"},{"1":"312","2":"0.200","3":"yes","4":"21269","5":"Dec  4 - Dec 31","6":"yes"},{"1":"313","2":"0.200","3":"yes","4":"18340","5":"Jan  1 - Jan 28","6":"yes"},{"1":"314","2":"0.250","3":"yes","4":"19440","5":"Jan  1 - Jan 28","6":"yes"},{"1":"315","2":"0.250","3":"no","4":"17056","5":"Jan  1 - Jan 28","6":"yes"},{"1":"316","2":"0.250","3":"no","4":"10713","5":"Jan  1 - Jan 28","6":"yes"},{"1":"317","2":"0.250","3":"no","4":"12836","5":"Jan 29 - Feb 25","6":"yes"},{"1":"318","2":"0.250","3":"no","4":"12344","5":"Jan 29 - Feb 25","6":"yes"},{"1":"319","2":"0.250","3":"no","4":"17868","5":"Jan 29 - Feb 25","6":"yes"},{"1":"320","2":"0.250","3":"no","4":"22789","5":"Jan 29 - Feb 25","6":"yes"},{"1":"321","2":"0.250","3":"no","4":"34851","5":"Feb 26 - Mar 26","6":"yes"},{"1":"322","2":"0.250","3":"no","4":"29997","5":"Feb 26 - Mar 26","6":"yes"},{"1":"323","2":"0.250","3":"no","4":"34010","5":"Feb 26 - Mar 26","6":"yes"},{"1":"324","2":"0.250","3":"yes","4":"19686","5":"Feb 26 - Mar 26","6":"yes"},{"1":"325","2":"0.250","3":"yes","4":"14757","5":"Mar 27 - Apr 23","6":"yes"},{"1":"326","2":"0.250","3":"yes","4":"16502","5":"Mar 27 - Apr 23","6":"yes"},{"1":"327","2":"0.250","3":"yes","4":"11490","5":"Mar 27 - Apr 23","6":"yes"},{"1":"328","2":"0.250","3":"yes","4":"7843","5":"Mar 27 - Apr 23","6":"yes"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div class="sourceCode" id="cb4" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">cartelstability</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>Rows: 328
+Columns: 6
+$ rownames &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18…
+$ price    &lt;dbl&gt; 0.40, 0.40, 0.40, 0.40, 0.40, 0.40, 0.40, 0.40, 0.40, 0.35, 0…
+$ cartel   &lt;chr&gt; "yes", "yes", "yes", "yes", "yes", "yes", "yes", "yes", "yes"…
+$ quantity &lt;dbl&gt; 13632, 20035, 16319, 12603, 23079, 19652, 16211, 22914, 23710…
+$ season   &lt;chr&gt; "Jan  1 - Jan 28", "Jan  1 - Jan 28", "Jan  1 - Jan 28", "Jan…
+$ ice      &lt;chr&gt; "yes", "yes", "yes", "yes", "yes", "yes", "yes", "yes", "yes"…</code></pre>
+</div>
+</div>
+</section><section id="data-dictionary" class="level2"><h2 class="anchored" data-anchor-id="data-dictionary">Data Dictionary</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Quantitative Variables
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Write in.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Qualitative Variables
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Write in.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Observations
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Write in.</p>
+</div>
+</div>
+</section><section id="research-question" class="level2"><h2 class="anchored" data-anchor-id="research-question">Research Question</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>How do prices for per-tonne grain transport vary based on whether the cartel is working or not? Does this depend upon whether it is summer time or winter time? Why?</p>
+</div>
+</div>
+</section><section id="inspectanalysetransform-the-data" class="level2"><h2 class="anchored" data-anchor-id="inspectanalysetransform-the-data">Inspect/Analyse/Transform the Data</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: data-preprocessing</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Write in your code here</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># to prepare this data as shown below</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># to generate the plot that follows</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Rename Variables if needed</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Change data to factors etc.</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Set up Counts, histograms etc</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["rownames"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["price"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["cartel"],"name":[3],"type":["fct"],"align":["left"]},{"label":["quantity"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["season"],"name":[5],"type":["ord"],"align":["right"]},{"label":["ice"],"name":[6],"type":["fct"],"align":["left"]}],"data":[{"1":"1","2":"0.400","3":"Cartel Operational","4":"13632","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"2","2":"0.400","3":"Cartel Operational","4":"20035","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"3","2":"0.400","3":"Cartel Operational","4":"16319","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"4","2":"0.400","3":"Cartel Operational","4":"12603","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"5","2":"0.400","3":"Cartel Operational","4":"23079","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"6","2":"0.400","3":"Cartel Operational","4":"19652","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"7","2":"0.400","3":"Cartel Operational","4":"16211","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"8","2":"0.400","3":"Cartel Operational","4":"22914","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"9","2":"0.400","3":"Cartel Operational","4":"23710","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"10","2":"0.350","3":"Cartel Operational","4":"23036","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"11","2":"0.350","3":"Cartel Operational","4":"38414","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"12","2":"0.350","3":"Cartel Operational","4":"46906","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"13","2":"0.350","3":"Cartel Operational","4":"58608","5":"Mar 27 - Apr 23","6":"Lakes are Frozen"},{"1":"14","2":"0.350","3":"Cartel Operational","4":"51225","5":"Mar 27 - Apr 23","6":"Lakes are Frozen"},{"1":"15","2":"0.350","3":"Cartel Operational","4":"37339","5":"Mar 27 - Apr 23","6":"Lakes are not Frozen"},{"1":"16","2":"0.300","3":"Cartel Operational","4":"20298","5":"Mar 27 - Apr 23","6":"Lakes are not Frozen"},{"1":"17","2":"0.300","3":"Cartel Operational","4":"13699","5":"Apr 24 - May 21","6":"Lakes are not Frozen"},{"1":"18","2":"0.300","3":"Cartel Operational","4":"11944","5":"Apr 24 - May 21","6":"Lakes are not Frozen"},{"1":"19","2":"0.300","3":"Cartel Operational","4":"10658","5":"Apr 24 - May 21","6":"Lakes are not Frozen"},{"1":"20","2":"0.300","3":"Cartel Operational","4":"9756","5":"Apr 24 - May 21","6":"Lakes are not Frozen"},{"1":"21","2":"0.300","3":"Cartel Operational","4":"9546","5":"May 22 - Jun 18","6":"Lakes are not Frozen"},{"1":"22","2":"0.300","3":"Cartel Operational","4":"16713","5":"May 22 - Jun 18","6":"Lakes are not Frozen"},{"1":"23","2":"0.300","3":"Cartel Operational","4":"16389","5":"May 22 - Jun 18","6":"Lakes are not Frozen"},{"1":"24","2":"0.300","3":"Cartel Operational","4":"23179","5":"May 22 - Jun 18","6":"Lakes are not Frozen"},{"1":"25","2":"0.300","3":"Cartel Operational","4":"34999","5":"Jun 19 - Jul 16","6":"Lakes are not Frozen"},{"1":"26","2":"0.300","3":"Cartel Operational","4":"35267","5":"Jun 19 - Jul 16","6":"Lakes are not Frozen"},{"1":"27","2":"0.300","3":"Cartel Operational","4":"20402","5":"Jun 19 - Jul 16","6":"Lakes are not Frozen"},{"1":"28","2":"0.300","3":"Cartel Operational","4":"21020","5":"Jun 19 - Jul 16","6":"Lakes are not Frozen"},{"1":"29","2":"0.300","3":"Cartel Operational","4":"16612","5":"Jul 17 - Aug 13","6":"Lakes are not Frozen"},{"1":"30","2":"0.300","3":"Cartel Operational","4":"14834","5":"Jul 17 - Aug 13","6":"Lakes are not Frozen"},{"1":"31","2":"0.300","3":"Cartel Operational","4":"11149","5":"Jul 17 - Aug 13","6":"Lakes are not Frozen"},{"1":"32","2":"0.300","3":"Cartel Operational","4":"16035","5":"Jul 17 - Aug 13","6":"Lakes are not Frozen"},{"1":"33","2":"0.300","3":"Cartel Operational","4":"18555","5":"Aug 14 - Sep 10","6":"Lakes are not Frozen"},{"1":"34","2":"0.300","3":"Cartel Operational","4":"17413","5":"Aug 14 - Sep 10","6":"Lakes are not Frozen"},{"1":"35","2":"0.300","3":"Cartel Operational","4":"19412","5":"Aug 14 - Sep 10","6":"Lakes are not Frozen"},{"1":"36","2":"0.300","3":"Cartel Operational","4":"20240","5":"Aug 14 - Sep 10","6":"Lakes are not Frozen"},{"1":"37","2":"0.300","3":"Cartel Operational","4":"11824","5":"Sep 11 - Oct 8","6":"Lakes are not Frozen"},{"1":"38","2":"0.300","3":"Cartel Operational","4":"17793","5":"Sep 11 - Oct 8","6":"Lakes are not Frozen"},{"1":"39","2":"0.300","3":"Cartel Operational","4":"20157","5":"Sep 11 - Oct 8","6":"Lakes are not Frozen"},{"1":"40","2":"0.300","3":"Cartel Operational","4":"18623","5":"Sep 11 - Oct 8","6":"Lakes are not Frozen"},{"1":"41","2":"0.300","3":"Cartel Operational","4":"19062","5":"Oct 9 - Nov 5","6":"Lakes are not Frozen"},{"1":"42","2":"0.300","3":"Cartel Operational","4":"20840","5":"Oct 9 - Nov 5","6":"Lakes are not Frozen"},{"1":"43","2":"0.300","3":"Cartel Operational","4":"18972","5":"Oct 9 - Nov 5","6":"Lakes are not Frozen"},{"1":"44","2":"0.300","3":"Cartel Operational","4":"19690","5":"Oct 9 - Nov 5","6":"Lakes are not Frozen"},{"1":"45","2":"0.300","3":"Cartel Operational","4":"20206","5":"Nov 6 - Dec 3","6":"Lakes are not Frozen"},{"1":"46","2":"0.300","3":"Cartel Operational","4":"23081","5":"Nov 6 - Dec 3","6":"Lakes are not Frozen"},{"1":"47","2":"0.300","3":"Cartel Operational","4":"21209","5":"Nov 6 - Dec 3","6":"Lakes are not Frozen"},{"1":"48","2":"0.350","3":"Cartel Operational","4":"13753","5":"Nov 6 - Dec 3","6":"Lakes are not Frozen"},{"1":"49","2":"0.350","3":"Cartel Operational","4":"14956","5":"Dec 4 - Dec 31","6":"Lakes are Frozen"},{"1":"50","2":"0.350","3":"Cartel Operational","4":"13295","5":"Dec 4 - Dec 31","6":"Lakes are Frozen"},{"1":"51","2":"0.350","3":"Cartel Operational","4":"16935","5":"Dec 4 - Dec 31","6":"Lakes are Frozen"},{"1":"52","2":"0.350","3":"Cartel Operational","4":"24499","5":"Dec 4 - Dec 31","6":"Lakes are Frozen"},{"1":"53","2":"0.350","3":"Cartel Operational","4":"20078","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"54","2":"0.350","3":"Cartel Operational","4":"24144","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"55","2":"0.350","3":"Cartel Operational","4":"26157","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"56","2":"0.350","3":"Cartel Operational","4":"22055","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"57","2":"0.350","3":"Cartel Operational","4":"21973","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"58","2":"0.350","3":"Cartel Operational","4":"23794","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"59","2":"0.350","3":"Cartel Operational","4":"23116","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"60","2":"0.350","3":"Cartel Operational","4":"23578","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"61","2":"0.350","3":"Cartel Operational","4":"21568","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"62","2":"0.350","3":"Cartel not Operational","4":"17494","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"63","2":"0.350","3":"Cartel not Operational","4":"16260","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"64","2":"0.350","3":"Cartel not Operational","4":"26690","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"65","2":"0.350","3":"Cartel not Operational","4":"21723","5":"Mar 27 - Apr 23","6":"Lakes are Frozen"},{"1":"66","2":"0.350","3":"Cartel not Operational","4":"30625","5":"Mar 27 - Apr 23","6":"Lakes are Frozen"},{"1":"67","2":"0.350","3":"Cartel not Operational","4":"36618","5":"Mar 27 - Apr 23","6":"Lakes are Frozen"},{"1":"68","2":"0.300","3":"Cartel not Operational","4":"42182","5":"Mar 27 - Apr 23","6":"Lakes are Frozen"},{"1":"69","2":"0.250","3":"Cartel not Operational","4":"47432","5":"Apr 24 - May 21","6":"Lakes are Frozen"},{"1":"70","2":"0.300","3":"Cartel Operational","4":"43822","5":"Apr 24 - May 21","6":"Lakes are Frozen"},{"1":"71","2":"0.300","3":"Cartel Operational","4":"36457","5":"Apr 24 - May 21","6":"Lakes are Frozen"},{"1":"72","2":"0.300","3":"Cartel Operational","4":"29093","5":"Apr 24 - May 21","6":"Lakes are Frozen"},{"1":"73","2":"0.300","3":"Cartel Operational","4":"21729","5":"May 22 - Jun 18","6":"Lakes are not Frozen"},{"1":"74","2":"0.300","3":"Cartel Operational","4":"21265","5":"May 22 - Jun 18","6":"Lakes are not Frozen"},{"1":"75","2":"0.300","3":"Cartel Operational","4":"18505","5":"May 22 - Jun 18","6":"Lakes are not Frozen"},{"1":"76","2":"0.300","3":"Cartel not Operational","4":"14540","5":"May 22 - Jun 18","6":"Lakes are not Frozen"},{"1":"77","2":"0.300","3":"Cartel not Operational","4":"19366","5":"Jun 19 - Jul 16","6":"Lakes are not Frozen"},{"1":"78","2":"0.250","3":"Cartel not Operational","4":"55732","5":"Jun 19 - Jul 16","6":"Lakes are not Frozen"},{"1":"79","2":"0.150","3":"Cartel not Operational","4":"42346","5":"Jun 19 - Jul 16","6":"Lakes are not Frozen"},{"1":"80","2":"0.150","3":"Cartel not Operational","4":"28960","5":"Jun 19 - Jul 16","6":"Lakes are not Frozen"},{"1":"81","2":"0.150","3":"Cartel not Operational","4":"30434","5":"Jul 17 - Aug 13","6":"Lakes are not Frozen"},{"1":"82","2":"0.150","3":"Cartel not Operational","4":"26139","5":"Jul 17 - Aug 13","6":"Lakes are not Frozen"},{"1":"83","2":"0.150","3":"Cartel not Operational","4":"31075","5":"Jul 17 - Aug 13","6":"Lakes are not Frozen"},{"1":"84","2":"0.150","3":"Cartel not Operational","4":"29433","5":"Jul 17 - Aug 13","6":"Lakes are not Frozen"},{"1":"85","2":"0.150","3":"Cartel not Operational","4":"29136","5":"Aug 14 - Sep 10","6":"Lakes are not Frozen"},{"1":"86","2":"0.150","3":"Cartel not Operational","4":"31126","5":"Aug 14 - Sep 10","6":"Lakes are not Frozen"},{"1":"87","2":"0.150","3":"Cartel not Operational","4":"35384","5":"Aug 14 - Sep 10","6":"Lakes are not Frozen"},{"1":"88","2":"0.150","3":"Cartel not Operational","4":"36701","5":"Aug 14 - Sep 10","6":"Lakes are not Frozen"},{"1":"89","2":"0.150","3":"Cartel not Operational","4":"37771","5":"Sep 11 - Oct 8","6":"Lakes are not Frozen"},{"1":"90","2":"0.150","3":"Cartel not Operational","4":"38247","5":"Sep 11 - Oct 8","6":"Lakes are not Frozen"},{"1":"91","2":"0.150","3":"Cartel not Operational","4":"39518","5":"Sep 11 - Oct 8","6":"Lakes are not Frozen"},{"1":"92","2":"0.150","3":"Cartel not Operational","4":"30603","5":"Sep 11 - Oct 8","6":"Lakes are not Frozen"},{"1":"93","2":"0.125","3":"Cartel not Operational","4":"28383","5":"Oct 9 - Nov 5","6":"Lakes are not Frozen"},{"1":"94","2":"0.125","3":"Cartel not Operational","4":"24678","5":"Oct 9 - Nov 5","6":"Lakes are not Frozen"},{"1":"95","2":"0.125","3":"Cartel not Operational","4":"27839","5":"Oct 9 - Nov 5","6":"Lakes are not Frozen"},{"1":"96","2":"0.125","3":"Cartel not Operational","4":"26767","5":"Oct 9 - Nov 5","6":"Lakes are not Frozen"},{"1":"97","2":"0.125","3":"Cartel not Operational","4":"24041","5":"Nov 6 - Dec 3","6":"Lakes are not Frozen"},{"1":"98","2":"0.200","3":"Cartel not Operational","4":"23355","5":"Nov 6 - Dec 3","6":"Lakes are not Frozen"},{"1":"99","2":"0.200","3":"Cartel not Operational","4":"26491","5":"Nov 6 - Dec 3","6":"Lakes are not Frozen"},{"1":"100","2":"0.200","3":"Cartel not Operational","4":"20900","5":"Nov 6 - Dec 3","6":"Lakes are not Frozen"},{"1":"101","2":"0.200","3":"Cartel not Operational","4":"26410","5":"Dec 4 - Dec 31","6":"Lakes are Frozen"},{"1":"102","2":"0.200","3":"Cartel not Operational","4":"26195","5":"Dec 4 - Dec 31","6":"Lakes are Frozen"},{"1":"103","2":"0.200","3":"Cartel not Operational","4":"22427","5":"Dec 4 - Dec 31","6":"Lakes are Frozen"},{"1":"104","2":"0.125","3":"Cartel not Operational","4":"27535","5":"Dec 4 - Dec 31","6":"Lakes are Frozen"},{"1":"105","2":"0.125","3":"Cartel not Operational","4":"25738","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"106","2":"0.125","3":"Cartel not Operational","4":"23429","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"107","2":"0.125","3":"Cartel not Operational","4":"32745","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"108","2":"0.125","3":"Cartel not Operational","4":"37950","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"109","2":"0.200","3":"Cartel Operational","4":"41466","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"110","2":"0.200","3":"Cartel Operational","4":"49276","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"111","2":"0.200","3":"Cartel Operational","4":"37850","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"112","2":"0.200","3":"Cartel Operational","4":"32893","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"113","2":"0.200","3":"Cartel Operational","4":"24410","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"114","2":"0.200","3":"Cartel Operational","4":"15104","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"115","2":"0.200","3":"Cartel Operational","4":"13819","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"116","2":"0.250","3":"Cartel Operational","4":"22959","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"117","2":"0.250","3":"Cartel Operational","4":"14486","5":"Mar 27 - Apr 23","6":"Lakes are Frozen"},{"1":"118","2":"0.250","3":"Cartel Operational","4":"15254","5":"Mar 27 - Apr 23","6":"Lakes are Frozen"},{"1":"119","2":"0.250","3":"Cartel Operational","4":"16607","5":"Mar 27 - Apr 23","6":"Lakes are Frozen"},{"1":"120","2":"0.250","3":"Cartel Operational","4":"17475","5":"Mar 27 - Apr 23","6":"Lakes are not Frozen"},{"1":"121","2":"0.250","3":"Cartel Operational","4":"12704","5":"Apr 24 - May 21","6":"Lakes are not Frozen"},{"1":"122","2":"0.250","3":"Cartel Operational","4":"14399","5":"Apr 24 - May 21","6":"Lakes are not Frozen"},{"1":"123","2":"0.250","3":"Cartel Operational","4":"12023","5":"Apr 24 - May 21","6":"Lakes are not Frozen"},{"1":"124","2":"0.250","3":"Cartel Operational","4":"9626","5":"Apr 24 - May 21","6":"Lakes are not Frozen"},{"1":"125","2":"0.250","3":"Cartel Operational","4":"6482","5":"May 22 - Jun 18","6":"Lakes are not Frozen"},{"1":"126","2":"0.250","3":"Cartel Operational","4":"10520","5":"May 22 - Jun 18","6":"Lakes are not Frozen"},{"1":"127","2":"0.250","3":"Cartel Operational","4":"12588","5":"May 22 - Jun 18","6":"Lakes are not Frozen"},{"1":"128","2":"0.250","3":"Cartel Operational","4":"12468","5":"May 22 - Jun 18","6":"Lakes are not Frozen"},{"1":"129","2":"0.250","3":"Cartel Operational","4":"10930","5":"Jun 19 - Jul 16","6":"Lakes are not Frozen"},{"1":"130","2":"0.250","3":"Cartel Operational","4":"10997","5":"Jun 19 - Jul 16","6":"Lakes are not Frozen"},{"1":"131","2":"0.250","3":"Cartel Operational","4":"8618","5":"Jun 19 - Jul 16","6":"Lakes are not Frozen"},{"1":"132","2":"0.250","3":"Cartel Operational","4":"4810","5":"Jun 19 - Jul 16","6":"Lakes are not Frozen"},{"1":"133","2":"0.250","3":"Cartel Operational","4":"5832","5":"Jul 17 - Aug 13","6":"Lakes are not Frozen"},{"1":"134","2":"0.250","3":"Cartel Operational","4":"8536","5":"Jul 17 - Aug 13","6":"Lakes are not Frozen"},{"1":"135","2":"0.250","3":"Cartel Operational","4":"11204","5":"Jul 17 - Aug 13","6":"Lakes are not Frozen"},{"1":"136","2":"0.250","3":"Cartel Operational","4":"10591","5":"Jul 17 - Aug 13","6":"Lakes are not Frozen"},{"1":"137","2":"0.250","3":"Cartel Operational","4":"9978","5":"Aug 14 - Sep 10","6":"Lakes are not Frozen"},{"1":"138","2":"0.250","3":"Cartel Operational","4":"9374","5":"Aug 14 - Sep 10","6":"Lakes are not Frozen"},{"1":"139","2":"0.250","3":"Cartel Operational","4":"19466","5":"Aug 14 - Sep 10","6":"Lakes are not Frozen"},{"1":"140","2":"0.250","3":"Cartel Operational","4":"23085","5":"Aug 14 - Sep 10","6":"Lakes are not Frozen"},{"1":"141","2":"0.250","3":"Cartel Operational","4":"18981","5":"Sep 11 - Oct 8","6":"Lakes are not Frozen"},{"1":"142","2":"0.250","3":"Cartel Operational","4":"16595","5":"Sep 11 - Oct 8","6":"Lakes are not Frozen"},{"1":"143","2":"0.250","3":"Cartel Operational","4":"13182","5":"Sep 11 - Oct 8","6":"Lakes are not Frozen"},{"1":"144","2":"0.250","3":"Cartel Operational","4":"11626","5":"Sep 11 - Oct 8","6":"Lakes are not Frozen"},{"1":"145","2":"0.250","3":"Cartel Operational","4":"12996","5":"Oct 9 - Nov 5","6":"Lakes are not Frozen"},{"1":"146","2":"0.250","3":"Cartel Operational","4":"14852","5":"Oct 9 - Nov 5","6":"Lakes are not Frozen"},{"1":"147","2":"0.250","3":"Cartel Operational","4":"11508","5":"Oct 9 - Nov 5","6":"Lakes are not Frozen"},{"1":"148","2":"0.250","3":"Cartel Operational","4":"12996","5":"Oct 9 - Nov 5","6":"Lakes are not Frozen"},{"1":"149","2":"0.250","3":"Cartel Operational","4":"17942","5":"Nov 6 - Dec 3","6":"Lakes are not Frozen"},{"1":"150","2":"0.250","3":"Cartel Operational","4":"15498","5":"Nov 6 - Dec 3","6":"Lakes are not Frozen"},{"1":"151","2":"0.250","3":"Cartel Operational","4":"18121","5":"Nov 6 - Dec 3","6":"Lakes are not Frozen"},{"1":"152","2":"0.250","3":"Cartel Operational","4":"17914","5":"Nov 6 - Dec 3","6":"Lakes are not Frozen"},{"1":"153","2":"0.300","3":"Cartel Operational","4":"21217","5":"Dec 4 - Dec 31","6":"Lakes are Frozen"},{"1":"154","2":"0.300","3":"Cartel Operational","4":"22418","5":"Dec 4 - Dec 31","6":"Lakes are Frozen"},{"1":"155","2":"0.300","3":"Cartel Operational","4":"26230","5":"Dec 4 - Dec 31","6":"Lakes are Frozen"},{"1":"156","2":"0.300","3":"Cartel Operational","4":"26458","5":"Dec 4 - Dec 31","6":"Lakes are Frozen"},{"1":"157","2":"0.300","3":"Cartel Operational","4":"36168","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"158","2":"0.300","3":"Cartel Operational","4":"30721","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"159","2":"0.300","3":"Cartel Operational","4":"41071","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"160","2":"0.300","3":"Cartel Operational","4":"28865","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"161","2":"0.300","3":"Cartel Operational","4":"29221","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"162","2":"0.300","3":"Cartel Operational","4":"22245","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"163","2":"0.300","3":"Cartel Operational","4":"20377","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"164","2":"0.300","3":"Cartel not Operational","4":"36343","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"165","2":"0.300","3":"Cartel Operational","4":"33227","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"166","2":"0.300","3":"Cartel Operational","4":"33806","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"167","2":"0.300","3":"Cartel Operational","4":"43998","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"168","2":"0.300","3":"Cartel Operational","4":"45342","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"169","2":"0.300","3":"Cartel Operational","4":"45659","5":"Mar 27 - Apr 23","6":"Lakes are Frozen"},{"1":"170","2":"0.300","3":"Cartel Operational","4":"30864","5":"Mar 27 - Apr 23","6":"Lakes are Frozen"},{"1":"171","2":"0.300","3":"Cartel Operational","4":"16522","5":"Mar 27 - Apr 23","6":"Lakes are Frozen"},{"1":"172","2":"0.300","3":"Cartel Operational","4":"20085","5":"Mar 27 - Apr 23","6":"Lakes are not Frozen"},{"1":"173","2":"0.250","3":"Cartel not Operational","4":"18262","5":"Apr 24 - May 21","6":"Lakes are not Frozen"},{"1":"174","2":"0.250","3":"Cartel not Operational","4":"19415","5":"Apr 24 - May 21","6":"Lakes are not Frozen"},{"1":"175","2":"0.250","3":"Cartel Operational","4":"22792","5":"Apr 24 - May 21","6":"Lakes are not Frozen"},{"1":"176","2":"0.250","3":"Cartel Operational","4":"23903","5":"Apr 24 - May 21","6":"Lakes are not Frozen"},{"1":"177","2":"0.250","3":"Cartel Operational","4":"14761","5":"May 22 - Jun 18","6":"Lakes are not Frozen"},{"1":"178","2":"0.250","3":"Cartel Operational","4":"10901","5":"May 22 - Jun 18","6":"Lakes are not Frozen"},{"1":"179","2":"0.250","3":"Cartel Operational","4":"14868","5":"May 22 - Jun 18","6":"Lakes are not Frozen"},{"1":"180","2":"0.250","3":"Cartel Operational","4":"17271","5":"May 22 - Jun 18","6":"Lakes are not Frozen"},{"1":"181","2":"0.250","3":"Cartel Operational","4":"16179","5":"Jun 19 - Jul 16","6":"Lakes are not Frozen"},{"1":"182","2":"0.250","3":"Cartel Operational","4":"15576","5":"Jun 19 - Jul 16","6":"Lakes are not Frozen"},{"1":"183","2":"0.250","3":"Cartel Operational","4":"12292","5":"Jun 19 - Jul 16","6":"Lakes are not Frozen"},{"1":"184","2":"0.250","3":"Cartel Operational","4":"7627","5":"Jun 19 - Jul 16","6":"Lakes are not Frozen"},{"1":"185","2":"0.250","3":"Cartel Operational","4":"9888","5":"Jul 17 - Aug 13","6":"Lakes are not Frozen"},{"1":"186","2":"0.250","3":"Cartel Operational","4":"11080","5":"Jul 17 - Aug 13","6":"Lakes are not Frozen"},{"1":"187","2":"0.250","3":"Cartel Operational","4":"13782","5":"Jul 17 - Aug 13","6":"Lakes are not Frozen"},{"1":"188","2":"0.250","3":"Cartel Operational","4":"15181","5":"Jul 17 - Aug 13","6":"Lakes are not Frozen"},{"1":"189","2":"0.250","3":"Cartel Operational","4":"11906","5":"Aug 14 - Sep 10","6":"Lakes are not Frozen"},{"1":"190","2":"0.250","3":"Cartel Operational","4":"14763","5":"Aug 14 - Sep 10","6":"Lakes are not Frozen"},{"1":"191","2":"0.250","3":"Cartel Operational","4":"22934","5":"Aug 14 - Sep 10","6":"Lakes are not Frozen"},{"1":"192","2":"0.250","3":"Cartel not Operational","4":"23252","5":"Aug 14 - Sep 10","6":"Lakes are not Frozen"},{"1":"193","2":"0.200","3":"Cartel not Operational","4":"25164","5":"Sep 11 - Oct 8","6":"Lakes are not Frozen"},{"1":"194","2":"0.200","3":"Cartel Operational","4":"33879","5":"Sep 11 - Oct 8","6":"Lakes are not Frozen"},{"1":"195","2":"0.250","3":"Cartel Operational","4":"32428","5":"Sep 11 - Oct 8","6":"Lakes are not Frozen"},{"1":"196","2":"0.250","3":"Cartel Operational","4":"31256","5":"Sep 11 - Oct 8","6":"Lakes are not Frozen"},{"1":"197","2":"0.250","3":"Cartel Operational","4":"27805","5":"Oct 9 - Nov 5","6":"Lakes are not Frozen"},{"1":"198","2":"0.250","3":"Cartel Operational","4":"34663","5":"Oct 9 - Nov 5","6":"Lakes are not Frozen"},{"1":"199","2":"0.250","3":"Cartel Operational","4":"30187","5":"Oct 9 - Nov 5","6":"Lakes are not Frozen"},{"1":"200","2":"0.250","3":"Cartel Operational","4":"27277","5":"Oct 9 - Nov 5","6":"Lakes are not Frozen"},{"1":"201","2":"0.250","3":"Cartel Operational","4":"29521","5":"Nov 6 - Dec 3","6":"Lakes are not Frozen"},{"1":"202","2":"0.250","3":"Cartel Operational","4":"31280","5":"Nov 6 - Dec 3","6":"Lakes are not Frozen"},{"1":"203","2":"0.250","3":"Cartel Operational","4":"30601","5":"Nov 6 - Dec 3","6":"Lakes are not Frozen"},{"1":"204","2":"0.250","3":"Cartel Operational","4":"31553","5":"Nov 6 - Dec 3","6":"Lakes are not Frozen"},{"1":"205","2":"0.300","3":"Cartel Operational","4":"42735","5":"Dec 4 - Dec 31","6":"Lakes are Frozen"},{"1":"206","2":"0.300","3":"Cartel Operational","4":"28241","5":"Dec 4 - Dec 31","6":"Lakes are Frozen"},{"1":"207","2":"0.300","3":"Cartel Operational","4":"29221","5":"Dec 4 - Dec 31","6":"Lakes are Frozen"},{"1":"208","2":"0.300","3":"Cartel Operational","4":"27894","5":"Dec 4 - Dec 31","6":"Lakes are Frozen"},{"1":"209","2":"0.300","3":"Cartel Operational","4":"21911","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"210","2":"0.300","3":"Cartel Operational","4":"16685","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"211","2":"0.200","3":"Cartel Operational","4":"23504","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"212","2":"0.300","3":"Cartel Operational","4":"41210","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"213","2":"0.300","3":"Cartel Operational","4":"35058","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"214","2":"0.300","3":"Cartel Operational","4":"27065","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"215","2":"0.300","3":"Cartel not Operational","4":"29404","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"216","2":"0.300","3":"Cartel not Operational","4":"25269","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"217","2":"0.300","3":"Cartel not Operational","4":"29219","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"218","2":"0.300","3":"Cartel not Operational","4":"29291","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"219","2":"0.300","3":"Cartel not Operational","4":"29217","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"220","2":"0.300","3":"Cartel not Operational","4":"32643","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"221","2":"0.200","3":"Cartel not Operational","4":"37902","5":"Mar 27 - Apr 23","6":"Lakes are Frozen"},{"1":"222","2":"0.150","3":"Cartel not Operational","4":"53282","5":"Mar 27 - Apr 23","6":"Lakes are Frozen"},{"1":"223","2":"0.150","3":"Cartel not Operational","4":"70793","5":"Mar 27 - Apr 23","6":"Lakes are Frozen"},{"1":"224","2":"0.150","3":"Cartel not Operational","4":"76407","5":"Mar 27 - Apr 23","6":"Lakes are Frozen"},{"1":"225","2":"0.150","3":"Cartel not Operational","4":"65944","5":"Apr 24 - May 21","6":"Lakes are Frozen"},{"1":"226","2":"0.150","3":"Cartel not Operational","4":"51242","5":"Apr 24 - May 21","6":"Lakes are Frozen"},{"1":"227","2":"0.150","3":"Cartel not Operational","4":"42464","5":"Apr 24 - May 21","6":"Lakes are not Frozen"},{"1":"228","2":"0.150","3":"Cartel not Operational","4":"36603","5":"Apr 24 - May 21","6":"Lakes are not Frozen"},{"1":"229","2":"0.150","3":"Cartel not Operational","4":"32376","5":"May 22 - Jun 18","6":"Lakes are not Frozen"},{"1":"230","2":"0.150","3":"Cartel not Operational","4":"37927","5":"May 22 - Jun 18","6":"Lakes are not Frozen"},{"1":"231","2":"0.150","3":"Cartel not Operational","4":"37905","5":"May 22 - Jun 18","6":"Lakes are not Frozen"},{"1":"232","2":"0.150","3":"Cartel not Operational","4":"34782","5":"May 22 - Jun 18","6":"Lakes are not Frozen"},{"1":"233","2":"0.150","3":"Cartel not Operational","4":"43146","5":"Jun 19 - Jul 16","6":"Lakes are not Frozen"},{"1":"234","2":"0.150","3":"Cartel Operational","4":"38104","5":"Jun 19 - Jul 16","6":"Lakes are not Frozen"},{"1":"235","2":"0.200","3":"Cartel Operational","4":"41901","5":"Jun 19 - Jul 16","6":"Lakes are not Frozen"},{"1":"236","2":"0.200","3":"Cartel Operational","4":"25829","5":"Jun 19 - Jul 16","6":"Lakes are not Frozen"},{"1":"237","2":"0.200","3":"Cartel Operational","4":"15480","5":"Jul 17 - Aug 13","6":"Lakes are not Frozen"},{"1":"238","2":"0.200","3":"Cartel Operational","4":"18461","5":"Jul 17 - Aug 13","6":"Lakes are not Frozen"},{"1":"239","2":"0.250","3":"Cartel not Operational","4":"20716","5":"Jul 17 - Aug 13","6":"Lakes are not Frozen"},{"1":"240","2":"0.250","3":"Cartel not Operational","4":"14492","5":"Jul 17 - Aug 13","6":"Lakes are not Frozen"},{"1":"241","2":"0.250","3":"Cartel not Operational","4":"13004","5":"Aug 14 - Sep 10","6":"Lakes are not Frozen"},{"1":"242","2":"0.250","3":"Cartel not Operational","4":"16754","5":"Aug 14 - Sep 10","6":"Lakes are not Frozen"},{"1":"243","2":"0.250","3":"Cartel not Operational","4":"23268","5":"Aug 14 - Sep 10","6":"Lakes are not Frozen"},{"1":"244","2":"0.150","3":"Cartel not Operational","4":"18972","5":"Aug 14 - Sep 10","6":"Lakes are not Frozen"},{"1":"245","2":"0.150","3":"Cartel not Operational","4":"15531","5":"Sep 11 - Oct 8","6":"Lakes are not Frozen"},{"1":"246","2":"0.150","3":"Cartel not Operational","4":"17154","5":"Sep 11 - Oct 8","6":"Lakes are not Frozen"},{"1":"247","2":"0.150","3":"Cartel not Operational","4":"23416","5":"Sep 11 - Oct 8","6":"Lakes are not Frozen"},{"1":"248","2":"0.150","3":"Cartel not Operational","4":"26541","5":"Sep 11 - Oct 8","6":"Lakes are not Frozen"},{"1":"249","2":"0.150","3":"Cartel Operational","4":"33592","5":"Oct 9 - Nov 5","6":"Lakes are not Frozen"},{"1":"250","2":"0.250","3":"Cartel Operational","4":"36235","5":"Oct 9 - Nov 5","6":"Lakes are not Frozen"},{"1":"251","2":"0.250","3":"Cartel Operational","4":"22372","5":"Oct 9 - Nov 5","6":"Lakes are not Frozen"},{"1":"252","2":"0.250","3":"Cartel Operational","4":"23876","5":"Oct 9 - Nov 5","6":"Lakes are not Frozen"},{"1":"253","2":"0.250","3":"Cartel Operational","4":"31600","5":"Nov 6 - Dec 3","6":"Lakes are not Frozen"},{"1":"254","2":"0.250","3":"Cartel not Operational","4":"31419","5":"Nov 6 - Dec 3","6":"Lakes are not Frozen"},{"1":"255","2":"0.250","3":"Cartel Operational","4":"27814","5":"Nov 6 - Dec 3","6":"Lakes are not Frozen"},{"1":"256","2":"0.250","3":"Cartel Operational","4":"32530","5":"Nov 6 - Dec 3","6":"Lakes are not Frozen"},{"1":"257","2":"0.250","3":"Cartel Operational","4":"33624","5":"Dec 4 - Dec 31","6":"Lakes are not Frozen"},{"1":"258","2":"0.250","3":"Cartel Operational","4":"34718","5":"Dec 4 - Dec 31","6":"Lakes are Frozen"},{"1":"259","2":"0.250","3":"Cartel Operational","4":"35812","5":"Dec 4 - Dec 31","6":"Lakes are Frozen"},{"1":"260","2":"0.250","3":"Cartel Operational","4":"26844","5":"Dec 4 - Dec 31","6":"Lakes are Frozen"},{"1":"261","2":"0.250","3":"Cartel Operational","4":"16938","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"262","2":"0.200","3":"Cartel Operational","4":"19362","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"263","2":"0.200","3":"Cartel not Operational","4":"29761","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"264","2":"0.200","3":"Cartel not Operational","4":"43777","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"265","2":"0.200","3":"Cartel not Operational","4":"32995","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"266","2":"0.200","3":"Cartel Operational","4":"50340","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"267","2":"0.250","3":"Cartel Operational","4":"52131","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"268","2":"0.250","3":"Cartel Operational","4":"30913","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"269","2":"0.250","3":"Cartel Operational","4":"22887","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"270","2":"0.250","3":"Cartel Operational","4":"30911","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"271","2":"0.250","3":"Cartel not Operational","4":"36354","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"272","2":"0.200","3":"Cartel not Operational","4":"38989","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"273","2":"0.200","3":"Cartel not Operational","4":"47087","5":"Mar 27 - Apr 23","6":"Lakes are Frozen"},{"1":"274","2":"0.200","3":"Cartel not Operational","4":"44805","5":"Mar 27 - Apr 23","6":"Lakes are Frozen"},{"1":"275","2":"0.200","3":"Cartel not Operational","4":"46694","5":"Mar 27 - Apr 23","6":"Lakes are Frozen"},{"1":"276","2":"0.200","3":"Cartel not Operational","4":"54188","5":"Mar 27 - Apr 23","6":"Lakes are Frozen"},{"1":"277","2":"0.200","3":"Cartel not Operational","4":"40650","5":"Apr 24 - May 21","6":"Lakes are Frozen"},{"1":"278","2":"0.200","3":"Cartel not Operational","4":"34674","5":"Apr 24 - May 21","6":"Lakes are Frozen"},{"1":"279","2":"0.200","3":"Cartel not Operational","4":"27430","5":"Apr 24 - May 21","6":"Lakes are Frozen"},{"1":"280","2":"0.150","3":"Cartel not Operational","4":"53360","5":"Apr 24 - May 21","6":"Lakes are Frozen"},{"1":"281","2":"0.150","3":"Cartel not Operational","4":"43018","5":"May 22 - Jun 18","6":"Lakes are not Frozen"},{"1":"282","2":"0.150","3":"Cartel not Operational","4":"33691","5":"May 22 - Jun 18","6":"Lakes are not Frozen"},{"1":"283","2":"0.150","3":"Cartel not Operational","4":"27424","5":"May 22 - Jun 18","6":"Lakes are not Frozen"},{"1":"284","2":"0.150","3":"Cartel not Operational","4":"30120","5":"May 22 - Jun 18","6":"Lakes are not Frozen"},{"1":"285","2":"0.150","3":"Cartel not Operational","4":"30488","5":"Jun 19 - Jul 16","6":"Lakes are not Frozen"},{"1":"286","2":"0.150","3":"Cartel not Operational","4":"31223","5":"Jun 19 - Jul 16","6":"Lakes are not Frozen"},{"1":"287","2":"0.150","3":"Cartel not Operational","4":"21562","5":"Jun 19 - Jul 16","6":"Lakes are not Frozen"},{"1":"288","2":"0.150","3":"Cartel not Operational","4":"24892","5":"Jun 19 - Jul 16","6":"Lakes are not Frozen"},{"1":"289","2":"0.150","3":"Cartel not Operational","4":"20864","5":"Jul 17 - Aug 13","6":"Lakes are not Frozen"},{"1":"290","2":"0.150","3":"Cartel not Operational","4":"19128","5":"Jul 17 - Aug 13","6":"Lakes are not Frozen"},{"1":"291","2":"0.200","3":"Cartel not Operational","4":"9778","5":"Jul 17 - Aug 13","6":"Lakes are not Frozen"},{"1":"292","2":"0.200","3":"Cartel not Operational","4":"7528","5":"Jul 17 - Aug 13","6":"Lakes are not Frozen"},{"1":"293","2":"0.200","3":"Cartel not Operational","4":"15773","5":"Aug 14 - Sep 10","6":"Lakes are not Frozen"},{"1":"294","2":"0.150","3":"Cartel not Operational","4":"10737","5":"Aug 14 - Sep 10","6":"Lakes are not Frozen"},{"1":"295","2":"0.150","3":"Cartel not Operational","4":"20881","5":"Aug 14 - Sep 10","6":"Lakes are not Frozen"},{"1":"296","2":"0.150","3":"Cartel not Operational","4":"20970","5":"Aug 14 - Sep 10","6":"Lakes are not Frozen"},{"1":"297","2":"0.150","3":"Cartel not Operational","4":"22835","5":"Sep 11 - Oct 8","6":"Lakes are not Frozen"},{"1":"298","2":"0.150","3":"Cartel not Operational","4":"30986","5":"Sep 11 - Oct 8","6":"Lakes are not Frozen"},{"1":"299","2":"0.150","3":"Cartel not Operational","4":"35308","5":"Sep 11 - Oct 8","6":"Lakes are not Frozen"},{"1":"300","2":"0.150","3":"Cartel not Operational","4":"40034","5":"Sep 11 - Oct 8","6":"Lakes are not Frozen"},{"1":"301","2":"0.150","3":"Cartel not Operational","4":"44776","5":"Oct 9 - Nov 5","6":"Lakes are not Frozen"},{"1":"302","2":"0.200","3":"Cartel not Operational","4":"36288","5":"Oct 9 - Nov 5","6":"Lakes are not Frozen"},{"1":"303","2":"0.200","3":"Cartel not Operational","4":"27158","5":"Oct 9 - Nov 5","6":"Lakes are not Frozen"},{"1":"304","2":"0.200","3":"Cartel not Operational","4":"14622","5":"Oct 9 - Nov 5","6":"Lakes are not Frozen"},{"1":"305","2":"0.200","3":"Cartel not Operational","4":"15259","5":"Nov 6 - Dec 3","6":"Lakes are not Frozen"},{"1":"306","2":"0.200","3":"Cartel not Operational","4":"14680","5":"Nov 6 - Dec 3","6":"Lakes are not Frozen"},{"1":"307","2":"0.200","3":"Cartel not Operational","4":"15114","5":"Nov 6 - Dec 3","6":"Lakes are not Frozen"},{"1":"308","2":"0.200","3":"Cartel Operational","4":"17686","5":"Nov 6 - Dec 3","6":"Lakes are not Frozen"},{"1":"309","2":"0.200","3":"Cartel Operational","4":"36336","5":"Dec 4 - Dec 31","6":"Lakes are not Frozen"},{"1":"310","2":"0.200","3":"Cartel Operational","4":"22569","5":"Dec 4 - Dec 31","6":"Lakes are Frozen"},{"1":"311","2":"0.200","3":"Cartel Operational","4":"23342","5":"Dec 4 - Dec 31","6":"Lakes are Frozen"},{"1":"312","2":"0.200","3":"Cartel Operational","4":"21269","5":"Dec 4 - Dec 31","6":"Lakes are Frozen"},{"1":"313","2":"0.200","3":"Cartel Operational","4":"18340","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"314","2":"0.250","3":"Cartel Operational","4":"19440","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"315","2":"0.250","3":"Cartel not Operational","4":"17056","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"316","2":"0.250","3":"Cartel not Operational","4":"10713","5":"Jan 1 - Jan 28","6":"Lakes are Frozen"},{"1":"317","2":"0.250","3":"Cartel not Operational","4":"12836","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"318","2":"0.250","3":"Cartel not Operational","4":"12344","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"319","2":"0.250","3":"Cartel not Operational","4":"17868","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"320","2":"0.250","3":"Cartel not Operational","4":"22789","5":"Jan 29 - Feb 25","6":"Lakes are Frozen"},{"1":"321","2":"0.250","3":"Cartel not Operational","4":"34851","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"322","2":"0.250","3":"Cartel not Operational","4":"29997","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"323","2":"0.250","3":"Cartel not Operational","4":"34010","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"324","2":"0.250","3":"Cartel Operational","4":"19686","5":"Feb 26 - Mar 26","6":"Lakes are Frozen"},{"1":"325","2":"0.250","3":"Cartel Operational","4":"14757","5":"Mar 27 - Apr 23","6":"Lakes are Frozen"},{"1":"326","2":"0.250","3":"Cartel Operational","4":"16502","5":"Mar 27 - Apr 23","6":"Lakes are Frozen"},{"1":"327","2":"0.250","3":"Cartel Operational","4":"11490","5":"Mar 27 - Apr 23","6":"Lakes are Frozen"},{"1":"328","2":"0.250","3":"Cartel Operational","4":"7843","5":"Mar 27 - Apr 23","6":"Lakes are Frozen"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>Some summarizing…</p>
+<div class="cell">
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["season"],"name":[1],"type":["ord"],"align":["right"]},{"label":["cartel"],"name":[2],"type":["fct"],"align":["left"]},{"label":["ice"],"name":[3],"type":["fct"],"align":["left"]},{"label":["avg_price"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["mean_tonnage"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"Jan 1 - Jan 28","2":"Cartel Operational","3":"Lakes are Frozen","4":"0.3100000","5":"23461.90"},{"1":"Jan 1 - Jan 28","2":"Cartel not Operational","3":"Lakes are Frozen","4":"0.1750000","5":"27646.12"},{"1":"Jan 29 - Feb 25","2":"Cartel Operational","3":"Lakes are Frozen","4":"0.3000000","5":"30157.60"},{"1":"Jan 29 - Feb 25","2":"Cartel not Operational","3":"Lakes are Frozen","4":"0.2625000","5":"23731.00"},{"1":"Feb 26 - Mar 26","2":"Cartel Operational","3":"Lakes are Frozen","4":"0.2875000","5":"28736.44"},{"1":"Feb 26 - Mar 26","2":"Cartel not Operational","3":"Lakes are Frozen","4":"0.2875000","5":"29584.58"},{"1":"Mar 27 - Apr 23","2":"Cartel Operational","3":"Lakes are Frozen","4":"0.2791667","5":"24984.75"},{"1":"Mar 27 - Apr 23","2":"Cartel Operational","3":"Lakes are not Frozen","4":"0.3000000","5":"23799.25"},{"1":"Mar 27 - Apr 23","2":"Cartel not Operational","3":"Lakes are Frozen","4":"0.2333333","5":"46858.83"},{"1":"Apr 24 - May 21","2":"Cartel Operational","3":"Lakes are Frozen","4":"0.3000000","5":"36457.33"},{"1":"Apr 24 - May 21","2":"Cartel Operational","3":"Lakes are not Frozen","4":"0.2700000","5":"14150.40"},{"1":"Apr 24 - May 21","2":"Cartel not Operational","3":"Lakes are Frozen","4":"0.1857143","5":"45818.86"},{"1":"Apr 24 - May 21","2":"Cartel not Operational","3":"Lakes are not Frozen","4":"0.2000000","5":"29186.00"},{"1":"May 22 - Jun 18","2":"Cartel Operational","3":"Lakes are not Frozen","4":"0.2733333","5":"15145.67"},{"1":"May 22 - Jun 18","2":"Cartel not Operational","3":"Lakes are not Frozen","4":"0.1666667","5":"32420.33"},{"1":"Jun 19 - Jul 16","2":"Cartel Operational","3":"Lakes are not Frozen","4":"0.2500000","5":"20303.40"},{"1":"Jun 19 - Jul 16","2":"Cartel not Operational","3":"Lakes are not Frozen","4":"0.1777778","5":"33079.44"},{"1":"Jul 17 - Aug 13","2":"Cartel Operational","3":"Lakes are not Frozen","4":"0.2571429","5":"12761.79"},{"1":"Jul 17 - Aug 13","2":"Cartel not Operational","3":"Lakes are not Frozen","4":"0.1800000","5":"20958.70"},{"1":"Aug 14 - Sep 10","2":"Cartel Operational","3":"Lakes are not Frozen","4":"0.2681818","5":"17011.45"},{"1":"Aug 14 - Sep 10","2":"Cartel not Operational","3":"Lakes are not Frozen","4":"0.1846154","5":"22766.00"},{"1":"Sep 11 - Oct 8","2":"Cartel Operational","3":"Lakes are not Frozen","4":"0.2636364","5":"20576.73"},{"1":"Sep 11 - Oct 8","2":"Cartel not Operational","3":"Lakes are not Frozen","4":"0.1538462","5":"29469.85"},{"1":"Oct 9 - Nov 5","2":"Cartel Operational","3":"Lakes are not Frozen","4":"0.2562500","5":"22932.69"},{"1":"Oct 9 - Nov 5","2":"Cartel not Operational","3":"Lakes are not Frozen","4":"0.1562500","5":"28813.88"},{"1":"Nov 6 - Dec 3","2":"Cartel Operational","3":"Lakes are not Frozen","4":"0.2625000","5":"23769.31"},{"1":"Nov 6 - Dec 3","2":"Cartel not Operational","3":"Lakes are not Frozen","4":"0.1968750","5":"21407.38"},{"1":"Dec 4 - Dec 31","2":"Cartel Operational","3":"Lakes are Frozen","4":"0.2861111","5":"25480.72"},{"1":"Dec 4 - Dec 31","2":"Cartel Operational","3":"Lakes are not Frozen","4":"0.2250000","5":"34980.00"},{"1":"Dec 4 - Dec 31","2":"Cartel not Operational","3":"Lakes are Frozen","4":"0.1812500","5":"25641.75"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="plot-the-data" class="level2"><h2 class="anchored" data-anchor-id="plot-the-data">Plot the Data</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="index_files/figure-html/plot-data-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="index_files/figure-html/plot-data-1.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="task-and-discussion" class="level2"><h2 class="anchored" data-anchor-id="task-and-discussion">Task and Discussion</h2>
+<ul>
+<li>Complete the Data Dictionary.</li>
+<li>Select and Transform the variables as shown.</li>
+<li>Create the graphs shown and discuss the following questions:
+<ul>
+<li>Identify the type of charts</li>
+<li>Identify the variables used for various geometrical aspects (x, y, fill…). Name the variables appropriately.</li>
+<li>What research activity might have been carried out to obtain the data graphed here? Provide some details.</li>
+<li>What pre-processing of the data was required to create the chart?</li>
+<li>Explain what happens when it is stated “cartel is working” and “cartel is not working”.</li>
+<li>How do prices for per-tonne grain transport vary based on whether the cartel is working or not? Does this depend upon whether it is summer time or winter time? Why?</li>
+<li>Is the cartel beneficial for customers of the JEC? What would be their behaviour based on whether the cartel was operational or not?</li>
+</ul>
+</li>
+</ul>
+
+
+</section><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/madhatterguide\.netlify\.app");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>License: <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</a></p>
+</div>   
+    <div class="nav-footer-center">
+<p>Website made with ❤️ and <a href="https://quarto.org/">Quarto</a>, by Arvind V.</p>
+</div>
+    <div class="nav-footer-right">
+<p>Hosted by Netlify <a href="https://www.netlify.com"><iconify-icon inline="" icon="simple-icons:netlify" aria-label="Icon netlify from simple-icons Iconify.design set." title="Icon netlify from simple-icons Iconify.design set."></iconify-icon></a>.</p>
+</div>
+  </div>
+</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"right","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+<script src="../../../../../../site_libs/quarto-html/zenscroll-min.js"></script>
+<script src="../../../../../../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.js" defer="true"></script>
+</body></html>

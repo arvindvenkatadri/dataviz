@@ -1,0 +1,292 @@
+---
+title: "Annotations: Drawing Attention to Parts of the Graph"
+subtitle: ""
+date: 2021/7/30
+date-modified: "`r Sys.Date()`"
+order: 35
+---
+
+```{r}
+#| label: setup
+#| echo: true
+#| message: false
+#| warning: false
+#| 
+library(tidyverse)  
+library(ggformula)
+library(systemfonts) ## use custom fonts (need to be installed on your OS)  
+library(scico)       ## scico color palettes(http://www.fabiocrameri.ch/colourmaps.php) in R 
+library(ggtext)      ## add improved text rendering to ggplot2
+library(ggforce)     ## add missing functionality to ggplot2
+
+library(showtext)   ## add google fonts to plots
+
+```
+
+## Introduction
+
+We may have been using `ggplot2` for a while now, but there is always more to learn about the aesthetics of our plots. Here we will look at annotating our graphs and plots. 
+
+Annotations help to draw attention to specific parts or the graph, specific areas of interest that are useful in telling the story .
+
+We have already seen the `annotate()` command from `ggplot2` first ( and the new `gf_annotate()` from `ggformula`). Here we will look at some of the intrigung features from the `ggforce` package. 
+
+### Fonts and Themes
+
+As we learnt in the [Fonts Module](../20-Fonts/index.qmd), let us set the ggplot theme with fonts for both the chart defining elements **and** our anotations.
+
+```{r}
+#| label: add-fonts
+#| echo: fenced
+#| cache: true
+#| code-fold: true
+font_add_google(name = "Gochi Hand", family = "gochi")
+font_add_google("Schoolbell", "bell")
+font_add_google("Galada", "galada")
+font_add_google("Roboto Condensed", "roboto-condensed")
+font_add_google("Noto Sans", "noto")
+font_add_google("Uchen", "uchen")
+font_add_google("Ibarra Real Nova", "ibarra")
+font_add_google("Open Sans", "open")
+font_add_google("Anton", "anton")
+font_add_google("Tangerine", "tangerine")
+showtext_auto() # set the google fonts as default
+
+```
+
+```{r}
+#| label: set-ggplot2-theme
+#| code-fold: true
+theme_set(theme_classic(base_size = 14, 
+                        base_family = "roboto-condensed"))
+
+## modify plot elements globally (for all following plots)
+theme_update(
+  axis.ticks = element_line(color = "grey92"),
+  axis.ticks.length = unit(.5, "lines"),
+  panel.grid.minor = element_blank(),
+  legend.title = element_text(size = 12, family = "ibarra"),
+  legend.text = element_text(color = "grey30"),
+  plot.title = element_text(size = 18, face = "bold"),
+  plot.subtitle = element_text(size = 12, color = "grey30", family = "ibarra"),
+  plot.caption = element_text(size = 9, margin = margin(t = 15), family = "anton")
+)
+# set-geom-default-font
+
+update_geom_defaults(geom = "text", 
+                     new = list(family = "roboto-condensed"))
+
+```
+
+
+## Data
+
+We will again work with a **familiar** dataset, so that we can concentrate on the chart aesthetics, without having to spend time getting used to the data: the `penguins` dataset again, ~~from the `palmerpenguins` package~~ now part of the R installation!. 
+
+As always, we will start with a **table** of the data:
+
+```{r}
+#| label: read-penguins-data
+#| message: false
+
+penguins <- penguins %>% drop_na() # remove data containing missing data
+
+## Create a nicely formatted table
+## uses `kableExtra` package
+## 
+penguins %>% 
+  kableExtra::kbl() %>%
+  kableExtra::kable_paper(full_width = TRUE) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "condensed", "responsive")) %>%
+  kableExtra::scroll_box(width = "700px", height = "500px")
+
+```
+
+## Basic Plot
+
+A basic scatter plot, which we will annotate: 
+
+```{r}
+#| label: basic-ggformula-plot
+#| 
+p1 <- gf_point(data = penguins, bill_dep ~ bill_len, 
+              color = ~ body_mass, alpha = 0.8, size = 3.5) %>% 
+
+  ## custom colors from the scico package
+  gf_refine(scico::scale_color_scico(palette = "tokyo", direction = -1)) %>% 
+  
+  ## custom labels
+  gf_labs(
+    title = 'Bill Dimensions of Brush-Tailed Penguins (Pygoscelis)',
+    subtitle = 'A scatter plot of bill depth versus bill length.',
+    caption = 'Data: Gorman, Williams & Fraser (2014) PLoS ONE',
+    x = 'Bill Length (mm)', 
+    y = 'Bill Depth (mm)',
+    color = 'Body mass (g)'
+  )
+
+p1
+
+```
+
+
+
+## Using `{ggforce}`
+
+From [Thomas Lin Pedersen's website](www.ggforce.data-imaginist.com) → www.ggforce.data-imaginist.com
+
+> `ggforce` is a package aimed at providing missing functionality to `ggplot2` through the extension system introduced with `ggplot2` v2.0.0. Broadly speaking `ggplot2` has been aimed primarily at explorative data visualization in order to investigate the data at hand, and less at providing utilities for composing custom plots a la `D3.js`. `ggforce` is mainly an attempt to address these “shortcoming” (design choices might be a better description). The goal is to provide a repository of geoms, stats, etc. that are as well documented and implemented as the official ones found in `ggplot2`.
+
+
+
+We will start with the basic plot, with the fonts, labels and `ggtext` related work done up to now: First, let us update the theme to use the `ggtext` options, and then we will add the `ggforce` annotations.
+
+```{r}
+## Existing theme
+theme_set(theme_classic(base_size = 14, 
+                        base_family = "roboto-condensed"))
+
+## modify plot elements globally (for all following plots)
+theme_update(
+  axis.ticks = element_line(color = "grey92"),
+  axis.ticks.length = unit(.5, "lines"),
+  panel.grid.minor = element_blank(),
+  legend.title = element_text(size = 12, family = "ibarra"),
+  legend.text = element_text(color = "grey30"),
+  
+## theme updates here
+  plot.title = ggtext::element_markdown(),
+  plot.caption = ggtext::element_markdown(),
+  axis.title.x = ggtext::element_markdown(),
+  axis.title.y = ggtext::element_markdown()
+)
+
+```
+
+
+
+
+```{r}
+## plot that we will annotate with ggforce afterwards
+p3 <- ggplot(penguins, aes(x = bill_len, y = bill_dep, 
+                           colour = body_mass)) + 
+  geom_point(size = 3.5) + 
+  coord_cartesian(xlim = c(25, 65), ylim = c(10, 25)) +
+  
+  # Add colours
+  scico::scale_color_scico(palette = "bamako", direction = -1) +
+  rcartocolor::scale_fill_carto_d(palette = "Bold") +
+  
+  # Add labels
+  labs(
+    title = "Bill Dimensions of Brush-Tailed Penguins (*Pygoscelis*)",
+    subtitle = 'A scatter plot of bill depth versus bill length.',
+    caption = "Data: Gorman, Williams & Fraser (2014) *PLoS ONE*",
+    x = "**Bill Length** (mm)", 
+    y = "**Bill Depth** (mm)",
+    color = "Body mass (g)",
+    fill = "Species"
+  )
+p3
+
+```
+
+### Using ellipses
+```{r}
+#| label: ellipses
+## ellipsoids for all groups
+p3 +
+  # penguins data is inherited automatically
+  # Can use other data also if needed
+  ggforce::geom_mark_ellipse( 
+    aes(fill = species, 
+        label = species), 
+    alpha = .15, 
+    show.legend = FALSE
+  ) +
+  
+  # Repeat the points!
+  # Why? So the ellipses don't hide them!
+  geom_point(aes(color = body_mass), 
+             alpha = .6, 
+             size = 3.5)
+
+
+```
+
+### Highlighting one group
+
+#### Add an Ellipse
+```{r}
+
+## ellipsoids for specific subset
+p3 +
+  ggforce::geom_mark_ellipse(
+    aes(fill = species, 
+        label = species, 
+        filter = species == 'Gentoo'), # Very Curious syntax here!!
+    alpha = 0.25, 
+    show.legend = FALSE
+  ) +
+ geom_point(aes(color = body_mass), 
+            alpha = .6, 
+            size = 3.5)
+
+```
+
+
+#### Adding Circles
+```{r}
+
+## circles
+p3 +
+  ggforce::geom_mark_circle(
+    aes(fill = species, label = species, 
+        filter = species == 'Gentoo'), 
+    alpha = 0.25, 
+    show.legend = FALSE
+  ) +
+  geom_point(aes(color = body_mass), 
+             alpha = .6, 
+             size = 3.5)
+
+```
+
+
+#### Adding Rectangles
+```{r}
+
+## rectangles
+p3 +
+  ggforce::geom_mark_rect(
+    aes(fill = species, 
+        label = species, 
+        filter = species == 'Gentoo'), 
+    alpha = 0.25, 
+    show.legend = FALSE
+  ) +
+  geom_point(aes(color = body_mass), 
+             alpha = .6, 
+             size = 3.5) 
+
+```
+
+
+#### Adding a Convex Hull
+```{r}
+library(concaveman)
+## hull
+p3 +
+  ggforce::geom_mark_hull(
+    aes(fill = species, 
+        label = species, 
+        filter = species == 'Gentoo'), 
+    alpha = 0.25, 
+    show.legend = FALSE
+  ) +
+  geom_point(aes(color = body_mass), 
+             alpha = .6, 
+             size = 3.5)
+
+```
+

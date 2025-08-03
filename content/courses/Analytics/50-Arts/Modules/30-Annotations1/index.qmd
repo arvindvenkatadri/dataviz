@@ -1,0 +1,471 @@
+---
+title: "Annotating Plots: Text, Labels, and Boxes"
+subtitle: ""
+date: 2021/7/30
+date-modified: "`r Sys.Date()`"
+order: 30
+---
+
+```{r}
+#| label: setup
+#| echo: true
+#| message: false
+#| warning: false
+#| 
+library(tidyverse)  
+library(ggformula)
+library(systemfonts) ## use custom fonts (need to be installed on your OS)  
+library(scico)       ## scico color palettes(http://www.fabiocrameri.ch/colourmaps.php) in R 
+library(ggtext)      ## add improved text rendering to ggplot2
+library(ggforce)     ## add missing functionality to ggplot2
+
+library(showtext)   ## add google fonts to plots
+
+```
+
+## Introduction
+
+We may have been using `ggplot2` for a while now, but there is always more to learn about the aesthetics of our plots. Here we will look at annotating our graphs and plots. 
+
+Annotations help to draw attention to specific parts or the graph, specific areas of interest that are useful in telling the story .
+
+We will use the `annotate()` command from `ggplot2` first ( and the new `gf_annotate()` from `ggformula`), and then look at the features offered by the `ggtext` package. 
+
+### Fonts and Themes
+
+As we learnt in the [Fonts Module](../20-Fonts/index.qmd), let us set the ggplot theme with fonts for both the chart defining elements **and** our anotations.
+
+```{r}
+#| label: add-fonts
+#| echo: fenced
+#| cache: true
+#| code-fold: true
+font_add_google(name = "Gochi Hand", family = "gochi")
+font_add_google("Schoolbell", "bell")
+font_add_google("Galada", "galada")
+font_add_google("Roboto Condensed", "roboto-condensed")
+font_add_google("Noto Sans", "noto")
+font_add_google("Uchen", "uchen")
+font_add_google("Ibarra Real Nova", "ibarra")
+font_add_google("Open Sans", "open")
+font_add_google("Anton", "anton")
+font_add_google("Tangerine", "tangerine")
+showtext_auto() # set the google fonts as default
+
+```
+
+```{r}
+#| label: set-ggplot2-theme
+#| code-fold: true
+theme_set(theme_classic(base_size = 14, 
+                        base_family = "roboto-condensed"))
+
+## modify plot elements globally (for all following plots)
+theme_update(
+  axis.ticks = element_line(color = "grey92"),
+  axis.ticks.length = unit(.5, "lines"),
+  panel.grid.minor = element_blank(),
+  legend.title = element_text(size = 12, family = "ibarra"),
+  legend.text = element_text(color = "grey30"),
+  plot.title = element_text(size = 18, face = "bold"),
+  plot.subtitle = element_text(size = 12, color = "grey30", family = "ibarra"),
+  plot.caption = element_text(size = 9, margin = margin(t = 15), family = "anton")
+)
+# set-geom-default-font
+
+update_geom_defaults(geom = "text", 
+                     new = list(family = "roboto-condensed"))
+
+```
+
+
+## Data
+
+We will again work with a **familiar** dataset, so that we can concentrate on the chart aesthetics, without having to spend time getting used to the data: the `penguins` dataset again, ~~from the `palmerpenguins` package~~ now part of the R installation!. 
+
+As always, we will start with a **table** of the data:
+
+```{r}
+#| label: read-penguins-data
+#| message: false
+
+penguins <- penguins %>% drop_na() # remove data containing missing data
+
+## Create a nicely formatted table
+## uses `kableExtra` package
+## 
+penguins %>% 
+  kableExtra::kbl() %>%
+  kableExtra::kable_paper(full_width = TRUE) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "condensed", "responsive")) %>%
+  kableExtra::scroll_box(width = "700px", height = "500px")
+
+```
+
+## Basic Plot
+
+A basic scatter plot, which we will annotate: 
+
+```{r}
+#| label: basic-ggformula-plot
+#| 
+p1 <- gf_point(data = penguins, bill_dep ~ bill_len, 
+              color = ~ body_mass, alpha = 0.8, size = 3.5) %>% 
+
+  ## custom colors from the scico package
+  gf_refine(scico::scale_color_scico(palette = "tokyo", direction = -1)) %>% 
+  
+  ## custom labels
+  gf_labs(
+    title = 'Bill Dimensions of Brush-Tailed Penguins (Pygoscelis)',
+    subtitle = 'A scatter plot of bill depth versus bill length.',
+    caption = 'Data: Gorman, Williams & Fraser (2014) PLoS ONE',
+    x = 'Bill Length (mm)', 
+    y = 'Bill Depth (mm)',
+    color = 'Body mass (g)'
+  )
+
+p1
+
+```
+
+## Using `annotate()`
+
+From the help menu ( Type `?annotate` in your Console), we have:
+
+>This function adds geoms to a plot, but unlike a typical geom function, the properties of the geoms are ***not mapped from variables*** of a data frame, ***but are instead passed in as vectors***. This is useful for adding small annotations (such as text labels) or if you have your data in vectors, and for some reason don't want to put them in a data frame.
+
+Usage: 
+
+```{r}
+#| echo: fenced
+#| eval: false
+
+gf_annotate( # or annotate() for ggplot
+  geom, # text , label, or rect, for example
+  x = NULL,
+  y = NULL,
+  xmin = NULL,
+  xmax = NULL,
+  ymin = NULL,
+  ymax = NULL,
+  xend = NULL,
+  yend = NULL,
+  ...,
+  na.rm = FALSE
+)
+
+```
+
+So annotations can be part of the original dataframe too, but can be composed out of *external* text or values, which are stored as vectors.
+`annotate()` / `gf_annotate()` offers the facility to plot text labels, rectangles, and also some neat arrows to ensure that the annotation works as intended. 
+
+Let us use `annotate()` / `gf_annotate()` to highlight a portion of the graph. We will shade a portion of the chart with a grey rectangle, add a label, and an arrow between the label and the rectangle. 
+
+```{r}
+#| label: annotate-ggformula
+p1 %>% 
+  gf_annotate(geom = "rect", xmin = 45, xmax = 55, ymin = 15, ymax = 20, colour = "black", fill = "grey", alpha = 0.2) %>% 
+  
+  gf_annotate(geom = "text", x = 55, y = 13.5, 
+           label = "Highly Educated\n Penguins") %>% 
+  
+  gf_annotate(geom = "curve", x = 57, y = 14.25,
+           xend = 55, yend = 17.5, linewidth = 0.5,
+    curvature = +0.5,
+    arrow = arrow(length = unit(0.5, 'cm')))
+
+```
+
+
+```{r}
+#| label: annotate-ggplot
+p1 + 
+  annotate(geom = "rect", xmin = 45, xmax = 55, ymin = 15, ymax = 20, colour = "black", fill = "grey", alpha = 0.2) + 
+  annotate(geom = "text", x = 55, y = 13.5, label = "Highly Educated\n Penguins") + 
+  annotate(geom = "curve", x = 57, y = 14.25,
+           xend = 55, yend = 17.5,linewidth = 0.5,
+    curvature = +0.5,
+    arrow = arrow(length = unit(0.5, 'cm')))
+
+```
+
+
+## Using `{ggtext}`
+
+From [Claus Wilke's website](https://wilkelab.org/ggtext/) → www.wilkelab.org/ggtext
+
+> The `ggtext` package provides simple Markdown and HTML rendering for ggplot2. Under the hood, the package uses the `gridtext` package for the actual rendering, and consequently it is limited to the feature set provided by `gridtext`.  
+Support is provided for Markdown both in theme elements (plot titles, subtitles, captions, axis labels, legends, etc.) and in geoms (similar to `geom_text()`). In both cases, there are two alternatives, one for creating simple text labels and one for creating text boxes with word wrapping.
+
+::: callout-important
+### Installation of `ggtext`
+
+NOTE: on some machines, the ggtext package may not work as expected. In this case, please do as follows, using your Console:
+
+```{yaml}
+remove.packages(gridtext) #remove gridtext  
+library(remotes) # Install development version of `gridtext`
+remotes::install_github("wilkelab/gridtext")
+```
+
+:::
+
+
+### Using Markdown for titles and captions
+
+We can use our familiar markdown syntax right inside the titles and captions of the plot. `element_markdown()` is a theming command made available by the `ggtext` package. 
+
+`element_markdown()` → formatted text elements, e.g. titles, caption, axis text, striptext:
+
+```{r}
+p1 %>% 
+   
+  ## New code starts here: Two Step Procedure with ggtext
+  ## 1. Markdown formatting of labels and title, using asterisks
+  gf_labs(
+    title = 'Bill Dimensions of Brush-Tailed Penguins (*Pygoscelis*)',
+    subtitle = 'A scatter plot of bill depth versus bill length.',
+    caption = 'Data: Gorman, Williams & Fraser (2014) *PLoS ONE*',
+    x = '**Bill Length** (mm)', # Bold
+    y = '**Bill Depth** (mm)', # Bold
+    color = 'Body mass (g)' # Legend Title
+  ) %>% 
+   
+  ## 2. Add theme related commands from ggtext
+  ## render respective text elements
+  gf_theme(theme(
+    plot.title = ggtext::element_markdown(),
+    plot.caption = ggtext::element_markdown(),
+    axis.title.x = ggtext::element_markdown(),
+    axis.title.y = ggtext::element_markdown()
+  ))
+
+
+```
+
+
+
+```{r}
+p1 +
+   
+  ## New code starts here: Two Step Procedure with ggtext
+  ## 1. Markdown formatting of labels and title, using asterisks
+  labs(
+    title = 'Bill Dimensions of Brush-Tailed Penguins (*Pygoscelis*)',
+    subtitle = 'A scatter plot of bill depth versus bill length.',
+    caption = 'Data: Gorman, Williams & Fraser (2014) *PLoS ONE*',
+    x = '**Bill Length** (mm)', # Bold
+    y = '**Bill Depth** (mm)', # Bold
+    color = 'Body mass (g)' # Legend Title
+  ) +
+   
+  ## 2. Add theme related commands from ggtext
+  ## render respective text elements
+  theme(
+    plot.title = ggtext::element_markdown(),
+    plot.caption = ggtext::element_markdown(),
+    axis.title.x = ggtext::element_markdown(),
+    axis.title.y = ggtext::element_markdown()
+  )
+
+
+```
+
+
+### Annotations with `geom_richtext()` and `geom_textbox()`
+
+Further ggplot annotations can be achieved using `geom_richtext()` and `geom_textbox()`. 
+
+`geom_richtext()` also allows formatted text labels with 360° rotation.
+
+::: callout-note
+### Using `geom_richtext()`
+
+One needs to pass a dataframe to `geom_richtext()` giving the location, colour, rotation etc. of **each** label annotation. 
+
+:::
+
+Another basic plot :
+
+```{r}
+p2 <- ggplot(data = penguins, 
+             aes(y = bill_dep, x = bill_len, 
+                 color = species), 
+             alpha = 0.8, size = 3.5) + 
+  geom_point() + 
+
+  # Colours from the RColorbrewer package
+  scale_color_brewer(palette = "Set1") + 
+  
+  ## custom labels
+  labs(
+    title = 'Bill Dimensions of Brush-Tailed Penguins (Pygoscelis)',
+    subtitle = 'A scatter plot of bill depth versus bill length.',
+    caption = 'Data: Gorman, Williams & Fraser (2014) PLoS ONE',
+    x = 'Bill Length (mm)', 
+    y = 'Bill Depth (mm)',
+    color = 'Species'
+  )
+
+p2
+
+```
+
+```{r}
+#| label: design-the-annotations
+# Define data frame for labels, colours, angles. 
+# Can include inside ggplot call too
+# But code will look crazy!!
+
+annotations <- 
+  tibble(x = c(38, 56, 53),
+         y = c(22, 22, 13.5), 
+         angle = c(12, -20, 30),
+         species = c("Adelie", "Chinstrap", "Gentoo"), # Note!!
+      
+      ## Use HTML tags to format the annotations
+    
+      lab = c("<b style='font-family:anton;font-size:24pt;'>Adelie</b><br><i style='color:darkgrey;'>P. adéliae</i>",
+              
+              "<b style='font-family:anton;font-size:24pt;'>Chinstrap</b><br><i style='color:darkgrey;'>P. antarctica</i>",
+              
+              "<b style='font-family:anton;font-size:24pt;'>Gentoo</b><br><i style='color:darkgrey;'>P. papua</i>"))
+annotations
+
+```
+
+Now we can use these annotations on plot `p2`. (ggplot only!)
+
+
+```{r}
+## add text annotations for each species
+
+p2 + 
+  scale_y_continuous(breaks = seq(10, 25, by = 2.5), 
+                     limits = c(10, 25)) + # stretch y-scale a bit
+  ggtext::geom_richtext(
+    
+    data = annotations, 
+    # Now pass these data variables as aesthetics
+    aes(x, y, label = lab, color = species, angle = angle), 
+    
+    size = 4, fill = NA, label.color = NA,
+    lineheight = .3
+  ) +
+  
+  # Use theme and element_markdown() to format axes and titles as usual
+  theme(
+    plot.title = ggtext::element_markdown(),
+    plot.caption = ggtext::element_markdown(),
+    axis.title.x = ggtext::element_markdown(),
+    axis.title.y = ggtext::element_markdown(),
+    plot.margin = margin(25, 6, 15, 6)
+  )
+
+
+```
+
+
+### geom_textbox()
+
+`element_textbox()` and `element_textbox_simple()` → formatted text boxes with word wrapping
+
+```{r}
+ggplot(penguins, aes(x = bill_len, y = bill_dep)) +
+  geom_point(aes(color = species), alpha = .6, size = 3.5) +
+  
+  scale_x_continuous(breaks = 3:6 * 10, limits = c(30, 60)) +
+  scale_y_continuous(breaks = seq(12.5, 22.5, by = 2.5),
+                     limits = c(12.5, 22.5)) +
+  rcartocolor::scale_color_carto_d(palette = "Bold", guide = "none") +
+  
+  ## add text annotations for each species
+  ## Creating a tibble for the labels!
+  ggtext::geom_richtext(
+    data = tibble(
+      # Three rich text labels
+      # So three sets of locations x and y, and angle of rotation
+      x = c(34, 56, 54),
+      y = c(20, 18.5, 14.5),
+      angle = c(12, 20, 335),
+      species = c("Adélie", "Chinstrap", "Gentoo"),
+      notes = c(
+        "<b style='font-family:anton;font-size:24pt;'>Adélie</b><br><i style='color:darkgrey;'>P. adéliae</i>",
+        "<b style='font-family:anton;font-size:24pt;'>Chinstrap</b><br><i style='color:darkgrey;'>P. antarctica</i>",
+        "<b style='font-family:anton;font-size:24pt;'>Gentoo</b><br><i style='color:darkgrey;'>P. papua</i>"
+      )
+      ),
+    
+    
+    # Now pass these data variables as aesthetics
+    aes(
+      x,
+      y,
+      label = notes,
+      color = species,
+      angle = angle
+    ),
+    
+    size = 4,
+    fill = NA,
+    label.color = NA,
+    lineheight = .3
+  ) +
+  
+  
+# Now for the Plot Titles and Labels, as before  
+  labs(
+    title = 'Bill Dimensions of Brush-Tailed Penguins (*Pygoscelis*)',
+    subtitle = 'A scatter plot of bill depth versus bill length.',
+    caption = 'Data: Gorman, Williams & Fraser (2014) *PLoS ONE*',
+    x = '**Bill Length** (mm)',
+    y = '**Bill Depth** (mm)',
+    color = 'Body mass (g)'
+  ) +
+  
+# Add the ggtext theme related commands
+  theme(
+    ## turn title into filled textbox
+    plot.title = ggtext::element_textbox_simple(
+      color = "white",
+      fill = "#28A78D",
+      size = 32,
+      padding = margin(8, 4, 8, 4),
+      margin = margin(b = 5),
+      lineheight = .9
+    ),
+    ## add round outline to caption
+    plot.caption = ggtext::element_textbox_simple(
+      width = NULL,
+      linetype = 1,
+      padding = margin(4, 8, 4, 8),
+      margin = margin(t = 15),
+      r = grid::unit(8, "pt")
+    ),
+    axis.title.x = ggtext::element_markdown(),
+    axis.title.y = ggtext::element_markdown(),
+    plot.margin = margin(25, 6, 15, 6)
+  ) -> p4
+
+p4
+
+```
+
+`geom_textbox()` → formatted text boxes with word wrapping  
+
+```{r}
+p4 +
+  ## add textbox with long paragraphs
+  ggtext::geom_textbox(
+    data = tibble(x = 34, y = 13.7, label = "<span style='font-size:12pt;font-family:anton;'>Lorem Ipsum Dolor Sit Amet</span><br><br>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
+    aes(x, y, label = label),
+    size = 2.2, family = "sans",
+    fill = "cornsilk", box.color = "cornsilk3",
+    width = unit(11, "lines")
+  ) +
+  coord_cartesian(clip = "off") # ensure no clipping of labels near the edge
+
+
+```
+
