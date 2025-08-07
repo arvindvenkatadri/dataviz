@@ -1,0 +1,101 @@
+---
+title: "Font and Theme Demo"
+subtitle: "Testing the Fixed Theming System"
+format: html
+---
+
+## Overview
+
+This document demonstrates that the font and theme issues have been resolved. If you can render this file successfully, the fixes are working.
+
+## Setup
+
+```{r setup, message=FALSE, warning=FALSE}
+# The theming should be automatically loaded via .Rprofile
+# but we can also source it manually if needed
+# source("theming/roboto_theme.R")
+
+library(ggplot2)
+library(palmerpenguins)
+
+# Check that fonts are available
+cat("Available font families:", paste(sysfonts::font_families(), collapse = ", "), "\n")
+```
+
+## Test Plot 1: Basic Scatter Plot
+
+This should use the custom theme with proper fonts:
+
+```{r basic-plot}
+ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
+  geom_point(aes(color = body_mass_g), alpha = 0.7, size = 2) +
+  labs(
+    title = "Bill Dimensions of Palmer Penguins",
+    subtitle = "This plot should use Vollkorn for title and Roboto Condensed for other text",
+    caption = "Data: Palmer Penguins dataset",
+    x = "Bill Length (mm)",
+    y = "Bill Depth (mm)",
+    color = "Body Mass (g)"
+  )
+```
+
+## Test Plot 2: Faceted Plot
+
+Testing the theme with facets:
+
+```{r faceted-plot}
+ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
+  geom_point(aes(color = body_mass_g), alpha = 0.7) +
+  facet_wrap(~species) +
+  labs(
+    title = "Bill Dimensions by Species",
+    subtitle = "Faceted plot to test strip text formatting",
+    x = "Bill Length (mm)",
+    y = "Bill Depth (mm)",
+    color = "Body Mass (g)"
+  )
+```
+
+## Font Test
+
+The following should display different fonts if the theme is working:
+
+- **Title text**: Should use Vollkorn font (serif-like)
+- **Body text**: Should use Roboto Condensed (sans-serif)
+- **Axis labels**: Should use Roboto Condensed
+- **Code blocks**: Should use Fira Code (if available)
+
+## Verification Checklist
+
+If the theming system is working correctly, you should see:
+
+- [ ] Plot titles in a serif font (Vollkorn)
+- [ ] Axis text and labels in a condensed sans-serif font
+- [ ] Consistent styling across all plots
+- [ ] No errors about missing columns (bill_len, bill_dep, body_mass)
+- [ ] Font families listed in the setup chunk
+
+## Troubleshooting
+
+If you encounter issues:
+
+1. **Missing packages**: Run `source("setup_packages.R")` to install required packages
+2. **Font errors**: Check internet connection and try restarting R
+3. **Column errors**: Ensure you're using the latest version of the files
+4. **Theme not applied**: Manually run `source("theming/roboto_theme.R")`
+
+## Technical Details
+
+The fixes implemented:
+
+1. **Column Names**: Changed incorrect column references:
+   - `bill_len` → `bill_length_mm`
+   - `bill_dep` → `bill_depth_mm`  
+   - `body_mass` → `body_mass_g`
+
+2. **Font System**: Created robust theming with:
+   - Google Fonts integration via showtext
+   - Graceful fallbacks when fonts unavailable
+   - Automatic theme application via .Rprofile
+
+3. **Error Handling**: Added proper error handling for missing packages and network issues
