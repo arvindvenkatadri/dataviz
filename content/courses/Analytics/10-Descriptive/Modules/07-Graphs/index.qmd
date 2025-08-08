@@ -3,6 +3,9 @@ title: <iconify-icon icon="carbon:chart-3d" width="1.2em" height="1.2em"></iconi
 subtitle: "Charts and How they are generated from Data"
 date: 2021-11-01
 date-modified: "`r Sys.Date()`"
+knitr:
+  opts_chunk:
+    dev: "ragg_png"
 fig-retina: 1
 order: 07
 fig-cap-location: bottom
@@ -46,6 +49,7 @@ library(Lock5withR)
 library(Lock5Data) # Some neat little datasets from a lovely textbook
 library(kableExtra)
 library(ggformula) # Our plotting package
+knitr::opts_chunk$set(dev = "ragg_png")
 
 
 ```
@@ -64,7 +68,8 @@ library(plotly)
 #devtools::install_github("mccarthy-m-g/embedr")
 library(embedr) # Embed multimedia in HTML files
 library(ggplot2)
-
+#theme_get()
+#
 ```
 
 
@@ -72,6 +77,8 @@ library(ggplot2)
 
 ```{r}
 #| label: plot-theme
+#| echo: true
+#| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
@@ -98,8 +105,8 @@ showtext_auto(enable = TRUE) #enable showtext
 ##
 theme_custom <- function(){ 
     font <- "Alegreya"   #assign font family up front
-        '%+replace%' <- ggplot2::'%+replace%' # nolint
-        
+    '%+replace%' <- ggplot2::'%+replace%' # nolint
+    
     theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
     
     theme(
@@ -144,7 +151,7 @@ theme_custom <- function(){
 }
 
 ## Use available fonts in ggplot text geoms too!
-update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text",new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -153,7 +160,7 @@ update_geom_defaults(geom = "text",new = list(
 )
 
 ## Set the theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ```
 
@@ -264,13 +271,10 @@ Bad choices may lead to bad, or worse, misleading charts!
 ```{r}
 #| echo: false
 #| message: false
+#| warning: true
 #| fig-cap: "Data Vis Components and Features"
 #| label: fig-data-vis-r
 #| fig.showtext: true
-
-# Set graph theme
-theme_set(new = theme_custom())
-#
 
 diamonds %>% 
   slice_sample(n = 150, weight_by = cut) %>% 
@@ -289,12 +293,12 @@ diamonds %>%
             scale_shape_manual(name = "Legend = DIAMOND QUALITY",
                                values = c(15:21)),
             
-            annotate('text', x = 1.0, y = 17000, 
+            annotate('text', x = 1.0, y = 16000, 
                      label = 'These DIAMONDS are\n Super Affordable!!',
                      fontface = 'bold', 
                      size = 3.5),
             annotate('curve',x = 0.75, 
-    y = 15000,
+    y = 100,
     yend = 8000,
     xend = 0.95,
     linewidth = 1,
@@ -310,8 +314,8 @@ diamonds %>%
     alpha = 0.5, 
     fill = 'grey80',
     col = 'black'
-  )) 
-
+  )) %>% 
+  gf_theme(theme_custom())
 
 ```
 

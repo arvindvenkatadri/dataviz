@@ -82,7 +82,6 @@ theme_custom <- function(){
     )
 }
 
-
 ## Use available fonts in ggplot text geoms too!
 update_geom_defaults(geom = "text",new = list(
   family = "Roboto Condensed",

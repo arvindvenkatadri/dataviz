@@ -1,30 +1,32 @@
 ---
-title: "Lab 05: Colors with Penguins"
+title: "Colours"
 subtitle: "Palettes from Famous Paintings, GoT, Harry Potter, and Wes Anderson"
-author: "Arvind Venkatadri"
-output:
-  html_document:
-    theme: flatly
-    toc: TRUE
-    toc_float: TRUE
-    toc_depth: 2
-    number_sections: TRUE
-    code_folding: hide
-    code_download: TRUE
+order: 10
 ---
 
-```{r setup, include = FALSE, cache = FALSE}
-knitr::opts_chunk$set(error = TRUE, comment = NA, warning = FALSE, errors = FALSE, message = FALSE, tidy = FALSE, cache = FALSE, fig.path= "03-figs/")
+## {{< iconify noto-v1 package >}} Setting up R Packages
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+#| fig-directory: "03-figs"
+knitr::opts_chunk$set(
+  fig.width = 7,
+  fig.asp = 0.618, # Golden Ratio
+  #out.width = "80%",
+  fig.align = "center"
+)
 
 library(tidyverse) # Manage data
+library(ggformula) # ggplot2 with a formula interface
 library(scales) # Create special ( % or $ ) scales
-#
-library(palmerpenguins) # source of our data
-#
 library(RColorBrewer) # Colour Palettes
 library(wesanderson) # Colour Palettes
-#library(gameofthrones) # You all know this!
-#
+
+# devtools::install_github("aljrico/gameofthrones")
+library(gameofthrones) # You all know this!
+
 library(paletteer) # Colour Palettes
 library(colorspace) # Colour Palettes
 #
@@ -33,65 +35,153 @@ library(ggthemes)
 
 ```
 
-# Introduction
+#### Plot Fonts and Theme
 
-This RMarkdown document is part of the Generic Skills Component  (GSK) of the Course of the  Foundation Studies Programme at Srishti Manipal Institute of Art, Design, and Technology, Bangalore India. The material is based on *A Layered Grammar of Graphics* by Hadley Wickham. The course is meant for First Year students pursuing a Degree in Art and Design. 
+```{r}
+#| label: plot-theme
+#| echo: true
+#| cache: false
+#| code-fold: true
+#| messages: false
+#| warning: false
 
-The intent of this GSK part is to build Skill in coding in R, and also appreciate R as a way to metaphorically visualize information of various kinds, using predominantly geometric figures and structures.
+library(systemfonts)
+library(showtext)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
 
-All RMarkdown files combine code, text, web-images, and figures developed using code. Everything is text; code chunks are enclosed in **fences** (```)
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+showtext_auto(enable = TRUE) #enable showtext
+##
+theme_custom <- function(){ 
+    font <- "Alegreya"   #assign font family up front
+    '%+replace%' <- ggplot2::'%+replace%' # nolint
+    
+    theme_classic(base_size = 10, base_family = font) %+replace%    #replace elements we want to change
+    
+    theme(
+      text = element_text(family = font),  #set base font family
+      
+      #text elements
+      plot.title = element_text(                 #title
+                   family = font,          #set font family
+                   size = 18,                    #set font size
+                   face = 'bold',                #bold typeface
+                   hjust = 0,                    #left align
+                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
+      plot.title.position = "plot", 
+      
+      plot.subtitle = element_text(              #subtitle
+                   family = font,          #font family
+                   size = 12,                   #font size
+                   hjust = 0,                   #left align
+                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
+      
+      plot.caption = element_text(               #caption
+                   family = font,          #font family
+                   size = 9,                     #font size
+                   hjust = 1),                   #right align
+      
+      plot.caption.position = "plot",            #right align
+      
+      axis.title = element_text(                 #axis titles
+                   family = "Roboto Condensed",  #font family
+                   size = 10),                   #font size
+      
+      axis.text = element_text(                  #axis text
+                   family = "Roboto Condensed",  #font family
+                   size = 8),                    #font size
+      
+      axis.text.x = element_text(                #margin for axis text
+                    margin = margin(5, b = 10))
+      
+      #since the legend often requires manual tweaking 
+      #based on plot content, don't define it here
+    )
+}
 
-# Goals
+## Use available fonts in ggplot text geoms too!
+ggplot2::update_geom_defaults(geom = "text",new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
 
-- (Re)Understand different kinds of data variables
-- Appreciate how they can be identified based on the *Interrogative Pronouns* they answer to
-- Understand how each kind of variable lends itself to a specific choice of **colour scale** in the data visualization.
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
+
+```
 
 
-# Pedagogical Note
+## Introduction
 
-The method followed will be based on
-[PRIMM](https://blogs.kcl.ac.uk/cser/2017/09/01/primm-a-structured-approach-to-teaching-programming/):
+We will look at how to use colour scales and palettes to embellish our plots in `ggplot2`.
 
--   **PREDICT** Inspect the code and guess at what the code might do,
-    **write predictions**
--   **RUN** the code provided and check what happens
--   **INFER** what the `parameters` of the code do and **write comments to explain**. What bells and whistles can you see?
--   **MODIFY** the `parameters` code provided to understand the
-    `options` available. **Write comments** to show what you have aimed for and achieved.
--   **MAKE** : take an idea/concept of your own, and graph it.
+## {{< iconify file-icons influxdata >}} Examine the Data
 
-In the following, there is some boiler plate code demonstrating the use of colour palettes in R. There are places where **YOUR TURN** is mention; copy and play with the boiler plate code to see what happens !
-
-# Data
-
-We will use the `penguins` dataset built into the `palmerpenguins` package. Your should try other datasets too!
+We will use the `penguins` dataset built into R itself. Your should try other datasets too!
 
 Here is a glimpse of the data:
 
 ```{r}
-
+data(penguins,package = "datasets") # Load the penguins dataset)
 glimpse(penguins)
 
 ```
 
-Note that the unit of observation here is one-row-per-penguin.
+### {{< iconify streamline dictionary-language-book-solid >}} Data Dictionary
 
-Variables you need for this lab:
+::: callout-note
+#### Quantitative Data
+- `bill_len` - length of the penguin's bill in millimeters (continuous)
+- `bill_dep` - depth of the penguin's bill in millimeters (continuous)
+- `flipper_len` - length of the penguin's flipper in millimeters (continuous)
+- `body_mass` - mass of the penguin in grams (continuous)
+- `year` - year of observation (discrete, integer)
 
-![](https://allisonhorst.github.io/palmerpenguins/reference/figures/lter_penguins.png)
+:::
 
-![](https://allisonhorst.github.io/palmerpenguins/reference/figures/culmen_depth.png)
+::: callout-note
+#### Qualitative Data
+- `species` - the species of penguin (categorical)
+- `island` - the island where the penguin was observed (categorical)
+:::
+
+::: {#fig-penguins layout-ncol=2}
+
+![](https://allisonhorst.github.io/palmerpenguins/reference/figures/lter_penguins.png){width="50%" height="50%"}
+
+![](https://allisonhorst.github.io/palmerpenguins/reference/figures/culmen_depth.png){width="50%" height="50%"}
+
+Penguin Species and Measurements
+
+:::
 
 
-# Colour vs fill aesthetic
+## {{< iconify fa-solid palette >}} Colour vs Fill aesthetic
 
 Fill and colour scales in ggplot2 can use the same palettes. Some shapes such as lines only accept the colour aesthetic, while others, such as polygons, accept both colour and fill aesthetics. In the latter case, the colour refers to the border of the shape, and the fill to the interior.
 
 
 
 ```{r}
-
+#| label: fig-shapes
+#| echo: false
+#| fig.cap: "Shapes in ggplot2."
 ## A look at all 25 symbols
 df <- data.frame(x = 1:5,
                  y = rep(rev(seq(0, 24, by = 5)), each = 5),
@@ -103,79 +193,81 @@ s + geom_point(aes(shape = z), size = 4) + scale_shape_identity()
 
 ```
 
-
 All symbols have a foreground colour, so if we add `color = "navy"`, they all are affected.
 
 ```{r}
-
+#| label: fig-shapes-colour
+#| echo: false
+#| fig.cap: "Shapes in ggplot2 have the colour aesthetic."
 s + geom_point(aes(shape = z), size = 4, colour = "blue")  + scale_shape_identity()
 
 ```
 
 
-While all symbols have a foreground colour, symbols 21-25 also take a background colour (fill). So if we add `fill = "orchid"`, only the last row of symbols are affected.
+While all symbols have a foreground colour, symbols `21-25` also take a background colour (fill). So if we add `fill = "orchid"`, only the last row of symbols are affected.
 
 ```{r}
-
+#| label: fig-shapes-colour-fill
+#| echo: false
+#| fig.cap: "Some Shapes in ggplot2 also have the fill aesthetic."
 s + geom_point(aes(shape = z), size = 4, colour = "blue", fill = "orchid")  + scale_shape_identity()
 
 ```
 
 
-# Discrete vs continuous variables
+## Discrete vs continuous variables
+
+Please revisit: 
 
 [WHAT IS THE DIFFERENCE BETWEEN CATEGORICAL, ORDINAL AND INTERVAL VARIABLES?](https://stats.idre.ucla.edu/other/mult-pkg/whatstat/what-is-the-difference-between-categorical-ordinal-and-interval-variables/)
 
-In order to use color with your data, most importantly, you need to know if you’re dealing with discrete or continuous variables. 
+In order to use color with your data, most importantly, you need to know if you’re dealing with discrete or continuous variables. Discrete variables are categorical variables that can take on a limited number of values. For example, the species of penguins in the `penguins` dataset is a discrete variable because it can only take on a limited number of values (Adelie, Chinstrap, Gentoo).
 
+Continuous variables, on the other hand, can take on any value within a range. For example, the `body_mass` of penguins in the `penguins` dataset is a continuous variable because it can take on any value within a range (e.g., 3000g to 6000g).
 
-## Some Colour Palette Packages in R
+## Colour Palettes
 
-We have the following example packages that offer palettes in R:
+Colour palettes are a set of colours that can be used to represent data in a visual way. They are used to make plots more visually appealing and to help convey information more effectively. In R, there are many packages that provide colour palettes, and they can be used in `ggplot2` to create beautiful and informative plots.
+Colour palettes can be used to represent different types of data, such as categorical, ordinal, and continuous data. 
 
-- `RColorBrewer`
-- `wesanderson`
-- `paletteer`
-- `colorspace`
+There are three main types of colour palettes in R:
 
-See Appendix for a detailed graphical analysis of these palette packages. 
+- For **Quant** Variables: **Sequential** (type = "seq") palettes are suited to ordered data that progress from low to high. Lightness steps dominate the look of these schemes, with light colors for low data values to dark colors for high data values. (for **numerical** data, that are ordered)
 
+- For **Quant** Variables: **Diverging** (type = "div") palettes put equal emphasis on *mid-range critical values* and *extremes* at both ends of the data range. The critical class or break in the middle of the legend is emphasized with light colors and low and high extremes are emphasized with dark colors that have contrasting hues.(for **numerical data that can be positive or negative**, often representing deviations from some norm or baseline)
 
-## Colour Palette Types
+- For **Qualitative** Variables (type = "qual") palettes do not imply magnitude differences between legend classes, and hues are used to create the primary visual differences between classes. Qualitative schemes are best suited to representing **nominal or categorical** data. (for qualitative unordered data)
 
-These palettes can be:
+Let us now create plots that show the effect of these palettes on the penguins dataset. We will use different colour packages from R to achieve this. 
 
-> **Sequential** (type = "seq") palettes are suited to ordered data that progress from low to high. Lightness steps dominate the look of these schemes, with light colors for low data values to dark colors for high data values. (for **numerical** data, that are ordered)
-
-> **Diverging** (type = "div") palettes put equal emphasis on mid-range critical values and extremes at both ends of the data range. The critical class or break in the middle of the legend is emphasized with light colors and low and high extremes are emphasized with dark colors that have contrasting hues.(for **numerical data that can be positive or negative**, often representing deviations from some norm or baseline)
-
-> **Qualitative** (type = "qual") palettes do not imply magnitude differences between legend classes, and hues are used to create the primary visual differences between classes. Qualitative schemes are best suited to representing **nominal or categorical** data. (for qualitative unordered data)
-
-
-## Create a simple set of scatter plots
+### Create a simple set of scatter plots
 
 We will create simple base plots in `ggplot` and see how we may alter the colour scales using palettes.
 
 
-```{r penguin_names }
-
+```{r}
+#| label: penguins-names
 names(penguins)
 
 ```
 
 
-```{r Penguins_default_simple_plots}
+```{r}
+#| label: fig-penguins-default-plots
+#| fig.cap: "Default colours in ggplot2 for discrete and continuous variables"
+#| fig-subcap: 
+#|   - "P1: Discrete/Qual Colour Palette"
+#|   - "P2: Continuous/Quant Colour Palette"
 
 p1 <- penguins %>% 
   drop_na() %>% 
   # pipe data into ggplot
   # after removing data rows that have missing ( NA ) values
-  ggplot(aes(y = body_mass_g, x = flipper_length_mm, 
-           color = species # COLOUR = DISCRETE/QUAL VARIABLE
-           )) +
-           geom_point() + 
-           labs(title = "Default Colours in ggplot", 
-                subtitle = "P1: DISCRETE/QUAL Colour Palette")
+gf_point(body_mass ~ flipper_len, 
+           color = ~ species) %>%  # COLOUR = DISCRETE/QUAL VARIABLE
+         
+           gf_labs(title = "Default QUAL Colours in ggplot",
+                   x = "Flipper Length (mm)", y = "Body Mass (g)") # Add labels
 
 
 p2 <- 
@@ -183,170 +275,190 @@ penguins %>%
   drop_na() %>% 
   # pipe the data into ggplot, 
   # after removing data rows that have missing ( NA ) values
-  ggplot(aes(y = body_mass_g, x = flipper_length_mm, 
-           color = bill_length_mm # COLOUR = CONT/QUANT VARIABLE
-           )) +
-           geom_point() + 
-           labs(title = "Default Colours in ggplot", 
-                subtitle = "P2: CONTINUOUS/QUANT Colour Palette")
+  gf_point(body_mass ~ flipper_len, 
+           color = ~ bill_len) %>%  # COLOUR = CONT/QUANT VARIABLE
+      gf_labs(title = "Default QUANT Colours in ggplot",
+              x = "Flipper Length (mm)", y = "Body Mass (g)") # Add labels
 
-p1
-p2
+patchwork::wrap_plots(p1,p2, ncol = 2)
 
 ```
 
-Note that these use the **default colours** in R. 
+Note that these use the **default colours** in R. We did not specify any colour scales, so the default colours are used. The first plot uses a **qualitative** variable (species) and the second plot uses a **quantitative** variable (bill length).
 
-# Colours for **Discrete** (**QUAL**) Variables
+Note the colour legends next to either of the plots: this shows the default colours used by `ggplot2` for the discrete and continuous variables.
 
+## Changing Colour Scales ~~with chameleon ease~~
+
+P1: For **Discrete** (**QUAL**) Variables
 The commands below are used to fill colours based on Qualitative Variables:
 
-1) `scale_colour/fill_discrete`
+1) `scale_colour/fill_discrete` (Default ggplot2 colours)
 2) `scale_colour/fill_brewer` # RColorBrewer
-3) ....
+3) `scale_colour/fill_manual` # Specify colours manually
+4) `scale_colour/fill_paletteer_d` # Use palettes from `paletteer` package
 
+P2: For **Continuous** (**QUANT**) Variables
+
+The commands below are used to fill colours based on Quantitative Variables:
+
+1) `scale_colour/fill_continuous()` (Default ggplot2 colours)
+2) `scale_colour/fill_gradient` (Two colour gradient)
+3) `scale_colour/fill_gradient2` (Three colour gradient)
+4) `scale_colour/fill_gradientn` (Specify Palette, from other packages also, like `wesanderson` )
+5) `scale_colour/fill_distiller` (Palettes from RColorBrewer)
+6) `scale_colour/fill_paletteer_c` (Use palettes from `paletteer` package)
 
 Now to use these!
 
-# Plotting Colours based on Discrete Variables
+### Using `ggplot2` colour scales
 
-## Discrete n-Colour palettes from `RColorBrewer`
+Let us just assure ourselves of the "default-ness" of `ggplot2` colours, when we do not specify a palette or colour scale.
+
+```{r}
+#| label: fig-penguins-ggplot-scales
+#| fig.cap: "ggplot2 scales for discrete and continuous variables"
+#| fig-subcap: 
+#|   - "P1: Discrete/Qual Colour Palette"
+#|   - "P2: Continuous/Quant Colour Palette"
+
+p10 <- p1 %>% 
+  gf_refine(scale_color_discrete()) 
+
+
+p20 <- p2 %>% 
+    gf_refine(scale_color_continuous()) 
+
+patchwork::wrap_plots(p10,p20, ncol = 2)
+
+```
+
+No change, as we are using the default colours in `ggplot2`. we expected this, of course. 
+
+
+### Using `RColorBrewer`
+
+Let us examine the palettes available in the `RColorBrewer` package.
 
 ```{r brewer_palettes}
 
 RColorBrewer::brewer.pal.info
-RColorBrewer::display.brewer.all()
+RColorBrewer::display.brewer.all(type = "all")
 
 ```
 
+Note the palette `category`: div / seq / qual !!
 
-```{r Applying_RColorBrewer_Discrete_palettes}
+```{r}
+#| label:  Applying_RColorBrewer_palettes
+#| results: hold
+#| fig.cap: "RColorBrewer colours in ggplot2 for discrete and continuous variables"
+#| fig-subcap: 
+#|   - "P1: Discrete/Qual Colour Palette"
+#|   - "P2: Continuous/Quant Colour Palette"
+#| 
 
-p1 +
-  # default palette = "Blues"
-  scale_colour_brewer() +
-  labs(title = "Brewer Palette = Blues")
+p11 <- p1 +
+  scale_color_brewer(palette = "Set2") +
+  labs(title = "RColorBrewer QUAL Palette = Set2",
+       subtitle = "Discrete Qualitative Variable") 
 
-p1 +
-  scale_color_brewer(palette = "Spectral") +
-  labs(title = "Brewer Palette = Spectral") 
+p21 <- p2 +
+  scale_color_distiller(palette = "YlOrRd") +
+  labs(title = "RColorBrewer QUANT Palette = YlOrRd",
+       subtitle = "Continuous Quantitative Variable") 
 
-
-```
-
-
-```{r YOUR_TURN_1}
-
-```
-
-
-## Discrete Colour scales using `wesanderson` palettes
-
-```{r wesander_list}
-
-wesanderson::wes_palettes %>% names()
+patchwork::wrap_plots(p11,p21, ncol = 2)
 
 ```
+Note the legend changes again! The colours are now from the `RColorBrewer` package, and the legend shows the palette used.
+
+### Using `paletteer`
+
+The [`paletteer`](https://emilhvitfeldt.github.io/paletteer/) package by Emil Hvitfeldt contains over 2000 palettes and seems to have everything accessible in a simple way!
+
+::: callout-note
+NOTE: In order to access some palettes in `paletteer`, you may be asked to install other packages. E.g. `harrypotter` or `scico`. These need not be brought into your session using `library()` but are accessed directly by `paletteer` which is very convenient!!
+:::
 
 
-```{r wesanderson_discrete}
-
-p1 +
-  scale_colour_discrete(type = wes_palette(name = "GrandBudapest1",
-                                           n = 3)) +
-  labs(title = "Wes Anderson Palette: GrandBudapest")
-
-
-# We can also specify colour codes ourselves with scale_x_discrete.
-# Use argument "values" instead of "type"
-manual_colours <- c("#afc4b8", "#f1a4b2", "#ffb1e1") 
-manual_colours
-
-p1 +
-  scale_colour_manual(values =  manual_colours) +
-  labs(title = "Manual Colours")
-
-```
-
-
-
-```{r YOUR_TURN_2}
-
-```
-
-## Discrete n-Colour palettes from `RColorBrewer`
-
-```{r Brewer-discrete}
-
-# scale_x_brewer() for DISCRETE data
-p1 +
-  scale_colour_brewer(palette = "Spectral") +
-  
-  labs(title = "RColorBrewer Palette = Spectral")
-
-```
-
-
-
-```{r YOUR_TURN_3}
-
-```
-
-
-## Discrete Colour scales using `paletteer` palettes
-
-```{r paletteer discrete}
-
-palettes_d_names
+```{r}
+#| label: paletteer_palettes
+# What discrete palettes are there in paletteer?
+paletteer::palettes_d_names
+# What continuous palettes are there in paletteer?
+palettes_c_names
+# What dynamic palettes are there in paletteer?
 palettes_dynamic_names
-paletteer_d("dutchmasters::pearl_earring")
-paletteer_dynamic("ggthemes_ptol::qualitative", n = 3)
 
-p1 +
+```
+
+::: callout-note
+### Dynamic Palettes from `paletteer`
+Dynamic palettes are those that can change based on the data they are applied to, where the colors of the palette depend on the number of colors you need, like the `green.pal` palette from the `cartography` package. They are useful for creating plots that adapt to the data being visualized. 
+
+Dynamic palettes are available for both discrete and continuous variables in `paletteer`.
+:::
+
+
+```{r}
+#| label: paletteer_discrete_palettes
+p12 <- p1 +
   scale_colour_paletteer_d("ggthemes_ptol::qualitative", 
                            dynamic = TRUE) +
-  
-  labs(title = "ggThemes Palette: Qualitative", 
-          subtitle = "")
+  labs(title = "QUAL Palettes from `paletteer`", 
+       subtitle = "ggThemes Palette: Qualitative")
 
 
 # I like Vermeer's "Girl with the Pearl Earring"!
-p1 +
-  scale_colour_paletteer_d("dutchmasters::pearl_earring",
-                           dynamic = FALSE) +
+p22 <- p1 +
+  scale_colour_paletteer_d("dutchmasters::pearl_earring") +
   
-  labs(title = "Palettes from `paletteer`", 
-          subtitle = " Palette from Vermeer: Girl with Pearl Earring")
+  labs(title = "QUAL Palettes from `paletteer`", 
+          subtitle = " Vermeer Palette: Qualitative",
+       caption = "Girl with the Pearl Earring")
   
+patchwork::wrap_plots(p12,p22, ncol = 2)
 
 ```
 
 
-```{r YOUR_TURN_4}
+OK, one of the Games of Thrones Palettes, and Harry Potter! 
+
+```{r}
+#| label: continuous_palettes
+p22 <- p2 + 
+  scale_color_got("gameofthrones::jon_snow") +
+  labs(title = "Using QUANT palette\n from `GameofThrones`",
+       subtitle = "Continuous Palette-Game of Thrones: Jon Snow",
+       caption = "Oh you awful Srishti people...")
+  
+  # Harry Potter Gryffindor Palette.
+  # Will ask for `harrypotter` package to be installed. Say yes!
+p23 <- p2 +
+  scale_colour_paletteer_c("harrypotter::gryffindor") +
+  labs(title = "Using QUANT palette \nfrom `paletteer`",
+       subtitle = "Continuous Palette-Harry Potter:Gryffindor")
+
+patchwork::wrap_plots(p22,p23, ncol = 2)
 
 ```
 
 
+#### Using Manual Scales
 
-# Colours for **Continuous** (**QUANT**) Variables
+There are a good few ways in which we can manually specify colour scales for both Qual and Quant variables in ggplot.  There are built in functions for developing colour gradients and palettes, for Quant variables, such as `scale_colour_gradient()`, `scale_colour_gradient2()`, and `scale_colour_gradientn()`.
 
-The commands below are used to fill colours based on Quantitative Variables:
+For Qual variables, we can use `scale_colour_manual()` or `scale_fill_manual()` alog with a vector of colours, or a named vector of colours.
 
-1) `scale_colour/fill_gradient` (Two colour gradient)
-2) `scale_colour/fill_gradient2` (Three colour gradient)
-3) `scale_colour/fill_gradientn` (Specify Palette, from other packages also, like `wesanderson` )
-4) `scale_colour/fill_distiller` (Palettes from RColorBrewer)
-
-
-# Plotting Colours based on Continuous Variables
-
-
-## Continuous Two Colour Gradients
+###### Continuous Two-Colour Gradients
 
 Creates a pallete containing *continuous* shades between two colours:
 
-```{r Continuous_Two_Colour_Gradients}
-
+```{r}
+#| label: Continuous_Two_Colour_Gradients
+#| warning: false
+#| message: false
 p2 +
     scale_color_gradient(
       low = "yellow", # Play with this in the chunk below
@@ -357,18 +469,15 @@ p2 +
 
 ```
 
-```{r YOUR_TURN_5}
-
-```
-
-
-## Continuous Three Colour Gradients
+##### Continuous Three-Colour Gradients
 
 Sometimes we want a palette this way: a *midpoint* colour, and colours for the two extremes of a continuous variable:
 
-```{r Continuous_Three_Colour_Gradients}
-
-colour_midpoint <- mean(penguins$bill_length_mm, 
+```{r}
+#| label: Continuous_Three_Colour_Gradients
+#| warning: false
+#| 
+colour_midpoint <- mean(penguins$bill_len, 
                          na.rm = TRUE) # remove missing values
 # Struggled all morning on 22 Aug 2020 to get at this ;-D
 
@@ -388,11 +497,7 @@ p2 +
 
 ```
 
-```{r YOUR_TURN_6}
-
-```
-
-## Continuous n-Colour Gradients - grDevices package
+###### Continuous n-Colour Gradients - grDevices package
 
 
 ```{r Continuous_n_Colour_Gradients_grDevices}
@@ -411,117 +516,99 @@ p2 +
 ```
 
 
-```{r YOUR_TURN_7}
-
-```
-
-
-## Continuous n-Colour Gradients - `wesanderson` Palettes
+###### Continuous n-Colour Gradients - `wesanderson` Palettes
 
 ```{r wesanderson}
-
-wes_palettes
 names(wes_palettes)
+```
+
+```{r}
+#| echo: false
+len <- length(wes_palettes)
+names <- names(wes_palettes)
+lengths <- purrr::map_int(wes_palettes, length)
+
+tibble(
+  name = names,
+  length = lengths
+) %>% 
+  arrange(desc(length))
 
 ```
 
-```{r Using_wesanderson}
-
+```{r}
+#| label: Continuous_n_Colour_Gradients_wesanderson
 p2 +
     scale_colour_gradientn(
-      colors = wes_palette(name = "GrandBudapest1", 
-                           n = 4), # Keep an eye on "n".
+      colors = wes_palette(name = "Zissou1Continuous", 
+                           n = 11), # Keep an eye on "n" for the chosen palette!
       na.value = "grey") +
-  # Try these:
-  # "BottleRocket1"  "BottleRocket2"  "Rushmore1"
-  # "Rushmore"       "Royal1"         "Royal2"
-  # "Zissou1"        "Darjeeling1"    "Darjeeling2"   
-  # "Chevalier1"     "FantasticFox1"  "Moonrise1"     
-  # "Moonrise2"      "Moonrise3"      "Cavalcanti1"   
-  # "GrandBudapest1" "GrandBudapest2" "IsleofDogs1"   
-  # "IsleofDogs2"   
-  # Keep an eye on "n".
   
   labs(title = "N-colour continuous gradients", 
        subtitle = "Palettes from wesanderson",
-       caption = "Palette: GrandBudapest1") # Change this caption based on palette choice
+       caption = "Palette: Zissou1Continuous") # Change this caption based on palette choice
 
 ```
 
-```{r YOUR_TURN_8}
+###### Discrete `wesanderson` Palettes
+
+```{r wesanderson_discrete}
+
+p1 +
+  scale_colour_discrete(type = wes_palette(name = "GrandBudapest1",
+                                           n = 3)) +
+  labs(title = "Wes Anderson Palette: GrandBudapest")
 
 ```
 
+We can also specify colour codes ourselves with scale_x_discrete.
+Use argument "values" instead of "type".
 
-## Continuous n-Colour palettes from `RColorBrewer`
+```{r}
+manual_colours <- c( "#fba4b2","#af14b8", "#1fb1e1") 
+manual_colours
 
-Recall Palette **types**
-
-- `seq` for continuous data mapped to colour
-- `qual` for categorical data mapped to colour ( discrete)
-- `div` continuous data mapped to colour, that has pos and neg extremes from a middle value
-
-
-```{r brewer_palette_names}
-
-brewer.pal.info
-
-```
-
-
-```{r Using_Color_Brewer_palettes}
-
-# scale_color_distiller() and scale_fill_distiller() 
-# are used to apply the ColorBrewer colour scales 
-# to continuous data.
-
-p2 +
-  scale_colour_distiller(
-    palette = "YlGnBu") + # Play with this palette
-  
-  labs(title = "RColorBrewer Palette")
+p1 +
+  scale_colour_manual(values =  manual_colours) +
+  labs(title = "Manual Colours for Qual variable",
+       subtitle = "Using scale_colour_manual()",
+       caption = "Colours: afc4b8, f1a4b2, 1fb1e1") # Change this caption based on palette choice
 
 ```
 
-```{r YOUR_TURN_9}
+## Wait but Why?
+
+Why do we need all these colour palettes? Why not just use the default colours in `ggplot2`?
+The default colours in `ggplot2` are not always suitable for all types of data. For example, if you have a categorical variable with many levels, the default colours may not be distinct enough to differentiate between the levels. Similarly, if you have a continuous variable with a wide range of values, the default colours may not be able to represent the data effectively.
+Using colour palettes allows you to choose colours that are more suitable for your data, and that can help convey information more effectively. It also allows you to create more visually appealing plots that are easier to interpret.
+
+## Conclusion
+
+We have seen how to use colour palettes in `ggplot2` to enhance our plots. We have used the `RColorBrewer`, `paletteer`, and `wesanderson` packages to create beautiful and informative plots. We have also seen how to use manual colour scales to create custom colour palettes.
+
+We have also seen how to use colour scales for both discrete and continuous variables, and how to use different types of colour palettes for different types of data.
+
+## References
+
+1. Lisa Charlotte Muth. *How to pick more beautiful colors for your data visualizations*. <https://www.datawrapper.de/blog/beautifulcolors>
+1. Albert Rapp. (2022). *4 Ways to use colors in ggplot more efficiently* <https://albert-rapp.de/posts/ggplot2-tips/07_four_ways_colors_more_efficiently/07_four_ways_colors_more_efficiently>
+1. Emil Hvitfeldt. (2023). *paletteer: A Palette Manager for R*. <https://emilhvitfeldt.github.io/paletteer/>
+
+::: {#refs style="font-size: 60%;"}
+###### {{< iconify lucide package-check >}} R Package Citations
+
+```{r}
+#| echo: false
+library(grateful)
+#scan_packages()
+cite_packages(
+  output = "table",
+  out.dir = ".",
+  out.format = "html",
+  pkgs = c("paletteer", "RColorBrewer", "wesanderson", "gameofthrones", "scales", "ggthemes", "systemfonts", "showtext", "colorspace", "patchwork")
+) %>%
+  knitr::kable(format = "simple")
 
 ```
-
-## Continuous Colour scales using `paletteer` palettes
-
-This palette seems to have everything accessible in a simple way!
-NOTE: In order to access some palettes in `paletteer`, you may be asked to install other packages. E.g. `harrypotter` or `scico`. These need not be brought into your session using `library()` but are accessed directly by `paletteer` which is very convenient!!
-
-```{r paletteer_continupus_palettes_list}
-
-# What continuous palettes are there in paletteer?
-paletteer::palettes_c_names
-
-```
-
-
-OK, one of the Games of Thrones Palettes, and Harry Potter! 
-
-```{r paletteer_continuous_palettes}
-
-p2 +
-  scale_colour_paletteer_c("gameofthrones::jon_snow") +
-  labs(title = "Using Paletteer",
-       subtitle = "Continuous Palette-Game of Thrones: Jon Snow",
-       caption = "Oh you awful Srishti people...") +
-  
-  # Harry Potter Gryffindor Palette.
-  # Will ask for `harrypotter` package to be installed. Say yes!
-  p2 +
-  scale_colour_paletteer_c("harrypotter::gryffindor") +
-  labs(title = "Using Paletteer",
-       subtitle = "Continuous Palette-Harry Potter:Gryffindor")
-
-```
-
-```{r YOUR_TURN_10}
-
-```
- 
-
+:::
 
