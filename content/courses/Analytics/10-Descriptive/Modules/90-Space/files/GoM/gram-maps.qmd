@@ -3,7 +3,7 @@ title: "The Grammar of Maps"
 subtitle: "Where is the Secret Garden?"
 date: 22 April 2021
 date-modified: "`r Sys.Date()`"
-abstract: Part of my Workshop course on R
+abstract: Making Static Maps in R
 editor: 
   markdown: 
     wrap: 72
@@ -222,6 +222,7 @@ use. See what the `highway` tag looks like
 ### RapidEditor.Org for OSM Maps
 For a user-friendly tutorial on how to **edit** and **add features** to the OSM map, head off to [Rapid Editor](https://rapideditor.org/). Here you will learn about OSM itself and about how you can add value to it by adding data from your own surroundings.
 :::
+
 The `osmdata` commands `available_features` and `available_tags` can
 help also us get the associated **key-value pairs** to retrieve data
 from OSM.
@@ -371,17 +372,13 @@ geometry is naturally a POLYGON type of geometry column.
 Do this check for all the other spatial data, in the code chunk below.
 What kind of `geom` column does each dataset have?
 
-```{r YOUR-TURN-1, include=TRUE}
-
-
-
-```
-
 ## My first Map in R
 
 There are two ways of plotting maps that we will learn:
 
-### ggplot and geom_sf()
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+### Using ggplot and geom_sf()
 
 First we will plot with `ggplot` and `geom_sf()` : recall that our data
 is stored in 5 files: `buildings`, `parks`, `roads`, `trees`, and
@@ -415,7 +412,7 @@ column !!
 
 So there, we have our first map!
 
-## Map using `tmap` package
+### Map using tmap package
 
 We can also create a map using a package called `tmap`. Here we also
 have the option of making the map *interactive*. `tmap` plots are made
@@ -447,11 +444,23 @@ tm_shape(trees) +
 
 ```
 
-## Using data from `tmap`
+:::
+
+
+## Adding data to the map
+
+We will naturally wish to add our own data to the map. For instance, we may wish to add places of interest as markers, routes and paths as lines and areas of interest as polygons. Hence the ability to add layers to our map, based on our own data, is very important.
+
+We will first use data from existing packages such as `tmap` and `rnaturalearth`, and also make fresh interest-specific downloads from OSM maps. We will then import our own hand-made CSV data to see how we can superimpose that on the map. 
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+
+### Data from {tmap}
 
 Like many other packages ( e.g. ggplot ) `tmap` also has a few built-in
 spatial datasets: `World` and `metro`, `rivers`, `land` and a few
-others. Check help on these. Let's plot a first map using datasets built
+others. Check h elp on these. Let's plot a first map using datasets built
 into `tmap`.
 
 ```{r World-Data-tmap}
@@ -497,21 +506,8 @@ tm_crs("auto")
 
 ```
 
-```{r}
-#| label:  My Interactive Water Colour World
-# tmap_mode("view")
-# Let's use WaterColor Map this time!!
-#tm_tiles("OpenTopoMap") + 
-tm_shape(World) +
-    tm_polygons("HPI") + # Color by Happiness Index
-  
-  
-tm_shape(metro) + 
-  tm_bubbles(size = "pop2030", # Size City Markers by Population in 2020
-             col = "red") 
-```
 
-## Using data from `rnaturalearth`
+### Using data from {rnaturalearth}
 
 The `rnaturalearth` package allows us to download shapes of countries.
 We can use it to get borders and also internal state/district
@@ -550,6 +546,7 @@ In the `india` data frame:
 - Column `name` contains the name of the state
 
 In the `india_neighbours` data frame:\
+
 - Column `gu_a3` contains the country abbreviation\
 - Column `name` contains the name of the state\
 - Column `iso_3166_2` contains the abbreviation of the state within each
@@ -578,9 +575,9 @@ tmap_mode("plot")
   tm_layout(legend.show = FALSE) +
   tm_credits("Geographical Boundaries are not accurate",
              size = 0.5,
-             position = "right") +
+             position = c("right", "bottom")) +
   tm_compass(position = c("right", "top")) +
-  tm_scalebar(position = "left") +
+  tm_scalebar(position = c("right", "bottom")) +
   tmap_style(style = "white") 
 
 #Try other map styles
@@ -588,16 +585,8 @@ tmap_mode("plot")
 
 ```
 
-## Your Turn 2
 
-Can you try to download a map area of your home town and plot it as we
-have above?
-
-```{r Your-Turn-2, include=TRUE, eval=FALSE}
-
-```
-
-## Adding my favourite Restaurants to the map
+### Data from OSM Maps
 
 Is it time to order on Swiggy...
 
@@ -736,6 +725,10 @@ is for another day!!
 
 By now we know that we can use `geom_sf()` multiple number of times with
 different datasets to create layered maps in R.
+
+:::
+
+
 
 ## Some fancy stuff
 
