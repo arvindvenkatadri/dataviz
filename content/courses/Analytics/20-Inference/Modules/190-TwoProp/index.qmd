@@ -36,6 +36,7 @@ library(ggmosaic) # plotting mosaic plots for Categorical Data
 ### Dataset from Chihara and Hesterberg's book (Second Edition)
 library(resampledata)
 library(vcd)
+library(visStatistics) # One package to test them all
 
 ```
 
@@ -257,7 +258,7 @@ gss2002 <- GSS2002 %>%
   dplyr::select(Education, DeathPenalty) %>% 
   tidyr::drop_na(., c(Education, DeathPenalty))
 ##
-gss_table <- mosaic::tally(DeathPenalty ~ Education, data = gss2002) %>% 
+gss_table <- vcd::structable(DeathPenalty ~ Education, data = gss2002) %>%
   addmargins()
 gss_table 
 
@@ -265,21 +266,41 @@ gss_table
 
 ### Contingency Table Plots
 
-The Contingency Table can be plotted, as we have seen, using a
-`mosaic`plot using several packages. Let us do a quick recap:
+The Contingency Table can be plotted using a `mosaic` plot using several packages, [as we have seen](../../../10-Descriptive/Modules/40-CatData/index.qmd). Let us do a quick recap:
 
 ::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
 
 #### vcd
 
 ```{r}
-mosaic::tally(DeathPenalty ~ Education, data = gss2002) %>% 
-  # Note mosaic above is a PACKAGE
-  # mosaic below is a function in the vcd package
-  vcd::mosaic(gp = shading_hsv)
+vcd::structable(DeathPenalty ~ Education, data = GSS2002) %>% 
+vcd::mosaic(
+  gp = shading_hsv, direction = "v",
+  main = "GSS2002 Education vs Death Penalty Mosaic Chart", 
+  legend = TRUE,
+  labeling = labeling_border(
+                varnames = c("F", "F"), # Remove variable name labels
+                rot_labels = c(90,0,0,0), #t,r,b,l
+                just_labels = c("left", 
+                                "left", 
+                                "left", 
+                                "right"))) # How?
 
 ```
 
+
+#### visStatistics
+
+
+As discussed in the Descriptive Analysis on [Proportions](../../../10-Descriptive/Modules/40-CatData/index.qmd#using-visStatistics), `visStatistics` is a recent package that allows a very wide variety of statistical charts to be created **automagically** based on the variables chosen. Let us plot a mosaic chart directly with this package: with one function `visstats()`, we obtain mosaic and bar charts, as well as a statistical analysis of the data. We will discuss this analysis shortly. 
+
+```{r}
+#| label: visstat-1
+
+visstat(GSS2002$DeathPenalty, GSS2002$Education) %>%  str()
+```
+
+::: {.content-hidden when-format="html"}
 #### ggmosaic
 
 ```{r mosaic-plot,warning=FALSE}
@@ -293,6 +314,7 @@ ggplot(data = gss2002) +
   labs(title = "Mosaic Plot of Death Penalty by Education")
 
 ```
+
 
 #### ggformula
 
@@ -344,6 +366,9 @@ gf_col(edu_prop ~ Education, data = gss_summary,
 ```
 :::
 
+:::
+
+
 ## Hypotheses Definition
 
 What would our Hypotheses be relating to the *proportions* of votes for or against the Death Penalty?
@@ -367,10 +392,10 @@ Let us now perform the base `chisq test`: We need a `contingency table` and then
 ```{r}
 
 # Chi-square test
-mosaic::xchisq.test(mosaic::tally(DeathPenalty ~ Education, data = gss2002))
 
+mosaic::xchisq.test(vcd::structable(Education ~ DeathPenalty, data = gss2002))
 # Get the observed chi-square statistic
-X_squared_observed <- mosaic::chisq(mosaic::tally(DeathPenalty ~ Education, data = gss2002))
+X_squared_observed <- mosaic::chisq(mosaic::xchisq.test(vcd::structable(Education ~ DeathPenalty, data = gss2002)))
 X_squared_observed
 
 # Determine the Chi-Square critical value
@@ -404,25 +429,23 @@ mosaic::xqchisq(p = 0.95, df = 4,
            color = "dodgerblue", 
            linewidth = 1) %>%
   
-  gf_refine(
-    annotate(x = X_squared_observed - 2.5, y = 0.15, 
+    gf_annotate(x = X_squared_observed - 2.5, y = 0.15, 
              geom = "label", label = "Observed\n Chi-Square", 
-             fill = "red", alpha = 0.3),
+             fill = "red", alpha = 0.3) %>% 
         
-    annotate('curve', X_squared_observed - 2.5, y = 0.135, yend = 0.10,
+    gf_annotate('curve', X_squared_observed - 2.5, y = 0.135, yend = 0.10,
              xend = X_squared_observed - 0.5,
              linewidth = 0.5, curvature = 0.3,
-             arrow = arrow(length = unit(0.25, 'cm'))),
+             arrow = arrow(length = unit(0.25, 'cm'))) %>% 
     
-    annotate(x = X_squared_critical + 2.5, y = 0.15, 
+    gf_annotate(x = X_squared_critical + 2.5, y = 0.15, 
              geom = "label", label = "Critical\n Chi-Square", 
-             fill = "lightblue"),
+             fill = "lightblue") %>% 
                  
-    annotate('curve', X_squared_critical + 2.5, y = 0.135, yend = 0.10,
+    gf_annotate('curve', X_squared_critical + 2.5, y = 0.135, yend = 0.10,
              xend = X_squared_critical + 0.5,
              linewidth = 0.5, curvature = - 0.3,
              arrow = arrow(length = unit(0.25, 'cm')))
-  )
 
 ```
 
@@ -442,25 +465,21 @@ gss2002 <- GSS2002 %>%
   dplyr::select(Education, DeathPenalty) %>% 
   tidyr::drop_na(., c(Education, DeathPenalty))
 
-mosaic::tally(DeathPenalty ~ Education, data = gss2002) %>% 
-  addmargins() %>% 
-  as_tibble() %>% 
-  pivot_wider(id_cols = DeathPenalty, names_from = Education, values_from = n) %>% 
+vcd::structable(Education ~ DeathPenalty, data = gss2002) %>%
+  as.matrix() %>% # Convert to matrix;
+  addmargins() %>% # Add margins to the table; matrix output
+  as_tibble(rownames = "DeathPenalty") %>%  # Convert to tibble; ensure row names!
+
+# mosaic::tally(DeathPenalty ~ Education, data = gss2002) %>% 
+#   addmargins() %>% 
+#   as_tibble() %>% 
+# pivot_wider(id_cols = DeathPenalty, names_from = Education, values_from = n) %>% 
+
   tt() %>% 
-  style_tt(color = "grey") %>% 
+  style_tt(color = "grey20") %>% 
   style_tt(i = 1, j = 2, color = "black", bold = TRUE, background = "yellow") %>% 
   style_tt(i = 2, j = 5, color = "black", bold = TRUE, background = "yellow") %>% 
    style_tt(i = 3, color = "black", bold = TRUE, background = "palegreen") 
-
-```
-
-
-```{r echo=FALSE}
-#| eval: false
-mosaic::tally(DeathPenalty ~ Education, data = gss2002) %>% 
-  addmargins() %>% 
-  kableExtra::kbl(caption = "Contingency Table") %>%
-  kableExtra::kable_classic(full_width = F, html_font = "Cambria")
 
 ```
 
@@ -492,6 +511,30 @@ Proceeding in this way for all the 15 entries in the Contingency Table,
 we get the "Expected" Contingency Table. Here are both tables for
 comparison:
 
+
+```{r}
+#| eval: false
+#| echo: false
+vcd::structable(Education ~ DeathPenalty, data = gss2002) %>%
+  as.matrix() %>% # Convert to matrix;
+  addmargins() %>% # Add margins to the table; matrix output
+  as_tibble(rownames = "DeathPenalty") %>%  # Convert to tibble; ensure row names!
+  tt()
+```
+
+
+
+```{r}
+#| eval: false
+#| echo: false
+vcd::structable(Education ~ DeathPenalty, data = gss2002, type = "expected") %>%
+   as.matrix() %>% # Convert to matrix;
+  addmargins() %>% # Add margins to the table; matrix output
+  as_tibble(rownames = "DeathPenalty") %>%  # Convert to tibble; ensure row names!
+  tt()
+
+```
+
 ```{r}
 #| echo: false
 # using prop.table with appropriate margin argument gives us a slick matrix of probabilities
@@ -520,13 +563,15 @@ gss_exp %>%
 
 ```{r}
 #| echo: false
-gss_table %>%  
+gss_sub_table %>%  
    kableExtra::kbl(caption = "Actual Contingency Table") %>%
   kableExtra::kable_classic(full_width = F, html_font = "Cambria")
 
 ```
 
-And here are the mosaic plots for the *actual* and *expected* Contingency Tables, along with the *association* plot showing the differences, as we did when plotting [Proportions](../../../10-Descriptive/Modules/40-CatData/index.qmd#coloured-tiles-actual-and-expected-contingency-tables):
+These numbers are also what we saw with the code above, `mosaic::xchisq.test()`, which seems to output a format that combines both tables into one. 
+
+And so, here are the mosaic plots for the *actual* and *expected* Contingency Tables, along with the *association* plot showing the differences, as we did when plotting [Proportions](../../../10-Descriptive/Modules/40-CatData/index.qmd#coloured-tiles-actual-and-expected-contingency-tables):
 
 
 ```{r}
@@ -546,7 +591,7 @@ vcd::assoc(counts_table,gp = shading_max)
 <br> 
 
 Now, [the **Pearson Residual** in each cell is equivalent to the
-`z-score` of that cell]{.bg-light-red .black}. Recall the [z-score](../22-Histograms/index.qmd#z-scores) idea: we subtract the mean and divide by the std. deviation to get the `z-score`.
+`z-score` of that cell]{.bg-light-red .black}. Recall the [z-score](../../../10-Descriptive/Modules/22-Histograms/index.qmd#z-scores) idea: we subtract the mean and divide by the std. deviation to get the `z-score`.
 
 In the Contingency Table, we have **counts** which are usually modeled
 as an (integer) *Poisson distribution*, for which **mean (i.e Expected

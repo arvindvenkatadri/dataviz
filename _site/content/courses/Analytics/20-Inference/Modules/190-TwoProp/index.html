@@ -760,7 +760,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">August 7, 2025</p>
+      <p class="date-modified">August 9, 2025</p>
     </div>
   </div>
     
@@ -783,7 +783,8 @@ window.Quarto = {
 <span></span>
 <span><span class="co">### Dataset from Chihara and Hesterberg's book (Second Edition)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rudeboybert/resampledata">resampledata</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">vcd</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">vcd</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/shhschilling/visStatistics">visStatistics</a></span><span class="op">)</span> <span class="co"># One package to test them all</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="plot-fonts-and-theme" class="level4"><h4 class="anchored" data-anchor-id="plot-fonts-and-theme">Plot Fonts and Theme</h4>
 <div class="cell" data-messages="false">
@@ -1288,115 +1289,106 @@ quantitative variables:
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Education</span>, <span class="va">DeathPenalty</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">.</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">Education</span>, <span class="va">DeathPenalty</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">##</span></span>
-<span><span class="va">gss_table</span> <span class="op">&lt;-</span> <span class="fu">mosaic</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/mosaicCore/man/tally.html">tally</a></span><span class="op">(</span><span class="va">DeathPenalty</span> <span class="op">~</span> <span class="va">Education</span>, data <span class="op">=</span> <span class="va">gss2002</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">gss_table</span> <span class="op">&lt;-</span> <span class="fu">vcd</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/vcd/man/structable.html">structable</a></span><span class="op">(</span><span class="va">DeathPenalty</span> <span class="op">~</span> <span class="va">Education</span>, data <span class="op">=</span> <span class="va">gss2002</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/addmargins.html">addmargins</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">gss_table</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre data-code-line-numbers=""><code>            Education
-DeathPenalty Left HS   HS Jr Col Bachelors Graduate  Sum
-      Favor      117  511     71       135       64  898
-      Oppose      72  200     16        71       50  409
-      Sum        189  711     87       206      114 1307</code></pre>
+<pre data-code-line-numbers=""><code>           DeathPenalty
+Education   Favor Oppose  Sum
+  Left HS     117     72  189
+  HS          511    200  711
+  Jr Col       71     16   87
+  Bachelors   135     71  206
+  Graduate     64     50  114
+  Sum         898    409 1307</code></pre>
 </div>
 </div>
 <section id="contingency-table-plots" class="level3"><h3 class="anchored" data-anchor-id="contingency-table-plots">Contingency Table Plots</h3>
-<p>The Contingency Table can be plotted, as we have seen, using a <code>mosaic</code>plot using several packages. Let us do a quick recap:</p>
+<p>The Contingency Table can be plotted using a <code>mosaic</code> plot using several packages, <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/40-CatData/index.html">as we have seen</a>. Let us do a quick recap:</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset nav-pills" style="background: whitesmoke;">
 <ul class="nav nav-tabs" role="tablist">
 <li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" aria-current="page">vcd</a></li>
-<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">ggmosaic</a></li>
-<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false">ggformula</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">visStatistics</a></li>
 </ul>
 <div class="tab-content nav-pills" style="background: whitesmoke;">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
-<div class="sourceCode" id="cb12" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">mosaic</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/mosaicCore/man/tally.html">tally</a></span><span class="op">(</span><span class="va">DeathPenalty</span> <span class="op">~</span> <span class="va">Education</span>, data <span class="op">=</span> <span class="va">gss2002</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="co"># Note mosaic above is a PACKAGE</span></span>
-<span>  <span class="co"># mosaic below is a function in the vcd package</span></span>
-<span>  <span class="fu">vcd</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/vcd/man/mosaic.html">mosaic</a></span><span class="op">(</span>gp <span class="op">=</span> <span class="va">shading_hsv</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">vcd</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/vcd/man/structable.html">structable</a></span><span class="op">(</span><span class="va">DeathPenalty</span> <span class="op">~</span> <span class="va">Education</span>, data <span class="op">=</span> <span class="va">GSS2002</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">vcd</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/vcd/man/mosaic.html">mosaic</a></span><span class="op">(</span></span>
+<span>    gp <span class="op">=</span> <span class="va">shading_hsv</span>, direction <span class="op">=</span> <span class="st">"v"</span>,</span>
+<span>    main <span class="op">=</span> <span class="st">"GSS2002 Education vs Death Penalty Mosaic Chart"</span>,</span>
+<span>    legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    labeling <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/vcd/man/labeling_border.html">labeling_border</a></span><span class="op">(</span></span>
+<span>      varnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"F"</span>, <span class="st">"F"</span><span class="op">)</span>, <span class="co"># Remove variable name labels</span></span>
+<span>      rot_labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">90</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="co"># t,r,b,l</span></span>
+<span>      just_labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span></span>
+<span>        <span class="st">"left"</span>,</span>
+<span>        <span class="st">"left"</span>,</span>
+<span>        <span class="st">"left"</span>,</span>
+<span>        <span class="st">"right"</span></span>
+<span>      <span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="co"># How?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-4-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="1500"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-4-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="2100"></a></p>
 </figure>
 </div>
 </div>
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p>As discussed in the Descriptive Analysis on <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/40-CatData/index.html#using-visStatistics">Proportions</a>, <code>visStatistics</code> is a recent package that allows a very wide variety of statistical charts to be created <strong>automagically</strong> based on the variables chosen. Let us plot a mosaic chart directly with this package: with one function <code>visstats()</code>, we obtain mosaic and bar charts, as well as a statistical analysis of the data. We will discuss this analysis shortly.</p>
 <div class="cell">
-<div class="sourceCode" id="cb13" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># library(ggmosaic)</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">gss2002</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggmosaic</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ggmosaic/man/geom_mosaic.html">geom_mosaic</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span></span>
-<span>    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/ggmosaic/man/product.html">product</a></span><span class="op">(</span><span class="va">DeathPenalty</span>, <span class="va">Education</span><span class="op">)</span>,</span>
-<span>    fill <span class="op">=</span> <span class="va">DeathPenalty</span></span>
-<span>  <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_fill_brewer</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Death Penalty"</span>, palette <span class="op">=</span> <span class="st">"Set1"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Mosaic Plot of Death Penalty by Education"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://shhschilling.github.io/visStatistics/reference/visstat.html">visstat</a></span><span class="op">(</span><span class="va">GSS2002</span><span class="op">$</span><span class="va">DeathPenalty</span>, <span class="va">GSS2002</span><span class="op">$</span><span class="va">Education</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/mosaic-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="index_files/figure-html/mosaic-plot-1.png" class="img-fluid figure-img" width="1500"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/visstat-1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="index_files/figure-html/visstat-1-1.png" class="img-fluid figure-img" width="2100"></a></p>
 </figure>
 </div>
 </div>
-</div>
-</div>
-<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<p>As seen before, it needs a little more work, to convert the Contingency Table into a tibble:</p>
-<div class="cell">
-<div class="sourceCode" id="cb14" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># https://stackoverflow.com/questions/19233365/how-to-create-a-marimekko-mosaic-plot-in-ggplot2</span></span>
-<span><span class="va">gss_summary</span> <span class="op">&lt;-</span> <span class="va">gss2002</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span></span>
-<span>    Education <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span></span>
-<span>      <span class="va">Education</span>,</span>
-<span>      levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Bachelors"</span>, <span class="st">"Graduate"</span>, <span class="st">"Jr Col"</span>, <span class="st">"HS"</span>, <span class="st">"Left HS"</span><span class="op">)</span>,</span>
-<span>      labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Bachelors"</span>, <span class="st">"Graduate"</span>, <span class="st">"Jr Col"</span>, <span class="st">"HS"</span>, <span class="st">"Left HS"</span><span class="op">)</span></span>
-<span>    <span class="op">)</span>,</span>
-<span>    DeathPenalty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">DeathPenalty</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Education</span>, <span class="va">DeathPenalty</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>count <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="co"># This is good for a chisq test</span></span>
-<span></span>
-<span>  <span class="co"># Add two more columns to facilitate mosaic/Marrimekko Plot</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span></span>
-<span>    edu_count <span class="op">=</span> <span class="fu"><a href="https://www.mosaic-web.org/mosaic/reference/aggregating.html">sum</a></span><span class="op">(</span><span class="va">count</span><span class="op">)</span>,</span>
-<span>    edu_prop <span class="op">=</span> <span class="va">count</span> <span class="op">/</span> <span class="fu"><a href="https://www.mosaic-web.org/mosaic/reference/aggregating.html">sum</a></span><span class="op">(</span><span class="va">count</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">###</span></span>
-<span><span class="fu">gf_col</span><span class="op">(</span><span class="va">edu_prop</span> <span class="op">~</span> <span class="va">Education</span>,</span>
-<span>  data <span class="op">=</span> <span class="va">gss_summary</span>,</span>
-<span>  width <span class="op">=</span> <span class="op">~</span><span class="va">edu_count</span>,</span>
-<span>  fill <span class="op">=</span> <span class="op">~</span><span class="va">DeathPenalty</span>,</span>
-<span>  stat <span class="op">=</span> <span class="st">"identity"</span>,</span>
-<span>  position <span class="op">=</span> <span class="st">"fill"</span>,</span>
-<span>  color <span class="op">=</span> <span class="st">"black"</span></span>
-<span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">gf_text</span><span class="op">(</span><span class="va">edu_prop</span> <span class="op">~</span> <span class="va">Education</span>,</span>
-<span>    label <span class="op">=</span> <span class="op">~</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/percent_format.html">percent</a></span><span class="op">(</span><span class="va">edu_prop</span><span class="op">)</span>,</span>
-<span>    position <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_stack.html">position_stack</a></span><span class="op">(</span>vjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">gf_facet_grid</span><span class="op">(</span><span class="op">~</span><span class="va">Education</span>,</span>
-<span>    scales <span class="op">=</span> <span class="st">"free_x"</span>,</span>
-<span>    space <span class="op">=</span> <span class="st">"free_x"</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">gf_refine</span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_fill_brewer</a></span><span class="op">(</span></span>
-<span>    name <span class="op">=</span> <span class="st">"Death Penalty"</span>,</span>
-<span>    palette <span class="op">=</span> <span class="st">"Set1"</span></span>
-<span>  <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">gf_labs</span><span class="op">(</span></span>
-<span>    title <span class="op">=</span> <span class="st">"Mosaic Plot of Death Penalty by Education"</span>,</span>
-<span>    x <span class="op">=</span> <span class="st">"Education Level"</span>,</span>
-<span>    y <span class="op">=</span> <span class="st">"Proportion of Votes for Death Penalty"</span></span>
-<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-5-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="1500"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/visstat-1-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="index_files/figure-html/visstat-1-2.png" class="img-fluid figure-img" width="2100"></a></p>
 </figure>
 </div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>List of 10
+ $ statistic   : Named num 23.5
+  ..- attr(*, "names")= chr "X-squared"
+ $ parameter   : Named int 4
+  ..- attr(*, "names")= chr "df"
+ $ p.value     : num 0.000103
+ $ method      : chr "Pearson's Chi-squared test"
+ $ data.name   : chr "counts"
+ $ observed    : 'table' int [1:2, 1:5] 511 200 135 71 117 72 64 50 71 16
+  ..- attr(*, "dimnames")=List of 2
+  .. ..$ groups   : chr [1:2] "Favor" "Oppose"
+  .. ..$ Education: chr [1:5] "HS" "Bachelors" "Left HS" "Graduate" ...
+ $ expected    : num [1:2, 1:5] 488.5 222.5 141.5 64.5 129.9 ...
+  ..- attr(*, "dimnames")=List of 2
+  .. ..$ groups   : chr [1:2] "Favor" "Oppose"
+  .. ..$ Education: chr [1:5] "HS" "Bachelors" "Left HS" "Graduate" ...
+ $ residuals   : 'table' num [1:2, 1:5] 1.018 -1.508 -0.549 0.814 -1.128 ...
+  ..- attr(*, "dimnames")=List of 2
+  .. ..$ groups   : chr [1:2] "Favor" "Oppose"
+  .. ..$ Education: chr [1:5] "HS" "Bachelors" "Left HS" "Graduate" ...
+ $ stdres      : 'table' num [1:2, 1:5] 2.69 -2.69 -1.07 1.07 -2.18 ...
+  ..- attr(*, "dimnames")=List of 2
+  .. ..$ groups   : chr [1:2] "Favor" "Oppose"
+  .. ..$ Education: chr [1:5] "HS" "Bachelors" "Left HS" "Graduate" ...
+ $ mosaic_stats: int [1:2, 1:5] 511 200 135 71 117 72 64 50 71 16
+  ..- attr(*, "dnames")=List of 2
+  .. ..$ DeathPenalty: chr [1:2] "Favor" "Oppose"
+  .. ..$ Education   : chr [1:5] "HS" "Bachelors" "Left HS" "Graduate" ...
+  ..- attr(*, "split_vertical")= logi [1:2] FALSE TRUE
+  ..- attr(*, "col.vars")=List of 1
+  .. ..$ Education: chr [1:5] "HS" "Bachelors" "Left HS" "Graduate" ...
+  ..- attr(*, "row.vars")=List of 1
+  .. ..$ DeathPenalty: chr [1:2] "Favor" "Oppose"
+ - attr(*, "plot_paths")= chr(0) 
+ - attr(*, "class")= chr "visstat"</code></pre>
 </div>
 </div>
 </div>
@@ -1418,7 +1410,8 @@ DeathPenalty Left HS   HS Jr Col Bachelors Graduate  Sum
 <p>Let us now perform the base <code>chisq test</code>: We need a <code>contingency table</code> and then the <code>chisq</code> test: We will calculate the <code>observed-chi-squared</code> value, and compare it with the <code>critical value</code>.</p>
 <div class="cell">
 <div class="sourceCode" id="cb15" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Chi-square test</span></span>
-<span><span class="fu">mosaic</span><span class="fu">::</span><span class="fu"><a href="https://www.mosaic-web.org/mosaic/reference/xchisq.test.html">xchisq.test</a></span><span class="op">(</span><span class="fu">mosaic</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/mosaicCore/man/tally.html">tally</a></span><span class="op">(</span><span class="va">DeathPenalty</span> <span class="op">~</span> <span class="va">Education</span>, data <span class="op">=</span> <span class="va">gss2002</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span></span>
+<span><span class="fu">mosaic</span><span class="fu">::</span><span class="fu"><a href="https://www.mosaic-web.org/mosaic/reference/xchisq.test.html">xchisq.test</a></span><span class="op">(</span><span class="fu">vcd</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/vcd/man/structable.html">structable</a></span><span class="op">(</span><span class="va">Education</span> <span class="op">~</span> <span class="va">DeathPenalty</span>, data <span class="op">=</span> <span class="va">gss2002</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre data-code-line-numbers=""><code>
     Pearson's Chi-squared test
@@ -1443,13 +1436,36 @@ key:
     &lt;Pearson residual&gt;</code></pre>
 </div>
 <div class="sourceCode" id="cb17" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Get the observed chi-square statistic</span></span>
-<span><span class="va">X_squared_observed</span> <span class="op">&lt;-</span> <span class="fu">mosaic</span><span class="fu">::</span><span class="fu"><a href="https://www.mosaic-web.org/mosaic/reference/chisq.html">chisq</a></span><span class="op">(</span><span class="fu">mosaic</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/mosaicCore/man/tally.html">tally</a></span><span class="op">(</span><span class="va">DeathPenalty</span> <span class="op">~</span> <span class="va">Education</span>, data <span class="op">=</span> <span class="va">gss2002</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">X_squared_observed</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">X_squared_observed</span> <span class="op">&lt;-</span> <span class="fu">mosaic</span><span class="fu">::</span><span class="fu"><a href="https://www.mosaic-web.org/mosaic/reference/chisq.html">chisq</a></span><span class="op">(</span><span class="fu">mosaic</span><span class="fu">::</span><span class="fu"><a href="https://www.mosaic-web.org/mosaic/reference/xchisq.test.html">xchisq.test</a></span><span class="op">(</span><span class="fu">vcd</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/vcd/man/structable.html">structable</a></span><span class="op">(</span><span class="va">Education</span> <span class="op">~</span> <span class="va">DeathPenalty</span>, data <span class="op">=</span> <span class="va">gss2002</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre data-code-line-numbers=""><code>
+    Pearson's Chi-squared test
+
+data:  x
+X-squared = 23.451, df = 4, p-value = 0.0001029
+
+  117      511       71      135       64   
+(129.86) (488.51) ( 59.78) (141.54) ( 78.33)
+ [1.27]   [1.04]   [2.11]   [0.30]   [2.62] 
+&lt;-1.13&gt;  &lt; 1.02&gt;  &lt; 1.45&gt;  &lt;-0.55&gt;  &lt;-1.62&gt; 
+         
+   72      200       16       71       50   
+( 59.14) (222.49) ( 27.22) ( 64.46) ( 35.67)
+ [2.79]   [2.27]   [4.63]   [0.66]   [5.75] 
+&lt; 1.67&gt;  &lt;-1.51&gt;  &lt;-2.15&gt;  &lt; 0.81&gt;  &lt; 2.40&gt; 
+         
+key:
+    observed
+    (expected)
+    [contribution to X-squared]
+    &lt;Pearson residual&gt;</code></pre>
+</div>
+<div class="sourceCode" id="cb19" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">X_squared_observed</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre data-code-line-numbers=""><code>X.squared 
  23.45093 </code></pre>
 </div>
-<div class="sourceCode" id="cb19" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Determine the Chi-Square critical value</span></span>
+<div class="sourceCode" id="cb21" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Determine the Chi-Square critical value</span></span>
 <span><span class="va">X_squared_critical</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Chisquare.html">qchisq</a></span><span class="op">(</span></span>
 <span>  p <span class="op">=</span> <span class="fl">.05</span>,</span>
 <span>  df <span class="op">=</span> <span class="op">(</span><span class="fl">5</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">2</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span>, <span class="co"># (nrows-1) * (ncols-1)</span></span>
@@ -1462,7 +1478,7 @@ key:
 </div>
 <p>We see that our observed <span class="math inline">\(X^2 = 23.45\)</span>; the critical value <code>X_squared_critical</code> is <span class="math inline">\(9.48\)</span>, which is much smaller! The <code>p-value</code> is <span class="math inline">\(0.0001029\)</span>, very low as we would expect, indicating that the NULL Hypothesis should be rejected in favour of the alternate hypothesis, that opinions about the <code>DeathPenalty</code> are related to <code>Education</code>.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode" id="cb21" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode" id="cb23" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">mosaic</span><span class="fu">::</span><span class="fu"><a href="https://www.mosaic-web.org/mosaic/reference/qdist.html">xqchisq</a></span><span class="op">(</span></span>
 <span>  p <span class="op">=</span> <span class="fl">0.95</span>, df <span class="op">=</span> <span class="fl">4</span>,</span>
@@ -1482,34 +1498,32 @@ key:
 <span>    color <span class="op">=</span> <span class="st">"dodgerblue"</span>,</span>
 <span>    linewidth <span class="op">=</span> <span class="fl">1</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">gf_refine</span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html">annotate</a></span><span class="op">(</span></span>
-<span>      x <span class="op">=</span> <span class="va">X_squared_observed</span> <span class="op">-</span> <span class="fl">2.5</span>, y <span class="op">=</span> <span class="fl">0.15</span>,</span>
-<span>      geom <span class="op">=</span> <span class="st">"label"</span>, label <span class="op">=</span> <span class="st">"Observed\n Chi-Square"</span>,</span>
-<span>      fill <span class="op">=</span> <span class="st">"red"</span>, alpha <span class="op">=</span> <span class="fl">0.3</span></span>
-<span>    <span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html">annotate</a></span><span class="op">(</span><span class="st">"curve"</span>, <span class="va">X_squared_observed</span> <span class="op">-</span> <span class="fl">2.5</span>,</span>
-<span>      y <span class="op">=</span> <span class="fl">0.135</span>, yend <span class="op">=</span> <span class="fl">0.10</span>,</span>
-<span>      xend <span class="op">=</span> <span class="va">X_squared_observed</span> <span class="op">-</span> <span class="fl">0.5</span>,</span>
-<span>      linewidth <span class="op">=</span> <span class="fl">0.5</span>, curvature <span class="op">=</span> <span class="fl">0.3</span>,</span>
-<span>      arrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/arrow.html">arrow</a></span><span class="op">(</span>length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="st">"cm"</span><span class="op">)</span><span class="op">)</span></span>
-<span>    <span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html">annotate</a></span><span class="op">(</span></span>
-<span>      x <span class="op">=</span> <span class="va">X_squared_critical</span> <span class="op">+</span> <span class="fl">2.5</span>, y <span class="op">=</span> <span class="fl">0.15</span>,</span>
-<span>      geom <span class="op">=</span> <span class="st">"label"</span>, label <span class="op">=</span> <span class="st">"Critical\n Chi-Square"</span>,</span>
-<span>      fill <span class="op">=</span> <span class="st">"lightblue"</span></span>
-<span>    <span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html">annotate</a></span><span class="op">(</span><span class="st">"curve"</span>, <span class="va">X_squared_critical</span> <span class="op">+</span> <span class="fl">2.5</span>,</span>
-<span>      y <span class="op">=</span> <span class="fl">0.135</span>, yend <span class="op">=</span> <span class="fl">0.10</span>,</span>
-<span>      xend <span class="op">=</span> <span class="va">X_squared_critical</span> <span class="op">+</span> <span class="fl">0.5</span>,</span>
-<span>      linewidth <span class="op">=</span> <span class="fl">0.5</span>, curvature <span class="op">=</span> <span class="op">-</span><span class="fl">0.3</span>,</span>
-<span>      arrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/arrow.html">arrow</a></span><span class="op">(</span>length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="st">"cm"</span><span class="op">)</span><span class="op">)</span></span>
-<span>    <span class="op">)</span></span>
+<span>  <span class="fu">gf_annotate</span><span class="op">(</span></span>
+<span>    x <span class="op">=</span> <span class="va">X_squared_observed</span> <span class="op">-</span> <span class="fl">2.5</span>, y <span class="op">=</span> <span class="fl">0.15</span>,</span>
+<span>    geom <span class="op">=</span> <span class="st">"label"</span>, label <span class="op">=</span> <span class="st">"Observed\n Chi-Square"</span>,</span>
+<span>    fill <span class="op">=</span> <span class="st">"red"</span>, alpha <span class="op">=</span> <span class="fl">0.3</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">gf_annotate</span><span class="op">(</span><span class="st">"curve"</span>, <span class="va">X_squared_observed</span> <span class="op">-</span> <span class="fl">2.5</span>,</span>
+<span>    y <span class="op">=</span> <span class="fl">0.135</span>, yend <span class="op">=</span> <span class="fl">0.10</span>,</span>
+<span>    xend <span class="op">=</span> <span class="va">X_squared_observed</span> <span class="op">-</span> <span class="fl">0.5</span>,</span>
+<span>    linewidth <span class="op">=</span> <span class="fl">0.5</span>, curvature <span class="op">=</span> <span class="fl">0.3</span>,</span>
+<span>    arrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/arrow.html">arrow</a></span><span class="op">(</span>length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="st">"cm"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">gf_annotate</span><span class="op">(</span></span>
+<span>    x <span class="op">=</span> <span class="va">X_squared_critical</span> <span class="op">+</span> <span class="fl">2.5</span>, y <span class="op">=</span> <span class="fl">0.15</span>,</span>
+<span>    geom <span class="op">=</span> <span class="st">"label"</span>, label <span class="op">=</span> <span class="st">"Critical\n Chi-Square"</span>,</span>
+<span>    fill <span class="op">=</span> <span class="st">"lightblue"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">gf_annotate</span><span class="op">(</span><span class="st">"curve"</span>, <span class="va">X_squared_critical</span> <span class="op">+</span> <span class="fl">2.5</span>,</span>
+<span>    y <span class="op">=</span> <span class="fl">0.135</span>, yend <span class="op">=</span> <span class="fl">0.10</span>,</span>
+<span>    xend <span class="op">=</span> <span class="va">X_squared_critical</span> <span class="op">+</span> <span class="fl">0.5</span>,</span>
+<span>    linewidth <span class="op">=</span> <span class="fl">0.5</span>, curvature <span class="op">=</span> <span class="op">-</span><span class="fl">0.3</span>,</span>
+<span>    arrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/arrow.html">arrow</a></span><span class="op">(</span>length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="st">"cm"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="fig-chi-square-critical-value" class="quarto-float quarto-figure quarto-figure-center anchored" width="1500">
+<div id="fig-chi-square-critical-value" class="quarto-float quarto-figure quarto-figure-center anchored" width="2100">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-chi-square-critical-value-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="index_files/figure-html/fig-chi-square-critical-value-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;2: "><img src="index_files/figure-html/fig-chi-square-critical-value-1.png" id="fig-chi-square-critical-value" class="img-fluid figure-img" width="1500"></a>
+<a href="index_files/figure-html/fig-chi-square-critical-value-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;2: "><img src="index_files/figure-html/fig-chi-square-critical-value-1.png" id="fig-chi-square-critical-value" class="img-fluid figure-img" width="2100"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-chi-square-critical-value-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2
@@ -1528,8 +1542,8 @@ Figure&nbsp;2
 
     <script>
 
-      function styleCell_6j5xftq8alp5vr1dpyo9(i, j, css_id) {
-          var table = document.getElementById("tinytable_6j5xftq8alp5vr1dpyo9");
+      function styleCell_io18yhngcrr9pm1gu6hi(i, j, css_id) {
+          var table = document.getElementById("tinytable_io18yhngcrr9pm1gu6hi");
           var cell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -1538,8 +1552,8 @@ Figure&nbsp;2
               console.warn(`Cell at (${i}, ${j}) not found.`);
           }
       }
-      function spanCell_6j5xftq8alp5vr1dpyo9(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_6j5xftq8alp5vr1dpyo9");
+      function spanCell_io18yhngcrr9pm1gu6hi(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_io18yhngcrr9pm1gu6hi");
         const targetCell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
         if (!targetCell) {
           console.warn(`Cell at (${i}, ${j}) not found.`);
@@ -1570,28 +1584,28 @@ Figure&nbsp;2
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '1', j: 1 }, { i: '2', j: 4 },  ], css_id: 'tinytable_css_rvpo9mswhw0y23n23wko',}, 
-          { positions: [ { i: '3', j: 0 }, { i: '3', j: 1 }, { i: '3', j: 2 }, { i: '3', j: 3 }, { i: '3', j: 4 }, { i: '3', j: 5 }, { i: '3', j: 6 },  ], css_id: 'tinytable_css_q2wh17r59ivmtyaprm4d',}, 
-          { positions: [ { i: '1', j: 0 }, { i: '2', j: 0 }, { i: '1', j: 2 }, { i: '2', j: 1 }, { i: '1', j: 3 }, { i: '2', j: 2 }, { i: '1', j: 4 }, { i: '2', j: 3 }, { i: '1', j: 5 }, { i: '2', j: 5 }, { i: '1', j: 6 }, { i: '2', j: 6 },  ], css_id: 'tinytable_css_wv3wfckdof5d30hmm2y3',}, 
-          { positions: [ { i: '0', j: 0 }, { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 },  ], css_id: 'tinytable_css_e88wkluloqr85t0c5eph',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '2', j: 4 },  ], css_id: 'tinytable_css_ortceswtzkpnu4im7dzt',}, 
+          { positions: [ { i: '3', j: 0 }, { i: '3', j: 1 }, { i: '3', j: 2 }, { i: '3', j: 3 }, { i: '3', j: 4 }, { i: '3', j: 5 }, { i: '3', j: 6 },  ], css_id: 'tinytable_css_po14tbar1ch2fx6wcdqu',}, 
+          { positions: [ { i: '1', j: 0 }, { i: '2', j: 0 }, { i: '1', j: 2 }, { i: '2', j: 1 }, { i: '1', j: 3 }, { i: '2', j: 2 }, { i: '1', j: 4 }, { i: '2', j: 3 }, { i: '1', j: 5 }, { i: '2', j: 5 }, { i: '1', j: 6 }, { i: '2', j: 6 },  ], css_id: 'tinytable_css_918vnw7lx24v346ua2qc',}, 
+          { positions: [ { i: '0', j: 0 }, { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 },  ], css_id: 'tinytable_css_x5ctryzu34ulc602ta7s',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_6j5xftq8alp5vr1dpyo9(cell.i, cell.j, group.css_id);
+                  styleCell_io18yhngcrr9pm1gu6hi(cell.i, cell.j, group.css_id);
               });
           });
       });
     </script><style>
       /* tinytable css entries after */
-      .table td.tinytable_css_rvpo9mswhw0y23n23wko, .table th.tinytable_css_rvpo9mswhw0y23n23wko { color: #BEBEBE; font-weight: bold; color: black; background-color: #FFFF00; }
-      .table td.tinytable_css_q2wh17r59ivmtyaprm4d, .table th.tinytable_css_q2wh17r59ivmtyaprm4d { color: #BEBEBE; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_wv3wfckdof5d30hmm2y3, .table th.tinytable_css_wv3wfckdof5d30hmm2y3 { color: #BEBEBE; }
-      .table td.tinytable_css_e88wkluloqr85t0c5eph, .table th.tinytable_css_e88wkluloqr85t0c5eph { color: #BEBEBE; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_ortceswtzkpnu4im7dzt, .table th.tinytable_css_ortceswtzkpnu4im7dzt { color: #333333; font-weight: bold; color: black; background-color: #FFFF00; }
+      .table td.tinytable_css_po14tbar1ch2fx6wcdqu, .table th.tinytable_css_po14tbar1ch2fx6wcdqu { color: #333333; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_918vnw7lx24v346ua2qc, .table th.tinytable_css_918vnw7lx24v346ua2qc { color: #333333; }
+      .table td.tinytable_css_x5ctryzu34ulc602ta7s, .table th.tinytable_css_x5ctryzu34ulc602ta7s { color: #333333; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
     </style>
 <div class="container">
-      <table class="table table-borderless" id="tinytable_6j5xftq8alp5vr1dpyo9" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_io18yhngcrr9pm1gu6hi" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
 <thead><tr>
 <th scope="col" data-row="0" data-col="0">DeathPenalty</th>
                 <th scope="col" data-row="0" data-col="1">Left HS</th>
@@ -1742,31 +1756,32 @@ Figure&nbsp;3: Contingency Table
 </table>
 </div>
 </div>
-<p>And here are the mosaic plots for the <em>actual</em> and <em>expected</em> Contingency Tables, along with the <em>association</em> plot showing the differences, as we did when plotting <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/40-CatData/index.html#coloured-tiles-actual-and-expected-contingency-tables">Proportions</a>:</p>
+<p>These numbers are also what we saw with the code above, <code><a href="https://www.mosaic-web.org/mosaic/reference/xchisq.test.html">mosaic::xchisq.test()</a></code>, which seems to output a format that combines both tables into one.</p>
+<p>And so, here are the mosaic plots for the <em>actual</em> and <em>expected</em> Contingency Tables, along with the <em>association</em> plot showing the differences, as we did when plotting <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/40-CatData/index.html#coloured-tiles-actual-and-expected-contingency-tables">Proportions</a>:</p>
 <div class="cell quarto-layout-panel" data-layout-ncol="3">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-11-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Actual"><img src="index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="1500" alt="Actual"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-12-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Actual"><img src="index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="2100" alt="Actual"></a></p>
 <figcaption>Actual</figcaption></figure>
 </div>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-11-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Expected"><img src="index_files/figure-html/unnamed-chunk-11-2.png" class="img-fluid figure-img" width="1500" alt="Expected"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-12-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Expected"><img src="index_files/figure-html/unnamed-chunk-12-2.png" class="img-fluid figure-img" width="2100" alt="Expected"></a></p>
 <figcaption>Expected</figcaption></figure>
 </div>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-11-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Tile-Wise Differences"><img src="index_files/figure-html/unnamed-chunk-11-3.png" class="img-fluid figure-img" width="1500" alt="Tile-Wise Differences"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-12-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Tile-Wise Differences"><img src="index_files/figure-html/unnamed-chunk-12-3.png" class="img-fluid figure-img" width="2100" alt="Tile-Wise Differences"></a></p>
 <figcaption>Tile-Wise Differences</figcaption></figure>
 </div>
 </div>
 </div>
 </div>
 <p><br></p>
-<p>Now, <span class="bg-light-red black">the <strong>Pearson Residual</strong> in each cell is equivalent to the <code>z-score</code> of that cell</span>. Recall the <a href="../22-Histograms/index.qmd#z-scores">z-score</a> idea: we subtract the mean and divide by the std. deviation to get the <code>z-score</code>.</p>
+<p>Now, <span class="bg-light-red black">the <strong>Pearson Residual</strong> in each cell is equivalent to the <code>z-score</code> of that cell</span>. Recall the <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/22-Histograms/index.html#z-scores">z-score</a> idea: we subtract the mean and divide by the std. deviation to get the <code>z-score</code>.</p>
 <p>In the Contingency Table, we have <strong>counts</strong> which are usually modeled as an (integer) <em>Poisson distribution</em>, for which <strong>mean (i.e Expected value) and variance are identical</strong>. Thus we get the Pearson Residual as:</p>
 <p><span class="math display">\[
 r_{i,j} = \frac{(Actual - Expected)}{\sqrt{\displaystyle Expected}}
@@ -1798,10 +1813,10 @@ r_{i,j} = \frac{(o_{i,j}- e_{i,j})}{\sqrt{\displaystyle e_{i,j}}}
 <div class="cell quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<p><a href="index_files/figure-html/unnamed-chunk-12-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="1500"></a></p>
+<p><a href="index_files/figure-html/unnamed-chunk-13-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="2100"></a></p>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<p><a href="index_files/figure-html/unnamed-chunk-12-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img src="index_files/figure-html/unnamed-chunk-12-2.png" class="img-fluid" width="1500"></a></p>
+<p><a href="index_files/figure-html/unnamed-chunk-13-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img src="index_files/figure-html/unnamed-chunk-13-2.png" class="img-fluid" width="2100"></a></p>
 </div>
 </div>
 </div>
@@ -1847,7 +1862,7 @@ r_{i,j} = \frac{(o_{i,j}- e_{i,j})}{\sqrt{\displaystyle e_{i,j}}}
 -0.3333333 </code></pre>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 80.0%;justify-content: center;">
-<p><a href="index_files/figure-html/Difference in Proportion-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11"><img src="index_files/figure-html/Difference in Proportion-1.png" class="img-fluid" width="1500"></a></p>
+<p><a href="index_files/figure-html/Difference in Proportion-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11"><img src="index_files/figure-html/Difference in Proportion-1.png" class="img-fluid" width="2100"></a></p>
 </div>
 </div>
 </div>
@@ -1871,19 +1886,19 @@ r_{i,j} = \frac{(o_{i,j}- e_{i,j})}{\sqrt{\displaystyle e_{i,j}}}
 <div class="cell quarto-layout-panel" data-layout="[[45,-10,45]]">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 45.0%;justify-content: center;">
-<p><a href="index_files/figure-html/unnamed-chunk-13-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12"><img src="index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="1500"></a></p>
+<p><a href="index_files/figure-html/unnamed-chunk-14-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12"><img src="index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="2100"></a></p>
 </div>
 <div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 10.0%;justify-content: flex-start;">
 <p>&nbsp;</p>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 45.0%;justify-content: center;">
-<p><a href="index_files/figure-html/unnamed-chunk-13-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13"><img src="index_files/figure-html/unnamed-chunk-13-2.png" class="img-fluid" width="1500"></a></p>
+<p><a href="index_files/figure-html/unnamed-chunk-14-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13"><img src="index_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid" width="2100"></a></p>
 </div>
 </div>
 </div>
 <p>As can be seen, the ratio is different!</p>
 <p>We can now check out our Hypothesis that there is <em>no</em> bias. We can shuffle the data many many times, calculating the ratio each time, and plot the <em>distribution of the differences in selection ratio</em> and see how that artificially created distribution compares with the originally observed figure from Mother Nature.</p>
-<div class="sourceCode" id="cb23" data-code-line-numbers=""><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb25" data-code-line-numbers=""><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">null_dist</span> <span class="op">&lt;-</span> <span class="fu">do</span><span class="op">(</span><span class="fl">4999</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/diff.html">diff</a></span><span class="op">(</span><span class="fu">mean</span><span class="op">(</span></span>
 <span>  <span class="va">candidate_selected</span> <span class="op">~</span> <span class="fu"><a href="https://www.mosaic-web.org/mosaic/reference/resample.html">shuffle</a></span><span class="op">(</span><span class="va">evaluator</span><span class="op">)</span>,</span>
@@ -1908,7 +1923,7 @@ r_{i,j} = \frac{(o_{i,j}- e_{i,j})}{\sqrt{\displaystyle e_{i,j}}}
 <div class="cell quarto-layout-panel" data-layout="[[60,-10,30]]">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: center;">
-<p><a href="index_files/figure-html/unnamed-chunk-14-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14"><img src="index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="1500"></a></p>
+<p><a href="index_files/figure-html/unnamed-chunk-15-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14"><img src="index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="2100"></a></p>
 </div>
 <div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 10.0%;justify-content: flex-start;">
 <p>&nbsp;</p>
@@ -1923,7 +1938,7 @@ r_{i,j} = \frac{(o_{i,j}- e_{i,j})}{\sqrt{\displaystyle e_{i,j}}}
 <div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
 <p>We should now repeat the test with permutations on <code>Education</code>:</p>
 <div class="cell">
-<div class="sourceCode" id="cb25" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb27" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">null_chisq</span> <span class="op">&lt;-</span> <span class="fu">do</span><span class="op">(</span><span class="fl">4999</span><span class="op">)</span> <span class="op">*</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/chisq.test.html">chisq.test</a></span><span class="op">(</span><span class="fu">mosaic</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/mosaicCore/man/tally.html">tally</a></span><span class="op">(</span><span class="va">DeathPenalty</span> <span class="op">~</span> <span class="fu"><a href="https://www.mosaic-web.org/mosaic/reference/resample.html">shuffle</a></span><span class="op">(</span><span class="va">Education</span><span class="op">)</span>,</span>
@@ -1938,7 +1953,7 @@ r_{i,j} = \frac{(o_{i,j}- e_{i,j})}{\sqrt{\displaystyle e_{i,j}}}
   </script>
 </div>
 </div>
-<div class="sourceCode" id="cb26" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">gf_histogram</span><span class="op">(</span><span class="op">~</span><span class="va">X.squared</span>, data <span class="op">=</span> <span class="va">null_chisq</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<div class="sourceCode" id="cb28" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">gf_histogram</span><span class="op">(</span><span class="op">~</span><span class="va">X.squared</span>, data <span class="op">=</span> <span class="va">null_chisq</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">gf_vline</span><span class="op">(</span></span>
 <span>    xintercept <span class="op">=</span> <span class="va">observedChi2</span>,</span>
 <span>    color <span class="op">=</span> <span class="st">"red"</span></span>
@@ -1955,7 +1970,7 @@ r_{i,j} = \frac{(o_{i,j}- e_{i,j})}{\sqrt{\displaystyle e_{i,j}}}
 <div class="cell-output cell-output-error">
 <pre data-code-line-numbers=""><code>Error: object 'observedChi2' not found</code></pre>
 </div>
-<div class="sourceCode" id="cb28" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/mosaicCore/man/prop.html">prop1</a></span><span class="op">(</span><span class="op">~</span> <span class="va">X.squared</span> <span class="op">&gt;=</span> <span class="va">observedChi2</span>, data <span class="op">=</span> <span class="va">null_chisq</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb30" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/mosaicCore/man/prop.html">prop1</a></span><span class="op">(</span><span class="op">~</span> <span class="va">X.squared</span> <span class="op">&gt;=</span> <span class="va">observedChi2</span>, data <span class="op">=</span> <span class="va">null_chisq</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-error">
 <pre data-code-line-numbers=""><code>Error in eval(x, data, env): object 'observedChi2' not found</code></pre>
 </div>
