@@ -161,13 +161,13 @@ window.Quarto = {
 <meta property="og:description" content="Using Multiple Regression to predict Quantitative Target Variables">
 <meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/30-Modelling/Modules/LinReg/files/backward-selection-1_files/figure-html/corrtest plots-1.png">
 <meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
-<meta property="og:image:height" content="1854">
-<meta property="og:image:width" content="3000">
+<meta property="og:image:height" content="3000">
+<meta property="og:image:width" content="4200">
 <meta name="twitter:title" content="Tutorial: Multiple Linear Regression with Backward Selection – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta name="twitter:description" content="Using Multiple Regression to predict Quantitative Target Variables">
 <meta name="twitter:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/30-Modelling/Modules/LinReg/files/backward-selection-1_files/figure-html/corrtest plots-1.png">
-<meta name="twitter:image-height" content="1854">
-<meta name="twitter:image-width" content="3000">
+<meta name="twitter:image-height" content="3000">
+<meta name="twitter:image-width" content="4200">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 <body class="nav-sidebar docked nav-fixed quarto-light">
@@ -781,7 +781,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">August 7, 2025</p>
+      <p class="date-modified">August 10, 2025</p>
     </div>
   </div>
     
@@ -799,47 +799,102 @@ window.Quarto = {
 <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</h2>
 <div class="cell">
 <div class="sourceCode" id="cb1" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>scipen <span class="op">=</span> <span class="fl">1</span>, digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="co"># set to three decimal</span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/knitr/man/opts_chunk.html">opts_chunk</a></span><span class="op">$</span><span class="fu">set</span><span class="op">(</span>echo <span class="op">=</span> <span class="cn">TRUE</span>, warning <span class="op">=</span> <span class="cn">FALSE</span>, message <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ProjectMOSAIC/ggformula">ggformula</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ProjectMOSAIC/mosaic">mosaic</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/infer">infer</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell">
-<div class="sourceCode" id="cb2" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Let us set a plot theme for Data visualisation</span></span>
+<section id="plot-fonts-and-theme" class="level4"><h4 class="anchored" data-anchor-id="plot-fonts-and-theme">Plot Fonts and Theme</h4>
+<div class="cell" data-messages="false">
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode" id="cb2" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-lib/systemfonts">systemfonts</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/yixuan/showtext">showtext</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="co">## Clean the slate</span></span>
+<span><span class="fu">systemfonts</span><span class="fu">::</span><span class="fu"><a href="https://systemfonts.r-lib.org/reference/add_fonts.html">clear_local_fonts</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">systemfonts</span><span class="fu">::</span><span class="fu"><a href="https://systemfonts.r-lib.org/reference/register_font.html">clear_registry</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">##</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/showtext/man/showtext_opts.html">showtext_opts</a></span><span class="op">(</span>dpi <span class="op">=</span> <span class="fl">96</span><span class="op">)</span> <span class="co"># set DPI for showtext</span></span>
+<span><span class="fu">sysfonts</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sysfonts/man/font_add.html">font_add</a></span><span class="op">(</span></span>
+<span>  family <span class="op">=</span> <span class="st">"Alegreya"</span>,</span>
+<span>  regular <span class="op">=</span> <span class="st">"../../../../../../../fonts/Alegreya-Regular.ttf"</span>,</span>
+<span>  bold <span class="op">=</span> <span class="st">"../../../../../../../fonts/Alegreya-Bold.ttf"</span>,</span>
+<span>  italic <span class="op">=</span> <span class="st">"../../../../../../../fonts/Alegreya-Italic.ttf"</span>,</span>
+<span>  bolditalic <span class="op">=</span> <span class="st">"../../../../../../../fonts/Alegreya-BoldItalic.ttf"</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># my_theme &lt;- function(){  # Creating a function</span></span>
-<span><span class="co">#   theme_classic() +  # Using pre-defined theme as base</span></span>
-<span><span class="co">#   theme(axis.text.x = element_text(size = 12, face = "bold"),  # Customizing axes text</span></span>
-<span><span class="co">#         axis.text.y = element_text(size = 12, face = "bold"),</span></span>
-<span><span class="co">#         axis.title = element_text(size = 14, face = "bold"),  # Customizing axis title</span></span>
-<span><span class="co">#         panel.grid = element_blank(),  # Taking off the default grid</span></span>
-<span><span class="co">#         plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),</span></span>
-<span><span class="co">#         legend.text = element_text(size = 12, face = "italic"),  # Customizing legend text</span></span>
-<span><span class="co">#         legend.title = element_text(size = 12, face = "bold"),  # Customizing legend title</span></span>
-<span><span class="co">#         legend.position = "right",  # Customizing legend position</span></span>
-<span><span class="co">#         plot.caption = element_text(size = 12))  # Customizing plot caption</span></span>
-<span><span class="co"># }</span></span>
+<span><span class="fu">sysfonts</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sysfonts/man/font_add.html">font_add</a></span><span class="op">(</span></span>
+<span>  family <span class="op">=</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span>  regular <span class="op">=</span> <span class="st">"../../../../../../../fonts/RobotoCondensed-Regular.ttf"</span>,</span>
+<span>  bold <span class="op">=</span> <span class="st">"../../../../../../../fonts/RobotoCondensed-Bold.ttf"</span>,</span>
+<span>  italic <span class="op">=</span> <span class="st">"../../../../../../../fonts/RobotoCondensed-Italic.ttf"</span>,</span>
+<span>  bolditalic <span class="op">=</span> <span class="st">"../../../../../../../fonts/RobotoCondensed-BoldItalic.ttf"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/showtext/man/showtext_auto.html">showtext_auto</a></span><span class="op">(</span>enable <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># enable showtext</span></span>
+<span><span class="co">##</span></span>
+<span><span class="va">theme_custom</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">font</span> <span class="op">&lt;-</span> <span class="st">"Alegreya"</span> <span class="co"># assign font family up front</span></span>
+<span>  <span class="st">"%+replace%"</span> <span class="op">&lt;-</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="st">"%+replace%"</span> <span class="co"># nolint</span></span>
 <span></span>
-<span><span class="va">my_theme</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span> <span class="co"># Creating a function</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_classic</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="co"># Using pre-defined theme as base</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_classic</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">14</span>, base_family <span class="op">=</span> <span class="va">font</span><span class="op">)</span> <span class="op"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">%+replace%</a></span> <span class="co"># replace elements we want to change</span></span>
+<span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span></span>
-<span>      plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span>, size <span class="op">=</span> <span class="fl">14</span><span class="op">)</span>,</span>
-<span>      axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">10</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
-<span>      <span class="co"># Customizing axes text</span></span>
-<span>      axis.text.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">10</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
-<span>      axis.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">12</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
-<span>      <span class="co"># Customizing axis title</span></span>
-<span>      panel.grid <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>, <span class="co"># Taking off the default grid</span></span>
-<span>      plot.margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span><span class="op">)</span>, units <span class="op">=</span> , <span class="st">"cm"</span><span class="op">)</span>,</span>
-<span>      legend.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">8</span>, face <span class="op">=</span> <span class="st">"italic"</span><span class="op">)</span>,</span>
-<span>      <span class="co"># Customizing legend text</span></span>
-<span>      legend.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">10</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
-<span>      <span class="co"># Customizing legend title</span></span>
-<span>      legend.position <span class="op">=</span> <span class="st">"right"</span>, <span class="co"># Customizing legend position</span></span>
-<span>      plot.caption <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
-<span>    <span class="op">)</span> <span class="co"># Customizing plot caption</span></span>
-<span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>      text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>family <span class="op">=</span> <span class="va">font</span><span class="op">)</span>, <span class="co"># set base font family</span></span>
+<span></span>
+<span>      <span class="co"># text elements</span></span>
+<span>      plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># title</span></span>
+<span>        family <span class="op">=</span> <span class="va">font</span>, <span class="co"># set font family</span></span>
+<span>        size <span class="op">=</span> <span class="fl">24</span>, <span class="co"># set font size</span></span>
+<span>        face <span class="op">=</span> <span class="st">"bold"</span>, <span class="co"># bold typeface</span></span>
+<span>        hjust <span class="op">=</span> <span class="fl">0</span>, <span class="co"># left align</span></span>
+<span>        margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">5</span>, r <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">5</span>, l <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span>      <span class="op">)</span>, <span class="co"># margin</span></span>
+<span>      plot.title.position <span class="op">=</span> <span class="st">"plot"</span>,</span>
+<span>      plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># subtitle</span></span>
+<span>        family <span class="op">=</span> <span class="va">font</span>, <span class="co"># font family</span></span>
+<span>        size <span class="op">=</span> <span class="fl">14</span>, <span class="co"># font size</span></span>
+<span>        hjust <span class="op">=</span> <span class="fl">0</span>, <span class="co"># left align</span></span>
+<span>        margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">5</span>, r <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">10</span>, l <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span>      <span class="op">)</span>, <span class="co"># margin</span></span>
+<span></span>
+<span>      plot.caption <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># caption</span></span>
+<span>        family <span class="op">=</span> <span class="va">font</span>, <span class="co"># font family</span></span>
+<span>        size <span class="op">=</span> <span class="fl">9</span>, <span class="co"># font size</span></span>
+<span>        hjust <span class="op">=</span> <span class="fl">1</span></span>
+<span>      <span class="op">)</span>, <span class="co"># right align</span></span>
+<span></span>
+<span>      plot.caption.position <span class="op">=</span> <span class="st">"plot"</span>, <span class="co"># right align</span></span>
+<span></span>
+<span>      axis.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># axis titles</span></span>
+<span>        family <span class="op">=</span> <span class="st">"Roboto Condensed"</span>, <span class="co"># font family</span></span>
+<span>        size <span class="op">=</span> <span class="fl">12</span></span>
+<span>      <span class="op">)</span>, <span class="co"># font size</span></span>
+<span></span>
+<span>      axis.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># axis text</span></span>
+<span>        family <span class="op">=</span> <span class="st">"Roboto Condensed"</span>, <span class="co"># font family</span></span>
+<span>        size <span class="op">=</span> <span class="fl">9</span></span>
+<span>      <span class="op">)</span>, <span class="co"># font size</span></span>
+<span></span>
+<span>      axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># margin for axis text</span></span>
+<span>        margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span><span class="fl">5</span>, b <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span>      <span class="op">)</span></span>
+<span></span>
+<span>      <span class="co"># since the legend often requires manual tweaking</span></span>
+<span>      <span class="co"># based on plot content, don't define it here</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co">## Use available fonts in ggplot text geoms too!</span></span>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/update_defaults.html">update_geom_defaults</a></span><span class="op">(</span>geom <span class="op">=</span> <span class="st">"text"</span>, new <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>  family <span class="op">=</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span>  face <span class="op">=</span> <span class="st">"plain"</span>,</span>
+<span>  size <span class="op">=</span> <span class="fl">3.5</span>,</span>
+<span>  color <span class="op">=</span> <span class="st">"#2b2b2b"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Set the theme</span></span>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <p>In this tutorial, we will use the Boston housing dataset. Our research question is:</p>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -856,7 +911,7 @@ Research Question
 <p>And how do we choose the “best” model, based on a tradeoff between Model Complexity and Model Accuracy?</p>
 </div>
 </div>
-</section><section id="workflow-read-the-data" class="level2"><h2 class="anchored" data-anchor-id="workflow-read-the-data">
+</section></section><section id="workflow-read-the-data" class="level2"><h2 class="anchored" data-anchor-id="workflow-read-the-data">
 <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Read the Data</h2>
 <div class="cell">
 <div class="sourceCode" id="cb3" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"BostonHousing2"</span>, package <span class="op">=</span> <span class="st">"mlbench"</span><span class="op">)</span></span>
@@ -1002,7 +1057,9 @@ quantitative variables:
 <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Correlations</h2>
 <p>We can use <code>purrr</code> to evaluate all pair-wise correlations in one shot:</p>
 <div class="cell">
-<div class="sourceCode" id="cb5" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">all_corrs</span> <span class="op">&lt;-</span> <span class="va">housing</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<div class="sourceCode" id="cb5" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">##</span></span>
+<span><span class="va">all_corrs</span> <span class="op">&lt;-</span> <span class="va">housing</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># leave off cmedv/medv to get all the remaining ones</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">cmedv</span>, <span class="op">-</span><span class="va">medv</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -1036,8 +1093,10 @@ quantitative variables:
 <span>    caption <span class="op">=</span> <span class="st">"Significance = -log10(p.value)"</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_point.html">gf_point</a></span><span class="op">(</span><span class="va">estimate</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html">reorder</a></span><span class="op">(</span><span class="va">predictor</span>, <span class="va">estimate</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_aux.html">gf_labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Predictors"</span>, y <span class="op">=</span> <span class="st">"Correlation with Median House Price"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_theme.html">gf_theme</a></span><span class="op">(</span><span class="fu">my_theme</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_aux.html">gf_labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Correlation Scores with Target Variable"</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"Predictors"</span>, y <span class="op">=</span> <span class="st">"Correlation with Median House Price"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_theme.html">gf_theme</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_aux.html">gf_refine</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_colour_distiller</a></span><span class="op">(</span><span class="st">"Correlation"</span>, type <span class="op">=</span> <span class="st">"div"</span>, palette <span class="op">=</span> <span class="st">"RdBu"</span><span class="op">)</span>,</span>
@@ -1046,7 +1105,7 @@ quantitative variables:
 <span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="backward-selection-1_files/figure-html/corrtest plots-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="backward-selection-1_files/figure-html/corrtest plots-1.png" class="img-fluid figure-img" width="1500"></a></p>
+<figure class="figure"><p><a href="backward-selection-1_files/figure-html/corrtest plots-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="backward-selection-1_files/figure-html/corrtest plots-1.png" class="img-fluid figure-img" width="2100"></a></p>
 </figure>
 </div>
 </div>
@@ -1144,13 +1203,14 @@ F-statistic: 94.3 on 15 and 490 DF,  p-value: &lt;2e-16</code></pre>
 <li>A “list” column containing the <code>housing</code> data frame itself</li>
 </ul>
 <p>We will use the iteration capability of <code>purrr</code> to <strong>sequentially drop one variable at a time</strong> from the maximal(15 predictor) model, build a new reduced model each time, and compute the <code>r.squared</code>:</p>
-<div class="sourceCode" id="cb12" data-code-line-numbers=""><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">housing_model_set</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span></span>
+<div class="cell">
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode" id="cb12" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">housing_model_set</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span></span>
 <span>  all_vars <span class="op">=</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">housing_maximal_tidy</span><span class="op">$</span><span class="va">term</span><span class="op">)</span>, <span class="co"># p-hacked order!!</span></span>
 <span>  keep_vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n_vars</span><span class="op">)</span>,</span>
 <span>  data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">housing_numeric</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">housing_model_set</span></span>
+<span></span>
 <span><span class="co"># Unleash purrr in a series of mutates</span></span>
 <span><span class="va">housing_model_set</span> <span class="op">&lt;-</span> <span class="va">housing_model_set</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># list of predictor variables for each model</span></span>
@@ -1179,8 +1239,7 @@ F-statistic: 94.3 on 15 and 490 DF,  p-value: &lt;2e-16</code></pre>
 <span>        .f <span class="op">=</span> \<span class="op">(</span><span class="va">data</span>, <span class="va">formula</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span>
 <span>      <span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="co"># Check everything after the operation</span></span>
-<span><span class="va">housing_model_set</span></span>
+<span></span>
 <span><span class="co"># Tidy up the models using broom to expose their metrics</span></span>
 <span><span class="va">housing_models_tidy</span> <span class="op">&lt;-</span> <span class="va">housing_model_set</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span></span>
@@ -1196,7 +1255,18 @@ F-statistic: 94.3 on 15 and 490 DF,  p-value: &lt;2e-16</code></pre>
 <span>  <span class="co"># Remove unwanted columns, keep model and predictor count</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">keep_vars</span>, <span class="va">tidy_models</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html">unnest</a></span><span class="op">(</span><span class="va">tidy_models</span><span class="op">)</span></span>
-<span></span>
+<span><span class="va">housing_models_tidy</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["keep_vars"],"name":[1],"type":["int"],"align":["right"]},{"label":["r.squared"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["adj.r.squared"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["sigma"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["df"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["logLik"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["AIC"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["BIC"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["deviance"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["df.residual"],"name":[12],"type":["int"],"align":["right"]},{"label":["nobs"],"name":[13],"type":["int"],"align":["right"]}],"data":[{"1":"1","2":"0.549","3":"0.548","4":"6.17","5":"613.1","6":"3.73e-89","7":"1","8":"-1638","9":"3282","10":"3295","11":"19209","12":"504","13":"506"},{"1":"2","2":"0.642","3":"0.641","4":"5.50","5":"451.9","6":"4.54e-113","7":"2","8":"-1579","9":"3166","10":"3183","11":"15223","12":"503","13":"506"},{"1":"3","2":"0.681","3":"0.679","4":"5.20","5":"357.5","6":"3.62e-124","7":"3","8":"-1550","9":"3110","10":"3132","11":"13575","12":"502","13":"506"},{"1":"4","2":"0.693","3":"0.691","4":"5.10","5":"283.3","6":"4.24e-127","7":"4","8":"-1540","9":"3093","10":"3118","11":"13054","12":"501","13":"506"},{"1":"5","2":"0.700","3":"0.697","4":"5.06","5":"233.0","6":"4.21e-128","7":"5","8":"-1535","9":"3084","10":"3114","11":"12785","12":"500","13":"506"},{"1":"6","2":"0.712","3":"0.709","4":"4.96","5":"205.8","6":"1.84e-131","7":"6","8":"-1524","9":"3065","10":"3099","11":"12256","12":"499","13":"506"},{"1":"7","2":"0.719","3":"0.715","4":"4.90","5":"182.1","6":"6.41e-133","7":"7","8":"-1518","9":"3054","10":"3092","11":"11960","12":"498","13":"506"},{"1":"8","2":"0.721","3":"0.716","4":"4.89","5":"160.5","6":"1.76e-132","7":"8","8":"-1516","9":"3053","10":"3095","11":"11881","12":"497","13":"506"},{"1":"9","2":"0.726","3":"0.721","4":"4.85","5":"146.1","6":"2.29e-133","7":"9","8":"-1512","9":"3046","10":"3092","11":"11661","12":"496","13":"506"},{"1":"10","2":"0.739","3":"0.734","4":"4.74","5":"140.2","6":"2.03e-137","7":"10","8":"-1500","9":"3023","10":"3074","11":"11113","12":"495","13":"506"},{"1":"11","2":"0.740","3":"0.734","4":"4.73","5":"128.0","6":"7.63e-137","7":"11","8":"-1498","9":"3023","10":"3078","11":"11060","12":"494","13":"506"},{"1":"12","2":"0.742","3":"0.736","4":"4.72","5":"118.4","6":"1.22e-136","7":"12","8":"-1496","9":"3021","10":"3080","11":"10971","12":"493","13":"506"},{"1":"13","2":"0.742","3":"0.736","4":"4.72","5":"109.1","6":"1.22e-135","7":"13","8":"-1496","9":"3022","10":"3086","11":"10966","12":"492","13":"506"},{"1":"14","2":"0.743","3":"0.735","4":"4.72","5":"101.2","6":"1.19e-134","7":"14","8":"-1496","9":"3024","10":"3092","11":"10962","12":"491","13":"506"},{"1":"15","2":"0.743","3":"0.735","4":"4.73","5":"94.3","6":"1.11e-133","7":"15","8":"-1496","9":"3026","10":"3098","11":"10958","12":"490","13":"506"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode" id="cb13" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">##</span></span>
 <span><span class="va">housing_models_tidy</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_line.html">gf_line</a></span><span class="op">(</span></span>
 <span>    <span class="va">r.squared</span> <span class="op">~</span> <span class="va">keep_vars</span>,</span>
@@ -1217,37 +1287,19 @@ F-statistic: 94.3 on 15 and 490 DF,  p-value: &lt;2e-16</code></pre>
 <span>    color <span class="op">=</span> <span class="st">"red"</span>,</span>
 <span>    data <span class="op">=</span> <span class="va">housing_models_tidy</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">keep_vars</span> <span class="op">==</span> <span class="fl">4</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_lines.html">gf_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0.7</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_theme.html">gf_theme</a></span><span class="op">(</span><span class="fu">my_theme</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="quarto-layout-panel" data-layout="[ [1,1], [1]]">
-<div class="quarto-layout-row">
-<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
-<div class="cell-output-display">
-<div data-pagedtable="false">
-  <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":["all_vars"],"name":[1],"type":["list"],"align":["right"]},{"label":["keep_vars"],"name":[2],"type":["int"],"align":["right"]},{"label":["data"],"name":[3],"type":["list"],"align":["right"]}],"data":[{"1":"<chr [15]>","2":"1","3":"<df[,16] [506 × 16]>"},{"1":"<chr [15]>","2":"2","3":"<df[,16] [506 × 16]>"},{"1":"<chr [15]>","2":"3","3":"<df[,16] [506 × 16]>"},{"1":"<chr [15]>","2":"4","3":"<df[,16] [506 × 16]>"},{"1":"<chr [15]>","2":"5","3":"<df[,16] [506 × 16]>"},{"1":"<chr [15]>","2":"6","3":"<df[,16] [506 × 16]>"},{"1":"<chr [15]>","2":"7","3":"<df[,16] [506 × 16]>"},{"1":"<chr [15]>","2":"8","3":"<df[,16] [506 × 16]>"},{"1":"<chr [15]>","2":"9","3":"<df[,16] [506 × 16]>"},{"1":"<chr [15]>","2":"10","3":"<df[,16] [506 × 16]>"},{"1":"<chr [15]>","2":"11","3":"<df[,16] [506 × 16]>"},{"1":"<chr [15]>","2":"12","3":"<df[,16] [506 × 16]>"},{"1":"<chr [15]>","2":"13","3":"<df[,16] [506 × 16]>"},{"1":"<chr [15]>","2":"14","3":"<df[,16] [506 × 16]>"},{"1":"<chr [15]>","2":"15","3":"<df[,16] [506 × 16]>"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-</div>
-<div class="cell-output-display">
-<div data-pagedtable="false">
-  <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":["all_vars"],"name":[1],"type":["list"],"align":["right"]},{"label":["keep_vars"],"name":[2],"type":["int"],"align":["right"]},{"label":["data"],"name":[3],"type":["list"],"align":["right"]},{"label":["mod_vars"],"name":[4],"type":["list"],"align":["right"]},{"label":["formula"],"name":[5],"type":["list"],"align":["right"]},{"label":["models"],"name":[6],"type":["list"],"align":["right"]}],"data":[{"1":"<chr [15]>","2":"1","3":"<df[,16] [506 × 16]>","4":"<chr [1]>","5":"<S3: formula>","6":"<S3: lm>"},{"1":"<chr [15]>","2":"2","3":"<df[,16] [506 × 16]>","4":"<chr [2]>","5":"<S3: formula>","6":"<S3: lm>"},{"1":"<chr [15]>","2":"3","3":"<df[,16] [506 × 16]>","4":"<chr [3]>","5":"<S3: formula>","6":"<S3: lm>"},{"1":"<chr [15]>","2":"4","3":"<df[,16] [506 × 16]>","4":"<chr [4]>","5":"<S3: formula>","6":"<S3: lm>"},{"1":"<chr [15]>","2":"5","3":"<df[,16] [506 × 16]>","4":"<chr [5]>","5":"<S3: formula>","6":"<S3: lm>"},{"1":"<chr [15]>","2":"6","3":"<df[,16] [506 × 16]>","4":"<chr [6]>","5":"<S3: formula>","6":"<S3: lm>"},{"1":"<chr [15]>","2":"7","3":"<df[,16] [506 × 16]>","4":"<chr [7]>","5":"<S3: formula>","6":"<S3: lm>"},{"1":"<chr [15]>","2":"8","3":"<df[,16] [506 × 16]>","4":"<chr [8]>","5":"<S3: formula>","6":"<S3: lm>"},{"1":"<chr [15]>","2":"9","3":"<df[,16] [506 × 16]>","4":"<chr [9]>","5":"<S3: formula>","6":"<S3: lm>"},{"1":"<chr [15]>","2":"10","3":"<df[,16] [506 × 16]>","4":"<chr [10]>","5":"<S3: formula>","6":"<S3: lm>"},{"1":"<chr [15]>","2":"11","3":"<df[,16] [506 × 16]>","4":"<chr [11]>","5":"<S3: formula>","6":"<S3: lm>"},{"1":"<chr [15]>","2":"12","3":"<df[,16] [506 × 16]>","4":"<chr [12]>","5":"<S3: formula>","6":"<S3: lm>"},{"1":"<chr [15]>","2":"13","3":"<df[,16] [506 × 16]>","4":"<chr [13]>","5":"<S3: formula>","6":"<S3: lm>"},{"1":"<chr [15]>","2":"14","3":"<df[,16] [506 × 16]>","4":"<chr [14]>","5":"<S3: formula>","6":"<S3: lm>"},{"1":"<chr [15]>","2":"15","3":"<df[,16] [506 × 16]>","4":"<chr [15]>","5":"<S3: formula>","6":"<S3: lm>"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-</div>
-<div class="cell-output-display">
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_lines.html">gf_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0.7</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="backward-selection-1_files/figure-html/All models at once-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="backward-selection-1_files/figure-html/All models at once-1.png" class="img-fluid figure-img" width="1500"></a></p>
+<figure class="figure"><p><a href="backward-selection-1_files/figure-html/Plot-of-r.squared-vs-No-of-Predictors-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="backward-selection-1_files/figure-html/Plot-of-r.squared-vs-No-of-Predictors-1.png" class="img-fluid figure-img" width="2100"></a></p>
 </figure>
 </div>
 </div>
 </div>
-</div>
-</div>
-<p>At the loss of some 5% in the <code>r.squared</code>, we can drop our model complexity from 15 predictors to say 4! Our final model will then be:</p>
+<p>At the loss of some 5% in the <code>r.squared</code>, we can drop our model complexity from 15 predictors to say 4! Filtering the set of models for just the one that has 4 <code>predictors</code>, we obtain final model:</p>
 <div class="cell">
-<div class="sourceCode" id="cb13" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">housing_model_final</span> <span class="op">&lt;-</span></span>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode" id="cb14" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">##</span></span>
+<span><span class="va">housing_model_final</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">housing_model_set</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># filter for best model, with 4 variables</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">keep_vars</span> <span class="op">==</span> <span class="fl">4</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -1264,17 +1316,25 @@ F-statistic: 94.3 on 15 and 490 DF,  p-value: &lt;2e-16</code></pre>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># Remove unwanted columns, keep model and predictor count</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">keep_vars</span>, <span class="va">models</span>, <span class="va">tidy_models</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html">unnest</a></span><span class="op">(</span><span class="va">tidy_models</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html">unnest</a></span><span class="op">(</span><span class="va">tidy_models</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">housing_model_final</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
+</details><div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":["keep_vars"],"name":[1],"type":["int"],"align":["right"]},{"label":["models"],"name":[2],"type":["list"],"align":["right"]},{"label":["term"],"name":[3],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[9],"type":["dbl"],"align":["right"]}],"data":[{"1":"4","2":"<S3: lm>","3":"(Intercept)","4":"24.459","5":"4.0510","6":"6.04","7":"3.04e-09","8":"16.500","9":"32.418"},{"1":"4","2":"<S3: lm>","3":"lstat","4":"-0.673","5":"0.0464","6":"-14.49","7":"5.36e-40","8":"-0.764","9":"-0.582"},{"1":"4","2":"<S3: lm>","3":"rm","4":"4.199","5":"0.4210","6":"9.97","7":"1.71e-21","8":"3.372","9":"5.026"},{"1":"4","2":"<S3: lm>","3":"ptratio","4":"-0.957","5":"0.1153","6":"-8.30","7":"9.41e-16","8":"-1.184","9":"-0.731"},{"1":"4","2":"<S3: lm>","3":"dis","4":"-0.564","5":"0.1261","6":"-4.47","7":"9.74e-06","8":"-0.811","9":"-0.316"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"(Intercept)","2":"24.459","3":"4.0510","4":"6.04","5":"3.04e-09","6":"16.500","7":"32.418"},{"1":"lstat","2":"-0.673","3":"0.0464","4":"-14.49","5":"5.36e-40","6":"-0.764","7":"-0.582"},{"1":"rm","2":"4.199","3":"0.4210","4":"9.97","5":"1.71e-21","6":"3.372","7":"5.026"},{"1":"ptratio","2":"-0.957","3":"0.1153","4":"-8.30","5":"9.41e-16","6":"-1.184","7":"-0.731"},{"1":"dis","2":"-0.564","3":"0.1261","4":"-4.47","5":"9.74e-06","6":"-0.811","7":"-0.316"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
-<div class="sourceCode" id="cb14" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">housing_model_final</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+</div>
+<p>which we can state in equation form as:</p>
+<p><span class="math display">\[
+\widehat{cmedv} \sim 24.459 - 0.563 * dis - 0.673 * lstat - 0.957 * ptratio  + 4.199 * rm
+\]</span></p>
+<p>And plotting this model, we have:</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode" id="cb15" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">housing_model_final</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># And plot the model</span></span>
 <span>  <span class="co"># Remove the intercept term</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">term</span> <span class="op">!=</span> <span class="st">"(Intercept)"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -1284,24 +1344,19 @@ F-statistic: 94.3 on 15 and 490 DF,  p-value: &lt;2e-16</code></pre>
 <span>    width <span class="op">=</span> <span class="fl">0.1</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Multiple Regression"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"Model Estimates with Confidence Intervals"</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_theme.html">gf_theme</a></span><span class="op">(</span><span class="fu">my_theme</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="backward-selection-1_files/figure-html/Final Model-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="backward-selection-1_files/figure-html/Final Model-1.png" class="img-fluid figure-img" width="1500"></a></p>
+<figure class="figure"><p><a href="backward-selection-1_files/figure-html/Final-Model-Plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="backward-selection-1_files/figure-html/Final-Model-Plot-1.png" class="img-fluid figure-img" width="2100"></a></p>
 </figure>
 </div>
 </div>
 </div>
-<p>Our current best model can be stated as:</p>
-<p><span class="math display">\[
-\widehat{cmedv} \sim 24.459 - 0.563 * dis - 0.673 * lstat - 0.957 * ptratio  + 4.199 * rm
-\]</span></p>
 </section><section id="workflow-diagnostics" class="level2"><h2 class="anchored" data-anchor-id="workflow-diagnostics">
 <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Diagnostics</h2>
 <p>Let us use <code><a href="https://generics.r-lib.org/reference/augment.html">broom::augment</a></code> to calculate residuals and predictions to arrive at a quick set of diagnostic plots.</p>
 <div class="cell">
-<div class="sourceCode" id="cb15" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">housing_model_final_augment</span> <span class="op">&lt;-</span></span>
+<div class="sourceCode" id="cb16" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">housing_model_final_augment</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">housing_model_set</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">keep_vars</span> <span class="op">==</span> <span class="fl">4</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># augment the model</span></span>
@@ -1324,41 +1379,42 @@ F-statistic: 94.3 on 15 and 490 DF,  p-value: &lt;2e-16</code></pre>
 </div>
 </div>
 </div>
-<div class="sourceCode" id="cb16" data-code-line-numbers=""><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">housing_model_final_augment</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<div class="sourceCode" id="cb17" data-code-line-numbers=""><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">##</span></span>
+<span><span class="va">housing_model_final_augment</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_point.html">gf_point</a></span><span class="op">(</span><span class="va">.resid</span> <span class="op">~</span> <span class="va">.fitted</span>, title <span class="op">=</span> <span class="st">"Residuals vs Fitted"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_smooth.html">gf_smooth</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_theme.html">gf_theme</a></span><span class="op">(</span><span class="va">my_theme</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_smooth.html">gf_smooth</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">##</span></span>
 <span><span class="va">housing_model_final_augment</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_qq.html">gf_qq</a></span><span class="op">(</span><span class="op">~</span><span class="va">.std.resid</span>, title <span class="op">=</span> <span class="st">"Q-Q Residuals"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_qq.html">gf_qqline</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_theme.html">gf_theme</a></span><span class="op">(</span><span class="va">my_theme</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_qq.html">gf_qqline</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">##</span></span>
 <span><span class="va">housing_model_final_augment</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_point.html">gf_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">.std.resid</span><span class="op">)</span> <span class="op">~</span> <span class="va">.fitted</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Scale-Location Plot"</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_smooth.html">gf_smooth</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_theme.html">gf_theme</a></span><span class="op">(</span><span class="va">my_theme</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_smooth.html">gf_smooth</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">##</span></span>
 <span><span class="va">housing_model_final_augment</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_point.html">gf_point</a></span><span class="op">(</span><span class="va">.std.resid</span> <span class="op">~</span> <span class="va">.hat</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Residuals vs Leverage"</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_smooth.html">gf_smooth</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_theme.html">gf_theme</a></span><span class="op">(</span><span class="va">my_theme</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_smooth.html">gf_smooth</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell quarto-layout-panel" data-layout-nrow="2">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<p><a href="backward-selection-1_files/figure-html/Diagnostic Plots for Multiple Regression-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="backward-selection-1_files/figure-html/Diagnostic Plots for Multiple Regression-1.png" class="img-fluid" width="1500"></a></p>
+<p><a href="backward-selection-1_files/figure-html/Diagnostic Plots for Multiple Regression-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="backward-selection-1_files/figure-html/Diagnostic Plots for Multiple Regression-1.png" class="img-fluid" width="2100"></a></p>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<p><a href="backward-selection-1_files/figure-html/Diagnostic Plots for Multiple Regression-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="backward-selection-1_files/figure-html/Diagnostic Plots for Multiple Regression-2.png" class="img-fluid" width="1500"></a></p>
+<p><a href="backward-selection-1_files/figure-html/Diagnostic Plots for Multiple Regression-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="backward-selection-1_files/figure-html/Diagnostic Plots for Multiple Regression-2.png" class="img-fluid" width="2100"></a></p>
 </div>
 </div>
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<p><a href="backward-selection-1_files/figure-html/Diagnostic Plots for Multiple Regression-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="backward-selection-1_files/figure-html/Diagnostic Plots for Multiple Regression-3.png" class="img-fluid" width="1500"></a></p>
+<p><a href="backward-selection-1_files/figure-html/Diagnostic Plots for Multiple Regression-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="backward-selection-1_files/figure-html/Diagnostic Plots for Multiple Regression-3.png" class="img-fluid" width="2100"></a></p>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<p><a href="backward-selection-1_files/figure-html/Diagnostic Plots for Multiple Regression-4.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="backward-selection-1_files/figure-html/Diagnostic Plots for Multiple Regression-4.png" class="img-fluid" width="1500"></a></p>
+<p><a href="backward-selection-1_files/figure-html/Diagnostic Plots for Multiple Regression-4.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="backward-selection-1_files/figure-html/Diagnostic Plots for Multiple Regression-4.png" class="img-fluid" width="2100"></a></p>
 </div>
 </div>
 </div>

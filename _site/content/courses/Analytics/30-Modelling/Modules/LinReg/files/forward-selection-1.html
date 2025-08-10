@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.7.32">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<meta name="author" content="Arvind V.">
 <meta name="dcterms.date" content="2023-05-13">
 <title>Tutorial: Multiple Linear Regression with Forward Selection – The Mad Hatter’s Guide to Data Viz and Stats in R</title>
 <style>
@@ -164,13 +163,13 @@ window.Quarto = {
 <meta property="og:description" content="Using Multiple Regression to predict Quantitative Target Variables">
 <meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/30-Modelling/Modules/LinReg/files/forward-selection-1_files/figure-html/pairs plots 1-1.png">
 <meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
-<meta property="og:image:height" content="1854">
-<meta property="og:image:width" content="3000">
+<meta property="og:image:height" content="3000">
+<meta property="og:image:width" content="4200">
 <meta name="twitter:title" content="Tutorial: Multiple Linear Regression with Forward Selection – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta name="twitter:description" content="Using Multiple Regression to predict Quantitative Target Variables">
 <meta name="twitter:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/30-Modelling/Modules/LinReg/files/forward-selection-1_files/figure-html/pairs plots 1-1.png">
-<meta name="twitter:image-height" content="1854">
-<meta name="twitter:image-width" content="3000">
+<meta name="twitter:image-height" content="3000">
+<meta name="twitter:image-width" content="4200">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 <body class="nav-sidebar docked nav-fixed quarto-light">
@@ -742,6 +741,7 @@ window.Quarto = {
    
   <ul>
 <li><a href="#setting-up-r-packages" id="toc-setting-up-r-packages" class="nav-link active" data-scroll-target="#setting-up-r-packages"><iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction"><iconify-icon inline="" icon="openmoji:japanese-symbol-for-beginner" aria-label="Icon japanese-symbol-for-beginner from openmoji Iconify.design set." title="Icon japanese-symbol-for-beginner from openmoji Iconify.design set."></iconify-icon> Introduction</a></li>
   <li><a href="#workflow-plan" id="toc-workflow-plan" class="nav-link" data-scroll-target="#workflow-plan"><iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow Plan</a></li>
   <li>
 <a href="#workflow-eda" id="toc-workflow-eda" class="nav-link" data-scroll-target="#workflow-eda"><iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: EDA</a>
@@ -775,12 +775,6 @@ window.Quarto = {
 
 <div class="quarto-title-meta column-body">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Arvind V. </p>
-          </div>
-  </div>
     
     <div>
     <div class="quarto-title-meta-heading">Published</div>
@@ -792,7 +786,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">August 7, 2025</p>
+      <p class="date-modified">August 10, 2025</p>
     </div>
   </div>
     
@@ -810,7 +804,6 @@ window.Quarto = {
 <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</h2>
 <div class="cell">
 <div class="sourceCode" id="cb1" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>scipen <span class="op">=</span> <span class="fl">1</span>, digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="co"># set to three decimal</span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/knitr/man/opts_chunk.html">opts_chunk</a></span><span class="op">$</span><span class="fu">set</span><span class="op">(</span>echo <span class="op">=</span> <span class="cn">TRUE</span>, warning <span class="op">=</span> <span class="cn">FALSE</span>, message <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ProjectMOSAIC/ggformula">ggformula</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ProjectMOSAIC/mosaic">mosaic</a></span><span class="op">)</span></span>
@@ -822,17 +815,99 @@ window.Quarto = {
 <span><span class="co"># datasets</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.statlearning.com">ISLR</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell">
-<div class="sourceCode" id="cb2" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Let us set a plot theme for Data visualization</span></span>
+<section id="plot-fonts-and-theme" class="level4"><h4 class="anchored" data-anchor-id="plot-fonts-and-theme">Plot Fonts and Theme</h4>
+<div class="cell" data-messages="false">
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode" id="cb2" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-lib/systemfonts">systemfonts</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/yixuan/showtext">showtext</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="co">## Clean the slate</span></span>
+<span><span class="fu">systemfonts</span><span class="fu">::</span><span class="fu"><a href="https://systemfonts.r-lib.org/reference/add_fonts.html">clear_local_fonts</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">systemfonts</span><span class="fu">::</span><span class="fu"><a href="https://systemfonts.r-lib.org/reference/register_font.html">clear_registry</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">##</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/showtext/man/showtext_opts.html">showtext_opts</a></span><span class="op">(</span>dpi <span class="op">=</span> <span class="fl">96</span><span class="op">)</span> <span class="co"># set DPI for showtext</span></span>
+<span><span class="fu">sysfonts</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sysfonts/man/font_add.html">font_add</a></span><span class="op">(</span></span>
+<span>  family <span class="op">=</span> <span class="st">"Alegreya"</span>,</span>
+<span>  regular <span class="op">=</span> <span class="st">"../../../../../../../fonts/Alegreya-Regular.ttf"</span>,</span>
+<span>  bold <span class="op">=</span> <span class="st">"../../../../../../../fonts/Alegreya-Bold.ttf"</span>,</span>
+<span>  italic <span class="op">=</span> <span class="st">"../../../../../../../fonts/Alegreya-Italic.ttf"</span>,</span>
+<span>  bolditalic <span class="op">=</span> <span class="st">"../../../../../../../fonts/Alegreya-BoldItalic.ttf"</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_light</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">11</span>, base_family <span class="op">=</span> <span class="st">"Roboto Condensed"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">sysfonts</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sysfonts/man/font_add.html">font_add</a></span><span class="op">(</span></span>
+<span>  family <span class="op">=</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span>  regular <span class="op">=</span> <span class="st">"../../../../../../../fonts/RobotoCondensed-Regular.ttf"</span>,</span>
+<span>  bold <span class="op">=</span> <span class="st">"../../../../../../../fonts/RobotoCondensed-Bold.ttf"</span>,</span>
+<span>  italic <span class="op">=</span> <span class="st">"../../../../../../../fonts/RobotoCondensed-Italic.ttf"</span>,</span>
+<span>  bolditalic <span class="op">=</span> <span class="st">"../../../../../../../fonts/RobotoCondensed-BoldItalic.ttf"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/showtext/man/showtext_auto.html">showtext_auto</a></span><span class="op">(</span>enable <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># enable showtext</span></span>
+<span><span class="co">##</span></span>
+<span><span class="va">theme_custom</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">font</span> <span class="op">&lt;-</span> <span class="st">"Alegreya"</span> <span class="co"># assign font family up front</span></span>
+<span>  <span class="st">"%+replace%"</span> <span class="op">&lt;-</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="st">"%+replace%"</span> <span class="co"># nolint</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_update</a></span><span class="op">(</span></span>
-<span>  panel.grid.minor <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
-<span>  plot.title.position <span class="op">=</span> <span class="st">"plot"</span></span>
-<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_classic</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">14</span>, base_family <span class="op">=</span> <span class="va">font</span><span class="op">)</span> <span class="op"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">%+replace%</a></span> <span class="co"># replace elements we want to change</span></span>
+<span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span></span>
+<span>      text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>family <span class="op">=</span> <span class="va">font</span><span class="op">)</span>, <span class="co"># set base font family</span></span>
+<span></span>
+<span>      <span class="co"># text elements</span></span>
+<span>      plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># title</span></span>
+<span>        family <span class="op">=</span> <span class="va">font</span>, <span class="co"># set font family</span></span>
+<span>        size <span class="op">=</span> <span class="fl">24</span>, <span class="co"># set font size</span></span>
+<span>        face <span class="op">=</span> <span class="st">"bold"</span>, <span class="co"># bold typeface</span></span>
+<span>        hjust <span class="op">=</span> <span class="fl">0</span>, <span class="co"># left align</span></span>
+<span>        margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">5</span>, r <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">5</span>, l <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span>      <span class="op">)</span>, <span class="co"># margin</span></span>
+<span>      plot.title.position <span class="op">=</span> <span class="st">"plot"</span>,</span>
+<span>      plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># subtitle</span></span>
+<span>        family <span class="op">=</span> <span class="va">font</span>, <span class="co"># font family</span></span>
+<span>        size <span class="op">=</span> <span class="fl">14</span>, <span class="co"># font size</span></span>
+<span>        hjust <span class="op">=</span> <span class="fl">0</span>, <span class="co"># left align</span></span>
+<span>        margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">5</span>, r <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">10</span>, l <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span>      <span class="op">)</span>, <span class="co"># margin</span></span>
+<span></span>
+<span>      plot.caption <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># caption</span></span>
+<span>        family <span class="op">=</span> <span class="va">font</span>, <span class="co"># font family</span></span>
+<span>        size <span class="op">=</span> <span class="fl">9</span>, <span class="co"># font size</span></span>
+<span>        hjust <span class="op">=</span> <span class="fl">1</span></span>
+<span>      <span class="op">)</span>, <span class="co"># right align</span></span>
+<span></span>
+<span>      plot.caption.position <span class="op">=</span> <span class="st">"plot"</span>, <span class="co"># right align</span></span>
+<span></span>
+<span>      axis.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># axis titles</span></span>
+<span>        family <span class="op">=</span> <span class="st">"Roboto Condensed"</span>, <span class="co"># font family</span></span>
+<span>        size <span class="op">=</span> <span class="fl">12</span></span>
+<span>      <span class="op">)</span>, <span class="co"># font size</span></span>
+<span></span>
+<span>      axis.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># axis text</span></span>
+<span>        family <span class="op">=</span> <span class="st">"Roboto Condensed"</span>, <span class="co"># font family</span></span>
+<span>        size <span class="op">=</span> <span class="fl">9</span></span>
+<span>      <span class="op">)</span>, <span class="co"># font size</span></span>
+<span></span>
+<span>      axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># margin for axis text</span></span>
+<span>        margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span><span class="fl">5</span>, b <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span>      <span class="op">)</span></span>
+<span></span>
+<span>      <span class="co"># since the legend often requires manual tweaking</span></span>
+<span>      <span class="co"># based on plot content, don't define it here</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co">## Use available fonts in ggplot text geoms too!</span></span>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/update_defaults.html">update_geom_defaults</a></span><span class="op">(</span>geom <span class="op">=</span> <span class="st">"text"</span>, new <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>  family <span class="op">=</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span>  face <span class="op">=</span> <span class="st">"plain"</span>,</span>
+<span>  size <span class="op">=</span> <span class="fl">3.5</span>,</span>
+<span>  color <span class="op">=</span> <span class="st">"#2b2b2b"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Set the theme</span></span>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
+</section></section><section id="introduction" class="level2"><h2 class="anchored" data-anchor-id="introduction">
+<iconify-icon inline="" icon="openmoji:japanese-symbol-for-beginner" aria-label="Icon japanese-symbol-for-beginner from openmoji Iconify.design set." title="Icon japanese-symbol-for-beginner from openmoji Iconify.design set."></iconify-icon> Introduction</h2>
 <p>In this tutorial, we will use the <del>Boston housing</del> <code>Hitters</code> dataset<strong>(s)</strong> from the <code>ISLR</code> package. Our research question is:</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -908,7 +983,7 @@ quantitative variables:
 <section id="scatter-plots-and-correlations" class="level3 page-columns page-full"><h3 class="anchored" data-anchor-id="scatter-plots-and-correlations">
 <iconify-icon inline="" icon="flat-color-icons:scatter-plot" aria-label="Icon scatter-plot from flat-color-icons Iconify.design set." title="Icon scatter-plot from flat-color-icons Iconify.design set."></iconify-icon> Scatter Plots and Correlations</h3>
 <p>We should examine scatter plots and Correlations of <code>Salary</code> against these variables. Let us select a few sets of Quantitative and Qualitative features, along with the target variable <code>Salary</code> and do a pairs-plots with them:</p>
-<div class="sourceCode" id="cb5" data-code-line-numbers=""><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">Hitters</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode" id="cb5" data-code-line-numbers=""><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">Hitters</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Salary</span>, <span class="va">AtBat</span>, <span class="va">Hits</span>, <span class="va">HmRun</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">GGally</span><span class="fu">::</span><span class="fu"><a href="https://ggobi.github.io/ggally/reference/ggpairs.html">ggpairs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Plot 1"</span>, lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>continuous <span class="op">=</span> <span class="fu"><a href="https://ggobi.github.io/ggally/reference/wrap.html">wrap</a></span><span class="op">(</span><span class="st">"smooth"</span>, alpha <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">Hitters</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -923,24 +998,24 @@ quantitative variables:
 <span><span class="va">Hitters</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Salary</span>, <span class="va">League</span>, <span class="va">Division</span>, <span class="va">NewLeague</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">GGally</span><span class="fu">::</span><span class="fu"><a href="https://ggobi.github.io/ggally/reference/ggpairs.html">ggpairs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Plot 5"</span>, lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>continuous <span class="op">=</span> <span class="fu"><a href="https://ggobi.github.io/ggally/reference/wrap.html">wrap</a></span><span class="op">(</span><span class="st">"smooth"</span>, alpha <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell column-screen-inset-shaded quarto-layout-panel" data-layout-nrow="2">
+</details><div class="cell column-screen-inset-shaded quarto-layout-panel" data-layout-nrow="2">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
-<p><a href="forward-selection-1_files/figure-html/pairs plots 1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="forward-selection-1_files/figure-html/pairs plots 1-1.png" class="img-fluid" width="1500"></a></p>
+<p><a href="forward-selection-1_files/figure-html/pairs plots 1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="forward-selection-1_files/figure-html/pairs plots 1-1.png" class="img-fluid" width="2100"></a></p>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
-<p><a href="forward-selection-1_files/figure-html/pairs plots 1-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="forward-selection-1_files/figure-html/pairs plots 1-2.png" class="img-fluid" width="1500"></a></p>
+<p><a href="forward-selection-1_files/figure-html/pairs plots 1-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="forward-selection-1_files/figure-html/pairs plots 1-2.png" class="img-fluid" width="2100"></a></p>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
-<p><a href="forward-selection-1_files/figure-html/pairs plots 1-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="forward-selection-1_files/figure-html/pairs plots 1-3.png" class="img-fluid" width="1500"></a></p>
+<p><a href="forward-selection-1_files/figure-html/pairs plots 1-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="forward-selection-1_files/figure-html/pairs plots 1-3.png" class="img-fluid" width="2100"></a></p>
 </div>
 </div>
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
-<p><a href="forward-selection-1_files/figure-html/pairs plots 1-4.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="forward-selection-1_files/figure-html/pairs plots 1-4.png" class="img-fluid" width="1500"></a></p>
+<p><a href="forward-selection-1_files/figure-html/pairs plots 1-4.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="forward-selection-1_files/figure-html/pairs plots 1-4.png" class="img-fluid" width="2100"></a></p>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
-<p><a href="forward-selection-1_files/figure-html/pairs plots 1-5.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="forward-selection-1_files/figure-html/pairs plots 1-5.png" class="img-fluid" width="1500"></a></p>
+<p><a href="forward-selection-1_files/figure-html/pairs plots 1-5.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="forward-selection-1_files/figure-html/pairs plots 1-5.png" class="img-fluid" width="2100"></a></p>
 </div>
 </div>
 </div>
@@ -948,7 +1023,7 @@ quantitative variables:
 </section><section id="correlation-error-bars" class="level3"><h3 class="anchored" data-anchor-id="correlation-error-bars">
 <iconify-icon inline="" icon="fluent-emoji:carbonchart-error-bar-alt" aria-label="Icon carbonchart-error-bar-alt from fluent-emoji Iconify.design set." title="Icon carbonchart-error-bar-alt from fluent-emoji Iconify.design set."></iconify-icon> Correlation Error-Bars</h3>
 <p>We can also plot all correlations in one graph using <code>cor.test</code> and <code>purrr</code>:</p>
-<div class="sourceCode" id="cb6" data-code-line-numbers=""><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">all_corrs</span> <span class="op">&lt;-</span></span>
+<details class="code-fold"><summary>Show the Code</summary><div class="sourceCode" id="cb6" data-code-line-numbers=""><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">all_corrs</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">Hitters</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># leave off Salary and year to get all the remaining ones</span></span>
@@ -976,8 +1051,11 @@ quantitative variables:
 <span>    width <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Significance = -log10(p.value)"</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_point.html">gf_point</a></span><span class="op">(</span><span class="va">estimate</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html">reorder</a></span><span class="op">(</span><span class="va">predictor</span>, <span class="va">estimate</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_aux.html">gf_labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="st">"Correlation with Salary"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_point.html">gf_point</a></span><span class="op">(</span><span class="va">estimate</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html">reorder</a></span><span class="op">(</span><span class="va">predictor</span>, <span class="va">estimate</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_aux.html">gf_labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Correlation Scores with Target Variable"</span>,</span>
+<span>    x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="st">"Correlation with Salary"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># gf_theme(theme = my_theme()) %&gt;%</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_aux.html">gf_refine</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_colour_distiller</a></span><span class="op">(</span><span class="st">"Correlation"</span>,</span>
@@ -994,7 +1072,7 @@ quantitative variables:
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html">guides</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html">guide_legend</a></span><span class="op">(</span>reverse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html">coord_flip</a></span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell quarto-layout-panel" data-layout-nrow="1">
+</details><div class="cell quarto-layout-panel" data-layout-nrow="1">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div data-pagedtable="false">
@@ -1004,7 +1082,7 @@ quantitative variables:
 </div>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<p><a href="forward-selection-1_files/figure-html/corr-test plots-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="forward-selection-1_files/figure-html/corr-test plots-1.png" class="img-fluid" width="1500"></a></p>
+<p><a href="forward-selection-1_files/figure-html/corr-test-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="forward-selection-1_files/figure-html/corr-test-1.png" class="img-fluid" width="2100"></a></p>
 </div>
 </div>
 </div>
@@ -1145,7 +1223,7 @@ Residual standard error: 451 on 262 degrees of freedom
 </div>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<p><a href="forward-selection-1_files/figure-html/Round1-All individual models at once-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="forward-selection-1_files/figure-html/Round1-All individual models at once-1.png" class="img-fluid" width="1500"></a></p>
+<p><a href="forward-selection-1_files/figure-html/Round1-All-individual-models-at-once-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="forward-selection-1_files/figure-html/Round1-All-individual-models-at-once-1.png" class="img-fluid" width="2100"></a></p>
 </div>
 </div>
 </div>
@@ -1282,7 +1360,7 @@ Salary \sim 274.580 + 0.791 \times CRBI
 </div>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<p><a href="forward-selection-1_files/figure-html/Round 2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="forward-selection-1_files/figure-html/Round 2-1.png" class="img-fluid" width="1500"></a></p>
+<p><a href="forward-selection-1_files/figure-html/Round 2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="forward-selection-1_files/figure-html/Round 2-1.png" class="img-fluid" width="2100"></a></p>
 </div>
 </div>
 </div>
@@ -1335,8 +1413,8 @@ Salary \sim -47.96 + 0.691 \times CRBI + 3.30 \times Hits
 </div>
 </div>
 <div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-18b2d25dec3fef43a576" style="width:100%;height:401px;"></div>
-<script type="application/json" data-for="htmlwidget-18b2d25dec3fef43a576">{"x":{"visdat":{"7ac34ead3f82":["function () ","plotlyVisDat"]},"cur_data":"7ac34ead3f82","attrs":{"7ac34ead3f82":{"x":{},"y":{},"z":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"markers","inherit":true},"7ac34ead3f82.1":{"x":{},"y":{},"z":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"surface","inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Salaries of Baseball Players","scene":{"xaxis":{"title":"CRBI"},"yaxis":{"title":"Hits"},"zaxis":{"title":"Salary"}},"hovermode":"closest","showlegend":false,"legend":{"yanchor":"top","y":0.5}},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[414,266,838,46,336,9,37,34,890,504,186,204,103,290,993,23,82,48,43,251,1072,198,108,327,182,734,46,208,132,803,29,29,76,117,121,107,342,977,32,563,666,138,179,321,472,69,661,64,69,1179,40,103,909,815,1152,949,301,110,274,108,608,401,822,528,1093,70,805,123,159,343,35,110,294,1234,119,174,1015,122,693,319,18,1050,219,999,173,401,80,1067,365,208,955,1267,126,141,519,280,419,316,589,377,154,1088,31,97,37,376,421,32,130,222,705,1032,383,268,326,367,462,39,38,428,351,48,522,227,337,10,1289,324,94,226,135,46,579,72,382,195,23,420,707,900,474,456,260,44,477,303,156,201,26,458,64,483,430,119,471,700,840,112,522,25,163,263,37,69,491,203,325,14,36,288,167,75,7,199,55,33,83,249,120,177,80,91,374,202,167,714,88,390,1314,125,252,32,435,192,304,1128,109,380,322,417,1659,299,497,96,445,273,284,22,280,13,104,345,71,54,55,660,47,259,827,276,31,106,75,86,149,1299,56,39,146,230,342,300,384,137,162,82,230,163,349,80,3,99,139,491,340,161,149,363,1348,148,406,69,366,257,125,322,41,100,311,451,93,420,357],"y":[81,130,141,87,169,37,73,81,92,159,53,113,60,43,158,46,32,92,109,116,168,163,73,129,152,137,108,168,49,106,60,41,46,68,132,57,146,101,53,168,101,102,58,78,177,113,44,56,53,139,53,142,81,131,122,137,119,97,103,96,70,238,163,83,174,82,41,114,83,123,78,138,119,148,115,110,151,49,154,198,51,128,76,125,152,171,118,77,94,85,96,77,139,84,126,78,120,158,169,104,54,70,99,39,40,170,103,103,144,200,55,133,132,39,183,136,70,41,86,95,147,102,94,163,174,39,200,66,76,157,92,73,91,101,47,184,58,118,150,171,147,74,161,91,159,136,85,223,64,127,127,70,141,52,149,84,128,92,157,54,179,131,56,93,148,131,65,54,71,77,120,60,1,94,43,75,167,110,76,93,137,152,144,80,163,83,135,123,52,56,154,72,77,96,56,70,108,68,110,160,101,82,145,76,52,90,135,68,119,27,68,178,86,57,101,113,149,63,163,117,66,140,112,145,159,142,96,103,122,210,169,76,152,213,103,70,211,68,141,120,4,43,47,61,147,138,113,42,32,69,112,139,186,81,124,207,117,172,127,136,126,144,170],"z":[475,480,500,91.5,750,70,100,75,1100,517.14300000000003,512.5,550,700,240,775,175,135,100,115,600,776.66700000000003,765,708.33299999999997,750,625,900,110,612.5,300,850,90,67.5,180,305,215,247.5,815,875,70,1200,675,415,340,416.66699999999997,1350,90,275,230,225,950,75,105,320,850,535,933.33299999999997,850,210,325,275,450,1975,1900,600,1041.6669999999999,110,260,475,431.5,1220,70,145,595,1861.46,300,490,2460,375,750,1175,70,1500,385,1925.5709999999999,215,900,155,700,535,362.5,733.33299999999997,200,400,400,737.5,500,600,662.5,950,750,297.5,325,87.5,175,90,1237.5,430,100,165,250,1300,773.33299999999997,1008.333,275,775,850,365,95,110,100,277.5,80,600,200,657,75,2412.5,250,155,640,300,110,825,195,450,630,86.5,1300,1000,1800,1310,737.5,625,125,1043.3330000000001,725,300,365,75,1183.3330000000001,202.5,225,525,265,787.5,800,587.5,145,420,75,575,780,90,150,700,550,650,68,100,670,175,137,2127.3330000000001,875,120,140,210,800,240,350,175,200,1940,700,750,450,172,1260,750,190,580,130,450,300,250,1050,215,400,560,1670,487.5,425,500,250,400,450,750,70,875,190,191,740,250,140,97.5,740,140,341.66699999999997,1000,100,90,200,135,155,475,1450,150,105,350,90,530,341.66699999999997,940,350,326.66699999999997,250,740,425,925,185,920,286.66699999999997,245,235,1150,160,425,900,500,277.5,750,160,1300,525,550,1600,120,165,700,875,385,960,1000],"type":"scatter3d","mode":"markers","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"frame":null},{"colorbar":{"title":"Salary<br />pred_mx","ticklen":2,"len":0.5,"lenmode":"fraction","y":1,"yanchor":"top"},"colorscale":[["0","rgba(68,1,84,1)"],["0.0416666666666667","rgba(70,19,97,1)"],["0.0833333333333333","rgba(72,32,111,1)"],["0.125","rgba(71,45,122,1)"],["0.166666666666667","rgba(68,58,128,1)"],["0.208333333333333","rgba(64,70,135,1)"],["0.25","rgba(60,82,138,1)"],["0.291666666666667","rgba(56,93,140,1)"],["0.333333333333333","rgba(49,104,142,1)"],["0.375","rgba(46,114,142,1)"],["0.416666666666667","rgba(42,123,142,1)"],["0.458333333333333","rgba(38,133,141,1)"],["0.5","rgba(37,144,140,1)"],["0.541666666666667","rgba(33,154,138,1)"],["0.583333333333333","rgba(39,164,133,1)"],["0.625","rgba(47,174,127,1)"],["0.666666666666667","rgba(53,183,121,1)"],["0.708333333333333","rgba(79,191,110,1)"],["0.75","rgba(98,199,98,1)"],["0.791666666666667","rgba(119,207,85,1)"],["0.833333333333333","rgba(147,214,70,1)"],["0.875","rgba(172,220,52,1)"],["0.916666666666667","rgba(199,225,42,1)"],["0.958333333333333","rgba(226,228,40,1)"],["1","rgba(253,231,37,1)"]],"showscale":true,"x":[0,69.125,138.25,207.375,276.5,345.625,414.75,483.875,553,622.125,691.25,760.375,829.5,898.625,967.75,1036.875,1106,1175.125,1244.25,1313.375,1382.5,1451.625,1520.75,1589.875,1659],"y":[1,10.875,20.75,30.625,40.5,50.375,60.25,70.125,80,89.875,99.75,109.625,119.5,129.375,139.25,149.125,159,168.875,178.75,188.625,198.5,208.375,218.25,228.125,238],"z":[[-44.655057673336636,-12.05921755508159,20.536622563173459,53.132462681428507,85.728302799683561,118.3241429179386,150.91998303619366,183.5158231544487,216.11166327270377,248.70750339095881,281.30334350921385,313.89918362746891,346.49502374572393,379.090863863979,411.68670398223406,444.28254410048908,476.87838421874415,509.47422433699921,542.07006445525428,574.66590457350924,607.26174469176431,639.85758481001938,672.45342492827444,705.04926504652951,737.64510516478458],[3.034238589685168,35.630078707940214,68.225918826195269,100.82175894445031,133.41759906270536,166.0134391809604,198.60927929921547,231.20511941747051,263.80095953572555,296.39679965398062,328.99263977223563,361.5884798904907,394.18432000874577,426.78016012700078,459.37600024525585,491.97184036351092,524.56768048176593,557.163520600021,589.75936071827607,622.35520083653114,654.95104095478609,687.54688107304116,720.14272119129623,752.7385613095513,785.33440142780637],[50.723534852706976,83.319374970962016,115.91521508921707,148.51105520747211,181.10689532572718,213.70273544398222,246.29857556223726,278.89441568049233,311.49025579874734,344.08609591700241,376.68193603525748,409.27777615351249,441.87361627176756,474.46945639002263,507.06529650827764,539.66113662653265,572.25697674478772,604.85281686304279,637.44865698129786,670.04449709955293,702.640337217808,735.23617733606295,767.83201745431802,800.42785757257309,833.02369769082816],[98.412831115728778,131.00867123398382,163.60451135223889,196.20035147049393,228.79619158874897,261.39203170700404,293.98787182525905,326.58371194351412,359.17955206176919,391.7753921800242,424.37123229827927,456.96707241653434,489.56291253478935,522.15875265304442,554.75459277129949,587.35043288955455,619.94627300780951,652.54211312606458,685.13795324431965,717.73379336257472,750.32963348082978,782.92547359908485,815.52131371733981,848.11715383559488,880.71299395384995],[146.10212737875057,178.69796749700564,211.29380761526068,243.88964773351572,276.48548785177076,309.08132797002582,341.67716808828089,374.27300820653591,406.86884832479097,439.46468844304604,472.06052856130106,504.65636867955612,537.25220879781114,569.8480489160662,602.44388903432127,635.03972915257634,667.63556927083141,700.23140938908637,732.82724950734143,765.4230896255965,798.01892974385157,830.61476986210664,863.2106099803616,895.80645009861666,928.40229021687173],[193.79142364177238,226.38726376002745,258.98310387828252,291.57894399653753,324.1747841147926,356.77062423304761,389.36646435130268,421.96230446955775,454.55814458781276,487.15398470606783,519.7498248243229,552.34566494257797,584.94150506083292,617.53734517908799,650.13318529734306,682.72902541559813,715.3248655338532,747.92070565210827,780.51654577036322,813.11238588861829,845.70822600687336,878.30406612512843,910.8999062433835,943.49574636163857,976.09158647989352],[241.4807199047942,274.07656002304924,306.67240014130431,339.26824025955938,371.86408037781439,404.45992049606946,437.05576061432453,469.65160073257954,502.24744085083461,534.84328096908962,567.43912108734469,600.03496120559976,632.63080132385483,665.22664144210989,697.82248156036485,730.41832167861992,763.01416179687499,795.61000191513006,828.20584203338512,860.80168215164008,893.39752226989515,925.99336238815022,958.58920250640529,991.18504262466035,1023.7808827429154],[289.17001616781602,321.76585628607103,354.3616964043261,386.95753652258117,419.55337664083618,452.14921675909125,484.74505687734631,517.34089699560138,549.93673711385634,582.53257723211141,615.12841735036648,647.72425746862154,680.32009758687661,712.91593770513168,745.51177782338664,778.10761794164171,810.70345805989678,843.29929817815184,875.89513829640691,908.49097841466187,941.08681853291694,973.68265865117201,1006.2784987694271,1038.8743388876821,1071.4701790059371],[336.8593124308378,369.45515254909282,402.05099266734788,434.64683278560295,467.24267290385797,499.83851302211303,532.4343531403681,565.03019325862317,597.62603337687813,630.2218734951332,662.81771361338826,695.41355373164333,728.0093938498984,760.60523396815347,793.20107408640843,825.79691420466349,858.39275432291856,890.98859444117363,923.5844345594287,956.18027467768366,988.77611479593872,1021.3719549141938,1053.9677950324487,1086.5636351507039,1119.1594752689589],[384.54860869385965,417.14444881211466,449.74028893036973,482.3361290486248,514.93196916687987,547.52780928513482,580.12364940338989,612.71948952164496,645.31532963990003,677.9111697581551,710.50700987641017,743.10284999466512,775.69869011292019,808.29453023117526,840.89037034943033,873.4862104676854,906.08205058594046,938.67789070419542,971.27373082245049,1003.8695709407056,1036.4654110589606,1069.0612511772156,1101.6570912954708,1134.2529314137257,1166.8487715319809],[432.23790495688144,464.83374507513645,497.42958519339152,530.02542531164659,562.62126542990165,595.21710554815661,627.81294566641168,660.40878578466675,693.00462590292182,725.60046602117689,758.19630613943195,790.79214625768691,823.38798637594198,855.98382649419705,888.57966661245212,921.17550673070718,953.77134684896225,986.36718696721721,1018.9630270854723,1051.5588672037272,1084.1547073219824,1116.7505474402374,1149.3463875584926,1181.9422276767475,1214.5380677950027],[479.92720121990322,512.52304133815824,545.11888145641331,577.71472157466837,610.31056169292344,642.9064018111784,675.50224192943347,708.09808204768854,740.6939221659436,773.28976228419867,805.88560240245374,838.4814425207087,871.07728263896377,903.67312275721883,936.2689628754739,968.86480299372897,1001.460643111984,1034.0564832302391,1066.6523233484941,1099.248163466749,1131.8440035850042,1164.4398437032592,1197.0356838215143,1229.6315239397693,1262.2273640580245],[527.61649748292507,560.21233760118014,592.80817771943521,625.40401783769016,657.99985795594523,690.5956980742003,723.19153819245537,755.78737831071044,788.38321842896539,820.97905854722046,853.57489866547553,886.1707387837306,918.76657890198567,951.36241902024074,983.95825913849569,1016.5540992567508,1049.1499393750059,1081.7457794932609,1114.3416196115159,1146.937459729771,1179.533299848026,1212.1291399662812,1244.7249800845361,1277.3208202027911,1309.9166603210463],[575.30579374594686,607.90163386420193,640.497473982457,673.09331410071195,705.68915421896702,738.28499433722209,770.88083445547716,803.47667457373223,836.07251469198718,868.66835481024225,901.26419492849732,933.86003504675239,966.45587516500746,999.05171528326252,1031.6475554015176,1064.2433955197725,1096.8392356380277,1129.4350757562827,1162.0309158745376,1194.6267559927928,1227.2225961110478,1259.818436229303,1292.4142763475579,1325.0101164658129,1357.6059565840681],[622.99509000896865,655.59093012722371,688.18677024547878,720.78261036373374,753.37845048198881,785.97429060024388,818.57013071849894,851.16597083675401,883.76181095500897,916.35765107326404,948.95349119151911,981.54933130977417,1014.1451714280292,1046.7410115462842,1079.3368516645394,1111.9326917827943,1144.5285319010495,1177.1243720193045,1209.7202121375594,1242.3160522558146,1274.9118923740696,1307.5077324923247,1340.1035726105797,1372.6994127288347,1405.2952528470898],[670.68438627199043,703.2802263902455,735.87606650850057,768.47190662675553,801.0677467450106,833.66358686326566,866.25942698152073,898.8552670997758,931.45110721803076,964.04694733628583,996.64278745454089,1029.2386275727958,1061.834467691051,1094.430307809306,1127.0261479275612,1159.6219880458161,1192.2178281640713,1224.8136682823263,1257.4095084005812,1290.0053485188364,1322.6011886370914,1355.1970287553465,1387.7928688736015,1420.3887089918564,1452.9845491101116],[718.37368253501222,750.96952265326729,783.56536277152236,816.16120288977731,848.75704300803238,881.35288312628745,913.94872324454252,946.54456336279759,979.14040348105254,1011.7362435993076,1044.3320837175627,1076.9279238358176,1109.5237639540728,1142.1196040723278,1174.715444190583,1207.3112843088379,1239.9071244270931,1272.502964545348,1305.098804663603,1337.6946447818582,1370.2904849001131,1402.8863250183683,1435.4821651366233,1468.0780052548782,1500.6738453731334],[766.06297879803412,798.65881891628919,831.25465903454426,863.85049915279922,896.44633927105428,929.04217938930935,961.63801950756442,994.23385962581949,1026.8296997440746,1059.4255398623295,1092.0213799805847,1124.6172200988397,1157.2130602170946,1189.8089003353498,1222.4047404536047,1255.0005805718599,1287.5964206901149,1320.1922608083698,1352.788100926625,1385.38394104488,1417.9797811631352,1450.5756212813901,1483.1714613996451,1515.7673015179003,1548.3631416361552],[813.75227506105591,846.34811517931098,878.94395529756605,911.539795415821,944.13563553407607,976.73147565233114,1009.3273157705862,1041.9231558888412,1074.5189960070963,1107.1148361253513,1139.7106762436065,1172.3065163618614,1204.9023564801164,1237.4981965983716,1270.0940367166265,1302.6898768348817,1335.2857169531367,1367.8815570713916,1400.4773971896468,1433.0732373079018,1465.6690774261569,1498.2649175444119,1530.8607576626669,1563.456597780922,1596.052437899177],[861.4415713240777,894.03741144233277,926.63325156058784,959.22909167884279,991.82493179709786,1024.4207719153528,1057.016612033608,1089.612452151863,1122.2082922701181,1154.8041323883731,1187.3999725066283,1219.9958126248832,1252.5916527431382,1285.1874928613934,1317.7833329796483,1350.3791730979035,1382.9750132161585,1415.5708533344134,1448.1666934526686,1480.7625335709236,1513.3583736891787,1545.9542138074337,1578.5500539256886,1611.1458940439438,1643.7417341621988],[909.13086758709949,941.72670770535456,974.32254782360963,1006.9183879418646,1039.5142280601196,1072.1100681783746,1104.7059082966298,1137.3017484148847,1169.8975885331399,1202.4934286513949,1235.0892687696501,1267.685108887905,1300.28094900616,1332.8767891244152,1365.4726292426701,1398.0684693609253,1430.6643094791802,1463.2601495974352,1495.8559897156904,1528.4518298339453,1561.0476699522005,1593.6435100704555,1626.2393501887104,1658.8351903069656,1691.4310304252206],[956.82016385012128,989.41600396837634,1022.0118440866314,1054.6076842048865,1087.2035243231414,1119.7993644413964,1152.3952045596516,1184.9910446779065,1217.5868847961617,1250.1827249144167,1282.7785650326718,1315.3744051509268,1347.9702452691818,1380.5660853874369,1413.1619255056919,1445.7577656239471,1478.353605742202,1510.949445860457,1543.5452859787122,1576.1411260969671,1608.7369662152223,1641.3328063334773,1673.9286464517322,1706.5244865699874,1739.1203266882424],[1004.5094601131431,1037.1053002313981,1069.7011403496531,1102.2969804679083,1134.8928205861632,1167.4886607044182,1200.0845008226734,1232.6803409409283,1265.2761810591835,1297.8720211774385,1330.4678612956936,1363.0637014139486,1395.6595415322035,1428.2553816504587,1460.8512217687137,1493.4470618869689,1526.0429020052238,1558.6387421234788,1591.234582241734,1623.8304223599889,1656.4262624782441,1689.0221025964991,1721.617942714754,1754.2137828330092,1786.8096229512641],[1052.198756376165,1084.7945964944199,1117.3904366126751,1149.9862767309301,1182.5821168491852,1215.1779569674402,1247.7737970856952,1280.3696372039503,1312.9654773222053,1345.5613174404605,1378.1571575587154,1410.7529976769704,1443.3488377952256,1475.9446779134805,1508.5405180317357,1541.1363581499907,1573.7321982682458,1606.3280383865008,1638.9238785047557,1671.5197186230109,1704.1155587412659,1736.7113988595211,1769.307238977776,1801.903079096031,1834.4989192142862],[1099.8880526391868,1132.4838927574417,1165.0797328756969,1197.6755729939518,1230.271413112207,1262.867253230462,1295.4630933487169,1328.0589334669721,1360.6547735852271,1393.2506137034823,1425.8464538217372,1458.4422939399922,1491.0381340582474,1523.6339741765023,1556.2298142947575,1588.8256544130124,1621.4214945312676,1654.0173346495226,1686.6131747677775,1719.2090148860327,1751.8048550042877,1784.4006951225429,1816.9965352407978,1849.5923753590528,1882.1882154773079]],"type":"surface","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-9f0b1b805dd02d040b31" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-9f0b1b805dd02d040b31">{"x":{"visdat":{"ffb0304793f1":["function () ","plotlyVisDat"]},"cur_data":"ffb0304793f1","attrs":{"ffb0304793f1":{"x":{},"y":{},"z":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"markers","inherit":true},"ffb0304793f1.1":{"x":{},"y":{},"z":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"surface","inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Salaries of Baseball Players","scene":{"xaxis":{"title":"CRBI"},"yaxis":{"title":"Hits"},"zaxis":{"title":"Salary"}},"hovermode":"closest","showlegend":false,"legend":{"yanchor":"top","y":0.5}},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[414,266,838,46,336,9,37,34,890,504,186,204,103,290,993,23,82,48,43,251,1072,198,108,327,182,734,46,208,132,803,29,29,76,117,121,107,342,977,32,563,666,138,179,321,472,69,661,64,69,1179,40,103,909,815,1152,949,301,110,274,108,608,401,822,528,1093,70,805,123,159,343,35,110,294,1234,119,174,1015,122,693,319,18,1050,219,999,173,401,80,1067,365,208,955,1267,126,141,519,280,419,316,589,377,154,1088,31,97,37,376,421,32,130,222,705,1032,383,268,326,367,462,39,38,428,351,48,522,227,337,10,1289,324,94,226,135,46,579,72,382,195,23,420,707,900,474,456,260,44,477,303,156,201,26,458,64,483,430,119,471,700,840,112,522,25,163,263,37,69,491,203,325,14,36,288,167,75,7,199,55,33,83,249,120,177,80,91,374,202,167,714,88,390,1314,125,252,32,435,192,304,1128,109,380,322,417,1659,299,497,96,445,273,284,22,280,13,104,345,71,54,55,660,47,259,827,276,31,106,75,86,149,1299,56,39,146,230,342,300,384,137,162,82,230,163,349,80,3,99,139,491,340,161,149,363,1348,148,406,69,366,257,125,322,41,100,311,451,93,420,357],"y":[81,130,141,87,169,37,73,81,92,159,53,113,60,43,158,46,32,92,109,116,168,163,73,129,152,137,108,168,49,106,60,41,46,68,132,57,146,101,53,168,101,102,58,78,177,113,44,56,53,139,53,142,81,131,122,137,119,97,103,96,70,238,163,83,174,82,41,114,83,123,78,138,119,148,115,110,151,49,154,198,51,128,76,125,152,171,118,77,94,85,96,77,139,84,126,78,120,158,169,104,54,70,99,39,40,170,103,103,144,200,55,133,132,39,183,136,70,41,86,95,147,102,94,163,174,39,200,66,76,157,92,73,91,101,47,184,58,118,150,171,147,74,161,91,159,136,85,223,64,127,127,70,141,52,149,84,128,92,157,54,179,131,56,93,148,131,65,54,71,77,120,60,1,94,43,75,167,110,76,93,137,152,144,80,163,83,135,123,52,56,154,72,77,96,56,70,108,68,110,160,101,82,145,76,52,90,135,68,119,27,68,178,86,57,101,113,149,63,163,117,66,140,112,145,159,142,96,103,122,210,169,76,152,213,103,70,211,68,141,120,4,43,47,61,147,138,113,42,32,69,112,139,186,81,124,207,117,172,127,136,126,144,170],"z":[475,480,500,91.5,750,70,100,75,1100,517.14300000000003,512.5,550,700,240,775,175,135,100,115,600,776.66700000000003,765,708.33299999999997,750,625,900,110,612.5,300,850,90,67.5,180,305,215,247.5,815,875,70,1200,675,415,340,416.66699999999997,1350,90,275,230,225,950,75,105,320,850,535,933.33299999999997,850,210,325,275,450,1975,1900,600,1041.6669999999999,110,260,475,431.5,1220,70,145,595,1861.46,300,490,2460,375,750,1175,70,1500,385,1925.5709999999999,215,900,155,700,535,362.5,733.33299999999997,200,400,400,737.5,500,600,662.5,950,750,297.5,325,87.5,175,90,1237.5,430,100,165,250,1300,773.33299999999997,1008.333,275,775,850,365,95,110,100,277.5,80,600,200,657,75,2412.5,250,155,640,300,110,825,195,450,630,86.5,1300,1000,1800,1310,737.5,625,125,1043.3330000000001,725,300,365,75,1183.3330000000001,202.5,225,525,265,787.5,800,587.5,145,420,75,575,780,90,150,700,550,650,68,100,670,175,137,2127.3330000000001,875,120,140,210,800,240,350,175,200,1940,700,750,450,172,1260,750,190,580,130,450,300,250,1050,215,400,560,1670,487.5,425,500,250,400,450,750,70,875,190,191,740,250,140,97.5,740,140,341.66699999999997,1000,100,90,200,135,155,475,1450,150,105,350,90,530,341.66699999999997,940,350,326.66699999999997,250,740,425,925,185,920,286.66699999999997,245,235,1150,160,425,900,500,277.5,750,160,1300,525,550,1600,120,165,700,875,385,960,1000],"type":"scatter3d","mode":"markers","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"frame":null},{"colorbar":{"title":"Salary<br />pred_mx","ticklen":2,"len":0.5,"lenmode":"fraction","y":1,"yanchor":"top"},"colorscale":[["0","rgba(68,1,84,1)"],["0.0416666666666667","rgba(70,19,97,1)"],["0.0833333333333333","rgba(72,32,111,1)"],["0.125","rgba(71,45,122,1)"],["0.166666666666667","rgba(68,58,128,1)"],["0.208333333333333","rgba(64,70,135,1)"],["0.25","rgba(60,82,138,1)"],["0.291666666666667","rgba(56,93,140,1)"],["0.333333333333333","rgba(49,104,142,1)"],["0.375","rgba(46,114,142,1)"],["0.416666666666667","rgba(42,123,142,1)"],["0.458333333333333","rgba(38,133,141,1)"],["0.5","rgba(37,144,140,1)"],["0.541666666666667","rgba(33,154,138,1)"],["0.583333333333333","rgba(39,164,133,1)"],["0.625","rgba(47,174,127,1)"],["0.666666666666667","rgba(53,183,121,1)"],["0.708333333333333","rgba(79,191,110,1)"],["0.75","rgba(98,199,98,1)"],["0.791666666666667","rgba(119,207,85,1)"],["0.833333333333333","rgba(147,214,70,1)"],["0.875","rgba(172,220,52,1)"],["0.916666666666667","rgba(199,225,42,1)"],["0.958333333333333","rgba(226,228,40,1)"],["1","rgba(253,231,37,1)"]],"showscale":true,"x":[0,69.125,138.25,207.375,276.5,345.625,414.75,483.875,553,622.125,691.25,760.375,829.5,898.625,967.75,1036.875,1106,1175.125,1244.25,1313.375,1382.5,1451.625,1520.75,1589.875,1659],"y":[1,10.875,20.75,30.625,40.5,50.375,60.25,70.125,80,89.875,99.75,109.625,119.5,129.375,139.25,149.125,159,168.875,178.75,188.625,198.5,208.375,218.25,228.125,238],"z":[[-44.655057673336636,-12.05921755508159,20.536622563173459,53.132462681428507,85.728302799683561,118.3241429179386,150.91998303619366,183.5158231544487,216.11166327270377,248.70750339095881,281.30334350921385,313.89918362746891,346.49502374572393,379.090863863979,411.68670398223406,444.28254410048908,476.87838421874415,509.47422433699921,542.07006445525428,574.66590457350924,607.26174469176431,639.85758481001938,672.45342492827444,705.04926504652951,737.64510516478458],[3.034238589685168,35.630078707940214,68.225918826195269,100.82175894445031,133.41759906270536,166.0134391809604,198.60927929921547,231.20511941747051,263.80095953572555,296.39679965398062,328.99263977223563,361.5884798904907,394.18432000874577,426.78016012700078,459.37600024525585,491.97184036351092,524.56768048176593,557.163520600021,589.75936071827607,622.35520083653114,654.95104095478609,687.54688107304116,720.14272119129623,752.7385613095513,785.33440142780637],[50.723534852706976,83.319374970962016,115.91521508921707,148.51105520747211,181.10689532572718,213.70273544398222,246.29857556223726,278.89441568049233,311.49025579874734,344.08609591700241,376.68193603525748,409.27777615351249,441.87361627176756,474.46945639002263,507.06529650827764,539.66113662653265,572.25697674478772,604.85281686304279,637.44865698129786,670.04449709955293,702.640337217808,735.23617733606295,767.83201745431802,800.42785757257309,833.02369769082816],[98.412831115728778,131.00867123398382,163.60451135223889,196.20035147049393,228.79619158874897,261.39203170700404,293.98787182525905,326.58371194351412,359.17955206176919,391.7753921800242,424.37123229827927,456.96707241653434,489.56291253478935,522.15875265304442,554.75459277129949,587.35043288955455,619.94627300780951,652.54211312606458,685.13795324431965,717.73379336257472,750.32963348082978,782.92547359908485,815.52131371733981,848.11715383559488,880.71299395384995],[146.10212737875057,178.69796749700564,211.29380761526068,243.88964773351572,276.48548785177076,309.08132797002582,341.67716808828089,374.27300820653591,406.86884832479097,439.46468844304604,472.06052856130106,504.65636867955612,537.25220879781114,569.8480489160662,602.44388903432127,635.03972915257634,667.63556927083141,700.23140938908637,732.82724950734143,765.4230896255965,798.01892974385157,830.61476986210664,863.2106099803616,895.80645009861666,928.40229021687173],[193.79142364177238,226.38726376002745,258.98310387828252,291.57894399653753,324.1747841147926,356.77062423304761,389.36646435130268,421.96230446955775,454.55814458781276,487.15398470606783,519.7498248243229,552.34566494257797,584.94150506083292,617.53734517908799,650.13318529734306,682.72902541559813,715.3248655338532,747.92070565210827,780.51654577036322,813.11238588861829,845.70822600687336,878.30406612512843,910.8999062433835,943.49574636163857,976.09158647989352],[241.4807199047942,274.07656002304924,306.67240014130431,339.26824025955938,371.86408037781439,404.45992049606946,437.05576061432453,469.65160073257954,502.24744085083461,534.84328096908962,567.43912108734469,600.03496120559976,632.63080132385483,665.22664144210989,697.82248156036485,730.41832167861992,763.01416179687499,795.61000191513006,828.20584203338512,860.80168215164008,893.39752226989515,925.99336238815022,958.58920250640529,991.18504262466035,1023.7808827429154],[289.17001616781602,321.76585628607103,354.3616964043261,386.95753652258117,419.55337664083618,452.14921675909125,484.74505687734631,517.34089699560138,549.93673711385634,582.53257723211141,615.12841735036648,647.72425746862154,680.32009758687661,712.91593770513168,745.51177782338664,778.10761794164171,810.70345805989678,843.29929817815184,875.89513829640691,908.49097841466187,941.08681853291694,973.68265865117201,1006.2784987694271,1038.8743388876821,1071.4701790059371],[336.8593124308378,369.45515254909282,402.05099266734788,434.64683278560295,467.24267290385797,499.83851302211303,532.4343531403681,565.03019325862317,597.62603337687813,630.2218734951332,662.81771361338826,695.41355373164333,728.0093938498984,760.60523396815347,793.20107408640843,825.79691420466349,858.39275432291856,890.98859444117363,923.5844345594287,956.18027467768366,988.77611479593872,1021.3719549141938,1053.9677950324487,1086.5636351507039,1119.1594752689589],[384.54860869385965,417.14444881211466,449.74028893036973,482.3361290486248,514.93196916687987,547.52780928513482,580.12364940338989,612.71948952164496,645.31532963990003,677.9111697581551,710.50700987641017,743.10284999466512,775.69869011292019,808.29453023117526,840.89037034943033,873.4862104676854,906.08205058594046,938.67789070419542,971.27373082245049,1003.8695709407056,1036.4654110589606,1069.0612511772156,1101.6570912954708,1134.2529314137257,1166.8487715319809],[432.23790495688144,464.83374507513645,497.42958519339152,530.02542531164659,562.62126542990165,595.21710554815661,627.81294566641168,660.40878578466675,693.00462590292182,725.60046602117689,758.19630613943195,790.79214625768691,823.38798637594198,855.98382649419705,888.57966661245212,921.17550673070718,953.77134684896225,986.36718696721721,1018.9630270854723,1051.5588672037272,1084.1547073219824,1116.7505474402374,1149.3463875584926,1181.9422276767475,1214.5380677950027],[479.92720121990322,512.52304133815824,545.11888145641331,577.71472157466837,610.31056169292344,642.9064018111784,675.50224192943347,708.09808204768854,740.6939221659436,773.28976228419867,805.88560240245374,838.4814425207087,871.07728263896377,903.67312275721883,936.2689628754739,968.86480299372897,1001.460643111984,1034.0564832302391,1066.6523233484941,1099.248163466749,1131.8440035850042,1164.4398437032592,1197.0356838215143,1229.6315239397693,1262.2273640580245],[527.61649748292507,560.21233760118014,592.80817771943521,625.40401783769016,657.99985795594523,690.5956980742003,723.19153819245537,755.78737831071044,788.38321842896539,820.97905854722046,853.57489866547553,886.1707387837306,918.76657890198567,951.36241902024074,983.95825913849569,1016.5540992567508,1049.1499393750059,1081.7457794932609,1114.3416196115159,1146.937459729771,1179.533299848026,1212.1291399662812,1244.7249800845361,1277.3208202027911,1309.9166603210463],[575.30579374594686,607.90163386420193,640.497473982457,673.09331410071195,705.68915421896702,738.28499433722209,770.88083445547716,803.47667457373223,836.07251469198718,868.66835481024225,901.26419492849732,933.86003504675239,966.45587516500746,999.05171528326252,1031.6475554015176,1064.2433955197725,1096.8392356380277,1129.4350757562827,1162.0309158745376,1194.6267559927928,1227.2225961110478,1259.818436229303,1292.4142763475579,1325.0101164658129,1357.6059565840681],[622.99509000896865,655.59093012722371,688.18677024547878,720.78261036373374,753.37845048198881,785.97429060024388,818.57013071849894,851.16597083675401,883.76181095500897,916.35765107326404,948.95349119151911,981.54933130977417,1014.1451714280292,1046.7410115462842,1079.3368516645394,1111.9326917827943,1144.5285319010495,1177.1243720193045,1209.7202121375594,1242.3160522558146,1274.9118923740696,1307.5077324923247,1340.1035726105797,1372.6994127288347,1405.2952528470898],[670.68438627199043,703.2802263902455,735.87606650850057,768.47190662675553,801.0677467450106,833.66358686326566,866.25942698152073,898.8552670997758,931.45110721803076,964.04694733628583,996.64278745454089,1029.2386275727958,1061.834467691051,1094.430307809306,1127.0261479275612,1159.6219880458161,1192.2178281640713,1224.8136682823263,1257.4095084005812,1290.0053485188364,1322.6011886370914,1355.1970287553465,1387.7928688736015,1420.3887089918564,1452.9845491101116],[718.37368253501222,750.96952265326729,783.56536277152236,816.16120288977731,848.75704300803238,881.35288312628745,913.94872324454252,946.54456336279759,979.14040348105254,1011.7362435993076,1044.3320837175627,1076.9279238358176,1109.5237639540728,1142.1196040723278,1174.715444190583,1207.3112843088379,1239.9071244270931,1272.502964545348,1305.098804663603,1337.6946447818582,1370.2904849001131,1402.8863250183683,1435.4821651366233,1468.0780052548782,1500.6738453731334],[766.06297879803412,798.65881891628919,831.25465903454426,863.85049915279922,896.44633927105428,929.04217938930935,961.63801950756442,994.23385962581949,1026.8296997440746,1059.4255398623295,1092.0213799805847,1124.6172200988397,1157.2130602170946,1189.8089003353498,1222.4047404536047,1255.0005805718599,1287.5964206901149,1320.1922608083698,1352.788100926625,1385.38394104488,1417.9797811631352,1450.5756212813901,1483.1714613996451,1515.7673015179003,1548.3631416361552],[813.75227506105591,846.34811517931098,878.94395529756605,911.539795415821,944.13563553407607,976.73147565233114,1009.3273157705862,1041.9231558888412,1074.5189960070963,1107.1148361253513,1139.7106762436065,1172.3065163618614,1204.9023564801164,1237.4981965983716,1270.0940367166265,1302.6898768348817,1335.2857169531367,1367.8815570713916,1400.4773971896468,1433.0732373079018,1465.6690774261569,1498.2649175444119,1530.8607576626669,1563.456597780922,1596.052437899177],[861.4415713240777,894.03741144233277,926.63325156058784,959.22909167884279,991.82493179709786,1024.4207719153528,1057.016612033608,1089.612452151863,1122.2082922701181,1154.8041323883731,1187.3999725066283,1219.9958126248832,1252.5916527431382,1285.1874928613934,1317.7833329796483,1350.3791730979035,1382.9750132161585,1415.5708533344134,1448.1666934526686,1480.7625335709236,1513.3583736891787,1545.9542138074337,1578.5500539256886,1611.1458940439438,1643.7417341621988],[909.13086758709949,941.72670770535456,974.32254782360963,1006.9183879418646,1039.5142280601196,1072.1100681783746,1104.7059082966298,1137.3017484148847,1169.8975885331399,1202.4934286513949,1235.0892687696501,1267.685108887905,1300.28094900616,1332.8767891244152,1365.4726292426701,1398.0684693609253,1430.6643094791802,1463.2601495974352,1495.8559897156904,1528.4518298339453,1561.0476699522005,1593.6435100704555,1626.2393501887104,1658.8351903069656,1691.4310304252206],[956.82016385012128,989.41600396837634,1022.0118440866314,1054.6076842048865,1087.2035243231414,1119.7993644413964,1152.3952045596516,1184.9910446779065,1217.5868847961617,1250.1827249144167,1282.7785650326718,1315.3744051509268,1347.9702452691818,1380.5660853874369,1413.1619255056919,1445.7577656239471,1478.353605742202,1510.949445860457,1543.5452859787122,1576.1411260969671,1608.7369662152223,1641.3328063334773,1673.9286464517322,1706.5244865699874,1739.1203266882424],[1004.5094601131431,1037.1053002313981,1069.7011403496531,1102.2969804679083,1134.8928205861632,1167.4886607044182,1200.0845008226734,1232.6803409409283,1265.2761810591835,1297.8720211774385,1330.4678612956936,1363.0637014139486,1395.6595415322035,1428.2553816504587,1460.8512217687137,1493.4470618869689,1526.0429020052238,1558.6387421234788,1591.234582241734,1623.8304223599889,1656.4262624782441,1689.0221025964991,1721.617942714754,1754.2137828330092,1786.8096229512641],[1052.198756376165,1084.7945964944199,1117.3904366126751,1149.9862767309301,1182.5821168491852,1215.1779569674402,1247.7737970856952,1280.3696372039503,1312.9654773222053,1345.5613174404605,1378.1571575587154,1410.7529976769704,1443.3488377952256,1475.9446779134805,1508.5405180317357,1541.1363581499907,1573.7321982682458,1606.3280383865008,1638.9238785047557,1671.5197186230109,1704.1155587412659,1736.7113988595211,1769.307238977776,1801.903079096031,1834.4989192142862],[1099.8880526391868,1132.4838927574417,1165.0797328756969,1197.6755729939518,1230.271413112207,1262.867253230462,1295.4630933487169,1328.0589334669721,1360.6547735852271,1393.2506137034823,1425.8464538217372,1458.4422939399922,1491.0381340582474,1523.6339741765023,1556.2298142947575,1588.8256544130124,1621.4214945312676,1654.0173346495226,1686.6131747677775,1719.2090148860327,1751.8048550042877,1784.4006951225429,1816.9965352407978,1849.5923753590528,1882.1882154773079]],"type":"surface","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </section><section id="discussion" class="level2"><h2 class="anchored" data-anchor-id="discussion">
@@ -1412,23 +1490,23 @@ Automatic Iteration Method
 <span>    locations <span class="op">=</span> <span class="fu"><a href="https://gt.rstudio.com/reference/cells_body.html">cells_body</a></span><span class="op">(</span>rows <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">18</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display column-page-inset-right">
-<div id="hrfbhaqmjk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#hrfbhaqmjk table {
+<div id="reherngnkr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#reherngnkr table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#hrfbhaqmjk thead, #hrfbhaqmjk tbody, #hrfbhaqmjk tfoot, #hrfbhaqmjk tr, #hrfbhaqmjk td, #hrfbhaqmjk th {
+#reherngnkr thead, #reherngnkr tbody, #reherngnkr tfoot, #reherngnkr tr, #reherngnkr td, #reherngnkr th {
   border-style: none;
 }
 
-#hrfbhaqmjk p {
+#reherngnkr p {
   margin: 0;
   padding: 0;
 }
 
-#hrfbhaqmjk .gt_table {
+#reherngnkr .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1454,12 +1532,12 @@ Automatic Iteration Method
   border-left-color: #D3D3D3;
 }
 
-#hrfbhaqmjk .gt_caption {
+#reherngnkr .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#hrfbhaqmjk .gt_title {
+#reherngnkr .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1471,7 +1549,7 @@ Automatic Iteration Method
   border-bottom-width: 0;
 }
 
-#hrfbhaqmjk .gt_subtitle {
+#reherngnkr .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1483,7 +1561,7 @@ Automatic Iteration Method
   border-top-width: 0;
 }
 
-#hrfbhaqmjk .gt_heading {
+#reherngnkr .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1495,13 +1573,13 @@ Automatic Iteration Method
   border-right-color: #D3D3D3;
 }
 
-#hrfbhaqmjk .gt_bottom_border {
+#reherngnkr .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#hrfbhaqmjk .gt_col_headings {
+#reherngnkr .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1516,7 +1594,7 @@ Automatic Iteration Method
   border-right-color: #D3D3D3;
 }
 
-#hrfbhaqmjk .gt_col_heading {
+#reherngnkr .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1536,7 +1614,7 @@ Automatic Iteration Method
   overflow-x: hidden;
 }
 
-#hrfbhaqmjk .gt_column_spanner_outer {
+#reherngnkr .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1548,15 +1626,15 @@ Automatic Iteration Method
   padding-right: 4px;
 }
 
-#hrfbhaqmjk .gt_column_spanner_outer:first-child {
+#reherngnkr .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#hrfbhaqmjk .gt_column_spanner_outer:last-child {
+#reherngnkr .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#hrfbhaqmjk .gt_column_spanner {
+#reherngnkr .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1568,11 +1646,11 @@ Automatic Iteration Method
   width: 100%;
 }
 
-#hrfbhaqmjk .gt_spanner_row {
+#reherngnkr .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#hrfbhaqmjk .gt_group_heading {
+#reherngnkr .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1598,7 +1676,7 @@ Automatic Iteration Method
   text-align: left;
 }
 
-#hrfbhaqmjk .gt_empty_group_heading {
+#reherngnkr .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1613,15 +1691,15 @@ Automatic Iteration Method
   vertical-align: middle;
 }
 
-#hrfbhaqmjk .gt_from_md > :first-child {
+#reherngnkr .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#hrfbhaqmjk .gt_from_md > :last-child {
+#reherngnkr .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#hrfbhaqmjk .gt_row {
+#reherngnkr .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1640,7 +1718,7 @@ Automatic Iteration Method
   overflow-x: hidden;
 }
 
-#hrfbhaqmjk .gt_stub {
+#reherngnkr .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1653,7 +1731,7 @@ Automatic Iteration Method
   padding-right: 5px;
 }
 
-#hrfbhaqmjk .gt_stub_row_group {
+#reherngnkr .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1667,15 +1745,15 @@ Automatic Iteration Method
   vertical-align: top;
 }
 
-#hrfbhaqmjk .gt_row_group_first td {
+#reherngnkr .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#hrfbhaqmjk .gt_row_group_first th {
+#reherngnkr .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#hrfbhaqmjk .gt_summary_row {
+#reherngnkr .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1685,16 +1763,16 @@ Automatic Iteration Method
   padding-right: 5px;
 }
 
-#hrfbhaqmjk .gt_first_summary_row {
+#reherngnkr .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#hrfbhaqmjk .gt_first_summary_row.thick {
+#reherngnkr .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#hrfbhaqmjk .gt_last_summary_row {
+#reherngnkr .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1704,7 +1782,7 @@ Automatic Iteration Method
   border-bottom-color: #D3D3D3;
 }
 
-#hrfbhaqmjk .gt_grand_summary_row {
+#reherngnkr .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1714,7 +1792,7 @@ Automatic Iteration Method
   padding-right: 5px;
 }
 
-#hrfbhaqmjk .gt_first_grand_summary_row {
+#reherngnkr .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1724,7 +1802,7 @@ Automatic Iteration Method
   border-top-color: #D3D3D3;
 }
 
-#hrfbhaqmjk .gt_last_grand_summary_row_top {
+#reherngnkr .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1734,11 +1812,11 @@ Automatic Iteration Method
   border-bottom-color: #D3D3D3;
 }
 
-#hrfbhaqmjk .gt_striped {
+#reherngnkr .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#hrfbhaqmjk .gt_table_body {
+#reherngnkr .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1747,7 +1825,7 @@ Automatic Iteration Method
   border-bottom-color: #D3D3D3;
 }
 
-#hrfbhaqmjk .gt_footnotes {
+#reherngnkr .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1761,7 +1839,7 @@ Automatic Iteration Method
   border-right-color: #D3D3D3;
 }
 
-#hrfbhaqmjk .gt_footnote {
+#reherngnkr .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1770,7 +1848,7 @@ Automatic Iteration Method
   padding-right: 5px;
 }
 
-#hrfbhaqmjk .gt_sourcenotes {
+#reherngnkr .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1784,7 +1862,7 @@ Automatic Iteration Method
   border-right-color: #D3D3D3;
 }
 
-#hrfbhaqmjk .gt_sourcenote {
+#reherngnkr .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1792,72 +1870,72 @@ Automatic Iteration Method
   padding-right: 5px;
 }
 
-#hrfbhaqmjk .gt_left {
+#reherngnkr .gt_left {
   text-align: left;
 }
 
-#hrfbhaqmjk .gt_center {
+#reherngnkr .gt_center {
   text-align: center;
 }
 
-#hrfbhaqmjk .gt_right {
+#reherngnkr .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#hrfbhaqmjk .gt_font_normal {
+#reherngnkr .gt_font_normal {
   font-weight: normal;
 }
 
-#hrfbhaqmjk .gt_font_bold {
+#reherngnkr .gt_font_bold {
   font-weight: bold;
 }
 
-#hrfbhaqmjk .gt_font_italic {
+#reherngnkr .gt_font_italic {
   font-style: italic;
 }
 
-#hrfbhaqmjk .gt_super {
+#reherngnkr .gt_super {
   font-size: 65%;
 }
 
-#hrfbhaqmjk .gt_footnote_marks {
+#reherngnkr .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#hrfbhaqmjk .gt_asterisk {
+#reherngnkr .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#hrfbhaqmjk .gt_indent_1 {
+#reherngnkr .gt_indent_1 {
   text-indent: 5px;
 }
 
-#hrfbhaqmjk .gt_indent_2 {
+#reherngnkr .gt_indent_2 {
   text-indent: 10px;
 }
 
-#hrfbhaqmjk .gt_indent_3 {
+#reherngnkr .gt_indent_3 {
   text-indent: 15px;
 }
 
-#hrfbhaqmjk .gt_indent_4 {
+#reherngnkr .gt_indent_4 {
   text-indent: 20px;
 }
 
-#hrfbhaqmjk .gt_indent_5 {
+#reherngnkr .gt_indent_5 {
   text-indent: 25px;
 }
 
-#hrfbhaqmjk .katex-display {
+#reherngnkr .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#hrfbhaqmjk div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#reherngnkr div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2048,8 +2126,8 @@ Wright, Kevin. 2021. <em><span class="nocase">corrgram</span>: Plot a Correlogra
 </div>
 
 
-</section><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{v.2023,
-  author = {V., Arvind},
+</section><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{2023,
+  author = {},
   title = {Tutorial: {Multiple} {Linear} {Regression} with {Forward}
     {Selection}},
   date = {2023-05-13},
@@ -2058,9 +2136,9 @@ Wright, Kevin. 2021. <em><span class="nocase">corrgram</span>: Plot a Correlogra
   abstract = {Using Multiple Regression to predict Quantitative Target
     Variables}
 }
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-v.2023" class="csl-entry quarto-appendix-citeas" role="listitem">
-V., Arvind. 2023. <span>“Tutorial: Multiple Linear Regression with
-Forward Selection.”</span> May 13, 2023. <a href="https://madhatterguide.netlify.app/content/courses/Analytics/30-Modelling/Modules/LinReg/files/forward-selection-1.html">https://madhatterguide.netlify.app/content/courses/Analytics/30-Modelling/Modules/LinReg/files/forward-selection-1.html</a>.
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-2023" class="csl-entry quarto-appendix-citeas" role="listitem">
+<span>“Tutorial: Multiple Linear Regression with Forward
+Selection.”</span> 2023. May 13, 2023. <a href="https://madhatterguide.netlify.app/content/courses/Analytics/30-Modelling/Modules/LinReg/files/forward-selection-1.html">https://madhatterguide.netlify.app/content/courses/Analytics/30-Modelling/Modules/LinReg/files/forward-selection-1.html</a>.
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

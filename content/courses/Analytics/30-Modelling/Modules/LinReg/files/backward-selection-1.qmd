@@ -23,7 +23,7 @@ citation: true
 #| message: true
 #| warning: false
 options(scipen = 1, digits = 3) #set to three decimal 
-knitr::opts_chunk$set(echo = TRUE,warning = FALSE,message = FALSE)
+
 library(tidyverse)
 library(ggformula)
 library(mosaic)
@@ -44,42 +44,98 @@ library(grateful)
 
 ```
 
+#### Plot Fonts and Theme
+
 ```{r}
-#| label: plot theme
-# Let us set a plot theme for Data visualisation
+#| label: plot-theme
+#| echo: true
+#| cache: false
+#| code-fold: true
+#| messages: false
+#| warning: false
 
-# my_theme <- function(){  # Creating a function
-#   theme_classic() +  # Using pre-defined theme as base
-#   theme(axis.text.x = element_text(size = 12, face = "bold"),  # Customizing axes text      
-#         axis.text.y = element_text(size = 12, face = "bold"),
-#         axis.title = element_text(size = 14, face = "bold"),  # Customizing axis title
-#         panel.grid = element_blank(),  # Taking off the default grid
-#         plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
-#         legend.text = element_text(size = 12, face = "italic"),  # Customizing legend text
-#         legend.title = element_text(size = 12, face = "bold"),  # Customizing legend title
-#         legend.position = "right",  # Customizing legend position
-#         plot.caption = element_text(size = 12))  # Customizing plot caption
-# }   
+library(systemfonts)
+library(showtext)
+library(tidyverse)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../../fonts/Alegreya-BoldItalic.ttf")
 
-my_theme <- function(){  # Creating a function
-  theme_classic() +  # Using pre-defined theme as base
-  theme(plot.title = element_text(face = "bold", size = 14),
-        axis.text.x = element_text(size = 10, face = "bold"),  
-        # Customizing axes text      
-        axis.text.y = element_text(size = 10, face = "bold"),
-        axis.title = element_text(size = 12, face = "bold"),  
-        # Customizing axis title
-        panel.grid = element_blank(),  # Taking off the default grid
-        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
-        legend.text = element_text(size = 8, face = "italic"),  
-        # Customizing legend text
-        legend.title = element_text(size = 10, face = "bold"),  
-        # Customizing legend title
-        legend.position = "right",  # Customizing legend position
-        plot.caption = element_text(size = 8))  # Customizing plot caption
-}   
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+showtext_auto(enable = TRUE) #enable showtext
+##
+theme_custom <- function(){ 
+    font <- "Alegreya"   #assign font family up front
+    '%+replace%' <- ggplot2::'%+replace%' # nolint
+        
+    ggplot2::theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
+    
+    theme(
+      text = element_text(family = font),  #set base font family
+      
+      #text elements
+      plot.title = element_text(                 #title
+                   family = font,          #set font family
+                   size = 24,                    #set font size
+                   face = 'bold',                #bold typeface
+                   hjust = 0,                    #left align
+                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
+      plot.title.position = "plot", 
+      
+      plot.subtitle = element_text(              #subtitle
+                   family = font,          #font family
+                   size = 14,                   #font size
+                   hjust = 0,                   #left align
+                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
+      
+      plot.caption = element_text(               #caption
+                   family = font,          #font family
+                   size = 9,                     #font size
+                   hjust = 1),                   #right align
+      
+      plot.caption.position = "plot",            #right align
+      
+      axis.title = element_text(                 #axis titles
+                   family = "Roboto Condensed",  #font family
+                   size = 12),                   #font size
+      
+      axis.text = element_text(                  #axis text
+                   family = "Roboto Condensed",  #font family
+                   size = 9),                    #font size
+      
+      axis.text.x = element_text(                #margin for axis text
+                    margin = margin(5, b = 10))
+      
+      #since the legend often requires manual tweaking 
+      #based on plot content, don't define it here
+    )
+}
+
+## Use available fonts in ggplot text geoms too!
+ggplot2::update_geom_defaults(geom = "text",new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
 
 ```
+
 
 In this tutorial, we will use the Boston housing dataset. Our research
 question is:
@@ -146,6 +202,8 @@ We can use `purrr` to evaluate all pair-wise correlations in one shot:
 ```{r}
 #| label: corrtest plots
 
+ggplot2::theme_set(new = theme_custom())
+##
 all_corrs <- housing %>% 
   select(where(is.numeric)) %>% 
   
@@ -173,8 +231,8 @@ all_corrs %>%
     caption = "Significance = -log10(p.value)"
   ) %>%
   gf_point(estimate ~ reorder(predictor, estimate)) %>%
-  gf_labs(x = "Predictors", y = "Correlation with Median House Price") %>%
-  gf_theme(my_theme()) %>%
+  gf_labs(title = "Correlation Scores with Target Variable", 
+          x = "Predictors", y = "Correlation with Median House Price") %>%
   gf_theme(theme(axis.text.x = element_text(angle = 45, hjust = 1))) %>%
   gf_refine(
     scale_colour_distiller("Correlation", type = "div", palette = "RdBu"),
@@ -258,15 +316,15 @@ We will use the iteration capability of `purrr` to **sequentially drop
 one variable at a time** from the maximal(15 predictor) model, build a
 new reduced model each time, and compute the `r.squared`:
 
-::: {layout="[ [1,1], [1]]"}
+
 ```{r}
 #| label: All models at once
+#| code-fold: true
 
 housing_model_set <- tibble(all_vars = 
                             list(housing_maximal_tidy$term), # p-hacked order!!
                             keep_vars = seq(1, n_vars),
                             data = list(housing_numeric))
-housing_model_set
 
 # Unleash purrr in a series of mutates
 housing_model_set <- housing_model_set %>%
@@ -291,8 +349,6 @@ housing_model_set <- housing_model_set %>%
              .l = list(data, formula),
              .f = \(data, formula) lm(formula, data = data)
            ))
-# Check everything after the operation
-housing_model_set
 
 # Tidy up the models using broom to expose their metrics
 housing_models_tidy <- housing_model_set %>% 
@@ -307,7 +363,16 @@ housing_models_tidy <- housing_model_set %>%
   # Remove unwanted columns, keep model and predictor count
   select(keep_vars, tidy_models) %>%
   unnest(tidy_models)
+housing_models_tidy
 
+```
+
+
+```{r}
+#| label: Plot-of-r.squared-vs-No-of-Predictors
+#| code-fold: true
+ggplot2::theme_set(new = theme_custom())
+##
 housing_models_tidy %>%
   gf_line(
     r.squared ~ keep_vars,
@@ -330,18 +395,19 @@ housing_models_tidy %>%
     data = housing_models_tidy %>% filter(keep_vars == 4)
   ) %>%
   
-  gf_hline(yintercept = 0.7, linetype = "dashed") %>%
-  gf_theme(my_theme())
-
+  gf_hline(yintercept = 0.7, linetype = "dashed") 
 
 ```
-:::
+
 
 At the loss of some 5% in the `r.squared`, we can drop our model
-complexity from 15 predictors to say 4! Our final model will then be:
+complexity from 15 predictors to say 4! Filtering the set of models for just the one that has 4 `predictors`, we obtain final model:
 
 ```{r}
-#| label: Final Model
+#| label: Final-Model
+#| code-fold: true
+ggplot2::theme_set(new = theme_custom())
+##
 housing_model_final <- 
   housing_model_set %>% 
   
@@ -359,10 +425,23 @@ housing_model_final <-
   
   # Remove unwanted columns, keep model and predictor count
   select(keep_vars, models, tidy_models) %>%
-  unnest(tidy_models)
+  unnest(tidy_models) %>% 
+  select(-c(1,2))
 
 housing_model_final
-  
+```
+
+which we can state in equation form as:
+
+$$
+\widehat{cmedv} \sim 24.459 - 0.563 * dis - 0.673 * lstat - 0.957 * ptratio  + 4.199 * rm
+$$
+
+And plotting this model, we have:
+
+```{r}
+#| label: Final-Model-Plot
+#| code-fold: true
   
 housing_model_final %>%  
   # And plot the model
@@ -373,17 +452,11 @@ housing_model_final %>%
   gf_errorbar(conf.low + conf.high ~ term, 
               width = 0.1, 
               title = "Multiple Regression",
-              subtitle = "Model Estimates with Confidence Intervals") %>% 
-  gf_theme(my_theme())
-
+              subtitle = "Model Estimates with Confidence Intervals")
 
 ```
 
-Our current best model can be stated as:
 
-$$
-\widehat{cmedv} \sim 24.459 - 0.563 * dis - 0.673 * lstat - 0.957 * ptratio  + 4.199 * rm
-$$
 
 ## {{< iconify flat-color-icons workflow >}} Workflow: Diagnostics
 
@@ -413,27 +486,26 @@ housing_model_final_augment
 #| layout-nrow: 2
 #| message: false
 #| warning: false
+#| results: hold
+ggplot2::theme_set(new = theme_custom())
+##
 housing_model_final_augment %>% 
   gf_point(.resid ~ .fitted, title = "Residuals vs Fitted") %>%
-  gf_smooth() %>% 
-  gf_theme(my_theme)
-
+  gf_smooth() 
+##
 housing_model_final_augment %>% 
   gf_qq(~ .std.resid, title = "Q-Q Residuals") %>% 
-  gf_qqline() %>%
-  gf_theme(my_theme)
-
+  gf_qqline() 
+##
 housing_model_final_augment %>% 
   gf_point(sqrt(.std.resid) ~ .fitted, 
            title = "Scale-Location Plot") %>%
-    gf_smooth() %>% 
-  gf_theme(my_theme)
-
+    gf_smooth() 
+##
 housing_model_final_augment %>% 
   gf_point(.std.resid ~ .hat, 
            title = "Residuals vs Leverage") %>%
-    gf_smooth() %>% 
-  gf_theme(my_theme)
+    gf_smooth() 
 
 ```
 
