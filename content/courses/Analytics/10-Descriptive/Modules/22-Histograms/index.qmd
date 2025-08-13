@@ -79,44 +79,58 @@ library(ggplot2)
 
 ```{r}
 #| label: plot-theme
-#| echo: fenced
+#| echo: true
 #| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
 
+library(systemfonts)
 library(showtext)
-font_add(family = "Alegreya", regular = "../../../../fonts/Alegreya/Alegreya-Regular.ttf")
-font_add(family = "Roboto Condensed", regular = "../../../../fonts/RobotoCondensed-Regular.ttf")
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
 showtext_auto(enable = TRUE) #enable showtext
 ##
-library(ggplot2)
 theme_custom <- function(){ 
     font <- "Alegreya"   #assign font family up front
     '%+replace%' <- ggplot2::'%+replace%' # nolint
     
-    theme_classic(base_size = 14) %+replace%   #replace elements we want to change
+    theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
     
     theme(
       text = element_text(family = font),  #set base font family
       
       #text elements
       plot.title = element_text(                 #title
-                   family = "Alegreya",          #set font family
-                   size = 18,                    #set font size
+                   family = font,          #set font family
+                   size = 24,                    #set font size
                    face = 'bold',                #bold typeface
                    hjust = 0,                    #left align
                    margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
       plot.title.position = "plot", 
       
       plot.subtitle = element_text(              #subtitle
-                   family = "Alegreya",          #font family
+                   family = font,          #font family
                    size = 14,                   #font size
                    hjust = 0,                   #left align
                    margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
       
       plot.caption = element_text(               #caption
-                   family = "Alegreya",          #font family
+                   family = font,          #font family
                    size = 9,                     #font size
                    hjust = 1),                   #right align
       
@@ -151,9 +165,6 @@ ggplot2::update_geom_defaults(geom = "text",new = list(
 ggplot2::theme_set(new = theme_custom())
 
 ```
-
-
-
 
 
 ## {{< iconify fxemoji japanesesymbolforbeginner >}} What graphs will we see today?

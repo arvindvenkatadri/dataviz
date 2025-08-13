@@ -65,7 +65,9 @@ library(TeachHist)
 library(TeachingDemos)
 library(grateful)
 library(explore) # New, Easy package for Stats Test and Viz, and other things
-
+##
+library(statlingua) # For Statistics explained in simple English using AI
+library(ellmer)
 
 ```
 
@@ -159,6 +161,7 @@ ggplot2::update_geom_defaults(geom = "text",new = list(
 ggplot2::theme_set(new = theme_custom())
 
 ```
+
 
 
 ## {{< iconify fxemoji japanesesymbolforbeginner >}} Introduction
@@ -836,4 +839,35 @@ cite_packages(
 
 [^3]: <https://www.r-bloggers.com/2021/11/anderson-darling-test-in-r-quick-normality-check/>
 
+### An AI Generated Explanation of the Statistical Models
+
+```{r}
+#| label: ai-explanations
+#| echo: false
+library(ellmer)
+library(statlingua)
+library(chores)
+client <- ellmer::chat_ollama(model = "llama3.1", echo = FALSE)
+###
+
+exam_context <- "
+The model uses a data set on child exam grades from the openintro package in R.
+The hypothesis is that the average course grade is 80%. The model includes a t-test and a Wilcoxon signed-rank test to assess whether the mean of the course grades significantly differs from this value.
+The variables are:
+- `course_grade`: The final grade in the course, which is a numeric variable.
+- `semester`: The semester in which the course was taken, which is a factor variable.
+- `sex`: Sex of the student ( Man / Woman )
+- ` exam1`, `exam2`, `exam3`: Scores on three exams, which are numeric variables.
+The model also includes a permutation test and a bootstrap test to further assess the hypothesis."
+
+explanation4 <- statlingua::explain(t4, client = client, 
+                context = exam_context,
+                audience = "novice", verbosity = "brief") # moderate / detailed
+str(explanation4)
+
+explanation4[[1]] %>% 
+  knitr::kable(format = "html", escape = FALSE, align = "l") %>% 
+  kableExtra::kable_styling(full_width = F, position = "left") %>% 
+  kableExtra::column_spec(1, width = "100%")
+```
 

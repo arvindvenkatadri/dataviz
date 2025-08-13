@@ -8,7 +8,7 @@ library(checkdown)
 library(epoxy)
 library(explore) # fake data generation
 library(grateful)
-# library(conflicted)
+library(kableExtra) # For making tables
 # conflicts_prefer(dplyr::filter, dplyr::last, dplyr::glimpse, base::max)
 library(downloadthis)
 #devtools::install_github("mccarthy-m-g/embedr")
@@ -113,7 +113,8 @@ literacy %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), position = "float_right") %>% 
   column_spec(2:4, bold = T) %>%
   row_spec(1:2, bold = T, color = "white", background = "#D7261E") %>% 
-    footnote(general = "SOURCE: U.S. Department of Education, National Center for Education Statistics, Program for the International Assessment of Adult Competencies (PIAAC), U.S. PIAAC 2017, U.S. PIAAC 2012/2014.")
+    kableExtra::footnote(general = "SOURCE: U.S. Department of Education, National Center for Education Statistics, Program for the International Assessment of Adult Competencies (PIAAC), U.S. PIAAC 2017, U.S. PIAAC 2012/2014.")
+
 
 read_csv("../../../../../materials/Data/pronouns.csv") %>% 
   #filter(No == "1") %>% 
@@ -271,15 +272,6 @@ docVisits_modified %>%
 ##
 docVisits_modified %>% 
   mosaic::favstats(income ~ freepoor + nchronic, data = .) # Don't use fav_stats with formula!!!
-
-
-mpg %>%
-  head(10) %>% 
-  tt(theme = c("striped")) %>%
-  setNames(c("Manufacturer", "Model", "Engine\nDisplacement", 
-                    "Model\n Year", "Cylinders", "Transmission",
-                    "Drivetrain", "City\n Mileage", "Highway\n Mileage",
-                    "Fuel", "Class\nOf\nVehicle")) 
 
 
 mpg %>% 
