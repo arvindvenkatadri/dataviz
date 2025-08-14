@@ -492,7 +492,7 @@ The *bootstrap test* uses the sample at hand to generate many similar samples *w
 
 The *permutation test* generates many permutations of the data and generates appropriates measures/statistics *under the NULL hypothesis*. Which is why the permutation test has a NULL distribution centered at $0$ in this case, our NULL hypothesis. 
 
-As student [Sneha Manu Jacob](https://linkedin.com) remarked in class, *Permutation flips the signs of the data values in our sample; Bootstrap flips the number of times each data value is (re)used*. Good Insight!!
+As student [Sneha Manu Jacob](https://in.linkedin.com/in/sneha-manu-jacob-781a62379) remarked in class, *Permutation flips the signs of the data values in our sample; Bootstrap flips the number of times each data value is (re)used*. Good Insight!!
 
 :::
 
@@ -620,9 +620,9 @@ stats::shapiro.test(x = exam_grades$course_grade) %>%
   broom::tidy()
 
 ```
-The [Shapiro-Wilkes Test]{} tests whether a data variable is normally distributed or not. Without digging into the maths of it, let us say it makes the assumption that the variable **is** so distributed and then computes the probability of how likely this is. So a **high** `p-value` ($0.47$) is a good thing here. 
+The Shapiro-Wilkes Test tests whether a data variable is normally distributed or not. Without digging into the maths of it, let us say it makes the assumption that the variable **is** so distributed and then computes the probability of how likely this is. So a **high** `p-value` ($0.47$) is a good thing here. 
 
-When we have *large* Quant variables ( i.e. with length >= 5000), the `shapiro.test` does not work, and we use an Anderson-Darling[^3] test to confirm normality:
+When we have *large* Quant variables ( i.e. with length >= 5000), the function `shapiro.test` does not work, and we use an Anderson-Darling[^3] test to confirm normality:
 
 ```{r}
 library(nortest)
@@ -823,7 +823,7 @@ cite_packages(
   output = "table",
   out.dir = ".",
   out.format = "html",
-  pkgs = c("explore", "resampledata", "openintro", "infer", "TeachHist", "TeachingDemos")
+  pkgs = c("ellmer", "explore", "resampledata", "openintro", "infer", "statlingua", "TeachHist", "TeachingDemos")
 ) %>%
   knitr::kable(format = "simple")
 
@@ -841,9 +841,18 @@ cite_packages(
 
 ### An AI Generated Explanation of the Statistical Models
 
+We have used the `statlingua` package to generate an AI explanation of the statistical model `t4` we have used in this module. `statlingua` interfaces to the `ellmer` package, which in turn interfaces to the `ollama` API for AI explanations. The AI model used is `llama3.1`, and the explanation is tailored for a novice audience with moderate verbosity.
+
+::: callout-note
+### AI Generated Explanation
+The command was run in the Console and the results pasted into this Quarto document. I have not edited this at all. Do look for complex verbiage and outright hallucinatory responses. The very last para seems to be...hmmm!!
+
+:::
+
 ```{r}
 #| label: ai-explanations
-#| echo: false
+#| code-fold: true
+#| eval: false
 library(ellmer)
 library(statlingua)
 library(chores)
@@ -862,12 +871,44 @@ The model also includes a permutation test and a bootstrap test to further asses
 
 explanation4 <- statlingua::explain(t4, client = client, 
                 context = exam_context,
-                audience = "novice", verbosity = "brief") # moderate / detailed
-str(explanation4)
+                audience = "novice", verbosity = "moderate") # moderate / detailed
 
-explanation4[[1]] %>% 
-  knitr::kable(format = "html", escape = FALSE, align = "l") %>% 
-  kableExtra::kable_styling(full_width = F, position = "left") %>% 
-  kableExtra::column_spec(1, width = "100%")
 ```
 
+### One-Sample t-test Output Interpretation
+
+This is a **One-sample t-test** output summary from R, comparing the mean course grade (`course_grade`) against 80%. Key elements are outlined below:
+
+
+#### Estimate, Statistic, p-value, and N/A Parameter
+
+-   **estimate (72.2):**
+    * Indicates the estimated sample mean of `course_grade`, in this case approximately 72.2.
+    * This suggests that on average, across all examined children, their final grades are below 80%.
+
+-   **statistic (-12.1):**
+    * The large negative value indicates how many standard deviations away from the hypothesized mean ($80$) our observed estimate is; this can help us grasp just how 'unexpected' our outcome really is.
+    * This large difference would usually correspond to a very small p-value under $H_0$, which supports rejecting it.
+
+
+-   **p-value (2.19e-26):**
+    * Extremely low p-values (usually below 0.05 or even .001) indicate that the observed effect or deviation from the expected value is statistically significant.
+    * In this context, the hypothesis of 80% being the true mean can be strongly rejected since achieving such a grade as often as observed purely by chance for our sample size is incredibly unlikely.
+
+
+-   **parameter (232):**
+    - The parameter usually refers to the degrees of freedom used in the calculation of test statistics.
+    - However, since we're looking at one sample t-test results here it likely indicates that there are 231 data points or more as 'available'. A large such number is expected given that often this statistic simply becomes irrelevant to further inferences about such hypotheses (especially those based on a normal distribution assumption), because for larger n approaching population size all t-statistics should effectively be treated identically and become useless for exact confidence intervals etc..
+
+
+#### Confidence Intervals
+
+ - **conf.low** and **conf.high**: These provide bounds within which the true mean can be estimated not to lie with 95% probability, given our understanding of the test's results so far.
+ 
+#### Additional Details
+
+-   *method*: Often 'One Sample', as seen in this example. One-sample tests are used when comparing an individual sample or a group of samples against a known population parameter.
+-   *alternative*: This denotes the directionality assumption during hypothesis testing; by default it is set to two-sided for most statistical tests, which means we want to determine whether our result (if any) contradicts H0 in either direction (above or below, greater or smaller). There are one-tailed tests too though which look at differences only above (> or <), not both sides.
+
+
+**Remember**, given the small p-value (.0022e+26 being effectively zero), you can reject H0 very safely and conclude that observed exam grade averages definitely differ significantly from what we'd expect if things were as described in our model according to a normal probability distribution. The large t-statistic (-12, indicating substantial deviation) confirms this. 

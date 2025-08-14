@@ -1,6 +1,6 @@
 ---
 title: "\U0001F0CF Inference for Two Independent Means"
-subtitle: "How different are you?"
+subtitle: "How diff-different(sic) are you?"
 abstract: "Two independent means from two separate populations."
 date: 22/Nov/2022
 date-modified: "`r Sys.Date()`"
@@ -45,6 +45,7 @@ library(skimr) # data inspection
 library(resampledata3) # Datasets from Chihara and Hesterberg's book
 library(openintro) # datasets
 library(gt) # for tables
+library(ggprism) # Prism-like ggplot themes
 ##
 library(visStatistics) # All-in-one Stats test package
 
@@ -63,7 +64,8 @@ library(TeachingDemos)
 library(grateful)
 library(downloadthis)
 knitr::opts_chunk$set(tidy = 'styler')
-library(tidyverse)
+library(statlingua) # For Statistics explained in simple English using AI
+library(ellmer)
 
 ```
 
@@ -188,30 +190,55 @@ different components of mathematics.
 #| results: hold
 data("MathAnxiety",package = "resampledata")
 MathAnxiety
+glimpse(MathAnxiety)
 MathAnxiety_inspect <- inspect(MathAnxiety)
 MathAnxiety_inspect$categorical
 MathAnxiety_inspect$quantitative
 
 ```
+### {{< iconify streamline dictionary-language-book-solid >}} Data Dictionary
 
-We have \~600 data entries, and with 4 Quant variables; `Age`,`AMAS`,
-`RCMAS`, and `AMAS`; and two Qual variables, `Gender` and `Grade`. A
-simple dataset, with enough entries to make it worthwhile to explore as
-our first example.
+The `MathAnxiety` dataset contains data on students' anxiety levels, with \~600 data observations. 
+
+::: callout-note
+### Quantitative Data
+- `Age`: Age of the student (in years)
+- `AMAS`: Anxiety score from the Abbreviated Math Anxiety Scale (AMAS)
+- `RCMAS`: Anxiety score from the Revised Children's Manifest Anxiety Scale (RCMAS)
+- `Arith`: Score on Arithmetic Test
+:::
+
+::: callout-note
+### Qualitative Data
+
+- `Gender`: Boy / Girl
+- `Grade`: Grade level of the student (e.g., 5th, 6th, etc.)
+
+:::
+
+
+### {{< iconify  material-symbols lab-research >}} Hypothesis and Research Questions
+- The *target variable-s* for an experiment that resulted in this data might be either of the two Anxiety-related scores. 
 
 ::: callout-note
 ## Research Question
 
-Is there a difference between boy and girl "anxiety" levels for AMAS
+- Is there a difference between `Boy` and `Girl` "anxiety" levels for `AMAS`
 (test) in the **population** from which the MathAnxiety dataset is a
 sample?
+- Ditto for the `RCMAS` scores
+- Apropos: We may also be interested in the **correlation** between the *anxiety-related* variables and the `Arith` score obtained, and if it differs between `Boy`s and `Girl`s. 
 :::
+
+
+### {{< iconify mdi chart-areaspline >}} Graphs
 
 First, histograms, densities and counts of the variable we are
 interested in, after converting data into long format:
 
 ```{r}
-#| label: MathAnxiety-graphs
+#| label: MathAnxiety-summaries
+#| code-fold: true
 #| layout-ncol: 2
 #| message: false
 
@@ -224,16 +251,30 @@ MathAnxiety %>%
   group_by(Gender) %>% 
   summarise(mean = mean(AMAS), n = n())
 
-#
+```
+
+
+```{r}
+#| label: fig-MathAnxiety-graphs
+#| fig-caption: AMAS Anxiety Score graphs
+#| fig-subcap:
+#| - "AMAS Anxiety Score Densities"
+#| - "AMAS Anxiety Score Jitter Plot"
+#| code-fold: true
+#| layout-ncol: 2
+#| message: false
+# https://www.statology.org/r-geom_path-each-group-consists-of-only-one-observation/
 MathAnxiety %>%
   gf_density(
     ~ AMAS,
     fill = ~ Gender,
     alpha = 0.5,
-    title = "Math Anxiety Score Densities",
+    title = "AMAS Math Anxiety Score Densities",
     subtitle = "Boys vs Girls"
   )
-##
+
+
+
 MathAnxiety %>% 
   pivot_longer(cols = -c(Gender, Age, Grade),
                              names_to = "type", 
@@ -244,24 +285,22 @@ MathAnxiety %>%
     group = ~ type, color = ~ Gender,
     width = 0.08, alpha = 0.3,
     ylab = "AMAS Anxiety Scores",
-    title = "Math Anxiety Score Jitter Plots",
+    title = "AMAS Math Anxiety Score Jitter Plots",
     subtitle = "Illustrating Difference in Means"
   ) %>%
-  gf_summary(geom = "point", size = 3, colour = "black") %>% 
-  gf_summary(group = ~ 1, # See the reference link above. Damn!!!
+  gf_summary(group = ~ 1, # Damn!!! Look at the reference link above
              fun = "mean", geom = "line", 
              colour = ~"MeanDifferenceLine", 
              lty = 1, linewidth = 2) %>% 
+  gf_summary(geom = "point", size = 3, colour = "black") %>% 
   gf_refine(scale_x_discrete(
     breaks = c("Boy", "Girl"),
     labels = c("Boy", "Girl"),
     guide = "prism_bracket"
   )) %>%
-  gf_refine(
-    annotate(x = 0.65, y = 25, geom = "text", label = "Mean\n Boys' Anxiety Scores"),
-    annotate(x = 2.35, y = 25, geom = "text", label = "Mean\n Girls' Anxiety Scores"),
-    annotate(x = 1.5, y = 30, geom = "label", label = "Mean Difference Line\nSlope indicates\n differences in mean", fill = "moccasin")
-  ) %>% 
+  gf_annotate(x = 0.65, y = 25, geom = "text", label = "Mean\n Boys' Anxiety Scores") %>% 
+    gf_annotate(x = 2.35, y = 25, geom = "text", label = "Mean\n Girls' Anxiety Scores") %>% 
+    gf_annotate(x = 1.5, y = 30, geom = "label", label = "Mean Difference Line\nSlope indicates\n differences in mean", fill = "moccasin") %>% 
   gf_theme(theme(legend.position = "none"))
 
 ```
@@ -287,6 +326,7 @@ also look at Q-Q plots for both variables:
 ```{r}
 #| layout-ncol: 2
 #| warning: false
+#| code-fold: true
 
 # Set graph theme
 theme_set(new = theme_custom())
@@ -346,7 +386,7 @@ shapiro.test(girls_AMAS$AMAS)
 The distributions for anxiety scores for boys and girls are almost
 normal, visually speaking. With the Shapiro-Wilk test we find that the
 scores for `girls` **are** normally distributed, but the `boys` scores
-are not so. Sigh.
+are not so. Tch, tch. These boys. 
 
 ::: callout-note
 The `p.value` obtained in the `shapiro.wilk` test suggests the chances
@@ -434,7 +474,9 @@ similar, we typically cannot use a parametric `t.test`. However, we can
 still examine the results:
 
 ```{r}
-mosaic::t_test(AMAS ~ Gender, data = MathAnxiety) %>% 
+t1_amas <- mosaic::t_test(AMAS ~ Gender, data = MathAnxiety) 
+
+t1_amas%>% 
   broom::tidy()
 ```
 
@@ -508,12 +550,14 @@ MathAnxiety %>%
            320 ~ 2.25, inherit = FALSE)
 
 ```
+This is pretty similar to @fig-MathAnxiety-graphs-2 with **actual** scores. Here we have plotted the **ranks** of the scores.
+
 
 ```{r}
-wilcox.test(AMAS ~ Gender, data = MathAnxiety, 
+t2_amas <- wilcox.test(AMAS ~ Gender, data = MathAnxiety, 
             conf.int = TRUE, 
-            conf.level = 0.95) %>% 
-  broom::tidy()
+            conf.level = 0.95)
+t2_amas %>% broom::tidy()
 ```
 
 The `p.value` is very similar, $0.00077$, and again the
@@ -738,6 +782,69 @@ visstat(x = MathAnxiety$Gender,
 ```
 
 The tool runs the Welch t-test and declares the p-value to be significant. The Shapiro-Wilk test results here also confirm what we had performed earlier. Hence we can say that we may reject the NULL Hypothesis and state that there is a statistically significant difference in `AMAS` anxiety scores between Boys and Girls. 
+
+### An AI Generated Explanation of the Statistical Model
+
+We have used the `statlingua` package to generate an AI explanation of the statistical model `t1_amas` we have used in this module. `statlingua` interfaces to the `ellmer` package, which in turn interfaces to the `ollama` API for AI explanations. The AI model used is `llama3.1`, and the explanation is tailored for a novice audience with moderate verbosity.
+
+::: callout-note
+### AI Generated Explanation
+The command was run in the Console and the results pasted into this Quarto document. I have not edited this at all. Do look for complex verbiage and outright hallucinatory responses. 
+
+:::
+
+```{r}
+#| label: ai-explanations
+#| code-fold: true
+#| eval: false
+library(ellmer)
+library(statlingua)
+library(chores)
+client <- ellmer::chat_ollama(model = "llama3.1", echo = FALSE)
+###
+
+exam_context <- "
+The model uses a data set on child Math-related Anxiety scores from the resampledata package in R. The dataset has Age, Gender, Grade, and Arithmeitc test score variables, along with AMS and RCMAS math-anxiety scores. 
+The hypothesis is that the average Math Anxiety score is no different for Boys and Girls. The model conducted is a two-sample t-test to assess whether the mean of the Math Anxiety scores significantly differ between Boys and Girls."
+
+explanation_amas <- statlingua::explain(t1_amas, client = client, 
+                context = exam_context,
+                audience = "novice", verbosity = "moderate") # moderate / detailed
+
+```
+
+#### Welch Two Sample t-test Output Explanation
+
+The output given represents the results from conducting a **Welch Two Sample t-test** on the `AMAS` (Math-Related Anxiety Scale) variable in the dataset, specifically examining differences in mean anxiety scores between boys (`Boy`) and girls (`Girl`).
+
+##### Assumptions and Suitability
+Given context, the hypothesis to be tested is that average Math Anxiety scores are no different for Boys and Girls. A Welch Two Sample t-test is chosen, suitable given its independence of observations assumption aligned with the stated dataset properties.
+
+It assumes data follows a normal distribution in each group, though the test itself does not check for normality. However, due to non-homogeneous variance typical in many datasets, a t-test variant specifically designed for such cases, like Welch's, is preferable over the (more restrictive) homoscedastic t-test.
+
+##### Output Components
+
+- **data**: ` AMAS by Gender` - This indicates that the analysis comparing means of Math anxiety scores (`AMAS`) between genders (`Boy` and `Girl`) generated this output.
+- **Test Statistic**: The calculated test statistic is `t = -3.2918`. A negative t-value suggests an average math-anxiety-score difference in a direction favoring girls (higher average score for them), compared to boys.
+- **Degrees of Freedom (`df`)**: The degrees of freedom associated with this test are `df = 580.2`. This value is not an integer, which is typical for Welch’s t-test due to its handling of unequal variances among the groups.
+- **p-value**: The p-value from the output, `0.001056`, is considered highly significant at any conventional significance level (e.g., $\alpha = 0.05$). This implies the average Math Anxiety score significantly differs between boys and girls according to the test.
+- **Alternative Hypothesis**: This output supports an alternative hypothesis stating that true differences in means (`true difference in means between group Boy and group Girl is not equal to 0`). From the research question's perspective, this confirms that there are significant differing mean Math Anxiety scores for boys and girls.
+- **95% Confidence Interval (CI)**: Provided a confidence interval which suggests with 95% confidence, the population average math anxiety score difference can fall between ` -2.8222293` and `-0.7129706`. [Since zero is within this range, one might initially question 
+the interpretation of significant differences based on p-values alone]{.black .bg-red}. [***Hallucination!!!***]{.black .bg-gold}
+- **Sample Estimates**: Offers summary statistics (means) for individual groups (`mean in group Boy = 21.16718`, `mean in group Girl = 22.93478`), highlighting the observed average Math Anxiety scores per gender.
+
+##### Checking Assumptions and Practical Suggestions
+
+Given this analysis, practical steps to check assumptions include:
+- **Normality of Data**: Assess using graphical methods (histograms, Q-Q plots for each group). Check with **Shapiro-Wilk test**.
+  
+  If data shows clear indication against normality or from formal tests (e.g., Shapiro-Wilk W-statistic indicates distribution significantly deviates from being normally distributed), consider a non-parametric alternative.
+
+- **Equal Variance Assumption**: Since the Welch variant was used here, assessing equal variances isn't directly necessary with its output. But to check formally, one might use **Levene’s Test** or **Barlett's test**, and if significant, reconsider using Welch's for a better estimate of effects in such scenarios.
+
+##### Conclusion
+At $\alpha = 0.001056$, the observed differences (higher mean Math Anxiety among girls than boys) are considered statistically significant. Therefore, based on this analysis and context provided, we have sufficient evidence to reject the null hypothesis that there is no difference in average Math-related Anxiety Scores between boys and girls. 
+
 
 
 ## {{< iconify pajamas issue-type-test-case >}} Case Study #2: Youth Risk Behavior Surveillance System (YRBSS) survey

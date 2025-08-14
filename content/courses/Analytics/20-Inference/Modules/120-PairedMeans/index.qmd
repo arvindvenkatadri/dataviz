@@ -503,14 +503,18 @@ We can apply the *linear-model-as-inference* interpretation both to the
 original data and to the sign.rank data: 
 
 $$
-lm(y_i - x_i \sim 1) = \beta_0\\
-\\ and\\
+lm(y_i - x_i \sim 1) = \beta_0
+$$
+
+and
+
+$$
 lm(\ sign.rank[\ Final(i) - Semifinal(i)\ ] \sim 1) = \beta_0\\
 $$
 
 And the Hypothesis for both interpretations would be:\
 $$
-H_0: \beta_0 = 0\\
+H_0: \beta_0 = 0;\\
 \\\
 H_a: \beta_0 \ne 0\\
 $$
@@ -529,7 +533,7 @@ lm(signed_rank(Semifinal - Final) ~ 1,
 
 ```
 
-We observe that using the linear model method for the original scores and the sign-rank scores both sdo not permit us to reject the $H_0$ Null Hypothesis, since `p.values` are high, and the `confidence.intervals` straddle $0$.
+We observe that using the linear model method for the original scores and the sign-rank scores both do not permit us to reject the $H_0$ Null Hypothesis, since `p.values` are high, and the `confidence.intervals` straddle $0$.
 
 #### Permutation Tests
 
@@ -595,6 +599,7 @@ about the tests:
 
 ```{r}
 #| results: hold
+#| code-fold: true
 
 mosaic::t.test(x = Diving2017$Semifinal, 
                y = Diving2017$Final,
@@ -663,7 +668,7 @@ e)  Redo the hypothesis test without this observation. Would we reach
 data("Groceries")
 Groceries <- Groceries %>% 
   mutate(Product = stringr::str_squish(Product)) # Knock off extra spaces
-Groceries
+glimpse(Groceries)
 Groceries_inspect <- inspect(Groceries)
 Groceries_inspect$categorical
 Groceries_inspect$quantitative
@@ -748,9 +753,7 @@ gf_theme(theme(legend.position = "none"))
 :::
 ::::
 
-Not close to the Gaussian...there is clearly some skew to the right,
-with some items being very costly compared to the rest. More when we
-check the assumptions on data for the tests.
+Apart from the fact that prices cannot be negative, the distributions are otherwise not at all close to the Gaussian...there is clearly some skew to the right, with some items being very costly compared to the rest. More when we check the assumptions on data for the tests.
 
 How about price differences, what we are interested in? 
 
@@ -762,7 +765,7 @@ How about price differences, what we are interested in?
 ggplot2::theme_set(new = theme_custom())
 
 Groceries_long %>% 
-  gf_boxplot(prices~ store, 
+  gf_boxplot(prices ~ store, 
              fill = ~ store) %>% 
   gf_refine(scale_fill_brewer(palette = "Set1")) 
 ```
@@ -880,7 +883,7 @@ var.test(Groceries$Walmart, Groceries$Target)
 ```
 
 It appears from the $p.value = 0.9$ and the
-$Confidence Interval = [0.4629, 2.0432]$, which includes $1$, that we cannot reject the NULL Hypothesis that the variances are not significantly different.
+$Confidence Interval = [0.4629, 2.0432]$, which includes $1$, that we cannot reject the NULL Hypothesis that the variances are not significantly different. ( Remember: this test looks at the **ratio** of the two variances, and the NULL Hypothesis is that this ratio is $1$ ).
 
 ### {{< iconify fluent-mdl2 insights >}} Inference
 
@@ -913,7 +916,7 @@ distributed. So a Wilcoxon Test, using signed-ranks, is indicated:
 
 wilcox.test(Groceries$Walmart, Groceries$Target, 
             data = Groceries_long, 
-            digits.rank = 7,paired = TRUE, 
+            digits.rank = 7, paired = TRUE, 
             conf.int = TRUE, conf.level = 0.95) %>% 
   broom::tidy()
 
@@ -954,7 +957,7 @@ ggplot2::theme_set(new = theme_custom())
 
 polarity <- c(rep(1, 15), rep(-1,15))
 ##
-null_dist_price <- do(9999) * 
+null_dist_price <- do(4999) * 
                     mean(data = Groceries, 
                       ~ (Target - Walmart) * 
                         resample(polarity, replace = TRUE))
@@ -978,6 +981,8 @@ about the tests:
 ```{r}
 #| results: hold
 #| warning: false
+#| code-fold: true
+#| 
 mosaic::t_test(Groceries$Walmart, Groceries$Target,paired = TRUE) %>% 
   broom::tidy() %>%
   gt() %>%
@@ -1063,8 +1068,8 @@ mean(null_dist_price_less >= obs_diff_price_less)
 
 We see that removing the Quaker Oats product item from the data **does**
 give a significant difference in mean prices !!! That one price
-difference was in the opposite direction compared to the general trend
-in differences, so when it was removed, we obtained a truer picture of
+difference was in *the opposite direction compared to the general trend
+in differences*, so when it was removed, we obtained a truer picture of
 price differences.
 
 Try to do a regular parametric t.test with this reduced data!

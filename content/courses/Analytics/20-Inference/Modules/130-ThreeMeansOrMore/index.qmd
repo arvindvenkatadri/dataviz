@@ -43,7 +43,10 @@ library(TeachingDemos)
 library(grateful)
 library(restriktor)
 library(tinytable) # Easy-to-make tables for data
-library(ggplot2)
+##
+library(ellmer) # Access LLMs from R
+library(statlingua) # LLM-driven plain English statistical explanations
+
 ```
 
 
@@ -1175,4 +1178,73 @@ $$
 [^6]: ggplot2 Based Plots with Statistical Details • ggstatsplot <https://indrajeetpatil.github.io/ggstatsplot/>
 
 [^7]: <https://github.com/UCLATALL/supernova>
+
+
+### An AI Generated Explanation of the Statistical Model
+
+We have used the `statlingua` package to generate an AI explanation of the statistical model `t1_amas` we have used in this module. `statlingua` interfaces to the `ellmer` package, which in turn interfaces to the `ollama` API for AI explanations. The AI model used is `llama3.1`, and the explanation is tailored for a novice audience with moderate verbosity.
+
+::: callout-note
+### AI Generated Explanation
+The command was run in the Console and the results pasted into this Quarto document. I have not edited this at all. Do look for complex verbiage and outright hallucinatory responses. 
+
+:::
+
+```{r}
+#| label: ai-explanations
+#| code-fold: true
+#| eval: false
+library(ellmer)
+library(statlingua)
+client <- ellmer::chat_ollama(model = "llama3.1", echo = FALSE)
+###
+
+exam_context <- "This model uses ANOVA to analyze the effect of temperature on frog spawn time. The model is based on a dataset where frog spawn were observed at three different temperatures (13°C, 18°C, and 25°C) to see how long it took for them to spawn. There were 20 samples of spawn at each temperature. The data was in wide form and pivotted to long form, and the Temperature variable was converted to a 3-level factor. The goal is to determine if the temperature-factor has a significant impact on the time it takes for frogs to spawn."
+
+explanation_anova <- statlingua::explain(frogs_anova, client = client, 
+                context = exam_context,
+                audience = "novice", verbosity = "moderate") # moderate / detailed
+
+```
+
+##### ANOVA Model Output Interpretation
+
+
+The provided ANOVA table summarizes the results of our ANOVA ~~linear regression~~ model, examining the effect of temperature on frog spawn time.
+
+- **Df (Degrees of Freedom):** These values represent the number of parameters in each part of the model.
+  * **TempFac (2)**: The two degrees of freedom for the temperature factor correspond to the three levels of the factor minus one. This reflects that there are two independent comparisons within the factor, which can be derived by considering pair-wise differences between levels while controlling for the overall mean, effectively reducing the complexity from a 3-level comparison down to 2.
+  * **Residuals (57)**: The 57 degrees of freedom for residuals is the total number of observations minus the model's intercept and slope parameters. Assuming no loss of data during preparation, this should be your sample size minus one, reflecting how much variation in the observed times might not be explained by temperature.
+
+- **Sum Sq (Sum of Squares):** These values measure the amount of variation attributable to each part of the model.
+  * **TempFac**: The sum of squares for the temp factor is substantial relative to the variability attributed to random errors, indicating that temperature has a significant impact on frog spawn time.
+  * **Residuals**: This value represents how much observed variance remains unexplained by our model's inclusion of temperature differences.
+
+
+- **Mean Sq (Mean Square) and F Value:**
+    - The mean square for any effect is its sum of squares divided by its degrees of freedom. 
+    - In this case, the much larger Mean Square for TempFac reflects both that it explains more variance & includes more variation per comparison due to having fewer degrees of freedoms.
+    * **F Value (385.9)**: The F value represents a test statistic comparing the explained variance by temp factor to what we'd expect from randomized chance under our assumption of no effect.
+
+- **Pr(>F) (<2e-16 ***):** A very small Pr(>F) associated with a significant result indicates there is practically zero probability (considered a very strong effect size) that data as extreme would be observed in experiments testing the null hypothesis assuming temp has no overall effect on spawn time. ******* signifies this high level of statistical significance.
+
+###### Section: Checking Assumptions
+
+Given the complexity and specificity to research goals, consulting with your dataset on assumptions via graphical explorations is prudent. Here are brief suggestions tailored to our specific model:
+1.  Plot residuals against fitted values or a normal Q-Q plot.
+2.  **For linearity:** Observe whether scatter around each predicted spawn time level is fairly random for *each* temperature category in the residuals vs fitted-values plot.
+3.  **For homoscedasticity (Constant Deviation):** Assess if variability at any one temperature’s range of times are roughly consistent with those from other temperatures’ ranges, also considering graphical displays.
+4.  **Normality:** Perform a Shapiro-Wilk test on these model residuals to quantify how far the data deviates from normality; it’s especially relevant given the small size & homogeneity across treatment conditions.
+
+###### Section: Interpreting Coefficients
+
+Given the context and ANOVA results here, we'd primarily focus on the Temperature (TempFac levels) effect, not the individual intercept or coefficients of the TempFac categories themselves as our primary object of study is their collective overall influence relative to randomness.
+- The *practical interpretation* would be that any 2-level average comparison between our treatment conditions, as determined by the specific model parameters and the nature of factorization here applied toward ANOVA analysis. For a simple way of framing your result consider whether some combination of those two categories produces an increase or decrease in observed spawn times when comparing at higher temperatures than our baseline (for example).
+
+###### Conclusion
+
+The strong effect and extremely low p-value for the TempFac indicate that temperature has a significant impact on frog spawn time, and there is strong evidence to support an overall association. Your analysis thus supports your research goal and provides valuable insight into how temperature influences this ecological process.
+
+In summary, using linear regression or ANOVA (equivalent in terms of testing effect magnitude) with careful attention toward ensuring the appropriateness of linearity assumptions allows drawing significant conclusions about how the temperature factor affects frog spawn times. 
+
 

@@ -151,7 +151,24 @@ ggplot2::theme_set(new = theme_custom())
 
 ## {{< iconify openmoji japanese-symbol-for-beginner >}} Introduction
 
-Correlations define how one variables varies with another. One of the basic Questions we would have of our data is: Does some variable have a significant correlation score with another in some way? Does $y$ vary with $x$? A **Correlation Test** is designed to answer exactly this question.  The block diagram depicts the statistical procedures available to test for the significance of correlation scores between two variables. 
+Correlations define how one variables varies with another. One of the basic Questions we would have of our data is: Does some variable have a significant correlation score with another in some way? Does $y$ vary with $x$? A **Correlation Test** is designed to answer exactly this question.  The block diagram below depicts the statistical procedures available to test for the significance of correlation scores between two variables. 
+
+```{mermaid}
+%%| echo: false
+flowchart TD
+    A[Inference for Correlation] -->|Check Assumptions| B[Normality: Shapiro-Wilk Test shapiro.test\n Variances: Fisher F-test var.test]
+    B --> C{OK?}
+    C -->|Yes, both\n Parametric| D[t.test]
+    D <-->F[Linear Model\n Method] 
+    C -->|Yes, but not variance\n Parametric| W[t.test with\n Welch Correction]
+    W<-->F
+    C -->|No\n Non-Parametric| E[wilcox.test]
+    E <--> G[Linear Model\n with\n Ranked Data]
+    C -->|No\n Non-Parametric| P[Bootstrap\n or\n Permutation]
+    P <--> Q[Linear Model\n with Ranked Data\n and Permutation]
+```
+
+In this module we will explore the **correlation coefficient** and how to test for its significance. We will also see how to use the **linear model** method to perform correlation tests, and how to use the **permutation test** to do so without any assumptions.
 
 Before we begin, let us recap a few basic definitions:
 
@@ -198,21 +215,7 @@ $${#eq-corr}
 
 Thus correlation coefficient is the *covariance scaled by the geometric mean of the variances*. 
 
-```{mermaid}
-%%| echo: false
-flowchart TD
-    A[Inference for Correlation] -->|Check Assumptions| B[Normality: Shapiro-Wilk Test shapiro.test\n Variances: Fisher F-test var.test]
-    B --> C{OK?}
-    C -->|Yes, both\n Parametric| D[t.test]
-    D <-->F[Linear Model\n Method] 
-    C -->|Yes, but not variance\n Parametric| W[t.test with\n Welch Correction]
-    W<-->F
-    C -->|No\n Non-Parametric| E[wilcox.test]
-    E <--> G[Linear Model\n with\n Ranked Data]
-    C -->|No\n Non-Parametric| P[Bootstrap\n or\n Permutation]
-    P <--> Q[Linear Model\n with Ranked Data\n and Permutation]
-```
- 
+
 ## {{< iconify pajamas issue-type-test-case >}} Case Study #1: Galton's famous dataset
 
 How can we start, except by using the famous `Galton` dataset, now part of the `mosaicData` package?
@@ -224,6 +227,7 @@ How can we start, except by using the famous `Galton` dataset, now part of the `
 data("Galton", package = "mosaicData")
 Galton
 ```
+
 The variables in this dataset are:
 
 ::: callout-note
@@ -295,13 +299,15 @@ ggplot2::theme_set(new = theme_custom())
 Galton_sons %>% 
   gf_point(son ~ father) %>% 
   gf_lm() %>% 
-  gf_labs(title = "Height of Sons vs fathers",
+  gf_labs(x = "Father's Height", y = "Son's Height",
+          title = "Heights: Sons vs Fathers",
           subtitle = "Galton dataset")
 ##
 Galton_daughters %>% 
   gf_point(daughter ~ father) %>% 
   gf_lm() %>% 
-  gf_labs(title = "Height of Daughters vs Fathers",
+  gf_labs(x = "Father's Height", y = "Daughter's Height",
+          title = "Heights: Daughters vs Fathers",
           subtitle = "Galton dataset")
 ```
 
@@ -315,12 +321,13 @@ Galton %>%
            group = ~ sex, colour = ~ sex) %>% 
   gf_lm() %>% 
   gf_refine(scale_color_brewer(palette = "Set1")) %>%
-  gf_labs(title = "Height of sons vs fathers",
+  gf_labs(x = "Father's Height", y = "Children's Height",
+          title = "Heights: Children vs Fathers",
           subtitle = "Galton dataset")
 
 ```
 
-So daughters are shorter than sons, generally speaking, and both heights seem related to that of the father. 
+So daughters are shorter than sons, generally speaking, and both sets of heights seem related to that of the father. 
 
 ::: callout-note
 ### What did filtering do?
