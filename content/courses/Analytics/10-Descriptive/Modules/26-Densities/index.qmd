@@ -23,7 +23,7 @@ citation: true
 #   markdown: 
 #     wrap: 72
 webr:
-  packages: ['readr', 'tidyr', 'dplyr','mosaic', 'skimr', 'ggformula','ggridges', 'palmerpenguins']
+  packages: ['readr', 'tidyr', 'dplyr','mosaic', 'skimr', 'ggformula','ggridges', 'palmerpenguins','janitor']
 
 ---
 
@@ -52,6 +52,7 @@ library(ggformula)
 #remotes::install_github("wilkelab/ggridges")
 library(ggridges)
 library(skimr)
+library(janitor)
 library(tinytable) # Elegant Tables for our data
 
 ```
@@ -70,7 +71,6 @@ library(visualize) # Plot Densities, Histograms and Probabilities as areas under
 library(grateful)
 library(MKdescr)
 library(downloadthis)
-library(ggplot2)
 
 ```
 
@@ -166,6 +166,23 @@ ggplot2::theme_set(new = theme_custom())
 ```
 
 
+```{webr-r}
+#| context: setup
+
+ggplot2::theme_set(theme_classic())
+# Read the data
+data(mpg, package = "ggplot2")
+data(penguins, package = "palmerpenguins")
+penguins_modified <- penguins %>% 
+  janitor::clean_names(case = "snake") %>% 
+  janitor::remove_empty(which = c("rows", "cols")) %>% 
+  dplyr::mutate(
+    across(where(is.character), as.factor)
+  )
+
+
+```
+
 ## {{< iconify fxemoji japanesesymbolforbeginner >}} What graphs will we see today?
 
 | Variable #1 | Variable #2 | Chart Names |                    Chart Shape    | 
@@ -230,6 +247,15 @@ data(penguins, package = "palmerpenguins")
 names(penguins)
 
 ```
+And we will of course clean up the variable names, not that they need cleaning this case!!
+
+```{r}
+#| label: clean-penguins
+penguins_modified <- penguins %>% 
+  janitor::clean_names(case = "snake") %>% 
+  janitor::remove_empty(which = c("rows", "cols"))
+
+```
 
 ### {{< iconify file-icons influxdata >}} Examine the Data
 
@@ -241,14 +267,14 @@ methods we have seen.
 #### {{< iconify la r-project >}} dplyr
 ```{r}
 #| label: glimpse-penguins
-glimpse(penguins)
+glimpse(penguins_modified)
 
 ```
 
 #### {{< iconify la r-project >}} skimr
 ```{r}
 #| label: skim-penguins
-skim(penguins)
+skim(penguins_modified)
 
 ```
 
@@ -256,23 +282,28 @@ skim(penguins)
 
 ```{r}
 #| label: inspect-penguins
-inspect(penguins)
+inspect(penguins_modified)
 ```
 
 #### {{< iconify noto-v1 spider-web >}} web-r
 
 ```{webr-r}
 #| label: glimpse-penguins-webr
-glimpse(penguins)
+glimpse(penguins_modified)
 
 ```
 
 ```{webr-r}
 #| label: skim-penguins-webr
-skim(penguins)
+skim(penguins_modified)
 
 ```
 
+```{webr-r}
+#| label: inspect-penguins-webr
+inspect(penguins_modified)
+
+```
 
 :::
 
@@ -309,10 +340,15 @@ skim(penguins)
 ### Business Insights on Examining the `penguins` dataset
 
 -   This is a smallish dataset (344 rows, 8 columns).
--   There are a few missing values in `sex`(11 missing entries) and all the Quant variables (2 missing entries each).
+-   There are a few missing values in `sex`(11 missing entries) and all the Quant variables (2 missing entries each). Let us drop the rows with missing values for now.
 
 :::
 
+```{r}
+#| label: drop-missing-penguins
+penguins_modified <- penguins_modified %>% drop_na()
+
+```
 
 ### {{< iconify mdi chart-bell-curve >}} Plotting Densities
 
@@ -330,9 +366,7 @@ skim(penguins)
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-penguins <- penguins %>% drop_na()
-
-gf_density( ~ body_mass_g, data = penguins) %>%
+gf_density( ~ body_mass_g, data = penguins_modified) %>%
   gf_labs(title = "Plot A: Penguin Masses", caption = "ggformula")
 
 ```
@@ -355,7 +389,7 @@ gf_density( ~ body_mass_g, data = penguins) %>%
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-penguins %>% gf_density( ~ body_mass_g, 
+penguins_modified %>% gf_density( ~ body_mass_g, 
                          fill = ~ species, 
                          color = "black") %>%
   gf_refine(scale_color_viridis_d(option = "magma", 
@@ -381,7 +415,7 @@ penguins %>% gf_density( ~ body_mass_g,
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-penguins %>%
+penguins_modified %>%
   gf_density(
     ~ body_mass_g,
     fill = ~ species,
@@ -410,7 +444,7 @@ penguins %>%
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-penguins %>%
+penguins_modified %>%
   gf_density( ~ body_mass_g, fill = ~ species, color = "black") %>%
   gf_facet_wrap(vars(sex), scales = "free_y", nrow = 2) %>%
   gf_labs(title = "Plot D: Penguin Body Mass by Species and facetted by Sex",
@@ -440,7 +474,7 @@ penguins %>%
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-penguins <- penguins %>% drop_na()
+penguins_modified <- penguins %>% drop_na()
 
 ggplot(data = penguins) + 
   geom_density(aes(x = body_mass_g)) + 
@@ -466,7 +500,7 @@ ggplot(data = penguins) +
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-penguins %>% 
+penguins_modified %>% 
   ggplot() + 
   geom_density(aes(x = body_mass_g, fill = species), alpha = 0.3,
                    color = "black") + 
@@ -493,7 +527,7 @@ penguins %>%
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-penguins %>% ggplot() + 
+penguins_modified %>% ggplot() + 
   geom_density(aes(x = body_mass_g, fill = species),
                    color = "black",
                    alpha = 0.3) + 
@@ -519,7 +553,7 @@ penguins %>% ggplot() +
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-penguins %>% ggplot() + 
+penguins_modified %>% ggplot() + 
   geom_density(aes(x = body_mass_g, fill = species),
                    alpha = 0.3, 
                    color = "black") + 
@@ -545,19 +579,18 @@ penguins %>% ggplot() +
 #### {{< iconify noto-v1 spider-web >}} web-r
 ```{webr-r}
 #| label: density-charts-ggformula-webr
-ggplot2::theme_set(new = theme_custom())
 
-penguins <- penguins %>% drop_na()
-
-gf_density( ~ body_mass_g, data = penguins) %>%
+penguins_modified %>% 
+drop_na() %>% 
+gf_density( ~ body_mass_g, data = .) %>%
   gf_labs(title = "Plot A: Penguin Masses", caption = "ggformula")
 
 ```
 
 ```{webr-r}
-ggplot2::theme_set(new = theme_custom())
 
-penguins %>% 
+penguins_modified %>% 
+drop_na() %>% 
   gf_density( ~ body_mass_g, fill = ~ species, 
                              color = "black") %>%
   gf_refine(scale_color_viridis_d(option = "magma", 
@@ -568,9 +601,9 @@ penguins %>%
 ```
 
 ```{webr-r}
-ggplot2::theme_set(new = theme_custom())
 
-penguins %>%
+penguins_modified %>% 
+drop_na() %>% 
   gf_density(
     ~ body_mass_g,
     fill = ~ species,
@@ -583,9 +616,9 @@ penguins %>%
 ```
 
 ```{webr-r}
-ggplot2::theme_set(new = theme_custom())
 
-penguins %>%
+penguins_modified %>% 
+drop_na() %>% 
   gf_density( ~ body_mass_g, fill = ~ species, color = "black") %>%
   gf_facet_wrap(vars(sex), scales = "free_y", nrow = 2) %>%
   gf_labs(title = "Plot D: Penguin Body Mass by Species and facetted by Sex",
@@ -598,20 +631,17 @@ penguins %>%
 
 ```{webr-r}
 #| label: density-charts-ggplot-webr
-ggplot2::theme_set(new = theme_custom())
-
-penguins <- penguins %>% drop_na()
-
-ggplot(data = penguins) + 
+penguins_modified %>% 
+  drop_na() %>% 
+  ggplot() + 
   geom_density(aes(x = body_mass_g)) + 
   labs(title = "Plot A: Penguin Masses",caption = "ggplot")
 
 ```
 
 ```{webr-r}
-ggplot2::theme_set(new = theme_custom())
-
-penguins %>% 
+penguins_modified %>% 
+  drop_na() %>% 
   ggplot() + 
   geom_density(aes(x = body_mass_g, fill = species),
                    color = "black") + 
@@ -623,9 +653,9 @@ penguins %>%
 ```
 
 ```{webr-r}
-ggplot2::theme_set(new = theme_custom())
-
-penguins %>% ggplot() + 
+penguins_modified %>% 
+  drop_na() %>% 
+  ggplot() + 
   geom_density(aes(x = body_mass_g, fill = species),
                    color = "black",
                    alpha = 0.3) + 
@@ -635,11 +665,11 @@ penguins %>% ggplot() +
 ```
 
 ```{webr-r}
-ggplot2::theme_set(new = theme_custom())
-
-penguins %>% ggplot() + 
-  geom_density(aes(x = body_mass_g, fill = species, 
-                   color = "black")) + 
+penguins_modified %>% 
+  drop_na() %>% 
+  ggplot() + 
+  geom_density(aes(x = body_mass_g, fill = species), 
+                   color = "black") + 
   facet_wrap(vars(sex), scales = "free_y", nrow = 2) + 
   labs(title = "Plot D: Penguin Body Mass by Species and facetted by Sex", 
        subtitle = "Free y-scale", caption = "ggplot") %>%
@@ -740,7 +770,6 @@ ggplot(data = mpg, mapping = aes(x = hwy, y = drv, fill = drv)) +
 
 ```{webr-r}
 #| label: more-charts-webr
-ggplot2::theme_set(new = theme_custom())
 
 gf_density_ridges(drv ~ hwy, fill = ~ drv, 
                   alpha = 0.3, 

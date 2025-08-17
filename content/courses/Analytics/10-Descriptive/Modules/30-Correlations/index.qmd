@@ -20,7 +20,7 @@ editor:
   markdown: 
     wrap: 72
 webr:
-  packages: ['readr', 'tidyr', 'dplyr','mosaic', 'skimr', 'ggformula', 'palmerpenguins','correlation','GGally','corrplot', 'ggExtra','Lock5withR']
+  packages: ['readr', 'tidyr', 'dplyr','mosaic', 'skimr', 'ggformula','correlation','GGally','Lock5withR', 'janitor']
   
 ---
 
@@ -44,10 +44,12 @@ library(tidyverse) # Tidy data processing and plotting
 library(ggformula) # Formula based plots
 library(mosaic) # Our go-to package
 library(skimr) # Another Data inspection package
+library(janitor)
 
 library(GGally) # Corr plots
 library(broom) # Clean reports from Stats / ML outputs
-# library(devetools)
+
+# library(devtools)
 # devtools::install_github("rpruim/Lock5withR")
 library(Lock5withR) # Datasets
 
@@ -169,6 +171,23 @@ ggplot2::theme_set(new = theme_custom())
 ```
 
 
+```{webr-r}
+#| context: setup
+
+ggplot2::theme_set(theme_classic())
+# Read the data
+data(HollywoodMovies2011, package = "Lock5withR")
+# Clean the data
+movies_modified <- HollywoodMovies2011 %>% 
+  janitor::clean_names(case = "snake") %>% 
+  janitor::remove_empty(which = c("rows", "cols")) %>% 
+  dplyr::mutate(
+    across(where(is.character), as.factor)
+  )
+
+
+```
+
 
 
 ## {{< iconify material-symbols add-chart-outline >}} What graphs will we see today?
@@ -225,11 +244,30 @@ The word **correlation** is used in everyday life to denote some form of associa
 
 ## {{< iconify grommet-icons test >}} Case Study-1: `HollywoodMovies2011` dataset
 
-Let us look at the `HollywoodMovies2011` dataset from the `Lock5withR` package. The dataset is also available by clicking the icon below ( in case you are not able to install `Lock5withR`):
+Let us look at the `HollywoodMovies2011` dataset from the `Lock5withR` package. 
+
+```{r}
+#| label: load-movies
+data(HollywoodMovies2011, package = "Lock5withR")
+movies_modified <- HollywoodMovies2011 %>% 
+  janitor::clean_names(case = "snake") %>%
+  janitor::remove_empty(which = c("rows", "cols")) %>%
+  dplyr::mutate(
+    across(where(is.character), as.factor)
+  )
+
+```
+
+::: callout-note
+The dataset is also available by clicking the icon below ( in case you are not able to install `Lock5withR`):
 
 ```{r, echo = FALSE}
 HollywoodMovies2011 %>% download_this(output_name = "HollywoodMovies2011", output_extension = ".csv", button_label = "Hollywood Movies Dataset", button_type = "default", icon = "fa fa-save",   class = "hvr-sweep-to-left")
 ```
+
+:::
+
+
 
 ## {{< iconify carbon chart-3d >}} Inspecting the Data
 
@@ -238,17 +276,14 @@ HollywoodMovies2011 %>% download_this(output_name = "HollywoodMovies2011", outpu
 ### {{< iconify la r-project >}} glimpse
 ```{r}
 #| label: glimpse-movies
-HollywoodMovies2011-> movies
-glimpse(movies)
+glimpse(movies_modified)
 
 ```
 
 ### {{< iconify la r-project >}} skimr
 ```{r}
 #| label: skim-movies
-#| include: false
-skimr::skim(movies)
-skimr::skim(movies) %>% 
+skimr::skim(movies_modified) %>% 
   tt(theme = "striped")
 
 ```
@@ -256,9 +291,8 @@ skimr::skim(movies) %>%
 ### {{< iconify la r-project >}} mosaic
 ```{r}
 #| label: inspect-movies
-#| include: false
 
-movies_describe <- inspect(movies)
+movies_describe <- inspect(movies_modified)
 ##
 movies_describe$categorical %>%
   tt(theme = "striped")
@@ -271,21 +305,21 @@ movies_describe$quantitative %>%
 ### {{< iconify noto-v1 spider-web >}} web-r
 
 ```{webr-r}
-HollywoodMovies2011-> movies
-glimpse(movies)
+
+glimpse(movies_modified)
 
 ```
 
 ```{webr-r}
 #| label: skim-movies-webr
-skimr::skim(movies)
+skimr::skim(movies_modified)
 
 ```
 
 ```{webr-r}
 #| label: inspect-movies-webr
 
-movies_describe <- inspect(movies)
+movies_describe <- inspect(movies_modified)
 movies_describe$categorical
 movies_describe$quantitative
 
@@ -300,20 +334,21 @@ movies_describe$quantitative
 
 `movies` has 136 observations on the following 14 variables.
 
-- `Movie` a factor with many levels
-- `LeadStudio` a factor with many levels
-- `RottenTomatoes` a numeric vector
-- `AudienceScore` a numeric vector
-- `Story` a factor with many levels
-- `Genre` a factor with levels `Action, Adventure, Animation, Comedy, Drama, Fantasy, Horror, Romance, Thriller.`
-- `TheatersOpenWeek` a numeric vector. No. of theatres.
-- `BOAverageOpenWeek` a numeric vector. 
-- `DomesticGross` a numeric vector. In million USD.
-- `ForeignGross` a numeric vector. In million USD.
-- `WorldGross` a numeric vector. In million USD.
-- `Budget` a numeric vector. In million USD.
-- `Profitability` a numeric vector. A ratio
-- `OpeningWeekend` a numeric vector. In million USD.
+- `movie` a factor with many levels
+- `lead_studio` a factor with many levels
+- `story` a factor with many levels
+- `genre` a factor with levels `Action, Adventure, Animation, Comedy, Drama, Fantasy, Horror, Romance, Thriller.`
+
+- `rotten_tomatoes` a numeric vector
+- `audience_score` a numeric vector
+- `theaters_open_week` a numeric vector. No. of theatres.
+- `bo_average_open_week` a numeric vector. 
+- `domestic_gross` a numeric vector. In million USD.
+- `foreign_gross` a numeric vector. In million USD.
+- `world_gross` a numeric vector. In million USD.
+- `budget` a numeric vector. In million USD.
+- `profitability` a numeric vector. A ratio
+- `opening_weekend` a numeric vector. In million USD.
 
 There are no missing values in the *Qual* variables; but some entries in the *Quant* variables are missing. `skim` throws a warning that we may need to examine later. 
 
@@ -324,15 +359,15 @@ There are no missing values in the *Qual* variables; but some entries in the *Qu
 ### {{< iconify  material-symbols lab-research >}} Hypothesis and Research Questions
 
 Let us look at the *Quant* variables: are these related in anyway? Could the relationship between any two Quant variables also depend upon the level of a *Qual* variable? 
-- The *target variable* for an experiment that resulted in this data might be the `Profitability` variable, the resultant ratio of the money poured into the movie making, and the multiplier by which we obtain returns. 
+- The *target variable* for an experiment that resulted in this data might be the `profitability` variable, the resultant ratio of the money poured into the movie making, and the multiplier by which we obtain returns. 
 
 ::: callout-note  
 ### Research Questions:
 
-  - Is there are relationship [between]{style="background-color: yellow;"}`Profitability` and `Budget`? 
-  - How does the `OpeningWeekend` affect `Profitability`?
-  - [Between]{style="background-color: yellow;"} `Profitability` and `DomesticGross`? [Between]{style="background-color: yellow;"} `Profitability` and `ForeignGross`?
-  - Is `Profitability` varying [with]{style="background-color: yellow;"} `RottenTomatoes`? 
+  - Is there are relationship [between]{style="background-color: yellow;"}`profitability` and `budget`? 
+  - How does the `opening_weekend` affect `profitability`?
+  - [Between]{style="background-color: yellow;"} `profitability` and `domestic_gross`? [Between]{style="background-color: yellow;"} `profitability` and `foreign_gross`?
+  - Is `profitability` varying [with]{style="background-color: yellow;"} `rotten_tomatoes`? 
 
   
 These should do for now! But we should make more questions when have seen some plots!
@@ -356,10 +391,10 @@ Which are the numeric variables in `movies`?
 ### {{< iconify la r-project >}} R
 
 ```{r}
-movies_quant <- movies %>%
+movies_quant <- movies_modified %>%
   drop_na() %>%
   select(where(is.numeric))
-movies_quant
+movies_quant %>% names()
 
 ```
 
@@ -367,17 +402,14 @@ movies_quant
 
 ```{webr-r}
 
-movies_quant <- movies %>%
+movies_quant <- movies_modified %>%
   drop_na() %>%
   select(where(is.numeric))
-movies_quant
+movies_quant %>% names()
 
 ```
 
 :::
-
-
-
 
 
 Now let us plot their relationships. We will use ***scatter plots*** whose shape shows us if there is a relationship between the two variables at hand. In general, if the "cloud of points" is tipped toward one side (up or down), then there is a possible relationship between the two variables. If the points are scattered all over the place, then there is no relationship between the two variables.
@@ -394,12 +426,12 @@ Now let us plot their relationships. We will use ***scatter plots*** whose shape
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-movies %>% 
+movies_modified %>% 
   drop_na() %>% 
-  gf_point(Profitability ~ Budget) %>% 
+  gf_point(profitability ~ budget) %>% 
   gf_lm() %>% 
-  gf_labs(title = "Profitability vs Budget",
-          subtitle = "Movie Profitability: Does Budget affect Profitability?")
+  gf_labs(title = "Profitability vs budget",
+          subtitle = "Movie profitability: Does budget affect profitability?")
 ```
 :::
 
@@ -419,12 +451,12 @@ movies %>%
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-movies %>% 
+movies_modified %>% 
   drop_na() %>% 
-  gf_point(Profitability ~ OpeningWeekend) %>% 
+  gf_point(profitability ~ opening_weekend) %>% 
   gf_lm() %>% 
   gf_labs(title = "Profitability vs Opening Weekend",
-          subtitle = "Movies: Does Opening Week Earnings indicate Profitability?")
+          subtitle = "Movies: Does Opening Week Earnings indicate profitability?")
 ```
 
 :::
@@ -445,12 +477,12 @@ movies %>%
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-movies %>% 
+movies_modified %>% 
 drop_na() %>% 
-  gf_point(Profitability ~ RottenTomatoes) %>% 
+  gf_point(profitability ~ rotten_tomatoes) %>% 
   gf_lm() %>% 
   gf_labs(title = "Profitability vs Rotten Tomatoes",
-          subtitle = "Movie Ratings: Does Rotten Tomatoes affect Profitability?")
+          subtitle = "Movie Ratings: Does Rotten Tomatoes affect profitability?")
 ```
 :::
 
@@ -474,10 +506,10 @@ We can split some of the scatter plots using one or other of the Qual variables.
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-movies %>%
+movies_modified %>%
   drop_na() %>%
-  gf_point(Profitability ~ AudienceScore, 
-           color = ~ Genre) %>%
+  gf_point(profitability ~ audience_score, 
+           color = ~ genre) %>%
   gf_lm() %>% 
   gf_labs(title = "Profitability vs Audience Score",
           subtitle = "Movie Ratings: Trends by Genre")
@@ -501,9 +533,9 @@ movies %>%
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-movies %>% 
+movies_modified %>% 
   drop_na() %>% 
-  ggplot(aes(y = Profitability, x = Budget)) + 
+  ggplot(aes(y = profitability, x = budget)) + 
   geom_point() + 
   geom_lm() + 
   labs(title = "Scatter Plot",
@@ -527,13 +559,13 @@ movies %>%
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-movies %>% 
+movies_modified %>% 
   drop_na() %>% 
-  ggplot(aes(OpeningWeekend,Profitability)) + 
+  ggplot(aes(opening_weekend, profitability)) + 
   geom_point() + 
   geom_lm() + 
   labs(title = "Scatter Plot",
-       subtitle = "Movies: Does Opening Week Earnings indicate Profitability?")
+       subtitle = "Movies: Does Opening Week Earnings indicate profitability?")
 ```
 
 :::
@@ -553,9 +585,9 @@ movies %>%
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-movies %>% 
+movies_modified %>% 
   drop_na() %>% 
-  ggplot(aes(y = Profitability, x = RottenTomatoes)) + 
+  ggplot(aes(y = profitability, x = rotten_tomatoes)) + 
   geom_point() + 
   geom_lm() +
   labs(title = "Scatter Plot",
@@ -579,9 +611,9 @@ movies %>%
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-movies %>%
+movies_modified %>%
   drop_na() %>%
-  ggplot(aes(y = Profitability, x = AudienceScore, color = Genre)) + 
+  ggplot(aes(y = profitability, x = audience_score, color = genre)) + 
   geom_point() + 
   geom_smooth(method = "lm", se = FALSE) +
   labs(title = "Scatter Plot",
@@ -602,11 +634,10 @@ movies %>%
 ### {{< iconify noto-v1 spider-web >}} web-r
 
 ```{webr-r}
-ggplot2::theme_set(new = theme_custom())
 
-movies %>% 
+movies_modified %>% 
   drop_na() %>% 
-  ggplot(aes(y = Profitability, x = Budget)) + 
+  ggplot(aes(y = profitability, x = budget)) + 
   geom_point() + 
   geom_lm() + 
   labs(title = "Scatter Plot",
@@ -615,40 +646,35 @@ movies %>%
 
 ```{webr-r}
 
-ggplot2::theme_set(new = theme_custom())
-
-movies %>% 
+movies_modified %>% 
   drop_na() %>% 
-  ggplot(aes(OpeningWeekend,Profitability)) + 
+  ggplot(aes(opening_weekend,profitability)) + 
   geom_point() + 
   geom_lm() + 
   labs(title = "Scatter Plot",
-       subtitle = "Movies: Does Opening Week Earnings indicate Profitability?")
+       subtitle = "Movies: Does Opening Week Earnings indicate profitability?")
 
 ```
 
 ```{webr-r}
 
-ggplot2::theme_set(new = theme_custom())
-
-movies %>% 
+movies_modified %>% 
 drop_na() %>% 
-  gf_point(Profitability ~ RottenTomatoes) %>% 
+  gf_point(profitability ~ rotten_tomatoes) %>% 
   gf_lm() %>% 
   gf_labs(title = "Profitability vs Rotten Tomatoes",
-          subtitle = "Movie Ratings: Does Rotten Tomatoes affect Profitability?")
+          subtitle = "Movie Ratings: Does Rotten Tomatoes affect profitability?")
 
 ```
+
 
 ```{webr-r}
 ## We can split some of the scatter plots using one or other of the Qual variables. For instance, is the relationship between the two ratings the same, regardless of movie genre?
 
-ggplot2::theme_set(new = theme_custom())
-
-movies %>%
+movies_modified %>%
   drop_na() %>%
-  gf_point(Profitability ~ AudienceScore, 
-           color = ~ Genre) %>%
+  gf_point(profitability ~ audience_score, 
+           color = ~ genre) %>%
   gf_lm() %>% 
   gf_labs(title = "Profitability vs Audience Score",
           subtitle = "Movie Ratings: Trends by Genre")
@@ -665,10 +691,10 @@ movies %>%
 ### Business Insight from `movies` scatter plots
 We have fitted a **trend line** to each of the scatter plots.
 
-- `Profitability` and `Budget`: The trend line is mildly negative...seeming to suggest that increasing the `Budget` does not necessarily increase the `Profitability`. In fact, it seems to suggest that increasing the `Budget` decreases the `Profitability`! But is this a significant trend? We will see later.
-- `Profitability` and `OpeningWeekend`: The trend line is positive, suggesting that increasing the `OpeningWeekend` earnings increases the `Profitability`. This is a good sign for movie makers! But again, not a very markedly upward trend, so we need to check if this is significant.
-- `Profitability` and `RottenTomatoes`: The trend line is positive, suggesting that increasing the `RottenTomatoes` rating increases the `Profitability`. Yet again, not a very markedly upward trend, so we need to check if this is significant.
-- `Profitability` and `AudienceScore`: The trend lines are mostly flat, suggesting that increasing the `AudienceScore` does not do much for `Profitability`. The slope for *Horror* is higher than that for the other `genre`-s ! Oh hell...people are ***paying*** to be scared witless???
+- `profitability` and `budget`: The trend line is mildly negative...seeming to suggest that increasing the `budget` does not necessarily increase the `profitability`. In fact, it seems to suggest that increasing the `budget` decreases the `profitability`! But is this a significant trend? We will see later.
+- `profitability` and `opening_weekend`: The trend line is positive, suggesting that increasing the `opening_weekend` earnings increases the `profitability`. This is a good sign for movie makers! But again, not a very markedly upward trend, so we need to check if this is significant.
+- `profitability` and `rotten_tomatoes`: The trend line is positive, suggesting that increasing the `rotten_tomatoes` rating increases the `profitability`. Yet again, not a very markedly upward trend, so we need to check if this is significant.
+- `profitability` and `audience_score`: The trend lines are mostly flat, suggesting that increasing the `audience_score` does not do much for `profitability`. The slope for *Horror* is higher than that for the other `genre`-s ! Oh hell...people are ***paying*** to be scared witless???
 
 Note that there are two `horror` movies that have been hugely successful. However, these are outliers, and are also located, in the dataset, at a place where they do not tip the trend line too much. They have limited ***influence***, concept that becomes important with [Regression Analysis](../../../30-Modelling/Modules/LinReg/index.qmd).
 
@@ -785,10 +811,10 @@ By default, [`GGally::ggpairs()`](https://ggobi.github.io/ggally/reference/ggpai
 ggplot2::theme_set(new = theme_custom())
 
 GGally::ggpairs(
-  movies %>% drop_na(),
+  movies_modified %>% drop_na(),
   # Select Quant variables only for now
     columns = c(
-    "Profitability","Budget", "DomesticGross", "ForeignGross"),
+    "profitability","budget", "domestic_gross", "foreign_gross"),
 
   switch = "both",
   # axis labels in more traditional locations(left and bottom)
@@ -823,10 +849,10 @@ GGally::ggpairs(
 ::: callout-note
 
 #### Business Insight from Pairs Plot #1
-- `Profitability` and `Budget` have a very slight negative correlation, but this does not appear to be significant.
-- `Profitability` has low correlation scores with both `DomesticGross` ($.181$) and also with `ForeignGross` ($0.123$. 
-- `DomesticGross` and `ForeignGross` have a very high correlation score ($0.96$), which is expected, since most movies are released in both markets, and the earnings are usually similar. However, as noted, neither influences `Profitability` much. Sigh. 
-- Note in passing that the `Profitability` and both the "Gross" related variables have highly skewed distributions. That is the nature of the movie business!
+- `profitability` and `budget` have a very slight negative correlation, but this does not appear to be significant.
+- `profitability` has low correlation scores with both `DomesticGross` ($.181$) and also with `ForeignGross` ($0.123$. 
+- `DomesticGross` and `ForeignGross` have a very high correlation score ($0.96$), which is expected, since most movies are released in both markets, and the earnings are usually similar. However, as noted, neither influences `profitability` much. Sigh. 
+- Note in passing that the `profitability` and both the "Gross" related variables have highly skewed distributions. That is the nature of the movie business!
 
 :::
 
@@ -843,20 +869,20 @@ Both correlations scores, and the uncertainty we have can be obtained by conduct
 
 ```{r}
 
-mosaic::cor_test(Profitability ~ Budget, data = movies) %>% 
+mosaic::cor_test(profitability ~ budget, data = movies_modified) %>% 
   broom::tidy() %>% 
   knitr::kable(digits = 2,
-               caption = "Movie Profitability vs Budget")
+               caption = "Movie profitability vs budget")
 
-mosaic::cor_test(DomesticGross ~ Budget, data = movies) %>% 
+mosaic::cor_test(domestic_gross ~ budget, data = movies_modified) %>% 
   broom::tidy() %>% 
   knitr::kable(digits = 2,
-               caption = "Movie Domestic Gross vs Budget")
+               caption = "Movie Domestic Gross vs budget")
 
-mosaic::cor_test(ForeignGross ~ Budget, data = movies) %>% 
+mosaic::cor_test(foreign_gross ~ budget, data = movies_modified) %>% 
   broom::tidy() %>% 
   knitr::kable(digits = 2,
-               caption = "Movie Foreign Gross vs Budget")
+               caption = "Movie Foreign Gross vs budget")
 ```
 
 ::: callout-note
@@ -864,7 +890,7 @@ mosaic::cor_test(ForeignGross ~ Budget, data = movies) %>%
 ## Business Insights from Correlation Tests
 The `budget` and `profitability` are not well correlated, sadly. We see this from the `p.value` which is $0.34$ and the confidence values for the correlation `estimate` which also cover $0$.
 
-However, both `DomesticGross` and `ForeignGross` are well correlated with `Budget`. 
+However, both `DomesticGross` and `ForeignGross` are well correlated with `budget`. 
 
 Look at the `conf.low` and `conf.high` coloumns: these are ***calculated uncertainty limits*** on the *estimated* correlation. If these ***do not straddle** $0$, then we m-a-y infer that the correlation is significant. More when we study [Inference for Correlation](../../../20-Inference/Modules/150-Correlation/index.qmd) in a later module.
 
@@ -928,6 +954,7 @@ cor %>%
 
 ::: callout-note
 ### Business Insights from ErrorBar Plot
+
 - Several variables are negatively correlated and some are positively correlated with 'mpg`. (The grey line shows "zero correlation")
 - Since none of the error bars straddle zero, the correlations are mostly significant. 
 :::

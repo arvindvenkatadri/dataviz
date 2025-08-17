@@ -1,0 +1,419 @@
+---
+title: "\U0001F3B2 Bayes Rule"
+subtitle: "How to update beiefs with new evidence"
+date: 16/Aug/2025
+date-modified: "`r Sys.Date()`"
+order: 20
+abstract: ""
+image: preview.jpg
+categories:
+- Bayes Rule
+- Prior Probability
+- Likelihood
+- Posterior Probability
+bibliography: 
+  - grateful-refs.bib
+citation: true
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+:::: pa4
+::: {.athelas .ml0 .mt0 .pl4 .black-90 .bl .bw2 .b--blue}
+[""]{.f5 .f4-m .f3-l .lh-copy .measure
+.mt0}
+
+[--- Somebody]{.f6 .ttu
+.tracked .fs-normal}
+:::
+::::
+
+## {{< iconify noto-v1 package >}} Setting up R Packages
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+library(tidyverse) # Data Processing in R
+library(mosaic) # Our workhorse for stats, sampling
+library(skimr) # Good to Examine data
+library(ggformula) # Formula interface for graphs
+library(vcd) # Visualizing Categorical Data and Contingency Tables
+##
+library(bayesrules)
+library(janitor)
+library(rstanarm)
+library(bayesplot)
+library(tidybayes)
+library(broom.mixed)
+library(modelr)
+library(e1071)
+library(forcats)
+```
+
+
+```{r}
+#| label: Extra Pedagogical Packages
+#| echo: false
+#| message: false
+
+library(grateful)
+library(checkdown)
+library(epoxy)
+library(TeachHist)
+library(TeachingDemos)
+#library(smovie) # Stat Movies with code
+library(visualize) # Plot Densities, Histograms and Probabilities as areas under the curve
+
+```
+
+#### Plot Fonts and Theme
+
+```{r}
+#| label: plot-theme
+#| echo: true
+#| cache: false
+#| code-fold: true
+#| messages: false
+#| warning: false
+
+library(systemfonts)
+library(showtext)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+showtext_auto(enable = TRUE) #enable showtext
+##
+theme_custom <- function(){ 
+    font <- "Alegreya"   #assign font family up front
+    
+    theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
+    
+    theme(
+      text = element_text(family = font),  #set base font family
+      
+      #text elements
+      plot.title = element_text(                 #title
+                   family = font,          #set font family
+                   size = 24,                    #set font size
+                   face = 'bold',                #bold typeface
+                   hjust = 0,                    #left align
+                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
+      plot.title.position = "plot", 
+      
+      plot.subtitle = element_text(              #subtitle
+                   family = font,          #font family
+                   size = 14,                   #font size
+                   hjust = 0,                   #left align
+                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
+      
+      plot.caption = element_text(               #caption
+                   family = font,          #font family
+                   size = 9,                     #font size
+                   hjust = 1),                   #right align
+      
+      plot.caption.position = "plot",            #right align
+      
+      axis.title = element_text(                 #axis titles
+                   family = "Roboto Condensed",  #font family
+                   size = 12),                   #font size
+      
+      axis.text = element_text(                  #axis text
+                   family = "Roboto Condensed",  #font family
+                   size = 9),                    #font size
+      
+      axis.text.x = element_text(                #margin for axis text
+                    margin = margin(5, b = 10))
+      
+      #since the legend often requires manual tweaking 
+      #based on plot content, don't define it here
+    )
+}
+
+## Use available fonts in ggplot text geoms too!
+ggplot2::update_geom_defaults(geom = "text",new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
+
+```
+
+
+
+## {{< iconify clarity group-solid >}} Bayes Rule: Do Exclamation Marks in Headlines help define fake news?
+
+
+Let us replicate the initial analysis in Chapter 2 of the book *Bayes Rule* by Mine Dogucu et al. The goal is to update our beliefs about the probability of a coin being fair given new evidence.
+
+Let us first define our events:
+
+1. Event F: News item is *fake* or *real*. p = c(0.4, 0.6) for fake and real news, respectively. These are our ***prior*** probabilities.
+2. Event E: News item has an exclamation mark in the headline. Looking at the ***data***, we find that :
+
+```{r}
+#| label: prior-probabilities
+#| code-fold: true
+data(fake_news, package = "bayesrules")
+fake_news %>% glimpse()
+fake_news %>% count(type)
+fake_news %>% count(title_has_excl)
+```
+We can see that 60 out of 150 news items are fake, and 90 are real. Of the fake news, 16 have an exclamation mark in the title, while only 2 of the real news have an exclamation mark in the title.
+We can summarize this information in a contingency table:
+
+```{r}
+#| label: likelihoods
+#| code-fold: true
+vcd::structable(type ~ title_has_excl, data = fake_news) %>% 
+  addmargins()
+
+```
+
+And the ***likelihoods*** of the events are: 
+
+- $P(E | F)$: Exclamation given Fake: 16/60 = 0.267
+- $P(E | F_c)$: Exclamation given Real: 2/90 = 0.022
+- $P(E_c | F )$: No Exclamation given Fake: 44/60 = 0.733
+- $P(E_c | F_c)$: No Exclamation given Real: 88/90 = 0.978
+
+
+Now we can use Bayes Rule to update our beliefs about the probability of a news item being fake given that it has an exclamation mark in the title: Here is the logic of that update:
+
+1. We have $P(F) = 0.4$ and $P(F_c) = 0.6$
+2. We have $P(E | F) = 0.267$ and $P(E | F_c) = 0.022$
+3. We **want**: $P(F | E) = P(E | F) * P(F) / P(E) = ?$
+
+Where P(E) is the total probability of E, which can be calculated as:
+
+$$
+P(E) = P(E | F) * P(F) + P(E | F_c) * P(F_c)
+$$
+
+4. We can calculate the ***posterior*** probability of a news item being fake given that it has an exclamation mark in the title using Bayes Rule:
+
+```{r}
+#| label: bayes-rule
+#| code-fold: true
+#| echo: false
+#| message: false
+#| warning: false
+
+prior <- c(0.4, 0.6) # P(F) and P(F_c)
+likelihood <- c(0.267, 0.022) # P(E | F) and P(E | F_c)
+posterior <- likelihood * prior / 
+  (likelihood[1] * prior[1] + likelihood[2] * prior[2])
+posterior <- round(posterior, 3)
+posterior
+posterior_df <- tibble(
+  type = c("Fake", "Real"),
+  posterior = posterior
+)
+posterior_df %>%
+  ggplot(aes(x = type, y = posterior, fill = type)) +
+  geom_col() +
+  scale_fill_manual(values = c("#d62728", "#1f77b4")) +
+  labs(title = "Posterior Probability of Fake News",
+       subtitle = "Given an Exclamation Mark in the Title",
+       x = "News Type",
+       y = "Posterior Probability") +
+  theme(legend.position = "none")
+
+```
+
+So now we know how to compute the likelihoods and the posterior probabilities using Bayes Rule. Let us do this for a sequence of 10000 headlines, which we will generate by sampling the `fake_news` dataset with replacement. We will update our beliefs about the probability of a news item being fake as we get new evidence (i.e., as we see more headlines with or without exclamation marks).
+
+## A Simulation
+
+Let us simulate a run where we get a series of headlines and see how our beliefs about the probability of a news item being fake change as we get new evidence. We will use the `fake_news` dataset to simulate this process. We will sample from this dataset with replacement 10000 times ( as done in the text, and plot the posterior probabilities as we go along.)
+
+We will create a function to compute the likelihood from each observation and update the posterior probability using Bayes Rule.  
+
+```{r}
+#| label: bayes-simulation-setup
+#| code-fold: true
+#| echo: false
+#| message: false
+
+prior <- c(0.4, 0.6) # P(F) and P(F_c)
+# Define possible articles
+article <- data.frame(type = c("real", "fake"))
+
+# Simulate 10000 articles. 
+set.seed(84735)
+article_sim <- sample_n(article, size = 10000, 
+                        weight = prior, replace = TRUE) %>% 
+  mutate(data_model = case_when(type == "fake" ~ 0.2667,
+                                type == "real" ~ 0.0222))
+
+glimpse(article_sim)
+
+```
+
+```{r}
+#| label: bayes-function
+#| code-fold: true
+#| echo: false
+#| message: false
+#| warning: false
+
+bayes_update <- function(prior, likelihood, likelihood_c) {
+  posterior <- likelihood * prior[1] / 
+    (likelihood * prior[1] + likelihood_c * prior[2])
+  posterior <- round(posterior, 3)
+  prior <- posterior
+  return(posterior)
+}
+
+```
+
+Now let us run the simulation. We will simulate the usage of exclamation points in the headlines based on the data model we have defined. We will then update our beliefs about the probability of a news item being fake as we get new evidence.
+
+```{r}
+data <- c("no", "yes")
+
+# Simulate exclamation point usage 
+set.seed(3)
+article_sim <- article_sim %>%
+  group_by(1:n()) %>% 
+  mutate(usage = sample(data, size = 1, 
+                        prob = c(1 - data_model, data_model))) %>% 
+  ungroup() %>% 
+  rename(id = `1:n()`)
+article_sim
+article_sim %>% group_by(type, usage) %>% count()
+
+```
+
+
+```{r}
+article_sim %>% 
+  ggplot(aes(x = usage, fill = type)) +
+  geom_bar(position = "fill") + # Proportion of usage
+  labs(title = "Exclamation Point Usage in Headlines",
+       x = "Usage",
+       y = "Proportion") +
+  scale_fill_manual(values = c("#d62728", "#1f77b4")) +
+  theme(legend.position = "top")
+
+ggplot(article_sim, aes(x = type)) + 
+  geom_bar(aes(fill = type)) + 
+  facet_wrap(~ usage) +   scale_fill_manual(values = c("#d62728", "#1f77b4"))
+
+```
+
+We now have a simulated dataset of 10000 articles with a type (fake or real) and an exclamation point usage (yes or no). We can now use this dataset to update our beliefs about the probability of a news item being fake given that it has an exclamation mark in the title.
+
+Each time we update the posterior probability, we will store the result in a data frame. The posterior from the previous iteration becomes the prior for the next iteration.
+
+```{r}
+#| label: bayes-simulation
+#| code-fold: true
+#| echo: false
+#| message: false
+#| warning: false
+
+posterior_df <- data.frame(
+  iteration = integer(),
+  fake = numeric(),
+  real = numeric()
+)
+for (i in 1:nrow(article_sim)) {
+  # Get the current article type and usage
+  current_article <- article_sim[i, ]
+  
+  # Determine the likelihood based on the article type
+  if (current_article$type == "fake") {
+    likelihood <- 0.2667
+    likelihood_c <- 0.7333
+  } else {
+    likelihood <- 0.0222
+    likelihood_c <- 0.9778
+  }
+  
+  # Update the posterior probability using Bayes Rule
+  posterior <- bayes_update(prior, likelihood, likelihood_c)
+  
+  # Store the result in the data frame
+  posterior_df <- rbind(posterior_df, 
+                        data.frame(iteration = i, 
+                                   fake = posterior[1], 
+                                   real = posterior[2]))
+    # Update the prior for the next iteration
+  prior <- posterior
+}
+posterior_df
+posterior_df %>%
+  ggplot(aes(x = iteration)) +
+  geom_line(aes(y = fake, color = "Fake"), size = 1) +
+  geom_line(aes(y = real, color = "Real"), size = 1) +
+  labs(title = "Posterior Probability of Fake News",
+       subtitle = "Updated with Each New Article",
+       x = "Iteration",
+       y = "Posterior Probability") +
+  scale_color_manual(values = c("Fake" = "#d62728", "Real" = "#1f77b4")) +
+  theme(legend.position = "top")
+
+
+
+
+
+
+```
+
+
+
+
+
+
+
+## {{< iconify ooui references-rtl >}} References
+
+1. Alicia A. Johnson, Miles Q. Ott, Mine Dogucu. (2021). *Bayes Rules! An Introduction to Applied Bayesian Modeling*. CRC Press, 2021. ISBN: 9780367338850. <https://www.bayesrulesbook.com/>
+1.  
+
+
+## Additional Readings
+
+1. 
+
+
+::: {#refs style="font-size: 60%;"}
+
+###### {{< iconify lucide package-check >}} R Package Citations
+
+```{r}
+#| echo: false
+#scan_packages()
+cite_packages(
+  output = "table",
+  out.dir = ".",
+  out.format = "html",
+  pkgs = c("NHANES", "regressinator", "smovie", "TeachHist",
+           "TeachingDemos", "visualize")
+) %>%
+  knitr::kable(format = "simple")
+
+```
+:::
+
+

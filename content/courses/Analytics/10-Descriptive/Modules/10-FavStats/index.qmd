@@ -23,7 +23,7 @@ editor:
   markdown: 
     wrap: 72
 webr:
-  packages: ['readr', 'dplyr','forcats','mosaic', 'skimr', 'ggformula']
+  packages: ['readr', 'dplyr','forcats','mosaic', 'skimr', 'ggformula', 'janitor']
 ---
 
 
@@ -43,10 +43,12 @@ webr:
 #| message: false
 #| warning: false
 
+library(tidyverse)
 library(mosaic) # Our all-in-one package
 library(skimr) # Looking at data
+library(janitor) # Clean the data
 library(tinytable) # Printing Tables for our data
-library(tidyverse)
+
 
 ```
 
@@ -70,6 +72,14 @@ library(embedr) # Embed multimedia in HTML files
 #| context: setup
 # Read the data
 docVisits <- read.csv("https://vincentarelbundock.github.io/Rdatasets/csv/AER/DoctorVisits.csv")
+docVisits_modified <- docVisits %>%
+  janitor::clean_names(case = "snake") %>% # clean names
+  janitor::remove_empty("cols") # remove empty columns
+
+data(mpg, package = "ggplot2") # load the mpg dataset
+mpg_modified <- mpg %>%
+  janitor::clean_names(case = "snake") %>% # clean names
+  janitor::remove_empty("cols") # remove empty columns
 
 ```
 
@@ -280,11 +290,12 @@ We will obviously choose *all* variables in the dataset, unless they are unrelat
 
 **Qual variables**: With Qual variables, we understand the `levels` within each, and understand the total number of combinations of the levels across these. `Counts` **across levels, and across combinations of levels** tells us whether the data has sufficient readings for graphing, inference, and decision-making, of if certain levels/classes of data are under or over represented. 
 
-**Together?**: We can use Quant and Qual together, to develop the above summaries (`min`, `max`,`mean`, `median` and `sd`) for Quant variables, again **across levels, and across combinations of levels** of single or multiple Quals, along with `counts` if we are interested in that. 
+**Together?**: We can use Quant and Qual together, to develop the above summaries (`min`, `max`,`mean`, `median` and `sd`) for Quant variables, again **across levels, and across combinations of levels** of single or multiple Quals, along with `counts`. This will tell us if our (sample) dataset already shows *quantitative differences* between  sub-classes in the population. 
+
+And this may also tell us if we are witnessing a [Simpson's Paradox situation](../30-Correlations/index.qmd#simpsons-paradox).  You may have to decide on what to do with this data sparseness, or just check your biases!
 
 For both types of variables, we need to keep an eye open for data entries that are *missing*! This may point to data gathering errors, which may be fixable. Or we will have to take a decision to let go of that entire observation (i.e. a row). Or even do what is called *imputation* to fill in values that are based on the other values in the same column, which sounds like we are making up data, but isn't so really. 
 
-And this may also tell us if we are witnessing a [Simpson's Paradox situation](../30-Correlations/index.qmd#simpsons-paradox).  You may have to decide on what to do with this data sparseness, or just check your biases!
 
 
 ## {{< iconify wpf define-location >}} Some Quick Definitions
@@ -321,6 +332,34 @@ When the observations in a Quant variable are placed in order of their maginitud
 We will first use a dataset `mpg` that is available in R as part of one
 of the R packages that we have loaded with the `library()` command.
 
+
+### {{< iconify carbon clean >}} Make Clean Variable Names
+
+As a part of the process, we should make sure that the variable names are "clean": there are a few options here, such as `camelCase`, `snake_case`, `kebab-case`, or `dot.case`. We will use the `janitor` package to do this, and also to make sure that the variable names are unique. AND, we will stick with `snake_case` for the rest of this course. 
+
+In this specific case, the variable names are already very terse and simple and this process would not change things too much. But as names in data become complex, with special characters ( %$#@! etc.), this becomes very useful.
+
+We will also not touch the original data, but save the modified data in a new variable called `mpg_modified`. This is a good practice, as it allows us to keep the original data intact, and also to compare the two if needed.
+
+```{r}
+#| label: clean-mpg
+
+mpg_modified <- mpg %>%
+  janitor::clean_names(case = "snake") %>% # clean names
+  janitor::remove_empty("cols") # remove empty columns
+mpg_modified
+
+```
+
+```{webr-r}
+
+mpg_modified <- mpg %>%
+  janitor::clean_names(case = "snake") %>% # clean names
+  janitor::remove_empty("cols") # remove empty columns
+mpg_modified
+
+```
+
 ### {{< iconify file-icons influxdata >}} Examine the Data
 
 It is usually a good idea to make crisp business-like tables, for the
@@ -333,7 +372,7 @@ one of the simplest and effective ones is to use the `kable` set of commands fro
 #| label: tinytable-for-data-1
 #| eval: false
 #| echo: false
-mpg %>%
+mpg_modified %>%
   head(10) %>% 
   tt(theme = c("striped")) %>%
   setNames(c("Manufacturer", "Model", "Engine\nDisplacement", 
@@ -345,7 +384,7 @@ mpg %>%
 
 ```{r}
 #| label: kable-for-data-1
-mpg %>% 
+mpg_modified %>% 
   head(10) %>%
   kbl(
     # add Human Readable column names
@@ -353,7 +392,7 @@ mpg %>%
                     "Model\n Year", "Cylinders", "Transmission",
                     "Drivetrain", "City\n Mileage", "Highway\n Mileage",
                     "Fuel", "Class\nOf\nVehicle"), 
-    caption = "MPG Dataset") %>%
+    caption = "MPG Modified Dataset") %>%
   kable_styling(bootstrap_options = c("striped", "hover", 
                                       "condensed", "responsive"),
                 full_width = F, position = "center")
@@ -375,7 +414,7 @@ The `dplyr` package offers a convenient command called `glimpse`:
 
 ```{r}
 #| label: glimpse-1
-glimpse(mpg)
+glimpse(mpg_modified)
 
 ```
 
@@ -404,7 +443,7 @@ From the output of `?skimr`:
 We can use `skim(dataset)` directly as shown below:
 
 ```{r}
-skimr::skim(mpg) # explicitly stating package name
+skimr::skim(mpg_modified) # explicitly stating package name
 
 ```
 
@@ -436,7 +475,7 @@ We get very similar output from `mosaic::inspect()`:
 ```{r}
 #| label: inspect-mpg
 
-inspect(mpg)
+inspect(mpg_modified)
 
 ```
 
@@ -464,7 +503,7 @@ We can save and see the outputs separately:
 
 ```{r mpg-inspect-2, eval=FALSE}
 
-mpg_describe <- inspect(mpg)
+mpg_describe <- inspect(mpg_modified)
 mpg_describe$categorical
 mpg_describe$quantitative
 
@@ -474,15 +513,15 @@ mpg_describe$quantitative
 #### {{< iconify noto-v1 spider-web >}} web-r
 
 ```{webr-r}
-mpg %>% dplyr::glimpse()
+mpg_modified %>% dplyr::glimpse()
 ```
 
 ```{webr-r}
-mpg %>% mosaic::inspect()
+mpg_modified %>% mosaic::inspect()
 ```
 
 ```{webr-r}
-mpg %>% skimr::skim()
+mpg_modified %>% skimr::skim()
 ```
 
 :::
@@ -516,7 +555,7 @@ We see that there are certain variables that must be converted to **factors** fo
 
 
 ```{r}
-mpg_modified <- mpg %>% 
+mpg_modified <- mpg_modified %>% 
   dplyr::mutate(cyl = as_factor(cyl),
                 fl = as_factor(fl),
                 drv = as_factor(drv),
@@ -527,7 +566,7 @@ glimpse(mpg_modified)
 ```
 
 ```{webr-r}
-mpg_modified <- mpg %>% 
+mpg_modified <- mpg_modified %>% 
   dplyr::mutate(cyl = as_factor(cyl),
                 fl = as_factor(fl),
                 drv = as_factor(drv),
@@ -536,6 +575,8 @@ mpg_modified <- mpg %>%
 glimpse(mpg_modified)
 
 ```
+
+Let us get acquainted with another dataset, so that we will have two reference points to compare. 
 
 ## {{< iconify grommet-icons test >}} Case Study-2
 
@@ -566,6 +607,23 @@ folder online.
 # read_csv can read data directly from the net
 # Don't use read.csv()
 docVisits <- read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/AER/DoctorVisits.csv")
+docVisits_modified <- docVisits %>%
+  janitor::clean_names(case = "snake") %>% # clean names
+  janitor::remove_empty("cols") # remove empty columns
+
+```
+
+```{webr-r}
+
+# From Vincent Arel-Bundock's dataset website
+# https://vincentarelbundock.github.io/Rdatasets
+# 
+# read_csv can read data directly from the net
+# Don't use read.csv()
+docVisits <- read.csv("https://vincentarelbundock.github.io/Rdatasets/csv/AER/DoctorVisits.csv")
+docVisits_modified <- docVisits %>%
+  janitor::clean_names(case = "snake") %>% # clean names
+  janitor::remove_empty("cols") # remove empty columns
 
 ```
 
@@ -587,7 +645,7 @@ Let us quickly report the data itself, as in a real report. Note that we can use
 
 ```{r}
 #| label: kable-for-data02
-docVisits %>%
+docVisits_modified %>%
   head(10) %>%
   kbl(caption = "Doctor Visits Dataset",
       # Add Human Readable Names if desired
@@ -609,7 +667,7 @@ docVisits %>%
 
 ```{r}
 #| label: glimpse-2
-glimpse(docVisits)
+glimpse(docVisits_modified)
 ```
 
 ::: callout-note
@@ -628,7 +686,7 @@ Always document your data with variable descriptions when you share it, a **data
 
 ```{r}
 #| label: skim-2
-skim(docVisits) %>% kbl()
+skim(docVisits_modified) %>% kbl()
 ```
 
 ::: callout-note
@@ -654,7 +712,7 @@ skim(docVisits) %>% kbl()
 
 ```{r}
 #| label: inspect-2
-inspect(docVisits)
+inspect(docVisits_modified)
 ```
 
 ::: callout-note
@@ -671,15 +729,15 @@ the dataset.
 #### {{< iconify noto-v1 spider-web >}} web-r
 
 ```{webr-r}
-docVisits %>% glimpse()
+docVisits_modified %>% glimpse()
 ```
 
 ```{webr-r}
-docVisits %>% inspect()
+docVisits_modified %>% inspect()
 ```
 
 ```{webr-r}
-docVisits %>% skim()
+docVisits_modified %>% skim()
 ```
 
 
@@ -705,7 +763,7 @@ docVisits %>% skim()
 Here too, we should convert the variables that are obviously Qualitative into *factors*, ordered or otherwise:
 
 ```{r}
-docVisits_modified <-  docVisits %>% 
+docVisits_modified <-  docVisits_modified %>% 
   mutate(gender = as_factor(gender),
          private = as_factor(private),
          freepoor = as_factor(freepoor),
@@ -713,11 +771,12 @@ docVisits_modified <-  docVisits %>%
          nchronic = as_factor(nchronic),
          lchronic = as_factor(lchronic))
 docVisits_modified
+
 ```
 
 
 ```{webr-r}
-docVisits_modified <-  docVisits %>% 
+docVisits_modified <-  docVisits_modified %>% 
   mutate(gender = as_factor(gender),
          private = as_factor(private),
          freepoor = as_factor(freepoor),
@@ -727,6 +786,8 @@ docVisits_modified <-  docVisits %>%
 glimpse(docVisits_modified)
 
 ```
+
+OK, now we have two datasets. We are ready to prepare summary statistics, counts based on individual Quant variables and Qual variables, and also combinations of these. We will use the `dplyr` package from the `tidyverse` for this, and also the `mosaic` package, which has some very useful functions for summarizing data.
 
 ## {{< iconify mdi-light group >}} {{< iconify mdi counting-5 >}} Groups and Counts of Qualitative Variables
 
@@ -783,12 +844,12 @@ be preferable to `lump` smaller categories/levels together. (Using the
 ```{r}
 #| label: docVisits-counts-and-tables-1
 ## Counting by the obvious factor variables
-docVisits %>% count(gender)
-docVisits %>% count(private)
-docVisits %>% count(freepoor)
-docVisits %>% count(freerepat)
-docVisits %>% count(lchronic)
-docVisits %>% count(nchronic)
+docVisits_modified %>% count(gender)
+docVisits_modified %>% count(private)
+docVisits_modified %>% count(freepoor)
+docVisits_modified %>% count(freerepat)
+docVisits_modified %>% count(lchronic)
+docVisits_modified %>% count(nchronic)
 
 ```
 
@@ -796,12 +857,15 @@ docVisits %>% count(nchronic)
 #| label: docVisits-counts-and-tables-2
 # Now for all Combinations...
 # Maybe too much to digest...
-docVisits %>% count(across(where(is.character)))
+docVisits_modified %>% count(across(where(is.factor)))
+docVisits_modified %>% 
+  group_by(across(where(is.factor))) %>% 
+  summarize(count = n())
 # Shall we try counting by some variables that might be factors?
 # Even if they are labeled as <dbl>?
 # 
-docVisits %>% count(illness)
-docVisits %>% count(health)
+docVisits_modified %>% count(illness)
+docVisits_modified %>% count(health)
 
 ```
 
@@ -837,11 +901,11 @@ docVisits %>%
 
 :::
 
-## {{< iconify vaadin group >}} {{< iconify carbon summary-kpi >}} Groups and Summaries of Quantitative Variables
+## {{< iconify vaadin group >}} {{< iconify carbon summary-kpi >}} Grouped Summaries of Quantitative Variables
 
 We saw that we could obtain **numerical summary stats** such as `means, medians, quartiles, maximum/minimum` of **entire** Quantitative variables, i.e the complete column. However, we often need identical numerical summary stats of parts of a Quantitative variable. Why?
 
-Note that we have *Qualitative* variables as well in a typical dataset. These Qual variables help us to **group** the entire dataset based on their combinations of **levels**. We can now think of *summarizing Quant variables* within each such group. 
+Note that we have *Qualitative* variables as well in a typical dataset. These Qual variables help us to [**group** the entire dataset based on their combinations of **levels**]{style="background-color: yellow;"}. We can now think of *summarizing Quant variables* within each such group. 
 
 Let us work through these ideas for both our familiar datasets.
 
@@ -872,7 +936,7 @@ mpg_modified %>%
 ### Business Insights from Grouped Quant Summaries (`mpg`)
 - We have quite some variation of mean_hwy mileage over `cyl` , though the groups/level are quite imbalanced. This is of course a small dataset. 
 - The number of groups are large enough (>> 7!) to warrant a chart, which we will make in our next module on [Distributions](.../../../22-Histograms/index.qmd).
-- Mean `price` varies quite some based on `cyl`and `fl`. Some groups are non-existent, hence we see "NA" and "NaN" in the output of `mosaic::favstats`.; and also on *combinations* of `cyl:fl`. This should point to the existence of some [*interaction effect*](https://www.jmp.com/en_in/statistics-knowledge-portal/what-is-multiple-regression/mlr-with-interactions.html) when modelling for price. 
+- Mean `hwy` mileage varies quite some based on `cyl`and `fl`. Some groups are non-existent, hence we see "NA" and "NaN" in the output of `mosaic::favstats`.; and also on *combinations* of `cyl:fl`. This should point to the existence of some [*interaction effect*](https://www.jmp.com/en_in/statistics-knowledge-portal/what-is-multiple-regression/mlr-with-interactions.html) when modelling for price. 
 
 
 :::
@@ -1113,7 +1177,7 @@ cite_packages(
   output = "table",
   out.dir = ".",
   out.format = "html",
-  pkgs = c("mosaic", "palmerpenguins", "skimr")
+  pkgs = c("janitor", "mosaic", "palmerpenguins", "skimr")
 ) %>%
   knitr::kable(format = "simple")
 

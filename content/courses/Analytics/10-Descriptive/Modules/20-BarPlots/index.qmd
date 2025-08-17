@@ -23,7 +23,7 @@ citation: true
 #   markdown: 
 #     wrap: 72
 webr:
-  packages: ['readr', 'tidyr', 'dplyr','mosaic', 'skimr', 'ggformula','ggridges', 'palmerpenguins', 'tidyplots']
+  packages: ['janitor','readr', 'tidyr', 'dplyr','mosaic', 'skimr', 'ggformula','ggridges', 'palmerpenguins', 'tidyplots', 'systemfonts', 'showtext']
 
 ---
 
@@ -46,6 +46,7 @@ library(tidyverse)
 library(mosaic)
 library(ggformula)
 library(skimr)
+library(janitor)
 
 ```
 
@@ -65,7 +66,6 @@ library(downloadthis)
 library(tinytable)
 #devtools::install_github("mccarthy-m-g/embedr")
 library(embedr) # Embed multimedia in HTML files
-library(ggplot2)
 
 ```
 
@@ -160,6 +160,39 @@ ggplot2::theme_set(new = theme_custom())
 
 ```
 
+
+```{webr-r}
+#| context: setup
+#| label: webr-cell-1
+
+## Set the theme
+ggplot2::theme_set(new = theme_classic())
+
+# Read the data. Always use base-R. 
+# race_df <- read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-10-26/race.csv")
+# rank_df <- read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-10-26/ultra_rankings.csv")
+taxi <- read.csv("https://vincentarelbundock.github.io/Rdatasets/csv/modeldata/taxi.csv")
+taxi_modified <- taxi %>% 
+  janitor::clean_names() %>% 
+  janitor::remove_empty() # Empty columns and rows if any
+taxi_modified <- taxi_modified %>%
+  mutate(dow = factor(dow,
+    levels = c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"),
+    labels = c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"),
+    ordered = TRUE),
+    ##
+    local = factor(local,
+                   levels = c("no", "yes"),
+                   labels = c("no", "yes"),
+                   ordered = TRUE),
+    ##
+  month = factor(month, 
+                 levels = c("Jan", "Feb", "Mar", "Apr"),
+                 labels = c("Jan", "Feb", "Mar", "Apr"),
+                 ordered = TRUE))
+
+
+```
 
 
 
@@ -260,21 +293,15 @@ We will first look at at a dataset that speaks about taxi rides in Chicago in th
 #| label: read_chicago_taxi_data
 #| message: false
 taxi <- read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/modeldata/taxi.csv")
+taxi_modified <- taxi %>% 
+  janitor::clean_names() %>% 
+  janitor::remove_empty() # Empty columns and rows if any
 
 ```
 
 The data has automatically been read into the `webr` session, so you can continue on to the next code chunk!
 
 
-```{webr-r}
-#| context: setup
-#|
-# Read the data. Always use base-R. 
-# race_df <- read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-10-26/race.csv")
-# rank_df <- read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-10-26/ultra_rankings.csv")
-taxi <- read.csv("https://vincentarelbundock.github.io/Rdatasets/csv/modeldata/taxi.csv")
-
-```
 :::
 
 ### {{< iconify file-icons influxdata >}} Examine the Data
@@ -288,7 +315,7 @@ methods we have seen.
 
 ```{r}
 #| label: glimpse-taxi
-dplyr::glimpse(taxi)
+dplyr::glimpse(taxi_modified)
 
 ```
 
@@ -296,7 +323,7 @@ dplyr::glimpse(taxi)
 
 ```{r}
 #| label: skim-taxi
-skimr::skim(taxi)
+skimr::skim(taxi_modified)
 
 ```
 
@@ -304,7 +331,7 @@ skimr::skim(taxi)
 
 ```{r}
 #| label: inspect-taxi
-mosaic::inspect(taxi)
+mosaic::inspect(taxi_modified)
 
 ```
 
@@ -312,19 +339,19 @@ mosaic::inspect(taxi)
 
 ```{webr-r}
 #| label: glimpse-taxi-webr
-glimpse(taxi)
+glimpse(taxi_modified)
 
 ```
 
 ```{webr-r}
 #| label: skim-taxi-webr
-skim(taxi)
+skim(taxi_modified)
 
 ```
 
 ```{webr-r}
 #| label: inspect-taxi-webr
-inspect(taxi)
+inspect(taxi_modified)
 
 ```
 :::
@@ -369,7 +396,7 @@ We will convert the `tip`, `company`, `dow`, `local`, `hour`, and `month` variab
 #| code-fold: true
 
 ## Convert `dow`, `local`, `month`, and `hour` into ordered factors
-taxi_modified <- taxi %>%
+taxi_modified <- taxi_modified %>%
   mutate(
     ##
     tip = factor(tip, levels = c("yes", "no"), 
@@ -398,30 +425,6 @@ taxi_modified <- taxi %>%
 taxi_modified %>% glimpse()
 
 ```
-
-
-```{webr-r}
-#| context: setup
-## Convert `dow`, `local`, and `month` into ordered factors
-taxi_modified <- taxi %>%
-  mutate(dow = factor(dow,
-    levels = c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"),
-    labels = c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"),
-    ordered = TRUE),
-    ##
-    local = factor(local,
-                   levels = c("no", "yes"),
-                   labels = c("no", "yes"),
-                   ordered = TRUE),
-    ##
-  month = factor(month, 
-                 levels = c("Jan", "Feb", "Mar", "Apr"),
-                 labels = c("Jan", "Feb", "Mar", "Apr"),
-                 ordered = TRUE))
-taxi_modified %>% glimpse()
-
-```
-
 
 
 ### {{< iconify  material-symbols lab-research >}} Hypothesis and Research Questions
@@ -677,8 +680,6 @@ taxi_modified %>%
 #### {{< iconify noto-v1 spider-web >}} web-r-2
 ```{webr-r}
 
-theme_set(new = theme_custom())
-
 taxi_modified %>% 
   gf_bar(~ local, fill = ~ tip, position = "dodge") %>% 
   gf_labs(title = "Dodged Bar Chart") %>%  gf_refine(scale_fill_brewer(palette = "Set1")) 
@@ -871,8 +872,6 @@ taxi_modified %>%
 #### {{< iconify noto-v1 spider-web >}} web-r-3
 ```{webr-r}
 
-ggplot2::theme_set(new = theme_custom())
-
 taxi_modified %>% 
   gf_bar(~ company, fill = ~ tip, position = "dodge") %>% 
   gf_labs(title = "Plot 3A: Dodged Bar Chart") %>% 
@@ -904,6 +903,7 @@ taxi_modified %>%
 :::
 
 #### Business Insights-3
+
 - Using `stack`-ed, `dodge`-ed, and `fill`-ed in ggformula (and `bars`, `absolute-stacked-bars`, and `relative-stacked-bars` in tidyplots) in bar plots gives us different ways of looking at the sets of counts;
 - `fill`: gives us a per-group proportion of another Qual variable for a chosen Qual variable. This chart view is useful in [Inference for Proportions](../../../20-Inference/Modules/190-TwoProp/index.qmd);
 - Most cab `company`-ies have similar usage, if you neglect the `other` category of `company`;
@@ -1120,8 +1120,6 @@ ggplot(taxi_modified) +
 
 ```{webr-r}
 
-ggplot2::theme_set(new = theme_custom())
-
 gf_bar(~ hour, fill = ~ tip, data = taxi_modified) %>%
   gf_labs(title = "Plot 4A: Counts of Tips by Hour") %>% 
   gf_refine(scale_fill_brewer(palette = "Set1"))
@@ -1155,6 +1153,7 @@ gf_bar(~ hour | dow, fill = ~ tip, data = taxi) %>%
 :::
 
 ### Business Insights-4
+
 - Note: We were using `fill = ~ tip` here! Why is that a good idea?
 - `tips` vs `hour`: There are always more people who `tip` than those who do not. Of course there are fewer **trips** during the early morning hours and the late night hours, based on the very small bar-pairs we see at those times
 - `tips` vs `dow`: Except for Sunday, the `tip` count patterns (Yes/No) look similar across all days.

@@ -1,7 +1,9 @@
+library(tidyverse)
 library(mosaic) # Our all-in-one package
 library(skimr) # Looking at data
+library(janitor) # Clean the data
 library(tinytable) # Printing Tables for our data
-library(tidyverse)
+
 
 
 library(checkdown)
@@ -122,7 +124,13 @@ read_csv("../../../../../materials/Data/pronouns.csv") %>%
   kable_paper(c("striped","hover","responsive"), full_width = T)
   
 
-# mpg %>%
+mpg_modified <- mpg %>%
+  janitor::clean_names(case = "snake") %>% # clean names
+  janitor::remove_empty("cols") # remove empty columns
+mpg_modified
+
+
+# mpg_modified %>%
 #   head(10) %>%
 #   tt(theme = c("striped")) %>%
 #   setNames(c("Manufacturer", "Model", "Engine\nDisplacement",
@@ -131,7 +139,7 @@ read_csv("../../../../../materials/Data/pronouns.csv") %>%
 #                     "Fuel", "Class\nOf\nVehicle"))
 # 
 
-mpg %>% 
+mpg_modified %>% 
   head(10) %>%
   kbl(
     # add Human Readable column names
@@ -139,28 +147,28 @@ mpg %>%
                     "Model\n Year", "Cylinders", "Transmission",
                     "Drivetrain", "City\n Mileage", "Highway\n Mileage",
                     "Fuel", "Class\nOf\nVehicle"), 
-    caption = "MPG Dataset") %>%
+    caption = "MPG Modified Dataset") %>%
   kable_styling(bootstrap_options = c("striped", "hover", 
                                       "condensed", "responsive"),
                 full_width = F, position = "center")
 
 
-glimpse(mpg)
+glimpse(mpg_modified)
 
 
-skimr::skim(mpg) # explicitly stating package name
+skimr::skim(mpg_modified) # explicitly stating package name
 
 
-inspect(mpg)
+inspect(mpg_modified)
 
 
 # 
-# mpg_describe <- inspect(mpg)
+# mpg_describe <- inspect(mpg_modified)
 # mpg_describe$categorical
 # mpg_describe$quantitative
 # 
 
-mpg_modified <- mpg %>% 
+mpg_modified <- mpg_modified %>% 
   dplyr::mutate(cyl = as_factor(cyl),
                 fl = as_factor(fl),
                 drv = as_factor(drv),
@@ -175,12 +183,15 @@ glimpse(mpg_modified)
 # read_csv can read data directly from the net
 # Don't use read.csv()
 docVisits <- read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/AER/DoctorVisits.csv")
+docVisits_modified <- docVisits %>%
+  janitor::clean_names(case = "snake") %>% # clean names
+  janitor::remove_empty("cols") # remove empty columns
 
 
 # docVisits <- read_csv("data/DoctorVisits.csv")
 # 
 
-docVisits %>%
+docVisits_modified %>%
   head(10) %>%
   kbl(caption = "Doctor Visits Dataset",
       # Add Human Readable Names if desired
@@ -192,13 +203,13 @@ docVisits %>%
     full_width = F, position = "center")
 
 
-glimpse(docVisits)
+glimpse(docVisits_modified)
 
-skim(docVisits) %>% kbl()
+skim(docVisits_modified) %>% kbl()
 
-inspect(docVisits)
+inspect(docVisits_modified)
 
-docVisits_modified <-  docVisits %>% 
+docVisits_modified <-  docVisits_modified %>% 
   mutate(gender = as_factor(gender),
          private = as_factor(private),
          freepoor = as_factor(freepoor),
@@ -206,6 +217,7 @@ docVisits_modified <-  docVisits %>%
          nchronic = as_factor(nchronic),
          lchronic = as_factor(lchronic))
 docVisits_modified
+
 
 mpg_modified %>% dplyr::count(cyl)
 mpg_modified %>% mosaic::count(drv) # does the same thing! Counts!
@@ -218,22 +230,25 @@ mpg_modified %>%
 
 
 ## Counting by the obvious factor variables
-docVisits %>% count(gender)
-docVisits %>% count(private)
-docVisits %>% count(freepoor)
-docVisits %>% count(freerepat)
-docVisits %>% count(lchronic)
-docVisits %>% count(nchronic)
+docVisits_modified %>% count(gender)
+docVisits_modified %>% count(private)
+docVisits_modified %>% count(freepoor)
+docVisits_modified %>% count(freerepat)
+docVisits_modified %>% count(lchronic)
+docVisits_modified %>% count(nchronic)
 
 
 # Now for all Combinations...
 # Maybe too much to digest...
-docVisits %>% count(across(where(is.character)))
+docVisits_modified %>% count(across(where(is.factor)))
+docVisits_modified %>% 
+  group_by(across(where(is.factor))) %>% 
+  summarize(count = n())
 # Shall we try counting by some variables that might be factors?
 # Even if they are labeled as <dbl>?
 # 
-docVisits %>% count(illness)
-docVisits %>% count(health)
+docVisits_modified %>% count(illness)
+docVisits_modified %>% count(health)
 
 
 mpg_modified %>% 
@@ -317,7 +332,7 @@ cite_packages(
   output = "table",
   out.dir = ".",
   out.format = "html",
-  pkgs = c("mosaic", "palmerpenguins", "skimr")
+  pkgs = c("janitor", "mosaic", "palmerpenguins", "skimr")
 ) %>%
   knitr::kable(format = "simple")
 

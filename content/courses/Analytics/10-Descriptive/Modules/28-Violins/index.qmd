@@ -23,7 +23,7 @@ citation: true
 #   markdown: 
 #     wrap: 72
 webr:
-  packages: ['readr', 'tidyr', 'dplyr','mosaic', 'skimr', 'ggformula','ggridges', 'palmerpenguins']
+  packages: ['readr', 'tidyr', 'dplyr','mosaic', 'skimr','forcats', 'ggformula','ggridges', 'palmerpenguins', 'janitor']
 
 ---
 :::{.baskerville}
@@ -54,6 +54,7 @@ library(tidyverse)
 library(mosaic)
 library(ggformula)
 library(skimr)
+library(janitor)
 
 library(tinytable) # Elegant Tables for our data
 
@@ -172,7 +173,21 @@ ggplot2::theme_set(new = theme_custom())
 ```
 
 
+```{webr-r}
+#| context: setup
 
+ggplot2::theme_set(theme_classic())
+# Read the data
+data(diamonds, package = "ggplot2")
+diamonds_modified <- diamonds %>% 
+  janitor::clean_names(case = "snake") %>% 
+  janitor::remove_empty(which = c("rows", "cols")) %>% 
+  dplyr::mutate(
+    across(where(is.character), as.factor)
+  )
+
+
+```
 
 ## {{< iconify fxemoji japanesesymbolforbeginner >}} What graphs will we see today?
 
@@ -302,6 +317,18 @@ In @fig-normal-violins, the plots show (very artificial!) distributions of a *si
 
 ## {{< iconify grommet-icons test >}} Case Study-1: `diamonds` dataset
 
+The `diamonds` dataset is a classic dataset that contains information about the prices and attributes of over 50,000 diamonds. It includes variables such as `carat`, `cut`, `color`, `clarity`, and `price`. We can use this dataset to create violin plots to visualize the distribution of diamond prices across different cuts and clarity levels.
+
+```{r}
+#| label: diamonds-setup
+diamonds_modified <- diamonds %>% 
+  janitor::clean_names(case = "snake") %>% 
+  janitor::remove_empty(which = c("rows", "cols")) %>% 
+  dplyr::mutate(
+    across(where(is.character), as.factor)
+  )
+
+```
 
 ::: {.column-page-inset-right}
 
@@ -317,7 +344,7 @@ In @fig-normal-violins, the plots show (very artificial!) distributions of a *si
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-gf_violin(price ~ "All Diamonds", data = diamonds, 
+gf_violin(price ~ "All Diamonds", data = diamonds_modified, 
           draw_quantiles = c(0,.25,.50,.75)) %>%
   gf_labs(title = "Plot A: Violin plot for Diamond Prices")
 
@@ -343,7 +370,7 @@ gf_violin(price ~ "All Diamonds", data = diamonds,
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-diamonds %>% 
+diamonds_modified %>% 
   gf_violin(price ~ cut,
             draw_quantiles = c(0,.25,.50,.75)) %>% 
   gf_labs(title = "Plot B: Price by Cut")
@@ -369,7 +396,7 @@ diamonds %>%
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-diamonds %>% 
+diamonds_modified %>% 
   gf_violin(price ~ cut, 
              fill = ~ cut, 
              color = ~ cut,
@@ -395,7 +422,7 @@ diamonds %>%
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-diamonds %>% 
+diamonds_modified %>% 
   gf_violin(price ~ cut, 
              fill = ~ cut, 
              colour = ~ cut,             
@@ -428,19 +455,19 @@ diamonds %>%
 #| layout-ncol: 2
 ggplot2::theme_set(new = theme_custom())
 
-diamonds %>% ggplot() + 
+diamonds_modified %>% ggplot() + 
   geom_violin(aes(y = price, x = ""),
               draw_quantiles = c(0,.25,.50,.75)) + # note: y, not x
   labs(title = "Plot A: violin for Diamond Prices")
 
 ###
-diamonds %>% ggplot() + 
+diamonds_modified %>% ggplot() + 
   geom_violin(aes(cut, price),
               draw_quantiles = c(0,.25,.50,.75)) + 
   labs(title = "Plot B: Price by Cut")
 
 ###
-diamonds %>% ggplot() + 
+diamonds_modified %>% ggplot() + 
   geom_violin(aes(cut, price, 
                   color = cut, fill = cut),
               draw_quantiles = c(0,.25,.50,.75),
@@ -448,7 +475,7 @@ diamonds %>% ggplot() +
   labs(title = "Plot C: Price by Cut")
 
 ###
-diamonds %>% ggplot() + 
+diamonds_modified %>% ggplot() + 
   geom_violin(aes(cut, 
                    price, 
                    color = cut, fill = cut), 
@@ -466,27 +493,24 @@ diamonds %>% ggplot() +
 ```{webr-r}
 #| label: Violin plots with ggformula webr
 #| collapse: true
-ggplot2::theme_set(new = theme_custom())
 
-gf_violin(price ~ "", data = diamonds, 
+gf_violin(price ~ "", data = diamonds_modified, 
           draw_quantiles = c(0,.25,.50,.75)) %>%
   gf_labs(title = "Plot A: Violin plot for Diamond Prices")
 
 ```
 
 ```{webr-r}
-ggplot2::theme_set(new = theme_custom())
 
-gf_violin(price ~ cut,
+gf_violin(price ~ cut, data = diamonds_modified,
             draw_quantiles = c(0,.25,.50,.75)) %>% 
   gf_labs(title = "Plot B: Price by Cut")
 
 ```
 
 ```{webr-r}
-ggplot2::theme_set(new = theme_custom())
 
-diamonds %>% 
+diamonds_modified %>% 
   gf_violin(price ~ cut, 
              fill = ~ cut, 
              color = ~ cut,
@@ -497,9 +521,8 @@ diamonds %>%
 ```
 
 ```{webr-r}
-ggplot2::theme_set(new = theme_custom())
 
-diamonds %>% 
+diamonds_modified %>% 
   gf_violin(price ~ cut, 
              fill = ~ cut, 
              colour = ~ cut,             
@@ -514,9 +537,8 @@ diamonds %>%
 #| label: Violin plots with ggplot webr
 #| layout-ncol: 2
 #| collapse: true
-ggplot2::theme_set(new = theme_custom())
 
-diamonds %>% ggplot() + 
+diamonds_modified %>% ggplot() + 
   geom_violin(aes(y = price, x = ""),
               draw_quantiles = c(0,.25,.50,.75)) + # note: y, not x
   labs(title = "Plot A: violin for Diamond Prices")
@@ -524,9 +546,8 @@ diamonds %>% ggplot() +
 ```
 
 ```{webr-r}
-ggplot2::theme_set(new = theme_custom())
 
-diamonds %>% ggplot() + 
+diamonds_modified %>% ggplot() + 
   geom_violin(aes(cut, price),
               draw_quantiles = c(0,.25,.50,.75)) + 
   labs(title = "Plot B: Price by Cut")
@@ -534,9 +555,8 @@ diamonds %>% ggplot() +
 ```
 
 ```{webr-r}
-ggplot2::theme_set(new = theme_custom())
 
-diamonds %>% ggplot() + 
+diamonds_modified %>% ggplot() + 
   geom_violin(aes(cut, price, 
                   color = cut, fill = cut),
               draw_quantiles = c(0,.25,.50,.75),
@@ -545,10 +565,10 @@ diamonds %>% ggplot() +
 
 ```
 
-```{webr-r}
-ggplot2::theme_set(new = theme_custom())
 
-diamonds %>% ggplot() + 
+```{webr-r}
+
+diamonds_modified %>% ggplot() + 
   geom_violin(aes(cut, 
                    price, 
                    color = cut, fill = cut), 

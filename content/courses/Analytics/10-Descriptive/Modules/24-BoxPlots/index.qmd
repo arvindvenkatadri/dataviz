@@ -23,7 +23,7 @@ citation: true
 #   markdown: 
 #     wrap: 72
 webr:
-  packages: ['readr', 'tidyr', 'dplyr','mosaic', 'skimr', 'ggformula','ggridges', 'palmerpenguins']
+  packages: ['readr', 'tidyr', 'dplyr','forcats','mosaic', 'skimr', 'ggformula','ggridges', 'palmerpenguins', 'janitor']
 
 ---
 
@@ -48,6 +48,7 @@ library(tidyverse)
 library(mosaic)
 library(ggformula)
 library(skimr)
+library(janitor) # Data cleaning and tidying package
 library(visStatistics) # All in one plot + stats test package
 library(palmerpenguins) # Our new favourite dataset
 
@@ -310,6 +311,9 @@ We will first look at Wage data from the General Social Survey (1974-2018) condu
 #| label: read_gss_wage_data
 #| message: false
 wages <- read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/stevedata/gss_wages.csv")
+wages_modified <- wages %>% 
+  janitor::clean_names(case = "snake") %>% 
+  janitor::remove_empty(which = c("rows", "cols")) # Empty columns and rows if any
 
 ```
 
@@ -318,6 +322,8 @@ The data has automatically been read into the `webr` session, so you can continu
 
 ```{webr-r}
 #| context: setup
+
+ggplot2::theme_set(theme_classic())
 # Read the data
 wages <- read.csv("https://vincentarelbundock.github.io/Rdatasets/csv/stevedata/gss_wages.csv")
 
@@ -335,40 +341,49 @@ methods we have seen.
 #### {{< iconify la r-project >}} dplyr
 ```{r}
 #| label: glimpse-wages
-glimpse(wages)
+glimpse(wages_modified)
 
 ```
 
 #### {{< iconify la r-project >}} skimr
 ```{r}
 #| label: skim-wages
-skim(wages)
+skim(wages_modified)
 
 ```
 
 #### {{< iconify la r-project >}} mosaic
 ```{r}
 #| label: inspect-wages
-inspect(wages)
+inspect(wages_modified)
 ```
 
 #### {{< iconify noto-v1 spider-web >}} web-r
 
 ```{webr-r}
 #| label: glimpse-wages-webr
-glimpse(wages)
+wages %>%
+  janitor::clean_names(case = "snake") %>% 
+  janitor::remove_empty(which = c("rows", "cols")) %>% 
+  glimpse()
 
 ```
 
 ```{webr-r}
 #| label: skim-wages-webr
-skim(wages)
+wages %>% 
+  janitor::clean_names(case = "snake") %>% 
+  janitor::remove_empty(which = c("rows", "cols")) %>% 
+  skim()
 
 ```
 
 ```{webr-r}
 #| label: inspect-wages-webr
-skim(wages)
+wages %>% 
+  janitor::clean_names(case = "snake") %>% 
+  janitor::remove_empty(which = c("rows", "cols")) %>% 
+  inspect()
 
 ```
 
@@ -444,13 +459,9 @@ NOTE: This is not advised at all as a general procedure!! Data is valuable and t
 #| label: data-cleanup
 
 wages_clean <- 
-  wages %>% 
+  wages_modified %>% 
   tidyr::drop_na(realrinc) # choose column or leave blank to choose all
 
-```
-
-```{webr-r}
-wages_clean <-  wages %>% tidyr::drop_na(realinc)
 ```
 
 
@@ -502,15 +513,18 @@ wages_clean %>%
 
 ### {{< iconify noto-v1 spider-web >}} web-r
 ```{webr-r}
-ggplot2::theme_set(new = theme_custom())
 
 wages %>% 
+  janitor::clean_names(case = "snake") %>% 
+  janitor::remove_empty(which = c("rows", "cols")) %>% 
   tidyr::drop_na(realrinc) %>% 
   gf_boxplot(realrinc ~ "Income") %>% # Dummy X-axis "variable"
   gf_labs(title = "Plot 1A: Income has a skewed distribution",
           subtitle = "Many outliers on the high side")
 ##
 wages %>% 
+  janitor::clean_names(case = "snake") %>% 
+  janitor::remove_empty(which = c("rows", "cols")) %>% 
   tidyr::drop_na(realrinc) %>%  
   ggplot() + 
   geom_boxplot(aes(y = realrinc, x = "Income")) +  # Dummy X-axis "variable"
@@ -546,6 +560,7 @@ ggplot2::theme_set(new = theme_custom())
 wages_clean %>% 
   gf_boxplot(gender ~ realrinc) %>% 
   gf_labs(title = "Plot 2A: Income by Gender")
+
 ```
 :::
 ::: {.column}
@@ -643,19 +658,23 @@ wages_clean %>%
 ### web-r
 
 ```{webr-r}
-ggplot2::theme_set(new = theme_custom())
-
 wages %>% 
+  janitor::clean_names(case = "snake") %>% 
+  janitor::remove_empty(which = c("rows", "cols")) %>% 
   tidyr::drop_na(realrinc) %>% 
   gf_boxplot(gender ~ realrinc) %>% 
   gf_labs(title = "Plot 2A: Income by Gender")
 ##
 wages %>% 
+  janitor::clean_names(case = "snake") %>% 
+  janitor::remove_empty(which = c("rows", "cols")) %>% 
   tidyr::drop_na(realrinc) %>% 
   gf_boxplot(gender ~ log10(realrinc)) %>% 
   gf_labs(title = "Plot 2B: Log(Income) by Gender")
 ##
 wages %>% 
+  janitor::clean_names(case = "snake") %>% 
+  janitor::remove_empty(which = c("rows", "cols")) %>% 
   tidyr::drop_na(realrinc) %>% 
   gf_boxplot(gender ~ realrinc, fill = ~ gender) %>% 
   gf_refine(scale_x_log10(), scale_fill_brewer(palette = "Set1")) %>% 
@@ -836,19 +855,24 @@ wages_clean %>%
 ### web-r
 
 ```{webr-r}
-ggplot2::theme_set(new = theme_custom())
 
 wages %>% 
+  janitor::clean_names(case = "snake") %>% 
+  janitor::remove_empty(which = c("rows", "cols")) %>% 
   tidyr::drop_na(realrinc) %>% 
   gf_boxplot(educcat ~ realrinc) %>% 
   gf_labs(title = "Plot 3A: Income by Education Category")
 ##
 wages %>% 
+  janitor::clean_names(case = "snake") %>% 
+  janitor::remove_empty(which = c("rows", "cols")) %>% 
   tidyr::drop_na(realrinc) %>% 
   gf_boxplot(educcat ~ log10(realrinc)) %>% 
   gf_labs(title = "Plot 3B: Log(Income) by Education Category")
 ##
 wages %>% 
+  janitor::clean_names(case = "snake") %>% 
+  janitor::remove_empty(which = c("rows", "cols")) %>% 
   tidyr::drop_na(realrinc) %>% 
   gf_boxplot(reorder(educcat, realrinc, FUN = median) ~ log(realrinc), 
              fill = ~ educcat,
@@ -857,6 +881,8 @@ wages %>%
           x = "Log Income", y = "Education Category")
 ##
 wages %>% 
+  janitor::clean_names(case = "snake") %>% 
+  janitor::remove_empty(which = c("rows", "cols")) %>% 
   tidyr::drop_na(realrinc) %>% 
   gf_boxplot(reorder(educcat, realrinc, FUN = median) ~ realrinc, 
              fill = ~ educcat,
@@ -908,7 +934,7 @@ We will also drop NA values all around this time, to avoid seeing boxplots for u
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-wages %>% 
+wages_modified %>% 
   drop_na() %>% 
   gf_boxplot(reorder(educcat, realrinc) ~ log10(realrinc),
              fill = ~ educcat, 
@@ -940,7 +966,7 @@ wages %>%
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-wages %>% 
+wages_modified %>% 
   drop_na() %>% 
   mutate(childs = as_factor(childs)) %>% 
   gf_boxplot(childs ~ log10(realrinc),
@@ -977,7 +1003,7 @@ wages %>%
 #|   - "Split by Gender and Family Size"
 ggplot2::theme_set(new = theme_custom())
 
-wages %>% 
+wages_modified %>% 
   drop_na() %>%
   ggplot() + 
   geom_boxplot(aes(log10(realrinc), reorder(educcat, realrinc),
@@ -987,7 +1013,7 @@ wages %>%
   scale_fill_brewer(type = "qual", palette = "Dark2") + 
   labs(title = "Plot 4A: Log Income by Education Category and Family Size", x = "Log income", y = "No. of Children")
 ##
-wages %>% 
+wages_modified %>% 
   drop_na() %>% 
   mutate(childs = as_factor(childs)) %>% 
   ggplot() + 
@@ -1007,9 +1033,10 @@ wages %>%
 
 ```{webr-r}
 #| label: fig-income-by-educcat-childs-webr
-ggplot2::theme_set(new = theme_custom())
 
 wages %>% 
+  janitor::clean_names(case = "snake") %>% 
+  janitor::remove_empty(which = c("rows", "cols")) %>% 
   drop_na() %>% 
   gf_boxplot(reorder(educcat, realrinc) ~ log10(realrinc),
              fill = ~ educcat, 
@@ -1019,8 +1046,10 @@ wages %>%
   gf_labs(title = "Plot 4A: Log Income by Education Category and Family Size", x = "Log income", y = "No. of Children")
 ##
 wages %>% 
+  janitor::clean_names(case = "snake") %>% 
+  janitor::remove_empty(which = c("rows", "cols")) %>% 
   drop_na() %>% 
-  mutate(childs = as_factor(childs)) %>% 
+  dplyr::mutate(childs = as_factor(childs)) %>% 
   gf_boxplot(childs ~ log10(realrinc),
              group = ~ childs,
              fill = ~ childs, 
@@ -1180,4 +1209,3 @@ cite_packages(
 
 ```
 :::
-

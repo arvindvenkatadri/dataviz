@@ -22,7 +22,7 @@ citation: true
 #   markdown: 
 #     wrap: 72
 webr:
-  packages: ['crosstable','readr', 'tidyr', 'dplyr','mosaic', 'skimr', 'ggformula','ggridges', 'palmerpenguins']
+  packages: ['crosstable','readr', 'tidyr', 'dplyr','mosaic', 'skimr', 'ggformula','ggridges', 'palmerpenguins', 'janitor']
 
 ---
 
@@ -166,6 +166,22 @@ ggplot2::theme_set(new = theme_custom())
 
 ```
 
+```{webr-r}
+#| context: setup
+#| label: webr-cell-1
+
+## Set the theme
+ggplot2::theme_set(new = theme_classic())
+
+# Read the data. Always use base-R. 
+# race_df <- read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-10-26/race.csv")
+# rank_df <- read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-10-26/ultra_rankings.csv")
+data(diamonds, package = "ggplot2")
+diamonds_modified <- diamonds %>%
+  janitor::clean_names() %>% 
+  janitor::remove_empty() # Empty columns and rows if any
+
+```
 
 ## {{< iconify fxemoji japanesesymbolforbeginner >}} What graphs will we see today?
 
@@ -229,7 +245,15 @@ Histograms do not usually show spaces between buckets because the buckets repres
 ## {{< iconify grommet-icons test >}} Case Study-1: `diamonds` dataset
 
 We will first look at at a dataset that is directly available in R, the
-`diamonds` dataset. 
+`diamonds` dataset. As always, we will use `janitor` to clean up the column names:
+
+```{r}
+diamonds_modified <- diamonds %>%
+  janitor::clean_names(case = "snake") %>% 
+  janitor::remove_empty(which = c("rows", "cols")) # Empty columns and rows if any
+
+```
+
 
 ### {{< iconify file-icons influxdata >}} Examine the Data
 
@@ -241,21 +265,21 @@ methods we have seen.
 #### {{< iconify la r-project >}} dplyr::glimpse
 ```{r}
 #| label: glimpse-diamonds
-glimpse(diamonds)
+glimpse(diamonds_modified)
 
 ```
 
 #### {{< iconify la r-project >}} skimr::skim
 ```{r}
 #| label: skim-diamonds
-skim(diamonds)
+skim(diamonds_modified)
 
 ```
 
 #### {{< iconify la r-project >}} mosaic::inspect
 ```{r}
 #| label: inspect-diamonds
-inspect(diamonds)
+inspect(diamonds_modified)
 
 ```
 
@@ -263,19 +287,19 @@ inspect(diamonds)
 
 ```{webr-r}
 #| label: glimpse-diamonds-webr
-glimpse(diamonds)
+glimpse(diamonds_modified)
 
 ```
 
 ```{webr-r}
 #| label: skim-diamonds-webr
-skim(diamonds)
+skim(diamonds_modified)
 
 ```
 
 ```{webr-r}
 #| label: inspect-diamonds-webr
-inspect(diamonds)
+inspect(diamonds_modified)
 
 ```
 
@@ -363,7 +387,7 @@ Let's plot some histograms to answer each of the Hypothesis questions above.
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-gf_histogram(~ price, data = diamonds) %>%
+gf_histogram(~ price, data = diamonds_modified) %>%
   gf_labs(title = "Plot 1A: Diamond Prices",
           caption = "ggformula")
 
@@ -387,7 +411,7 @@ gf_histogram(~ price, data = diamonds) %>%
 ggplot2::theme_set(new = theme_custom())
 
 ## More bins
-gf_histogram(~ price, data = diamonds, 
+gf_histogram(~ price, data = diamonds_modified, 
              bins = 100) %>%
   gf_labs(title = "Plot 1B: Diamond Prices",
           caption = "ggformula")
@@ -410,12 +434,12 @@ gf_histogram(~ price, data = diamonds,
 #| message: false
 ggplot2::theme_set(new = theme_custom())
 
-ggplot(data = diamonds) + 
+ggplot(data = diamonds_modified) + 
   geom_histogram(aes(x = price)) +
   labs(title = "Plot 1A: Diamond Prices",
        caption = "ggplot")
 ## More bins
-ggplot(data = diamonds) + 
+ggplot(data = diamonds_modified) + 
   geom_histogram(aes(x = price), bins = 100) +
   labs(title = "Plot 1B: Diamond Prices",
        caption = "ggplot")
@@ -425,13 +449,12 @@ ggplot(data = diamonds) +
 ### {{< iconify noto-v1 spider-web >}} web-r-1
 
 ```{webr-r}
-ggplot2::theme_set(new = theme_custom())
 
-gf_histogram(~ price, data = diamonds) %>%
+gf_histogram(~ price, data = diamonds_modified) %>%
   gf_labs(title = "Plot 1A: Diamond Prices",
           caption = "ggformula")
 ## More bins
-gf_histogram(~ price, data = diamonds, 
+gf_histogram(~ price, data = diamonds_modified, 
   bins = 100) %>%
   gf_labs(title = "Plot 1B: Diamond Prices",
           caption = "ggformula")
@@ -461,7 +484,7 @@ gf_histogram(~ price, data = diamonds,
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-diamonds %>% 
+diamonds_modified %>% 
   gf_histogram(~ carat) %>%
   gf_labs(title = "Plot 2A: Carats of Diamonds",
           caption = "ggformula")
@@ -484,7 +507,7 @@ diamonds %>%
 ggplot2::theme_set(new = theme_custom())
 
 ## More bins
-diamonds %>% 
+diamonds_modified %>% 
   gf_histogram(~ carat, 
   bins = 100) %>%
   gf_labs(title = "Plot 2B: Carats of Diamonds",
@@ -506,13 +529,13 @@ diamonds %>%
 #| message: false
 ggplot2::theme_set(new = theme_custom())
 
-diamonds %>% 
+diamonds_modified %>% 
   ggplot() + 
   geom_histogram(aes(x = carat)) + 
   labs(title = "Plot 2A: Carats of Diamonds",
           caption = "ggplot")
 ## More bins
-diamonds %>% 
+diamonds_modified %>% 
   ggplot() + 
   geom_histogram(aes(x = carat), bins = 100) + 
   labs(title = "Plot 2A: Carats of Diamonds",
@@ -523,14 +546,13 @@ diamonds %>%
 ### {{< iconify noto-v1 spider-web >}} web-r-2
 
 ```{webr-r}
-ggplot2::theme_set(new = theme_custom())
 
-diamonds %>% 
+diamonds_modified %>% 
   gf_histogram(~ carat) %>%
   gf_labs(title = "Plot 2A: Carats of Diamonds",
           caption = "ggformula")
 ## More bins
-diamonds %>% 
+diamonds_modified %>% 
   gf_histogram(~ carat, bins = 100) %>%
   gf_labs(title = "Plot 2B: Carats of Diamonds",
           caption = "ggformula")
@@ -561,7 +583,7 @@ diamonds %>%
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-gf_histogram(~ price, fill = ~ cut, data = diamonds) %>%
+gf_histogram(~ price, fill = ~ cut, data = diamonds_modified) %>%
   gf_labs(title = "Plot 3A: Diamond Prices",caption = "ggformula") 
 ```
 :::
@@ -581,7 +603,7 @@ gf_histogram(~ price, fill = ~ cut, data = diamonds) %>%
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-diamonds %>% 
+diamonds_modified %>% 
   gf_histogram(~ price, fill = ~ cut, color = "black", alpha = 0.3) %>%
   gf_labs(title = "Plot 3B: Prices by Cut",
           caption = "ggformula")
@@ -602,7 +624,7 @@ diamonds %>%
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-diamonds %>% 
+diamonds_modified %>% 
   gf_histogram(~ price, fill = ~ cut, color = "black", alpha = 0.3) %>%
   gf_facet_wrap(~ cut) %>%
   gf_labs(title = "Plot 3C: Prices by Filled and Facetted by Cut",
@@ -627,7 +649,7 @@ diamonds %>%
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-diamonds %>% 
+diamonds_modified %>% 
   gf_histogram(~ price, fill = ~ cut, color = "black", alpha = 0.3) %>% 
   gf_facet_wrap(~ cut, scales = "free_y", nrow = 2) %>%
   gf_labs(title = "Plot 3D: Prices Filled and Facetted by Cut", 
@@ -651,17 +673,17 @@ diamonds %>%
 #| layout-ncol: 2
 ggplot2::theme_set(new = theme_custom())
 
-diamonds %>% ggplot() + 
+diamonds_modified %>% ggplot() + 
   geom_histogram(aes(x = price, fill = cut), alpha = 0.3) + 
   labs(title = "Plot 3A: Prices by Cut", caption = "ggplot")
 ##
-diamonds %>% 
+diamonds_modified %>% 
   ggplot() + 
   geom_histogram(aes(x = price, fill = cut), 
                  colour = "black", alpha = 0.3) + 
   labs(title = "Plot 3B: Prices filled by Cut", caption = "ggplot")
 ##
-diamonds  %>% ggplot() + 
+diamonds_modified  %>% ggplot() + 
   geom_histogram(aes(price, fill = cut),
                  colour = "black", alpha = 0.3) +
   facet_wrap(facets = vars(cut)) + 
@@ -669,7 +691,7 @@ diamonds  %>% ggplot() +
        caption = "ggplot") + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ##
-diamonds  %>% ggplot() + 
+diamonds_modified  %>% ggplot() + 
   geom_histogram(aes(price, fill = cut), 
                  colour = "black", alpha = 0.3) +
   facet_wrap(facets = vars(cut), scales = "free_y") +
@@ -681,25 +703,25 @@ diamonds  %>% ggplot() +
 ```
 
 ### {{< iconify noto-v1 spider-web >}} web-r-3
-```{webr-r}
-ggplot2::theme_set(new = theme_custom())
 
-gf_histogram(~ price, fill = ~ cut, data = diamonds) %>%
+```{webr-r}
+
+gf_histogram(~ price, fill = ~ cut, data = diamonds_modified) %>%
   gf_labs(title = "Plot 3A: Diamond Prices",caption = "ggformula") 
 ###
-diamonds %>% 
+diamonds_modified %>% 
   gf_histogram(~ price, fill = ~ cut, color = "black", alpha = 0.3) %>%
   gf_labs(title = "Plot 3B: Prices by Cut",
           caption = "ggformula")
 ###
-diamonds %>% 
+diamonds_modified %>% 
   gf_histogram(~ price, fill = ~ cut, color = "black", alpha = 0.3) %>%
   gf_facet_wrap(~ cut) %>%
   gf_labs(title = "Plot 3C: Prices by Filled and Facetted by Cut",
           caption = "ggformula") %>%
   gf_theme(theme(axis.text.x = element_text(angle = 45, hjust = 1)))
 ###
-diamonds %>% 
+diamonds_modified %>% 
   gf_histogram(~ price, fill = ~ cut, color = "black", alpha = 0.3) %>% 
   gf_facet_wrap(~ cut, scales = "free_y", nrow = 2) %>%
   gf_labs(title = "Plot 3D: Prices Filled and Facetted by Cut", 
@@ -775,7 +797,7 @@ rank_df <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesd
 
 ```
 
-The data has automatically been read into the `webr` session, so you can continue on to the next code chunk!
+The data has automatically been read into the `webr` session, so you can continue on to the next code chunk! And the names are already cleaned up, so we can use them directly.
 
 ```{webr-r}
 #| context: setup
@@ -1109,7 +1131,6 @@ rank_df %>%
 ### {{< iconify noto-v1 spider-web >}} web-r
 
 ```{webr-r}
-ggplot2::theme_set(new = theme_custom())
 
 rank_df %>%
   gf_histogram(~ time_in_seconds, bins = 75)  %>%
@@ -1167,7 +1188,6 @@ race_df %>%
 ### {{< iconify noto-v1 spider-web >}} web-r
 
 ```{webr-r}
-ggplot2::theme_set(new = theme_custom())
 
 race_df %>%
   gf_histogram(~ distance, bins =  50) %>%
@@ -1330,7 +1350,6 @@ race_start_factor <- race_df %>%
 
 
 ```{webr-r}
-ggplot2::theme_set(new = theme_custom())
 
 # Join with rank_df
 race_start_factor %>%
@@ -1386,7 +1405,7 @@ Let us plot densities/histograms for `value`:
 ggplot2::theme_set(new = theme_custom())
 
 gf_histogram(~ value, data = pop, title = "Long Tailed Histogram") 
-gf_density(~ value, data = pop, title = "Long Tailed Density")
+gf_density(~ value, data = pop, title = "Long Tailed Density") 
 
 ```
 
@@ -1608,7 +1627,7 @@ cite_packages(
   out.dir = ".",
   out.format = "html",
   pkgs = c("crosstable","ggridges", "NHANES", "TeachHist",
-           "TeachingDemos", "visualize")
+           "TeachingDemos", "visualize", "janitor")
 ) %>%
   knitr::kable(format = "simple")
 
