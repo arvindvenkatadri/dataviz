@@ -147,8 +147,15 @@ theme_custom <- function(){
     )
 }
 
-## Use available fonts in ggplot text geoms too!
-ggplot2::update_geom_defaults(geom = "text",new = list(
+## Use available fonts in ggplot text and label geoms too!
+ggplot2::update_geom_defaults(geom = "text", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label", new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -198,11 +205,11 @@ different components of mathematics.
 #| - "Quantitative Variables"
 #| results: hold
 data("MathAnxiety",package = "resampledata")
-MathAnxiety %>% head(10) %>% tt() %>% format_tt(quarto = TRUE)
+MathAnxiety %>% head(10) %>% tt()
 glimpse(MathAnxiety)
 MathAnxiety_inspect <- inspect(MathAnxiety)
-MathAnxiety_inspect$categorical %>%  tt() %>% format_tt(quarto = TRUE)
-MathAnxiety_inspect$quantitative %>%  tt() %>% format_tt(quarto = TRUE)
+MathAnxiety_inspect$categorical %>%  tt() 
+MathAnxiety_inspect$quantitative %>%  tt() 
 
 ```
 ### {{< iconify streamline dictionary-language-book-solid >}} Data Dictionary
@@ -251,9 +258,6 @@ interested in, after converting data into long format:
 #| layout-ncol: 2
 #| message: false
 
-# Set graph theme
-theme_set(new = theme_custom())
-
 MathAnxiety %>% count(Gender)
 
 MathAnxiety %>% 
@@ -273,6 +277,9 @@ MathAnxiety %>%
 #| layout-ncol: 2
 #| message: false
 #| warning: false
+
+# Set graph theme
+theme_set(new = theme_custom())
 
 # https://www.statology.org/r-geom_path-each-group-consists-of-only-one-observation/
 MathAnxiety %>%
@@ -306,10 +313,10 @@ MathAnxiety %>%
     breaks = c("Boy", "Girl"),
     labels = c("Boy", "Girl"),
     guide = "prism_bracket"
-  )) %>%
-  gf_annotate(x = 0.65, y = 25, geom = "text", label = "Mean\n Boys' Anxiety Scores") %>% 
-    gf_annotate(x = 2.35, y = 25, geom = "text", label = "Mean\n Girls' Anxiety Scores") %>% 
-    gf_annotate(x = 1.5, y = 30, geom = "label", label = "Mean Difference Line\nSlope indicates\n differences in mean", fill = "moccasin") %>% 
+  ))  %>% 
+  gf_annotate(x = 0.65, y = 25, geom = "text", label = "Mean\n Boys' Anxiety Scores", family = "Roboto Condensed") %>%
+    gf_annotate(x = 2.35, y = 25, geom = "text", label = "Mean\n Girls' Anxiety Scores",family = "Roboto Condensed") %>% 
+    gf_annotate(x = 1.5, y = 30, geom = "label", label = "Mean Difference Line\nSlope indicates\n differences in mean", fill = "moccasin", family = "Roboto Condensed") %>%
   gf_theme(theme(legend.position = "none"))
 
 ```
@@ -820,7 +827,7 @@ xqnorm(p = c(0.025, 0.975),  mean = obs_diff_amas, sd = std_error_diff,
   gf_dhistogram(~ diff, data = all_diff,bins = 50, 
                 xlab = "Difference in Means",
                 ylab = "Density", inherit = F) %>% ## Very important!
-    gf_fitdistr(~ diff, data = all_diff, inherit = F) %>% 
+  gf_fitdistr(~ diff, data = all_diff, inherit = F) %>% 
   gf_vline(xintercept = mean_diff_belief, colour = "red") %>% 
   gf_vline(xintercept = obs_diff_amas, colour = "purple") %>% 
   
@@ -835,11 +842,10 @@ xqnorm(p = c(0.025, 0.975),  mean = obs_diff_amas, sd = std_error_diff,
             colour = "black") %>% 
   
   ## Observed Difference
-  gf_vline(xintercept = obs_diff_amas, color = "purple") %>% 
   gf_annotate(geom = "label", x = obs_diff_amas, y = 0.8, 
             label = "Observed Mean Difference", colour = "purple") %>% 
 ## Null Hypothesis
-  gf_vline(xintercept = mean_diff_belief, color = "red") %>% 
+
   gf_annotate(geom = "label", x = mean_diff_belief, y = 0.7, 
             label = "Null Hypothesis (Belief)") %>% 
 
@@ -888,29 +894,29 @@ about the tests:
 
 mosaic::t_test(AMAS ~ Gender, 
                data = MathAnxiety) %>% 
-  broom::tidy() %>% tt() %>% format_tt(quarto = TRUE) %>% 
-  style_tt(i = 1,j = 5,background = "gold",color = "black")
+  broom::tidy() %>% tt() %>% 
+  style_tt(i = 1,j = 5,color = "black", bold = TRUE, background = "gold")
 
 
 wilcox.test(AMAS ~ Gender, 
                data = MathAnxiety) %>% 
   broom::tidy() %>% 
-  tt() %>% format_tt(quarto = TRUE) %>% 
-  style_tt(i = 1,j = 2,background = "gold",color = "black")
+  tt() %>% 
+  style_tt(i = 1,j = 2,color = "black", bold = TRUE, background = "gold")
 
 lm(AMAS ~ Gender, 
    data = MathAnxiety) %>% 
   broom::tidy(conf.int = TRUE,
               conf.level = 0.95) %>% 
-  tt() %>% format_tt(quarto = TRUE) %>% 
-  style_tt(i = 1:2, j = 5,background = "gold",color = "black")
+  tt() %>% 
+  style_tt(i = 1:2, j = 5,color = "black", bold = TRUE, background = "gold")
 
 lm(rank(AMAS) ~ Gender, 
    data = MathAnxiety) %>% 
   broom::tidy(conf.int = TRUE,
               conf.level = 0.95) %>% 
-  tt() %>% format_tt(quarto = TRUE) %>% 
-  style_tt(i = 1:2, j = 5,background = "gold",color = "black")
+  tt() %>% 
+  style_tt(i = 1:2, j = 5,color = "black", bold = TRUE, background = "gold")
 
 
 ```
@@ -1401,13 +1407,13 @@ about the tests:
 wilcox.test(weight ~ gender, data = yrbss_select_gender, 
             conf.int = TRUE, 
             conf.level = 0.95) %>% 
-  broom::tidy() %>% tt() %>% format_tt(quarto = TRUE) %>% 
+  broom::tidy() %>% tt() %>% 
   style_tt(i = 1,j = 5,background = "gold",color = "black")
 
 lm(rank(weight) ~ gender, 
    data = yrbss_select_gender) %>% 
   broom::tidy(conf.int = TRUE,
-              conf.level = 0.95) %>% tt() %>% format_tt(quarto = TRUE) %>% 
+              conf.level = 0.95) %>% tt() %>% 
   style_tt(i = 1,j = 5,background = "gold",color = "black")
 
 
