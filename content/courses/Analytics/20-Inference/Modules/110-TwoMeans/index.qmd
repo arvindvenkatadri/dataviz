@@ -42,12 +42,14 @@ library(ggformula)
 library(infer) # An alternative package for inference using tidy data
 library(broom) # Clean test results in tibble form
 library(skimr) # data inspection
-library(resampledata3) # Datasets from Chihara and Hesterberg's book
-library(openintro) # datasets
-library(gt) # for tables
+library(tinytable)
 library(ggprism) # Prism-like ggplot themes
 ##
 library(visStatistics) # All-in-one Stats test package
+##
+library(resampledata3) # Datasets from Chihara and Hesterberg's book
+library(openintro) # datasets
+
 
 ```
 
@@ -154,8 +156,11 @@ ggplot2::update_geom_defaults(geom = "text",new = list(
 )
 )
 
+
 ## Set the theme
 ggplot2::theme_set(new = theme_custom())
+
+## tinytable options
 
 ```
 
@@ -176,7 +181,7 @@ flowchart TD
 
 ```
 
-## {{< iconify pajamas issue-type-test-case >}} Case Study #1: A Simple Data set with Two Quant Variables
+## {{< iconify pajamas issue-type-test-case >}} Case Study #1: Math Anxiety
 
 Let us look at the `MathAnxiety` dataset from the package
 `resampledata`. Here we have "anxiety" scores for boys and girls, for
@@ -185,15 +190,19 @@ different components of mathematics.
 ### {{< iconify carbon chart-3d >}} Inspecting and Charting Data
 
 ```{r}
-#| label: DataCaseStudy-1
-#| column: page-inset-right
+#| label: tbl-Math-Anxiety
+#| tbl-cap: Math Anxiety Dataset
+#| tbl-subcap:
+#| - "Dataset (first 10 rows)"
+#| - "Qualitative Variables"
+#| - "Quantitative Variables"
 #| results: hold
 data("MathAnxiety",package = "resampledata")
-MathAnxiety
+MathAnxiety %>% head(10) %>% tt() %>% format_tt(quarto = TRUE)
 glimpse(MathAnxiety)
 MathAnxiety_inspect <- inspect(MathAnxiety)
-MathAnxiety_inspect$categorical
-MathAnxiety_inspect$quantitative
+MathAnxiety_inspect$categorical %>%  tt() %>% format_tt(quarto = TRUE)
+MathAnxiety_inspect$quantitative %>%  tt() %>% format_tt(quarto = TRUE)
 
 ```
 ### {{< iconify streamline dictionary-language-book-solid >}} Data Dictionary
@@ -256,25 +265,25 @@ MathAnxiety %>%
 
 ```{r}
 #| label: fig-MathAnxiety-graphs
-#| fig-caption: AMAS Anxiety Score graphs
+#| fig-cap: AMAS Anxiety Score graphs
 #| fig-subcap:
 #| - "AMAS Anxiety Score Densities"
 #| - "AMAS Anxiety Score Jitter Plot"
 #| code-fold: true
 #| layout-ncol: 2
 #| message: false
+#| warning: false
+
 # https://www.statology.org/r-geom_path-each-group-consists-of-only-one-observation/
 MathAnxiety %>%
   gf_density(
     ~ AMAS,
-    fill = ~ Gender,
+    fill = ~ Gender, colour = ~ Gender,
     alpha = 0.5,
     title = "AMAS Math Anxiety Score Densities",
     subtitle = "Boys vs Girls"
   )
-
-
-
+##
 MathAnxiety %>% 
   pivot_longer(cols = -c(Gender, Age, Grade),
                              names_to = "type", 
@@ -306,8 +315,8 @@ MathAnxiety %>%
 ```
 
 The distributions for anxiety scores for boys and girls overlap
-considerably and are very similar, though the boxplot for boys shows a
-significant outlier. Are they close to being *normal distributions* too?
+considerably and are very similar, though the jitter plot for boys shows
+significant outliers. Are they close to being *normal distributions* too?
 We should check.
 
 #### A. {{< iconify mdi chart-bell-curve >}} Check for Normality
@@ -324,6 +333,11 @@ hypothesis is that the data *are* from a normal distribution. We will
 also look at Q-Q plots for both variables:
 
 ```{r}
+#| label: fig-MathAnxiety-charts
+#| fig-cap: AMAS Anxiety Score Normality Check
+#| fig-subcap:
+#| - "AMAS Anxiety Score Densities"
+#| - "AMAS Anxiety Score Q-Q Plots"
 #| layout-ncol: 2
 #| warning: false
 #| code-fold: true
@@ -407,6 +421,13 @@ significantly different:
 
 ```{r}
 #| message: false
+#| results: hold
+#| 
+MathAnxiety %>% 
+  dplyr::select(AMAS, Gender) %>% 
+  dplyr::group_by(Gender) %>% 
+  dplyr::summarize(variance = var(AMAS), n = n())
+
 var.test(AMAS ~ Gender, data = MathAnxiety, 
          conf.int = TRUE, conf.level = 0.95) %>% 
   broom::tidy()
@@ -433,11 +454,11 @@ Girls and Boys, in the **population** from which the dataset
 `MathAnxiety` has been drawn. So accordingly:
 
 $$
-H_0: \mu_{Boys} = \mu_{Girls}\\
+H_0: \mu_{Boys} - \mu_{Girls} = 0\\
 $$
 
 $$
-H_a: \mu_{Girls} \ne \mu_{Boys}\\
+H_a: \mu_{Boys} - \mu_{Girls} \ne 0\\
 $$
 
 ### {{< iconify academicons hypothesis >}} Observed and Test Statistic
@@ -514,8 +535,9 @@ H_a: \mu_{Boys} - \mu_{Girls} \ne 0
 $$
 
 ```{r}
-#| label:  Independent-Data-Plots-1
-#| echo: false
+#| label:  fig-Independent-Data-Plots-1
+#| fig-cap: AMAS Scores Ranked Data by Gender
+#| code-fold: true
 #| message: false
 #| warning: false
 library(ggprism)
@@ -550,6 +572,7 @@ MathAnxiety %>%
            320 ~ 2.25, inherit = FALSE)
 
 ```
+
 This is pretty similar to @fig-MathAnxiety-graphs-2 with **actual** scores. Here we have plotted the **ranks** of the scores.
 
 
@@ -585,8 +608,9 @@ H_a: \beta_1 \ne 0\\
 $$
 
 ```{r}
-#| label:  Independent-Data-Plots-2
-#| echo: false
+#| label:  fig-Independent-Data-Plots-2
+#| fig-cap: "AMAS Anxiety by Gender (Again)"
+#| code-fold: true
 #| message: false
 #| warning: false
 library(ggprism)
@@ -661,7 +685,14 @@ null_dist_amas
 ```
 
 ```{r}
+#| label: fig-NullDist-amas
+#| fig-cap: Null Distribution of Difference in AMAS Means
+#| fig-subcap:
+#| - "Histogram of Null Distribution"
+#| - "Cumulative Density of Null Distribution"
 #| layout-ncol: 2
+#| code-fold: true
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 gf_histogram(data = null_dist_amas, ~ diffmean, bins = 25) %>%
@@ -689,7 +720,155 @@ gf_ecdf(data = null_dist_amas, ~ diffmean,
 Clearly the `observed_diff_amas` is much beyond anything we can generate
 with permutations with `gender`! And hence there is a significant
 difference in weights across `gender`!
-:::::
+
+#### Visual and by Hand t.test
+
+Here too, as with the [Test for a Single Mean](../100-OneMean/index.qmd), the inner mechanism of the t-test is very similar, but for some important differences: 
+
+1. ***Two Means***: Calculate the `mean` of the two samples $\bar{x}$ and $\bar{y}$.
+2. Take the difference between the two sample means $\bar{x} - \bar{y}$:
+   $$
+   \text{Difference} = \bar{x} - \bar{y}
+   $$
+2. ***Net Variance***: Here we need to **pool in** the variances of both samples and compute the **net variance**
+3. Calculate the `standard error` (using net-variance) as follows:
+   $$
+   SE = \sqrt{\frac{s_x^2}{n_x} + \frac{s_y^2}{n_y}}
+   $$
+   where $s_x$ and $s_y$ are the standard deviations of the two samples, and $n_x$ and $n_y$ are their respective sample sizes.
+3. Scale the difference by the `standard error` to get a `test statistic` $t$.
+   $$
+   t = \frac{\text{Difference}}{SE}
+   $$
+4. If the `test statistic` is more than $\pm 1.96$, we can say that it is beyond the the `confidence interval` of the sample mean difference $\bar{x} - \bar{y}$
+   $$
+   \text{Confidence Interval} = \bar{x} - \bar{y} \pm 1.96 \times SE
+   $$
+5. Therefore if the actual difference and bis far beyond the confidence interval, hmm...we cannot think our belief is correct and we change our opinion that the two means $\bar{x}$ and $\bar{y}$ are the same.
+
+Let us translate that mouthful into calculations!
+
+:::: {layout="[15,15,15,40,15]"}
+
+::: {#first-column}
+```{r}
+(mean_diff_belief <- 0.0) # Assert our belief
+```
+Null Hypothesis / Belief
+:::
+
+::: {#second-column}
+```{r}
+(obs_diff_amas <- diffmean(AMAS ~ Gender, data = MathAnxiety) %>% as.numeric())
+```
+Observed Difference in Means
+:::
+
+::: {#third-column}
+```{r}
+#| code-fold: true
+#| 
+(MathAnxiety %>% 
+  dplyr::select(AMAS, Gender) %>% 
+  dplyr::group_by(Gender) %>% 
+  dplyr::summarize(variance = var(AMAS), n = n()) %>% 
+  dplyr::mutate(se_contribution = variance/n) %>% 
+  dplyr::summarise(std_error = sqrt(sum(se_contribution))) %>% 
+  as.numeric () -> std_error_diff)
+
+```
+Standard Error
+:::
+
+::: {#fourth-column}
+```{r}
+(conf_int2 <- tibble(ci_low = obs_diff_amas - 1.96*std_error_diff, ci_high = obs_diff_amas + 1.96*std_error_diff))
+```
+Confidence Intervals
+:::
+::: {#fifth-column}
+```{r}
+(t <- (obs_diff_amas - mean_diff_belief)/std_error_diff)
+```
+Test Statistic
+:::
+::::
+
+
+How can we visualize this? We are going to have to construct a **difference dataset** containing ***all possible differences*** between the two groups, and then plot the distribution of those differences. We can then visualize the observed difference in means, the confidence intervals, and the test statistic. Let'see if that works!
+
+```{r}
+#| label: fig-visualizing-t-test-two-means
+#| fig-cap: "Visualizing the t-test for two means"
+#| message: false
+#| warning: false
+#| code-fold: true
+#| 
+ggplot2::theme_set(new = theme_custom())
+
+boys_scores <- boys_AMAS %>% rename("boys" = AMAS)
+girls_scores <- boys_AMAS %>% rename("girls" = AMAS)
+all_diff <- expand_grid(boys_scores, girls_scores) %>% mutate(diff = boys - girls)
+##
+mosaic::xqnorm(p = c(0.025, 0.975), mean = obs_diff_amas, sd = std_error_diff,
+               return = c("value"), verbose = T, plot = F) -> xq1
+
+xqnorm(p = c(0.025, 0.975),  mean = obs_diff_amas, sd = std_error_diff,
+       digits = 3, plot = TRUE,
+       return = c("plot"), verbose = F, alpha = 0.5, colour = "black",
+        system = "gg")  %>% 
+  gf_dhistogram(~ diff, data = all_diff,bins = 50, 
+                xlab = "Difference in Means",
+                ylab = "Density", inherit = F) %>% ## Very important!
+    gf_fitdistr(~ diff, data = all_diff, inherit = F) %>% 
+  gf_vline(xintercept = mean_diff_belief, colour = "red") %>% 
+  gf_vline(xintercept = obs_diff_amas, colour = "purple") %>% 
+  
+  gf_refine(scale_y_continuous(limits = c(0, 0.8)), 
+            scale_x_continuous(limits = c(-7.5, 7.5),
+                breaks = c(-10.0, -5.0, 0, 5, 10, obs_diff_amas),
+                labels = scales::number_format(accuracy = 0.001,
+                                 decimal.mark = "."))) %>% 
+  
+    gf_annotate(geom = "label", x = -4.5, y = 0.15, 
+            label = "Sample-Difference Histogram and Density", 
+            colour = "black") %>% 
+  
+  ## Observed Difference
+  gf_vline(xintercept = obs_diff_amas, color = "purple") %>% 
+  gf_annotate(geom = "label", x = obs_diff_amas, y = 0.8, 
+            label = "Observed Mean Difference", colour = "purple") %>% 
+## Null Hypothesis
+  gf_vline(xintercept = mean_diff_belief, color = "red") %>% 
+  gf_annotate(geom = "label", x = mean_diff_belief, y = 0.7, 
+            label = "Null Hypothesis (Belief)") %>% 
+
+## Confidence Intervals
+  gf_annotate("segment", 
+            x = conf_int2$ci_low, y = 0.0, 
+            xend = conf_int2$ci_low, yend = 0.5,
+            color = "purple", linewidth = 0.5) %>% 
+  gf_annotate("segment", 
+            x = conf_int2$ci_high, y = 0.0, 
+            xend = conf_int2$ci_high, yend = 0.5,
+            color = "purple", linewidth = 0.5) %>% 
+  gf_annotate("segment", 
+            x = conf_int2$ci_low, y = 0.35, 
+            xend = conf_int2$ci_high, yend = 0.35,
+            color = "purple", linewidth = 0.5, 
+            arrow = arrow(length = unit(0.25,"cm"), ends = "both")) %>% 
+  gf_annotate(geom = "label", x = obs_diff_amas, y = 0.4, 
+            label = "95% Confidence Interval", 
+            colour = "purple") %>% 
+  gf_labs(title = "Visualizing the t-test for Math Anxiety Scores",
+       subtitle = "Difference in Means, Confidence Intervals, and Test Statistic") %>%
+   gf_theme(theme_custom())
+
+```
+We see that the difference between means is `r t` times the std_error! At a distance of $1.96$ (either way) the probability of this data happening by chance already drops to $2.5 \%$ !! At this distance of `r t`, we would have negligible probability of this data occurring by chance!
+
+:::
+
 
 ### All Tests Together
 
@@ -697,51 +876,45 @@ We can put all the test results together to get a few more insights
 about the tests:
 
 ```{r}
+#| label: tbl-All-Tests-tt-1
+#| tbl-cap: All Tests for AMAS Anxiety Scores
+#| tbl-subcap:
+#| - "t.test"
+#| - "wilcox.test"
+#| - "Linear Model with Original Data"
+#| - "Linear Model with Ranked Data"
+#| code-fold: true
 #| results: hold
 
 mosaic::t_test(AMAS ~ Gender, 
                data = MathAnxiety) %>% 
-  broom::tidy() %>% 
-  gt() %>%
-  tab_style(
-    style = list(cell_fill(color = "cyan"), cell_text(weight = "bold")),
-    locations = cells_body(columns = p.value)) %>% 
-  tab_header(title = "t.test") %>%
-  tab_options(table.font.size = 10)
+  broom::tidy() %>% tt() %>% format_tt(quarto = TRUE) %>% 
+  style_tt(i = 1,j = 5,background = "gold",color = "black")
+
 
 wilcox.test(AMAS ~ Gender, 
                data = MathAnxiety) %>% 
   broom::tidy() %>% 
-  gt() %>%
-  tab_style(
-    style = list(cell_fill(color = "cyan"), cell_text(weight = "bold")),
-    locations = cells_body(columns = p.value)) %>% 
-  tab_header(title = "wilcox.test") %>%
-  tab_options(table.font.size = 10) 
+  tt() %>% format_tt(quarto = TRUE) %>% 
+  style_tt(i = 1,j = 2,background = "gold",color = "black")
 
 lm(AMAS ~ Gender, 
    data = MathAnxiety) %>% 
   broom::tidy(conf.int = TRUE,
               conf.level = 0.95) %>% 
-  gt() %>%
-  tab_style(
-    style = list(cell_fill(color = "cyan"),cell_text(weight = "bold")),
-    locations = cells_body(columns = p.value)) %>% 
-  tab_header(title = "Linear Model with Original Data") %>%
-  tab_options(table.font.size = 10)
+  tt() %>% format_tt(quarto = TRUE) %>% 
+  style_tt(i = 1:2, j = 5,background = "gold",color = "black")
 
 lm(rank(AMAS) ~ Gender, 
    data = MathAnxiety) %>% 
   broom::tidy(conf.int = TRUE,
               conf.level = 0.95) %>% 
-  gt() %>%
-  tab_style(
-    style = list(cell_fill(color = "cyan"),cell_text(weight = "bold")),
-    locations = cells_body(columns = p.value)) %>% 
-  tab_header(title = "Linear Model with Ranked Data") %>% tab_options(table.font.size = 10)
+  tt() %>% format_tt(quarto = TRUE) %>% 
+  style_tt(i = 1:2, j = 5,background = "gold",color = "black")
 
 
 ```
+
 
 As we can see, all tests are in agreement that there is a significant
 *effect* of `Gender` on the `AMAS` anxiety scores!
@@ -769,8 +942,9 @@ From the `visStatistics` package documentation:
 > assumption checks and post-hoc analyses.
 
 ```{r}
-#| label: visStatistics-1
-#| echo: true
+#| label: fig-visStatistics-1
+#| fig-cap: "visStatistics Output for AMAS Anxiety Scores"
+
 
 # Generate the annotated plots and statistics
 visstat(x = MathAnxiety$Gender, 
@@ -849,19 +1023,18 @@ At $\alpha = 0.001056$, the observed differences (higher mean Math Anxiety among
 
 ## {{< iconify pajamas issue-type-test-case >}} Case Study #2: Youth Risk Behavior Surveillance System (YRBSS) survey
 
-Every two years, the Centers for Disease Control and Prevention in the
+Every two years, the [Centers for Disease Control and Prevention](https://www.cdc.gov/) in the
 USA conduct the **Youth Risk Behavior Surveillance System (YRBSS)**
-survey, where it takes data from highschoolers (9th through 12th grade),
+survey, where it takes data from high-schoolers (9th through 12th grade),
 to analyze health patterns. We will work with a selected group of
 variables from a random sample of observations during one of the years
-the YRBSS was conducted.The `yrbss` dataset is part of the `openintro`
+the YRBSS was conducted. The `yrbss` dataset is part of the `openintro`
 package. Type this in your console: `help(yrbss)`.
 
 ### {{< iconify carbon chart-3d >}} Inspecting and Charting Data
 
 ```{r}
 #| label: Data-Case-Study-2
-#| column: page-inset-right
 #| results: hold
 data(yrbss, package = "openintro")
 yrbss
@@ -874,8 +1047,8 @@ yrbss_inspect$quantitative
 We have 13K data entries, and with 13 different variables, some Qual and
 some Quant. *Many entries are missing too*, typical of real-world data
 and something we will have to account for in our computations. The
-meaning of each variable can be found by bringing up the help file.[Type
-this in your console: `help(yrbss)`]{.aside}
+meaning of each variable can be found by bringing up the help file. Type
+`help(yrbss)` in your Console.
 
 First, histograms, densities and counts of the variable we are
 interested in:
@@ -891,17 +1064,25 @@ yrbss_select_gender <- yrbss %>%
 ```
 
 ```{r}
+#| label: fig-yrbss-weight-gender
+#| fig-cap: "Highschoolers' Weights Distributions"
+#| fig-subcap:
+#| - "Overlapped Density Plot"
+#| - "Jitter Plots"
 #| layout-ncol: 2
 #| warning: false
 #| message: false
+#| code-fold: true
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 yrbss_select_gender %>%
   gf_density( ~ weight,
-              fill = ~ gender,
-              alpha = 0.5,
+              fill = ~ gender, colour = ~ gender,
+              alpha = 0.3,
               title = "Highschoolers' Weights by Gender") %>% 
-  gf_refine(scale_fill_brewer(name = "Gender", palette = "Set1"))
+  gf_refine(scale_fill_brewer(name = "Gender", palette = "Set1", 
+                              aesthetics = c("colour", "fill")))
 
 ###
 yrbss_select_gender %>% 
@@ -932,7 +1113,7 @@ yrbss_select_gender %>% count(gender)
 ```
 
 Overlapped Distribution plot shows some difference in the *means*; and
-the Boxplots show visible difference in the *medians*. In this Case
+the Jitter plots show visible difference in the *means*. In this Case
 Study, our research question is:
 
 ### {{< iconify academicons hypothesis >}} Hypothesis
@@ -970,8 +1151,15 @@ Anderson-Darling test.
 Let us plot frequency distribution and Q-Q plots[^5] for both variables.
 
 ```{r}
+#| label: fig-normality-check-2
+#| fig-cap: "Highschoolers' weights Normality Check"
+#| fig-subcap:
+#| - "Facetted Densities"
+#| - "Q-Q Plots"
 #| results: hold
 #| layout-ncol: 2
+#| code-fold: true
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 male_student_weights <- yrbss_select_gender %>% 
@@ -987,16 +1175,17 @@ female_student_weights <- yrbss_select_gender %>%
 
 yrbss_select_gender %>%
   gf_density( ~ weight,
-              fill = ~ gender,
-              alpha = 0.5,
+              fill = ~ gender, colour = ~ gender,
+              alpha = 0.3,
               title = "Highschoolers' Weights by Gender") %>%
   gf_facet_grid(~ gender) %>% 
   gf_fitdistr(dist = "dnorm") %>% 
-  gf_refine(scale_fill_brewer(name = "Gender", palette = "Set1"))
+  gf_refine(scale_fill_brewer(name = "Gender", palette = "Set1", aesthetics = c("colour", "fill")))
 ##
 yrbss_select_gender %>% 
-  gf_qqline(~ weight | gender, ylab = "scores") %>% 
-  gf_qq(title = "Q-Q Plots of Male and Female Weights") 
+  gf_qqline(~ weight | gender, ylab = "weight", colour = ~ gender) %>% 
+  gf_qq(title = "Q-Q Plots of Male and Female Weights") %>% 
+  gf_refine(scale_fill_brewer(name = "Gender", palette = "Set1", aesthetics = c("colour", "fill")))
 
 ```
 
@@ -1149,8 +1338,16 @@ For the specific data at hand, we need to shuffle the `gender` and take
 the `test statistic` (difference in means) each time.
 
 ```{r}
+#| label: fig-permutation-test-2
+#| fig-cap: Null Distribution of Difference in Weights Means
+#| fig-subcap:
+#| - "Histogram of Null Distribution"
+#| - "Cumulative Density of Null Distribution"
+#| code-fold: true
+#| results: hold
 #| layout-ncol: 2
 #| layout-nrow: 2
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 null_dist_weight <- 
@@ -1193,29 +1390,25 @@ We can put all the test results together to get a few more insights
 about the tests:
 
 ```{r}
+#| label: tbl-All-Tests-tt-2
+#| tbl-cap: All Tests for YRBSS Weights
+#| tbl-subcap:
+#| - "wilcox.test"
+#| - "Linear Model with Ranked Data"
+#| code-fold: true
 #| results: hold
 
 wilcox.test(weight ~ gender, data = yrbss_select_gender, 
             conf.int = TRUE, 
             conf.level = 0.95) %>% 
-  broom::tidy() %>% 
-  gt() %>%
-  tab_style(
-    style = list(cell_fill(color = "cyan"), cell_text(weight = "bold")),
-    locations = cells_body(columns = p.value)) %>% 
-  tab_header(title = "wilcox.test") %>%
-  tab_options(table.font.size = 10)
+  broom::tidy() %>% tt() %>% format_tt(quarto = TRUE) %>% 
+  style_tt(i = 1,j = 5,background = "gold",color = "black")
 
 lm(rank(weight) ~ gender, 
    data = yrbss_select_gender) %>% 
   broom::tidy(conf.int = TRUE,
-              conf.level = 0.95) %>% 
-  gt() %>%
-  tab_style(
-    style = list(cell_fill(color = "cyan"),cell_text(weight = "bold")),
-    locations = cells_body(columns = p.value)) %>% 
-  tab_header(title = "Linear Model with Ranked Data") %>%
-  tab_options(table.font.size = 10)
+              conf.level = 0.95) %>% tt() %>% format_tt(quarto = TRUE) %>% 
+  style_tt(i = 1,j = 5,background = "gold",color = "black")
 
 
 ```
@@ -1230,8 +1423,9 @@ We need to use a smaller sample of the dataset `yrbss_select_gender`, for the (s
 
 
 ```{r}
-#| label: visStatistics-2
-#| echo: true
+#| label: fig-visStatistics-2
+#| fig-cap: visStatistics Output for YRBSS Weights Model
+#| 
 yrbss_select_gender_sample <- yrbss_select_gender %>% 
   slice_sample(n = 4999)
 
@@ -1285,11 +1479,27 @@ than 3 days a week? (`physically_active_7d` \>= 3 days)
 We can make distribution plots for `weight` by `physical_3plus`:
 
 ```{r}
+#| label: fig-yrbss-weight-phy
+#| fig-cap: "Highschoolers' Weights by Days of Exercise"
+#| fig-subcap:
+#| - "Overlapped Density Plot"
+#| - "Jitter Plots"
 #| layout-ncol: 2
 #| message: false
 #| warning: false
+#| code-fold: true
+#| 
 ggplot2::theme_set(new = theme_custom())
 
+###
+gf_density(~ weight,
+          fill = ~ physical_3plus, colour = ~ physical_3plus,
+          data = yrbss_select_phy, alpha = 0.3, 
+          title = "Highschoolers' Weights by Days of Exercise") %>% 
+  gf_refine(scale_fill_viridis_d(name = "Days of Exercise >=3",
+                                 option = "turbo",
+                              aesthetics = c("colour", "fill")))
+##
 yrbss_select_phy %>% 
   gf_jitter(weight ~ physical_3plus, colour = ~ physical_3plus,
             width = 0.08, alpha = 0.2,
@@ -1300,7 +1510,7 @@ yrbss_select_phy %>%
     fun = "mean", geom = "line", colour = "lightblue",
     lty = 1, linewidth = 2
   ) %>% 
-    gf_summary(fun = "mean", geom = "point", size = 3, colour = "firebrick") %>%
+    gf_summary(fun = "mean", geom = "point", size = 3, colour = "gold") %>%
   gf_refine(scale_x_discrete(
     breaks = c("no", "yes"),
     labels = c("no", "yes"),
@@ -1310,14 +1520,7 @@ yrbss_select_phy %>%
     annotate(x = 0.65, y = 60, geom = "text", label = "Mean Weights\n No Exercise"),
     annotate(x = 2.35, y = 60, geom = "text", label = "Mean Weights\nWith Exercise"),
     annotate(x = 1.5, y = 100, geom = "label", label = "Slope indicates\n differences in mean", fill = "moccasin"),
-    scale_colour_brewer(name = "Days of Exercise >=3", palette = "Set2"))
-
-###
-gf_density(~ weight,
-          fill = ~ physical_3plus,
-          data = yrbss_select_phy,
-          title = "Highschoolers' Weights by Days of Exercise") %>% 
-  gf_refine(scale_fill_brewer(name = "Days of Exercise >=3", palette = "Set2"))
+    scale_colour_viridis_d(name = "Days of Exercise >=3", option = "turbo"))
 
 ```
 
@@ -1351,22 +1554,36 @@ Let us also complete a visual check for normality,with plots since we
 cannot do a `shapiro.test`:
 
 ```{r}
+#| label: fig-normality-check-3
+#| fig-cap: "Highschoolers' Weights Normality Check"
+#| fig-subcap:
+#| - "Facetted Densities"
+#| - "Q-Q Plots"
 #| layout-ncol: 2
 #| results: hold
+#| code-fold: true
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 yrbss_select_phy %>%
   gf_density( ~ weight,
-              fill = ~ physical_3plus,
+              fill = ~ physical_3plus, color = ~ physical_3plus,
               alpha = 0.5,
               title = "Highschoolers' Weights by Exercise Frequency") %>%
   gf_facet_grid(~ physical_3plus) %>% 
-  gf_fitdistr(dist = "dnorm") 
+  gf_fitdistr(dist = "dnorm") %>% 
+  gf_refine(scale_fill_viridis_d(name = "Days of Exercise >=3",
+                                 option = "turbo",
+                                 aesthetics = c("colour", "fill")))
 ##
 yrbss_select_phy %>% 
   gf_qq(~ weight | physical_3plus , 
-        color = ~ physical_3plus) %>% 
-  gf_qqline(ylab = "Weight") 
+        color = ~ physical_3plus,
+        title = "Q-Q Plots of Male and Female Weights") %>% 
+  gf_qqline(ylab = "Weight") %>% 
+  gf_refine(scale_fill_viridis_d(name = "Days of Exercise >=3",
+                                 option = "turbo",
+                                 aesthetics = c("colour", "fill")))
 
 ```
 
@@ -1594,6 +1811,10 @@ find the observed difference in means!
 We can visualize this null distribution with the following code:
 
 ```{r}
+#| label: fig-inf-weight-habit-ht-visualise
+#| fig-cap: Null Distribution of Difference in Weights Means
+#| code-fold: true
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 null_dist %>% 
@@ -1653,12 +1874,21 @@ that with the `obs`erved `diff`rence and compute the `p-value` and
 `confidence intervals`:
 
 ```{r}
+#| label: fig-permutation-test-3
+#| fig-cap: Null Distribution of Difference in Weights Means
+#| code-fold: true
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 gf_histogram(~ diffmean, data = null_dist_mosaic) %>% 
   gf_vline(xintercept = obs_diff_mosaic, 
            colour = "red", linewidth = 2)
 
+```
+
+
+```{r}
+#| label: inf-weight-habit-ht-mosaic-pvalue
 # p-value
 prop(~ diffmean != obs_diff_mosaic, data = null_dist_mosaic)
 # Confidence Intervals for p = 0.95
@@ -1677,8 +1907,9 @@ weights of students in the population from which this dataset is drawn.
 
 ## {{< iconify mingcute thought-line >}} Wait, But Why?
 
--   We need often to infer differences in means between Quantitative
-    variables in a Population
+-   In our target population for our design intervention, we often perceive groups
+-   We need often to infer differences in some Quantitative
+    variable between these groups
 -   We **treat** our dataset as a **sample** from the population, which
     we cannot access
 -   We can apply all the CLT ideas +`t.test` if the two variables in the
@@ -1723,7 +1954,7 @@ cite_packages(
   output = "table",
   out.dir = ".",
   out.format = "html",
-  pkgs = c("explore", "resampledata", "openintro", "infer", "TeachHist", "TeachingDemos", "visStatistics")
+  pkgs = c( "resampledata", "openintro", "infer", "TeachHist", "TeachingDemos", "visStatistics", "tinytable")
 ) %>%
   knitr::kable(format = "simple")
 

@@ -17,6 +17,7 @@ bibliography:
 citation: true
 filters: 
   - gadenbuie/tachyons
+number-sections: false
 #suppress-bibliography: true
 ---
 
@@ -50,6 +51,7 @@ library(infer)
 library(broom) # Clean test results in tibble form
 library(resampledata) # Datasets from Chihara and Hesterberg's book
 library(openintro) # More datasets
+library(visStatistics) # One package to rule them all
 
 ```
 
@@ -165,6 +167,7 @@ ggplot2::theme_set(new = theme_custom())
 
 
 ## {{< iconify fxemoji japanesesymbolforbeginner >}} Introduction
+
 In this module, we will answer a basic Question: What is the mean $\mu$ of the population?
 
 Recall that the `mean` is the first of our [Summary Statistics](../../../10-Descriptive/Modules/10-FavStats/index.qmd). We wish to know more about the mean of the population from which we have drawn our data sample.
@@ -181,7 +184,7 @@ As we will notice, the process of Statistical Inference is an attitude: [**ain't
 a) there is really nothing happening with our research question, and that anything we see in the data is the outcome of random chance. 
 b) the value/statistic indicated by the data is off the mark and ought to be something else.
 
-We then calculate how slim the chances are of [the given data sample showing up like that]{.bg-washed-green .black}, **given our belief**. It is a distance measurement of sorts. If those chances are too low, then that might alter our belief. This is the attitude that lies at the heart of *Hypothesis Testing*.
+We then calculate how slim the chances are of [the given data sample showing up like that]{style="background-color: yellow;"}, **given our belief**. It is a distance measurement of sorts. If those chances are too low, then that might alter our belief. This is the attitude that lies at the heart of *Hypothesis Testing*.
 
 ::: callout-important
 The *calculation of chances* is both a logical, and a possible procedure since we are dealing with **samples** from a *population*. If many other samples give us quite different estimates, then we would discredit the one we derive from it. 
@@ -193,12 +196,12 @@ Each test we perform will mechanize this attitude in different ways, based on as
 
 Since the CLT **assumes** the [sample is normally-distributed]{style="background-color: yellow;"}, let us generate a sample that is just so:
 
-:::: {.columns}
+::::: columns
 ::: {.column width="60%"}
 ```{r}
 #| label: toy-data
 #| eval: false
-set.seed(40) # for replication
+set.seed(42) # for replication
 #
 # Data as individual vectors 
 # ( for t.tests etc)
@@ -212,22 +215,29 @@ mydata
 ```
 
 :::
+
 ::: {.column width="40%"}
 ```{r}
-#| ref.label: toy-data
+#| label: toy-data-table
 #| echo: false
+
+set.seed(42) # for replication
+y <- rnorm(n = 50, mean = 2, sd = 2)
+# And as tibble too 
+mydata <- tibble(y = y)
+mydata
+
 ```
 :::
-::::
-
+:::::
 
 
 ## {{< iconify carbon chart-3d >}} Inspecting and Charting Data
-:::: {.columns}
-::: {.column width="60%"}
 
+::::: columns
+::: {.column width="60%"}
 ```{r}
-#| label: charting-data-1
+#| label: fig-charting-data-1
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
@@ -237,16 +247,18 @@ mydata %>%
   gf_labs(title = "Densities of Original Data Variables",
           subtitle ="Compared with Normal Density")
 ```
-
 :::
+
 ::: {.column width="40%"}
 ```{r}
-#| ref.label: charting-data-1
+#| label: fig-toy-data
+#| fig-cap: "Toy Data Distribution"
+#| ref.label: fig-charting-data-1
 #| echo: false
+#| 
 ```
 :::
-::::
-
+:::::
 
 ::: callout-note
 ### Observations from Density Plots
@@ -261,7 +273,7 @@ Research Questions are always about the population! Here goes:
 
 ::: callout-note
 ### Research Question
-Could the mean of the population $\mu$, from which y has been drawn, be zero?
+Could the mean of the population $\mu$, from which the sample `y` has been drawn, be $0$?
 :::
 
 ### Assumptions
@@ -305,6 +317,9 @@ t1 <- mosaic::t_test(
 t1
 ```
 
+
+::: {.content-hidden when-format="html"}
+
 ::: callout-important
 ### Recall Confidence Intervals
 Recall how we calculated means, standard deviations from data (samples). If we could measure the entire population, then there would be no uncertainty in our estimates for means and sd-s. Since we are forced to sample, we can only estimate population parameters based on the sample estimates and state how much off we might be.
@@ -322,13 +337,52 @@ $$
 **Assuming** the y is normally-distributed, the $constant = 1.96$ for confidence level of 95%. What that means is that if we take multiple such samples like $y$ from the population, [**their means** (which are random)]{.bg-light-pink .black .athelas} will land within $CI$ of [the population mean (which is fixed!)]{.bg-light-green .black .athelas} 95% of the time. Uff...! May remind you of [Buffon's Needle](https://www.wikiwand.com/en/articles/Buffon's_needle_problem)...
 :::
 :::{.column width="40%"}
+
 ```{r}
 #| echo: false
-mosaic::xqnorm(p = c(0.025, 0.975), 2, 2,
-               return = c("plot"), verbose = T,
-        system = "gg") %>%  
-   gf_labs(title = "Deciding Confidence Intervals", 
- x = "") %>% 
+
+(sample_mean <- mean(y))
+(sample_sd <- sd(y))
+(sample_se <- sample_sd / sqrt(length(y)))
+##
+mosaic::xqnorm(p = c(0.025, 0.975), mean = sample_mean, sd = sample_se,
+               return = c("value"), verbose = T, plot = F) -> xq
+
+xqnorm(p = c(0.025, 0.975),  mean = sample_mean, sd = sample_se,
+       digits = 3, plot = TRUE,
+       return = c("plot"), verbose = F, alpha = 0.5, colour = "black",
+        system = "gg")  %>% 
+  gf_dhistogram(~ y, data = mydata, inherit = F) %>% ## Very important!
+  gf_vline(xintercept = ~ 0, colour = "red") %>% 
+  gf_vline(xintercept = sample_mean, colour = "purple") %>% 
+
+  gf_annotate(geom = "label", x = 0, y = 1.6, 
+            label = "Null Hypothesis (Belief)") %>% 
+
+  gf_annotate(geom = "label", x = sample_mean, y = 0.6, 
+            label = "95% Confidence Interval", 
+            colour = "purple") %>% 
+
+  gf_annotate(geom = "label", x = sample_mean, y = 1.6, 
+            label = "Sample Mean", colour = "purple") %>% 
+
+  gf_annotate("segment", 
+            x = xq[1], y = 0.0, 
+            xend = xq[1], yend = 0.5,
+            color = "purple", linewidth = 0.5) %>% 
+  gf_annotate("segment", 
+            x = xq[2], y = 0.0, 
+            xend = xq[2], yend = 0.5,
+            color = "purple", linewidth = 0.5) %>% 
+  gf_annotate("segment", 
+            x = xq[1], y = 0.35, 
+            xend = xq[2], yend = 0.35,
+            color = "purple", linewidth = 0.5, 
+            arrow = arrow(length = unit(0.25,"cm"), ends = "both")) %>% 
+
+
+  gf_labs(title = "Confidence Interval Estimation",
+        subtitle = "Sample-Mean-Distribution is plotted as theoretical Gaussian Bell Curve") %>% 
    gf_theme(theme_custom())
  
 ```
@@ -336,7 +390,9 @@ mosaic::xqnorm(p = c(0.025, 0.975), 2, 2,
 
 :::
 
-So $\bar{y}$ i.e. the `estimate` is $2.045689$. The confidence intervals do not straddle zero. The *chances* that this particular value of mean ($2.045689$) would randomly occur **under the assumption that $\mu$ is zero**, are exceedingly slim, $p.value = 1.425495e-08$. Hence we can reject the NULL hypothesis that the true population, of which y is a sample, could have mean $\mu = 0$. 
+:::
+
+So $\bar{y}$ i.e. the `estimate` is $2.045689$. The confidence intervals do not straddle zero. The *chances* that this particular value of mean ($2.045689$) would randomly occur [**under the assumption that $\mu$ is zero**]{style="background-color: yellow;"}, are exceedingly slim, $p.value = 1.425 * 10^{-8}$. Hence we can reject the NULL hypothesis that the true population, of which y is a sample, could have mean $\mu = 0$. 
 
 
 ### Wilcoxon's Signed-Rank Test
@@ -367,10 +423,10 @@ mean(signed\_rank(y)) = \beta_0
 $$
 
 $$
-H_0: \mu_0 = 0
+H_0: \beta_0 = 0
 $$
 $$
-H_a: \mu_0 \ne 0
+H_a: \beta_0 \ne 0
 $$
 
 B. Code
@@ -400,7 +456,7 @@ Again, the `confidence intervals` do not straddle $0$, and we need to reject the
 
 ::: callout-note
 Note how the Wilcoxon Test reports results about $y$, even though it computes with $signed-rank(y)$.
-The "equivalent t-test" with signed-rank data cannot do this, since it uses "rank" data, and reports the same result.
+The "equivalent t-test" used with signed-rank data cannot do this, since it uses "rank" data as-is.
 :::
 
 ### Using Permutation and Bootstrap
@@ -416,7 +472,11 @@ For the Permutation test, we mechanize our belief that $\mu = 0$ by *shuffling t
 We see that the means here that **chances** that the randomly generated means can exceed our real-world mean are about $0$! So the mean is definitely different from $0$. 
 
 ```{r}
-#| label: permutation-test-1
+#| label: fig-permutation-test-1
+#| fig-cap: "Permutation Test for One Mean"
+#| results: hold
+#| code-fold: true
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 # Calculate exact mean
@@ -458,7 +518,11 @@ prop(~ mean >= obs_diff_mosaic,
 Let us try the bootstrap test now: Here we *simulate samples, similar to the one at hand*, using repeated sampling the sample itself, with replacement, a process known as **bootstrapping**, or *bootstrap sampling*.
 
 ```{r}
-#| label: bootstrap-test-1
+#| label: fig-bootstrap-test-1
+#| fig-cap: "Bootstrap Test for One Mean"
+#| results: hold
+#| code-fold: true
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 ## Resample with replacement from the one sample of 50
@@ -496,70 +560,120 @@ As student [Sneha Manu Jacob](https://in.linkedin.com/in/sneha-manu-jacob-781a62
 
 :::
 
-### Intuitive
+### Visual and by Hand t-test
 
 Yes, the t-test works, but what is really happening under the hood of the t-test? The inner mechanism of the t-test can be stated in the following steps:
 
 1. Calculate the `mean` of the sample $\bar{y}$.
 2. Calculate the `sd` of the sample, and, assuming the sample is normally distributed, calculate the `standard error` (i.e. $\frac{sd}{\sqrt{n}}$)
 3. Take the difference between the sample mean $\bar{y}$ and our expected/believed population mean $\mu$. 
-4. We expect that the population mean ought to be within the `confidence interval` of the sample mean $\bar{y}$.
-5. For a normally distributed sample, the confidence interval is given by $\pm1.96 * standarderror$, to be 95% sure that the sample mean is a good estimate for the population mean. 
-5. Therefore if the difference between actual and believed is far beyond the confidence interval, hmm...we cannot think our belief is correct and we change our opinion. 
+4. Scale the difference by the `standard error` to get a `test statistic` $t$.
+5. If the `test statistic` is more than $\pm 1.96$, we can say that it is beyond the the `confidence interval` of the sample mean $\bar{y}$.
+6. Therefore if the difference between actual and believed is far beyond the confidence interval, hmm...we cannot think our belief is correct and we change our opinion. 
 
 Let us translate that mouthful into calculations!
 
-```{r}
-mean_belief_pop <- 0.0 # Assert our belief
-# Sample Mean
-mean_y <- mean(y)
-mean_y
-## Sample standard error
-std_error <- sd(y)/sqrt(length(y))
-std_error
-## Confidence Interval of Observed Mean
-conf_int <- tibble(ci_low = mean_y - 1.96*std_error, ci_high = mean_y + 1.96*std_error)
-conf_int
-## Difference between actual and believed mean
-mean_diff <- mean_y - mean_belief_pop
-mean_diff
-## Test Statistic
-t <- mean_diff/std_error
-t
-```
+:::: {layout="[15,15,15,40,15]"}
 
-We see that the difference between means is 6.78 times the std_error! At a distance of 1.96 (either way) the probability of this data happening by chance already drops to 5%!! At this distance of 6.78, we would have negligible probability of this data occurring by chance!
+::: {#first-column}
+```{r}
+(mean_belief_pop <- 0.0) # Assert our belief
+```
+Null Hypothesis / Belief
+:::
+
+::: {#second-column}
+```{r}
+(std_error <- sd(y)/sqrt(length(y)))
+```
+Standard Error
+:::
+
+::: {#third-column}
+```{r}
+(mean_y <- mean(y))
+```
+Sample Mean
+:::
+::: {#fourth-column}
+```{r}
+(conf_int <- tibble(ci_low = mean_y - 1.96*std_error, ci_high = mean_y + 1.96*std_error))
+```
+Confidence Intervals
+:::
+::: {#fifth-column}
+```{r}
+(t <- (mean_y - mean_belief_pop)/std_error)
+```
+Test Statistic
+:::
+::::
+
 
 How can we visualize this?
 
 ```{r}
-#| echo: false
-#| message: true
+#| label: fig-visualizing-t-test
+#| fig-cap: "Visualizing the t-test for Toy Data"
+#| message: false
+#| warning: false
+#| code-fold: true
+#| 
 ggplot2::theme_set(new = theme_custom())
 
-gf_dhistogram(~ y, data = mydata, 
-    title = "Distributions for Data and Estimates",
-    subtitle = "Sample Mean also has a distribution!") %>% 
-  gf_fitdistr() %>% 
-  gf_vline(xintercept = ~ mean_y, color = "blue") %>% 
-  gf_dist(dist = "norm", params = list(mean = mean_y, sd = std_error)) %>% 
-  gf_vline(xintercept = ~ ci_low,data = conf_int) %>% 
-  gf_vline(xintercept = ~ ci_high,data = conf_int) %>% 
+mosaic::xqnorm(p = c(0.025, 0.975), mean = sample_mean, sd = sample_se,
+               return = c("value"), verbose = T, plot = F) -> xq
 
-  gf_vline(xintercept = mean_y - 6.78 * std_error, color = "red")
+## Sample-Mean Distribution
+xqnorm(p = c(0.025, 0.975),  mean = sample_mean, sd = sample_se,
+       digits = 3, plot = TRUE,
+       return = c("plot"), verbose = F, alpha = 0.5, colour = "black",
+       system = "gg")  %>% 
+  gf_dhistogram(~ y, data = mydata, inherit = F) %>% 
+  gf_fitdistr(~ y, data = mydata) %>% 
+  gf_vline(xintercept = ~ mean_belief_pop, colour = "red") %>% 
+  gf_vline(xintercept = sample_mean, colour = "purple") %>% 
+## Sample Distribution
+  gf_annotate(geom = "label", x = 5, y = 0.25, 
+            label = "Sample Histogram and Density", 
+            colour = "black") %>% 
+## Null Hypothesis
+  gf_annotate(geom = "label", x = mean_belief_pop, y = 1.4, 
+            label = "Null Hypothesis (Belief)") %>% 
+
+## Observed Mean
+  gf_annotate(geom = "label", x = sample_mean, y = 1.6, 
+            label = "Sample Mean", colour = "purple") %>% 
+
+## Confidence Intervals
+  gf_annotate(geom = "label", x = sample_mean, y = 0.6, 
+            label = "95% Confidence Interval", 
+            colour = "purple") %>% 
+  gf_annotate("segment", 
+            x = xq[1], y = 0.0, 
+            xend = xq[1], yend = 0.5,
+            color = "purple", linewidth = 0.5) %>% 
+  gf_annotate("segment", 
+            x = xq[2], y = 0.0, 
+            xend = xq[2], yend = 0.5,
+            color = "purple", linewidth = 0.5) %>% 
+  gf_annotate("segment", 
+            x = xq[1], y = 0.35, 
+            xend = xq[2], yend = 0.35,
+            color = "purple", linewidth = 0.5, 
+            arrow = arrow(length = unit(0.25,"cm"), ends = "both")) %>% 
+  gf_labs(title = "Visualizing the t-test for Toy Data",
+          subtitle = "Sample-Mean-Distribution is plotted as theoretical Gaussian Bell Curve", 
+          x = "Sample Values and Means", y = "Density") %>%
+  gf_refine(scale_y_continuous(limits = c(0, 1.6)), 
+            scale_x_continuous(limits = c(-2.5, 7.5),
+                breaks = c(-2.5, 0, 2.5, 5, 7.5, sample_mean),
+                labels = scales::number_format(accuracy = 0.01,
+                                 decimal.mark = "."))) %>%
+   gf_theme(theme_custom())
+
 ```
-
-```{r}
-#| echo: false
-#| message: true
-#| layout-ncol: 2
-ggplot2::theme_set(new = theme_custom())
-
-xpnorm(mean = mean_y, sd = std_error, q = mean_y - 6.785596 * std_error,lower.tail = T) 
-
-
-
-```
+We see that the difference between means is `r t` times the std_error! At a distance of $1.96$ (either way) the probability of this data happening by chance already drops to $2.5 \%$ !! At this distance of `r t`, we would have negligible probability of this data occurring by chance!
 
 :::
 
@@ -579,7 +693,7 @@ There are quite a few Quant variables in the data. Let us choose `course_grade` 
 
 ::: callout-note
 ### Research Question
-In *general*, the Teacher in this class is overly generous with grades [[unlike others we know of](https://www.linkedin.com/in/arvindvenkatadri)]{.bg-washed-red}, and so the average `course-grade` is equal to 80% !!
+In *general*, the Teacher in this class is overly generous with grades [[unlike others we know](https://www.linkedin.com/in/arvindvenkatadri)]{.bg-washed-red}, and so the average `course-grade` is equal to 80% !!
 :::
 
 ### {{< iconify carbon chart-3d >}} Inspecting and Charting Data
@@ -588,7 +702,7 @@ In *general*, the Teacher in this class is overly generous with grades [[unlike 
 ::: {.column width="50%"}
 
 ```{r}
-#| label: charting-data-2
+#| label: fig-charting-data-2
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
@@ -602,7 +716,9 @@ exam_grades %>%
 
 ::: {.column width="50%"}
 ```{r}
-#| ref.label: charting-data-2
+#| ref.label: fig-charting-data-2
+#| label: fig-exam-grades
+#| fig-cap: "Exam Grades Distribution"
 #| echo: false
 #| 
 ```
@@ -620,9 +736,9 @@ stats::shapiro.test(x = exam_grades$course_grade) %>%
   broom::tidy()
 
 ```
-The Shapiro-Wilkes Test tests whether a data variable is normally distributed or not. Without digging into the maths of it, let us say it makes the assumption that the variable **is** so distributed and then computes the probability of how likely this is. So a **high** `p-value` ($0.47$) is a good thing here. 
+The Shapiro-Wilks Test tests whether a data variable is normally distributed or not. Without digging into the maths of it, let us say it makes the assumption that the variable **is** so distributed and then computes the probability of how likely this is. So a **high** `p-value` ($0.47$) is a good thing here. 
 
-When we have *large* Quant variables ( i.e. with length >= 5000), the function `shapiro.test` does not work, and we use an Anderson-Darling[^3] test to confirm normality:
+When we have *large* Quant variables ( i.e. with length >= 5000), the ***function*** `shapiro.test` does not work, and we use an Anderson-Darling[^3] test to confirm normality:
 
 ```{r}
 library(nortest)
@@ -630,7 +746,7 @@ library(nortest)
 nortest::ad.test(x = exam_grades$course_grade) %>% 
   broom::tidy()
 ```
-So `course_grade` is a normally-distributed variable. There are *no* exceptional students! Hmph!
+So `course_grade` is a normally-distributed variable. [There are *no* exceptional students! Hmph! Peasants.]{.bg-pink .black}
 
 :::
 
@@ -690,7 +806,11 @@ Note that we have computed whether the average `course_grade` is generally **dif
 ### Using Permutation and Bootstrap
 
 ```{r}
-#| label: permutation-test-2
+#| label: fig-permutation-test-2
+#| fig-cap: "Permutation Test for One Mean"
+#| code-fold: true
+#| results: hold
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 # Calculate exact mean
@@ -716,12 +836,25 @@ gf_histogram(
   data = null_dist_grade,
   fill = ~ (mean >= obs_grade_diff),
   bins = 50, 
-  title = "Distribution of Permuted Difference-Means under Null Hypothesis",
-  subtitle = "Why is the mean of the means zero??") %>%
-  gf_labs(x = "Calculated Random Means",
+  title = "Distribution of Permutated Difference-Means Under Null Hypothesis",
+  subtitle = "Why is the mean of the means zero?") %>%
+  gf_labs(x = "Random Means Calculated by Permutation",
           y = "How Often do these occur?") %>% 
   gf_vline(xintercept = obs_grade_diff, colour = "red") %>%
-  gf_vline(xintercept = - obs_grade_diff, colour = "red")
+  gf_vline(xintercept = - obs_grade_diff, colour = "red") %>% 
+  gf_annotate(geom = "label", x = obs_grade_diff, y = 400, 
+            label = "Belief ( + 80)", 
+            colour = "red") %>%
+  gf_annotate(geom = "label", x = - obs_grade_diff, y = 400, 
+            label = "Belief ( - 80)", 
+            colour = "red") %>% 
+  gf_refine(scale_fill_manual(values = c("skyblue", "grey"),
+            name = "Observed Mean Difference",
+            labels = c("Not Exceeding", "Exceeding")),
+            scale_x_continuous(limits = c(-10, 10),
+                breaks = c(-10, -5, - obs_grade_diff, 0, obs_grade_diff, 5, 10),
+                labels = scales::number_format(accuracy = 0.01,
+                                 decimal.mark = ".")))
 
 # p-value
 # Permutation distributions are always centered around zero. Why?
@@ -734,7 +867,11 @@ prop(~ mean >= obs_grade_diff,
 And let us now do the bootstrap test:
 
 ```{r}
-#| label: bootstrap-test-2
+#| label: fig-bootstrap-test-2
+#| code-fold: true
+#| fig-cap: "Bootstrap Test for One Mean"
+#| results: hold
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 null_grade_bs <- mosaic::do(4999) * 
@@ -751,7 +888,18 @@ gf_histogram(
   title = "Distribution of Bootstrap Means") %>%
   gf_labs(x = "Calculated Random Means",
           y = "How Often do these occur?") %>% 
-  gf_vline(xintercept = ~ belief, colour = "red") 
+  gf_vline(xintercept = ~ belief, colour = "red") %>% 
+
+  gf_annotate(geom = "label", x = belief, y = 400, 
+            label = "Belief ( + 80)", 
+            colour = "red") %>% 
+  gf_refine(scale_fill_manual(values = c("skyblue", "grey"),
+            name = "Observed Mean Difference",
+            labels = c("Not Exceeding", "Exceeding")),
+            scale_x_continuous(limits = c(60,100),
+                breaks = c(60, 65,70, 75, 80, 85, 90, 95, 100,belief),
+                labels = scales::number_format(accuracy = 0.01,
+                                 decimal.mark = ".")))
 
 prop(~ mean >= belief, 
      data = null_grade_bs) +
@@ -763,8 +911,125 @@ The permutation test shows that we are not able to "generate" the *believed* mea
 
 Hence there is no reason to believe that the belief (80) might be a reasonable one and we reject our NULL Hypothesis that the mean is equal to 80. 
 
+### Visual and by Hand t-test
+Let us plot the sample distribution, the theoretical distribution of the sample mean, and the confidence intervals, as we did before for the toy data.
 
+:::: {layout="[20,20,20,20,20]"}
+
+::: {#first-column}
+```{r}
+(obs_mean_2 <- mean(exam_grades$course_grade))
+```
+
+Sample Mean
 :::
+::: {#second-column}
+```{r}
+(mean_belief_pop_2 <- 80.0) # Assert our belief)
+```
+Null Hypothesis / Belief
+:::
+::: {#third-column}
+```{r}
+(sample_sd_2 <- sd(exam_grades$course_grade))
+```
+Sample Standard Deviation
+:::
+::: {#fourth-column}
+```{r}
+(sample_se_2 <- sample_sd_2 / sqrt(length(exam_grades$course_grade)))
+```
+Sample Standard Error
+:::
+::: {#fifth-column}
+```{r}
+(t_statistic_2 <- (obs_mean_2 - mean_belief_pop_2) / sample_se_2)
+```
+Test Statistic
+:::
+::::
+
+Now let us plot the figure with all these calculations:
+
+```{r}
+#| label: fig-visual-t-test-2
+#| fig-cap: Sample Distribution, Sample Mean Distribution, and Confidence Intervals
+#| fig-alt: "Visualizing the t-test for Exam Grades"
+#| results: hold
+#| warning: false
+#| message: false
+#| code-fold: true
+#| 
+## Let's plot this
+## Sample Data
+ggplot2::theme_set(new = theme_custom())
+
+mosaic::xqnorm(p = c(0.025, 0.975), mean = obs_mean_2, sd = sample_se_2,
+               return = c("value"), verbose = T, plot = F) -> xq2
+
+## Sample-Mean Distribution
+xqnorm(p = c(0.025, 0.975),  mean = obs_mean_2, sd = sample_se_2,
+       digits = 3, plot = TRUE,
+       return = c("plot"), verbose = F, alpha = 0.5, colour = "black",
+       system = "gg")  %>% 
+gf_dhistogram(~ course_grade, data = exam_grades, inherit = F) %>% 
+  gf_fitdistr(~ course_grade, data = exam_grades, inherit = F) %>% 
+  gf_vline(xintercept = obs_mean_2, colour = "purple") %>% 
+
+  gf_annotate(geom = "label", x = 65, y = 0.1, 
+            label = "Sample Histogram and Density", 
+            colour = "black") %>% 
+## Null
+  gf_vline(xintercept = ~ mean_belief_pop_2, colour = "red") %>% 
+  gf_annotate(geom = "label", x = mean_belief_pop_2, y = 0.6, 
+            label = "Null Hypothesis (Belief)") %>% 
+## Sample Mean and Distribution
+  gf_annotate(geom = "label", x = obs_mean_2, y = 0.65, 
+            label = "Sample Mean", colour = "purple") %>% 
+
+  gf_annotate(geom = "label", x = obs_mean_2 - 7, y = 0.45, 
+            label = "Sample-Mean Distribution", colour = "purple") %>% 
+
+  gf_annotate("curve", 
+            x = obs_mean_2 -7 , y = 0.475, 
+            xend = obs_mean_2 - 0.5, yend = 0.55,
+            curvature =  - 0.25, color = "purple", 
+            arrow = arrow(length = unit(0.25,"cm"))) %>% 
+## Z-limits for p = 0.95
+  gf_annotate("segment", 
+            x = obs_mean_2 - 1.96 * sample_se_2, y = 0.0, 
+            xend = obs_mean_2 - 1.96 * sample_se_2, yend = 0.25) %>%
+  gf_annotate("segment", 
+            x = obs_mean_2 + 1.96 * sample_se_2, y = 0.0, 
+            xend = obs_mean_2 + 1.96 * sample_se_2, yend = 0.25) %>%
+## Confidence Intervals
+  gf_annotate("segment", 
+            x = obs_mean_2 - 1.96 * sample_se_2, y = 0.2, 
+            xend = obs_mean_2 + 1.96 * sample_se_2, yend = 0.2,
+            color = "purple", linewidth = 0.5, 
+            arrow = arrow(length = unit(0.25,"cm"), ends = "both")) %>%
+  gf_annotate(geom = "label", x = obs_mean_2 - 1.96 * sample_se_2 + 1, y = 0.25, 
+            label = "95% Confidence Interval", 
+            colour = "purple") %>%
+
+  gf_annotate("curve", # CI
+            x = xq[2] + 0.05, y = 0.7, 
+            xend = xq[2] - 0.4, yend = 0.37,
+            curvature = 0.25, color = "purple", 
+            arrow = arrow(length = unit(0.25,"cm"))) %>% 
+
+  gf_labs(title = "Visualizing the t-test for Exam Grades",
+          subtitle = "Sample-Mean-Distribution is plotted as theoretical Gaussian Bell Curve", 
+          x = "Sample Values and Means", y = "Density") %>%
+
+  gf_refine(scale_y_continuous(limits = c(0, 0.65)),
+            scale_x_continuous(limits = c(60, 85)))
+
+```
+
+Please see the @sec-ai-explanations for an Explanation of of this model generated using AI + R. 
+:::
+
 
 ## {{< iconify openmoji flat-color-icons workflow >}} Workflow for Inference for a Single Mean
 
@@ -823,7 +1088,7 @@ cite_packages(
   output = "table",
   out.dir = ".",
   out.format = "html",
-  pkgs = c("ellmer", "explore", "resampledata", "openintro", "infer", "statlingua", "TeachHist", "TeachingDemos")
+  pkgs = c("ellmer","resampledata", "openintro", "infer", "statlingua", "TeachHist", "TeachingDemos")
 ) %>%
   knitr::kable(format = "simple")
 
@@ -839,13 +1104,14 @@ cite_packages(
 
 [^3]: <https://www.r-bloggers.com/2021/11/anderson-darling-test-in-r-quick-normality-check/>
 
-### An AI Generated Explanation of the Statistical Models
+## An AI Generated Explanation of the Statistical Models {#sec-ai-explanations}
 
 We have used the `statlingua` package to generate an AI explanation of the statistical model `t4` we have used in this module. `statlingua` interfaces to the `ellmer` package, which in turn interfaces to the `ollama` API for AI explanations. The AI model used is `llama3.1`, and the explanation is tailored for a novice audience with moderate verbosity.
 
 ::: callout-note
 ### AI Generated Explanation
-The command was run in the Console and the results pasted into this Quarto document. I have not edited this at all. Do look for complex verbiage and outright hallucinatory responses. The very last para seems to be...hmmm!!
+
+The command was run in the Console and the results pasted into this Quarto document. I have not edited this at all. Do look for complex verbiage and outright hallucinatory responses!!
 
 :::
 
