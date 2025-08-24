@@ -54,10 +54,11 @@ library(tidyverse)
 library(mosaic)
 library(ggformula)
 library(skimr)
-library(janitor)
-
+library(janitor) # Data cleaning and tidying package
+library(visdat) # Visualize whole dataframes for missing data
+library(naniar) # Clean missing data
+library(DT) # Interactive Tables for our data
 library(tinytable) # Elegant Tables for our data
-
 
 ```
 
@@ -327,14 +328,28 @@ In @fig-normal-violins, the plots show (very artificial!) distributions of a *si
 The `diamonds` dataset is a classic dataset that contains information about the prices and attributes of over 50,000 diamonds. It includes variables such as `carat`, `cut`, `color`, `clarity`, and `price`. We can use this dataset to create violin plots to visualize the distribution of diamond prices across different cuts and clarity levels.
 
 ```{r}
+#| label: diamonds-glimpse
+data("diamonds", package = "ggplot2")
+glimpse(diamonds)
+```
+
+There is no particular need to do any munging of this dataset,but for recall and retention purposes, we will do it anyway ;-D
+
+```{r}
 #| label: diamonds-setup
+
 diamonds_modified <- diamonds %>% 
+  drop_na() %>% 
   janitor::clean_names(case = "snake") %>% 
   janitor::remove_empty(which = c("rows", "cols")) %>% 
+  
   dplyr::mutate(
     across(where(is.character), as.factor)
-  )
+  ) %>% 
+  
+  dplyr::relocate(where(is.factor))
 
+diamonds_modified %>% glimpse()
 ```
 
 ::: {.column-page-inset-right}

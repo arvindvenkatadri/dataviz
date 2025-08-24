@@ -49,9 +49,9 @@ library(mosaic)
 library(ggformula)
 library(skimr)
 library(janitor) # Data cleaning and tidying package
-library(visStatistics) # All in one plot + stats test package
-library(palmerpenguins) # Our new favourite dataset
-
+library(visdat) # Visualize whole dataframes for missing data
+library(naniar) # Clean missing data
+library(DT) # Interactive Tables for our data
 library(tinytable) # Elegant Tables for our data
 
 ```
@@ -316,11 +316,8 @@ We will first look at Wage data from the General Social Survey (1974-2018) condu
 
 ```{r}
 #| label: read_gss_wage_data
-#| message: false
+#| message: true
 wages <- read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/stevedata/gss_wages.csv")
-wages_modified <- wages %>% 
-  janitor::clean_names(case = "snake") %>% 
-  janitor::remove_empty(which = c("rows", "cols")) # Empty columns and rows if any
 
 ```
 
@@ -348,21 +345,22 @@ methods we have seen.
 #### {{< iconify la r-project >}} dplyr
 ```{r}
 #| label: glimpse-wages
-glimpse(wages_modified)
+glimpse(wages)
 
 ```
 
 #### {{< iconify la r-project >}} skimr
 ```{r}
 #| label: skim-wages
-skim(wages_modified)
+skim(wages)
 
 ```
 
 #### {{< iconify la r-project >}} mosaic
+
 ```{r}
 #| label: inspect-wages
-inspect(wages_modified)
+inspect(wages)
 ```
 
 #### {{< iconify noto-v1 spider-web >}} web-r
@@ -370,8 +368,6 @@ inspect(wages_modified)
 ```{webr-r}
 #| label: glimpse-wages-webr
 wages %>%
-  janitor::clean_names(case = "snake") %>% 
-  janitor::remove_empty(which = c("rows", "cols")) %>% 
   glimpse()
 
 ```
@@ -379,8 +375,6 @@ wages %>%
 ```{webr-r}
 #| label: skim-wages-webr
 wages %>% 
-  janitor::clean_names(case = "snake") %>% 
-  janitor::remove_empty(which = c("rows", "cols")) %>% 
   skim()
 
 ```
@@ -388,29 +382,44 @@ wages %>%
 ```{webr-r}
 #| label: inspect-wages-webr
 wages %>% 
-  janitor::clean_names(case = "snake") %>% 
-  janitor::remove_empty(which = c("rows", "cols")) %>% 
   inspect()
 
 ```
 
 :::
 
+### {{< iconify carbon clean >}} Data Munging
+
+Since there are so many missing data in the target variable `realinc` *and* there is still enough data leftover, we can drop the missing values in that variable. This is not advised at all as a general procedure!! Data is valuable and there are better ways to manage this problem!
+
+::: callout-important
+
+It turns out that following our process of munging the data using the `naniar` package to replace common NA strings and numbers with actual `NA` makes the code run very slowly. I need to figure out how to optimize this.
+
+:::
+
+```{r}
+#| label: data-cleanup
+
+wages_clean <- wages %>% 
+  
+  tidyr::drop_na(realrinc) %>% # choose column or leave blank to choose all
+  
+  janitor::clean_names(case = "snake") %>% # clean names
+
+  dplyr::mutate(across(where(is.character), as_factor)) %>% # make factors
+  dplyr:: mutate(childs = as_factor(childs)) %>% # make childs a factor too
+  dplyr::relocate(where(is.factor), .after = rownames) # move factors to the right of rownames
+
+glimpse(wages_clean)
+
+```
+
+
+
 ### {{< iconify streamline dictionary-language-book-solid >}} Data Dictionary
 
 From the [dataset documentation page](https://vincentarelbundock.github.io/Rdatasets/doc/stevedata/gss_wages.html), we note that this is a large dataset (61K rows), with 11 variables:\
-
-::: callout-note
-### Quantitative Data
-
-  - `year`(dbl): the survey year
-  - `realrinc`(dbl): the respondent's base income (in constant 1986 USD
-  - `age`(dbl): the respondent's age in years
-  - `occ10`(dbl): respondent's occupation code (2010)
-  - `prestg10`(dbl): respondent's occupational prestige score (2010)
-  - `childs`(dbl): number of children (0-8)
-
-:::
 
 ::: callout-note
 ### Qualitative Data
@@ -420,7 +429,21 @@ From the [dataset documentation page](https://vincentarelbundock.github.io/Rdata
   - `gender`(chr): respondent's gender (male or female). 2 levels.\
   - `educcat`(chr): respondent's degree level (Less Than High School, High School, Junior College, Bachelor, or Graduate). 5 levels.\
   - `maritalcat`(chr): respondent's marital status (Married, Widowed, Divorced, Separated, Never Married). 5 levels.\
+  - [`childs`(dbl): number of children (0-8)]{style="background-color: yellow;"}
   
+:::
+
+
+::: callout-note
+### Quantitative Data
+
+  - `year`(dbl): the survey year
+  - `realrinc`(dbl): the respondent's base income (in constant 1986 USD
+  - `age`(dbl): the respondent's age in years
+  - `occ10`(dbl): respondent's occupation code (2010)
+  - `prestg10`(dbl): respondent's occupational prestige score (2010)
+
+
 :::
 
 
@@ -433,7 +456,10 @@ From the [dataset documentation page](https://vincentarelbundock.github.io/Rdata
 
 
 ### {{< iconify  material-symbols lab-research >}} Hypothesis and Research Questions
+
 - The *target variable* for an experiment that resulted in this data might be the `realinc` variable, the resultant income of the individual. Which is numerical variable. 
+- The *predictor variables* could be `gender`, `educcat`, `maritalcat`, and `wrkstat` (all categorical variables), **and** `age` and `childs` (numerical variables).
+- Note that `childs` is a coded as numerical variable, but it is actually a count of children, and so it can be treated as a categorical variable with 9 levels (0 to 8). We have done that above. 
 
 ::: callout-note  
 ### Research Questions:
@@ -453,23 +479,6 @@ These should do for now! But we should make more questions when have seen some p
 See that [preposition "by"]{style="background-color: yellow;"} in the questions above? It is a good idea to use it when you are asking about the effect of a Qual variable on a Quant variable. And we know that Qual variables are the ones that define...***groups***! So we are asking about the effect of groups on a Quant variable.
 
 :::
-
-
-### {{< iconify carbon clean >}} Data Munging
- Since there are so many missing data in the target variable `realinc` *and* there is still enough data leftover, let us remove the rows containing missing data in that variable. 
- 
-::: callout-important
-NOTE: This is not advised at all as a general procedure!! Data is valuable and there are better ways to manage this problem!
-:::
-
-```{r}
-#| label: data-cleanup
-
-wages_clean <- 
-  wages_modified %>% 
-  tidyr::drop_na(realrinc) # choose column or leave blank to choose all
-
-```
 
 
 ## {{< iconify carbon box-plot >}} Plotting Box Plots
@@ -494,12 +503,15 @@ ggplot2::theme_set(new = theme_custom())
 wages_clean %>% 
   gf_boxplot(realrinc ~ "Income") %>% # Dummy X-axis "variable"
   gf_labs(title = "Plot 1A: Income has a skewed distribution",
-          subtitle = "Many outliers on the high side")
+          subtitle = "Many outliers on the high side",
+          x = "") #Blank out the X-axis title
 ```
 :::
 ::: {.column}
 ```{r}
 #| ref-label: realincome-ggformula
+#| label: fig-realincome-ggformula
+#| fig-cap: "Basic Distribution of Income"
 #| echo: false
 ```
 
@@ -560,8 +572,9 @@ wages %>%
 :::: {.columns}
 ::: {.column}
 ```{r}
-#| label: fig-income-by-gender-ggformula-1
+#| label: income-by-gender-ggformula-1
 #| eval: false
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 wages_clean %>% 
@@ -573,10 +586,11 @@ wages_clean %>%
 ::: {.column}
 
 ```{r}
-#| ref-label: fig-income-by-gender-ggformula-1
+#| label: fig-income-by-gender-ggformula-1
+#| ref-label: income-by-gender-ggformula-1
 #| echo: false
-#| fig-subcap: 
-#|   - "Split by Gender"
+#| fig-cap: "Split by Gender"
+#| 
 ```
 :::
 ::::
@@ -585,7 +599,7 @@ wages_clean %>%
 :::: {.columns}
 ::: {.column}
 ```{r}
-#| label: fig-income-by-gender-ggformula-2
+#| label: income-by-gender-ggformula-2
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
@@ -598,10 +612,10 @@ wages_clean %>%
 ::: {.column}
 
 ```{r}
-#| ref-label: fig-income-by-gender-ggformula-2
+#| label: fig-income-by-gender-ggformula-2
+#| ref-label: income-by-gender-ggformula-2
 #| echo: false
-#| fig-subcap: 
-#|   - "With log income"
+#| fig-cap: "With log income"
 ```
 :::
 ::::
@@ -610,7 +624,7 @@ wages_clean %>%
 :::: {.columns}
 ::: {.column}
 ```{r}
-#| label: fig-income-by-gender-ggformula-3
+#| label: income-by-gender-ggformula-3
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
@@ -624,10 +638,10 @@ wages_clean %>%
 ::: {.column}
 
 ```{r}
-#| ref-label: fig-income-by-gender-ggformula-3
+#| label: fig-income-by-gender-ggformula-3
+#| ref-label: income-by-gender-ggformula-3
 #| echo: false
-#| fig-subcap: 
-#|   - "With log scale"
+#| fig-cap: "With log scale"
 ```
 :::
 ::::
@@ -692,6 +706,7 @@ wages %>%
 :::
 
 ### Business Insights-2
+
 - Even when split by `gender`, `realincome` presents a skewed set of distributions.
 - The IQR for `male`s is smaller than the IQR for `female`s. There is less variation in the middle ranges of `realrinc` for men. 
 - log10 transformation helps to view and understand the regions of low `realrinc`. 
@@ -709,7 +724,7 @@ wages %>%
 :::: {.columns}
 ::: {.column}
 ```{r}
-#| label: fig-income-by-educcat-ggformula-1
+#| label: income-by-educcat-ggformula-1
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
@@ -721,10 +736,10 @@ wages_clean %>%
 :::
 ::: {.column}
 ```{r}
-#| ref-label: fig-income-by-educcat-ggformula-1
+#| label: fig-income-by-educcat-ggformula-1
+#| ref-label: income-by-educcat-ggformula-1
 #| echo: false
-#| fig-subcap: 
-#|   - "Split by Education Category"
+#| fig-cap: "Split by Education Category"
 ```
 
 :::
@@ -733,7 +748,7 @@ wages_clean %>%
 :::: {.columns}
 ::: {.column}
 ```{r}
-#| label: fig-income-by-educcat-ggformula-2
+#| label: income-by-educcat-ggformula-2
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
@@ -745,10 +760,10 @@ wages_clean %>%
 :::
 ::: {.column}
 ```{r}
-#| ref-label: fig-income-by-educcat-ggformula-2
+#| label: fig-income-by-educcat-ggformula-2
+#| ref-label: income-by-educcat-ggformula-2
 #| echo: false
-#| fig-subcap: 
-#|   - "With log income"
+#| fig-subcap: "With log income"
 ```
 :::
 
@@ -757,7 +772,7 @@ wages_clean %>%
 :::: {.columns}
 ::: {.column}
 ```{r}
-#| label: fig-income-by-educcat-ggformula-3
+#| label: income-by-educcat-ggformula-3
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
@@ -775,10 +790,10 @@ wages_clean %>%
 :::
 ::: {.column}
 ```{r}
-#| ref-label: fig-income-by-educcat-ggformula-3
+#| label: fig-income-by-educcat-ggformula-3
+#| ref-label: income-by-educcat-ggformula-3
 #| echo: false
-#| fig-subcap: 
-#|   - "With log income"
+#| fig-cap: "With log income"
 ```
 :::
 ::::
@@ -786,7 +801,7 @@ wages_clean %>%
 :::: {.columns}
 ::: {.column}
 ```{r}
-#| label: fig-income-by-educcat-ggformula-4
+#| label: income-by-educcat-ggformula-4
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
@@ -806,13 +821,15 @@ wages_clean %>%
 :::
 ::: {.column}
 ```{r}
-#| ref-label: fig-income-by-educcat-ggformula-4
+#| label: fig-income-by-educcat-ggformula-4
+#| ref-label: income-by-educcat-ggformula-4
 #| echo: false
-#| fig-subcap: 
-#|   - "Log Income Scale"
+#| fig-cap: "Log Income Scale"
 ```
 :::
 ::::
+
+Note that `educcat` has been *sorted* in the last two plots, by the median value of `realrinc` in each category. This makes it easier to see the trend. And that `educcat` has a "NA" level as well, that indicates people who did not report their education level. This is plotted at one end of the box plot by default. (regardless of how the boxplots are sorted. Try reordering in `desc()` order to see what happens!)
 
 ### Using ggplot
 
@@ -937,12 +954,11 @@ We will also drop NA values all around this time, to avoid seeing boxplots for u
 :::: {.columns}
 :::{.column}
 ```{r}
-#| label: fig-income-by-educcat-childs-ggformula-1
+#| label: income-by-educcat-childs-ggformula-1
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-wages_modified %>% 
-  drop_na() %>% 
+wages_clean %>% 
   gf_boxplot(reorder(educcat, realrinc) ~ log10(realrinc),
              fill = ~ educcat, 
              alpha = 0.5) %>% 
@@ -956,11 +972,10 @@ wages_modified %>%
 :::
 ::: {.column}
 ```{r}
-#| ref-label: fig-income-by-educcat-childs-ggformula-1
-#| echo: false
 #| label: fig-income-by-educcat-childs-ggformula-1
-#| fig-subcap: 
-#|   - "Split by Education Category and Family Size"
+#| ref-label: income-by-educcat-childs-ggformula-1
+#| echo: false
+#| fig-cap: "Split by Education Category and Family Size"
 ```
 :::
 ::::
@@ -969,12 +984,11 @@ wages_modified %>%
 :::: {.columns}
 :::{.column}
 ```{r}
-#| label: fig-income-by-educcat-childs-ggformula-2
+#| label: income-by-educcat-childs-ggformula-2
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-wages_modified %>% 
-  drop_na() %>% 
+wages_clean %>% 
   mutate(childs = as_factor(childs)) %>% 
   gf_boxplot(childs ~ log10(realrinc),
              group = ~ childs,
@@ -991,11 +1005,10 @@ wages_modified %>%
 
 ::: {.column}
 ```{r}
-#| ref-label: fig-income-by-educcat-childs-ggformula-2
+#| ref-label: income-by-educcat-childs-ggformula-2
 #| echo: false
 #| label: fig-income-by-educcat-childs-ggformula-2
-#| fig-subcap: 
-#|   - "Split by Gender and Family Size"
+#| fig-cap: "Split by Gender and Family Size"
 ```
 :::
 ::::
@@ -1010,8 +1023,7 @@ wages_modified %>%
 #|   - "Split by Gender and Family Size"
 ggplot2::theme_set(new = theme_custom())
 
-wages_modified %>% 
-  drop_na() %>%
+wages_clean %>% 
   ggplot() + 
   geom_boxplot(aes(log10(realrinc), reorder(educcat, realrinc),
                    fill = educcat), # aes() closes here
@@ -1020,8 +1032,7 @@ wages_modified %>%
   scale_fill_brewer(type = "qual", palette = "Dark2") + 
   labs(title = "Plot 4A: Log Income by Education Category and Family Size", x = "Log income", y = "No. of Children")
 ##
-wages_modified %>% 
-  drop_na() %>% 
+wages_clean %>% 
   mutate(childs = as_factor(childs)) %>% 
   ggplot() + 
   geom_boxplot(aes(log10(realrinc),childs,
@@ -1109,6 +1120,8 @@ This is a very important idea of *Hypothesis Testing* which helps you justify yo
 
 -   Box Plots "dwell upon" **medians** and **Quartiles**
 -   Box Plots can show distributions of a Quant variable over *levels* of a Qual variable
+-   Box Plots ***should be*** sorted by median values of the Quant variable. ***And coloured*** too. 
+-   Horizontal aligning of multiple Box Plots is preferable! Why?
 - This allows a comparison of box plots side by side to visibly detect differences in medians and IQRs across such levels.
 
 
@@ -1209,8 +1222,7 @@ cite_packages(
   output = "table",
   out.dir = ".",
   out.format = "html",
-  pkgs = c("ggridges", "NHANES", "TeachHist",
-           "TeachingDemos", "visualize", "visStatistics", "tidyplots", "tinyplot", "tinytable", "sn")
+  pkgs = c("TeachHist",  "TeachingDemos", "visualize", "naniar", "visdat", "tinytable", "sn")
 ) %>%
   knitr::kable(format = "simple")
 

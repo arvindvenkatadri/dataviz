@@ -23,7 +23,7 @@ citation: true
 #   markdown: 
 #     wrap: 72
 webr:
-  packages: ['readr', 'tidyr', 'dplyr','mosaic', 'skimr', 'ggformula','ggridges', 'palmerpenguins','janitor']
+   packages: ['readr', 'tidyr', 'dplyr','mosaic', 'skimr', 'ggformula','ggridges', 'palmerpenguins','janitor']
 
 ---
 
@@ -47,12 +47,17 @@ webr:
 library(tidyverse)
 library(mosaic)
 library(ggformula)
+library(skimr)
+##
 #install.packages("remotes")
 #library(remotes)
 #remotes::install_github("wilkelab/ggridges")
-library(ggridges)
-library(skimr)
-library(janitor)
+library(ggridges) # Ridge Density Plots
+##
+library(janitor) # Data cleaning and tidying package
+library(visdat) # Visualize whole dataframes for missing data
+library(naniar) # Clean missing data
+library(DT) # Interactive Tables for our data
 library(tinytable) # Elegant Tables for our data
 
 ```
@@ -179,6 +184,7 @@ ggplot2::theme_set(new = theme_custom())
 ggplot2::theme_set(theme_classic())
 # Read the data
 data(mpg, package = "ggplot2")
+
 data(penguins, package = "palmerpenguins")
 penguins_modified <- penguins %>% 
   janitor::clean_names(case = "snake") %>% 
@@ -213,6 +219,8 @@ read_csv("../../../../../materials/Data/pronouns.csv") %>%
 
 ## {{< iconify icons8 idea >}} Inspiration
 ```{r}
+#| label: fig-nebraska-avenue
+#| fig-cap: "Lincoln, Nebraska, in the Sun"
 #| echo: false
 #| warning: false
 #| message: false
@@ -226,6 +234,7 @@ lincoln_weather %>%
   gf_labs(title = "Weather in Lincoln, Nebraska")
 
 ```
+
 [April is the cruelest month](https://www.poetryfoundation.org/poems/47311/the-waste-land), said T.S Eliot. But December in Nebraska must be tough.
 
 ## {{< iconify  mdi chart-bell-curve >}} What is a "Density Plot"?
@@ -250,17 +259,8 @@ We will first look at at a dataset that is available as a part of the `palmerpen
 
 ```{r}
 
-data(penguins, package = "palmerpenguins")
-names(penguins)
-
-```
-And we will of course clean up the variable names, not that they need cleaning this case!!
-
-```{r}
-#| label: clean-penguins
-penguins_modified <- penguins %>% 
-  janitor::clean_names(case = "snake") %>% 
-  janitor::remove_empty(which = c("rows", "cols"))
+data(penguins_raw, package = "datasets")
+names(penguins_raw)
 
 ```
 
@@ -274,14 +274,16 @@ methods we have seen.
 #### {{< iconify la r-project >}} dplyr
 ```{r}
 #| label: glimpse-penguins
-glimpse(penguins_modified)
+#| 
+glimpse(penguins_raw)
 
 ```
+
 
 #### {{< iconify la r-project >}} skimr
 ```{r}
 #| label: skim-penguins
-skim(penguins_modified)
+skim(penguins_raw)
 
 ```
 
@@ -289,38 +291,85 @@ skim(penguins_modified)
 
 ```{r}
 #| label: inspect-penguins
-inspect(penguins_modified)
+inspect(penguins_raw)
 ```
 
 #### {{< iconify noto-v1 spider-web >}} web-r
 
 ```{webr-r}
 #| label: glimpse-penguins-webr
-glimpse(penguins_modified)
+glimpse(penguins)
 
 ```
 
 ```{webr-r}
 #| label: skim-penguins-webr
-skim(penguins_modified)
+skim(penguins)
 
 ```
 
 ```{webr-r}
 #| label: inspect-penguins-webr
-inspect(penguins_modified)
+inspect(penguins)
 
 ```
 
 :::
 
+### {{< iconify carbon clean >}} Data Munging
+
+Among the variables that define the *physical measurements* of the penguins, there are a couple of entries that show missing data. Elsewhere there are more. The variable names also are *human-readable*, but not really *computer-readable*. 
+
+So let us follow through with our Data Munging Process: 
+
+```{r}
+#| label: data-cleanup
+
+penguins_clean <- penguins_raw %>% 
+  
+  naniar::replace_with_na_all(condition = ~.x %in% common_na_strings) %>% # replace common NA strings with actual NA
+  naniar::replace_with_na_all(condition = ~.x %in% common_na_numbers) %>%
+  
+  janitor::clean_names(case = "snake") %>% # clean names
+
+  dplyr::mutate(across(where(is.character), as_factor)) %>% # make factors
+  dplyr::relocate(where(is.factor)) # move factors to the right of rownames
+
+glimpse(penguins_clean)
+
+```
+
+```{r}
+#| label: tbl-dt-for-data
+#| tbl-cap: "Penguins Clean Dynamic Data Table"
+#| code-fold: true
+#| echo: false
+
+penguins_clean %>%
+  DT::datatable(
+    caption = htmltools::tags$caption(
+      style = 'caption-side: top; text-align: left; color: black; font-size: 150%;',
+      'Penguins Dataset (Clean)'
+    ),
+    options = list(pageLength = 10, autoWidth = TRUE)
+  ) %>%
+  DT::formatStyle(
+    columns = names(penguins_clean),
+    fontFamily = 'Roboto Condensed',
+    fontSize = '12px'
+  )
+```
+
 ### {{< iconify streamline dictionary-language-book-solid >}} Data Dictionary
+
+We will restrict ourselves to some of the variables that pertain, by and large, to the body dimensions of our penguins:
 
 ::: callout-note
 ### Qualitative Data
 - `sex`: male and female penguins
-- `island`: they have **islands** to themselves!!
 - `species`: Three adorable types!
+- `island`: they have **islands** to themselves!!
+- `region`: Antarctica, duh!! Hmmm....
 
 ::: {.column-margin}
 ![Penguin Species](../../../../../materials/images/penguins.png){#fig-penguin-species}
@@ -335,6 +384,9 @@ inspect(penguins_modified)
 - `bill_depth_mm`: See the picture!!
 - `flipper_length_mm`: Flippers! Penguins have "hands"!!
 - `body_mass_g`: Mass in grams. Grams? Grams??? Why, these penguins are like human babies!!`r emoji::emoji("heart")`
+- `culmen_depth_mm`: Depth of the culmen (the upper ridge of the bill)
+- `culmen_length_mm`: Length of the culmen
+
 
 ::: {.column-margin}
 ![Penguin Features](../../../../../materials/images/culmen_depth.png){#fig-penguin-features}
@@ -346,16 +398,11 @@ inspect(penguins_modified)
 ::: callout-note
 ### Business Insights on Examining the `penguins` dataset
 
--   This is a smallish dataset (344 rows, 8 columns).
--   There are a few missing values in `sex`(11 missing entries) and all the Quant variables (2 missing entries each). Let us drop the rows with missing values for now.
+-  This is a smallish dataset (344 rows, 8 columns).
+-  They define the various physical dimensions of the penguins, along with other variables pertaining to their study.
 
 :::
 
-```{r}
-#| label: drop-missing-penguins
-penguins_modified <- penguins_modified %>% drop_na()
-
-```
 
 ### {{< iconify mdi chart-bell-curve >}} Plotting Densities
 
@@ -369,11 +416,11 @@ penguins_modified <- penguins_modified %>% drop_na()
 :::: {.columns}
 :::{.column}
 ```{r}
-#| label: fig-ggformula-1
+#| label: ggformula-1
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-gf_density( ~ body_mass_g, data = penguins_modified) %>%
+gf_density( ~ body_mass_g, data = penguins_clean) %>%
   gf_labs(title = "Plot A: Penguin Masses", caption = "ggformula")
 
 ```
@@ -382,7 +429,9 @@ gf_density( ~ body_mass_g, data = penguins_modified) %>%
 
 ::: {.column}
 ```{r}
-#| ref-label: fig-ggformula-1
+#| ref-label: ggformula-1
+#| label: fig-ggformula-1
+#| fig-cap: "Penguin Masses"
 #| echo: false
 
 ```
@@ -392,11 +441,11 @@ gf_density( ~ body_mass_g, data = penguins_modified) %>%
 :::: {.columns}
 :::{.column}
 ```{r}
-#| label: fig-ggformula-2
+#| label: ggformula-2
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-penguins_modified %>% gf_density( ~ body_mass_g, 
+penguins_clean %>% gf_density( ~ body_mass_g, 
                          fill = ~ species, 
                          color = "black") %>%
   gf_refine(scale_color_viridis_d(option = "magma", 
@@ -408,7 +457,9 @@ penguins_modified %>% gf_density( ~ body_mass_g,
 :::
 ::: {.column}
 ```{r}
-#| ref-label: fig-ggformula-2
+#| ref-label: ggformula-2
+#| label: fig-ggformula-2
+#| fig-cap: "Penguin Body Mass by Species"
 #| echo: false
 ```
 :::
@@ -418,11 +469,11 @@ penguins_modified %>% gf_density( ~ body_mass_g,
 :::: {.columns}
 :::{.column}
 ```{r}
-#| label: fig-ggformula-3
+#| label: ggformula-3
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-penguins_modified %>%
+penguins_clean %>%
   gf_density(
     ~ body_mass_g,
     fill = ~ species,
@@ -436,7 +487,9 @@ penguins_modified %>%
 :::
 ::: {.column}
 ```{r}
-#| ref-label: fig-ggformula-3
+#| ref-label: ggformula-3
+#| label: fig-ggformula-3
+#| fig-cap: "Penguins Body Mass by Species and Sex"
 #| echo: false
 
 ```
@@ -447,11 +500,11 @@ penguins_modified %>%
 :::: {.columns}
 :::{.column}
 ```{r}
-#| label: fig-ggformula-4
+#| label: ggformula-4
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-penguins_modified %>%
+penguins_clean %>%
   gf_density( ~ body_mass_g, fill = ~ species, color = "black") %>%
   gf_facet_wrap(vars(sex), scales = "free_y", nrow = 2) %>%
   gf_labs(title = "Plot D: Penguin Body Mass by Species and facetted by Sex",
@@ -465,7 +518,9 @@ penguins_modified %>%
 :::
 ::: {.column}
 ```{r}
-#| ref-label: fig-ggformula-4
+#| ref-label: ggformula-4
+#| label: fig-ggformula-4
+#| fig-cap: "Facets with Free y-Scale"
 #| echo: false
 
 ```
@@ -481,7 +536,7 @@ penguins_modified %>%
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-penguins_modified <- penguins %>% drop_na()
+penguins_clean <- penguins %>% drop_na()
 
 ggplot(data = penguins) + 
   geom_density(aes(x = body_mass_g)) + 
@@ -507,7 +562,7 @@ ggplot(data = penguins) +
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-penguins_modified %>% 
+penguins_clean %>% 
   ggplot() + 
   geom_density(aes(x = body_mass_g, fill = species), alpha = 0.3,
                    color = "black") + 
@@ -534,7 +589,7 @@ penguins_modified %>%
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-penguins_modified %>% ggplot() + 
+penguins_clean %>% ggplot() + 
   geom_density(aes(x = body_mass_g, fill = species),
                    color = "black",
                    alpha = 0.3) + 
@@ -560,7 +615,7 @@ penguins_modified %>% ggplot() +
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-penguins_modified %>% ggplot() + 
+penguins_clean %>% ggplot() + 
   geom_density(aes(x = body_mass_g, fill = species),
                    alpha = 0.3, 
                    color = "black") + 

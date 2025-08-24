@@ -42,11 +42,16 @@ webr:
 #| message: false
 #| warning: false
 
-library(tidyverse)
-library(mosaic)
-library(ggformula)
-library(skimr)
-library(janitor)
+library(tidyverse) # Sine qua non
+library(mosaic) # Out all-in-one package
+library(ggformula) # Graphing package
+library(skimr) # Looking at Data
+library(janitor) # Clean the data
+library(naniar) # Handle missing data
+library(visdat) # Visualise missing data
+library(tinytable) # Printing Static Tables for our data
+library(DT) # Interactive Tables for our data
+library(crosstable) # Multiple variable summaries
 
 ```
 
@@ -182,6 +187,7 @@ taxi <- read.csv("https://vincentarelbundock.github.io/Rdatasets/csv/modeldata/t
 taxi_modified <- taxi %>% 
   janitor::clean_names() %>% 
   janitor::remove_empty() # Empty columns and rows if any
+
 taxi_modified <- taxi_modified %>%
   mutate(dow = factor(dow,
     levels = c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"),
@@ -301,8 +307,11 @@ We will first look at at a dataset that speaks about taxi rides in Chicago in th
 #| message: false
 taxi <- read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/modeldata/taxi.csv")
 taxi_modified <- taxi %>% 
+  
+  naniar::replace_with_na_all(condition = ~.x %in% common_na_strings) %>%
+  naniar::replace_with_na_all(condition = ~.x %in% common_na_numbers) %>%
   janitor::clean_names() %>% 
-  janitor::remove_empty() # Empty columns and rows if any
+  janitor::remove_empty()
 
 ```
 
@@ -404,41 +413,51 @@ We will convert the `tip`, `company`, `dow`, `local`, `hour`, and `month` variab
 
 ## Convert `dow`, `local`, `month`, and `hour` into ordered factors
 taxi_modified <- taxi_modified %>%
-  mutate(
-    ##
-    tip = factor(tip, levels = c("yes", "no"), 
+  dplyr::mutate(
+    
+    ## Variable "tip"
+    tip = base::factor(tip, levels = c("yes", "no"), 
                  labels = c("yes", "no"),
                  ordered = TRUE),
-    ##
-    company = factor(company), # Any order is OK. 
-    ##
-    dow = factor(dow,
+    
+    ## Variable "company"
+    company = base::factor(company), # Any order is OK. 
+    
+    ## Variable "dow"
+    dow = base::factor(dow,
          levels = c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"),
          labels = c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"),
     ordered = TRUE),
-    ##
-    local = factor(local,
+    
+    ## Variable "local"
+    local = base::factor(local,
                    levels = c("yes", "no"),
                    labels = c("yes", "no"),
                    ordered = TRUE),
-    ##
-    month = factor(month, 
+    
+    ## Variable "month"
+    month = base::factor(month, 
                  levels = c("Jan", "Feb", "Mar", "Apr"),
                  labels = c("Jan", "Feb", "Mar", "Apr"),
                  ordered = TRUE),
-    ##
-    hour = factor(hour, levels = c(0:23), labels = c(0:23), 
+    
+    ## Variable "hour"
+    hour = base::factor(hour, levels = c(0:23), labels = c(0:23), 
                   ordered = TRUE))
+
 taxi_modified %>% glimpse()
 
 ```
 
+Looks clean and good. 
 
 ### {{< iconify  material-symbols lab-research >}} Hypothesis and Research Questions
 
+It is a good practice in Exploratory Data Analysis [to surmise the Experiment that lead to the gathering of this dataset]{style="background-color:yellow;"}, and what the **target variable** might be. This is the variable that is to be explained, or predicted, or modelled. The other variables are **explanatory variables**, or ***predictor variables***.
+
 The ***target variable*** for an experiment that resulted in this data might be the `tip` variable, since that looks like a response, or an outcome. It is a binary i.e. Yes/No type Qual variable. 
 
-We will use the `tip` variable to ask questions about the data, and then plot the answers to these questions.
+We will concentrate on the `tip` target variable to ask questions about the data, and then plot the answers to these questions.
 
 ::: callout-note
 ### Research Questions:
@@ -518,9 +537,6 @@ ggplot(taxi_modified)  +
 - (Future) The counts of `tip` are very imbalanced and if we are to setup a model for that ([logistic regression](../../../30-Modelling/Modules/LogReg/index.qmd)) we would need to  very carefully subset the data for `training` and `testing` our model. 
 
 :::
-
-
-
 
 
 
@@ -715,6 +731,7 @@ taxi_modified %>%
 
 
 #### Business Insights-2
+
 - Counting the frequency of `tip` by `local` gives us grouped counts, but we cannot tell the percentage per group (local or not) of those who tip and those who do not. 
 - We need per-group percentages because the number of `local` trips are not balanced
 - Hence with `tidyplots`, we find that `add_barstack_relative` gives the clearest visual indication of a difference in proportion.
@@ -877,6 +894,7 @@ taxi_modified %>%
 
 
 #### {{< iconify noto-v1 spider-web >}} web-r-3
+
 ```{webr-r}
 
 taxi_modified %>% 

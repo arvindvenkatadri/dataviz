@@ -42,13 +42,17 @@ webr:
 #| message: false
 #| warning: false
 
-library(tidyverse)
-library(mosaic)
-library(ggformula)
-library(skimr)
+library(tidyverse) # Sine Qua Non package in R
+library(mosaic) # Our Favourite Bag of Tricks
+library(ggformula) # Graphing 
+library(skimr) # Data Inspection and Summary
 ##
 library(crosstable) # Fast stats for multiple variables in table form
 library(tinytable) # Elegant Tables for our data
+library(visdat) # Mapping missing data
+library(naniar) # Missing data visualization and munging
+library(janitor) # Clean the data
+library(tinytable) # Printing Tables for our data
 
 ```
 
@@ -71,7 +75,7 @@ library(shinylive) # To create a Shiny app in a Quarto HTML doc
 library(downloadthis)
 #devtools::install_github("mccarthy-m-g/embedr")
 library(embedr) # Embed multimedia in HTML files
-library(ggplot2)
+
 
 ```
 
@@ -199,6 +203,7 @@ diamonds_modified <- diamonds %>%
 
 ## {{< iconify tabler variable >}} What kind of Data Variables will we choose?
 
+::: {.column-page-inset-right}
 ```{r}
 #| message: false
 #| echo: false
@@ -208,9 +213,11 @@ read_csv("../../../../../materials/Data/pronouns.csv") %>%
   tt(theme = "striped")
   
 ```
-
+:::
 
 ## {{< iconify icons8 idea >}} Inspiration
+
+::: {.column-page-inset-right}
 
 ::: {#fig-golf-drive-evolution layout-ncol=2}
 
@@ -221,7 +228,7 @@ read_csv("../../../../../materials/Data/pronouns.csv") %>%
 
 Golf Drive Distance over the years
 :::
-
+:::
 
 What do we see here? In about two-and-a-half decades, golf drive distances have increased, *on the average*, by 35 yards. The maximum distance has also gone up by 30 yards, and the minimum is now at 250 yards, which was close to average in 1983! What was a decent average in 1983 is just the bare minimum in 2017!!
 
@@ -252,9 +259,21 @@ Histograms do not usually show spaces between buckets because the buckets repres
 ## {{< iconify grommet-icons test >}} Case Study-1: `diamonds` dataset
 
 We will first look at at a dataset that is directly available in R, the
-`diamonds` dataset. As always, we will use `janitor` to clean up the column names:
+`diamonds` dataset. As always, we will use our munging process to clean up the data for analysis
 
 ```{r}
+#| label: load-diamonds
+data("diamonds", package = "ggplot2")
+glimpse(diamonds)
+
+```
+
+We have ~54000 observations, with 10 variables. There are no missing values in any variable. It is a nice mix of Quantitative and Qualitative variables. Since the variables are nicely converted to factor where needed, and the names are already clean we will just use `janitor` to essentially rename our dataset.
+
+```{r}
+#| label: data-munging
+#| code-fold: true
+#| 
 diamonds_modified <- diamonds %>%
   janitor::clean_names(case = "snake") %>% 
   janitor::remove_empty(which = c("rows", "cols")) # Empty columns and rows if any
@@ -270,6 +289,7 @@ methods we have seen.
 ::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
 
 #### {{< iconify la r-project >}} dplyr::glimpse
+
 ```{r}
 #| label: glimpse-diamonds
 glimpse(diamonds_modified)
@@ -1475,8 +1495,8 @@ data %>%
 
 What insights could you develop based on these distribution shapes?\
 
-- *Bimodal*: Maybe two different systems or phenomena or regimes under which the data unfolds. Like our geyser above. Or a machine that works differently when cold and when hot. Intermittent faulty behaviour...\
-- *Comb*: Some specific Observations occur predominantly, in an otherwise even spread or observations. In a survey many respondents round off numbers to nearest 100 or 1000. Check the distribution of the diamonds dataset for carat values which are suspiciously integer numbers in too many cases.\
+- *Bimodal*: Maybe two different systems or phenomena or regimes under which the data unfolds. Like the geyser dataset (`r data(faithful, package = "datasets") `. Or a machine that works differently when cold and when hot. Intermittent faulty behaviour...\
+- *Comb*: Some specific Observations occur predominantly, in an otherwise even spread or observations. In a survey many respondents round off numbers to nearest 100 or 1000. Check the distribution of the diamonds dataset for `carat` values which are suspiciously integer numbers in too many cases.\
 - *Edge Peak*: Could even be a data entry artifact!! All unknown / unrecorded observations are recorded as $999$ !!`r emoji::emoji("scream_cat")`\
 - *Normal*: Just what it says! Course Marks in a Univ cohort...\
 - *Skewed*: Income, or friends count in a set of people. Do UI/UX peasants have more followers on Insta than say CAP people?\
@@ -1489,37 +1509,52 @@ values for means and standard deviations, we resort to a *scaling* of
 the variables that are plotted in the respective distributions.
 
 ```{r}
-#| label: z-scores-1
-#| echo: false
+#| label: z-scores
+#| code-fold: true
 #| layout-nrow: 2
-#| column: body-outset-right
+#| layout-ncol: 2
+#| column: page-inset-right
 
-p1 <- TeachHistDens(Mean = 60, Sd = 5, VLine1 = 70, AxisFontSize = 14)
 
-xpnorm(mean = 60, sd = 5, q = 70, return = "plot", 
+TeachHistDens(Mean = 60, Sd = 5, VLine1 = 70, AxisFontSize = 14)
+
+TeachHistDens(Mean = 60, Sd = 15, VLine1 = 70, AxisFontSize = 14)
+
+xpnorm(mean = 60, sd = 5, q = 70, return = "plot",
       method = "gg") %>% 
+  gf_vline(xintercept = 60, colour = "red") %>%
   gf_annotate("label", x = 75, y = 0.05, label = "area = probability = 0.02275") %>%
   gf_annotate("curve", x = 76, y = 0.045, xend = 72.5, yend = 0.005,
               curvature = -0.3, arrow = arrow(length = unit(0.2, "cm"))) %>%
-  gf_labs(title = "Z-score = 2") 
+  gf_labs(title = "Z-score = 2", subtitle = "mean = 60, sd = 5") %>% 
+  gf_refine(scale_x_continuous(limits = c(35, 85), breaks = seq(35, 85, by = 5), expand = c(0,0)))
+
+xpnorm(mean = 60, sd = 15, q = 70, return = "plot",
+      method = "gg") %>% 
+  gf_vline(xintercept = 60, colour = "red") %>%
+  gf_annotate("label", x = 100, y = 0.02, label = "area = probability = 0.2525") %>%
+  gf_annotate("curve", x = 100, y = 0.018, xend = 75, yend = 0.005,
+              curvature = -0.3, arrow = arrow(length = unit(0.2, "cm"))) %>%
+  gf_labs(title = "Z-score = 0.6667", subtitle = "mean = 60, sd = 15") %>% 
+  gf_refine(scale_x_continuous(limits = c(-15, 135), 
+breaks = seq(-15, 135, by = 15), expand = c(0,0)))
+
 
 ```
 
 ```{r}
-#| label: z-scores-2
-#| echo: false
-#| layout-nrow: 2
-#| column: body-outset-right
+#| eval: false
+#| include: false
 
-
-p2 <- TeachHistDens(Mean = 60, Sd = 15, VLine1 = 70,AxisFontSize = 14)
-xpnorm(mean = 60, sd = 15, q = 70, return = "plot", 
-      method = "gg") %>% 
-  gf_annotate("label", x = 100, y = 0.02, label = "area = probability = 0.2525") %>%
-  gf_annotate("curve", x = 100, y = 0.018, xend = 75, yend = 0.005,
+TeachHistDens(Mean = 60, Sd = 5, VLine1 = 70, AxisFontSize = 14) %>% 
+xpnorm(mean = 60, sd = 5, q = 70, return = "plot", alpha = 0.3,
+      method = "gg", verbose = F) %>% 
+  gf_vline(xintercept = 60, colour = "red") %>%
+  gf_annotate("label", x = 75, y = 0.05, label = "area = probability = 0.02275") %>%
+  gf_annotate("curve", x = 76, y = 0.045, xend = 72.5, yend = 0.005,
               curvature = -0.3, arrow = arrow(length = unit(0.2, "cm"))) %>%
-  gf_labs(title = "Z-score = 0.6667") 
-
+  gf_labs(title = "Z-score = 2", subtitle = "mean = 60, sd = 5") %>% 
+  gf_refine(scale_x_continuous(limits = c(35, 85), breaks = seq(35, 85, by = 5), expand = c(0,0))) 
 
 ```
 
@@ -1529,18 +1564,15 @@ x-variable, and the other is the *z-score* which is calculated as:
 
 $$
 \Large{z_x = \frac{x - \mu_{x}}{\sigma_x}}
-$$
+$${#eq-zcores}
 
-With similar distributions (i.e. normal distributions), we see that the
-variation in density is the **same** at the same values of `z-score` for
-each variable. However since the $\mu_i$ and $\sigma_i$ are different,
-the *absolute* value of the `z-score` is different for each variable. In
-the first plot (from the top left), $z = 1$ corresponds to an absolute
-change of $5$ units; it is $15$ units in the plot directly below it.
+where $\mu_x$ and $\sigma_x$ are the mean and standard deviation of the x-variable.[The `z-score` is the distance from the ``mean` scaled by the `sd`]{style="background-colr=yellow;"}. 
 
-Our comparisons are done easily when we compare differences in
-probabilities at identical `z-scores`, or differences in `z-scores` at
-identical probabilities.
+In the figures above, the ***absolute values*** of the random variables $x_i$ is always $10$ from the (identical) means $\mu_i$. However since the $\sigma_i$ are different, the `z-score` is different in each case. In the left column, the `z-score` is $2$; in the right column it is $0.6667$.
+
+We note that the variation in density is the **same** at the same values of `z-score`. 
+
+When we make comparisons of two random variables, our comparisons are done most easily when we compare `z-scores` to calculate probabilities, or differences in `z-scores` at identical probabilities.
 
 
 ## {{< iconify mingcute thought-line >}} Wait, But Why?
@@ -1634,7 +1666,7 @@ cite_packages(
   out.dir = ".",
   out.format = "html",
   pkgs = c("crosstable","ggridges", "NHANES", "TeachHist",
-           "TeachingDemos", "visualize", "janitor")
+           "TeachingDemos", "visualize", "janitor", "visdat", "naniar", "tinytable", "crosstable")
 ) %>%
   knitr::kable(format = "simple")
 

@@ -1,0 +1,127 @@
+---
+title: "Using LLMs to Explain Stat models"
+author: "Arvind V"
+date: "2025-06-14"
+order: 30
+date-modified: "`r Sys.Date()`"
+categories: [news, code, analysis]
+---
+
+## Introduction
+
+I am going to use `gander` to create a simple example of how to use it.
+It seems `gander` can allow the user to **see the data** they are
+working with and is able to generate accurate R code for graphs.
+
+## Setting Up R Packages
+
+```{r}
+#| label: setup
+#| message: false
+#| 
+library(tidyverse)
+library(ggformula)
+library(gander)
+library(ellmer)
+```
+
+## Setting up `gander` and `ellmer`
+
+There are a few steps involved in setting up `gander` and `ellmer` to
+work with your preferred LLM (Large Language Model) service. The steps
+are as follows:
+
+1.  Install the `gander` and `ellmer` packages.
+2.  Get your API Key, from say Anthropic, ChatGPT, or Ollama.\
+
+-   Anthropic: visit <https://console.anthropic.com/settings/keys>
+-   ChatGPT: visit <https://platform.openai.com/api-keys>
+-   Ollama: visit <https://ollama.com/> \# runs LLMs LOCALLY! NO API Key
+    needed.
+
+See “Choosing a model” in `vignette("gander", package = "gander")` to
+learn more.
+
+3.  Save the `API_KEY` of you preferred LLM service in your `.Rprofile`
+    file. For example, if you are using Ollama, you would add the
+    following line to your `.Rprofile`, as follows:
+
+```{r}
+#| label: gander-setup
+#| eval: false
+
+## RUN THESE IN YOUR CONSOLE
+install.packages("usethis")
+library(usethis)
+usethis::edit_r_profile()
+
+```
+
+This will open the `.Rprofile` file in your RStudio editor. You will
+need to add (one of ) the following lines to the file:
+
+OPENAI_API_KEY = "YOUR_API_KEY_HERE"
+
+ANTHROPIC_API_KEY = "YOUR_API_KEY_HERE"
+
+etc.
+
+4.  Also add (one of) these line to the `.Rprofile` file:
+
+`options(.gander_chat = ellmer::chat_anthropic())`
+
+`options(.gander_chat = ellmer::chat_openai())`
+
+etc. 
+
+5.  If you wish to run models locally for free, you can use `Ollama`. In that case, you will need to:
+
+-   install the Ollama CLI <https://ollama.com/download>
+-   download a model from <https://ollama.com/models>, say "llama3.1"
+-   then add the following line to your `.Rprofile` file:
+    `options(.gander_chat = ellmer::chat_ollama(model = "llama3.1"))`
+-   MacOS: Ensure you start `ollama` server by running `ollama serve` in your terminal.
+-   Windows: Add ollama.exe to your startup programs
+    (see <https://ollama.com/docs/installation/windows> for details).
+
+    Note: If you are using `Ollama`, you do not need an API key, but you
+    do need to have the Ollama server running.
+
+6.  Setup the `gander` assistant: The `gander` assistant is interfaced
+    with the via the `gander addin`. For easiest access, we recommend
+    registering the `gander addin` to a keyboard shortcut.
+
+In RStudio, navigate to
+`Tools > Modify Keyboard Shortcuts > Search "gander"`. The package
+author suggests `Ctrl+Alt+G` (or `Ctrl+Cmd+G` on macOS).
+
+7.  Restart RStudio to ensure the changes take effect.
+
+## Using `gander`
+
+Now that we have set up `gander` and `ellmer`, we can use the `gander/ellmer` packages to get working with creating code with AI tools.  Let us follow these steps:
+
+1. It seems ( for now, June 2025) that `gander` is best used in an ***R-script** ( a .R file). So let use create a new R script file in RStudio, and save it as `using-gander.R`.
+
+    -   In RStudio, go to `File > New File > R Script`.
+    -   Save the file as `using-gander.R`.
+    
+2.  In the R script, we can use the `gander` addin to generate code for us. The addin will prompt us to select a dataset and then ask us to describe the graph we want to create. Load up a dataset using the `data()` function, and then use the `gander` addin to generate code for a graph.
+
+3. When you invoke the `gander` add-in with the <keyboard>CTRL+Alt+G</keyboard> (or <keyboard>Ctrl+Cmd+G</keyboard> on macOS), it will prompt you to select a dataset. You can select the `penguins` dataset from the `palmerpenguins` package, or any other dataset you have loaded in your R session.
+4.  After selecting the dataset, the `gander` addin will ask you to describe the graph you want to create. You can type a description like "Create a scatter plot of bill length vs body mass, colored by species, with a linear model fit." The `gander` addin will then generate the R code for the graph. Hit tab to accept the generated code.
+5.  You can then run the generated code in your R script to create the graph.
+6.  You can also modify the generated code to customize the graph further, such as changing the theme or adding labels.
+7.  You can use the `gander` addin again to generate code for another graph, or to modify the existing graph. Select the existing code each time and invoke the `gander` addin to generate new code based on the selected code.
+8. As the code gets near to what you want to achieve, it is better ( in my experience) to switch from the `Replace` mode in the `gander` addin to the `Append` mode. This way, you can keep adding to the existing code without losing the previous code. ( It also helps when the tool occasionally changes existing code, or even hallucinates code that does not work.)
+9. Finally, paste the code from the R-script into your Quarto Markdown document or blog post to share your work.
+
+![](./using-gander.gif){width=100%}
+
+
+## References
+
+1.  <https://posit.co/blog/introducing-gander/>
+2.  <https://simonpcouch.github.io/gander/>
+
+

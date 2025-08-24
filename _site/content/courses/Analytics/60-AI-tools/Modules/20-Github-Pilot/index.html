@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
-
+<meta name="generator" content="quarto-1.8.21">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
 <meta name="author" content="Arvind V">
 <meta name="dcterms.date" content="2025-06-14">
-
-<title>Using Github Pilot in RStudio – The Mad Hatter’s Guide to Data Viz and Stats in R</title>
+<title>Using Github Copilot and other AI tools to generate R code – The Mad Hatter’s Guide to Data Viz and Stats in R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,8 +19,42 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
-
 
 <script src="../../../../../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../../../../../site_libs/quarto-nav/headroom.min.js"></script>
@@ -32,23 +63,26 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../../../../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../../../../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../../../../../">
-<link href="../../../../../../content/courses/Analytics/70-CaseStudies/listing.html" rel="next">
+<link href="../../../../../../content/courses/Analytics/60-AI-tools/Modules/30-Explain/index.html" rel="next">
 <link href="../../../../../../content/courses/Analytics/60-AI-tools/Modules/10-LLMs/index.html" rel="prev">
 <link href="../../../../../../content/materials/icon-park-twotone--concept-sharing.svg" rel="icon" type="image/svg+xml">
 <script src="../../../../../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../../../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../../../../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-1b3e43c72e8be34557c75123b0b69e0d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-9dc4a11de9e7e674daf7319c40631fef.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../../../../site_libs/bootstrap/bootstrap-568c5ee9ec4531743a00a9bacd4917ba.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../../../site_libs/bootstrap/bootstrap-f98024d38ba10b6a495c0c63f82dd59d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="../../../../../../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.css" rel="stylesheet">
 <script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
-<link href="../../../../../../site_libs/quarto-contrib/tachyons-4.12.0/tachyons.css" rel="stylesheet">
-<script id="quarto-search-options" type="application/json">{
+<script src="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<link href="../../../../../../site_libs/quarto-contrib/tachyons-4.12.0/tachyons.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -74,28 +108,29 @@ ul.task-list li input[type="checkbox"] {
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script>
-<style>html{ scroll-behavior: smooth; }</style>
-
-
-<link rel="stylesheet" href="../../../../../../css/fira.css">
+}</script><style>html{ scroll-behavior: smooth; }</style>
+<link href="../../../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><link rel="stylesheet" href="../../../../../../css/fira.css">
 <link rel="stylesheet" href="../../../../../../css/roboto-condensed.css">
 <link rel="stylesheet" href="../../../../../../css/vollkorn.css">
 <link rel="stylesheet" href="../../../../../../css/fraunces.css">
 <link rel="stylesheet" href="../../../../../../css/styles.css">
-<meta property="og:title" content="Using Github Pilot in RStudio – The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta property="og:title" content="Using Github Copilot and other AI tools to generate R code – The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta property="og:description" content="This is Arvind V.’s website for teaching Data Viz and Stats in R">
+<meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/60-AI-tools/Modules/20-Github-Pilot/using-gander.gif">
 <meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
-<meta name="twitter:title" content="Using Github Pilot in RStudio – The Mad Hatter’s Guide to Data Viz and Stats in R">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Using Github Copilot and other AI tools to generate R code – The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta name="twitter:description" content="This is Arvind V.’s website for teaching Data Viz and Stats in R">
+<meta name="twitter:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/60-AI-tools/Modules/20-Github-Pilot/using-gander.gif">
+<meta name="twitter:card" content="summary_large_image">
 </head>
-
 <body class="nav-sidebar docked nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
-      <div class="navbar-container container-fluid">
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
+    <a href="../../../../../../index.html" class="navbar-brand navbar-brand-logo">
+    </a>
     <a class="navbar-brand" href="../../../../../../index.html">
     <span class="navbar-title">The Mad Hatter’s Guide to Data Viz and Stats in R</span>
     </a>
@@ -106,7 +141,7 @@ ul.task-list li input[type="checkbox"] {
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
-  <li class="nav-item compact">
+<li class="nav-item compact">
     <a class="nav-link" href="https://github.com/arvindvenkatadri/dataviz"> <i class="bi bi-github" role="img">
 </i> 
 <span class="menu-text"></span></a>
@@ -127,7 +162,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text"></span></a>
   </li>  
 </ul>
-          </div> <!-- /navcollapse -->
+</div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -136,29 +171,22 @@ ul.task-list li input[type="checkbox"] {
 </a>
 </div>
       </div> <!-- /container-fluid -->
-    </nav>
-  <nav class="quarto-secondary-nav">
-    <div class="container-fluid d-flex">
+    </nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/listing.html">Data Viz and Stats</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/60-AI-tools/listing.html">AI Tools</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/60-AI-tools/Modules/20-Github-Pilot/index.html">Using Github Pilot in RStudio</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/listing.html">Data Viz and Stats</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/60-AI-tools/listing.html">AI Tools</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/60-AI-tools/Modules/20-Github-Pilot/index.html">Using Github Copilot and other AI tools to generate R code</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
-  </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
       <a href="../../../../../../index.html" class="sidebar-logo-link">
-      <img src="../../../../../../content/materials/images/1book25.jpg" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
-      </a>
+      <img src="../../../../../../content/materials/images/1book25.jpg" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none"><img src="../../../../../../content/materials/images/1book25.jpg" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none"></a>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
@@ -167,7 +195,7 @@ ul.task-list li input[type="checkbox"] {
         </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item sidebar-item-section">
+<li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a href="../../../../../../content/courses/Analytics/listing.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Data Viz and Stats</span></a>
@@ -175,8 +203,8 @@ ul.task-list li input[type="checkbox"] {
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item sidebar-item-section">
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a href="../../../../../../content/courses/Analytics/05-Tools/listing.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Tools</span></a>
@@ -184,15 +212,15 @@ ul.task-list li input[type="checkbox"] {
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../../../content/courses/Analytics/05-Tools/10-Intro-to-R/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><iconify-icon icon="fa-brands:r-project"></iconify-icon> Introduction to R and RStudio</span></a>
   </div>
 </li>
       </ul>
-  </li>
+</li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a href="../../../../../../content/courses/Analytics/10-Descriptive/listing.html" class="sidebar-item-text sidebar-link">
@@ -201,8 +229,8 @@ ul.task-list li input[type="checkbox"] {
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/05-NatureData/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><iconify-icon icon="icon-park-twotone:data-user" width="1.2em" height="1.2em"></iconify-icon> Data</span></a>
@@ -210,7 +238,13 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/07-Graphs/index.html" class="sidebar-item-text sidebar-link">
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/06-Inspect/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="grommet-icons:inspect" width="1.2em" height="1.2em"></iconify-icon> Inspect Data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/09-Graphs/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><iconify-icon icon="carbon:chart-3d" width="1.2em" height="1.2em"></iconify-icon> Graphs</span></a>
   </div>
 </li>
@@ -300,8 +334,8 @@ ul.task-list li input[type="checkbox"] {
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth3 ">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth3 ">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/05-Intro/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> Introduction to Maps</span></a>
@@ -320,13 +354,19 @@ ul.task-list li input[type="checkbox"] {
   </div>
 </li>
           <li class="sidebar-item">
- <span class="menu-text">content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/20-Interactive/index.qmd</span>
-  </li>
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/20-Leaflet/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Playing with Leaflet</span></a>
+  </div>
+</li>
           <li class="sidebar-item">
- <span class="menu-text">content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/30-Special/index.qmd</span>
-  </li>
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/30-Mapview/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Playing With Mapview</span></a>
+  </div>
+</li>
       </ul>
-  </li>
+</li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/100-Networks/index.html" class="sidebar-item-text sidebar-link">
@@ -346,7 +386,7 @@ ul.task-list li input[type="checkbox"] {
   </div>
 </li>
       </ul>
-  </li>
+</li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a href="../../../../../../content/courses/Analytics/20-Inference/listing.html" class="sidebar-item-text sidebar-link">
@@ -355,8 +395,8 @@ ul.task-list li input[type="checkbox"] {
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../../../content/courses/Analytics/20-Inference/Modules/10-Intro/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">🧭 Basics of Statistical Inference</span></a>
@@ -417,7 +457,7 @@ ul.task-list li input[type="checkbox"] {
   </div>
 </li>
       </ul>
-  </li>
+</li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a href="../../../../../../content/courses/Analytics/30-Modelling/listing.html" class="sidebar-item-text sidebar-link">
@@ -426,8 +466,8 @@ ul.task-list li input[type="checkbox"] {
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../../../content/courses/Analytics/30-Modelling/Modules/LinReg/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Modelling with Linear Regression</span></a>
@@ -446,7 +486,7 @@ ul.task-list li input[type="checkbox"] {
   </div>
 </li>
       </ul>
-  </li>
+</li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a href="../../../../../../content/courses/Analytics/40-Workflow/listing.html" class="sidebar-item-text sidebar-link">
@@ -455,8 +495,8 @@ ul.task-list li input[type="checkbox"] {
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth2 ">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../../../content/courses/Analytics/40-Workflow/Modules/200-EDA-Workflow/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><iconify-icon icon="guidance:falling-rocks" width="1.2em" height="1.2em"></iconify-icon><iconify-icon icon="game-icons:falling" width="1.2em" height="1.2em"></iconify-icon> Facing the Abyss</span></a>
@@ -475,7 +515,7 @@ ul.task-list li input[type="checkbox"] {
   </div>
 </li>
       </ul>
-  </li>
+</li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a href="../../../../../../content/courses/Analytics/50-Arts/listing.html" class="sidebar-item-text sidebar-link">
@@ -484,8 +524,8 @@ ul.task-list li input[type="checkbox"] {
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth2 ">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../../../content/courses/Analytics/50-Arts/Modules/10-Colour/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Colours</span></a>
@@ -522,7 +562,7 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">content/courses/Analytics/50-Arts/Modules/70-Diagrams/index.qmd</span>
   </li>
       </ul>
-  </li>
+</li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a href="../../../../../../content/courses/Analytics/60-AI-tools/listing.html" class="sidebar-item-text sidebar-link">
@@ -531,8 +571,8 @@ ul.task-list li input[type="checkbox"] {
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth2 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth2 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../../../content/courses/Analytics/60-AI-tools/Modules/10-LLMs/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Using gander and ellmer</span></a>
@@ -541,14 +581,17 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../../../content/courses/Analytics/60-AI-tools/Modules/20-Github-Pilot/index.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Using Github Pilot in RStudio</span></a>
+ <span class="menu-text">Using Github Copilot and other AI tools to generate R code</span></a>
   </div>
 </li>
           <li class="sidebar-item">
- <span class="menu-text">content/courses/Analytics/60-AI-tools/Modules/30-Explain/index.qmd</span>
-  </li>
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/60-AI-tools/Modules/30-Explain/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using LLMs to Explain Stat models</span></a>
+  </div>
+</li>
       </ul>
-  </li>
+</li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a href="../../../../../../content/courses/Analytics/70-CaseStudies/listing.html" class="sidebar-item-text sidebar-link">
@@ -557,8 +600,8 @@ ul.task-list li input[type="checkbox"] {
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth2 ">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/05-Demo/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><iconify-icon icon="healthicons:elderly-outline" width="1.2em" height="1.2em"></iconify-icon> Demo:Product Packaging and Elderly People</span></a>
@@ -597,7 +640,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/80-ChildrensGames/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><iconify-icon icon="fa6-solid:children"></iconify-icon> <iconify-icon icon="icon-park-solid:play-basketball"></iconify-icon> Children’s Games</span></a>
+ <span class="menu-text"><iconify-icon icon="fa6-solid:children"></iconify-icon><iconify-icon icon="icon-park-solid:play-basketball"></iconify-icon> Children's Games</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -615,19 +658,19 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/110-ChildrenHearingLoss/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><iconify-icon icon="fa6-solid:ear-deaf"></iconify-icon> <iconify-icon icon="fa-regular:sad-tear"></iconify-icon> Hearing Loss in Children</span></a>
+ <span class="menu-text"><iconify-icon icon="fa6-solid:ear-deaf"></iconify-icon><iconify-icon icon="fa-regular:sad-tear"></iconify-icon> Hearing Loss in Children</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/200-CaliforniaTransitPayments/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><iconify-icon icon="openmoji:california-flag"></iconify-icon> <iconify-icon icon="material-symbols:transit-ticket-outline-sharp"></iconify-icon> California Transit Payments</span></a>
+ <span class="menu-text"><iconify-icon icon="openmoji:california-flag"></iconify-icon><iconify-icon icon="material-symbols:transit-ticket-outline-sharp"></iconify-icon> California Transit Payments</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/250-Seaweed/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><iconify-icon icon="iconoir:sea-waves"></iconify-icon> <iconify-icon icon="mdi:weed"></iconify-icon> Seaweed Nutrients</span></a>
+ <span class="menu-text"><iconify-icon icon="iconoir:sea-waves"></iconify-icon><iconify-icon icon="mdi:weed"></iconify-icon> Seaweed Nutrients</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -645,41 +688,47 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/400-AntarcticSeaIce/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><iconify-icon icon="iconoir:sea-waves"></iconify-icon> <iconify-icon icon="openmoji:floating-ice"></iconify-icon> Antarctic Sea ice</span></a>
+ <span class="menu-text"><iconify-icon icon="iconoir:sea-waves"></iconify-icon><iconify-icon icon="openmoji:floating-ice"></iconify-icon>  Antarctic Sea ice</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/450-CholeraInLondon/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><iconify-icon icon="simple-icons:transportforlondon"></iconify-icon> <iconify-icon icon="hugeicons:water-pump"></iconify-icon> William Farr’s Observations on Cholera in London</span></a>
+ <span class="menu-text"><iconify-icon icon="simple-icons:transportforlondon"></iconify-icon><iconify-icon icon="hugeicons:water-pump"></iconify-icon>  William Farr's Observations on Cholera in London</span></a>
   </div>
 </li>
       </ul>
-  </li>
+</li>
       </ul>
-  </li>
+</li>
     </ul>
-    </div>
-</nav>
-<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#setting-up-r-packages" id="toc-setting-up-r-packages" class="nav-link" data-scroll-target="#setting-up-r-packages">Setting Up R Packages</a></li>
+  <li><a href="#setting-up-gander-and-ellmer" id="toc-setting-up-gander-and-ellmer" class="nav-link" data-scroll-target="#setting-up-gander-and-ellmer">Setting up <code>gander</code> and <code>ellmer</code></a></li>
+  <li><a href="#using-gander" id="toc-using-gander" class="nav-link" data-scroll-target="#using-gander">Using <code>gander</code></a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul></nav>
     </div>
 <!-- main -->
-<main class="content column-page-right" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/listing.html">Data Viz and Stats</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/60-AI-tools/listing.html">AI Tools</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/60-AI-tools/Modules/20-Github-Pilot/index.html">Using Github Pilot in RStudio</a></li></ol></nav>
-<div class="quarto-title">
-<h1 class="title">Using Github Pilot in RStudio</h1>
+<main class="content column-body" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/listing.html">Data Viz and Stats</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/60-AI-tools/listing.html">AI Tools</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/60-AI-tools/Modules/20-Github-Pilot/index.html">Using Github Copilot and other AI tools to generate R code</a></li></ol></nav><div class="quarto-title">
+<h1 class="title">Using Github Copilot and other AI tools to generate R code</h1>
   <div class="quarto-categories">
     <div class="quarto-category">news</div>
+    <div class="quarto-category">code</div>
+    <div class="quarto-category">analysis</div>
   </div>
   </div>
 
 
 
-<div class="quarto-title-meta column-page-right">
+<div class="quarto-title-meta column-body">
 
     <div>
     <div class="quarto-title-meta-heading">Author</div>
@@ -698,7 +747,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">Invalid Date</p>
+      <p class="date-modified">August 23, 2025</p>
     </div>
   </div>
     
@@ -706,14 +755,98 @@ ul.task-list li input[type="checkbox"] {
   
 
 
-</header>
+</header><section id="introduction" class="level2"><h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>I am going to use <code>gander</code> to create a simple example of how to use it. It seems <code>gander</code> can allow the user to <strong>see the data</strong> they are working with and is able to generate accurate R code for graphs.</p>
+</section><section id="setting-up-r-packages" class="level2"><h2 class="anchored" data-anchor-id="setting-up-r-packages">Setting Up R Packages</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ProjectMOSAIC/ggformula">ggformula</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/simonpcouch/gander">gander</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ellmer.tidyverse.org">ellmer</a></span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section><section id="setting-up-gander-and-ellmer" class="level2"><h2 class="anchored" data-anchor-id="setting-up-gander-and-ellmer">Setting up <code>gander</code> and <code>ellmer</code>
+</h2>
+<p>There are a few steps involved in setting up <code>gander</code> and <code>ellmer</code> to work with your preferred LLM (Large Language Model) service. The steps are as follows:</p>
+<ol type="1">
+<li>Install the <code>gander</code> and <code>ellmer</code> packages.</li>
+<li>Get your API Key, from say Anthropic, ChatGPT, or Ollama.<br>
+</li>
+</ol>
+<ul>
+<li>Anthropic: visit <a href="https://console.anthropic.com/settings/keys" class="uri">https://console.anthropic.com/settings/keys</a>
+</li>
+<li>ChatGPT: visit <a href="https://platform.openai.com/api-keys" class="uri">https://platform.openai.com/api-keys</a>
+</li>
+<li>Ollama: visit <a href="https://ollama.com/" class="uri">https://ollama.com/</a> # runs LLMs LOCALLY! NO API Key needed.</li>
+</ul>
+<p>See “Choosing a model” in <code><a href="https://simonpcouch.github.io/gander/articles/gander.html">vignette("gander", package = "gander")</a></code> to learn more.</p>
+<ol start="3" type="1">
+<li>Save the <code>API_KEY</code> of you preferred LLM service in your <code>.Rprofile</code> file. For example, if you are using Ollama, you would add the following line to your <code>.Rprofile</code>, as follows:</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## RUN THESE IN YOUR CONSOLE</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"usethis"</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://usethis.r-lib.org">usethis</a></span><span class="op">)</span></span>
+<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/edit.html">edit_r_profile</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>This will open the <code>.Rprofile</code> file in your RStudio editor. You will need to add (one of ) the following lines to the file:</p>
+<p>OPENAI_API_KEY = “YOUR_API_KEY_HERE”</p>
+<p>ANTHROPIC_API_KEY = “YOUR_API_KEY_HERE”</p>
+<p>etc.</p>
+<ol start="4" type="1">
+<li>Also add (one of) these line to the <code>.Rprofile</code> file:</li>
+</ol>
+<p><code>options(.gander_chat = ellmer::chat_anthropic())</code></p>
+<p><code>options(.gander_chat = ellmer::chat_openai())</code></p>
+<p>etc.</p>
+<ol start="5" type="1">
+<li>If you wish to run models locally for free, you can use <code>Ollama</code>. In that case, you will need to:</li>
+</ol>
+<ul>
+<li><p>install the Ollama CLI <a href="https://ollama.com/download" class="uri">https://ollama.com/download</a></p></li>
+<li><p>download a model from <a href="https://ollama.com/models" class="uri">https://ollama.com/models</a>, say “llama3.1”</p></li>
+<li><p>then add the following line to your <code>.Rprofile</code> file: <code>options(.gander_chat = ellmer::chat_ollama(model = "llama3.1"))</code></p></li>
+<li><p>MacOS: Ensure you start <code>ollama</code> server by running <code>ollama serve</code> in your terminal.</p></li>
+<li>
+<p>Windows: Add ollama.exe to your startup programs (see <a href="https://ollama.com/docs/installation/windows" class="uri">https://ollama.com/docs/installation/windows</a> for details).</p>
+<p>Note: If you are using <code>Ollama</code>, you do not need an API key, but you do need to have the Ollama server running.</p>
+</li>
+</ul>
+<ol start="6" type="1">
+<li>Setup the <code>gander</code> assistant: The <code>gander</code> assistant is interfaced with the via the <code>gander addin</code>. For easiest access, we recommend registering the <code>gander addin</code> to a keyboard shortcut.</li>
+</ol>
+<p>In RStudio, navigate to <code>Tools &gt; Modify Keyboard Shortcuts &gt; Search "gander"</code>. The package author suggests <code>Ctrl+Alt+G</code> (or <code>Ctrl+Cmd+G</code> on macOS).</p>
+<ol start="7" type="1">
+<li>Restart RStudio to ensure the changes take effect.</li>
+</ol></section><section id="using-gander" class="level2"><h2 class="anchored" data-anchor-id="using-gander">Using <code>gander</code>
+</h2>
+<p>Now that we have set up <code>gander</code> and <code>ellmer</code>, we can use the <code>gander/ellmer</code> packages to get working with creating code with AI tools. Let us follow these steps:</p>
+<ol type="1">
+<li>
+<p>It seems ( for now, June 2025) that <code>gander</code> is best used in an *<strong>R-script</strong> ( a .R file). So let use create a new R script file in RStudio, and save it as <code>using-gander.R</code>.</p>
+<ul>
+<li>In RStudio, go to <code>File &gt; New File &gt; R Script</code>.</li>
+<li>Save the file as <code>using-gander.R</code>.</li>
+</ul>
+</li>
+<li><p>In the R script, we can use the <code>gander</code> addin to generate code for us. The addin will prompt us to select a dataset and then ask us to describe the graph we want to create. Load up a dataset using the <code><a href="https://rdrr.io/r/utils/data.html">data()</a></code> function, and then use the <code>gander</code> addin to generate code for a graph.</p></li>
+<li><p>When you invoke the <code>gander</code> add-in with the <keyboard>CTRL+Alt+G</keyboard> (or <keyboard>Ctrl+Cmd+G</keyboard> on macOS), it will prompt you to select a dataset. You can select the <code>penguins</code> dataset from the <code>palmerpenguins</code> package, or any other dataset you have loaded in your R session.</p></li>
+<li><p>After selecting the dataset, the <code>gander</code> addin will ask you to describe the graph you want to create. You can type a description like “Create a scatter plot of bill length vs body mass, colored by species, with a linear model fit.” The <code>gander</code> addin will then generate the R code for the graph. Hit tab to accept the generated code.</p></li>
+<li><p>You can then run the generated code in your R script to create the graph.</p></li>
+<li><p>You can also modify the generated code to customize the graph further, such as changing the theme or adding labels.</p></li>
+<li><p>You can use the <code>gander</code> addin again to generate code for another graph, or to modify the existing graph. Select the existing code each time and invoke the <code>gander</code> addin to generate new code based on the selected code.</p></li>
+<li><p>As the code gets near to what you want to achieve, it is better ( in my experience) to switch from the <code>Replace</code> mode in the <code>gander</code> addin to the <code>Append</code> mode. This way, you can keep adding to the existing code without losing the previous code. ( It also helps when the tool occasionally changes existing code, or even hallucinates code that does not work.)</p></li>
+<li><p>Finally, paste the code from the R-script into your Quarto Markdown document or blog post to share your work.</p></li>
+</ol>
+<p><a href="./using-gander.gif" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="./using-gander.gif" class="img-fluid" style="width:100.0%"></a></p>
+</section><section id="references" class="level2"><h2 class="anchored" data-anchor-id="references">References</h2>
+<ol type="1">
+<li><a href="https://posit.co/blog/introducing-gander/" class="uri">https://posit.co/blog/introducing-gander/</a></li>
+<li><a href="https://simonpcouch.github.io/gander/" class="uri">https://simonpcouch.github.io/gander/</a></li>
+</ol>
 
 
-
-
-
-<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
+</section><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
     const anchorJS = new window.AnchorJS();
@@ -1118,22 +1251,19 @@ ul.task-list li input[type="checkbox"] {
       }
     }
   });
-  </script>
-<nav class="page-navigation column-page-right">
-  <div class="nav-page nav-page-previous">
+  </script><nav class="page-navigation column-body"><div class="nav-page nav-page-previous">
       <a href="../../../../../../content/courses/Analytics/60-AI-tools/Modules/10-LLMs/index.html" class="pagination-link" aria-label="Using gander and ellmer">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Using gander and ellmer</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../../../../../content/courses/Analytics/70-CaseStudies/listing.html" class="pagination-link" aria-label="Case Studies">
-        <span class="nav-page-text">Case Studies</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../../../../../content/courses/Analytics/60-AI-tools/Modules/30-Explain/index.html" class="pagination-link" aria-label="Using LLMs to Explain Stat models">
+        <span class="nav-page-text">Using LLMs to Explain Stat models</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
-<footer class="footer">
-  <div class="nav-footer">
+<footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">
 <p>License: <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</a></p>
 </div>   
@@ -1144,9 +1274,38 @@ ul.task-list li input[type="checkbox"] {
 <p>Hosted by Netlify <a href="https://www.netlify.com"><iconify-icon inline="" icon="simple-icons:netlify" aria-label="Icon netlify from simple-icons Iconify.design set." title="Icon netlify from simple-icons Iconify.design set."></iconify-icon></a>.</p>
 </div>
   </div>
-</footer>
-
-
+</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"right","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 <script src="../../../../../../site_libs/quarto-html/zenscroll-min.js"></script>

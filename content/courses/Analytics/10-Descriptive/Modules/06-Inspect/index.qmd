@@ -1,0 +1,515 @@
+---
+title: <iconify-icon icon="grommet-icons:inspect" width="1.2em" height="1.2em"></iconify-icon> Inspect Data
+subtitle:  "Eating your Data"
+abstract: "Getting used to what your Data tastes like"
+author: "Arvind V."
+date: 22/Aug/2025
+date-modified: "`r Sys.Date()`"
+order: 06
+image: preview.png
+image-alt: Image by rawpixel.com
+knitr:
+  opts_chunk:
+    dev: "ragg_png"
+categories:
+- Qual Variables
+- Quant Variables
+- Mean
+- Median
+- Standard Deviation
+- Quartiles
+bibliography: 
+  - grateful-refs.bib
+citation: true
+editor: 
+  markdown: 
+    wrap: 72
+
+---
+
+
+:::: {.pa4}
+::: {.athelas .ml0 .mt0 .pl4 .black-90 .bl .bw2 .b--blue}
+["The most certain sign of wisdom is cheerfulness."]{.f5 .f4-m .f3-l .lh-copy .measure .mt0}
+
+[ --- Michel de Montaigne, Writer and philosopher]{.f6 .ttu .tracked .fs-normal}
+:::
+::::
+
+## {{< iconify noto-v1 package >}} Setting up R Packages
+
+```{r}
+#| label: setup
+#| include: true
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(mosaic) # Our all-in-one package
+library(skimr) # Looking at data
+library(visdat) # Mapping missing data
+library(naniar) # Missing data visualization and munging
+library(janitor) # Clean the data
+library(tinytable) # Printing Tables for our data
+
+
+```
+
+```{r}
+#| label: Themes and Extra Packages
+#| echo: false
+#| message: false
+library(checkdown)
+library(epoxy)
+library(messy) # fake data generation
+library(grateful)
+library(downloadthis)
+#
+#devtools::install_github("mccarthy-m-g/embedr")
+library(embedr) # Embed multimedia in HTML files
+
+```
+
+#### Plot Fonts and Theme
+
+```{r}
+#| label: plot-theme
+#| echo: true
+#| eval: false
+#| code-fold: true
+#| messages: false
+#| warning: false
+
+library(systemfonts)
+library(showtext)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+showtext_auto(enable = TRUE) #enable showtext
+##
+theme_custom <- function(){ 
+    font <- "Alegreya"   #assign font family up front
+    '%+replace%' <- ggplot2::'%+replace%' # nolint
+        
+    theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
+    
+    theme(
+      text = element_text(family = font),  #set base font family
+      
+      #text elements
+      plot.title = element_text(                 #title
+                   family = font,          #set font family
+                   size = 24,                    #set font size
+                   face = 'bold',                #bold typeface
+                   hjust = 0,                    #left align
+                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
+      plot.title.position = "plot", 
+      
+      plot.subtitle = element_text(              #subtitle
+                   family = font,          #font family
+                   size = 14,                   #font size
+                   hjust = 0,                   #left align
+                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
+      
+      plot.caption = element_text(               #caption
+                   family = font,          #font family
+                   size = 9,                     #font size
+                   hjust = 1),                   #right align
+      
+      plot.caption.position = "plot",            #right align
+      
+      axis.title = element_text(                 #axis titles
+                   family = "Roboto Condensed",  #font family
+                   size = 12),                   #font size
+      
+      axis.text = element_text(                  #axis text
+                   family = "Roboto Condensed",  #font family
+                   size = 9),                    #font size
+      
+      axis.text.x = element_text(                #margin for axis text
+                    margin = margin(5, b = 10))
+      
+      #since the legend often requires manual tweaking 
+      #based on plot content, don't define it here
+    )
+}
+
+## Use available fonts in ggplot text geoms too!
+update_geom_defaults(geom = "text",new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+## Set the theme
+theme_set(new = theme_custom())
+
+```
+
+
+
+
+## {{< iconify fxemoji japanesesymbolforbeginner >}} How do we eat Data?
+
+We spoke of Experiments and Data Gathering in the first module [Nature of Data](../05-NatureData/index.qmd#sec-where-data). This helped us to **obtain** data.
+
+Our first task is to get acquainted with our data, to check the variables, the size of the dataset, how it is formatted, to eat it, as it were. We need to **inspect** the data, to understand what it is telling us. The physical significance of each variable needs to sink in before we can do anything with it. This is especially important in ***design***, since we may be working in domains that are not within our own range of acqaintance or expertise. It is also an important step in the data analysis process.
+
+So we look at:
+
+- How big is the dataset? How many rows and how many columns? Recall: Rows are observations, and columns are variables in the data
+- What types of columns do we have? Quant? Qual? How many of each?
+- What are the variable `names()`? Are they adequate and memorable?
+- Is there missing data? 
+
+All this inspection will lead to:
+
+- ***Data Cleaning, or Munging***
+- A clean dataset, whose variables we understand the meaning of, and which we will explore all the charts at our disposal.
+
+## {{< iconify mdi food-processor-outline >}} How do these Inspections Work?
+
+We will step-by-step proceed as follows:
+
+- Use `readr::read_cv()` to read the data
+- Variables Names: `base::names()` and `dplyr::glimpse()`
+- Discover Data Dimension/Size: `base::dim()`
+- Structure of the data: `utils::str()` [ Optional, but very useful. ]
+- Look for missing data: `visdat::vis_dat()` and `visdat::vis_miss()`
+- Clean up missing data: `naniar::replace_with_na_all()`
+- Clean the variable names: `janitor::clean_names()`
+- Make a cool table for our cleaned data with `tinytable::tt()` (static) or `DT::datatable()` (interactive)
+
+
+## {{< iconify grommet-icons test >}} Case Study: Fast Food
+
+Since we are about to eat our data, we may begin with the dataset `fastfood` from the [TidyTuesday Project](https://github.com/rfordatascience/tidytuesday) for September 4, 2018.
+
+### {{< iconify mdi database-import-outline >}} Read the Data
+
+```{r}
+#| label: read-data
+#| message: true
+#| warning: true
+#| echo: true
+
+fastfood <- readr::read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/openintro/fastfood.csv")
+
+```
+
+The output from `readr::read_csv()` tells us that the data frame contains 515 rows and 18 columns. At this point we can't tell if there are missing values anywhere, or even if there are badly formatted data values anywhere.
+
+
+### {{< iconify ri custom-size >}} The Size of our Dataset
+
+We already discover from the `read_csv()` output that the dataset has 515 rows and 18 columns. We can also use `dim()` to get this information:
+
+```{r}
+#| label: data-dim
+
+dim(fastfood)
+```
+This tells us that the dataset has 515 rows and 18 columns.
+
+### {{< iconify carbon structure >}} Variables in our Dataset
+
+Again, `read_csv()` tells us that some columns are `character`, some are `double` and some are `integer`. We can use `names()` and `dplyr::glimpse()` to get more information about the variables in the dataset.
+
+```{r}
+#| label: structure-data-1
+#| echo: true
+
+base::names(fastfood)
+
+```
+
+```{r}
+#| label: structure-data-2
+#| echo: true
+
+dplyr::glimpse(fastfood)
+
+```
+
+By and large, the entries look good. There are no cases, immediately, of `character` data lurking in Quant variables and such like. 
+
+### {{< iconify file-icons influxdata >}} Check for Missing Data
+
+Let us use the `visdat` package to visualize this:
+
+```{r}
+#| label: fig-visdat-missing-data
+#| layout-ncol: 2
+#| fig-cap: "Visualizing Missing Data with visdat"
+#| fig-subcap: 
+#| - "vis_miss()"
+#| - "vis_dat()"
+visdat::vis_miss(fastfood) +
+  ggtitle(label = "Missing Data in fastfood Dataset") + 
+  theme(plot.title = element_text(size = 20, hjust = 0.5))
+
+visdat::vis_dat(fastfood, sort_type = TRUE, palette = "cb_safe") +
+  labs(title = "Missing Data in fastfood Dataset", 
+       subtitle = "Showing Variable Types") + 
+  theme(plot.title = element_text(size = 20, hjust = 0.5),
+        plot.subtitle = element_text(size = 18, hjust = 0.5))
+
+```
+
+It is clear that there are quite a few missing values in a few columns: `vit_a`, `vit_c` and `calcium`. Some missing values are also present in `fiber`. 
+
+So what can one do? 
+
+
+A. **Remove rows with missing values**:
+
+We can use the `tidyr::drop_na()` command to check for empty locations in a any column, and drop rows containing NA values. Note that this will **remove entire rows** with missing values in *any column*, keeping only **complete rows**. This is a drastic step, and should be done with care. 
+
+B. **Impute missing values**:
+
+*"Imputation"* refers to a technique of inserting data values where they are lacking.  This is for a more sophisticated data practitioner, and also requires domain expertise into the subject matter of the dataset itself. We can use the [`simputation`](https://cran.r-project.org/web/packages/simputation/vignettes/intro.html) package to impute missing values using various methods, such as trend detection for Quant variables, and using classification for Qual data. This is a more advanced topic, and we will not cover it here.
+
+For our work here, to learn, we will use method A, and simply drop the cells containing `NA`, whenever we have to. 
+
+The `naniar` package has two built-in lists for common missing value codes: `naniar::common_na_numbers` for Quant variables, and `naniar::common_na_strings`. We can use these to replace these values with `NA`.
+
+```{r}
+#| label: naniar-built-in-lists
+
+common_na_strings
+common_na_numbers
+
+```
+
+
+```{r}
+#| label: replace-missing-with-na
+#| 
+fast_food_modified <- fastfood %>%
+  naniar::replace_with_na_all(condition = ~.x %in% common_na_numbers) %>% 
+  replace_with_na_all(condition = ~.x %in% common_na_strings)
+
+glimpse(fast_food_modified)
+```
+
+Note that with large datasets, this replacement of strings and numbers with `naniar::replace_with_na_all()` takes a lot of time to execute. 
+
+
+### {{< iconify carbon clean >}} Clean the Variable Names
+
+As a part of the process, we should make sure that the **variable names** (not entries!!) are formatted in a "clean" way: there are a few options here, such as `camelCase`, `snake_case`, `kebab-case`, or `dot.case`. We will use the `janitor` package to do this, and also to make sure that the variable names are unique. AND, we will stick with `snake_case` for the rest of this course. 
+
+In this specific case, the variables names look evocative and meaningful enough, without being verbose; they seem just right. But as names in data become complex, with special characters ( `%$#@!*_|?` etc.), this becomes very useful.
+
+We will also not touch the original data, but save the modified data in a new variable called `mpg_modified`. This is a good practice, as it allows us to keep the original data intact, and also to compare the two if needed.
+
+```{r}
+#| label: clean-fastfood
+
+fast_food_modified <- fast_food_modified %>%
+  janitor::clean_names(case = "snake") # clean names
+
+fast_food_modified
+
+```
+This cleaning up was not needed here, since the original names were already good. But it is a good practice to do this, as it will save you a lot of headaches later on.
+
+
+
+### {{< iconify streamline dictionary-language-book-solid >}} Data Dictionary and Munging, and Printing
+
+
+#### Data Dictionary
+
+Using all the above methods, we can now create a data dictionary for the `fastfood_modified` dataset. This is a good practice, as it helps us to understand the data better, and also to communicate with others about the data.
+
+::: callout-note
+### Quantitiative Data
+- `calories`(int): Calories in the dish
+- `calories_from_fat`(int): Calories from fat
+- `total_fat_g`(dbl): Total fat in grams
+- `saturated_fat_g`(dbl): Saturated fat in grams
+- `trans_fat` (dbl): Trans fat in grams
+- `cholesterol_mg`(int): Cholesterol in milligrams
+- `sodium_mg`(int): Sodium in milligrams
+- `carbohydrates_g`(dbl): Carbohydrates in grams
+- `fiber_g`(dbl): Fiber in grams
+- `sugars_g`(dbl): Sugars in grams
+- `protein_g`(dbl): Protein in grams
+- `vit_a`(int): Vitamin A in % Daily Value
+- `vit_c`(int): Vitamin C in % Daily Value
+- `calcium`(int): Calcium in % Daily Value
+- `iron`(int): Iron in % Daily Value
+:::
+
+::: callout-note
+### Qualitative Data
+- `restaurant`(chr): Name of the restaurant
+- `item`(chr): Name of the dish
+- `salad` (chr): Is it a salad? (Yes/No)
+- `rownames`(int): Row ID
+:::
+
+#### Data Munging
+
+We see that there are certain variables that must be converted to **factors** for analytics purposes, since they are unmistakably **Qualitative** in nature. Let us do that now, for use later:
+
+
+```{r}
+#| label: data-munging
+#| echo: true
+fast_food_modified <- fast_food_modified %>%
+  mutate(
+    restaurant = as.factor(restaurant),
+    salad = as.factor(salad),
+    item = as.factor(item) # Name Change too!!
+  ) %>%
+  rename("dish" = item) %>% # rename item to dish
+
+ # arrange the Qual variables first, Quant next
+  dplyr::relocate(where(is.factor), .after = rownames)
+
+glimpse(fast_food_modified)
+
+```
+
+#### {{< iconify mdi table-star >}} Data Table for Reporting
+
+It is usually a good idea to make crisp business-like tables to show your data. There are many methods to do this. 
+
+For ***Static Tables*** ( to be published in reports, papers, etc.), one of the simplest and effective ones is to use the `tt` set of commands from `tinytable`. (The `kable` set of commands from the `knitr` and `kableExtra` packages also are a good choice):
+
+
+```{r}
+#| label: tbl-tinytable-for-data
+#| tbl-cap: "Fastfood Clean Static Data Table ( first 10 rows )"
+#| code-fold: true
+#| 
+fast_food_modified %>%
+  head(10) %>% 
+  tt(caption = "Fast Food Dataset (Clean)") %>%
+  theme_html(class = "table table-hover table-striped table-condensed") %>% 
+
+  setNames(c("Row ID", "Restaurant", "Dish", "Calories", "Calories from fat","Total Fat (g)", "Saturated Fat (g)", "Trans Fat (g)", "Cholesterol (mg)", "Sodium (mg)", "Carbohydrates (g)", "Fiber (g)", "Sugars (g)", "Protein (g)", "Vitamin A (% DV)", "Vitamin C (% DV)", "Calcium (% DV)", "Iron (% DV)"))
+
+```
+
+***Dynamic Tables*** can be easily made using the `DT` package, which allows for sorting, searching, and pagination. This is useful for exploring the data interactively. Here is an example:
+
+```{r}
+#| label: tbl-dt-for-data
+#| tbl-cap: "Fastfood Clean Dynamic Data Table"
+#| code-fold: true
+#| echo: false
+
+fast_food_modified %>%
+  DT::datatable(
+    caption = htmltools::tags$caption(
+      style = 'caption-side: top; text-align: left; color: black; font-size: 150%;',
+      'Fast Food Dataset (Clean)'
+    ),
+    options = list(pageLength = 10, autoWidth = TRUE)
+  ) %>%
+  DT::formatStyle(
+    columns = names(fast_food_modified),
+    fontFamily = 'Roboto Condensed',
+    fontSize = '12px'
+  )
+```
+
+
+## {{< iconify bi person-up >}} Your Turn
+
+1. See if you can do this for this messy dataset which you can download by clicking on the button below the table:
+
+```{r}
+#| label: download-messy-data
+#| echo: false
+
+set.seed(42)
+# library(messy)
+data("penguins", package = "datasets")
+
+penguins_messy <- penguins %>% 
+  make_missing(cols = c("species", "island"), missing = " ") %>% 
+  make_missing(cols = c("bill_len", "bill_dep"), missing = c(NA, 999)) %>% 
+penguins_messy %>% DT::datatable()
+## Download button
+
+penguins_messy %>% download_this(output_name = "Messy_Penguins", output_extension = ".csv", button_label = "Messy Penguins data", button_type = "default", icon = "fa fa-save")
+
+```
+
+Save it inside your `data` folder, and call it `penguins_messy.csv`. Then read the data in your Quarto document using `readr::read_csv("data/penguins-messy.csv)` and proceed. 
+
+
+
+## {{< iconify mingcute thought-line >}} Wait, But Why?
+
+- Data Inspection is an essential step in getting to know your data.
+- The structure and format of your data variables, what they mean, and what they might be telling you, is crucial to Exploring, Analysing, and Modelling with the data. 
+- Data Cleaning is an essential step in the data analysis process.
+- These steps get much of the headache out of the way, and allow you to focus on the real work of Data Exploration, Data Analysis, and Modelling.
+- And Data Presentation!!
+
+
+## {{< iconify fluent-mdl2 decision-solid >}} Conclusion
+
+- The first step in data analysis is to get to know your data.
+- Use `readr::read_csv()` to read the data.
+- Use `names()`, `glimpse()`, `dim()`, and `str()` to get to know the variables in your data.
+- Use `visdat::vis_miss()` and `vis_dat()` to visualize missing data.
+- Use `naniar::replace_with_na_all()` to replace missing values with `NA`. If it runs too slowly, then fall back to `tidyr::drop_na()`. Strange looking strings, which `naniar` replaces with ease, may have to be separately searched for and replaced, using a combination of `dplyr::mutate()` and `str_detect()`. 
+- Use `janitor::clean_names()` to clean the variable names.
+- Use `tinytable::tt()` or `DT::datatable()` to create tables for your data.
+
+Make these part of your *Workflow*.
+
+
+## {{< iconify ooui references-rtl >}} References
+
+1. Nicholas Tierney. (2024-03-05). *Getting Started with naniar*. <https://cran.r-project.org/web/packages/naniar/vignettes/getting-started-w-naniar.html>
+1. Vincent Arel-Bundock. *tinytable*. <https://vincentarelbundock.github.io/tinytable/>.
+1. Vincent Arel-Bundock. *RDatasets*. <https://vincentarelbundock.github.io/Rdatasets/>.
+
+::: {#refs style="font-size: 60%;"}
+###### {{< iconify lucide package-check >}} R Package Citations
+
+```{r}
+#| echo: false
+#scan_packages()
+cite_packages(
+  output = "table",
+  out.dir = ".",
+  out.format = "html",
+  pkgs = c("janitor", "naniar", "visdat", "tinytable", "DT", "messy")
+) %>%
+  knitr::kable(format = "simple")
+
+```
+
+:::
+
+

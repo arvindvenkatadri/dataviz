@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
+<meta name="generator" content="quarto-1.8.21">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="dcterms.date" content="2024-09-02">
 <title>Case Studies – The Mad Hatter’s Guide to Data Viz and Stats in R</title>
@@ -28,20 +28,21 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../../../">
 <link href="../../../../content/courses/Analytics/70-CaseStudies/Modules/05-Demo/index.html" rel="next">
-<link href="../../../../content/courses/Analytics/60-AI-tools/Modules/20-Github-Pilot/index.html" rel="prev">
+<link href="../../../../content/courses/Analytics/60-AI-tools/Modules/30-Explain/index.html" rel="prev">
 <link href="../../../../content/materials/icon-park-twotone--concept-sharing.svg" rel="icon" type="image/svg+xml">
 <script src="../../../../site_libs/quarto-listing/list.min.js"></script>
 <script src="../../../../site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="../../../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-1b3e43c72e8be34557c75123b0b69e0d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-9dc4a11de9e7e674daf7319c40631fef.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../../site_libs/bootstrap/bootstrap-568c5ee9ec4531743a00a9bacd4917ba.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../site_libs/bootstrap/bootstrap-f98024d38ba10b6a495c0c63f82dd59d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="../../../../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.css" rel="stylesheet">
 <script src="../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
@@ -114,7 +115,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -147,6 +148,8 @@ window.Quarto = {
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
+    <a href="../../../../index.html" class="navbar-brand navbar-brand-logo">
+    </a>
     <a class="navbar-brand" href="../../../../index.html">
     <span class="navbar-title">The Mad Hatter’s Guide to Data Viz and Stats in R</span>
     </a>
@@ -202,7 +205,7 @@ window.Quarto = {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
       <a href="../../../../index.html" class="sidebar-logo-link">
-      <img src="../../../../content/materials/images/1book25.jpg" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
+      <img src="../../../../content/materials/images/1book25.jpg" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none"><img src="../../../../content/materials/images/1book25.jpg" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none"></a>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
@@ -254,7 +257,13 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../../content/courses/Analytics/10-Descriptive/Modules/07-Graphs/index.html" class="sidebar-item-text sidebar-link">
+  <a href="../../../../content/courses/Analytics/10-Descriptive/Modules/06-Inspect/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="grommet-icons:inspect" width="1.2em" height="1.2em"></iconify-icon> Inspect Data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../content/courses/Analytics/10-Descriptive/Modules/09-Graphs/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><iconify-icon icon="carbon:chart-3d" width="1.2em" height="1.2em"></iconify-icon> Graphs</span></a>
   </div>
 </li>
@@ -364,11 +373,17 @@ window.Quarto = {
   </div>
 </li>
           <li class="sidebar-item">
- <span class="menu-text">content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/20-Interactive/index.qmd</span>
-  </li>
+  <div class="sidebar-item-container"> 
+  <a href="../../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/20-Leaflet/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Playing with Leaflet</span></a>
+  </div>
+</li>
           <li class="sidebar-item">
- <span class="menu-text">content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/30-Special/index.qmd</span>
-  </li>
+  <div class="sidebar-item-container"> 
+  <a href="../../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/30-Mapview/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Playing With Mapview</span></a>
+  </div>
+</li>
       </ul>
 </li>
           <li class="sidebar-item">
@@ -585,12 +600,15 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../content/courses/Analytics/60-AI-tools/Modules/20-Github-Pilot/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Using Github Pilot in RStudio</span></a>
+ <span class="menu-text">Using Github Copilot and other AI tools to generate R code</span></a>
   </div>
 </li>
           <li class="sidebar-item">
- <span class="menu-text">content/courses/Analytics/60-AI-tools/Modules/30-Explain/index.qmd</span>
-  </li>
+  <div class="sidebar-item-container"> 
+  <a href="../../../../content/courses/Analytics/60-AI-tools/Modules/30-Explain/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using LLMs to Explain Stat models</span></a>
+  </div>
+</li>
       </ul>
 </li>
           <li class="sidebar-item sidebar-item-section">
@@ -760,7 +778,7 @@ Reading Time
 
 </tr></thead>
 <tbody class="list">
-<tr data-index="0" data-categories="Y29sb3VyJTIwcGFsZXR0ZXMlMkNpY29ucyUyQ3JpZGdlJTIwcGxvdHM=" data-listing-file-modified-sort="1754966460671" data-listing-reading-time-sort="23" data-listing-word-count-sort="4529" data-listing-title-sort="<iconify-icon icon=&quot;healthicons:elderly-outline&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> Demo:Product Packaging and Elderly People" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+<tr data-index="0" data-categories="Y29sb3VyJTIwcGFsZXR0ZXMlMkNpY29ucyUyQ3JpZGdlJTIwcGxvdHM=" data-listing-file-modified-sort="1755865281794" data-listing-reading-time-sort="23" data-listing-word-count-sort="4551" data-listing-title-sort="<iconify-icon icon=&quot;healthicons:elderly-outline&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> Demo:Product Packaging and Elderly People" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
  if (href) { window.location=href ; return false; }">
 <td>
 <span class="listing-image"><p class="card-img-top"><img src="Modules/05-Demo/index_files/figure-html/unnamed-chunk-4-1.png" style="height: 40px;"  class="thumbnail-image card-img"/></p></span>
@@ -773,7 +791,7 @@ Reading Time
 </td>
 
 </tr>
-<tr data-index="1" data-listing-file-modified-sort="1754955543133" data-listing-reading-time-sort="8" data-listing-word-count-sort="1494" data-listing-title-sort="<iconify-icon icon=&quot;simple-icons:ikea&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> Ikea Furniture" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+<tr data-index="1" data-listing-file-modified-sort="1755865303051" data-listing-reading-time-sort="8" data-listing-word-count-sort="1516" data-listing-title-sort="<iconify-icon icon=&quot;simple-icons:ikea&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> Ikea Furniture" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
  if (href) { window.location=href ; return false; }">
 <td>
 <span class="listing-image"><p class="card-img-top"><img src="Modules/10-IkeaFurniture/index_files/figure-html/unnamed-chunk-2-1.png" style="height: 40px;"  class="thumbnail-image card-img"/></p></span>
@@ -786,7 +804,7 @@ Reading Time
 </td>
 
 </tr>
-<tr data-index="2" data-listing-file-modified-sort="1753364883488" data-listing-reading-time-sort="4" data-listing-word-count-sort="734" data-listing-title-sort="<iconify-icon icon=&quot;mingcute:tyre-fill&quot; width=&quot;24&quot; height=&quot;24&quot;></iconify-icon> ANOVA - Tyre Brands and Mileage" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+<tr data-index="2" data-listing-file-modified-sort="1755957342627" data-listing-reading-time-sort="10" data-listing-word-count-sort="1802" data-listing-title-sort="<iconify-icon icon=&quot;mingcute:tyre-fill&quot; width=&quot;24&quot; height=&quot;24&quot;></iconify-icon> ANOVA - Tyre Brands and Mileage" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
  if (href) { window.location=href ; return false; }">
 <td>
 <span class="listing-image"><p class="card-img-top"><img src="Modules/325-ANOVA/index_files/figure-html/unnamed-chunk-3-1.png" style="height: 40px;"  class="thumbnail-image card-img"/></p></span>
@@ -795,11 +813,11 @@ Reading Time
 <a href="../../../../content/courses/Analytics/70-CaseStudies/Modules/325-ANOVA/index.html" class="title listing-title"><iconify-icon icon="mingcute:tyre-fill" width="24" height="24"></iconify-icon> ANOVA - Tyre Brands and Mileage</a>
 </td>
 <td>
-<span class="listing-reading-time">4 min</span>
+<span class="listing-reading-time">10 min</span>
 </td>
 
 </tr>
-<tr data-index="3" data-listing-file-modified-sort="1754955979945" data-listing-reading-time-sort="8" data-listing-word-count-sort="1471" data-listing-title-sort="<iconify-icon icon=&quot;noto:movie-camera&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> Movie Profits" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+<tr data-index="3" data-listing-file-modified-sort="1755865346649" data-listing-reading-time-sort="8" data-listing-word-count-sort="1493" data-listing-title-sort="<iconify-icon icon=&quot;noto:movie-camera&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> Movie Profits" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
  if (href) { window.location=href ; return false; }">
 <td>
 <span class="listing-image"><p class="card-img-top"><img src="Modules/20-MovieProfits/index_files/figure-html/unnamed-chunk-2-1.png" style="height: 40px;"  class="thumbnail-image card-img"/></p></span>
@@ -812,7 +830,7 @@ Reading Time
 </td>
 
 </tr>
-<tr data-index="4" data-listing-file-modified-sort="1754955778263" data-listing-reading-time-sort="8" data-listing-word-count-sort="1486" data-listing-title-sort="<iconify-icon icon=&quot;icons8:gender&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> Gender at the Work Place" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+<tr data-index="4" data-listing-file-modified-sort="1755865363268" data-listing-reading-time-sort="8" data-listing-word-count-sort="1508" data-listing-title-sort="<iconify-icon icon=&quot;icons8:gender&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> Gender at the Work Place" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
  if (href) { window.location=href ; return false; }">
 <td>
 <span class="listing-image"><div class="listing-item-img-placeholder card-img-top" style="height: 40px;">&nbsp;</div></span>
@@ -825,7 +843,7 @@ Reading Time
 </td>
 
 </tr>
-<tr data-index="5" data-listing-file-modified-sort="1754956960072" data-listing-reading-time-sort="9" data-listing-word-count-sort="1733" data-listing-title-sort="<iconify-icon icon=&quot;icon-park-outline:sport&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> Heptathlon" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+<tr data-index="5" data-listing-file-modified-sort="1755865376905" data-listing-reading-time-sort="9" data-listing-word-count-sort="1755" data-listing-title-sort="<iconify-icon icon=&quot;icon-park-outline:sport&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> Heptathlon" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
  if (href) { window.location=href ; return false; }">
 <td>
 <span class="listing-image"><p class="card-img-top"><img src="Modules/40-Heptathlon/index_files/figure-html/unnamed-chunk-2-1.png" style="height: 40px;"  class="thumbnail-image card-img"/></p></span>
@@ -838,7 +856,7 @@ Reading Time
 </td>
 
 </tr>
-<tr data-index="6" data-listing-file-modified-sort="1754956303027" data-listing-reading-time-sort="11" data-listing-word-count-sort="2015" data-listing-title-sort="<iconify-icon icon=&quot;ic:twotone-school&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> School Scores" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+<tr data-index="6" data-listing-file-modified-sort="1755865397702" data-listing-reading-time-sort="11" data-listing-word-count-sort="2037" data-listing-title-sort="<iconify-icon icon=&quot;ic:twotone-school&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> School Scores" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
  if (href) { window.location=href ; return false; }">
 <td>
 <span class="listing-image"><p class="card-img-top"><img src="Modules/60-SchoolScores/index_files/figure-html/school-scores-plots-1-1.png" style="height: 40px;"  class="thumbnail-image card-img"/></p></span>
@@ -851,7 +869,7 @@ Reading Time
 </td>
 
 </tr>
-<tr data-index="7" data-listing-file-modified-sort="1754956703976" data-listing-reading-time-sort="9" data-listing-word-count-sort="1749" data-listing-title-sort="<iconify-icon icon=&quot;fa6-solid:children&quot;></iconify-icon> <iconify-icon icon=&quot;icon-park-solid:play-basketball&quot;></iconify-icon> Children's Games" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+<tr data-index="7" data-listing-file-modified-sort="1755865423952" data-listing-reading-time-sort="9" data-listing-word-count-sort="1771" data-listing-title-sort="<iconify-icon icon=&quot;fa6-solid:children&quot;></iconify-icon> <iconify-icon icon=&quot;icon-park-solid:play-basketball&quot;></iconify-icon> Children's Games" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
  if (href) { window.location=href ; return false; }">
 <td>
 <span class="listing-image"><p class="card-img-top"><img src="Modules/80-ChildrensGames/index_files/figure-html/plot-games3-1.png" style="height: 40px;"  class="thumbnail-image card-img"/></p></span>
@@ -864,7 +882,7 @@ Reading Time
 </td>
 
 </tr>
-<tr data-index="8" data-listing-file-modified-sort="1754956703758" data-listing-reading-time-sort="9" data-listing-word-count-sort="1650" data-listing-title-sort="<iconify-icon icon=&quot;mingcute:hand-heart-line&quot;></iconify-icon> Valentine's Day Spending" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+<tr data-index="8" data-listing-file-modified-sort="1755865435026" data-listing-reading-time-sort="9" data-listing-word-count-sort="1672" data-listing-title-sort="<iconify-icon icon=&quot;mingcute:hand-heart-line&quot;></iconify-icon> Valentine's Day Spending" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
  if (href) { window.location=href ; return false; }">
 <td>
 <span class="listing-image"><p class="card-img-top"><img src="Modules/90-ValentinesDay/index_files/figure-html/plot-gifts-data-1.png" style="height: 40px;"  class="thumbnail-image card-img"/></p></span>
@@ -877,7 +895,7 @@ Reading Time
 </td>
 
 </tr>
-<tr data-index="9" data-listing-file-modified-sort="1754956635434" data-listing-reading-time-sort="9" data-listing-word-count-sort="1762" data-listing-title-sort="<iconify-icon icon=&quot;noto:mage-light-skin-tone&quot;></iconify-icon> Women Live Longer?" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+<tr data-index="9" data-listing-file-modified-sort="1755865446807" data-listing-reading-time-sort="9" data-listing-word-count-sort="1784" data-listing-title-sort="<iconify-icon icon=&quot;noto:mage-light-skin-tone&quot;></iconify-icon> Women Live Longer?" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
  if (href) { window.location=href ; return false; }">
 <td>
 <span class="listing-image"><p class="card-img-top"><img src="Modules/100-WomenLiveMen/index_files/figure-html/plot-gifts-data-1.png" style="height: 40px;"  class="thumbnail-image card-img"/></p></span>
@@ -890,7 +908,7 @@ Reading Time
 </td>
 
 </tr>
-<tr data-index="10" data-listing-file-modified-sort="1754956874314" data-listing-reading-time-sort="9" data-listing-word-count-sort="1758" data-listing-title-sort="<iconify-icon icon=&quot;fa6-solid:ear-deaf&quot;></iconify-icon> <iconify-icon icon=&quot;fa-regular:sad-tear&quot;></iconify-icon> Hearing Loss in Children" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+<tr data-index="10" data-listing-file-modified-sort="1755865464691" data-listing-reading-time-sort="9" data-listing-word-count-sort="1780" data-listing-title-sort="<iconify-icon icon=&quot;fa6-solid:ear-deaf&quot;></iconify-icon> <iconify-icon icon=&quot;fa-regular:sad-tear&quot;></iconify-icon> Hearing Loss in Children" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
  if (href) { window.location=href ; return false; }">
 <td>
 <span class="listing-image"><p class="card-img-top"><img src="Modules/110-ChildrenHearingLoss/index_files/figure-html/plot-ome-data-1.png" style="height: 40px;"  class="thumbnail-image card-img"/></p></span>
@@ -903,7 +921,7 @@ Reading Time
 </td>
 
 </tr>
-<tr data-index="11" data-listing-file-modified-sort="1753364883359" data-listing-reading-time-sort="12" data-listing-word-count-sort="2228" data-listing-title-sort="Grain Transportation Cartels" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+<tr data-index="11" data-listing-file-modified-sort="1755865508630" data-listing-reading-time-sort="13" data-listing-word-count-sort="2455" data-listing-title-sort="Grain Transportation Cartels" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
  if (href) { window.location=href ; return false; }">
 <td>
 <span class="listing-image"><p class="card-img-top"><img src="Modules/120-GrainCartels/index_files/figure-html/plot-data-1.png" style="height: 40px;"  class="thumbnail-image card-img"/></p></span>
@@ -912,11 +930,11 @@ Reading Time
 <a href="../../../../content/courses/Analytics/70-CaseStudies/Modules/120-GrainCartels/index.html" class="title listing-title">Grain Transportation Cartels</a>
 </td>
 <td>
-<span class="listing-reading-time">12 min</span>
+<span class="listing-reading-time">13 min</span>
 </td>
 
 </tr>
-<tr data-index="12" data-listing-file-modified-sort="1754957149505" data-listing-reading-time-sort="9" data-listing-word-count-sort="1601" data-listing-title-sort="<iconify-icon icon=&quot;openmoji:california-flag&quot;></iconify-icon> <iconify-icon icon=&quot;material-symbols:transit-ticket-outline-sharp&quot;></iconify-icon> California Transit Payments" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+<tr data-index="12" data-listing-file-modified-sort="1755865530919" data-listing-reading-time-sort="9" data-listing-word-count-sort="1623" data-listing-title-sort="<iconify-icon icon=&quot;openmoji:california-flag&quot;></iconify-icon> <iconify-icon icon=&quot;material-symbols:transit-ticket-outline-sharp&quot;></iconify-icon> California Transit Payments" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
  if (href) { window.location=href ; return false; }">
 <td>
 <span class="listing-image"><p class="card-img-top"><img src="Modules/200-CaliforniaTransitPayments/index_files/figure-html/california-payment-likert-1.png" style="height: 40px;"  class="thumbnail-image card-img"/></p></span>
@@ -929,7 +947,7 @@ Reading Time
 </td>
 
 </tr>
-<tr data-index="13" data-listing-file-modified-sort="1754966459450" data-listing-reading-time-sort="11" data-listing-word-count-sort="2134" data-listing-title-sort="<iconify-icon icon=&quot;iconoir:sea-waves&quot;></iconify-icon> <iconify-icon icon=&quot;mdi:weed&quot;></iconify-icon> Seaweed Nutrients" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+<tr data-index="13" data-listing-file-modified-sort="1755865552931" data-listing-reading-time-sort="11" data-listing-word-count-sort="2156" data-listing-title-sort="<iconify-icon icon=&quot;iconoir:sea-waves&quot;></iconify-icon> <iconify-icon icon=&quot;mdi:weed&quot;></iconify-icon> Seaweed Nutrients" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
  if (href) { window.location=href ; return false; }">
 <td>
 <span class="listing-image"><p class="card-img-top"><img src="Modules/250-Seaweed/index_files/figure-html/unnamed-chunk-1-1.png" style="height: 40px;"  class="thumbnail-image card-img"/></p></span>
@@ -942,7 +960,7 @@ Reading Time
 </td>
 
 </tr>
-<tr data-index="14" data-listing-file-modified-sort="1754966458162" data-listing-reading-time-sort="10" data-listing-word-count-sort="1961" data-listing-title-sort="<iconify-icon icon=&quot;fa:coffee&quot;></iconify-icon> Coffee Flavours" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+<tr data-index="14" data-listing-file-modified-sort="1755865592693" data-listing-reading-time-sort="10" data-listing-word-count-sort="1983" data-listing-title-sort="<iconify-icon icon=&quot;fa:coffee&quot;></iconify-icon> Coffee Flavours" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
  if (href) { window.location=href ; return false; }">
 <td>
 <span class="listing-image"><p class="card-img-top"><img src="Modules/300-Coffee/index_files/figure-html/unnamed-chunk-2-1.png" style="height: 40px;"  class="thumbnail-image card-img"/></p></span>
@@ -958,7 +976,7 @@ Reading Time
 <tr data-index="15" data-listing-file-modified-sort="1754966457058" data-listing-reading-time-sort="14" data-listing-word-count-sort="2664" data-listing-title-sort="<iconify-icon icon=&quot;fa6-solid:disease&quot;></iconify-icon> Legionnaire's Disease in the USA" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
  if (href) { window.location=href ; return false; }">
 <td>
-<span class="listing-image"><div class="listing-item-img-placeholder card-img-top" style="height: 40px;">&nbsp;</div></span>
+<span class="listing-image"><p class="card-img-top"><img src="Modules/350-LegionnairesDisease/index_files/figure-html/ld-so2-1.png" style="height: 40px;"  class="thumbnail-image card-img"/></p></span>
 </td>
 <td>
 <a href="../../../../content/courses/Analytics/70-CaseStudies/Modules/350-LegionnairesDisease/index.html" class="title listing-title"><iconify-icon icon="fa6-solid:disease"></iconify-icon> Legionnaire’s Disease in the USA</a>
@@ -1020,7 +1038,7 @@ Reading Time
 </td>
 
 </tr>
-<tr data-index="20" data-listing-file-modified-sort="1753364883577" data-listing-reading-time-sort="8" data-listing-word-count-sort="1591" data-listing-title-sort="<iconify-icon icon=&quot;iconoir:sea-waves&quot;></iconify-icon> <iconify-icon icon=&quot;mdi:weed&quot;></iconify-icon>  Elizabeth Bennett says No" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+<tr data-index="20" data-listing-file-modified-sort="1755865258399" data-listing-reading-time-sort="10" data-listing-word-count-sort="1820" data-listing-title-sort="<iconify-icon icon=&quot;iconoir:sea-waves&quot;></iconify-icon> <iconify-icon icon=&quot;mdi:weed&quot;></iconify-icon>  Elizabeth Bennett says No" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
  if (href) { window.location=href ; return false; }">
 <td>
 <span class="listing-image"><p class="card-img-top"><img src="Modules/520-JaneAustenNo/index_files/figure-html/unnamed-chunk-1-1.png" style="height: 40px;"  class="thumbnail-image card-img"/></p></span>
@@ -1029,7 +1047,7 @@ Reading Time
 <a href="../../../../content/courses/Analytics/70-CaseStudies/Modules/520-JaneAustenNo/index.html" class="title listing-title"><iconify-icon icon="iconoir:sea-waves"></iconify-icon><iconify-icon icon="mdi:weed"></iconify-icon> Elizabeth Bennett says No</a>
 </td>
 <td>
-<span class="listing-reading-time">8 min</span>
+<span class="listing-reading-time">10 min</span>
 </td>
 
 </tr>
@@ -1455,8 +1473,8 @@ Reading Time
     }
   });
   </script><nav class="page-navigation column-body"><div class="nav-page nav-page-previous">
-      <a href="../../../../content/courses/Analytics/60-AI-tools/Modules/20-Github-Pilot/index.html" class="pagination-link" aria-label="Using Github Pilot in RStudio">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Using Github Pilot in RStudio</span>
+      <a href="../../../../content/courses/Analytics/60-AI-tools/Modules/30-Explain/index.html" class="pagination-link" aria-label="Using LLMs to Explain Stat models">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Using LLMs to Explain Stat models</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

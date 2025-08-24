@@ -2,7 +2,11 @@ library(tidyverse)
 library(mosaic) # Our all-in-one package
 library(skimr) # Looking at data
 library(janitor) # Clean the data
-library(tinytable) # Printing Tables for our data
+library(naniar) # Handle missing data
+library(visdat) # Visualise missing data
+library(tinytable) # Printing Static Tables for our data
+library(DT) # Interactive Tables for our data
+library(crosstable) # Multiple variable summaries
 
 
 
@@ -10,9 +14,9 @@ library(checkdown)
 library(epoxy)
 library(explore) # fake data generation
 library(grateful)
-library(kableExtra) # For making tables
-# conflicts_prefer(dplyr::filter, dplyr::last, dplyr::glimpse, base::max)
+##
 library(downloadthis)
+##
 #devtools::install_github("mccarthy-m-g/embedr")
 library(embedr) # Embed multimedia in HTML files
 
@@ -103,6 +107,12 @@ ggplot2::update_geom_defaults(geom = "label", new = list(
 ## Set the theme
 theme_set(new = theme_custom())
 
+## tinytable options
+options("tinytable_tt_digits" = 2)
+options("tinytable_format_num_fmt" = "significant_cell")
+options(tinytable_html_mathjax = TRUE)
+
+
 
 literacy <- readxl::read_xlsx("../../../../../materials/Data/US_literacy_SETables.xlsx",sheet = "S1",skip = 3) %>% 
   select(-c(2,3),-contains("S.E.")) %>% 
@@ -115,170 +125,93 @@ literacy <- readxl::read_xlsx("../../../../../materials/Data/US_literacy_SETable
   filter(str_detect(pattern = "Number",Numbers))
 
 literacy %>% 
-  kbl(caption = "US Population: Reading and Numeracy Levels", digits = 2,
-      align = "c",centering = T,
-      col.names = c("Year", "Below Level #1", "Level #1", "Level #2", "Level #3", "Levels #4 and #5")) %>% 
-  kable_paper(full_width = F, html_font = "Noto") %>% 
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), position = "float_right") %>% 
-  column_spec(2:4, bold = T) %>%
-  row_spec(1:2, bold = T, color = "white", background = "#D7261E") %>% 
-    kableExtra::footnote(general = "SOURCE: U.S. Department of Education, National Center for Education Statistics, Program for the International Assessment of Adult Competencies (PIAAC), U.S. PIAAC 2017, U.S. PIAAC 2012/2014.")
+  tt(notes = "SOURCE: U.S. Department of Education, National Center for Education Statistics, Program for the International Assessment of Adult Competencies (PIAAC), U.S. PIAAC 2017, U.S. PIAAC 2012/2014.", 
+     width = c(5,1,1,1,1,1), digits = 3) %>% 
+  theme_html(class = "table table-hover table-striped table-condensed") %>% 
+  setNames(c("Year", "Below Level #1", "Level #1", "Level #2", "Level #3", "Levels #4 and #5")) %>% 
+  style_tt(i = 1:2,background = "red", color = "white")
 
 
-read_csv("../../../../../materials/Data/pronouns.csv") %>% 
-  #filter(No == "1") %>% 
-  kbl() %>%
-  kable_paper(c("striped","hover","responsive"), full_width = T)
-  
-
-mpg_modified <- mpg %>%
-  janitor::clean_names(case = "snake") %>% # clean names
-  janitor::remove_empty("cols") # remove empty columns
-mpg_modified
-
-
-# mpg_modified %>%
-#   head(10) %>%
-#   tt(theme = c("striped")) %>%
-#   setNames(c("Manufacturer", "Model", "Engine\nDisplacement",
-#                     "Model\n Year", "Cylinders", "Transmission",
-#                     "Drivetrain", "City\n Mileage", "Highway\n Mileage",
-#                     "Fuel", "Class\nOf\nVehicle"))
-# 
-
-mpg_modified %>% 
-  head(10) %>%
-  kbl(
-    # add Human Readable column names
-    col.names = c("Manufacturer", "Model", "Engine\nDisplacement", 
-                    "Model\n Year", "Cylinders", "Transmission",
-                    "Drivetrain", "City\n Mileage", "Highway\n Mileage",
-                    "Fuel", "Class\nOf\nVehicle"), 
-    caption = "MPG Modified Dataset") %>%
-  kable_styling(bootstrap_options = c("striped", "hover", 
-                                      "condensed", "responsive"),
-                full_width = F, position = "center")
-
-
-glimpse(mpg_modified)
-
-
-skimr::skim(mpg_modified) # explicitly stating package name
-
-
-inspect(mpg_modified)
-
-
-# 
-# mpg_describe <- inspect(mpg_modified)
-# mpg_describe$categorical
-# mpg_describe$quantitative
-# 
-
-mpg_modified <- mpg_modified %>% 
-  dplyr::mutate(cyl = as_factor(cyl),
-                fl = as_factor(fl),
-                drv = as_factor(drv),
-                class = as_factor(class),
-                trans = as_factor(trans))
-glimpse(mpg_modified)
-
-
-# From Vincent Arel-Bundock's dataset website
-# https://vincentarelbundock.github.io/Rdatasets
-# 
-# read_csv can read data directly from the net
-# Don't use read.csv()
 docVisits <- read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/AER/DoctorVisits.csv")
+glimpse(docVisits)
+docVisits %>% DT::datatable()
+
+
 docVisits_modified <- docVisits %>%
+  
+  # Replace common NA strings and numbers with actual NA
+  naniar::replace_with_na_all(condition = ~.x %in% common_na_strings) %>% 
+  naniar::replace_with_na_all(condition = ~.x %in% common_na_numbers) %>% 
+  
+  # Clean variable names
   janitor::clean_names(case = "snake") %>% # clean names
-  janitor::remove_empty("cols") # remove empty columns
-
-
-# docVisits <- read_csv("data/DoctorVisits.csv")
-# 
-
-docVisits_modified %>%
-  head(10) %>%
-  kbl(caption = "Doctor Visits Dataset",
-      # Add Human Readable Names if desired
-      # col.names(..names that you may want..)
-      ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover",
-                          "condensed", "responsive"),
-    full_width = F, position = "center")
-
-
-glimpse(docVisits_modified)
-
-skim(docVisits_modified) %>% kbl()
-
-inspect(docVisits_modified)
-
-docVisits_modified <-  docVisits_modified %>% 
+  
+  # Convert character variables to factors
   mutate(gender = as_factor(gender),
          private = as_factor(private),
          freepoor = as_factor(freepoor),
          freerepat = as_factor(freerepat),
          nchronic = as_factor(nchronic),
-         lchronic = as_factor(lchronic))
-docVisits_modified
+         lchronic = as_factor(lchronic)) %>%
+  
+  # arrange the character variables first
+  dplyr::relocate(where(is.factor), .after = rownames)
 
 
-mpg_modified %>% dplyr::count(cyl)
-mpg_modified %>% mosaic::count(drv) # does the same thing! Counts!
-mpg_modified %>% count(fl)
-
-### All combinations of cut, color, clarity
-### Overwhelming??
-mpg_modified %>% 
-  count(across(where(is.factor)))
-
-
-## Counting by the obvious factor variables
-docVisits_modified %>% count(gender)
-docVisits_modified %>% count(private)
-docVisits_modified %>% count(freepoor)
-docVisits_modified %>% count(freerepat)
-docVisits_modified %>% count(lchronic)
-docVisits_modified %>% count(nchronic)
-
-
-# Now for all Combinations...
-# Maybe too much to digest...
-docVisits_modified %>% count(across(where(is.factor)))
-docVisits_modified %>% 
-  group_by(across(where(is.factor))) %>% 
-  summarize(count = n())
-# Shall we try counting by some variables that might be factors?
-# Even if they are labeled as <dbl>?
-# 
-docVisits_modified %>% count(illness)
-docVisits_modified %>% count(health)
-
-
-mpg_modified %>% 
-  group_by(cyl) %>% 
-  summarize(average_hwy = mean(hwy), count = n())
-
-mpg_modified %>% 
-  group_by(cyl, fl) %>% 
-  summarize(average_hwy = mean(hwy), count = n())
-
-# Perhaps the best method for us!
-mpg_modified %>% 
-  mosaic::favstats(hwy ~ cyl, data = .) # Don't use fav_stats with formula!!!
-
-# Be aware of the first column format here!
-mpg_modified %>% 
-  mosaic::favstats(hwy ~ cyl + fl, data = .) # Don't use fav_stats with formula!!!
+docVisits_modified %>% glimpse()
 
 
 docVisits_modified %>%
-  group_by(gender) %>% 
-  summarize(average_visits = mean(visits), count = n())
-##
+  DT::datatable(
+    caption = htmltools::tags$caption(
+      style = 'caption-side: top; text-align: left; color: black; font-size: 150%;',
+      'Doctor Visits Dataset (Clean)'
+    ),
+    options = list(pageLength = 10, autoWidth = TRUE)
+  ) %>%
+  DT::formatStyle(
+    columns = names(docVisits_modified),
+    fontFamily = 'Roboto Condensed',
+    fontSize = '12px'
+  )
+
+
+diamonds %>% dplyr::glimpse() 
+diamonds %>% mosaic::inspect() 
+diamonds %>% skimr::skim()
+
+
+## Counting by the obvious factor variables
+docVisits_modified %>% dplyr::count(gender) %>% tt()
+docVisits_modified %>% dplyr::count(private) %>% tt()
+## Counting in pairs
+docVisits_modified %>% dplyr::count(across(.cols = c(gender, private))) %>% tt()
+## Counting by all factor variables
+docVisits %>% count(across(where(is.character))) %>% tt()
+
+
+# Single Variable, Single Summary
+docVisits %>% 
+  dplyr::summarise(mean_income = mean(income, na.rm = T))
+# Single Variable, Multiple Summaries
+docVisits_modified %>% 
+  dplyr::summarise(mean_visits = mean(visits, na.rm = T),
+                   sd_visits = sd(visits, na.rm = T),
+                   min_visits = min(visits, na.rm = T),
+                   max_visits = max(visits, na.rm = T)
+                   )
+# Multiple Variables, Multiple Summaries
+docVisits_modified %>% 
+  dplyr::summarise(across(.cols = c(visits, income), # select columns
+                          
+                          .fns = list(mean = ~ mean(., na.rm = T), 
+                                       sd = sd, 
+                                       min = min, max = max)
+                          )
+                   )
+
+
+
 docVisits_modified %>%
   group_by(gender) %>% 
   summarize(average_visits = mean(visits), count = n())
@@ -288,32 +221,12 @@ docVisits_modified %>%
   summarise(mean_income = mean(income),
             average_visits = mean(visits),
             count = n())
-##
-docVisits_modified %>% 
-  mosaic::favstats(income ~ gender, data = .) # Don't use fav_stats with formula!!!
-##
-docVisits_modified %>% 
-  mosaic::favstats(income ~ freepoor + nchronic, data = .) # Don't use fav_stats with formula!!!
 
 
-mpg %>% 
-  head(10) %>%
-  kbl(col.names = c("Manufacturer", "Model", "Engine\nDisplacement", 
-                    "Model\n Year", "Cylinders", "Transmission",
-                    "Drivetrain", "City\n Mileage", "Highway\n Mileage",
-                    "Fuel", "Class\nOf\nVehicle"), 
-      longtable = FALSE, centering = TRUE,
-      caption = "MPG Dataset") %>%
-    kable_styling(bootstrap_options = c("striped", "hover", 
-                                        "condensed", "responsive"),
-                  full_width = F, position = "center")
+#library(crosstable)
+crosstable(visits + income ~ gender + freepoor, data = docVisits_modified) %>% 
+  crosstable::as_flextable()
 
-
-
-skim(mpg) %>%
-  kbl(align = "c", caption = "Skim Output for mpg Dataset") %>%
-kable_paper(full_width = F)
-  
 
 
 library(rtrek)
