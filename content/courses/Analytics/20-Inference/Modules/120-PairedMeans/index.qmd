@@ -340,13 +340,26 @@ Let us also complete a check for normality: the `shapiro.wilk` test
 checks whether a Quant variable is from a normal distribution; the NULL
 hypothesis is that the data *are* from a normal distribution.
 
+:::: {.columns}
+:::{.column}
 ```{r}
-#| layout-ncol: 2
+#| label: shapiro-test-diving
+#| eval: false
 #| results: hold
+#| 
 shapiro.test(Diving2017$Final)
 shapiro.test(Diving2017$Semifinal)
 
 ```
+:::
+:::{.column}
+```{r}
+#| ref.label: shapiro-test-diving
+#| echo: false
+
+```
+:::
+::::
 
 Hmmm....the Shapiro-Wilk test suggests that both scores ***are***
 normally distributed (!!!), though `Semifinal` is probably marginally
@@ -356,9 +369,12 @@ Can we check this comparison also with plots? We can plot Q-Q plots for
 both variables, and also compare both data with normally-distributed
 data generated with the same means and standard deviations:
 
+:::: {.columns}
+:::{.column}
+
 ```{r}
-#| layout-ncol: 2
-#| warning: false
+#| label: diving-qq-plots
+#| eval: false
 ggplot2::theme_set(new = theme_custom())
 
 Diving2017_long %>% 
@@ -368,11 +384,18 @@ xlab = "theoretical normal", title = "Q-Q Plots for Paired Race Data") %>%
 gf_theme(theme(legend.position = "none"))
 
 ```
+:::
 
-We see in the QQ-plots that
-the `Final` scores are closer to the straight line than the `Semifinal`
-scores. But it is perhaps still hard to accept the data as normally
-distributed...hmm.
+:::{.column}
+```{r}
+#| ref.label: diving-qq-plots
+#| echo: false
+
+```
+:::
+::::
+
+We see in the QQ-plots that the `Final` scores are closer to the straight line than the `Semifinal` scores. But it is perhaps still hard to accept the data as normally distributed...hmm.
 
 ### B. {{< iconify mdi sigma-lower size=2x >}} Check for Variances
 
@@ -550,6 +573,8 @@ the records between `Semifinal` and `Final` on **a per Swimmer basis** (paired d
 ```{r}
 #| layout-ncol: 2
 #| cache: true
+#| code-fold: true
+#| 
 polarity <- c(rep(1, 6), rep(-1, 6)) 
 # 12 +/- 1s, 
 # 6 each to make sure there is equal probability
@@ -570,6 +595,8 @@ Let us plot the NULL distribution and compare it with the actual
 
 ```{r}
 #| layout-ncol: 2
+#| code-fold: true
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 gf_histogram(data = null_dist_swim, ~ mean) %>%
@@ -577,7 +604,8 @@ gf_histogram(data = null_dist_swim, ~ mean) %>%
            colour = "red",
            linewidth = 1, title = "Null Distribution by Permutation", 
            subtitle = "Histogram") %>% 
-  gf_labs(x = "Difference in Means")
+  gf_labs(x = "Difference in Means") %>% 
+  gf_refine(scale_y_continuous(expand = c(0, 0)))
 
 ###
 gf_ecdf(data = null_dist_swim, ~ mean, linewidth = 1) %>%
@@ -585,7 +613,8 @@ gf_ecdf(data = null_dist_swim, ~ mean, linewidth = 1) %>%
            colour = "red",
            linewidth = 1, title = "Null Distribution by Permutation", 
            subtitle = "Cumulative Density") %>% 
-  gf_labs(x = "Difference in Means")
+  gf_labs(x = "Difference in Means") %>% 
+  gf_refine(scale_y_continuous(expand = c(0, 0)))
 
 ###
 prop1(~ mean <= obs_diff_swim, data = null_dist_swim)
@@ -958,10 +987,13 @@ Very interesting results, but confirming what we saw earlier: The Linear Model w
 Let us perform the pair-wise permutation test on prices, by shuffling
 the two store names:
 
-```{r}
-# | layout: [[15, 85, 15]]
-ggplot2::theme_set(new = theme_custom())
+:::: {.columns}
+:::{.column}
 
+```{r}
+#| label: grocery-permutation-test
+#| eval: false
+#| 
 polarity <- c(rep(1, 15), rep(-1,15))
 ##
 null_dist_price <- do(4999) * 
@@ -969,15 +1001,48 @@ null_dist_price <- do(4999) *
                       ~ (Target - Walmart) * 
                         resample(polarity, replace = TRUE))
 null_dist_price
-##
-gf_histogram(data = null_dist_price, ~ mean) %>% 
-  gf_vline(xintercept = obs_diff_price, colour = "red")
-
-prop1(~ mean, data = null_dist_price)
 
 ```
 
+:::
+:::{.column}
+```{r}
+#| ref.label: grocery-permutation-test
+#| echo: false
+
+```
+:::
+::::
+
+
+```{r}
+#| label: grocery-permutation-plot
+#| code-fold: true
+#| layout-ncol: 2
+#| 
+ggplot2::theme_set(new = theme_custom())
+gf_histogram(data = null_dist_price, ~ mean) %>% 
+  gf_vline(xintercept = obs_diff_price, colour = "red") %>% 
+  gf_refine(scale_y_continuous(expand = c(0, 0)))
+
+###
+gf_ecdf(data = null_dist_price, ~ mean, linewidth = 1) %>%
+  gf_vline(xintercept = obs_diff_price, 
+           colour = "red",
+           linewidth = 1, title = "Null Distribution by Permutation", 
+           subtitle = "Cumulative Density") %>% 
+  gf_labs(x = "Difference in Means") %>% 
+  gf_refine(scale_y_continuous(expand = c(0, 0)))
+
+prop1(~ mean <= obs_diff_price, data = null_dist_price)
+
+
+```
+
+
+
 Does not seem to be any significant difference in prices...
+
 :::
 
 ### All Tests Together
@@ -1031,12 +1096,10 @@ Clearly, the parametric tests do not detect a significant difference in prices, 
 
 Suppose we knock off the `Quaker Cereal` data item...(note the spaces in the product name)
 
-```{r}
-#| layout: [[30,5],[50,5]]
-#| warning: false
-ggplot2::theme_set(new = theme_custom())
 
-set.seed(12345)
+```{r}
+#| warning: false
+
 Groceries_less <- Groceries %>%
   filter(Product != "Quaker Oats Life Cereal Original")
 ##
@@ -1054,11 +1117,23 @@ wilcox.test(Groceries_less$Walmart,
             conf.level = 0.95
 ) %>%
   broom::tidy()
-##
+
+```
+
+```{r}
 obs_diff_price_less <-
   mean(~ (Target - Walmart), data = Groceries_less)
 obs_diff_price_less
+```
 
+```{r}
+#| label: grocery-permutation-test-less
+#| layout-ncol: 2
+#| code-fold: true
+
+ggplot2::theme_set(new = theme_custom())
+
+set.seed(12345)
 polarity_less <- c(rep(1, 15), rep(-1, 14))
 # Due to resampling this small bias makes no difference
 null_dist_price_less <-
@@ -1067,8 +1142,18 @@ null_dist_price_less <-
 ##
 gf_histogram(data = null_dist_price_less, ~ mean) %>%
   gf_vline(xintercept = obs_diff_price_less, 
-           colour = "red")
+           colour = "red") %>% 
+  gf_refine(scale_y_continuous(expand = c(0, 0)))
 ##
+###
+gf_ecdf(data = null_dist_price_less, ~ mean, linewidth = 1) %>%
+  gf_vline(xintercept = obs_diff_price_less, 
+           colour = "red",
+           linewidth = 1, title = "Null Distribution by Permutation", 
+           subtitle = "Cumulative Density") %>% 
+  gf_labs(x = "Difference in Means") %>% 
+  gf_refine(scale_y_continuous(expand = c(0, 0)))
+
 mean(null_dist_price_less >= obs_diff_price_less)
 
 ```

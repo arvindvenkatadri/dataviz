@@ -44,7 +44,6 @@ library(tidyverse) # Tidy data processing and plotting
 library(ggformula) # Formula based plots
 library(mosaic) # Our go-to package
 library(skimr) # Another Data inspection package
-library(janitor)
 
 library(GGally) # Corr plots
 library(broom) # Clean reports from Stats / ML outputs
@@ -55,6 +54,11 @@ library(Lock5withR) # Datasets
 
 library(easystats) # Easy Statistical Analysis and Charts
 library(correlation) # Different Types of Correlations
+
+library(janitor) # Data cleaning and tidying package
+library(visdat) # Visualize whole dataframes for missing data
+library(naniar) # Clean missing data
+library(DT) # Interactive Tables for our data
 library(tinytable) # Elegant Tables for our data
 
 ```
@@ -75,7 +79,7 @@ library(downloadthis)
 library(latex2exp)
 #devtools::install_github("mccarthy-m-g/embedr")
 library(embedr) # Embed multimedia in HTML files
-library(ggplot2)
+
 
 ```
 
@@ -190,7 +194,8 @@ movies_modified <- HollywoodMovies2011 %>%
   janitor::remove_empty(which = c("rows", "cols")) %>% 
   dplyr::mutate(
     across(where(is.character), as.factor)
-  )
+  ) %>% 
+  dplyr::relocate(where(is.factor))
 
 
 ```
@@ -261,7 +266,8 @@ movies_modified <- HollywoodMovies2011 %>%
   janitor::remove_empty(which = c("rows", "cols")) %>%
   dplyr::mutate(
     across(where(is.character), as.factor)
-  )
+  ) %>% 
+  dplyr::relocate(where(is.factor))
 
 ```
 
@@ -269,7 +275,7 @@ movies_modified <- HollywoodMovies2011 %>%
 The dataset is also available by clicking the icon below ( in case you are not able to install `Lock5withR`):
 
 ```{r, echo = FALSE}
-HollywoodMovies2011 %>% download_this(output_name = "HollywoodMovies2011", output_extension = ".csv", button_label = "Hollywood Movies Dataset", button_type = "default", icon = "fa fa-save",   class = "hvr-sweep-to-left")
+movies_modified %>% download_this(output_name = "movies_modified", output_extension = ".csv", button_label = "Hollywood Movies Dataset", button_type = "default", icon = "fa fa-save",   class = "hvr-sweep-to-left")
 ```
 
 :::
@@ -727,7 +733,7 @@ defined as:
 
 $$
 \rho = E\left[\frac{(x - \mu_{x}) * (y - \mu_{y})}{(\sigma_x)*(\sigma_y)}\right]
-$$
+$${#eq-pearson-corr}
 
 where $E$ is the *expectation operator* ( i.e taking mean ). Think of this
 as *the average of the products of two scaled variables*.

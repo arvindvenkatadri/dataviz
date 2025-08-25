@@ -513,7 +513,9 @@ gf_histogram(
   subtitle = "Why is the mean of the means zero??") %>%
   gf_labs(x = "Calculated Random Means",
           y = "How Often do these occur?") %>% 
-  gf_vline(xintercept = obs_diff_mosaic, colour = "red")
+  gf_vline(xintercept = obs_diff_mosaic, colour = "red") %>% 
+  gf_refine(scale_y_continuous(expand = c(0,0)),
+            scale_x_continuous(expand = c(0,0)))
 
 # p-value
 # Null distributions are always centered around zero. Why?
@@ -547,7 +549,9 @@ gf_histogram(
   title = "Distribution of Bootstrap Means") %>%
   gf_labs(x = "Calculated Random Means",
           y = "How Often do these occur?") %>% 
-  gf_vline(xintercept = ~ belief1, colour = "red") 
+  gf_vline(xintercept = ~ belief1, colour = "red") %>% 
+  gf_refine(scale_y_continuous(expand = c(0,0)),
+            scale_x_continuous(expand = c(0,0)))
 
 prop(~ mean >= belief1, 
      data = null_toy_bs) +
@@ -680,6 +684,7 @@ xqnorm(p = c(0.025, 0.975),  mean = sample_mean, sd = sample_se,
    gf_theme(theme_custom())
 
 ```
+
 We see that the difference between means is `r t` times the std_error! At a distance of $1.96$ (either way) the probability of this data happening by chance already drops to $2.5 \%$ !! At this distance of `r t`, we would have negligible probability of this data occurring by chance!
 
 :::
@@ -753,6 +758,7 @@ library(nortest)
 nortest::ad.test(x = exam_grades$course_grade) %>% 
   broom::tidy()
 ```
+
 So `course_grade` is a normally-distributed variable. [There are *no* exceptional students! Hmph! Peasants.]{.bg-pink .black}
 
 :::
@@ -861,7 +867,10 @@ gf_histogram(
             scale_x_continuous(limits = c(-10, 10),
                 breaks = c(-10, -5, - obs_grade_diff, 0, obs_grade_diff, 5, 10),
                 labels = scales::number_format(accuracy = 0.01,
-                                 decimal.mark = ".")))
+                                 decimal.mark = "."))) %>% 
+  gf_refine(scale_y_continuous(expand = c(0,0)))
+
+
 
 # p-value
 # Permutation distributions are always centered around zero. Why?
@@ -906,7 +915,7 @@ gf_histogram(
             scale_x_continuous(limits = c(60,100),
                 breaks = c(60, 65,70, 75, 80, 85, 90, 95, 100,belief),
                 labels = scales::number_format(accuracy = 0.01,
-                                 decimal.mark = ".")))
+                                 decimal.mark = "."))) %>%  gf_refine(scale_y_continuous(expand = c(0,0)))
 
 prop(~ mean >= belief, 
      data = null_grade_bs) +

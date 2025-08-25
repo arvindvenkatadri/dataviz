@@ -1,5 +1,5 @@
 ---
-title: "Comparing Multiple Means with ANOVA"
+title: "Comparing Multiple Means with ANOVA" 
 abstract: "ANOVA to investigate how frogspawn hatching time varies with temperature."
 date: 28/Mar/2023
 date-modified: "`r Sys.Date()`"
@@ -43,6 +43,10 @@ library(TeachingDemos)
 library(grateful)
 library(restriktor)
 library(tinytable) # Easy-to-make tables for data
+##
+library(latex2exp)
+library(equatiomatic)
+library(marquee) # Marquee Text in HTML
 ##
 library(ellmer) # Access LLMs from R
 library(statlingua) # LLM-driven plain English statistical explanations
@@ -141,7 +145,13 @@ ggplot2::update_geom_defaults(geom = "label", new = list(
   color = "#2b2b2b"
 )
 )
-
+ggplot2::update_geom_defaults(geom = GeomMarquee, new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
 ## Set the theme
 ggplot2::theme_set(new = theme_custom())
 
@@ -189,14 +199,21 @@ Our response variable is the hatching `Time`. Our explanatory variable is a *fac
 
 ## {{< iconify material-symbols pivot-table-chart >}} Workflow: Clean the Data
 
-The data is in wide-format, with a separate column for each Temperature, and a common column for Sample ID. This is good for humans, but poor for a computer: there are NA entries since not all samples of spawn can be subject to all temperatures. (E.g. Sample ID #1 was maintained at 13°C, and there are NAs in the other two columns, which we don't need).
+The data is in wide-format, with a separate column for each Temperature, and a common column for Sample ID. This is good for humans, but poor for a computer: there are NA entries since not all samples of spawn can be subject to all temperatures. (E.g. Sample ID #1 was maintained at 13°C, and there are obvious NAs in the other two columns, which we don't need).
 
 We will first stack up the `Temperature` columns into a single column, separate that into pieces and then retain just the number part (13, 18, 25), getting rid of the *word* `Temperature` from the column titles. Then the remaining **numerical** column with temperatures (13, 18, 25) will be converted into a factor.
 
 We will use `pivot_longer()`and `separate_wider_regex()` to achieve this. \[See this animation for pivot_longer(): <https://haswal.github.io/pivot/> \]
 
 ```{r}
+#| label: tbl-pivot-data-long
+#| tbl-cap: "Frogspawn data"
+#| tbl-subcap: 
+#|   - "Clean Data"
+#|   - "Counts of samples per Temperature level"
 #| layout-ncol: 2
+#| code-fold: true
+#| 
 frogs_orig %>%
   pivot_longer(
     .,
@@ -233,29 +250,42 @@ So we have cleaned up our data and have `20` samples for Hatching `Time` per `Te
 
 ## {{< iconify flat-color-icons workflow >}} Workflow: EDA
 
-Let us plot some histograms and boxplots of Hatching Time:
+Let us plot jitter-plots, boxplots, and histograms of Hatching Time:
+
+:::: {.columns}
+::: {.column}
 
 ```{r}
-#| fig-column: margin
-ggplot2::theme_set(new = theme_custom())
+#| label: Frogs-Scatter
+#| eval: false
 
-gf_histogram(~ Time, fill = ~ TempFac,
-  data = frogs_long, alpha = 0.5) %>%
-  gf_vline(xintercept = ~ mean(Time)) %>%
+gf_jitter(Time ~ TempFac, color = ~ TempFac, width = 0.2,
+         data = frogs_long, size = 3, alpha = 0.5) %>%
   gf_labs(title = "Frog Spawn Hatching Time vs Temperature",
-          x = "Hatching Time", y = "Count") %>%
-  gf_text(7 ~ (mean(Time) + 2),
-          label = "Overall Mean") %>%
-  gf_refine(scale_fill_paletteer_d("ggthemes::colorblind"), 
-            guides(fill = guide_legend(title = "Temperature level (°C)")))
+          x = "Temperature", y = "Hatching Time") %>%
+  gf_refine(scale_color_paletteer_d("ggthemes::colorblind"),
+            scale_x_discrete(guide = "prism_bracket"),
+            guides(color = guide_legend(title = "Temperature level (°C)")))
 
 ```
 
+:::
+::: {.column}
+```{r}
+#| ref.label: Frogs-Scatter
+#| echo: false
 
+```
+:::
+::::
 
+:::: {.columns}
+::: {.column}
 
 ```{r}
-#| fig-column: margin
+#| label: Frogs-Boxplot
+#| eval: false
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 gf_boxplot(data = frogs_long,
@@ -271,8 +301,57 @@ gf_boxplot(data = frogs_long,
             guides(fill = guide_legend(title = "Temperature level (°C)"))) 
 
 ```
+:::
+::: {.column}
+```{r}
+#| ref.label: Frogs-Boxplot
+#| echo: false
+
+```
+:::
+::::
+
+
+
+:::: {.columns}
+::: {.column}
+
+```{r}
+#| label: Frogs-Histogram
+#| eval: false
+#| 
+ggplot2::theme_set(new = theme_custom())
+
+gf_histogram(~ Time, fill = ~ TempFac,
+  data = frogs_long, alpha = 0.5) %>%
+  gf_vline(xintercept = ~ mean(Time)) %>%
+  gf_labs(title = "Frog Spawn Hatching Time vs Temperature",
+          x = "Hatching Time", y = "Count") %>%
+  gf_text(7 ~ (mean(Time) + 2),
+          label = "Overall Mean") %>%
+  gf_refine(scale_fill_paletteer_d("ggthemes::colorblind"), 
+            guides(fill = guide_legend(title = "Temperature level (°C)")))
+
+```
+
+:::
+::: {.column}
+
+```{r}
+#| ref.label: Frogs-Histogram
+#| echo: false
+
+```
+:::
+::::
+
+
+
+
 
 The histograms look well separated and the box plots also show very little overlap. So we can reasonably hypothesize that Temperature has a significant effect on Hatching Time.
+
+The scatter plot seems to show that there are only a few fixed values of observed readings of Hatching Time for each setting of `TempFac`, which is a little unusual. But we will proceed nonetheless.
 
 Let's go ahead with our ANOVA test.
 
@@ -289,22 +368,51 @@ R offers a very simple command `aov` to execute an ANOVA test: Note the familiar
 ```{r}
 #| label: ANOVA-with-code
 frogs_anova <- aov(Time ~ TempFac, data = frogs_long)
+frogs_anova
+
 ```
 
-This creates an *ANOVA model object*, called `frogs_anova`. We can examine the ANOVA model object best with a package called `supernova`[^7]:
+This creates an *ANOVA model object*, called `frogs_anova`; the output is still a little too terse for us. We can examine the ANOVA model object best with a package called `supernova`[^7]:
+
+
+:::: {.columns}
+::: {.column}
 
 ```{r}
-# library(supernova)
+#| label: ANOVA-Table-and-Pairwise
+#| eval: false
+#| 
 ggplot2::theme_set(new = theme_custom())
+# Create a "pairwise" list object
+frogs_supernova <- 
+  supernova::pairwise(frogs_anova,
+      correction = "Bonferroni", # Try "Tukey"
+      alpha = 0.05, # 95% CI calculation
+      var_equal = TRUE, # We'll see
+      plot = T)
 
-supernova::pairwise(frogs_anova,
-                    correction = "Bonferroni", #Try "Tukey"
-                    alpha = 0.05, #95% CI calculation
-                    var_equal = TRUE, #We'll see
-                    plot = TRUE)
+```
+:::
+
+::: {.column}
+```{r}
+#| ref.label: ANOVA-Table-and-Pairwise
+#| echo: false
+
+```
+:::
+::::
+
+```{r}
+frogs_supernova$TempFac
+supernova::supernova(frogs_anova)
+
 ```
 
-This table + error-bar plot gives us a clear comparison between each pair of the three groups of observations defined by `TempFac`. The differences in spawn hatching `Time` between each pair of `TempFac` settings are given by the `diff` column. Also shown are the confidence intervals for each of these differences (none of which include $0$); the `p-value`s for each of these differences is also negligible. Thus we can conclude that the **effect of temperature on hatching time** is significant. 
+
+The first table + error-bar plot gives us a comparison between each pair of the three groups of observations defined by `TempFac`. The differences in spawn hatching `Time` between each pair of `TempFac` settings are given by the `diff` column. Also shown are the confidence intervals for each of these differences (none of which include $0$); the `p-value`s for each of these differences is also negligible. Thus we can conclude that the **effect of temperature on hatching time** is significant. 
+
+The `supernova` table is also very interesting and tells us that the model has *reduced the error* in our understanding of the data by a significant amount. What exactly that means, we will workout in the next section. 
 
 ::: callout-note
 To find which specific value of `TempFac` has the most `effect` will require *pairwise comparison* of the group means, using a standard `t-test`. The confidence level for such repeated comparisons will need what is called ***Bonferroni correction***[^2] to prevent us from detecting a significant (pair-wise) difference simply by chance. To do this we take $\alpha = 0.05$, the confidence level used and divide it by $K$, the number of pair-wise comparisons we intend to make. This new value is used to decide on the significance of the estimated parameter. So the pairwise comparisons in our current data will have to use $\alpha/3 = 0.0166$ as the confidence level. The `supernova::pairwise()` function did this for us very neatly!
@@ -313,7 +421,7 @@ There are also other ways, such as the "Tukey correction" for multiple tests.
 :::
 
 
-### Intuitive {#sec-anova-intuitive}
+### Intuitive{#sec-anova-intuitive}
 
 All that is very well, but what is happening under the hood of the `aov()` command?
 
@@ -324,6 +432,7 @@ Consider a data set with a single Quant and a single Qual variable. The Qual var
 #| label: Anova-Intuitive
 #| warning: false
 #| echo: false
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 set.seed(42) # for replication
@@ -422,7 +531,9 @@ Let us compute these numbers for our toy dataset:
 #| echo: true
 demo_anova <- aov(quant ~ qual, data = toydata)
 supernova::supernova(demo_anova)
+
 ```
+
 What do we see?
 
 1. **All Data**: $SST = 1047.935$. 
@@ -442,7 +553,7 @@ When divide each of $SSA$ and $SSE$ by their [*degrees of freedom*]{style="backg
 So this may seem like a great [Hero's Journey](https://www.youtube.com/watch?v=bnaXpcH7L6I&list=PLsvuw0vMeKQ0CWR-YpAYH90YjYPck6Ots&pp=iAQB), where we start with means and differences, go into sums of squares, differences and comparisons of error ratios, and [return to the means where we started, only to know them properly now](https://www.quora.com/profile/Arvind-Venkatadri/https-www-quora-com-What-did-T-S-Elliot-mean-when-he-wrote-We-must-not-cease-from-exploration-and-the-end-of-all-our-e).
 
 
-### ANOVA Hand Calculation
+### ANOVA By Hand 
 
 Now that we understand what `aov()` is doing, let us hand-calculate the numbers for our `frogs` dataset and check. Let us visualize our calculations first.
 
@@ -451,8 +562,9 @@ Now that we understand what `aov()` is doing, let us hand-calculate the numbers 
 #| fig-cap: 
 #|   - "SST"
 #|   - "SSE"
-#| echo: false
+#| code-fold: true
 #| layout-ncol: 2
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 frogs_plot <- frogs_long %>% 
@@ -525,6 +637,7 @@ Let us get the ready table from `supernova` first, and then systematically calcu
 ```{r}
 supernova::supernova(frogs_anova)
 ```
+
 Here are the SST, SSE, and the SSA:
 
 ```{r}
@@ -694,6 +807,8 @@ gf_dist("f", df1 = df_SSA, df2 = df_SSE,
 
 
 ```{r}
+#| label: F-distribution-Plot
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 mosaic::xpf(q = F_crit, 
@@ -701,10 +816,12 @@ mosaic::xpf(q = F_crit,
             log.p = FALSE,lower.tail = TRUE, 
             return = "plot") %>% 
   gf_vline(xintercept = F_crit) %>% 
-  gf_label(0.75 ~ 5.5, label = "F_critical", 
+  gf_label(0.75 ~ F_crit, label = "F_critical", 
            inherit = F, show.legend = F) %>% 
   gf_labs(title = "F distribution for Frogs Data",
-          subtitle = "F_critical = 4.403")
+          subtitle = "F_critical = 4.403") %>% 
+  gf_refine(scale_y_continuous(expand = c(0, 0)),
+            scale_x_continuous(expand = c(0, 0)))
 
 ```
 
@@ -723,10 +840,46 @@ And `supernova` gives us a nice linear equation relating `Hatching_Time` to `Tem
 
 ```{r}
 #| label: fig-eq-frogs-anova
-supernova::equation(frogs_anova)
+#| 
+supernova::equation(frogs_anova) 
 
 ```
+
 `TempFac18` and `TempFac25` are binary {0,1} coded variables, representing the test situation. `e` is the remaining error. The equation models the *means* at each value of `TempFac`. 
+
+```{r}
+#| label: Fitted-Equation-Plot
+#| code-fold: true
+#| 
+# https://www.statology.org/r-geom_path-each-group-consists-of-only-one-observation/
+
+## Plot the Equation over the Scatterplot
+frogs_long %>% 
+  mutate(fitted = fitted(frogs_anova)) %>% 
+  gf_jitter(Time ~ TempFac, width = 0.2, alpha = 0.6,
+           color = ~ TempFac,
+           data = .) %>% 
+  gf_summary(group = ~ 1, # See the reference link above. Damn!!!
+             fun = "mean", geom = "line", colour = "lightblue", 
+             lty = 1, linewidth = 2) %>% 
+  gf_point(fitted ~ TempFac, 
+           color = ~ TempFac,
+           shape = 2,
+           size = 6) %>% 
+  gf_segment(fitted + fitted ~ 0 + TempFac, linetype = 2, color = ~ TempFac) %>% 
+
+  gf_annotate("label", label = TeX(r"($Time = 26.3 - 5.3 \times TempFac18  -10.1 \times TempFac25 + e)"), y = 26.3,  x = 2.25, 
+              size = 3, color = "black", fill = "lightblue") %>% 
+  gf_annotate("label", label = "Triangles are Predictions\n at each TempFac value", y = 20,  x = 1.25, 
+              size = 3, color = "black", fill = "moccasin") %>%
+  gf_labs(title = "Fitted ANOVA Model Equation",
+          x = "Temperature", y = "Hatching Time") %>%
+  gf_refine(scale_colour_paletteer_d("ggthemes::colorblind"),
+            guides(colour = guide_legend(title = "Temperature level (°C)"))) %>% 
+  gf_refine( scale_x_discrete(guide = "prism_bracket"),
+             scale_y_continuous(breaks = c(10,15,(26.3-10.1), 20,(26.3 - 5.3), 25,26.3,30, 35)))
+
+```
 
 ## {{< iconify flat-color-icons workflow >}} Workflow: Checking ANOVA Assumptions
 
@@ -740,15 +893,39 @@ We can check these using checks and graphs.
 
 ### {{< iconify ic twotone-rule >}} Checks for Normality
 
-The `shapiro.wilk` test tests if a vector of numeric data is normally distributed and rejects the hypothesis of normality when the [p-value](https://variation.com/wp-content/distribution_analyzer_help/hs132.htm) is less than or equal to 0.05. 
+The `shapiro.wilk` test tests if a vector of numeric data is normally distributed and rejects the hypothesis of normality when the [p-value](https://variation.com/wp-content/distribution_analyzer_help/hs132.htm) is less than or equal to 0.05.
 
+:::: {.columns}
+
+::: {.column}
 ```{r}
-#| label: Check for Normality
+#| label: Check-for-Normality
+#| eval: false
 shapiro.test(x = frogs_long$Time)
 
 ```
+:::
 
-The p-value is very low and we cannot reject the (alternative) hypothesis that the overall data is **not** normal. How about normality at each level of the factor?
+::: {.column}
+```{r}
+#| ref.label: Check-for-Normality
+#| echo: false
+
+```
+:::
+
+::::
+
+
+
+The p-value is very low and we cannot reject the (alternative) hypothesis that the overall data is **not** normal. How about *normality at each level of the `TempFac` factor?
+
+::: callout-note
+## Group-wise Normality
+We will use an advanced `dplyr` technique to do this. We will first group the data by `TempFac`, then use `dplyr::group_modify()` to apply the `shapiro.test()` function to each of these groups. Finally we will use `broom::tidy()` to convert the output of `shapiro.test()` into a tidy dataframe. See the code below.
+
+:::
+
 
 ```{r}
 #| eval: false
@@ -784,28 +961,20 @@ frogs_grouped %>%
 
 ```
 
-:::: {.columns}
-::: {.column}
+
 ```{r}
-#| label: Group-check-for-normality
-#| eval: false
+#| label: group-check-for-normality
+#| code-fold: true
+#| 
 frogs_long %>%
   group_by(TempFac) %>%
   group_modify( ~ .x %>%
                   select(Time) %>%
                   as_vector() %>% shapiro.test() %>%
                   broom::tidy())
-```
-:::
-::: {.column}
 
-```{r}
-#| ref.label: Group-check-for-normality
-#| echo: false
 ```
 
-:::
-::::
 
 The `shapiro.wilk` test makes a NULL Hypothesis that the data **are** normally distributed and estimates the probability that the given data could have happened by chance. Except for `TempFac = 18` the `p.value`s are less than 0.05 and we can reject the NULL hypothesis that each of these is normally distributed. Perhaps this is a sign that we need more than 20 samples per factor level. Let there be more frogs !!! இன்னும தவளைகள் வேண்டும்!!
 !!
@@ -813,8 +982,9 @@ The `shapiro.wilk` test makes a NULL Hypothesis that the data **are** normally d
 We can also check the residuals post-model:
 
 ```{r}
-#| layout-ncol: 3
-#| column: screen-inset-right
+#| layout-ncol: 2
+#| code-fold: true
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 frogs_anova$residuals %>% 
@@ -831,12 +1001,32 @@ frogs_anova$residuals %>%
   gf_labs(title = "Residuals Q-Q Plot",
           x = "Theoretical Quantiles", y = "Sample Quantiles") %>%
   gf_qqline() 
-##
-shapiro.test(frogs_anova$residuals)
 
 ```
 
-Unsurprisingly, the residuals are also not normally distributed either.
+
+:::: {.columns}
+
+::: {.column}
+
+```{r}
+#| label: Shapiro-test-on-residuals
+#| eval: false
+#| 
+shapiro.test(frogs_anova$residuals)
+
+```
+:::
+::: {.column}
+```{r}
+#| ref.label: Shapiro-test-on-residuals
+#| echo: false
+
+```
+:::
+::::
+
+Unsurprisingly, the residuals are also not normally distributed either. We really need more samples / observations!! But the differences in means are so large that we can still be confident of the results.
 
 ### {{< iconify ic twotone-rule >}} Check for Similar Variance
 
@@ -844,21 +1034,39 @@ Response data with different variances at different levels of an *explanatory* v
 
 To check if the `Time` readings are similar in `variance` across levels of `TempFac`, we can use the [Levene Test]{style="background-color: yellow;"}, or since our per-group observations are not normally distributed, a non-parametric rank-based [Fligner-Killeen Test]{style="background-color: yellow;"}. The NULL hypothesis is that the data **are** with similar variances. The tests assess how probable this is with the given data assuming this NULL hypothesis:
 
+:::: {.columns}
+::: {.column}
 ```{r}
-#| layout-ncol: 2
-#| column: screen-inset-right
-#| results: hold
+#| label: variance-check
+#| eval: false
+#| 
 frogs_long %>% 
   group_by(TempFac) %>% 
   summarise(variance = var(Time))
-# Not too different...OK on with the test
+
+```
+:::
+::: {.column}
+```{r}
+#| ref.label: variance-check
+#| echo: false
+
+```
+:::
+::::
+
+Not too different...OK on with the tests...
+
+```{r}
+#| label: Variance-tests
+
 DescTools::LeveneTest(Time ~ TempFac, data = frogs_long)
 ##
 fligner.test(Time ~ TempFac, data = frogs_long)
   
 ```
 
-It seems that there is no cause for concern here; the data do not have significantly different variances.
+It seems that there is no cause for concern here; the data do not have significantly different variances at different levels of `TempFac`.
 
 ### {{< iconify ic twotone-rule >}} Independent Observations
 
@@ -868,18 +1076,36 @@ This is an experiment *design* concern; the way the data is gathered must be spe
 
 The simplest way to find the actual `effect sizes` detected by an ANOVA test is something we have already done, with the `supernova` package: Here is the table and plot again:
 
+:::: {.columns}
+::: {.column}
+
 ```{r}
-#| fig-column: margin
+#| label: Frogs-Supernova-Pairwise
+#| eval: false
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 frogs_supernova <- 
   supernova::pairwise(frogs_anova,
-                      plot = TRUE,
-                      alpha = 0.05, 
-                      correction = "Bonferroni")
-frogs_supernova
+        plot = TRUE,
+        alpha = 0.05, 
+        correction = "Bonferroni")
+```
+:::
+
+::: {.column}
+```{r}
+#| ref.label: Frogs-Supernova-Pairwise
+#| echo: false
 
 ```
+:::
+::::
+
+```{r}
+frogs_supernova$TempFac
+```
+
 
 This table, the plot, and the equation we set up earlier all give us the sense of how the `TempFac` affects `Time`. The differences are given pair-wise between levels of the Qual factor, `TempFac`, and the `standard error` has been declared in *pooled* fashion (all groups together).
 
@@ -975,18 +1201,22 @@ The ANOVA test does not tell us that the "treatments" (i.e. levels of `TempFac`)
 frogs_anova %>% stats::TukeyHSD()
 
 ```
+
 We see that **each** of the pairwise differences in effect-size is significant, with `p = 0` !
+
 :::
 
-### Using other packages{.hidden}
 
-::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
-### Using ggstatsplot
+### Using other packages : ggstatsplot
 
 There is a very neat package called `ggstatsplot`[^6] that allows us to plot very comprehensive statistical graphs. Let us quickly do this:
 
 ```{r}
+#| label: fig-ggstatsplot-ANOVA
+#| fig-cap: "ggstatsplot ANOVA"
 #| message: false
+#| code-fold: true
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 library(ggstatsplot)
@@ -994,40 +1224,23 @@ frogs_long %>%
   ggstatsplot::ggbetweenstats(x = TempFac, y = Time, 
                              colour = TempFac, alpha = 0.8,
                              type = "parametric",
-                             pairwise.comparisons = TRUE,
                              p.adjust.method = "bonferroni",
                              conf.level = 0.95,
-# Plot parameters for the points
-  point.args = list(position = ggplot2::position_jitterdodge(dodge.width = 0.6), alpha =
-    0.8, size = 3, stroke = 0, na.rm = TRUE),
-
-# Plot parameters for the boxplots
-  boxplot.args = list(width = 0.3, alpha = 0.2, na.rm = TRUE),
-
-# Plot parameters for the violin plots
-  violin.args = list(width = 0.5, alpha = 0.2, na.rm = TRUE),
-                             title = "ANOVA : Frogs Spawn Time vs Temperature Setting") + 
+                             # Remove the violin plots
+                             violin.args = list(width = 0.0)
+                             ) + 
+  
   scale_colour_paletteer_d("ggthemes::colorblind") +
-  labs(x = "Temperature (°C)", y = "Spawn Time (seconds)")
-
-
-```
-Probably a case of too much in one plot, but it does give us a lot of information, including the pairwise comparisons and the effect sizes. The `ggstatsplot` package is very useful for quick visualizations of statistical tests.
-
-### Using supernova
-
-We can also obtain crisp-looking anova tables from the new `supernova` package [^7], which is based on the methods discussed in Judd et al. @sec-references
-
-```{r}
-#| layout-nrow: 2
-library(supernova)
-supernova::supernova(frogs_anova)
-supernova::pairwise(frogs_anova)
+  labs(title = "ANOVA : Frogs Spawn Time vs Temperature Setting",
+       x = "Temperature (°C)", y = "Spawn Time (days)",
+       subtitle = "", caption = "")
 
 ```
 
-The `supernova` table clearly shows the reduction the Sum of Squares as we go from a NULL (empty) model to a full ANOVA model.
-:::
+This plot also shows the $p.value = 0$ for each pairwise comparison, attesting to its significance. 
+
+The `ggstatsplot` package is very useful for quick visualizations of statistical tests.
+
 
 
 ## {{< iconify flat-color-icons workflow >}} Workflow: ANOVA using Permutation Tests
@@ -1120,7 +1333,7 @@ It *is* possible to incorporate these beliefs into the ANOVA model, using what i
 1. Marti Anderson, [Permutation tests for univariate or multivariate analysis of variance and regression](https://www.academia.edu/50056272/Permutation_tests_for_univariate_or_multivariate_analysis_of_variance_and_regression?auto=download)\
 1. Judd, Charles M., Gary H. McClelland, and Carey S. Ryan.(2017). "Introduction to Data Analysis." In, 1--9. Routledge. https://doi.org/10.4324/9781315744131-1.\
 1. Patil, I. (2021). *Visualizations with statistical details: The 'ggstatsplot' approach.* Journal of Open Source Software, 6(61), 3167, doi:10.21105/joss.03167\
-1. Langsrud, Øyvind. (2003). *ANOVA for unbalanced data: Use type II instead of type III sums of squares*. Statistics and Computing. 13. 163-167. https://doi.org/10.1023/A:1023260610025. <https://www.researchgate.net/publication/220286726_ANOVA_for_unbalanced_data_Use_type_II_instead_of_type_III_sums_of_squares>\
+1. Langsrud, [Øyvind]{style="background-color:yellow;"}. (2003). [*ANOVA for unbalanced data: Use type II instead of type III sums of squares*](https://www.researchgate.net/publication/220286726_ANOVA_for_unbalanced_data_Use_type_II_instead_of_type_III_sums_of_squares). Statistics and Computing. 13. 163-167.
 1. Kim TK. (2017). *Understanding one-way ANOVA using conceptual figures*. Korean J Anesthesiol. 2017 Feb;70(1):22-26. <https://ekja.org/upload/pdf/kjae-70-22.pdf>
 1. *Anova – Type I/II/III SS explained*.<https://mcfromnz.wordpress.com/2011/03/02/anova-type-iiiiii-ss-explained/>
 1. Bidyut Ghosh (Aug 28, 2017). One-way ANOVA in R.  <https://datascienceplus.com/one-way-anova-in-r/>

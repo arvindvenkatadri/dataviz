@@ -174,6 +174,11 @@ ggplot2::theme_set(new = theme_custom())
 
 ## {{< iconify openmoji japanese-symbol-for-beginner >}} Introduction
 
+Sometimes, we need to compare if two distinct populations have the same mean. For instance we may wish to compare salaries between two different professions, or test scores between two different teaching methods. In this case, we take a sample ( not necessarily of equal length ) from each population, and compare the means of the two samples.
+
+Here is a diagram showing the workflow of this test based on the kind of data samples we encounter. 
+
+
 ```{mermaid}
 %%| echo: false
 %%| 
@@ -707,7 +712,9 @@ gf_histogram(data = null_dist_amas, ~ diffmean, bins = 25) %>%
            colour = "red", linewidth = 1,
            title = "Null Distribution by Permutation", 
            subtitle = "Histogram") %>% 
-  gf_labs(x = "Difference in Means")
+  gf_labs(x = "Difference in Means") %>% 
+  gf_refine(scale_y_continuous(expand = c(0, 0)))
+
 ###
 gf_ecdf(data = null_dist_amas, ~ diffmean, 
         linewidth = 1) %>%
@@ -715,7 +722,8 @@ gf_ecdf(data = null_dist_amas, ~ diffmean,
            colour = "red", linewidth = 1,
            title = "Null Distribution by Permutation", 
            subtitle = "Cumulative Density") %>% 
-  gf_labs(x = "Difference in Means")
+  gf_labs(x = "Difference in Means") %>% 
+  gf_refine(scale_y_continuous(expand = c(0, 0)))
 
 ```
 
@@ -867,8 +875,9 @@ xqnorm(p = c(0.025, 0.975),  mean = obs_diff_amas, sd = std_error_diff,
             label = "95% Confidence Interval", 
             colour = "purple") %>% 
   gf_labs(title = "Visualizing the t-test for Math Anxiety Scores",
-       subtitle = "Difference in Means, Confidence Intervals, and Test Statistic") %>%
-   gf_theme(theme_custom())
+       subtitle = "Difference in Means, Confidence Intervals, and Test Statistic") %>% 
+  gf_refine(scale_y_continuous(expand = c(0, 0))) %>% 
+  gf_theme(theme_custom())
 
 ```
 We see that the difference between means is `r t` times the std_error! At a distance of $1.96$ (either way) the probability of this data happening by chance already drops to $2.5 \%$ !! At this distance of `r t`, we would have negligible probability of this data occurring by chance!
@@ -1369,7 +1378,8 @@ gf_histogram(data = null_dist_weight, ~ diffmean,
            colour = "red", linewidth = 1,
            title = "Null Distribution by Permutation", 
            subtitle = "Histogram") %>% 
-  gf_labs(x = "Difference in Means")
+  gf_labs(x = "Difference in Means") %>% 
+  gf_refine(scale_y_continuous(expand = c(0, 0)))
 ###
 gf_ecdf(data = null_dist_weight, ~ diffmean, 
         linewidth = 1) %>%
@@ -1377,7 +1387,8 @@ gf_ecdf(data = null_dist_weight, ~ diffmean,
            colour = "red", linewidth = 1,
            title = "Null Distribution by Permutation", 
            subtitle = "Cumulative Density") %>% 
-  gf_labs(x = "Difference in Means")
+  gf_labs(x = "Difference in Means") %>% 
+  gf_refine(scale_y_continuous(expand = c(0, 0)))
 
 ```
 
@@ -1826,7 +1837,8 @@ ggplot2::theme_set(new = theme_custom())
 null_dist %>% 
   visualise() + # Note this plus sign! 
   shade_p_value(obs_diff_infer,
-                direction = "two-sided")
+                direction = "two-sided") + 
+  scale_y_continuous(expand = c(0, 0))
 
 ```
 
@@ -1888,7 +1900,9 @@ ggplot2::theme_set(new = theme_custom())
 
 gf_histogram(~ diffmean, data = null_dist_mosaic) %>% 
   gf_vline(xintercept = obs_diff_mosaic, 
-           colour = "red", linewidth = 2)
+           colour = "red", linewidth = 2) %>% 
+  gf_refine(scale_y_continuous(expand = c(0, 0)))
+            
 
 ```
 
