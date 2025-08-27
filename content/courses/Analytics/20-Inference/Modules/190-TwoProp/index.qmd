@@ -31,12 +31,12 @@ editor:
 #| warning: false
 library(tidyverse)
 library(mosaic)
-library(ggmosaic) # plotting mosaic plots for Categorical Data
+library(vcd)
+library(visStatistics) # One package to test them all
 
 ### Dataset from Chihara and Hesterberg's book (Second Edition)
 library(resampledata)
-library(vcd)
-library(visStatistics) # One package to test them all
+
 
 ```
 
@@ -46,6 +46,7 @@ library(visStatistics) # One package to test them all
 #| message: false
 #| warning: false
 library(tinytable)
+library(kableExtra)
 library(checkdown)
 library(epoxy)
 library(TeachHist)
@@ -238,8 +239,6 @@ its *effect size* is.
 
 data(GSS2002, package = "resampledata")
 glimpse(GSS2002)
-inspect(GSS2002)
-skimr::skim(GSS2002)
 
 ```
 
@@ -255,65 +254,144 @@ GSS2002 %>% count(DeathPenalty)
 
 ```
 
-Let us drop NA entries in `Education` and `Death Penalty` and set up a
-[**Contingency
-Table**](../../../10-Descriptive/Modules/40-CatData/index.qmd#what-is-a-contingency-table).
+## Data Munging
 
-```{r,warning=FALSE,message=FALSE}
+Let us drop NA entries in `Education` and `Death Penalty` and also check the levels of the two factors and set them up as we need:
 
-gss2002 <- GSS2002 %>% 
+```{r}
+#| label: data-munging
+#| 
+GSS2002_modified <- GSS2002 %>% 
   dplyr::select(Education, DeathPenalty) %>% 
-  tidyr::drop_na(., c(Education, DeathPenalty))
-##
-gss_table <- vcd::structable(DeathPenalty ~ Education, data = gss2002) %>%
-  addmargins()
-gss_table 
+  tidyr::drop_na(., c(Education, DeathPenalty)) %>%
+  
+  # Re-level the factors
+  mutate(Education = factor(Education,
+            levels = c("Left HS", "HS", "Jr Col", "Bachelors", "Graduate"),
+            labels = c("Left HS", "HS", "Jr Col", "Bachelors", "Graduate"),
+            # ordered = TRUE # Nope can't use this. See below
+            ),
+         DeathPenalty = factor(DeathPenalty,
+                              levels = c("Favor", "Oppose"),
+                              labels = c("Favor", "Oppose")
+            # ordered = TRUE # Nope can't use this. See below
+         )
+         )
+glimpse(GSS2002_modified)
+
+```
+
+
+We can now set up a
+[**Contingency Table**](../../../10-Descriptive/Modules/40-CatData/index.qmd#what-is-a-contingency-table).
+
+```{r}
+#| label: tbl-vcd-contingency-table
+#| tbl-cap: "Contingency Table of Education vs Death Penalty"
+
+gss_vcd_table <- vcd::structable(Education ~ DeathPenalty, # cols ~ rows
+                             data = GSS2002_modified) 
+gss_vcd_table %>% addmargins()
 
 ```
 
 ### Contingency Table Plots
 
-The Contingency Table can be plotted using a `mosaic` plot using several packages, [as we have seen](../../../10-Descriptive/Modules/40-CatData/index.qmd). Let us do a quick recap:
+The Contingency Table can be plotted using a `mosaic` plot using two packages, [as we have seen](../../../10-Descriptive/Modules/40-CatData/index.qmd). Let us do a quick recap:
 
 ::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
 
 #### vcd
 
 ```{r}
-vcd::structable(DeathPenalty ~ Education, data = GSS2002) %>% 
+#| code-fold: true
+# Already computed
+# gss_vcd_table <- vcd::structable(Education ~ DeathPenalty, # cols ~ rows
+#                              data = GSS2002_modified)
+
+gss_vcd_table %>% 
 vcd::mosaic(
-  gp = shading_hsv, direction = "v",
+  gp = shading_hsv, direction = "h",
   main = "GSS2002 Education vs Death Penalty Mosaic Chart", 
   legend = TRUE,
   labeling = labeling_border(
                 varnames = c("F", "F"), # Remove variable name labels
-                rot_labels = c(90,0,0,0), #t,r,b,l
-                just_labels = c("left", 
-                                "left", 
-                                "left", 
-                                "right"))) # How?
+                rot_labels = c(90,0,0,0), #t,r,b,l?
+                just_labels = c("left", # Top Side. How?
+                                "left", # Right side
+                                "left", # Bottom side
+                                "right"))) # Left side. How?
 
 ```
+
+::: callout-note
+### Business Insights
+
+We see that:
+
+- the proportion of people in favour of the Death Penalty decreases with increasing levels of Education.
+- there are some imbalances in the counts of people with different levels of Education (vertical divisions are not straight), which we will need to account for in our analysis.
+:::
 
 
 #### visStatistics
 
-
-As discussed in the Descriptive Analysis on [Proportions](../../../10-Descriptive/Modules/40-CatData/index.qmd#using-visStatistics), `visStatistics` is a recent package that allows a very wide variety of statistical charts to be created **automagically** based on the variables chosen. Let us plot a mosaic chart directly with this package: with one function `visstats()`, we obtain mosaic and bar charts, as well as a statistical analysis of the data. We will discuss this analysis shortly. 
+As discussed in the Descriptive Analysis on [Proportions](../../../10-Descriptive/Modules/40-CatData/index.qmd#using-visStatistics), `visStatistics` is a recent package that allows a very wide variety of statistical charts to be created **auto-magically** based on the variables chosen. Let us plot a mosaic chart directly with this package: with one function `visstats()`, we obtain mosaic and bar charts, as well as a statistical analysis of the data. We will discuss this analysis shortly. 
 
 ```{r}
-#| label: visstat-1
+#| label: fig-visstat1
+#| fig-cap: visStatistics output for Chi-Square Test
+#| fig-subcap:
+#|  - Dodged Bar Plot of Death Penalty by Education
+#|  - Mosaic Plot of Death Penalty by Education
 
-visstat(GSS2002$DeathPenalty, GSS2002$Education) %>%  str()
+
+chisq_visstat <- visstat(x = GSS2002_modified$DeathPenalty, 
+                         y = GSS2002_modified$Education)
+
+chisq_visstat %>% summary()
 ```
 
+```{r}
+#| label: tbl-visstat2
+#| tbl-cap: "visStatistics Tables output for Chi-Square Test"
+
+chisq_visstat$observed
+chisq_visstat$expected
+chisq_visstat$stdres
+
+```
+
+This is a very comprehensive output, with just one line of code.  We obtain:
+
+- The original Contingency Table
+- the Expected Contingency Table ( if the two variables were independent )
+- the contribution each cell makes to the overall Chi-Square statistic i.e. each cell's Pearson Residual
+- the test statistic, degrees of freedom and p-value
+- a mosaic plot
+- a dodged bar plot
+
+We will use all of these results to obtain a clear understanding of the test.
+
+::: callout-note
+### Ordering of levels between `vcd` and `visstat`
+
+The ordering of the levels (`Left HS`, `HS`, `Jr Col`, `Bachelors`, `Graduate`) is different between the two packages. This is because `vcd` orders the levels in the order they appear in the data, while `visStatistics` orders them in ~~alphabetical~~ strange order. If we attempt to munge the data into ***ordinal*** factors ( `ordered = TRUE`), `visStatistics` does not accept it at all, and wants plain `factors`. 
+
+We will therefore continue to use the outputs from `vcd`.
+
+:::
+
+
 ::: {.content-hidden when-format="html"}
+
 #### ggmosaic
 
 ```{r mosaic-plot,warning=FALSE}
+#| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-#library(ggmosaic)
+library(ggmosaic)
 ggplot(data = gss2002) +
   ggmosaic::geom_mosaic(aes(x = product(DeathPenalty, Education), 
                   fill = DeathPenalty)) + 
@@ -371,14 +449,20 @@ gf_col(edu_prop ~ Education, data = gss_summary,
            y = "Proportion of Votes for Death Penalty")
 
 ```
+
 :::
 
 :::
+
+
+
+
+
 
 
 ## Hypotheses Definition
 
-What would our Hypotheses be relating to the *proportions* of votes for or against the Death Penalty?
+What would our Hypotheses be relating to the *proportions* of votes for or against the `DeathPenalty`?
 
 $H_0: \text{Education does not affect votes for Death Penalty}\\$
 
@@ -392,19 +476,35 @@ will then do a permutation test to have an alternative method to
 complete the same task.
 
 ::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
 ### Code
 
-Let us now perform the base `chisq test`: We need a `contingency table` and then the `chisq` test: We will calculate the `observed-chi-squared` value, and compare it with the `critical value`.
+Let us now perform the base `chisq test`: We need a `contingency table` and then the `xchisq` test: We will calculate the `observed-chi-squared` value, and compare it with the `critical value`. ( The `xchisq` function is from the `mosaic` package, and is a wrapper around the base `chisq.test` function. It provides more verbose output, which is easier to work with. )
 
 ```{r}
+#| label: chi-squared-test1
 
-# Chi-square test
+contingency_table <- vcd::structable(Education ~ DeathPenalty, 
+                                     data = GSS2002_modified)
+contingency_table
 
-mosaic::xchisq.test(vcd::structable(Education ~ DeathPenalty, data = gss2002))
-# Get the observed chi-square statistic
-X_squared_observed <- mosaic::chisq(mosaic::xchisq.test(vcd::structable(Education ~ DeathPenalty, data = gss2002)))
+xq_test_object <- xchisq.test(contingency_table) 
+
+
+xq_test_object%>% 
+  broom::tidy() %>% 
+  select(statistic) %>% 
+  as.numeric -> X_squared_observed
 X_squared_observed
 
+```
+
+We have the CT and the quite verbose test results, which we will examine shortly. 
+
+Let us also evaluate the `critical value` for the Chi-Square distribution, with `alpha = 0.05` and `df = (nrows-1)*(ncols-1) = (5-1)*(2-1) = 4`:
+
+
+```{r}
 # Determine the Chi-Square critical value
 X_squared_critical <- qchisq(p = .05, 
        df = (5-1)*(2-1), # (nrows-1) * (ncols-1)
@@ -413,15 +513,19 @@ X_squared_critical
 
 ```
 
-We see that our observed $X^2 = 23.45$; the critical value
-`X_squared_critical` is $9.48$, which is much smaller! The `p-value` is
+We see that our observed $X^2_{obs} = 23.45$; the critical value
+$X^2_{crit} = 9.48$, which is much smaller! The `p-value` is
 $0.0001029$, very low as we would expect, indicating that the NULL
 Hypothesis should be rejected in favour of the alternate hypothesis,
-that opinions about the `DeathPenalty` are related to `Education`.
+that proportions of `DeathPenalty` are affected by `Education`.
+
+As always, *we analyze our plots, and plot our analysis*. Here is a plot for this test:
 
 ```{r}
 #| code-fold: true
 #| label: fig-chi-square-critical-value
+#| fig-cap: Results of Chi-Square Test
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 mosaic::xqchisq(p = 0.95, df = 4, 
@@ -452,57 +556,148 @@ mosaic::xqchisq(p = 0.95, df = 4,
     gf_annotate('curve', X_squared_critical + 2.5, y = 0.135, yend = 0.10,
              xend = X_squared_critical + 0.5,
              linewidth = 0.5, curvature = - 0.3,
-             arrow = arrow(length = unit(0.25, 'cm')))
+             arrow = arrow(length = unit(0.25, 'cm'))) %>% 
+  gf_refine(scale_y_continuous(expand = c(0,0)),
+            scale_x_continuous(expand = c(0,0)))
 
 ```
 
 Let us now dig into that cryptic-looking table above!
 
-### Intuitive Explanation
+### Visual Explanation
 
-Let us look at the Contingency Table that we have:
+Let us once again look at the output of the `xchisq.test()` function:
 
 ```{r}
-#| label: fig-sample-contingency-table-picture
-#| fig-cap: "Contingency Table"
+xchisq.test(contingency_table)
+```
+
+As per the `key` below, this is [**actually four 2-row tables interleaved together into one**]{style="background-color:yellow;"}. The first row is the `Observed` counts, the second row is the `Expected` counts, if the two variables were independent. The third row is the `Pearson Residuals`, which we will explain shortly. The last row is the `Contribution` of each cell to the overall Chi-Square statistic.
+
+Let us plot these tables and develop first a visual intuition, and then a mathematical one. If we pull apart the four tables, here are the mosaic plots for the *actual* and *expected* Contingency Tables, along with the *association* plot showing the differences, as we did when plotting [Proportions](../../../10-Descriptive/Modules/40-CatData/index.qmd#coloured-tiles-actual-and-expected-contingency-tables):
+
+
+```{r}
 #| echo: false
+#| layout-ncol: 3
+#| label: fig-mosaic-actual-expected-differences
+#| fig-cap: Mosaic Plots of Actual, Expected and Differences in Contingency Tables
+#| fig-subcap: 
+#|  - "Actual"
+#|  - "Expected"
+#|  - "Tile-Wise Differences Contribute to Chi-Square Statistic"
+#| code-fold: true
+#| 
+counts_table <- vcd::structable(Education ~ DeathPenalty, 
+                                data = GSS2002_modified) # No margins added
+vcd::mosaic(counts_table,gp = shading_max, legend = TRUE,
+    labeling = labeling_border(
+      varnames = c("F", "F"), # Remove variable name labels
+      rot_labels = c(90, 0, 0, 0), # t,r,b,l?
+      just_labels = c(
+        "left", # Top Side. How?
+        "left", # Right side
+        "left", # Bottom side
+        "right"
+      )
+    )
+  ) # Left side. How?
+vcd::mosaic(counts_table, type = "expected", gp = shading_max, legend = TRUE,
+    labeling = labeling_border(
+      varnames = c("F", "F"), # Remove variable name labels
+      rot_labels = c(90, 0, 0, 0), # t,r,b,l?
+      just_labels = c(
+        "left", # Top Side. How?
+        "left", # Right side
+        "left", # Bottom side
+        "right"
+      )
+    )
+  ) # Left side. How?)
+vcd::assoc(counts_table,gp = shading_max, legend = TRUE,
+    labeling = labeling_border(
+      varnames = c("F", "F"), # Remove variable name labels
+      rot_labels = c(90, 0, 0, 0), # t,r,b,l?
+      just_labels = c(
+        "left", # Top Side. How?
+        "left", # Right side
+        "left", # Bottom side
+        "right"
+      )
+    )
+  ) # Left side. How?)
 
-data("GSS2002", package = "resampledata")
-gss2002 <- GSS2002 %>% 
-  dplyr::select(Education, DeathPenalty) %>% 
-  tidyr::drop_na(., c(Education, DeathPenalty))
+```
+In @fig-mosaic-actual-expected-differences-1, we have the *Observed Contingency Table* as a mosaic, with its imbalances. The horizontal slice-line provides the overall proportion `Favour::Oppose`. The vertical slice-lines tell us that this proportion is *not the same* across levels of `Education`. 
 
-vcd::structable(Education ~ DeathPenalty, data = gss2002) %>%
-  as.matrix() %>% # Convert to matrix;
-  addmargins() %>% # Add margins to the table; matrix output
+What if we straighten out the vertical slice-lines?
+
+@fig-mosaic-actual-expected-differences-2 does exactly this: we have a **fictitious** mosaic plot of an **Expected Contingency Table**, with ***straight vertical divisions***, as if ***Education had no effect on the Favour::Oppose proportion***. (NULL hypothesis!!)
+
+The third plot, @fig-mosaic-actual-expected-differences-3, is a tile-plot of the tile-wise differences between the two tables, which *Contribute* to the overall `X-statistic`. The [blue tiles]{style="background-color:blue; color:white"} indicate that the Actual count is higher than the Expected count, and the [red tiles]{style="background-color:red; color:white"} indicate that the Actual count is lower than the Expected count. The intensity of the colour indicates the magnitude of the difference.
+
+When we scale these differences by the standard deviation of each cell, we get the `Pearson Residuals`, which we will explain next.
+
+
+### Numeric Explanation
+
+Let us perform these computations manually, to see how this works. Here are all the four tables, side by side: (Are you tired of these yet?)
+
+```{r}
+#| label: tbl-all-tables
+#| tbl-cap: "All Contingency Tables"
+#| tbl-subcap:
+#| - "Observed"
+#| - "Expected"
+#| - "Pearson Residuals"
+#| - "Contribution to Chi-Square Statistic"
+#| code-fold: true
+
+# xq_test_object <- xchisq.test(contingency_table) 
+# Already computed
+
+xq_test_object$observed %>% 
+  addmargins() %>% 
   as_tibble(rownames = "DeathPenalty") %>%  # Convert to tibble; ensure row names!
-
-# mosaic::tally(DeathPenalty ~ Education, data = gss2002) %>% 
-#   addmargins() %>% 
-#   as_tibble() %>% 
-# pivot_wider(id_cols = DeathPenalty, names_from = Education, values_from = n) %>% 
-
-  tt() %>% 
+  tt(caption = "Observed") %>% 
   style_tt(color = "grey20") %>% 
   style_tt(i = 1, j = 2, color = "black", bold = TRUE, background = "yellow") %>% 
   style_tt(i = 2, j = 5, color = "black", bold = TRUE, background = "yellow") %>% 
-   style_tt(i = 3, color = "black", bold = TRUE, background = "palegreen") 
+   style_tt(i = 3, j = 1:7,color = "black", bold = TRUE, background = "palegreen") %>% 
+  style_tt(j = 7, i = 1:3, color = "black", bold = TRUE, background = "palegreen")
+
+xq_test_object$expected %>% 
+  addmargins() %>% 
+  as_tibble(rownames = "DeathPenalty") %>%  # Convert to tibble; ensure row names!
+  tt(digits = 2, caption = "Expected") %>% 
+  style_tt(color = "grey20") %>% 
+  style_tt(i = 1, j = 2, color = "black", bold = TRUE, background = "yellow") %>% 
+  style_tt(i = 2, j = 5, color = "black", bold = TRUE, background = "yellow") %>% 
+   style_tt(i = 3, j = 1:7,color = "black", bold = TRUE, background = "palegreen") %>% 
+  style_tt(j = 7, i = 1:3, color = "black", bold = TRUE, background = "palegreen")
+
+xq_test_object$residuals %>% 
+  addmargins() %>% 
+  as_tibble(rownames = "DeathPenalty") %>%  # Convert to tibble; ensure row names!
+  tt(digits = 2, caption = "Pearson Residuals") %>% 
+  style_tt(color = "grey20") %>% 
+  style_tt(i = 1, j = 2, color = "black", bold = TRUE, background = "yellow") %>% 
+  style_tt(i = 2, j = 5, color = "black", bold = TRUE, background = "yellow") %>% 
+   style_tt(i = 3, j = 1:7,color = "black", bold = TRUE, background = "palegreen") %>% 
+  style_tt(j = 7, i = 1:3, color = "black", bold = TRUE, background = "palegreen")
+
+xq_test_object$contribution %>% as.matrix() %>% 
+  as_tibble(rownames = "DeathPenalty") %>%  # Convert to tibble; ensure row names!
+  tt(digits = 2, caption = "Contribution to Chi-Square Statistic") %>% 
+  style_tt(color = "grey20") %>%
+  style_tt(i = 1, j = 2, color = "black", bold = TRUE, background = "yellow") %>%
+  style_tt(i = 2, j = 5, color = "black", bold = TRUE, background = "yellow")
 
 ```
 
-<br> In the chi-square test, we check whether the two (or more)
-categorical variables are independent. To do this we perform a simple
-check on the Contingency Table. We first *re-compute* the totals in each
-row and column, based on what we could **expect** ***if there was
-independence (NULL Hypothesis)***. If the two variables were independent,
-then there should be **no difference** between real and expected scores.
+##### A. Expected Counts
 
-How do we know [what scores to expect]{.black .bg-light-red} if there was
-no relationship between the variables?
-
-Consider the entry in location (1,1): 117. The number of **expected**
-entries there is the *probability of an entry landing in that square*
-times *the total number of entries*:
+How would we calculate the `Expected` table? The numbers that we might ***expect*** (under independence) in each cell there is the *probability of an entry landing in that square* times *the total number of entries*:
 
 $$
 \begin{align}
@@ -515,132 +710,40 @@ $$
 $$
 
 Proceeding in this way for all the 15 entries in the Contingency Table,
-we get the "Expected" Contingency Table. Here are both tables for
-comparison:
+we get the "Expected" Contingency Table. [Remember ***expect*** is another way of saying ***mean*** !!]{style="background-color:yellow;"}
 
+##### B. Pearson Residuals
 
-```{r}
-#| eval: false
-#| echo: false
-vcd::structable(Education ~ DeathPenalty, data = gss2002) %>%
-  as.matrix() %>% # Convert to matrix;
-  addmargins() %>% # Add margins to the table; matrix output
-  as_tibble(rownames = "DeathPenalty") %>%  # Convert to tibble; ensure row names!
-  tt()
-```
+Now, [the **Pearson Residual** in each cell is equivalent to the `z-score` of that cell]{.bg-light-red .black}. Recall the [z-score](../../../10-Descriptive/Modules/22-Histograms/index.qmd#z-scores) idea: we subtract the mean and divide by the std. deviation to get the `z-score`.
 
+1. To get a `z-score`, we need the value, the `mean`, and `sd`. 
+1. Now, the mean is the `Expected` value, as stated, and the `value` is the `Actual` value. 
+1. What of the `sd`? In the Contingency Table, we have **counts** which are usually modeled as an (integer-valued) *Poisson distribution*, for which **mean and variance are identical**. And $sd = \sqrt{variance}$. Thus we get the `z-scores` aka ***Pearson Residuals*** as:
 
+    $$
+    r_{i,j} = \frac{(Actual - Expected)}{\sqrt{\displaystyle Expected}}
+    $${#eq-pearson-residuals}
 
-```{r}
-#| eval: false
-#| echo: false
-vcd::structable(Education ~ DeathPenalty, data = gss2002, type = "expected") %>%
-   as.matrix() %>% # Convert to matrix;
-  addmargins() %>% # Add margins to the table; matrix output
-  as_tibble(rownames = "DeathPenalty") %>%  # Convert to tibble; ensure row names!
-  tt()
+1. The sum of all the squared Pearson residuals is the chi-square
+statistic, χ2, upon which the inferential analysis follows. We square them because we want to measure the *magnitude* of the difference, not the direction ( + or - ):
 
-```
+    $$
+    χ2 = \sum_{i=1}^R\sum_{j=1}^C{r_{i,j}^2} 
+    $${#eq-chi-square-statistic}
 
-```{r}
-#| echo: false
-# using prop.table with appropriate margin argument gives us a slick matrix of probabilities
-mosaic::tally(DeathPenalty ~ Education, 
-              data = gss2002) %>% 
-  addmargins() -> gss_sub_table
-##
-gss_exp <- gss_sub_table * gss_sub_table / ((
-  prop.table(gss_sub_table, margin = 1) * prop.table(gss_sub_table, margin = 2)) * 1307 * 4)
-gss_exp %>% 
-   kableExtra::kbl(caption = "Expected Contingency Table", 
-                   digits = 0) %>%
-  kableExtra::kable_classic(full_width = F, 
-                            html_font = "Cambria")
-```
+    where R and C are number of rows and columns in the Contingency Table, the levels in the two Qual variables.
+So for cell-location \[1,1\], its contribution to χ2 would be: $(117-130)^2/130 = -1.13$. Do try to compute all of these and the $X^2$ statistic by hand !!
 
-```{r}
-#| eval: false
-#| echo: false
-gss_exp %>% 
-   kableExtra::kbl(caption = "Expected Contingency Table", 
-                   digits = 0) %>%
-  kableExtra::kable_classic(full_width = F, 
-                            html_font = "Cambria")
-```
-
-```{r}
-#| echo: false
-gss_sub_table %>%  
-   kableExtra::kbl(caption = "Actual Contingency Table") %>%
-  kableExtra::kable_classic(full_width = F, html_font = "Cambria")
-
-```
-
-These numbers are also what we saw with the code above, `mosaic::xchisq.test()`, which seems to output a format that combines both tables into one. 
-
-And so, here are the mosaic plots for the *actual* and *expected* Contingency Tables, along with the *association* plot showing the differences, as we did when plotting [Proportions](../../../10-Descriptive/Modules/40-CatData/index.qmd#coloured-tiles-actual-and-expected-contingency-tables):
-
-
-```{r}
-#| echo: false
-#| layout-ncol: 3
-#| fig-subcap: 
-#|  - "Actual"
-#|  - "Expected"
-#|  - "Tile-Wise Differences"
-counts_table <- mosaic::tally(DeathPenalty ~ Education, data = gss2002) # No margins added
-vcd::mosaic(counts_table,gp = shading_max)
-vcd::mosaic(counts_table, type = "expected", gp = shading_max)
-vcd::assoc(counts_table,gp = shading_max)
-
-```
-
-<br> 
-
-Now, [the **Pearson Residual** in each cell is equivalent to the
-`z-score` of that cell]{.bg-light-red .black}. Recall the [z-score](../../../10-Descriptive/Modules/22-Histograms/index.qmd#z-scores) idea: we subtract the mean and divide by the std. deviation to get the `z-score`.
-
-In the Contingency Table, we have **counts** which are usually modeled
-as an (integer) *Poisson distribution*, for which **mean (i.e Expected
-value) and variance are identical**. Thus we get the Pearson Residual
-as:
-
-$$
-r_{i,j} = \frac{(Actual - Expected)}{\sqrt{\displaystyle Expected}}
-$$ 
-
-and therefore:
-
-
-$$
-r_{i,j} = \frac{(o_{i,j}- e_{i,j})}{\sqrt{\displaystyle e_{i,j}}}
-$$
-
-
-The sum of all the squared Pearson residuals is the chi-square
-statistic, χ2, upon which the inferential analysis follows. 
-
-$$
-χ2 = \sum_{i=1}^R\sum_{j=1}^C{r_{i,j}^2} 
-$$ 
-
-
-where R and C are number of rows and columns in the Contingency
-Table, the levels in the two Qual variables.
-
-For location \[1,1\], its contribution to χ2 would be: $(117-130)^2/130 = 1.3$. 
-Do try to compute all of these and the $X^2$ statistic by hand !!
-
-All right, what of all this? How did this $X^2$ distribution come from?
+1. How did this $X^2$ distribution come from?
 Here is a lovely, brief explanation from this [StackOverflow
 Post](https://stats.stackexchange.com/a/303548):
 
 > -   In a Contingency Table the Null Hypothesis states that the
 >     variables in the rows and the variable in the columns are
 >     independent.\
-> -   The cell counts $E_{ij}$ are assumed to be [Poisson distributed]{.bg-light-red .black} with mean = $E_{ij}$ and as they are Poisson, their variance is
+> -   The (each) cell counts $E_{ij}$ are assumed to be [Poisson distributed]{.bg-light-red .black} with mean = $E_{ij}$ and as they are Poisson, their variance is
 >     also $E_{ij}$.\
-> -   Asymptotically the Poisson distribution approaches the [normal
+> -   Asymptotically (when cell counts are large) the Poisson distribution approaches the [normal
 >     distribution]{.bg-light-red .black}, with mean = $E_{ij}$ and *standard deviation* with
 >     $\sqrt{E_{ij}}$ so, asymptotically
 >     $\large{\frac{(X_{ij} - E_{ij})}{\sqrt{E_{ij}}}}$ is approximately
@@ -674,6 +777,7 @@ df %>% gf_density(~y) %>%
 ```
 :::
 
+Hence, after all this calculation, we have the $X^2$ statistic, which we can compare with the critical value, and make our inference.
 
 ## Permutation Test for `Education`
 
@@ -777,7 +881,7 @@ p0 <- data %>%
   # Very important to have scales = "free" !!
   facet_wrap( ~ evaluator, ncol = 1, scales = "free") +
   
-  theme_void() +
+  ggplot2::theme_void() +
   theme(
     legend.position = "top",
     strip.background = element_blank(),
@@ -851,7 +955,7 @@ data_shuffled %>%
       scale_fill_manual(name = NULL,
                         values = c("orangered", "dodgerblue"),
                         labels = c("Rejected","Selected")) +  
-  theme_void(base_family = "Alegreya", base_size = 14) + 
+  ggplot2::theme_void(base_family = "Alegreya", base_size = 14) + 
       facet_wrap(~ evaluator, ncol = 1, scales = "free") +
       expand_limits(y = c(0,28)) +
       ggbrace::stat_brace(aes(label = evaluator),
@@ -893,7 +997,7 @@ data_shuffled %>%
                       labelrotate = 0,
                       labelsize = 4,
                       inherit.aes = TRUE) +
-  theme_void(base_family = "Alegreya", base_size = 14) + 
+  ggplot2::theme_void(base_family = "Alegreya", base_size = 14) + 
   theme(legend.position = "top", 
                        strip.background = element_blank(),
                        strip.text.x = element_blank(),
@@ -903,7 +1007,7 @@ data_shuffled %>%
 ```
 
 ```{r}
-#| label: Old code retained
+#| label: Old-code-retained
 #| echo: false
 #| message: false
 #| warning: false
@@ -957,22 +1061,27 @@ We should now repeat the test with permutations on `Education`:
 ```{r}
 ggplot2::theme_set(new = theme_custom())
 
+set.seed(42)
 null_chisq <- do(4999) * 
   chisq.test(mosaic::tally(DeathPenalty ~ shuffle(Education), 
-                   data = gss2002))
+                   data = GSS2002_modified))
 
 head(null_chisq)
 
 gf_histogram( ~ X.squared, data = null_chisq) %>% 
-  gf_vline(xintercept = observedChi2, 
+  gf_vline(xintercept = X_squared_observed, 
            color = "red") %>% 
-  gf_refine(annotate("text", y = 500, x = observedChi2, 
-           label = "Observed\n Chi-Square")) %>%
   gf_labs(title = "Permutation Test on Chi-Square Statistic",
            x = "Chi-Square Statistic",
-           y = "How Often?") 
+           y = "How Often?") %>% 
+  gf_annotate(geom = "label", y = 500, x = X_squared_observed, 
+           label = "Observed\n Chi-Square", fill = "moccasin") %>% 
+  gf_refine(
+    scale_x_continuous(breaks = c(0, 5, 10, 15, 20, round(X_squared_observed, 2)), 
+                       expand = expansion(mult = c(0, .1))),
+            scale_y_continuous(expand = c(0,0)))
 
-prop1(~ X.squared >= observedChi2, data = null_chisq)
+prop1(~ X.squared >= X_squared_observed, data = null_chisq)
 
 ```
 
@@ -1006,6 +1115,23 @@ When performing research for a design project, peasants, you are likely to have 
 
 ## {{< iconify bi person-up >}} Your Turn
 
+1. `DaytonSurvey`: Substance Abuse among highschoolers. Part of the `vcdExtra` package. ( Install it, peasants!). dataset: <https://friendly.r-universe.dev/vcdExtra/doc/manual.html#DaytonSurvey>
+
+    -   Is there a relationship between `Gender` and `Substance` use?
+    -   Is there a relationship between `Race` and `Substance` use?
+2. `Titanic` dataset: <https://www.kaggle.com/c/titanic/data>
+
+    -   Is there a relationship between `Sex` and `Survived`?
+    -   Is there a relationship between `Pclass` and `Survived`?
+    -   Is there a relationship between `Embarked` and `Survived`?
+    
+    Can you prove that Jack would have survived, had Rose been a nice-R person?
+    
+3. `Gilby` dataset: <https://friendly.r-universe.dev/vcdExtra/doc/manual.html#Gilby>
+    -   Is there a relationship between `Clothing` and `Dullness`?
+
+4. Can you show that people who wear ethnic are more likely to be considered dull? Find a dataset to prove or disprove this hypothesis!
+    
 ## {{< iconify ooui references-rtl >}} References
 
 1.  [OpenIntro Modern Statistics: Chapter

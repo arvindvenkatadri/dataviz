@@ -808,7 +808,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">August 23, 2025</p>
+      <p class="date-modified">August 26, 2025</p>
     </div>
   </div>
     
@@ -947,17 +947,26 @@ window.Quarto = {
 <p>Now then: does a similar logic work for <code>proportions</code> too, as for <code>means</code>?</p>
 <section id="the-clt-for-proportions" class="level3"><h3 class="anchored" data-anchor-id="the-clt-for-proportions">
 <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> The CLT for Proportions</h3>
+<p>The Central Limit Theorem (CLT) also works for proportions, with some differences:</p>
 <ul>
 <li>Sample proportions are also centred around population proportions</li>
 <li>
-<strong>Success-failure condition</strong>: If <span class="math inline">\(\hat{p} *n &gt;= 10\)</span> and <span class="math inline">\((1-\hat{p})*n &gt;= 10\)</span> are both satisfied, then the we can assume that the <em>sampling distribution</em> of the proportion is normal. And so:</li>
-<li>The Standard Error for a sample proportion is given by <span class="math inline">\(SE = \sqrt\frac{\hat{p}(1-\hat{p})}{n}\)</span>, where <span class="math inline">\(\hat{p}\)</span> is the sample proportion</li>
+<strong>Success-failure condition</strong>: If <span class="math display">\[
+  \hat{p} *n &gt;= 10
+  \]</span> and <span class="math display">\[
+  (1-\hat{p})*n &gt;= 10
+  \]</span> are both satisfied, then the we can assume that the <em>sampling distribution</em> of the proportion is normal. And so:</li>
+<li>The Standard Error for a sample proportion is given by <span id="eq-standard-error"><span class="math display">\[
+\Large{SE = \sqrt\frac{\hat{p}(1-\hat{p})}{n}}
+  \tag{1}\]</span></span> where <span class="math inline">\(\hat{p}\)</span> is the sample proportion.</li>
 <li>We would calculate the Confidence Intervals in a similar fashion, based on the desired probability of error, as:</li>
 </ul>
-<p><span class="math display">\[
-p = \hat{p} \pm 1.96*{SE}
-\]</span></p>
-</section></section><section id="case-study-1-yrbss-survey" class="level2"><h2 class="anchored" data-anchor-id="case-study-1-yrbss-survey">
+<p><span id="eq-confidence-interval"><span class="math display">\[
+\Large{p = \hat{p} \pm 1.96*{SE}}
+\tag{2}\]</span></span></p>
+<ul>
+<li>The larger the size of the sample, the tighter the Confidence Interval.</li>
+</ul></section></section><section id="case-study-1-yrbss-survey" class="level2"><h2 class="anchored" data-anchor-id="case-study-1-yrbss-survey">
 <iconify-icon inline="" icon="pajamas:issue-type-test-case" aria-label="Icon issue-type-test-case from pajamas Iconify.design set." title="Icon issue-type-test-case from pajamas Iconify.design set."></iconify-icon> Case Study #1: YRBSS Survey</h2>
 <p>We will be analyzing the same dataset called the <em>Youth Risk Behavior Surveillance System (YRBSS) survey</em> from the <code>openintro</code> package, which uses data from high schoolers to help discover health patterns. The dataset is called <code>yrbss</code>.</p>
 <section id="workflow-read-the-data" class="level3"><h3 class="anchored" data-anchor-id="workflow-read-the-data">
@@ -973,7 +982,7 @@ p = \hat{p} \pm 1.96*{SE}
 </div>
 </div>
 </div>
-<p>When summarizing the YRBSS data, the Centers for Disease Control and Prevention seeks insight into the population <em>parameters</em>. Accordingly, in this tutorial, our research questions are:</p>
+<p>When summarizing the YRBSS data, the Centers for Disease Control and Prevention seeks insight into the <strong><em>population parameters</em></strong>. Accordingly, in this tutorial, our research questions are:</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -990,7 +999,8 @@ p = \hat{p} \pm 1.96*{SE}
 </ol>
 </div>
 </div>
-<p>Question 1 pertains to the data set <code>yrbss</code>, our “sample”. To answer this, you can answer the question, “What proportion of people in your sample reported that they have texted while driving each day for the past 30 days?” with a statistic. Question 2 is an inference we need to make about the <em>population of highschoolers</em>. While the question “What proportion of people on earth have texted while driving each day for the past 30 days?” is answered with an estimate of the parameter.</p>
+<p>Question 1 pertains to the data set <code>yrbss</code>, our “sample”. To answer this, you can answer the question, “What proportion of people in your sample reported that they have texted while driving each day for the past 30 days?” with an <strong><em>observed statistic</em></strong>.</p>
+<p>Question 2 is an inference we need to make about the <em>population of highschoolers</em>. While the question “What proportion of people on earth have texted while driving each day for the past 30 days?” is answered with an estimate of the parameter.</p>
 <p>For our first Research Question, we will choose the column <code>helmet_12m</code>: Remember that you can use <code>filter</code> to limit the dataset to just non-helmet wearers. Here, we will name the (filtered ) dataset <code>no_helmet</code>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">yrbss</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -1003,8 +1013,7 @@ p = \hat{p} \pm 1.96*{SE}
   </script>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">##</span></span>
-<span><span class="va">yrbss</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">yrbss</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">text_while_driving_30d</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/mosaicCore/man/prop.html">count</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
@@ -1015,7 +1024,7 @@ p = \hat{p} \pm 1.96*{SE}
 </div>
 </div>
 </div>
-<p>Also, it may be easier to calculate the proportion if we create a new variable that specifies whether the individual has <em>texted every day</em> while driving over the past 30 days or not. We will call this variable <code>text_ind</code>.</p>
+<p>Also, it may be easier to calculate the proportion if we create a new variable that specifies whether the individual has <strong><em>texted every day</em></strong> while driving over the past 30 days or not. We will call this variable <code>text_ind</code>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">no_helmet_text</span> <span class="op">&lt;-</span> <span class="va">yrbss</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">helmet_12m</span> <span class="op">==</span> <span class="st">"never"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -1030,8 +1039,7 @@ p = \hat{p} \pm 1.96*{SE}
   </script>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">##</span></span>
-<span><span class="va">no_helmet_text</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">no_helmet_text</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/mosaicCore/man/prop.html">count</a></span><span class="op">(</span><span class="va">text_ind</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
@@ -1041,8 +1049,7 @@ p = \hat{p} \pm 1.96*{SE}
   </script>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">##</span></span>
-<span><span class="va">no_helmet_text</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">no_helmet_text</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>prop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/mosaicCore/man/prop.html">prop</a></span><span class="op">(</span><span class="va">text_ind</span>, success <span class="op">=</span> <span class="st">"yes"</span><span class="op">)</span>, n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
@@ -1056,6 +1063,8 @@ p = \hat{p} \pm 1.96*{SE}
 <p>This is the <code>observed_statistic</code>: the proportion of people <strong>in this sample</strong> who do text when they drive without a helmet.</p>
 </section><section id="visualizing-a-single-proportion" class="level3"><h3 class="anchored" data-anchor-id="visualizing-a-single-proportion">Visualizing a Single Proportion</h3>
 <p>We can quickly plot this, just for the sake of visual understanding of the proportions:</p>
+<div class="columns">
+<div class="column">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -1067,10 +1076,19 @@ p = \hat{p} \pm 1.96*{SE}
 <span>    title <span class="op">=</span> <span class="st">"High-Schoolers who texted every day"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"While driving with no helmet on!!"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div><div class="column">
+<div class="cell">
 <div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="2100"></a></p>
-</figure>
+<div id="fig-no-helmet-text" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-no-helmet-text-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="index_files/figure-html/fig-no-helmet-text-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: High-Schoolers who texted every day while driving with no helmet on!!"><img src="index_files/figure-html/fig-no-helmet-text-1.png" class="img-fluid figure-img" width="2100"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-no-helmet-text-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: High-Schoolers who texted every day while driving with no helmet on!!
+</figcaption></figure>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1193,13 +1211,13 @@ CI &amp;=&amp; \hat{p} ~ \pm 1.96*SE\\
 <div class="cell quarto-layout-panel" data-layout="[[45,-10,45]]">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 45.0%;justify-content: center;">
-<p><a href="index_files/figure-html/unnamed-chunk-4-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="2100"></a></p>
+<p><a href="index_files/figure-html/unnamed-chunk-3-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="2100"></a></p>
 </div>
 <div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 10.0%;justify-content: flex-start;">
 <p>&nbsp;</p>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 45.0%;justify-content: center;">
-<p><a href="index_files/figure-html/unnamed-chunk-4-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="index_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid" width="2100"></a></p>
+<p><a href="index_files/figure-html/unnamed-chunk-3-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="index_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid" width="2100"></a></p>
 </div>
 </div>
 </div>
@@ -1230,7 +1248,7 @@ CI &amp;=&amp; \hat{p} ~ \pm 1.96*SE\\
 <div class="cell quarto-layout-panel" data-layout="[[60,-10,30]]">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: center;">
-<p><a href="index_files/figure-html/unnamed-chunk-5-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="2100"></a></p>
+<p><a href="index_files/figure-html/unnamed-chunk-4-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="2100"></a></p>
 </div>
 <div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 10.0%;justify-content: flex-start;">
 <p>&nbsp;</p>

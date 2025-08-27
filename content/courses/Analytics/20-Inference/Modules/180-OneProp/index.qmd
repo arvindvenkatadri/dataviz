@@ -168,14 +168,31 @@ We have seen how sampling from a population works when we wish to estimate **mea
 Now then: does a similar logic work for `proportions` too, as for `means`?
 
 ### {{< iconify flat-color-icons workflow >}} The CLT for Proportions
+
+The Central Limit Theorem (CLT) also works for proportions, with some differences:
+
  - Sample proportions are also centred around population proportions
- - **Success-failure condition**: If $\hat{p} *n >= 10$ and $(1-\hat{p})*n >= 10$ are both satisfied, then the we can assume that the *sampling distribution* of the proportion is normal. And so:
- - The Standard Error for a sample proportion is given by $SE = \sqrt\frac{\hat{p}(1-\hat{p})}{n}$, where $\hat{p}$ is the sample proportion
+ - **Success-failure condition**: If 
+  $$
+  \hat{p} *n >= 10
+  $$ 
+  and 
+  $$
+  (1-\hat{p})*n >= 10
+  $$ 
+  are both satisfied, then the we can assume that the *sampling distribution* of the proportion is normal. And so:
+ - The Standard Error for a sample proportion is given by 
+    $$
+    \Large{SE = \sqrt\frac{\hat{p}(1-\hat{p})}{n}}
+    $${#eq-standard-error}
+    where $\hat{p}$ is the sample proportion.
  - We would calculate the Confidence Intervals in a similar fashion, based on the desired probability of error, as:
  
 $$
-p = \hat{p} \pm 1.96*{SE}
-$$
+\Large{p = \hat{p} \pm 1.96*{SE}}
+$${#eq-confidence-interval}
+ 
+ - The larger the size of the sample, the tighter the Confidence Interval.
 
 
 ## {{< iconify pajamas issue-type-test-case >}} Case Study #1: YRBSS Survey
@@ -190,16 +207,19 @@ data(yrbss, package = "openintro")
 yrbss
 ```
 
-When summarizing the YRBSS data, the Centers for Disease Control and Prevention seeks insight into the population *parameters*. Accordingly, in this tutorial, our research questions are:
+When summarizing the YRBSS data, the Centers for Disease Control and Prevention seeks insight into the ***population parameters***. Accordingly, in this tutorial, our research questions are:
 
 ::: callout-note
 ## Research Questions
+
 1.  What are the counts within each category for the amount of days these students have texted while driving within the past 30 days?
 
 2. What proportion of people on earth have texted while driving each day for the past 30 days without wearing helmets?
 :::
 
-Question 1 pertains to the data set `yrbss`, our "sample". To answer this, you can answer the question, "What proportion of people in your sample reported that they have texted while driving each day for the past 30 days?" with a statistic. Question 2 is an inference we need to make about the *population of highschoolers*.  While the question "What proportion of people on earth have texted while driving each day for the past 30 days?" is answered with an estimate of the parameter.
+Question 1 pertains to the data set `yrbss`, our "sample". To answer this, you can answer the question, "What proportion of people in your sample reported that they have texted while driving each day for the past 30 days?" with an ***observed statistic***. 
+
+Question 2 is an inference we need to make about the *population of highschoolers*.  While the question "What proportion of people on earth have texted while driving each day for the past 30 days?" is answered with an estimate of the parameter.
 
 For our first Research Question, we will choose the column `helmet_12m`: Remember that you can use `filter` to limit the dataset to just non-helmet wearers. Here, we will name the (filtered ) dataset `no_helmet`.
 
@@ -207,12 +227,12 @@ For our first Research Question, we will choose the column `helmet_12m`: Remembe
 #| label: no-helmet-text
 yrbss %>% 
   group_by(helmet_12m) %>% count()
-##
+
 yrbss %>% 
   group_by(text_while_driving_30d) %>% count()
 ```
 
-Also, it may be easier to calculate the proportion if we create a new variable that specifies whether the individual has *texted every day* while driving over the past 30 days or not. We will call this variable `text_ind`.
+Also, it may be easier to calculate the proportion if we create a new variable that specifies whether the individual has [***texted every day***]{style="background-color:yellow;"} while driving over the past 30 days or not. We will call this variable `text_ind`.
 
 ```{r}
 no_helmet_text <- yrbss %>%
@@ -221,20 +241,27 @@ no_helmet_text <- yrbss %>%
   # removing most of the other variables
   select(age, gender, text_ind)
 no_helmet_text
-##
+
 no_helmet_text %>% drop_na() %>% count(text_ind)
-##
+
 no_helmet_text %>% drop_na() %>% 
   summarize(prop = prop(text_ind, success = "yes"), n = n())
 
 ```
+
 This is the `observed_statistic`: the proportion of people  **in this sample** who do text when they drive without a helmet.
 
 ### Visualizing a Single Proportion
 
 We can quickly plot this, just for the sake of visual understanding of the proportions:
 
+:::: {.columns}
+::: {.column}
+
 ```{r}
+#| label: plot-no-helmet-text
+#| eval: false
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 no_helmet_text %>% drop_na() %>% 
@@ -243,6 +270,19 @@ no_helmet_text %>% drop_na() %>%
           title = "High-Schoolers who texted every day",
           subtitle = "While driving with no helmet on!!")
 ```
+:::
+
+::: {.column}
+```{r}
+#| ref-label: plot-no-helmet-text
+#| echo: false
+#| label: fig-no-helmet-text
+#| fig-cap: "High-Schoolers who texted every day while driving with no helmet on!!"
+```
+
+:::
+::::
+  
 
 ## Inference for a Single Proportion
 
@@ -251,10 +291,10 @@ Based on this **sample** in the `yrbss` data, we wish to infer proportions for t
 
 ### Hypothesis Testing for a Single Proportion
 
-Consider the inference we did for a single mean. What was our NULL Hypothesis? That the population mean $\mu = 0$. for two means? That they might be equal. What might a suitable NULL Hypothesis be for a *single proportion*? What *attitude* of [ain't nothing happenin']{.bg-yellow .black} might we adopt?
+Consider the inference we did for a single mean. What was our NULL Hypothesis? That the population mean $\mu = 0$. For two means? That they might be equal. What might a suitable NULL Hypothesis be for a *single proportion*? What *attitude* of [ain't nothing happenin']{.bg-yellow .black} might we adopt?
 
 ::: callout-important
-With proportions, we usually look for a "no difference" situation, i.e. a ratio of unity!! So our NULL hypothesis would be a proportion of 1:1 for texters and no-texters, so a proportion of $0.5$!!
+With proportions, we usually look for a "no difference" situation, i.e. [a ratio of unity]{style="background-color:yellow;"}!! So our NULL hypothesis would be a ratio of 1:1 for texters and no-texters, so a proportion of $0.5$!!
 :::
 
 ::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
@@ -269,7 +309,7 @@ mosaic::binom.test(~ text_ind, data = no_helmet_text, success = "yes") %>%
   broom::tidy()
 ```
 
-How do we understand this result? That the sample tells us the $\hat{p} = 0.07119$ and that based on this the population proportion of those who text while driving without a helmet is also **not 0.5**, since the `p-value` is $2.2e-16$. So we reject the NULL hypothesis and accept the alternative hypothesis. 
+How do we understand this result? That the sample tells us the $\hat{p} = 0.07119$ and that based on this the population proportion of those who text while driving without a helmet is also **not 0.5**, since the `p-value` is $2.2e-16$. So we reject the NULL hypothesis and accept the alternative hypothesis, that the proportion is not 0.5 and more like 0.07119.
 
 ### Uncertainty in Estimation
 
