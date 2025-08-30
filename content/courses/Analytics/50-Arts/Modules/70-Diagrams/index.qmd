@@ -1,0 +1,379 @@
+---
+title: "Making Diagrams in R"
+subtitle: "Using d2 and ggdiagram"
+date: 2025/8/30
+date-modified: "`r Sys.Date()`"
+filter:
+  - d2
+order: 70
+---
+
+```{r}
+#| label: setup
+#| echo: true
+#| message: false
+#| warning: false
+#| 
+library(tidyverse)  
+library(ggformula)
+library(systemfonts) ## use custom fonts (need to be installed on your OS)  
+library(scico)       ## scico color palettes(http://www.fabiocrameri.ch/colourmaps.php) in R 
+library(ggtext)      ## add improved text rendering to ggplot2
+library(ggforce)     ## add missing functionality to ggplot2
+library(showtext)   ## add google fonts to plots
+
+library(ggdiagram)   ## create diagrams with ggplot2
+
+
+```
+
+## Introduction
+
+We may have been using `ggplot2` for a while now, but sometimes we need something that is not data-dependent: we need to make diagrams to show processes, workflows, relationships, etc.
+
+Annotations help to draw attention to specific parts or the graph, specific areas of interest that are useful in telling the story .
+
+We have already seen the `annotate()` command from `ggplot2` first ( and the new `gf_annotate()` from `ggformula`). Here we will look at some of the intrigung features from the `ggforce` package. 
+
+### Fonts and Themes
+
+AAs we learnt in the [Fonts Module](../20-Fonts/index.qmd), let us set the ggplot theme with fonts for both the chart defining elements **and** our annotations. I am going to use local fonts from my machine, that I have downloaded from Google Fonts earlier and saved in a `fonts` folder at the root of my project.
+
+```{r}
+#| label: add-local-fonts
+#| code-fold: true
+#| 
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Anton",
+  regular = "../../../../../../fonts/Anton-Regular.ttf") # Only one style is available
+
+sysfonts::font_add(family = "RobotoCondensed", 
+  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+
+sysfonts::font_add(family = "IbarraNova", 
+  regular = "../../../../../../fonts/IbarraRealNova-Regular.ttf",
+  bold = "../../../../../../fonts/IbarraRealNova-Bold.ttf",
+  italic = "../../../../../../fonts/IbarraRealNova-Italic.ttf",
+  bolditalic = "../../../../../../fonts/IbarraRealNova-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Tangerine", 
+  regular = "../../../../../../fonts/Tangerine-Regular.ttf",
+  bold = "../../../../../../fonts/Tangerine-Bold.ttf") # only these two are available
+
+sysfonts::font_add(family = "Schoolbell", 
+  regular = "../../../../../../fonts/Schoolbell-Regular.ttf") # Only regular is available
+
+showtext_auto() # set these fonts as default for the session
+sysfonts::font_families() # check which fonts are available in the session
+
+```
+
+
+```{r}
+#| label: set-ggplot2-theme
+#| code-fold: true
+#| 
+
+theme_custom <- function(){ 
+    font <- "RobotoCondensed"   # Assign font family up front
+    
+    theme_bw(base_size = 14, base_family = font) %+replace%    
+      
+      ## modify plot elements globally (for all following plots)
+      theme(
+        axis.ticks = element_line(color = "grey92"),
+        axis.ticks.length = unit(.5, "lines"),
+        
+        panel.grid.minor = element_blank(),
+        
+        legend.title = element_text(family = "Schoolbell", size = 12),
+        legend.text = element_text(family = "IbarraNova", color = "grey30"),
+        
+        plot.title = element_text(               #title
+                   family = "Alegreya",          #set font family
+                   size = 18,                    #set font size
+                   face = 'bold',                #bold typeface
+                   hjust = 0,                  #left align
+                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
+      
+        plot.title.position = "plot",
+        
+        plot.subtitle = element_text(family = "Alegreya", size = 12, 
+                                     color = "grey30",
+                                     hjust = 0,                   #left align
+                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
+      
+       plot.caption = element_text(             #caption
+                   family = font,                #font family
+                   size = 9,                     #font size
+                   hjust = 1),                   #right align
+       
+      plot.caption.position = "plot",            #right align to plot
+)
+}
+
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
+
+
+## Use available fonts in ggplot text geoms too!
+ggplot2::update_geom_defaults(geom = "text",new = list(
+  family = "RobotoCondensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label", new = list(
+  family = "RobotoCondensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+```
+
+
+
+## Data
+
+We will again work with a **familiar** dataset, so that we can concentrate on the chart aesthetics, without having to spend time getting used to the data: the `penguins` dataset again, ~~from the `palmerpenguins` package~~ now part of the R installation!. 
+
+As always, we will start with a **table** of the data:
+
+```{r}
+#| label: tbl-read-penguins-data
+#| tbl-cap: "Penguins Dataset"
+#| message: false
+
+penguins <- penguins %>% drop_na() # remove data containing missing data
+
+## Create a nicely formatted table
+## uses `kableExtra` package
+## 
+penguins %>% 
+  kableExtra::kbl() %>%
+  kableExtra::kable_paper(full_width = TRUE) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "condensed", "responsive")) %>%
+  kableExtra::scroll_box(width = "700px", height = "350px")
+
+```
+
+## Basic Plot
+
+A basic scatter plot, which we will use to highlight and draw attention to specific areas of the plot. We will include, for the sake of retaining context, the fonts and labels that we have used in previous modules. And we will also use `ggtext` to format the axis titles and the plot title.
+
+
+```{r}
+#| label: basic-ggformula-plot
+#| code-fold: true
+
+
+p1 <- gf_point(data = penguins, bill_dep ~ bill_len, 
+              color = ~ body_mass, alpha = 0.8, size = 3.5) %>% 
+
+  ## custom colors from the scico package
+  gf_refine(scico::scale_color_scico(palette = "tokyo", direction = -1)) %>% 
+  
+  ## custom labels
+  gf_labs(
+    title = 'Bill Dimensions of Brush-Tailed Penguins (**Pygoscelis**)',
+    subtitle = 'A scatter plot of bill depth versus bill length.',
+    caption = 'Data: Gorman, Williams & Fraser (2014) PLoS ONE',
+    x = '**Bill Length** (mm)', 
+    y = '**Bill Depth** (mm)',
+    color = 'Body mass (g)') %>% 
+   
+  ## 2. Add theme related commands from ggtext
+  ## render respective text elements
+  gf_theme(theme(
+    plot.title = ggtext::element_markdown(),
+    plot.caption = ggtext::element_markdown(),
+    axis.title.x = ggtext::element_markdown(),
+    axis.title.y = ggtext::element_markdown()
+  ))
+
+
+p1
+
+```
+
+
+
+## Using `{ggforce}`
+
+From [Thomas Lin Pedersen's website](www.ggforce.data-imaginist.com) → www.ggforce.data-imaginist.com
+
+> `ggforce` is a package aimed at providing missing functionality to `ggplot2` through the extension system introduced with `ggplot2` v2.0.0. Broadly speaking `ggplot2` has been aimed primarily at explorative data visualization in order to investigate the data at hand, and less at providing utilities for composing custom plots a la `D3.js`. `ggforce` is mainly an attempt to address these “shortcoming” (design choices might be a better description). The goal is to provide a repository of geoms, stats, etc. that are as well documented and implemented as the official ones found in `ggplot2`.
+
+
+
+We will start with the basic plot, with the fonts, labels and `ggtext` related work done up to now: First, let us update the theme to use the `ggtext` options, and then we will add the `ggforce` annotations.
+
+```{r}
+#| eval: false
+#| echo: false
+## Existing theme
+theme_set(theme_classic(base_size = 14, 
+                        base_family = "roboto-condensed"))
+
+## modify plot elements globally (for all following plots)
+theme_update(
+  axis.ticks = element_line(color = "grey92"),
+  axis.ticks.length = unit(.5, "lines"),
+  panel.grid.minor = element_blank(),
+  legend.title = element_text(size = 12, family = "ibarra"),
+  legend.text = element_text(color = "grey30"),
+  
+## theme updates here
+  plot.title = ggtext::element_markdown(),
+  plot.caption = ggtext::element_markdown(),
+  axis.title.x = ggtext::element_markdown(),
+  axis.title.y = ggtext::element_markdown()
+)
+
+```
+
+
+
+
+```{r}
+#| eval: false
+#| echo: false
+## plot that we will annotate with ggforce afterwards
+p3 <- ggplot(penguins, aes(x = bill_len, y = bill_dep, 
+                           colour = body_mass)) + 
+  geom_point(size = 3.5) + 
+  coord_cartesian(xlim = c(25, 65), ylim = c(10, 25)) +
+  
+  # Add colours
+  scico::scale_color_scico(palette = "bamako", direction = -1) +
+  rcartocolor::scale_fill_carto_d(palette = "Bold") +
+  
+  # Add labels
+  labs(
+    title = "Bill Dimensions of Brush-Tailed Penguins (*Pygoscelis*)",
+    subtitle = 'A scatter plot of bill depth versus bill length.',
+    caption = "Data: Gorman, Williams & Fraser (2014) *PLoS ONE*",
+    x = "**Bill Length** (mm)", 
+    y = "**Bill Depth** (mm)",
+    color = "Body mass (g)",
+    fill = "Species"
+  )
+p3
+
+```
+
+### Using ellipses
+```{r}
+#| label: ellipses
+## ellipsoids for all groups
+p1 +
+  # penguins data is inherited automatically
+  # Can use other data also if needed
+  ggforce::geom_mark_ellipse( 
+    aes(fill = species, 
+        label = species), 
+    alpha = .15, 
+    show.legend = FALSE
+  ) +
+  
+  # Repeat the points!
+  # Why? So the ellipses don't hide them!
+  geom_point(aes(color = body_mass), 
+             alpha = .6, 
+             size = 3.5)
+
+
+```
+
+### Highlighting one group
+
+#### Add an Ellipse
+```{r}
+
+## ellipsoids for specific subset
+p1 +
+  ggforce::geom_mark_ellipse(
+    aes(fill = species, 
+        label = species, 
+        filter = species == 'Gentoo'), # Very Curious syntax here!!
+    alpha = 0.25, 
+    show.legend = FALSE
+  ) +
+ geom_point(aes(color = body_mass), 
+            alpha = .6, 
+            size = 3.5)
+
+```
+
+
+#### Adding Circles
+```{r}
+
+## circles
+p1 +
+  ggforce::geom_mark_circle(
+    aes(fill = species, label = species, 
+        filter = species == 'Gentoo'), 
+    alpha = 0.25, 
+    show.legend = FALSE
+  ) +
+  geom_point(aes(color = body_mass), 
+             alpha = .6, 
+             size = 3.5)
+
+```
+
+
+#### Adding Rectangles
+```{r}
+
+## rectangles
+p1 +
+  ggforce::geom_mark_rect(
+    aes(fill = species, 
+        label = species, 
+        filter = species == 'Gentoo'), 
+    alpha = 0.25, 
+    show.legend = FALSE
+  ) +
+  geom_point(aes(color = body_mass), 
+             alpha = .6, 
+             size = 3.5) 
+
+```
+
+
+#### Adding a Convex Hull
+```{r}
+library(concaveman)
+## hull
+p1 +
+  ggforce::geom_mark_hull(
+    aes(fill = species, 
+        label = species, 
+        filter = species == 'Gentoo'), 
+    alpha = 0.25, 
+    show.legend = FALSE
+  ) +
+  geom_point(aes(color = body_mass), 
+             alpha = .6, 
+             size = 3.5)
+
+```
+

@@ -33,50 +33,117 @@ We will use the `annotate()` command from `ggplot2` first ( and the new `gf_anno
 
 ### Fonts and Themes
 
-As we learnt in the [Fonts Module](../20-Fonts/index.qmd), let us set the ggplot theme with fonts for both the chart defining elements **and** our anotations.
+As we learnt in the [Fonts Module](../20-Fonts/index.qmd), let us set the ggplot theme with fonts for both the chart defining elements **and** our annotations. I am going to use local fonts from my machine, that I have downloaded from Google Fonts earlier and saved in a `fonts` folder at the root of my project.
 
 ```{r}
-#| label: add-fonts
-#| echo: fenced
-#| cache: true
+#| label: add-local-fonts
 #| code-fold: true
-font_add_google(name = "Gochi Hand", family = "gochi")
-font_add_google("Schoolbell", "bell")
-font_add_google("Galada", "galada")
-font_add_google("Roboto Condensed", "roboto-condensed")
-font_add_google("Noto Sans", "noto")
-font_add_google("Uchen", "uchen")
-font_add_google("Ibarra Real Nova", "ibarra")
-font_add_google("Open Sans", "open")
-font_add_google("Anton", "anton")
-font_add_google("Tangerine", "tangerine")
-showtext_auto() # set the google fonts as default
+#| 
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Anton",
+  regular = "../../../../../../fonts/Anton-Regular.ttf") # Only one style is available
+
+sysfonts::font_add(family = "RobotoCondensed", 
+  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+
+sysfonts::font_add(family = "IbarraNova", 
+  regular = "../../../../../../fonts/IbarraRealNova-Regular.ttf",
+  bold = "../../../../../../fonts/IbarraRealNova-Bold.ttf",
+  italic = "../../../../../../fonts/IbarraRealNova-Italic.ttf",
+  bolditalic = "../../../../../../fonts/IbarraRealNova-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Tangerine", 
+  regular = "../../../../../../fonts/Tangerine-Regular.ttf",
+  bold = "../../../../../../fonts/Tangerine-Bold.ttf") # only these two are available
+
+sysfonts::font_add(family = "Schoolbell", 
+  regular = "../../../../../../fonts/Schoolbell-Regular.ttf") # Only regular is available
+
+showtext_auto() # set these fonts as default for the session
+sysfonts::font_families() # check which fonts are available in the session
 
 ```
+
 
 ```{r}
 #| label: set-ggplot2-theme
 #| code-fold: true
-theme_set(theme_classic(base_size = 14, 
-                        base_family = "roboto-condensed"))
+#| 
 
-## modify plot elements globally (for all following plots)
-theme_update(
-  axis.ticks = element_line(color = "grey92"),
-  axis.ticks.length = unit(.5, "lines"),
-  panel.grid.minor = element_blank(),
-  legend.title = element_text(size = 12, family = "ibarra"),
-  legend.text = element_text(color = "grey30"),
-  plot.title = element_text(size = 18, face = "bold"),
-  plot.subtitle = element_text(size = 12, color = "grey30", family = "ibarra"),
-  plot.caption = element_text(size = 9, margin = margin(t = 15), family = "anton")
+theme_custom <- function(){ 
+    font <- "RobotoCondensed"   # Assign font family up front
+    
+    theme_bw(base_size = 14, base_family = font) %+replace%    
+      
+      ## modify plot elements globally (for all following plots)
+      theme(
+        axis.ticks = element_line(color = "grey92"),
+        axis.ticks.length = unit(.5, "lines"),
+        
+        panel.grid.minor = element_blank(),
+        
+        legend.title = element_text(family = "Schoolbell", size = 12),
+        legend.text = element_text(family = "IbarraNova", color = "grey30"),
+        
+        plot.title = element_text(               #title
+                   family = "Alegreya",          #set font family
+                   size = 18,                    #set font size
+                   face = 'bold',                #bold typeface
+                   hjust = 0,                  #left align
+                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
+      
+        plot.title.position = "plot",
+        
+        plot.subtitle = element_text(family = "Alegreya", size = 12, 
+                                     color = "grey30",
+                                     hjust = 0,                   #left align
+                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
+      
+       plot.caption = element_text(             #caption
+                   family = font,                #font family
+                   size = 9,                     #font size
+                   hjust = 1),                   #right align
+       
+      plot.caption.position = "plot",            #right align to plot
 )
-# set-geom-default-font
+}
 
-update_geom_defaults(geom = "text", 
-                     new = list(family = "roboto-condensed"))
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
+
+
+## Use available fonts in ggplot text geoms too!
+ggplot2::update_geom_defaults(geom = "text",new = list(
+  family = "RobotoCondensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label", new = list(
+  family = "RobotoCondensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
 
 ```
+
+
 
 
 ## Data
@@ -95,10 +162,10 @@ penguins <- penguins %>% drop_na() # remove data containing missing data
 ## uses `kableExtra` package
 ## 
 penguins %>% 
-  kableExtra::kbl() %>%
+  kableExtra::kbl(caption = "Penguins Dataset") %>%
   kableExtra::kable_paper(full_width = TRUE) %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "condensed", "responsive")) %>%
-  kableExtra::scroll_box(width = "700px", height = "500px")
+  kableExtra::scroll_box(width = "700px", height = "350px")
 
 ```
 
@@ -108,6 +175,7 @@ A basic scatter plot, which we will annotate:
 
 ```{r}
 #| label: basic-ggformula-plot
+#| code-fold: true
 #| 
 p1 <- gf_point(data = penguins, bill_dep ~ bill_len, 
               color = ~ body_mass, alpha = 0.8, size = 3.5) %>% 
@@ -129,17 +197,17 @@ p1
 
 ```
 
-## Using `annotate()`
+## Using `annotate()`/ `gf_annotate()`
 
 From the help menu ( Type `?annotate` in your Console), we have:
 
->This function adds geoms to a plot, but unlike a typical geom function, the properties of the geoms are ***not mapped from variables*** of a data frame, ***but are instead passed in as vectors***. This is useful for adding small annotations (such as text labels) or if you have your data in vectors, and for some reason don't want to put them in a data frame.
+>This function adds geoms to a plot, but unlike a typical geom function, the properties of the geoms are **not mapped from variables** of a data frame, **but are instead passed in as vectors**. This is useful for adding small annotations (such as text labels) or if you have your data in vectors, and for some reason don't want to put them in a data frame.
 
 Usage: 
 
 ```{r}
 #| echo: fenced
-#| eval: false
+#| label: showing-annotate-usage
 
 gf_annotate( # or annotate() for ggplot
   geom, # text , label, or rect, for example
@@ -162,8 +230,16 @@ So annotations can be part of the original dataframe too, but can be composed ou
 
 Let us use `annotate()` / `gf_annotate()` to highlight a portion of the graph. We will shade a portion of the chart with a grey rectangle, add a label, and an arrow between the label and the rectangle. 
 
+::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
+
+### Using ggformula
 ```{r}
-#| label: annotate-ggformula
+#| label: fig-annotate-ggformula
+#| fig-cap: "Using `gf_annotate()`"
+
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
+
 p1 %>% 
   gf_annotate(geom = "rect", xmin = 45, xmax = 55, ymin = 15, ymax = 20, colour = "black", fill = "grey", alpha = 0.2) %>% 
   
@@ -177,9 +253,15 @@ p1 %>%
 
 ```
 
+### Using ggplot2
 
 ```{r}
-#| label: annotate-ggplot
+#| label: fig-annotate-ggplot
+#| fig-cap: "Using `annotate()`"
+
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
+
 p1 + 
   annotate(geom = "rect", xmin = 45, xmax = 55, ymin = 15, ymax = 20, colour = "black", fill = "grey", alpha = 0.2) + 
   annotate(geom = "text", x = 55, y = 13.5, label = "Highly Educated\n Penguins") + 
@@ -189,6 +271,9 @@ p1 +
     arrow = arrow(length = unit(0.5, 'cm')))
 
 ```
+
+:::
+
 
 
 ## Using `{ggtext}`
@@ -203,7 +288,7 @@ Support is provided for Markdown both in theme elements (plot titles, subtitles,
 
 NOTE: on some machines, the ggtext package may not work as expected. In this case, please do as follows, using your Console:
 
-```{yaml}
+```{{r}}
 remove.packages(gridtext) #remove gridtext  
 library(remotes) # Install development version of `gridtext`
 remotes::install_github("wilkelab/gridtext")
@@ -218,7 +303,12 @@ We can use our familiar markdown syntax right inside the titles and captions of 
 
 `element_markdown()` → formatted text elements, e.g. titles, caption, axis text, striptext:
 
+::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
+
+### Using ggformula
+
 ```{r}
+
 p1 %>% 
    
   ## New code starts here: Two Step Procedure with ggtext
@@ -244,9 +334,10 @@ p1 %>%
 
 ```
 
-
+### Using ggplot2
 
 ```{r}
+
 p1 +
    
   ## New code starts here: Two Step Procedure with ggtext
@@ -272,6 +363,9 @@ p1 +
 
 ```
 
+:::
+
+
 
 ### Annotations with `geom_richtext()` and `geom_textbox()`
 
@@ -289,6 +383,12 @@ One needs to pass a dataframe to `geom_richtext()` giving the location, colour, 
 Another basic plot :
 
 ```{r}
+#| label: fig-basic-ggplot2-plot
+#| fig-cap: "Basic ggplot2 scatter plot #2"
+#| 
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
+
 p2 <- ggplot(data = penguins, 
              aes(y = bill_dep, x = bill_len, 
                  color = species), 
@@ -312,6 +412,8 @@ p2
 
 ```
 
+Let us define a dataframe for the annotations, with the label text, location, colour, and angle of rotation.
+
 ```{r}
 #| label: design-the-annotations
 # Define data frame for labels, colours, angles. 
@@ -326,11 +428,11 @@ annotations <-
       
       ## Use HTML tags to format the annotations
     
-      lab = c("<b style='font-family:anton;font-size:24pt;'>Adelie</b><br><i style='color:darkgrey;'>P. adéliae</i>",
+      lab = c("<b style='font-family:Anton;font-size:24pt;'>Adelie</b><br><i style='color:darkgrey;'>P. adéliae</i>",
               
-              "<b style='font-family:anton;font-size:24pt;'>Chinstrap</b><br><i style='color:darkgrey;'>P. antarctica</i>",
+              "<b style='font-family:Anton;font-size:24pt;'>Chinstrap</b><br><i style='color:darkgrey;'>P. antarctica</i>",
               
-              "<b style='font-family:anton;font-size:24pt;'>Gentoo</b><br><i style='color:darkgrey;'>P. papua</i>"))
+              "<b style='font-family:Anton;font-size:24pt;'>Gentoo</b><br><i style='color:darkgrey;'>P. papua</i>"))
 annotations
 
 ```
@@ -391,9 +493,9 @@ ggplot(penguins, aes(x = bill_len, y = bill_dep)) +
       angle = c(12, 20, 335),
       species = c("Adélie", "Chinstrap", "Gentoo"),
       notes = c(
-        "<b style='font-family:anton;font-size:24pt;'>Adélie</b><br><i style='color:darkgrey;'>P. adéliae</i>",
-        "<b style='font-family:anton;font-size:24pt;'>Chinstrap</b><br><i style='color:darkgrey;'>P. antarctica</i>",
-        "<b style='font-family:anton;font-size:24pt;'>Gentoo</b><br><i style='color:darkgrey;'>P. papua</i>"
+        "<b style='font-family:Anton;font-size:24pt;'>Adélie</b><br><i style='color:darkgrey;'>P. adéliae</i>",
+        "<b style='font-family:Anton;font-size:24pt;'>Chinstrap</b><br><i style='color:darkgrey;'>P. antarctica</i>",
+        "<b style='font-family:Anton;font-size:24pt;'>Gentoo</b><br><i style='color:darkgrey;'>P. papua</i>"
       )
       ),
     
@@ -458,7 +560,7 @@ p4
 p4 +
   ## add textbox with long paragraphs
   ggtext::geom_textbox(
-    data = tibble(x = 34, y = 13.7, label = "<span style='font-size:12pt;font-family:anton;'>Lorem Ipsum Dolor Sit Amet</span><br><br>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
+    data = tibble(x = 34, y = 13.7, label = "<span style='font-size:12pt;font-family:Anton;'>Lorem Ipsum Dolor Sit Amet</span><br><br>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
     aes(x, y, label = label),
     size = 2.2, family = "sans",
     fill = "cornsilk", box.color = "cornsilk3",
@@ -468,4 +570,5 @@ p4 +
 
 
 ```
+
 
