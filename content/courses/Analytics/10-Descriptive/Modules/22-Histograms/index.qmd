@@ -902,11 +902,14 @@ We will find occasion to meet `crosstable` again when we do [Inference. ](../../
 ```{r}
 #| label: race-crosstable
 ## library(crosstable)
-crosstable(time_in_seconds + age ~ gender, data = rank_df) %>% 
+crosstable(time_in_seconds + age~ gender, data = rank_df, num_digits = 3) %>% 
   crosstable::as_flextable()
 ```
 
 (The `as_flextable` command from the `crosstable` package helped to render this elegant HTML table we see. It should be possible to do Word/PDF also, which we might see later.)
+
+Hmm...women's `time_in_seconds` are less than those for men by 6000 seconds??? How come? Are the races different for men and women??
+
 
 #### {{< iconify noto-v1 spider-web >}} web-r
 
@@ -1128,7 +1131,7 @@ finishes, when it comes to the *longest* races, it is `r emoji::emoji("france")`
 ::: callout-note
 ### Question #4
 What is the distribution of the finishing times, across all
-races and all ranks?
+races and all ranks across gender of the particants?
 
 ::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
 
@@ -1140,8 +1143,8 @@ races and all ranks?
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-rank_df %>%
-  gf_histogram(~ time_in_seconds, bins = 75) %>%
+rank_df %>% drop_na(gender) %>% 
+  gf_dhistogram(~ time_in_seconds, fill = ~ gender, bins = 175) %>%
   gf_labs(title = "Histogram of Race Times")
 
 ```
@@ -1172,6 +1175,8 @@ hence we have a small bump close to *zero* time! The histogram shows
 three bumps...at least one reason is that the distances to be covered
 are not the same...but could there be other reasons? Like
 `altitude_gained` for example?
+
+We should really try to plot the X-axis with a better-formatted time axis. MAybe with transformations too!! That is for later!!
 :::
 
 ### {{< iconify el question-sign >}} Question-5: What is the distribution of race distances?

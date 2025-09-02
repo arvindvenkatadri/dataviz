@@ -783,7 +783,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">August 30, 2025</p>
+      <p class="date-modified">August 31, 2025</p>
     </div>
   </div>
     
@@ -871,8 +871,8 @@ div.csl-indent {
 <p>Ensure that you use the right <code>name</code> for the font family, as shown above. It is text-sensitive. The <code>family</code> is up to you to choose. Using similar names for <code>name</code> and <code>family</code> is a good idea, as shown above.</p>
 </section></section><section id="adding-local-fonts-from-your-computer" class="level2"><h2 class="anchored" data-anchor-id="adding-local-fonts-from-your-computer">Adding local fonts from your computer</h2>
 <p>Using Google fonts as shown above means that every time someone loads your website on their browser, the browser goes off to Google to download the fonts on the fly. As mentioned above, this will typically make your website non-compliant with GDPR.</p>
-<p>One solution is to download fonts from Google <em>a priori</em>, or from elsewhere, and then import them into your session. The <code><a href="https://rdrr.io/pkg/sysfonts/man/font_add.html">sysfonts::font_add()</a></code> function allows us to do this. You will need to provide the path to the font files on your computer. That is our next step.</p>
-<p>Now you need to import these fonts into <strong><em>each Quarto document</em></strong> individually ( This website has done that for every document !! ) Think of it as a theme for your document. You will need to provide the path to the font files on your computer. The <code>../</code> sequence navigates up one folder level. Adjust the path as needed, to go right from your Quarto document folder up to project <code>root</code> and then down to the <code>fonts</code> folder.</p>
+<p>One solution is to download fonts <em>a priori</em> from Google, or from elsewhere, and then import them into your session. The <code><a href="https://rdrr.io/pkg/sysfonts/man/font_add.html">sysfonts::font_add()</a></code> function allows us to do this. You will need to provide the path to the font files on your computer. That is our next step.</p>
+<p>Now, you need to import these fonts into <strong><em>each Quarto document</em></strong> individually ( This website has done that for every document !! ) Think of it as a theme for your document. You will need to provide the path to the font files on your computer. The <code>../</code> sequence navigates up one folder level. Adjust the path as needed, to go right from your Quarto document folder up to project <code>root</code> and then down to the <code>fonts</code> folder.</p>
 <p>Let’s assume we have gone off to <a href="https://fonts.google.com/">Google Fonts</a> and downloaded the following fonts to our <code>fonts</code> folder: <code>Alegreya</code>,<code>Anton</code>, <code>Roboto Condensed</code>, <code>Schoolbell</code>, <code>Tangerine</code>, and <code>Ibarra Real Nova</code>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## Clean the slate</span></span>
@@ -920,8 +920,11 @@ div.csl-indent {
 <span>  regular <span class="op">=</span> <span class="st">"../../../../../../fonts/Schoolbell-Regular.ttf"</span></span>
 <span><span class="op">)</span> <span class="co"># Only regular is available</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/showtext/man/showtext_auto.html">showtext_auto</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># set these fonts as default for the session</span></span>
-<span><span class="fu">sysfonts</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sysfonts/man/font_families.html">font_families</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># check which fonts are available in the session</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span><span class="fu"><a href="https://rdrr.io/pkg/showtext/man/showtext_auto.html">showtext_auto</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># set these fonts as default for the session</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Let check of the fonts are now available in the session:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">sysfonts</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sysfonts/man/font_families.html">font_families</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># check which fonts are available in the session</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre data-code-line-numbers=""><code> [1] "sans"            "serif"           "mono"            "wqy-microhei"   
  [5] "Alegreya"        "Anton"           "RobotoCondensed" "IbarraNova"     
@@ -930,7 +933,7 @@ div.csl-indent {
 </div>
 <p>After running the chunks above in your session, you can check which fonts are available in your session by typing <code><a href="https://rdrr.io/pkg/sysfonts/man/font_families.html">sysfonts::font_families()</a></code> in your console, as shown above. We see that apart from the R-default <code>sans</code>, <code>serif</code>, and <code>mono</code> fonts, we have added the several fonts to our session.</p>
 </section><section id="plot-theme-using-desired-fonts" class="level2"><h2 class="anchored" data-anchor-id="plot-theme-using-desired-fonts">Plot Theme using Desired fonts</h2>
-<p>Now that we have the fonts downloaded, we can use them in our plots. We will use the <code><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set()</a></code> function to set a default theme for our plots, and then we will modify the theme elements to use our desired fonts. Let us set some <code>ggplot2</code> theme aspects now!! Here is a handy picture showing ( most of ) the theme-able aspects of a ggplot plot.</p>
+<p>Now that we have the fonts downloaded, we can use them in our plots. We will use the <code>theme_xxxx()</code> function to set a default theme for our plots, and then we will modify the theme elements to use our desired fonts. Let us set some <code>ggplot2</code> theme aspects now!! Here is a handy picture showing ( most of ) the theme-able aspects of a ggplot plot.</p>
 <p>For more info, type <code><a href="https://ggplot2.tidyverse.org/reference/theme.html">?theme</a></code> in your console.</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -946,7 +949,7 @@ Figure&nbsp;1: ggplot2 Theme Elements. Source: Rosana Ferrero (<span class="cita
 </div>
 <p>So now that we understand the elements of the themes, let us set our ggplot theme:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">theme_custom</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">theme_custom</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">font</span> <span class="op">&lt;-</span> <span class="st">"RobotoCondensed"</span> <span class="co"># Assign font family up front</span></span>
 <span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">14</span>, base_family <span class="op">=</span> <span class="va">font</span><span class="op">)</span> <span class="op"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">%+replace%</a></span></span>
@@ -985,22 +988,7 @@ Figure&nbsp;1: ggplot2 Theme Elements. Source: Rosana Ferrero (<span class="cita
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co">## Set the theme</span></span>
-<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span><span class="co">## Use available fonts in ggplot text geoms too!</span></span>
-<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/update_defaults.html">update_geom_defaults</a></span><span class="op">(</span>geom <span class="op">=</span> <span class="st">"text"</span>, new <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
-<span>  family <span class="op">=</span> <span class="st">"RobotoCondensed"</span>,</span>
-<span>  face <span class="op">=</span> <span class="st">"plain"</span>,</span>
-<span>  size <span class="op">=</span> <span class="fl">3.5</span>,</span>
-<span>  color <span class="op">=</span> <span class="st">"#2b2b2b"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/update_defaults.html">update_geom_defaults</a></span><span class="op">(</span>geom <span class="op">=</span> <span class="st">"label"</span>, new <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
-<span>  family <span class="op">=</span> <span class="st">"RobotoCondensed"</span>,</span>
-<span>  face <span class="op">=</span> <span class="st">"plain"</span>,</span>
-<span>  size <span class="op">=</span> <span class="fl">3.5</span>,</span>
-<span>  color <span class="op">=</span> <span class="st">"#2b2b2b"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -1016,8 +1004,19 @@ Figure&nbsp;1: ggplot2 Theme Elements. Source: Rosana Ferrero (<span class="cita
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/update_defaults.html">update_geom_defaults</a></span><span class="op">(</span>geom <span class="op">=</span> <span class="st">"text"</span>, new <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>family <span class="op">=</span> <span class="st">"Schoolbell"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/update_defaults.html">update_geom_defaults</a></span><span class="op">(</span>geom <span class="op">=</span> <span class="st">"label"</span>, new <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>family <span class="op">=</span> <span class="st">"Schoolbell"</span><span class="op">)</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## Use available fonts in ggplot text geoms too!</span></span>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/update_defaults.html">update_geom_defaults</a></span><span class="op">(</span>geom <span class="op">=</span> <span class="st">"text"</span>, new <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>  family <span class="op">=</span> <span class="st">"Schoolbell"</span>,</span>
+<span>  face <span class="op">=</span> <span class="st">"plain"</span>,</span>
+<span>  size <span class="op">=</span> <span class="fl">3.5</span>,</span>
+<span>  color <span class="op">=</span> <span class="st">"#2b2b2b"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/update_defaults.html">update_geom_defaults</a></span><span class="op">(</span>geom <span class="op">=</span> <span class="st">"label"</span>, new <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>  family <span class="op">=</span> <span class="st">"Schoolbell"</span>,</span>
+<span>  face <span class="op">=</span> <span class="st">"plain"</span>,</span>
+<span>  size <span class="op">=</span> <span class="fl">3.5</span>,</span>
+<span>  color <span class="op">=</span> <span class="st">"#2b2b2b"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># repeat for other geoms like "text_repel" and any new text-using geom etc.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -1025,7 +1024,7 @@ Figure&nbsp;1: ggplot2 Theme Elements. Source: Rosana Ferrero (<span class="cita
 <p>We will work with a <strong>familiar</strong> dataset, so that we can concentrate on the chart aesthetics, without having to spend time getting used to the data: the <code>penguins</code> dataset again, <del>from the <code>palmerpenguins</code> package</del> now part of the R installation!.</p>
 <p>As always, we will start with a <strong>table</strong> of the data:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">penguins</span>, package <span class="op">=</span> <span class="st">"datasets"</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">penguins</span>, package <span class="op">=</span> <span class="st">"datasets"</span><span class="op">)</span></span>
 <span><span class="va">penguins</span> <span class="op">&lt;-</span> <span class="va">penguins</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># remove data containing missing data</span></span>
 <span></span>
 <span><span class="co">## Create a nicely formatted table</span></span>
@@ -1033,15 +1032,17 @@ Figure&nbsp;1: ggplot2 Theme Elements. Source: Rosana Ferrero (<span class="cita
 <span><span class="co">##</span></span>
 <span><span class="va">penguins</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kbl.html">kbl</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Penguins Dataset"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_classic.html">kable_paper</a></span><span class="op">(</span>full_width <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span>bootstrap_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"striped"</span>, <span class="st">"condensed"</span>, <span class="st">"responsive"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/scroll_box.html">scroll_box</a></span><span class="op">(</span>width <span class="op">=</span> <span class="st">"700px"</span>, height <span class="op">=</span> <span class="st">"350px"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span>  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_classic.html">kable_paper</a></span><span class="op">(</span></span>
+<span>    full_width <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    bootstrap_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>, <span class="st">"responsive"</span><span class="op">)</span>,</span>
+<span>    position <span class="op">=</span> <span class="st">"center"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/scroll_box.html">scroll_box</a></span><span class="op">(</span>height <span class="op">=</span> <span class="st">"350px"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div id="tbl-read-penguins-data" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure"><div aria-describedby="tbl-read-penguins-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:350px; overflow-x: scroll; width:700px; ">
-<div class="table-responsive">
-<table class="lightable-paper table table-striped table-condensed do-not-create-environment cell table-sm small">
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:350px; ">
+<table class="lightable-paper do-not-create-environment cell table table-sm table-striped small">
 <caption>Penguins Dataset</caption>
 <thead><tr class="header">
 <th data-quarto-table-cell-role="th" style="text-align: left; position: sticky; top: 0; background-color: #FFFFFF;">species</th>
@@ -4389,7 +4390,6 @@ Figure&nbsp;1: ggplot2 Theme Elements. Source: Rosana Ferrero (<span class="cita
 </div>
 </div>
 </div>
-</div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-tbl" id="tbl-read-penguins-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;1: Penguins Dataset
 </figcaption></figure>
@@ -4398,7 +4398,7 @@ Table&nbsp;1: Penguins Dataset
 </section><section id="basic-plot" class="level2"><h2 class="anchored" data-anchor-id="basic-plot">Basic Plot</h2>
 <p>A basic scatter plot first, which we will decorate with fonts:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## Set the theme</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## Set the theme</span></span>
 <span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">penguins</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">bill_len</span>, y <span class="op">=</span> <span class="va">bill_dep</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -4419,9 +4419,13 @@ Table&nbsp;1: Penguins Dataset
 <span></span>
 <span><span class="va">p1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><a href="index_files/figure-html/basic-scatter-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Scatter plot of bill depth versus bill length, colored by body mass."><img src="index_files/figure-html/basic-scatter-plot-1.png" class="img-fluid figure-img" width="2100" alt="Scatter plot of bill depth versus bill length, colored by body mass."></a></p>
-<figcaption>Scatter plot of bill depth versus bill length, colored by body mass.</figcaption></figure>
+<div id="fig-basic-scatter-plot" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-basic-scatter-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="index_files/figure-html/fig-basic-scatter-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Scatter plot of bill depth versus bill length, colored by body mass."><img src="index_files/figure-html/fig-basic-scatter-plot-1.png" class="img-fluid figure-img" width="2100"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-basic-scatter-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Scatter plot of bill depth versus bill length, colored by body mass.
+</figcaption></figure>
 </div>
 </div>
 </div>
@@ -4444,7 +4448,7 @@ Support is provided for Markdown both in theme elements (plot titles, subtitles,
 <p>We can use our familiar markdown syntax right inside the titles and captions of the plot. <code><a href="https://wilkelab.org/ggtext/reference/element_markdown.html">element_markdown()</a></code> is a theming command made available by the <code>ggtext</code> package.</p>
 <p><code><a href="https://wilkelab.org/ggtext/reference/element_markdown.html">element_markdown()</a></code> → formatted text elements, e.g.&nbsp;titles, caption, axis text, striptext</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## Set the theme</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## Set the theme</span></span>
 <span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">p1</span> <span class="op">+</span></span>
@@ -4479,7 +4483,7 @@ Support is provided for Markdown both in theme elements (plot titles, subtitles,
 <code>element_markdown()</code> in combination with HTML</h3>
 <p>This allows us to change fonts and font-effects in titles, labels, and captions:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## use HTML syntax to change text color</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## use HTML syntax to change text color</span></span>
 <span><span class="va">p1</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">'Bill Dimensions of Brush-Tailed Penguins &lt;i style="color:#28A87D;"&gt;Pygoscelis&lt;/i&gt;'</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span></span>
@@ -4495,7 +4499,7 @@ Support is provided for Markdown both in theme elements (plot titles, subtitles,
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## use HTML syntax to change font and text size</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## use HTML syntax to change font and text size</span></span>
 <span><span class="co">##</span></span>
 <span><span class="va">p1</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">'Bill Dimensions of Brush-Tailed Penguins &lt;b style="font-size:32pt;font-family:Tangerine;"&gt;Pygoscelis&lt;/b&gt;'</span><span class="op">)</span> <span class="op">+</span></span>

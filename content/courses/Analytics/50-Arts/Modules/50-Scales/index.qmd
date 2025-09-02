@@ -4,6 +4,7 @@ subtitle: "Percentages, Ratios, and such like"
 date: 2025/8/30
 date-modified: "`r Sys.Date()`"
 order: 50
+code-fold: true
 ---
 
 ```{r}
@@ -15,25 +16,21 @@ order: 50
 library(tidyverse)  
 library(ggformula)
 library(systemfonts) ## use custom fonts (need to be installed on your OS)  
-library(scico)       ## scico color palettes(http://www.fabiocrameri.ch/colourmaps.php) in R 
-library(ggtext)      ## add improved text rendering to ggplot2
-library(ggforce)     ## add missing functionality to ggplot2
-library(scales)     ## scale functions for visualization
+library(paletteer)  ## access many color palettes
 library(showtext)   ## add google fonts to plots
+library(kableExtra) ## for nice tables
 
+library(scales)     ## scale functions for visualization. Part of tidyverse.
 ```
 
 ## Introduction
 
-We may have been using `ggplot2` for a while now, but there is always more to learn about the aesthetics of our plots. Here we will look at annotating our graphs and plots. 
+We may have been using `ggplot2` for a while now, learning how to add fonts, colours, and annotations. Here we will look at changing the scales on the axes of our graphs and plots. Scales such as percentages, ratios, and other such like are needed when the quantities depicted demand it, when the data variabls on the axes are not simple counts or measurements. 
 
-Annotations help to draw attention to specific parts or the graph, specific areas of interest that are useful in telling the story .
-
-We have already seen the `annotate()` command from `ggplot2` first ( and the new `gf_annotate()` from `ggformula`). Here we will look at some of the intrigung features from the `ggforce` package. 
+Here we will look at some of the neatfeatures from the `scales` package. 
 
 ### Fonts and Themes
 
-As we learnt in the [Fonts Module](../20-Fonts/index.qmd), let us set the ggplot theme with fonts for both the chart defining elements **and** our annotations. I am going to use local fonts from my machine, that I have downloaded from Google Fonts earlier and saved in a `fonts` folder at the root of my project.
 
 ```{r}
 #| label: add-local-fonts
@@ -73,7 +70,8 @@ sysfonts::font_add(family = "Schoolbell",
   regular = "../../../../../../fonts/Schoolbell-Regular.ttf") # Only regular is available
 
 showtext_auto() # set these fonts as default for the session
-sysfonts::font_families() # check which fonts are available in the session
+
+# sysfonts::font_families() # check which fonts are available in the session
 
 ```
 
@@ -143,233 +141,157 @@ ggplot2::update_geom_defaults(geom = "label", new = list(
 
 ```
 
+## Scales: Breaks and Labels
 
+The `scales` package provides functions that are useful for scaling axes and legends in `ggplot2`. It is part of the `tidyverse` and is automatically loaded when you load `ggplot2`.
 
-## Data
+There are several parts to scaling: the `breaks`, the `labels`, and the `transformations`. 
 
-We will again work with a **familiar** dataset, so that we can concentrate on the chart aesthetics, without having to spend time getting used to the data: the `penguins` dataset again, ~~from the `palmerpenguins` package~~ now part of the R installation!. 
+`Breaks`: These are the points at which ticks appear on an axis. You can specify breaks manually or use functions to generate them automatically.
+
+`Labels`: These are the text labels that appear at the breaks. You can customize the labels to display values in different formats, such as `percentages`, `currency`, `dates`, or scientific notation.
+
+`Transformations`: These are functions that can be applied to the data before plotting, such as `logarithmic` or `square root` transformations.
+
+Scales can be applied all the `aesthetics` in ggplot: `x`, `y`, `color`, `fill`, `size`, `shape`, and even some esoteric ones `area`, `alpha`, `linewidth` etc.
+
+## Case Study: gss-wages
+
+We will work with datasets that we have seen in earlier modules, datasets that deal with variables like currencies, or which vary over several multiples.
+
+Let us take an income dataset from [Vincent Arel-Bundock's website.](https://vincentarelbundock.github.io/Rdatasets/articles/data.html). We will use the dataset `gss_wages` which is available here.<https://vincentarelbundock.github.io/Rdatasets/csv/stevedata/gss_wages.csv>
 
 As always, we will start with a **table** of the data:
 
 ```{r}
-#| label: tbl-read-penguins-data
-#| tbl-cap: "Penguins Dataset"
+#| label: tbl-read-gsswages-data
+#| tbl-cap: "GSS Wages Dataset"
 #| message: false
 
-penguins <- penguins %>% drop_na() # remove data containing missing data
+gss_wages <- read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/stevedata/gss_wages.csv") %>% drop_na()
 
 ## Create a nicely formatted table
 ## uses `kableExtra` package
 ## 
-penguins %>% 
-  kableExtra::kbl() %>%
-  kableExtra::kable_paper(full_width = TRUE) %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "condensed", "responsive")) %>%
-  kableExtra::scroll_box(width = "700px", height = "350px")
+gss_wages 
+# 
+# %>%
+#   kableExtra::kbl() %>%
+#   kableExtra::kable_paper(full_width = FALSE) %>%
+#   kableExtra::kable_styling(bootstrap_options = c("striped", "condensed", "responsive")) %>%
+#   kableExtra::scroll_box(height = "350px")
 
 ```
 
 ## Basic Plot
 
-A basic scatter plot, which we will use to highlight and draw attention to specific areas of the plot. We will include, for the sake of retaining context, the fonts and labels that we have used in previous modules. And we will also use `ggtext` to format the axis titles and the plot title.
+Let us create a basic scatter plot of `realrinc` vs `year` and colour by `gender`, and another boxplot of `realrinc` by `gender`:
 
 
 ```{r}
-#| label: basic-ggformula-plot
-#| code-fold: true
+#| label: fig-basic-ggformula-plot
+#| fig-cap: "Basic Plots"
+#| fig-subcap: 
+#| - "Scatter Plot"
+#| - "Box Plot"
+#| layout-ncol: 2
 
 
-p1 <- gf_point(data = penguins, bill_dep ~ bill_len, 
-              color = ~ body_mass, alpha = 0.8, size = 3.5) %>% 
+p1 <- gf_point(data = gss_wages, realrinc ~ year, 
+              color = ~ gender, alpha = 0.8, size = 1) %>% 
+  gf_labs(y = "Income", x = "Year", title = "GSS-Wages Dataset") %>% 
 
-  ## custom colors from the scico package
-  gf_refine(scico::scale_color_scico(palette = "tokyo", direction = -1)) %>% 
-  
-  ## custom labels
-  gf_labs(
-    title = 'Bill Dimensions of Brush-Tailed Penguins (**Pygoscelis**)',
-    subtitle = 'A scatter plot of bill depth versus bill length.',
-    caption = 'Data: Gorman, Williams & Fraser (2014) PLoS ONE',
-    x = '**Bill Length** (mm)', 
-    y = '**Bill Depth** (mm)',
-    color = 'Body mass (g)') %>% 
-   
-  ## 2. Add theme related commands from ggtext
-  ## render respective text elements
-  gf_theme(theme(
-    plot.title = ggtext::element_markdown(),
-    plot.caption = ggtext::element_markdown(),
-    axis.title.x = ggtext::element_markdown(),
-    axis.title.y = ggtext::element_markdown()
-  ))
-
-
+  gf_refine(scale_color_brewer(palette = "Set1"))
 p1
 
+p2 <- gf_boxplot(data = gss_wages, realrinc ~ gender, 
+              color = ~gender, fill = ~ gender, alpha = 0.8) %>% 
+  gf_labs(y = "Income", x = "Gender", title = "GSS-Wages Dataset") %>% 
+
+  gf_refine(scale_color_brewer(palette = "Set1"))
+p2
+
 ```
 
-
-
-## Using `{ggforce}`
-
-From [Thomas Lin Pedersen's website](www.ggforce.data-imaginist.com) → www.ggforce.data-imaginist.com
-
-> `ggforce` is a package aimed at providing missing functionality to `ggplot2` through the extension system introduced with `ggplot2` v2.0.0. Broadly speaking `ggplot2` has been aimed primarily at explorative data visualization in order to investigate the data at hand, and less at providing utilities for composing custom plots a la `D3.js`. `ggforce` is mainly an attempt to address these “shortcoming” (design choices might be a better description). The goal is to provide a repository of geoms, stats, etc. that are as well documented and implemented as the official ones found in `ggplot2`.
-
-
-
-We will start with the basic plot, with the fonts, labels and `ggtext` related work done up to now: First, let us update the theme to use the `ggtext` options, and then we will add the `ggforce` annotations.
+Let us now change the y-axis to show income in thousands of dollars. We will use the `scales` package for this.
 
 ```{r}
-#| eval: false
-#| echo: false
-## Existing theme
-theme_set(theme_classic(base_size = 14, 
-                        base_family = "roboto-condensed"))
+#| label: fig-dollar-scale
+#| fig-cap: "Dollar Scale with Automatic Breaks"
+#| fig-subcap: 
+#| - "Scatter Plot"
+#| - "Box Plot"
+#| layout-ncol: 2
+#| 
+p1 %>% 
+  gf_refine(scale_y_continuous(labels = scales::label_currency(scale = 0.001, suffix = "K")))
 
-## modify plot elements globally (for all following plots)
-theme_update(
-  axis.ticks = element_line(color = "grey92"),
-  axis.ticks.length = unit(.5, "lines"),
-  panel.grid.minor = element_blank(),
-  legend.title = element_text(size = 12, family = "ibarra"),
-  legend.text = element_text(color = "grey30"),
-  
-## theme updates here
-  plot.title = ggtext::element_markdown(),
-  plot.caption = ggtext::element_markdown(),
-  axis.title.x = ggtext::element_markdown(),
-  axis.title.y = ggtext::element_markdown()
-)
+
+p2 %>% 
+  gf_refine(scale_y_continuous(labels = scales::label_currency(scale = 0.001, suffix = "K")))
 
 ```
+The `scale` function `label_currency` has several arguments that can be used to customize the display of currency values. Here we have used `scale = 0.001` to convert the values to thousands and `suffix = "K"` to add a "K" suffix to the labels.
 
-
-
+We may yet be dissatisfied with this plot and wish to change the y-axis to a logarithmic scale. This is useful when the data spans several orders of magnitude, as is often the case with income data. We will also, for demonstration purposes, setup an excessively detailed y-scale with far too many breaks!!
 
 ```{r}
-#| eval: false
-#| echo: false
-## plot that we will annotate with ggforce afterwards
-p3 <- ggplot(penguins, aes(x = bill_len, y = bill_dep, 
-                           colour = body_mass)) + 
-  geom_point(size = 3.5) + 
-  coord_cartesian(xlim = c(25, 65), ylim = c(10, 25)) +
-  
-  # Add colours
-  scico::scale_color_scico(palette = "bamako", direction = -1) +
-  rcartocolor::scale_fill_carto_d(palette = "Bold") +
-  
-  # Add labels
-  labs(
-    title = "Bill Dimensions of Brush-Tailed Penguins (*Pygoscelis*)",
-    subtitle = 'A scatter plot of bill depth versus bill length.',
-    caption = "Data: Gorman, Williams & Fraser (2014) *PLoS ONE*",
-    x = "**Bill Length** (mm)", 
-    y = "**Bill Depth** (mm)",
-    color = "Body mass (g)",
-    fill = "Species"
-  )
-p3
+#| label: fig-log-scale
+#| fig-cap: "Logarithmic Scale with (Excessively ) Detailed Breaks"
+#| fig-subcap: 
+#| - "Scatter Plot"
+#| - "Box Plot"
+#| layout-ncol: 2
+
+p1 %>% 
+  gf_refine(scale_y_log10(labels = scales::label_currency(scale = 0.001, 
+                                                          suffix = "K"),
+            breaks = scales::breaks_log(n = 20, base = 10)))
+p2 %>% 
+  gf_refine(scale_y_log10(labels = scales::label_currency(scale = 0.001, suffix = "K"), breaks = scales::breaks_log(n = 20, base = 10)))
 
 ```
 
-### Using ellipses
+
+## Case Study: Gapminder
+
+We will work with the `gapminder` dataset from the `gapminder` package. This dataset contains data on life expectancy, GDP per capita, and population for various countries over several years.
+
 ```{r}
-#| label: ellipses
-## ellipsoids for all groups
-p1 +
-  # penguins data is inherited automatically
-  # Can use other data also if needed
-  ggforce::geom_mark_ellipse( 
-    aes(fill = species, 
-        label = species), 
-    alpha = .15, 
-    show.legend = FALSE
-  ) +
-  
-  # Repeat the points!
-  # Why? So the ellipses don't hide them!
-  geom_point(aes(color = body_mass), 
-             alpha = .6, 
-             size = 3.5)
+#| label: tbl-read-gapminder-data
+#| tbl-cap: "Gapminder Dataset"
 
+gapminder <- gapminder::gapminder
+gapminder
 
 ```
+There are several variables, most of them "man-made", which tend to vary over serveral orders of magnitude. Let us see how we can depict those. 
 
-### Highlighting one group
-
-#### Add an Ellipse
 ```{r}
+#| label: fig-gapminder-base-plot
+#| fig-cap: "Basic Gapminder Plot"
+#| fig-subcap:
+#| - "Scatter Plot"
+#| - "Box Plot"
 
-## ellipsoids for specific subset
-p1 +
-  ggforce::geom_mark_ellipse(
-    aes(fill = species, 
-        label = species, 
-        filter = species == 'Gentoo'), # Very Curious syntax here!!
-    alpha = 0.25, 
-    show.legend = FALSE
-  ) +
- geom_point(aes(color = body_mass), 
-            alpha = .6, 
-            size = 3.5)
+p1 <- gf_point(data = gapminder, gdpPercap ~ year, 
+              color = ~ continent, alpha = 0.8, size = 1) %>% 
+  gf_labs(y = "GDP per Capita", x = "Year", title = "Gapminder Dataset") %>% 
 
-```
+  gf_refine(scale_color_brewer(palette = "Set1"))
+p1
+p2 <- gf_boxplot(data = gapminder, gdpPercap ~ continent, 
+              color = ~continent, fill = ~ continent, alpha = 0.8) %>% 
+  gf_labs(y = "GDP per Capita", x = "Continent", title = "Gapminder Dataset") %>% 
 
+  gf_refine(scale_color_brewer(palette = "Set1"))
 
-#### Adding Circles
-```{r}
-
-## circles
-p1 +
-  ggforce::geom_mark_circle(
-    aes(fill = species, label = species, 
-        filter = species == 'Gentoo'), 
-    alpha = 0.25, 
-    show.legend = FALSE
-  ) +
-  geom_point(aes(color = body_mass), 
-             alpha = .6, 
-             size = 3.5)
+p2
 
 ```
 
 
-#### Adding Rectangles
-```{r}
+## References
 
-## rectangles
-p1 +
-  ggforce::geom_mark_rect(
-    aes(fill = species, 
-        label = species, 
-        filter = species == 'Gentoo'), 
-    alpha = 0.25, 
-    show.legend = FALSE
-  ) +
-  geom_point(aes(color = body_mass), 
-             alpha = .6, 
-             size = 3.5) 
-
-```
-
-
-#### Adding a Convex Hull
-```{r}
-library(concaveman)
-## hull
-p1 +
-  ggforce::geom_mark_hull(
-    aes(fill = species, 
-        label = species, 
-        filter = species == 'Gentoo'), 
-    alpha = 0.25, 
-    show.legend = FALSE
-  ) +
-  geom_point(aes(color = body_mass), 
-             alpha = .6, 
-             size = 3.5)
-
-```
-
+1. R package `scales`: <https://scales.r-lib.org/>
+1. 

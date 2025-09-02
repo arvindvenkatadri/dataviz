@@ -91,9 +91,9 @@ Ensure that you use the right `name` for the font family, as shown above. It is 
 
 Using Google fonts as shown above means that every time someone loads your website on their browser, the browser goes off to Google to download the fonts on the fly. As mentioned above, this will typically make your website non-compliant with GDPR. 
 
-One solution is to download fonts from Google *a priori*, or from elsewhere, and then import them into your session. The `sysfonts::font_add()` function allows us to do this. You will need to provide the path to the font files on your computer. That is our next step.
+One solution is to download fonts *a priori* from Google, or from elsewhere, and then import them into your session. The `sysfonts::font_add()` function allows us to do this. You will need to provide the path to the font files on your computer. That is our next step.
 
-Now you need to import these fonts into ***each Quarto document*** individually ( This website has done that for every document !! ) Think of it as a theme for your document. You will need to provide the path to the font files on your computer. The `../` sequence navigates up one folder level. Adjust the path as needed, to go right from your Quarto document folder up to project `root` and then down to the `fonts` folder.
+Now, you need to import these fonts into ***each Quarto document*** individually ( This website has done that for every document !! ) Think of it as a theme for your document. You will need to provide the path to the font files on your computer. The `../` sequence navigates up one folder level. Adjust the path as needed, to go right from your Quarto document folder up to project `root` and then down to the `fonts` folder.
 
 Let's assume we have gone off to [Google Fonts](https://fonts.google.com/) and downloaded the following fonts to our `fonts` folder: `Alegreya`,`Anton`, `Roboto Condensed`, `Schoolbell`, `Tangerine`, and `Ibarra Real Nova`.
 
@@ -135,6 +135,13 @@ sysfonts::font_add(family = "Schoolbell",
   regular = "../../../../../../fonts/Schoolbell-Regular.ttf") # Only regular is available
 
 showtext_auto() # set these fonts as default for the session
+
+```
+
+Let check of the fonts are now available in the session:
+
+```{r}
+#| label: check-available-fonts
 sysfonts::font_families() # check which fonts are available in the session
 
 ```
@@ -144,7 +151,7 @@ After running the chunks above in your session, you can check which fonts are av
 
 ## Plot Theme using Desired fonts
 
-Now that we have the fonts downloaded, we can use them in our plots. We will use the `theme_set()` function to set a default theme for our plots, and then we will modify the theme elements to use our desired fonts.
+Now that we have the fonts downloaded, we can use them in our plots. We will use the `theme_xxxx()` function to set a default theme for our plots, and then we will modify the theme elements to use our desired fonts.
 Let us set some `ggplot2` theme aspects now!! Here is a handy picture showing ( most of ) the theme-able aspects of a ggplot plot. 
 
 For more info, type `?theme` in your console.
@@ -158,6 +165,7 @@ For more info, type `?theme` in your console.
 knitr::include_graphics("../../../../../materials/images/ggplot_theme_elements.jfif")
 
 ```
+
 So now that we understand the elements of the themes, let us set our ggplot theme: 
 
 
@@ -207,23 +215,6 @@ theme_custom <- function(){
 ## Set the theme
 ggplot2::theme_set(new = theme_custom())
 
-
-## Use available fonts in ggplot text geoms too!
-ggplot2::update_geom_defaults(geom = "text",new = list(
-  family = "RobotoCondensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-ggplot2::update_geom_defaults(geom = "label", new = list(
-  family = "RobotoCondensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-
 ```
 
 ::: callout-note
@@ -235,9 +226,23 @@ Using `showtext(auto)` as shown above allows us to modify the ***non-graph*** el
 
 ```{r}
 #| label: set-geom-default-font
-#| 
-update_geom_defaults(geom = "text", new = list(family = "Schoolbell"))
-update_geom_defaults(geom = "label", new = list(family = "Schoolbell"))
+
+
+## Use available fonts in ggplot text geoms too!
+ggplot2::update_geom_defaults(geom = "text",new = list(
+  family = "Schoolbell",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label", new = list(
+  family = "Schoolbell",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
 
 # repeat for other geoms like "text_repel" and any new text-using geom etc.
 ```
@@ -254,6 +259,7 @@ As always, we will start with a **table** of the data:
 #| tbl-cap: "Penguins Dataset"
 #| message: false
 #| 
+#| 
 data(penguins, package = "datasets")
 penguins <- penguins %>% drop_na() # remove data containing missing data
 
@@ -262,9 +268,10 @@ penguins <- penguins %>% drop_na() # remove data containing missing data
 ## 
 penguins %>% 
   kableExtra::kbl(caption = "Penguins Dataset") %>%
-  kableExtra::kable_paper(full_width = TRUE) %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "condensed", "responsive")) %>%
-  kableExtra::scroll_box(width = "700px", height = "350px")
+  kableExtra::kable_paper(full_width = FALSE,
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    position = "center") %>%
+  kableExtra::scroll_box(height = "350px")
 
 ```
 
@@ -274,7 +281,7 @@ penguins %>%
 A basic scatter plot first, which we will decorate with fonts:
 
 ```{r}
-#| label: basic-scatter-plot
+#| label: fig-basic-scatter-plot
 #| fig.cap: "Scatter plot of bill depth versus bill length, colored by body mass."
 
 ## Set the theme

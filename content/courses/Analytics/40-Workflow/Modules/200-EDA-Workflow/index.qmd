@@ -65,6 +65,7 @@ knitr:
 #| include: true
 #| message: false
 #| warning: true
+#| results: hold
 #| knitr:
 #|   opts_chunk:
 #|     dev: "ragg_png"
@@ -81,13 +82,16 @@ library(corrplot)
 library(corrgram)
 library(crosstable) # Summary stats tables
 library(kableExtra)
+library(tinytable) # Static tables
+library(DT) # Interactive tables
 ## 
 library(paletteer) # Colour Palettes for Peasants
 ##
 ## Add other packages here as needed, e.g.:
-## scales/ggprism;
-## ggstats/correlation;
-## vcd/vcdExtra/ggalluvial/ggpubr; 
+## 
+## scales/ggprism; # For scales / axes formatting
+## ggstats/correlation; For Correlation Analysis
+## vcd/vcdExtra/ggalluvial/ggpubr for Qual Data
 ## sf/tmap/osmplotr/rnaturalearth; 
 ## igraph/tidygraph/ggraph/graphlayouts; 
 
@@ -146,22 +150,19 @@ theme_custom <- function(){
       
       #text elements
       plot.title = element_text(                 #title
-                   family = "Alegreya",          #set font family
-                   size = 18,                    #set font size
+                   family = font,                #set font family
+                   size = 24,                    #set font size
                    face = 'bold',                #bold typeface
                    hjust = 0,                    #left align
-                   vjust = 2),                   #raise slightly
+                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
       
       plot.title.position = "plot", 
       
       plot.subtitle = element_text(              #subtitle
-                   family = "Alegreya",          #font family
-                   size = 14),                   #font size
-      
-      plot.caption = element_text(               #caption
-                   family = "Alegreya",          #font family
-                   size = 9,                     #font size
-                   hjust = 1),                   #right align
+                   family = font,                #font family
+                   size = 14,                   #font size
+                   hjust = 0,                   #left align
+                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
       
       plot.caption.position = "plot",            #right align
       
@@ -190,6 +191,14 @@ update_geom_defaults(geom = "text",new = list(
 )
 )
 
+update_geom_defaults(geom = "label",new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
 ## Set the theme
 theme_set(new = theme_custom())
 
@@ -199,8 +208,8 @@ theme_set(new = theme_custom())
 ### Use Namespace based Code
 ::: callout-warning
 
-Try always to **name** your code-command with the package from whence it came!
-So use `dplyr::filter()` / `dplyr::summarize()` and **not** just `filter()` or `summarize()`, since these commands could exist across multiple packages, which you may have loaded **last**.
+Did you notice that there are similarly-named function commands from different packages? E.g. `chisq.test` and `fisher.test` are in the {{janitor}} package and they mask the identically named commands from {{stats}}. This is because the last-loaded package does the masking, but **all functions** from all loaded packages are available!! Just remember always to **name** your code-command with the package from whence it came!
+So use `dplyr::filter()` / `dplyr::summarize()` and **not** just `filter()` or `summarize()`, since these commands could exist across multiple packages, which you may have loaded **last**. And you will avoid a lot of coding grief. 
 
 (One can also use the `conflicted` package to set this up, but this is simpler for beginners like us. )
 
@@ -223,10 +232,11 @@ penguins
 ## {{< iconify file-icons influxdata >}} Examine Data
 
 - Use `dplyr::glimpse()`
-- Use `mosaic::inspect()` or `skimr::skim()`
-- Use `dplyr::summarise()` and `crosstable::crosstable()`
-- Format your tables with `knitr::kable()`
-- Highlight any interesting summary stats or data imbalances
+- Use `mosaic::inspect()` OR `skimr::skim()`
+- Use `dplyr::summarise()`
+- Use `crosstable::crosstable()`
+- Highlight any interesting summary stats or data imbalances, 
+especially across groups
 
 ```{r}
 #| label: data-examine
@@ -261,15 +271,19 @@ skimr::skim(penguins)
 - Clean badly formatted columns (e.g. text + numbers) using `tidyr::separate_**_**()`
 - **Save the data as a modified file**
 - **Do not mess up the original data file**
+- One Final Cleaned Data Table:
+  - Format your tables with `tinytable::tt()` OR `knitr::kable()`
+  - If you want interactive go with `DT::datatable()`
 
-```{r}
+```{{r}}
 #| label: data-munging
-#| echo: fenced
-#| eval: false
 
 dataset_modified <- data %>% 
   dplyr::mutate(across(where(is.character), as.factor)) 
 # And so on
+
+dataset_modified %>% tinytable::tt()
+
 ```
 
 Munge the variables **separately** if you need to specify factor `labels` and `levels` for each variable.
@@ -293,8 +307,7 @@ Munge the variables **separately** if you need to specify factor `labels` and `l
 #| fig-format: png
 
 ## Set graph theme
-## Idiotic that we have to repeat this every chunk
-## Open issue in Quarto
+## Safe to set this up every chunk
 theme_set(new = theme_custom())
 
 penguins %>% 
@@ -304,33 +317,34 @@ penguins %>%
   gf_labs(title = "My First Penguins Plot",
           subtitle = "Using ggformula with fonts",
           x = "Flipper Length mm", y = "Body Mass gms",
-          caption = "I love penguins, and R")
+          caption = "I love penguins, and R\n But Arvind's class is another matter altogether")
 
 ```
 
 
 ### Inference-1
 
-.
-.
-.
-.
+Description or Surprise Insight from the above graph/table/test/model
 
+.
+.
+.
+.
 
 ### Question-n
-....
+State the Question or Hypothesis
 
 ### Inference-n
-....
+Description or Surprise Insight from the above graph/table/test/model
 
-
-
-
-## {{< iconify ic outline-interests >}}{{< iconify carbon chart-3d >}} One Most Interesting Graph
+.
+.
+.
+.
 
 
 ## {{< iconify fluent-mdl2 decision-solid >}} Conclusion
-Describe what the graph shows and why it so interesting. What could be done next?
+Describe what the graph/table/test/models show and why it is all so interesting. What could be done next?
 
 ## {{< iconify ooui references-rtl >}} References
 
