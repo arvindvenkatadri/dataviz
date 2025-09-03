@@ -146,7 +146,7 @@ theme_custom <- function(){
       
       axis.text = element_text(                  #axis text
                    family = "Roboto Condensed",  #font family
-                   size = 9),                    #font size
+                   size = 12),                    #font size
       
       axis.text.x = element_text(                #margin for axis text
                     margin = margin(5, b = 10))
@@ -217,9 +217,8 @@ read_csv("../../../../../materials/Data/pronouns.csv") %>%
 
 ## {{< iconify icons8 idea >}} Inspiration
 
-::: {.column-page-inset-right}
 
-::: {#fig-golf-drive-evolution layout-ncol=2}
+::: {#fig-golf-drive-evolution layout-nrow=2}
 
 ![](../../../../../materials/images/Golf-Drive-Distance-1983.png)
 
@@ -228,7 +227,7 @@ read_csv("../../../../../materials/Data/pronouns.csv") %>%
 
 Golf Drive Distance over the years
 :::
-:::
+
 
 What do we see here? In about two-and-a-half decades, golf drive distances have increased, *on the average*, by 35 yards. The maximum distance has also gone up by 30 yards, and the minimum is now at 250 yards, which was close to average in 1983! What was a decent average in 1983 is just the bare minimum in 2017!!
 
@@ -297,6 +296,7 @@ glimpse(diamonds_modified)
 ```
 
 #### {{< iconify la r-project >}} skimr::skim
+
 ```{r}
 #| label: skim-diamonds
 skim(diamonds_modified)
@@ -304,6 +304,7 @@ skim(diamonds_modified)
 ```
 
 #### {{< iconify la r-project >}} mosaic::inspect
+
 ```{r}
 #| label: inspect-diamonds
 inspect(diamonds_modified)
@@ -333,12 +334,9 @@ inspect(diamonds_modified)
 :::
 
 ### {{< iconify streamline dictionary-language-book-solid >}} Data Dictionary
-::: column-margin
 
 ![Diamond Dimensions](xyztabledepth.png){#fig-diamond-dimensions}
 
-
-:::
 
 ::: callout-note
 ### Quantitative Data
@@ -1272,6 +1270,7 @@ afternoon(1400: 1800), evening(1800:2200), and night(2200:0200)
 
 ```{r}
 #| label: Slicing_time_to_Qual
+#| code-fold: true
 # Demo purposes only!
 ggplot2::theme_set(new = theme_custom())
 
@@ -1473,9 +1472,11 @@ Since very large observations are indeed possible, if not highly probable, [one 
 Several distribution shapes exist, here is an illustration of the 6 most common ones:
 
 ```{r}
+#| label: fig-Type_of_Distributions
 #| echo: false
 #| warning: false
-#| fig-cap: Type_of_Distributions
+#| message: false
+#| fig-cap: Type of Distributions
 # Build dataset with different distributions
 library(hrbrthemes)
 
@@ -1513,8 +1514,10 @@ Often when we compute wish to compare distributions with different
 values for means and standard deviations, we resort to a *scaling* of
 the variables that are plotted in the respective distributions.
 
+::: {#fig-z-scores-and-probabilities}
 ```{r}
-#| label: z-scores
+#| label: fig-z-scores-and-probabilities
+#| results: hold
 #| code-fold: true
 #| layout-nrow: 2
 #| layout-ncol: 2
@@ -1525,18 +1528,18 @@ TeachHistDens(Mean = 60, Sd = 5, VLine1 = 70, AxisFontSize = 14)
 
 TeachHistDens(Mean = 60, Sd = 15, VLine1 = 70, AxisFontSize = 14)
 
-xpnorm(mean = 60, sd = 5, q = 70, return = "plot",
+xpnorm(mean = 60, sd = 5, q = 70, return = "plot", alpha = 0.5,
       method = "gg") %>% 
-  gf_vline(xintercept = 60, colour = "red") %>%
+  gf_vline(xintercept = 60, colour = "red", linewidth = 1) %>%
   gf_annotate("label", x = 75, y = 0.05, label = "area = probability = 0.02275") %>%
   gf_annotate("curve", x = 76, y = 0.045, xend = 72.5, yend = 0.005,
               curvature = -0.3, arrow = arrow(length = unit(0.2, "cm"))) %>%
   gf_labs(title = "Z-score = 2", subtitle = "mean = 60, sd = 5") %>% 
   gf_refine(scale_x_continuous(limits = c(35, 85), breaks = seq(35, 85, by = 5), expand = c(0,0)))
 
-xpnorm(mean = 60, sd = 15, q = 70, return = "plot",
+xpnorm(mean = 60, sd = 15, q = 70, return = "plot", alpha = 0.5,
       method = "gg") %>% 
-  gf_vline(xintercept = 60, colour = "red") %>%
+  gf_vline(xintercept = 60, colour = "red", linewidth = 1) %>%
   gf_annotate("label", x = 100, y = 0.02, label = "area = probability = 0.2525") %>%
   gf_annotate("curve", x = 100, y = 0.018, xend = 75, yend = 0.005,
               curvature = -0.3, arrow = arrow(length = unit(0.2, "cm"))) %>%
@@ -1546,6 +1549,8 @@ breaks = seq(-15, 135, by = 15), expand = c(0,0)))
 
 
 ```
+Z-scores and Probabilities
+:::
 
 ```{r}
 #| eval: false
@@ -1571,7 +1576,7 @@ $$
 \Large{z_x = \frac{x - \mu_{x}}{\sigma_x}}
 $${#eq-zcores}
 
-where $\mu_x$ and $\sigma_x$ are the mean and standard deviation of the x-variable.[The `z-score` is the distance from the ``mean` scaled by the `sd`]{style="background-colr=yellow;"}. 
+where $\mu_x$ and $\sigma_x$ are the mean and standard deviation of the x-variable.[The `z-score` is the distance from the `mean` scaled by the `sd`]{style="background-colr=yellow;"}. 
 
 In the figures above, the ***absolute values*** of the random variables $x_i$ is always $10$ from the (identical) means $\mu_i$. However since the $\sigma_i$ are different, the `z-score` is different in each case. In the left column, the `z-score` is $2$; in the right column it is $0.6667$.
 
@@ -1671,7 +1676,7 @@ cite_packages(
   out.dir = ".",
   out.format = "html",
   pkgs = c("crosstable","ggridges", "NHANES", "TeachHist",
-           "TeachingDemos", "visualize", "janitor", "visdat", "naniar", "tinytable", "crosstable")
+           "TeachingDemos", "visualize", "janitor", "visdat", "naniar", "tinytable")
 ) %>%
   knitr::kable(format = "simple")
 

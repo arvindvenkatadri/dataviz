@@ -150,7 +150,7 @@ theme_custom <- function(){
       
       axis.text = element_text(                  #axis text
                    family = "Roboto Condensed",  #font family
-                   size = 9),                    #font size
+                   size = 12),                    #font size
       
       axis.text.x = element_text(                #margin for axis text
                     margin = margin(5, b = 10))
@@ -222,7 +222,7 @@ Some of the very basic and commonly used plots for data are:
 
 ## {{< iconify tabler variable >}} What kind of Data Variables will we choose?
 
-::: column-page-inset-right
+
 ```{r}
 #| message: false
 #| echo: false
@@ -233,7 +233,7 @@ read_csv("../../../../../materials/Data/pronouns.csv") %>%
   tt(theme = "striped")
   
 ```
-:::
+
 
 
 ## {{< iconify icons8 idea >}} Inspiration
@@ -351,7 +351,6 @@ movies_describe$quantitative
 - `lead_studio` a factor with many levels
 - `story` a factor with many levels
 - `genre` a factor with levels `Action, Adventure, Animation, Comedy, Drama, Fantasy, Horror, Romance, Thriller.`
-
 - `rotten_tomatoes` a numeric vector
 - `audience_score` a numeric vector
 - `theaters_open_week` a numeric vector. No. of theatres.
@@ -367,6 +366,26 @@ There are no missing values in the *Qual* variables; but some entries in the *Qu
 
 
 :::
+
+```{r}
+#| label: tbl-dt-for-data
+#| tbl-cap: "Movies Clean Dynamic Data Table"
+#| code-fold: true
+
+movies_modified %>%
+  DT::datatable(
+    caption = htmltools::tags$caption(
+      style = 'caption-side: top; text-align: left; color: black; font-size: 150%;',
+      'GSS Wages Dataset (Clean)'
+    ),
+    options = list(pageLength = 10, autoWidth = TRUE)
+  ) %>%
+  DT::formatStyle(
+    columns = names(movies_modified),
+    fontFamily = 'Roboto Condensed',
+    fontSize = '12px'
+  )
+```
 
 
 ### {{< iconify  material-symbols lab-research >}} Hypothesis and Research Questions
@@ -982,7 +1001,7 @@ Head off to this interactive game website where you can play with correlations!
 
 ## Simpson's Paradox
 
-<iframe width="100%" height="500" frameborder="0"
+<iframe width="100%" height="820" frameborder="0"
   src="https://observablehq.com/embed/@observablehq/plot-linear-regression-simpson?cell=*"></iframe>
   
 See how the overall correlation/regression line slopes upward, whereas that for the individual groups slopes downward!! This is an example of Simpson's Paradox!
@@ -1035,7 +1054,8 @@ Because $y = mx + c$ !
 ### And How about these datasets?
 
 ```{r}
-#| label: datasaurus
+#| label: fig-datasaurus
+#| fig-cap: "Datasaurus Dirty Dozen: All have (almost) identical summary statistics, but look so different!"
 #| echo: false
 #| message: false
 library(tidyverse)

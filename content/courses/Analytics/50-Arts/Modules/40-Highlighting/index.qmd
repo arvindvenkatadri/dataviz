@@ -16,17 +16,19 @@ library(tidyverse)
 library(ggformula)
 library(systemfonts) ## use custom fonts (need to be installed on your OS)  
 library(paletteer)  ## access to many color palettes
-library(ggtext)      ## add improved text rendering to ggplot2
-library(ggforce)     ## add missing functionality to ggplot2
 library(showtext)   ## add google fonts to plots
+library(ggtext)      ## add improved text rendering to ggplot2
 ##
+library(ggforce)     ## add missing functionality to ggplot2
+library(concaveman) # for convex hulls with ggforce
+library(ggfocus)  # Scales which help add emphasis to *any* geom!
 library(gghighlight) ## highlight parts of ggplot2 plots
 
 ```
 
 ## Introduction
 
-We may have been using `ggplot2` for a while now, but there is always more to learn about the aesthetics of our plots. Here we will look at ways to highlight specific areas of our plots, to draw attention to them. We will use simple overplotting to show off specific aspects of the chart, and also use the `gghighlight` package to create a new way of highlighting.
+We may have been using `ggplot2` for a while now, but there is always more to learn about the aesthetics of our plots. Here we will look at ways to highlight specific areas of our plots, to draw attention to them. We will introduce three packages that can help us do this: `ggfocus`, `ggforce`, and `gghighlight`. 
 
 ### Fonts and Themes
 
@@ -73,16 +75,6 @@ showtext_auto() # set these fonts as default for the session
 
 ```
 
-Let check of the fonts are now available in the session:
-
-```{r}
-#| label: check-available-fonts
-sysfonts::font_families() # check which fonts are available in the session
-
-```
-
-
-Let us set the ggplot theme:
 
 ```{r}
 #| label: set-ggplot2-theme
@@ -153,7 +145,7 @@ ggplot2::update_geom_defaults(geom = "label", new = list(
 
 ## Data
 
-We will again work with a **familiar** dataset, so that we can concentrate on the chart aesthetics, without having to spend time getting used to the data: the `penguins` dataset again, ~~from the `palmerpenguins` package~~ now part of the R installation!. 
+We will again work with a **familiar** dataset, so that we can concentrate on the chart aesthetics, without having to spend time getting used to the data: the `penguins` dataset again, ~~from the `palmerpenguins` package~~ now part of the R installation! 
 
 As always, we will start with a **table** of the data:
 
@@ -161,6 +153,7 @@ As always, we will start with a **table** of the data:
 #| label: tbl-read-penguins-data
 #| tbl-cap: "Penguins Dataset"
 #| message: false
+#| code-fold: true
 
 penguins <- penguins %>% drop_na() # remove data containing missing data
 
@@ -178,13 +171,16 @@ penguins %>%
 
 ```
 
-## Basic Plot
+## Basic Plots
 
 A basic scatter plot, which we will use to highlight and draw attention to specific areas of the plot. We will include, for the sake of retaining context, the fonts and labels that we have used in previous modules. And we will also use `ggtext` to format the axis titles and the plot title.
 
+We will colour one plot using a **Quant** variable, and the other using a **Qual** variable, to show that the highlighting methods work with both types of variables.
+
 
 ```{r}
-#| label: basic-ggformula-plot
+#| label: fig-basic-ggformula-scatter
+#| fig-cap: "Basic Scatter Plot coloured by Body Mass"
 #| code-fold: true
 
 
@@ -216,58 +212,19 @@ p1 <- gf_point(data = penguins, bill_dep ~ bill_len,
 p1
 
 ```
-
-
-
-## Using `{ggforce}`
-
-From [Thomas Lin Pedersen's website](www.ggforce.data-imaginist.com) → www.ggforce.data-imaginist.com
-
-> `ggforce` is a package aimed at providing missing functionality to `ggplot2` through the extension system introduced with `ggplot2` v2.0.0. Broadly speaking `ggplot2` has been aimed primarily at explorative data visualization in order to investigate the data at hand, and less at providing utilities for composing custom plots a la `D3.js`. `ggforce` is mainly an attempt to address these “shortcoming” (design choices might be a better description). The goal is to provide a repository of geoms, stats, etc. that are as well documented and implemented as the official ones found in `ggplot2`.
-
-
-
-We will start with the basic plot, with the fonts, labels and `ggtext` related work done up to now: First, let us update the theme to use the `ggtext` options, and then we will add the `ggforce` annotations.
+And another scatter plot:
 
 ```{r}
-#| eval: false
-#| echo: false
-## Existing theme
-theme_set(theme_classic(base_size = 14, 
-                        base_family = "roboto-condensed"))
-
-## modify plot elements globally (for all following plots)
-theme_update(
-  axis.ticks = element_line(color = "grey92"),
-  axis.ticks.length = unit(.5, "lines"),
-  panel.grid.minor = element_blank(),
-  legend.title = element_text(size = 12, family = "ibarra"),
-  legend.text = element_text(color = "grey30"),
-  
-## theme updates here
-  plot.title = ggtext::element_markdown(),
-  plot.caption = ggtext::element_markdown(),
-  axis.title.x = ggtext::element_markdown(),
-  axis.title.y = ggtext::element_markdown()
-)
-
-```
-
-
-
-
-```{r}
-#| eval: false
-#| echo: false
-## plot that we will annotate with ggforce afterwards
-p3 <- ggplot(penguins, aes(x = bill_len, y = bill_dep, 
-                           colour = body_mass)) + 
+#| label: fig-basic-ggplot2-scatter
+#| fig-cap: "Basic Scatter Plot coloured by Species"
+#| code-fold: true
+#| 
+p2 <- ggplot(penguins, aes(x = bill_len, y = bill_dep, 
+                           colour = species)) + 
   geom_point(size = 3.5) + 
-  coord_cartesian(xlim = c(25, 65), ylim = c(10, 25)) +
   
   # Add colours
-  scico::scale_color_scico(palette = "bamako", direction = -1) +
-  rcartocolor::scale_fill_carto_d(palette = "Bold") +
+  scale_color_paletteer_d("ggsci::category10_d3") +
   
   # Add labels
   labs(
@@ -278,20 +235,91 @@ p3 <- ggplot(penguins, aes(x = bill_len, y = bill_dep,
     y = "**Bill Depth** (mm)",
     color = "Body mass (g)",
     fill = "Species"
-  )
-p3
+  )  + 
+  ## 2. Add theme related commands from ggtext
+  ## render respective text elements
+  gf_theme(theme(
+    plot.title = ggtext::element_markdown(),
+    plot.caption = ggtext::element_markdown(),
+    axis.title.x = ggtext::element_markdown(),
+    axis.title.y = ggtext::element_markdown()
+  ))
+
+p2
 
 ```
 
-### Using ellipses
+## Using `{ggfocus}`
+
+`ggfocus` provides ***scales*** which help add emphasis to *any* geom! It works by fading out the non-focused data, and can be used with any geom, including those from other packages. It is particularly useful for highlighting points in scatter plots, lines in line plots, or bars in bar plots. Some examples of these scales are:
+
+- `scale_focus_color()`: Highlights points based on a condition, changing their color and adjusting the transparency of non-highlighted points.
+- `scale_focus_fill()`: for filled geoms like bars or areas.
+- `scale_focus_size()`: adjusts the size of the highlighted points instead of color.
+- `scale_focus_alpha()`: Adjusts the transparency of points based on a condition, making non-highlighted points more transparent.
+- `scale_focus_linetype()`: Highlights lines in line plots based on a condition by changing their linetype and adjusting the transparency of non-highlighted lines.
+
 ```{r}
-#| label: ellipses
-## ellipsoids for all groups
+#| label: fig-ggfocus-example
+#| fig-cap: "Using `ggfocus` to highlight points in a scatter plot"
+
+p2 +
+  ggfocus::scale_color_focus(
+    focus_levels  = c("Gentoo"),
+    color_focus = "red",          # color for highlighted points
+    color_other = "grey80",       # color for non-highlighted points
+  ) + 
+  labs(subtitle = "Highlighting Gentoo Penguins using ggfocus")
+
+```
+
+We can also highlight for `fill`, using the `ggformula` idiom this time:
+
+```{r}
+#| label: fig-ggfocus-example-2
+#| fig-cap: "Using `ggfocus` to highlight points in a histogram based on a categorical condition"
+#| message: false
+#| warning: false
+
+gf_histogram(~ body_mass, data = penguins, fill = ~ species) %>%
+  
+  gf_refine(ggfocus::scale_fill_focus(
+    focus_levels = c("Gentoo"), # condition to highlight points
+    color_focus = "dodgerblue",          # color for highlighted points
+    color_other = "grey80",       # color for non-highlighted points
+  )) %>% 
+  
+  gf_labs(title = "Penguins Body Mass Histograms",
+          subtitle = "Highlighting Gentoo Penguins using ggfocus")
+
+```
+
+We see that the scales from `ggfocus` directly use the ***existing*** aesthetics of the plot, and modify them to highlight specific data points. This is different from the other two packages we will see, which add new geoms to the plot to create the highlighting effect.
+
+## Using `{ggforce}`
+
+From [Thomas Lin Pedersen's website](www.ggforce.data-imaginist.com) → www.ggforce.data-imaginist.com
+
+> `ggforce` is a package aimed at providing missing functionality to `ggplot2` through the extension system introduced with `ggplot2` v2.0.0. Broadly speaking `ggplot2` has been aimed primarily at explorative data visualization in order to investigate the data at hand, and less at providing utilities for composing custom plots a la `D3.js`. `ggforce` is mainly an attempt to address these “shortcomings” (design choices might be a better description). The goal is to provide a repository of geoms, stats, etc. that are as well documented and implemented as the official ones found in `ggplot2`.
+
+
+`ggforce` provides several ways to highlight specific areas of a plot, including `ellipses`, `circles`, `rectangles`, and `convex hulls`. These can be used to draw attention to specific groups or clusters of points in a scatter plot. It also allows highlighting using a *different aesthetic* than the one used in the main plot, as we shall see. This was not possible with the simple-to-use scales of `ggfocus`. 
+
+Both are useful!!!
+
+### Using ellipses
+
+We can highlight *all groups* within a dataset using ellipses:
+
+```{r}
+#| label: fig-ellipses
+#| fig-cap: "Ellipses for all groups"
+
 p1 +
   # penguins data is inherited automatically
   # Can use other data also if needed
   ggforce::geom_mark_ellipse( 
-    aes(fill = species, 
+    aes(fill = species, # Note the variable used here!!
         label = species), 
     alpha = .15, 
     show.legend = FALSE
@@ -299,7 +327,7 @@ p1 +
   
   # Repeat the points!
   # Why? So the ellipses don't hide them!
-  geom_point(aes(color = body_mass), 
+  geom_point(aes(color = body_mass), # And note Colour variable used here!
              alpha = .6, 
              size = 3.5)
 
@@ -308,8 +336,13 @@ p1 +
 
 ### Highlighting one group
 
+`ggforce`, being ***data-aware*** ( it *inherits* the data too, and not just the plot!) allows us to highlight a specific group within the data, using the `filter` aesthetic. This is very useful when we want to draw attention to a specific subset of the data.
+
 #### Add an Ellipse
+
 ```{r}
+#| label: fig-ellipse-one-group
+#| fig-cap: "Highlighting one group with an ellipse"
 
 ## ellipsoids for specific subset
 p1 +
@@ -328,9 +361,11 @@ p1 +
 
 
 #### Adding Circles
-```{r}
 
-## circles
+```{r}
+#| label: fig-circles-one-group
+#| fig-cap: "Highlighting one group with circles"
+
 p1 +
   ggforce::geom_mark_circle(
     aes(fill = species, label = species, 
@@ -346,9 +381,11 @@ p1 +
 
 
 #### Adding Rectangles
-```{r}
 
-## rectangles
+```{r}
+#| label: fig-rectangles-one-group
+#| fig-cap: "Highlighting one group with rectangles"
+
 p1 +
   ggforce::geom_mark_rect(
     aes(fill = species, 
@@ -365,8 +402,22 @@ p1 +
 
 
 #### Adding a Convex Hull
+
+A ***convex hull*** is the smallest convex shape that can enclose a set of points. Imagine stretching a rubber band around the outermost points in a scatter plot; the shape formed by the rubber band is the convex hull. It effectively captures the boundary of the data points, providing a visual representation of their spread and extent.
+
+`ggforce` uses another package called `concaveman` to compute the convex hulls. This package implements a fast algorithm for computing concave hulls, which can be more representative of the data shape than convex hulls, especially for irregularly distributed points.
+
+::: callout-note
+### Highlighting using a different `aesthetic`
+The `filter` aesthetic in `ggforce::geom_mark_*` functions is used to specify which subset of the data should be highlighted or marked. It allows you to apply a condition to filter the data points that will be enclosed by the marking shape (like ellipse, circle, rectangle, or convex hull).
+With the original graph `p1`, we have coloured using `body_mass`, but here we are filtering using `species`. This shows that the `filter` aesthetic can be used independently of the aesthetics used in the main plot, allowing for flexible and targeted highlighting of specific data subsets.
+:::
+
 ```{r}
-library(concaveman)
+#| label: fig-hull-one-group
+#| fig-cap: "Highlighting one group with a convex hull"
+#| 
+#library(concaveman)
 ## hull
 p1 +
   ggforce::geom_mark_hull(
@@ -382,3 +433,30 @@ p1 +
 
 ```
 
+In summary, `ggforce` provides a powerful and flexible way to highlight specific areas of a plot using various shapes. The ability to use a different aesthetic for filtering allows for targeted emphasis on particular data subsets, enhancing the interpretability of the visualizations. 
+
+## Using `{gghighlight}`
+
+To be Written Up.
+
+
+## {{< iconify ooui references-ltr >}} References
+
+1. 
+
+::: {#refs style="font-size: 60%;"}
+###### {{< iconify lucide package-check >}} R Package Citations
+
+```{r}
+#| echo: false
+#scan_packages()
+cite_packages(
+  output = "table",
+  out.dir = ".",
+  out.format = "html",
+  pkgs = c("gghighlight", "ggforce", "ggtext", "ggfocus")
+) %>%
+  knitr::kable(format = "simple")
+
+```
+:::

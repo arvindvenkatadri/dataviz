@@ -179,7 +179,7 @@ theme_custom <- function(){
       
       axis.text = element_text(                  #axis text
                    family = "Roboto Condensed",  #font family
-                   size = 9),                    #font size
+                   size = 12),                    #font size
       
       axis.text.x = element_text(                #margin for axis text
                     margin = margin(5, b = 10))
@@ -304,7 +304,7 @@ them, is to convert them (Using the package
 [tsbox](https://docs.ropensci.org/tsbox/)) to a `tibble` or a `tsibble`
 and work with these.
 
-![Standards](https://imgs.xkcd.com/comics/standards.png){fig-align="center"}
+![Time Series Data Standards](https://imgs.xkcd.com/comics/standards.png){#fig-timeseries-standards fig-align="center"}
 
 To start, we will use simple `ts` data first, and then do another with a
 "vanilla" `tibble` format that we can plot *as is*. We will then look at
@@ -492,6 +492,7 @@ head(5) %>%
 kbl()
 
 ```
+
 -   It also allows for data processing with `dplyr` such as filtering
     and summarizing.\
     
@@ -506,6 +507,7 @@ Read this data in and inspect it.
 ::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
 
 ### {{< iconify la r-project >}} R
+
 ```{r}
 #| label: using-tibble-data-1
 #| message: false
@@ -599,6 +601,8 @@ month** in each year and plot that:
 #| label: using-tibble-data-3
 #| message: false
 #| layout-ncol: 2
+#| code-fold: true
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 births_2000_2014_monthly <- births_2000_2014 %>% 
@@ -645,6 +649,8 @@ instead of month:
 #| message: false
 #| warning: false
 #| layout-ncol: 2
+#| code-fold: true
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 births_2000_2014_weekly <- births_2000_2014 %>% 
@@ -989,6 +995,25 @@ net subsidies are provided to individuals exceeding this amount.\
 nested inside `ATC1`.
 :::
 
+```{r}
+#| label: tbl-dt-for-data
+#| tbl-cap: "PBS Clean Dynamic Data Table"
+#| code-fold: true
+
+PBS %>%
+  DT::datatable(
+    caption = htmltools::tags$caption(
+      style = 'caption-side: top; text-align: left; color: black; font-size: 150%;',
+      'PBS Dataset (Clean)'
+    ),
+    options = list(pageLength = 10, autoWidth = TRUE)
+  ) %>%
+  DT::formatStyle(
+    columns = names(PBS),
+    fontFamily = 'Roboto Condensed',
+    fontSize = '12px'
+  )
+```
 
 Let us simply plot `Cost` over time:
 

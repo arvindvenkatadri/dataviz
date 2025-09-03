@@ -140,7 +140,7 @@ theme_custom <- function(){
       
       axis.text = element_text(                  #axis text
                    family = "Roboto Condensed",  #font family
-                   size = 9),                    #font size
+                   size = 12),                    #font size
       
       axis.text.x = element_text(                #margin for axis text
                     margin = margin(5, b = 10))
@@ -343,6 +343,7 @@ methods we have seen.
 ::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
 
 #### {{< iconify la r-project >}} dplyr
+
 ```{r}
 #| label: glimpse-wages
 glimpse(wages)
@@ -350,6 +351,7 @@ glimpse(wages)
 ```
 
 #### {{< iconify la r-project >}} skimr
+
 ```{r}
 #| label: skim-wages
 skim(wages)
@@ -446,6 +448,25 @@ From the [dataset documentation page](https://vincentarelbundock.github.io/Rdata
 
 :::
 
+```{r}
+#| label: tbl-dt-for-data
+#| tbl-cap: "GSS Wages Clean Dynamic Data Table"
+#| code-fold: true
+
+wages_clean %>%
+  DT::datatable(
+    caption = htmltools::tags$caption(
+      style = 'caption-side: top; text-align: left; color: black; font-size: 150%;',
+      'GSS Wages Dataset (Clean)'
+    ),
+    options = list(pageLength = 10, autoWidth = TRUE)
+  ) %>%
+  DT::formatStyle(
+    columns = names(wages_clean),
+    fontFamily = 'Roboto Condensed',
+    fontSize = '12px'
+  )
+```
 
 
 ::: callout-note
@@ -483,7 +504,6 @@ See that [preposition "by"]{style="background-color: yellow;"} in the questions 
 
 ## {{< iconify carbon box-plot >}} Plotting Box Plots
 
-::: {.column-page-inset-right}
 
 ### {{< iconify el question-sign >}} Question-1: What is the basic distribution of `realrinc`?
 
@@ -1064,7 +1084,6 @@ wages %>%
 - We see that the effect of `childs` on `realrinc` is different for each `gender`! For *females*, the income steadily drops with the number of children, whereas for *males* it actually increases up to a certain family size before decreasing again. 
 :::
 
-:::
 
 
 ## {{< iconify ic outline-gpp-good>}} Are the Differences Significant?
