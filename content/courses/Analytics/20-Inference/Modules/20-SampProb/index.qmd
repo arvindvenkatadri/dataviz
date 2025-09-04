@@ -1076,7 +1076,8 @@ In @fig-confidence-intervals-examples, we see that $95\%$ confidence intervals s
 How do these vary with sample size $n$?
 
 ```{r}
-#| label: confidence-intervals-sample-sizes
+#| label: fig-confidence-intervals-sample-sizes
+#| fig-cap: Confidence Intervals for varying sample sizes
 #| code-fold: true
 #| 
 ggplot2::theme_set(new = theme_custom())
@@ -1085,6 +1086,7 @@ tbl_1 <- get_ci(samples_08_1000, level = 0.95)
 tbl_2 <- get_ci(samples_16_1000, level = 0.95)
 tbl_3 <- get_ci(samples_32_1000, level = 0.95)
 tbl_4 <- get_ci(samples_64_1000, level = 0.95)
+
 rbind(tbl_1, tbl_2, tbl_3, tbl_4) %>% 
   rownames_to_column("index") %>% 
 cbind("sample_size" = c(8,16,32,64)) %>% 
@@ -1113,7 +1115,8 @@ So finally, [we can *pretend* that our sample is also distributed normally (i.e 
 
 
 ```{r}
-#| label: Final-approximation-pop-sample
+#| label: fig-final-approximation-pop-sample
+#| fig-cap: Confidence Intervals on Sample Distribution
 #| message: true
 #| results: hold
 #| code-fold: true
@@ -1133,9 +1136,13 @@ xqnorm(p = c(0.025, 0.975),
         mean = mean_sample_16,
         sd = se_sample_16, digits = 3,
         return = c("plot"), verbose = F, alpha = 0.5, colour = "black") %>% 
-gf_vline(xintercept = ~ pop_mean, colour = "red") %>% 
-gf_vline(xintercept = mean(~ Height, data = sample_16), colour = "purple") %>% 
-gf_labs(title = "Confidence Intervals and the Bell Curve. N=16",
+
+gf_refine(scale_y_continuous(expand = c(0,0))) %>%
+gf_vline(xintercept = ~ pop_mean, colour = "red", linewidth = 1) %>% 
+gf_vline(xintercept = mean(~ Height, data = sample_16), 
+         colour = "purple", linewidth = 1) %>% 
+gf_labs(x = "Sample Value",
+        title = "Confidence Intervals and the Bell Curve. N=16",
         subtitle = "Sample is plotted as theoretical Gaussian Bell Curve") %>% 
 gf_annotate(geom = "label", x = pop_mean - 4, y = 0.15, 
             label = "Population Mean") %>% 

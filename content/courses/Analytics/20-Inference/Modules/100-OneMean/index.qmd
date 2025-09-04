@@ -1,7 +1,6 @@
 ---
-title: "\U0001F0CF Inference for a Single Mean"
+title: "Inference for a Single Mean"
 subtitle: "“The more I love humanity in general, the less I love man in particular. ― Fyodor Dostoyevsky, The Brothers Karamazov"
-author: Arvind V. 
 date: 10/Nov/2022
 date-modified: "`r Sys.Date()`"
 abstract: "Inference Tests for a Single population Mean"
@@ -390,7 +389,8 @@ xqnorm(p = c(0.025, 0.975),  mean = sample_mean, sd = sample_se,
 
   gf_labs(title = "Confidence Interval Estimation",
         subtitle = "Sample-Mean-Distribution is plotted as theoretical Gaussian Bell Curve") %>% 
-   gf_theme(theme_custom())
+  gf_refine(scale_y_continuous(expand = c(0,0))) %>% 
+  gf_theme(theme_custom())
  
 ```
 :::
@@ -651,9 +651,18 @@ xqnorm(p = c(0.025, 0.975),  mean = sample_mean, sd = sample_se,
 ## Null Hypothesis
   gf_annotate(geom = "label", x = mean_belief_pop, y = 1.4, 
             label = "Null Hypothesis (Belief)") %>% 
-
+## Sampling Mean Distribution
+ gf_annotate(
+    geom = "label", x = sample_mean - 3, y = 1.0,
+    label = "Sample-Mean Distribution", colour = "purple") %>%
+  gf_annotate("curve",
+    x = sample_mean - 3, y = 1.05,
+    xend = sample_mean - 0.25, yend = 1.0,
+    curvature = -0.25, color = "purple",
+    arrow = arrow(length = unit(0.25, "cm"))
+  ) %>%
 ## Observed Mean
-  gf_annotate(geom = "label", x = sample_mean, y = 1.6, 
+  gf_annotate(geom = "label", x = sample_mean, y = 1.5, 
             label = "Sample Mean", colour = "purple") %>% 
 
 ## Confidence Intervals
@@ -676,7 +685,7 @@ xqnorm(p = c(0.025, 0.975),  mean = sample_mean, sd = sample_se,
   gf_labs(title = "Visualizing the t-test for Toy Data",
           subtitle = "Sample-Mean-Distribution is plotted as theoretical Gaussian Bell Curve", 
           x = "Sample Values and Means", y = "Density") %>%
-  gf_refine(scale_y_continuous(limits = c(0, 1.6)), 
+  gf_refine(scale_y_continuous(limits = c(0, 1.6), expand = c(0,0)), 
             scale_x_continuous(limits = c(-2.5, 7.5),
                 breaks = c(-2.5, 0, 2.5, 5, 7.5, sample_mean),
                 labels = scales::number_format(accuracy = 0.01,
@@ -748,6 +757,7 @@ stats::shapiro.test(x = exam_grades$course_grade) %>%
   broom::tidy()
 
 ```
+
 The Shapiro-Wilks Test tests whether a data variable is normally distributed or not. Without digging into the maths of it, let us say it makes the assumption that the variable **is** so distributed and then computes the probability of how likely this is. So a **high** `p-value` ($0.47$) is a good thing here. 
 
 When we have *large* Quant variables ( i.e. with length >= 5000), the ***function*** `shapiro.test` does not work, and we use an Anderson-Darling[^3] test to confirm normality:
@@ -808,6 +818,7 @@ t5 <- wilcox.test(
   broom::tidy() # Make results presentable, and plottable!!
 t5
 ```
+
 This test too suggests that the average course grade is different from 80.
 
 ::: callout-note
@@ -1038,7 +1049,7 @@ gf_dhistogram(~ course_grade, data = exam_grades, inherit = F) %>%
           subtitle = "Sample-Mean-Distribution is plotted as theoretical Gaussian Bell Curve", 
           x = "Sample Values and Means", y = "Density") %>%
 
-  gf_refine(scale_y_continuous(limits = c(0, 0.65)),
+  gf_refine(scale_y_continuous(limits = c(0, 0.7), expand = c(0,0)),
             scale_x_continuous(limits = c(60, 85)))
 
 ```
