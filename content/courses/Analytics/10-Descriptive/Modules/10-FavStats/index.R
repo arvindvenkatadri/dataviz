@@ -252,7 +252,7 @@ cite_packages(
   output = "table",
   out.dir = ".",
   out.format = "html",
-  pkgs = c("janitor", "mosaic", "palmerpenguins", "skimr")
+  pkgs = c("janitor", "mosaic", "skimr", "CardioDataSets", "NeuroDataSets", "crosstable", "Lock5withR", "Lock5Data")
 ) %>%
   knitr::kable(format = "simple")
 
