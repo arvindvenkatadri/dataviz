@@ -1,5 +1,6 @@
 ---
 title: <iconify-icon icon="icon-park-outline:proportional-scaling"></iconify-icon> Proportions
+author: Arvind V. 
 date: 27/Dec/2022
 date-modified: '`r Sys.Date()`'
 abstract: Types, Categories, Counts, and Associations
@@ -515,10 +516,10 @@ or `data frame` for further analysis.
 1. **vcd**: For Case Form data, `vcd::structable()` is a good option, as it can also add margins to the table. The Table can also be converted to a tibble, preserving the rownames.
 
 ```{r}
-#| label: fig-vcd-case-form-ct
-#| fig-cap: Creating Contingency Tables from Case Form Data with `vcd`
+#| label: tbl-vcd-case-form-ct
+#| tbl-cap: Creating Contingency Tables from Case Form Data with `vcd`
 #| layout-ncol: 2
-#| output: true
+#| code-fold: true
 
 Arthritis %>% class()
 
@@ -539,9 +540,11 @@ vcd::structable(data = Arthritis, Improved ~ Treatment) %>%
 2. **Base R**: Base R also provides very compact formula-based smethods for Case Form Data:
 
 ```{r}
-#| label: fig-base-case-form-ct
-#| fig-cap: Creating Contingency Tables from Case Form Data with `base::ftable()`
+#| label: tbl-base-case-form-ct
+#| tbl-cap: Creating Contingency Tables from Case Form Data with `base::ftable()`
 #| layout-ncol: 2
+#| code-fold: true
+#| 
 Arthritis %>% class()
 
 ftable(data = Arthritis, 
@@ -577,9 +580,11 @@ But it is a **set** of (two-way) Contingency Tables. So let us try!
 
 
 ```{r}
-#| label: fig-vcd-freq-form-ct
-#| fig-cap: Creating Contingency Tables from Frequency Form Data with `vcd`
+#| label: tbl-vcd-freq-form-ct
+#| tbl-cap: Creating Contingency Tables from Frequency Form Data with `vcd`
 #| layout-ncol: 2
+#| code-fold: true
+#| 
 
 UCBAdmissions %>% class()
 vcd::structable(UCBAdmissions) %>% class()
@@ -603,6 +608,8 @@ as_tibble(rownames = "Admit-Dept") # Convert to tibble; ensure row names!
 #| label: fig-base-freq-form-ct
 #| fig-cap: Creating Contingency Tables from Frequency Form Data with `base::ftable()`
 #| layout-ncol: 2
+#| code-fold: true
+#| 
 UCBAdmissions %>% class()
 ftable(data = UCBAdmissions, Gender ~ Admit + Dept)
 
@@ -622,9 +629,11 @@ How about a multi-table dataset, like `HairEyeColor`?
 1. **vcd**: For Table Form data, `vcd::structable()` can readily be used: 
 
 ```{r}
-#| label: fig-vcd-multitable-data-ct
-#| fig-cap: Creating Contingency Tables from Table Form Data with `vcd`
+#| label: tbl-vcd-multitable-data-ct
+#| tbl-cap: Creating Contingency Tables from Table Form Data with `vcd`
 #| layout-ncol: 2
+#| code-fold: true
+#| 
 
 # HairEyeColor is in multiple table form data
 HairEyeColor
@@ -646,9 +655,11 @@ vcd::structable(data = HairEyeColor, Sex ~ Hair + Eye) %>%
 2. **Base R** also offers the `ftable()` option again:
 
 ```{r}
-#| label: fig-base-multitable-data-ct
-#| fig-cap: Creating Contingency Tables from Table Form Data with `base::ftable()`
+#| label: tbl-base-multitable-data-ct
+#| tbl-cap: Creating Contingency Tables from Table Form Data with `base::ftable()`
 #| layout-ncol: 2
+#| code-fold: true
+#| 
 HairEyeColor %>% ftable(Hair + Eye ~ Sex)
 
 HairEyeColor %>% 
@@ -687,21 +698,23 @@ Let us take the `GSS2002` dataset, and create a Contingency Table out of it. We 
 
 
 ```{r}
-#| label: fig-gss2002-data
-#| fig-cap: GSS 2002 Data
-#| echo: false
+#| label: tbl-gss2002-data
+#| tbl-cap: GSS 2002 Data
+#| code-fold: true
 #| warning: false
 
 data("GSS2002", package = "resampledata")
 GSS2002 %>% head() 
+
 ```
 
 
 ```{r}
-#| label: fig-gss2002-ct
-#| fig-cap: GSS 2002 Contingency Table
-#| echo: false
+#| label: tbl-gss2002-ct
+#| tbl-cap: GSS 2002 Contingency Table
+#| code-fold: true
 #| warning: false
+#| 
 gss_table <- vcd::structable(Education ~ DeathPenalty, data = GSS2002)
 gss_table %>% addmargins() %>% 
   as_tibble(rownames = "Education")
@@ -710,7 +723,7 @@ gss_table %>% addmargins() %>%
 
 
 
-The answer is provided in *the very shape of the CT*: we plot this as
+The answer is provided in [*the very shape of the CT*]{.bg-gold .black}: we plot this as
 a set of *tiles*, where $$ \pmb{area~of~tile \sim count} $$ We
 *recursively* partition off a (usually) square area into vertical and
 horizontal pieces whose area is proportional to the count at a specific
@@ -746,7 +759,7 @@ vcd::mosaic(
 
 The first split shows the various levels of `Education` and their counts
 as widths. *Order is alphabetical!* This splitting corresponds to the
-bottom ROW of the @fig-gss2002-ct. HS is clearly
+bottom ROW of the @tbl-gss2002-ct. HS is clearly
 the largest subgroup in `Education`.
 
 In the second step, the columns from @fig-mosaic-plot-steps-1 are
@@ -759,7 +772,7 @@ Let us now make this plot with `vcd`, and with a new package called `visStatisti
 
 ::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
 
-#### Using vcd
+#### Using {vcd}
 
 The `vcd::mosaic()` function needs the data in *contingency table* form.
 Of course, `vcd::structable()` gives us one!
@@ -768,6 +781,8 @@ Of course, `vcd::structable()` gives us one!
 #| label:  fig-mosaic-plot-arthritis-vcd
 #| fig-cap: Arthritis Mosaic Plot
 #| layout-ncol: 2
+#| code-fold: true
+#| 
 
 arthritis_table <- vcd::structable(Improved ~ Treatment,
                                    data = Arthritis)
@@ -794,6 +809,8 @@ There are visible differences in the counts for the `Improved` variable, based o
 #| label: fig-mosaic-plot-nhanes-vcd
 #| fig-cap: NHANES Mosaic Plot
 #| layout-nrow: 2
+#| code-fold: true
+#| 
 library(NHANES)
  
 nhanes_ct <- vcd::structable(data = NHANES, Race1 ~ Education)
@@ -938,17 +955,25 @@ gf_col(edu_prop ~ Education, data = gss_summary,
 :::
 
 
-#### Using visStatistics
+#### Using {visStatistics}
 
 `visStatistics` is a recent package that allows a very wide variety of statistical charts to be created **automagically** based on the variables chosen. Let us plot a mosaic chart directly with this package:
 
 ```{r}
-#| label: visstat-1
+#| label: fig-visstat-1
+#| fig-cap: "Mosaic and Bar Chart with visStatistics"
+#| fig-subcap:
+#|  - "Bar Chart"
+#|  - "Mosaic Chart"
+#| layout-ncol: 2
 
+# Plots the Bar Chart and Mosaic Chart
 visstat(GSS2002$DeathPenalty, GSS2002$Education)
 
 ```
-The `visStatistics` package is a very powerful package that can be used to create a wide variety of statistical charts, including Mosaic Charts, with very little code. This "universal" command `visstat()` computes a good many statistics and plots, all in one. Try doing an `str()` after this command to see what (else) it has computed. 
+The `visStatistics` package is a very powerful package that can be used to create a wide variety of statistical charts, including Mosaic Charts, with very little code. This "universal" command `visstat()` computes a good many statistics and plots, all in one. 
+
+For the fearless: Try doing an `str()` after this command to see what (else) it has computed. There is a wealth of information in the output object, including the Contingency Table, the Chi-Squared test results, and more. Type `visstat(GSS2002$DeathPenalty, GSS2002$Education) %>% str()` in the console or your Quarto chunk to see this.
 
 :::
 
@@ -979,9 +1004,11 @@ vcd::assoc(Treatment ~ Improved, data = Arthritis, gp = shading_max, legend = FA
 From an inspection of these plots, we see the (**tile-wise**) difference between situations when Qualitative variables are *related* to that when
 they *not related*. 
 
-The graph on the left show the mosaic plot of the **actual** Contingency Table. 
+The graph on the left @fig-contingency-expected-actual-diff-1 shows the mosaic plot of the **actual** Contingency Table. 
 
-The graph in the middle shows a similar but fictitious plot but with the cuts neatly horizontal or vertical. This mosaic would be what we would **expect**, if `Education` and the opinion on `Death Penalty` were independent!!
+The graph in the middle @fig-contingency-expected-actual-diff-2 shows a similar but fictitious plot but with the cuts neatly horizontal or vertical. This mosaic would be what we would **expect**, if `Education` and the opinion on `Death Penalty` were independent!!
+
+The graph on the right @fig-contingency-expected-actual-diff-3 shows the **differences** between the two plots, tile by tile.
 
 Clearly, there are differences in area of the corresponding tiles in the two mosaics, *actual* and *expected*, as shown in the graph on the right. Some differences are positive, and some negative. In the *actual mosaic*, @fig-contingency-expected-actual-diff-1, tiles with large positive differences are coloured blue, and those with large negative differences are coloured red. These are called the ***Pearson Residuals***, and they indicate the *extent* to which the actual counts differ from the expected counts, if the two Qual variables were independent. The higher the absolute values of these differences, the greater the effect of one Qual on the other. 
 

@@ -2,6 +2,7 @@
 title: "Introduction to the dplyr package"
 date: 06/July/2021
 date-modified: "`r Sys.Date()`"
+author: Arvind V. 
 order: 40
 ---
 
@@ -25,6 +26,7 @@ the tidyverse.
 knitr::opts_chunk$set(message = TRUE) # Want tidylog messages
 library(tidyverse)
 library(tidylog) ## Explains what happens with dplyr verbs
+
 ```
 
 
@@ -107,17 +109,17 @@ manipulation. These verbs can be organised into three categories based
 on the component of the dataset that they work with:
 
 -   Rows:
-    -   `filter()` chooses rows based on column values.
-    -   `slice()` chooses rows based on location.
-    -   `arrange()` changes the order of the rows.
+    -   `dplyr::filter()` chooses rows based on column values.
+    -   `dplyr::slice()` chooses rows based on location.
+    -   `dplyr::arrange()` changes the order of the rows.
 -   Columns:
-    -   `select()` changes whether or not a column is included.
-    -   `rename()` changes the name of columns.
-    -   `mutate()` changes the values of columns and creates new
+    -   `dplyr::select()` changes whether or not a column is included.
+    -   `dplyr::rename()` changes the name of columns.
+    -   `dplyr::mutate()` changes the values of columns and creates new
         columns.
-    -   `relocate()` changes the order of the columns.
+    -   `dplyr::relocate()` changes the order of the columns.
 -   Groups of rows:
-    -   `summarise()` collapses a group into a single row.
+    -   `dplyr::summarise()` collapses a group into a single row.
 
 > Think of the parallels from Microsoft Excel.
 
@@ -146,7 +148,8 @@ eyes with:
 
 ```{r}
 #| message: true
-starwars %>% filter(skin_color == "light", eye_color == "brown")
+starwars %>% 
+  dplyr::filter(skin_color == "light", eye_color == "brown")
 ```
 
 ### Arrange rows with `arrange()`
@@ -159,14 +162,14 @@ column will be used to break ties in the values of preceding columns:
 
 ```{r}
 #| message: true
-starwars %>% arrange(height, mass)
+starwars %>% dplyr::arrange(height, mass)
 ```
 
 Use `desc()` to order a column in descending order:
 
 ```{r}
 #| message: true
-starwars %>% arrange(desc(height))
+starwars %>% dplyr::arrange(desc(height))
 ```
 
 ### Choose rows using their position with `slice()`
@@ -181,7 +184,7 @@ We can get characters from row numbers 5 through 10.
 
 ```{r}
 #| message: true
-starwars %>% slice(5:10)
+starwars %>% dplyr::slice(5:10)
 ```
 
 It is accompanied by a number of helpers for common use cases:
@@ -190,7 +193,8 @@ It is accompanied by a number of helpers for common use cases:
 
 ```{r}
 #| message: true
-starwars %>% slice_head(n = 3)
+starwars %>% dplyr::slice_head(n = 3)
+
 ```
 
 -   `slice_sample()` randomly selects rows. Use the option prop to
@@ -198,8 +202,9 @@ starwars %>% slice_head(n = 3)
 
 ```{r}
 #| message: true
-starwars %>% slice_sample(n = 5)
-starwars %>% slice_sample(prop = 0.1)
+starwars %>% dplyr::slice_sample(n = 5)
+starwars %>% dplyr::slice_sample(prop = 0.1)
+
 ```
 
 Use `replace = TRUE` to perform a bootstrap sample. If needed, you can
@@ -218,8 +223,8 @@ weight the sample with the `weight` argument.
 #| message: true
 
 starwars %>%
-  filter(!is.na(height)) %>%
-  slice_min(height, n = 3)
+  dplyr::filter(!is.na(height)) %>%
+  dplyr::slice_min(height, n = 3)
 ```
 
 ### Select columns with `select()`
@@ -232,13 +237,16 @@ variable positions:
 ```{r}
 #| message: true
 # Select columns by name
-starwars %>% select(hair_color, skin_color, eye_color)
+starwars %>% dplyr::select(hair_color, skin_color, eye_color)
+
 # Select all columns between hair_color and eye_color (inclusive)
-starwars %>% select(hair_color:eye_color)
+starwars %>% dplyr::select(hair_color:eye_color)
+
 # Select all columns except those from hair_color to eye_color (inclusive)
-starwars %>% select(!(hair_color:eye_color))
+starwars %>% dplyr::select(!(hair_color:eye_color))
+
 # Select all columns ending with color
-starwars %>% select(ends_with("color"))
+starwars %>% dplyr::select(ends_with("color"))
 ```
 
 There are a number of helper functions you can use within `select()`,
@@ -250,7 +258,7 @@ You can rename variables with `select()` by using named arguments:
 
 ```{r}
 #| message: true
-starwars %>% select(home_world = homeworld)
+starwars %>% dplyr::select(home_world = homeworld) #select + rename
 ```
 
 But because `select()` drops all the variables not explicitly mentioned,
@@ -258,7 +266,7 @@ it's not that useful. Instead, use `rename()`:
 
 ```{r}
 #| message: true
-starwars %>% rename(home_world = homeworld)
+starwars %>% dplyr::rename(home_world = homeworld)
 ```
 
 ### Add new columns with `mutate()`
@@ -269,7 +277,7 @@ columns that are functions of existing columns. This is the job of
 
 ```{r}
 #| message: true
-starwars %>% mutate(height_m = height / 100)
+starwars %>% dplyr::mutate(height_m = height / 100)
 ```
 
 We can't see the height in meters we just calculated, but we can fix
@@ -278,8 +286,8 @@ that using a select command.
 ```{r}
 #| message: true
 starwars %>%
-  mutate(height_m = height / 100) %>%
-  select(height_m, height, everything())
+  dplyr::mutate(height_m = height / 100) %>%
+  dplyr::select(height_m, height, everything())
 ```
 
 `dplyr::mutate()` is similar to the base `transform()`, but allows you
@@ -288,11 +296,11 @@ to refer to columns that you've just created:
 ```{r}
 #| message: true
 starwars %>%
-  mutate(
+  dplyr::mutate(
     height_m = height / 100,
     BMI = mass / (height_m^2)
   ) %>%
-  select(BMI, everything())
+  dplyr::select(BMI, everything())
 ```
 
 If you only want to keep the new variables, use `transmute()`:
@@ -300,7 +308,7 @@ If you only want to keep the new variables, use `transmute()`:
 ```{r}
 #| message: true
 starwars %>%
-  transmute(
+  dplyr::transmute(
     height_m = height / 100,
     BMI = mass / (height_m^2)
   )
@@ -312,7 +320,7 @@ Use a similar syntax as `select()` to move blocks of columns at once
 
 ```{r}
 #| message: true
-starwars %>% relocate(sex:homeworld, .before = height)
+starwars %>% dplyr::relocate(sex:homeworld, .before = height)
 ```
 
 ### Summarise values with `summarise()`
@@ -322,7 +330,8 @@ row.
 
 ```{r}
 #| message: true
-starwars %>% summarise(mean_height = mean(height, na.rm = TRUE))
+starwars %>% 
+  dplyr::summarise(mean_height = mean(height, na.rm = TRUE))
 ```
 
 It's not that useful until we learn the `group_by()` verb below.
@@ -359,9 +368,9 @@ at once. You either have to do it step-by-step:
 
 ```{r, eval = FALSE}
 #| message: true
-a1 <- group_by(starwars, species, sex)
-a2 <- select(a1, height, mass)
-a3 <- summarise(a2,
+a1 <- dplyr::group_by(starwars, species, sex)
+a2 <- dplyr::select(a1, height, mass)
+a3 <- dplyr::summarise(a2,
   height = mean(height, na.rm = TRUE),
   mass = mean(mass, na.rm = TRUE)
 )
@@ -423,8 +432,9 @@ equivalent from dplyr's point of view:
 ```{r}
 #| message: true
 # `name` represents the integer 1
-select(starwars, name)
-select(starwars, 1)
+dplyr::select(starwars, name)
+dplyr::select(starwars, 1)
+
 ```
 
 By the same token, this means that you cannot refer to variables from
@@ -434,7 +444,8 @@ columns. In the following example, `height` still represents 2, not 5:
 ```{r}
 #| message: true
 height <- 5
-select(starwars, height)
+dplyr::select(starwars, height)
+
 ```
 
 One useful subtlety is that this only applies to bare names and to
@@ -445,7 +456,8 @@ you to refer to contextual variables in selection helpers:
 ```{r}
 #| message: true
 name <- "color"
-select(starwars, ends_with(name))
+dplyr::select(starwars, ends_with(name))
+
 ```
 
 These semantics are usually intuitive. But note the subtle difference:
@@ -453,7 +465,8 @@ These semantics are usually intuitive. But note the subtle difference:
 ```{r}
 #| message: true
 name <- 5
-select(starwars, name, identity(name))
+dplyr::select(starwars, name, identity(name))
+
 ```
 
 In the first argument, `name` represents its own position `1`. In the
@@ -468,7 +481,7 @@ vectors*. We will set up a smaller tibble to use for our examples.
 
 ```{r}
 #| message: true
-df <- starwars %>% select(name, height, mass)
+df <- starwars %>% dplyr::select(name, height, mass)
 ```
 
 When we use `select()`, the bare column names stand for their own
@@ -478,7 +491,8 @@ Consider what happens if we give a string or a number to `mutate()`:
 
 ```{r}
 #| message: true
-mutate(df, "height", 2)
+dplyr::mutate(df, "height", 2)
+
 ```
 
 `mutate()` gets length-1 vectors that it interprets as new columns in
@@ -489,7 +503,8 @@ The correct expression is:
 
 ```{r}
 #| message: true
-mutate(df, height + 10)
+dplyr::mutate(df, height + 10)
+
 ```
 
 In the same way, you can unquote values from the context if these values
@@ -538,26 +553,26 @@ The operations/verbs used to manipulate two-table verbs are:
     -   `inner_join()`
 
 ```{r,echo=FALSE}
-knitr::include_graphics("../../../materials/images/inner-join.gif")
+knitr::include_graphics("../../../../../materials/images/inner-join.gif")
 
 ```
 
 -   `left_join()`
 
 ```{r,echo=FALSE}
-knitr::include_graphics("../../../materials/images/left-join.gif")
+knitr::include_graphics("../../../../../materials/images/left-join.gif")
 ```
 
 -   `right_join()`
 
 ```{r,echo=FALSE}
-knitr::include_graphics("../../../materials/images/right-join.gif")
+knitr::include_graphics("../../../../../materials/images/right-join.gif")
 ```
 
 -   `full_join()`
 
 ```{r,echo=FALSE}
-knitr::include_graphics("../../../materials/images/full-join.gif")
+knitr::include_graphics("../../../../../materials/images/full-join.gif")
 ```
 
 -   Filtering joins, which filter observations from one table based on
@@ -573,7 +588,7 @@ knitr::include_graphics("../../../materials/images/semi-join.gif")
     y.  
 
 ```{r,echo=FALSE}
-knitr::include_graphics("../../../materials/images/anti-join.gif")
+knitr::include_graphics("../../../../../materials/images/anti-join.gif")
 ```
 
 -   Set operations, which combine the observations in the data sets as
@@ -582,25 +597,25 @@ knitr::include_graphics("../../../materials/images/anti-join.gif")
     -   union()
 
 ```{r,echo=FALSE}
-knitr::include_graphics("../../../materials/images/union.gif")
+knitr::include_graphics("../../../../../materials/images/union.gif")
 ```
 
 -   union_all(),
 
 ```{r,echo=FALSE}
-knitr::include_graphics("../../../materials/images/union-all.gif")
+knitr::include_graphics("../../../../../materials/images/union-all.gif")
 ```
 
 -   intersect(),
 
 ```{r,echo=FALSE}
-knitr::include_graphics("../../../materials/images/intersect.gif")
+knitr::include_graphics("../../../../../materials/images/intersect.gif")
 ```
 
 -   setdiff()
 
 ```{r,echo=FALSE}
-knitr::include_graphics("../../../materials/images/setdiff-rev.gif")
+knitr::include_graphics("../../../../../materials/images/setdiff-rev.gif")
 ```
 
 -   Tidyr Operations:
@@ -608,5 +623,6 @@ knitr::include_graphics("../../../materials/images/setdiff-rev.gif")
 -   pivot_wider()
 
 ```{r,echo=FALSE}
-knitr::include_graphics("../../../materials/images/tidyr-pivoting.gif")
+knitr::include_graphics("../../../../../materials/images/tidyr-pivoting.gif")
 ```
+
