@@ -2,6 +2,7 @@
 title: <iconify-icon icon="guidance:falling-rocks" width="1.2em" height="1.2em"></iconify-icon><iconify-icon icon="game-icons:falling" width="1.2em" height="1.2em"></iconify-icon> Facing the Abyss
 date: 21/Oct/2023
 date-modified: "`r Sys.Date()`"
+author: Arvind V. 
 abstract-title: "Abstract"
 abstract: "A complete EDA Workflow"
 order: 200
@@ -16,11 +17,11 @@ categories:
 ---
 
 
-## A Data Analytics Process
+## An EDA / Statistical Analysis Process
 
 So you have your shiny new R skills and you’ve successfully loaded a cool dataframe into R… Now what?
 
-The best charts come from understanding your data, asking good questions from it, and displaying the answers to those questions as clearly as possible.
+The best charts come from understanding your data, asking good questions from it, and displaying the answers to those questions as clearly as possible. And one uses Statistical procedures to help answer those questions quantitatively using models and tests.
 
 
 ## {{< iconify ic baseline-folder >}} Set up your Project
@@ -62,9 +63,8 @@ knitr:
 ```{r}
 #| label: setup
 #| include: true
-#| message: false
+#| message: true
 #| warning: true
-#| results: hold
 #| knitr:
 #|   opts_chunk:
 #|     dev: "ragg_png"
@@ -93,15 +93,31 @@ library(paletteer) # Colour Palettes for Peasants
 ## vcd/vcdExtra/ggalluvial/ggpubr for Qual Data
 ## sf/tmap/osmplotr/rnaturalearth; 
 ## igraph/tidygraph/ggraph/graphlayouts; 
+## harrypotter/wesanderson/tayloRswift;timburton;
 
 
 ```
 
+::: callout-note
+### Messages on Loading Packages
+If you would rather not have all the messages and warnings from loading packages, you can set `message=FALSE` and `warning=FALSE` in the setup chunk above. But it is a good idea to read these messages at least once, since they often contain useful information about package versions, and any conflicts with other packages.
+:::
+
+### Use Namespace based Code
+::: callout-warning
+
+Did you notice that there are similarly-named function commands from different packages? E.g. `chisq.test` and `fisher.test` are in the `{{janitor}}` package and they mask the identically-named commands from `{{stats}}`. This is because the last-loaded package does the masking, but **all functions** from all loaded packages are available!! Just remember always to **name** your code-command with the package from whence it came!
+So use `dplyr::filter()` / `dplyr::summarize()` and **not** just `filter()` or `summarize()`, since these commands could exist across multiple packages, which you may have loaded **last**. And you will avoid a lot of coding grief. 
+
+(One can also use the `conflicted` package to set this up, but this is simpler for beginners like us. )
+
+:::
+
+
 
 #### {{< iconify ic baseline-fonts >}} Themes and Fonts
 
-
-Set up a theme for your plots. This is a good time to set up your own theme, or use an existing one, e.g. `ggprism`, `ggthemes`, `ggpubr`, etc. If you have a Company logo, you can use that as a theme too.
+Set up a theme for your plots. This is a good time to set up your own theme, or use an existing one, e.g. `{{ggprism}}`, `{{ggthemes}}`, `{{ggpubr}}`, etc. If you have a Company logo, you can use that as a theme too.
 
 ```{r}
 #| label: Plot Sizing and theming
@@ -204,19 +220,9 @@ theme_set(new = theme_custom())
 ```
 
 
-### Use Namespace based Code
-::: callout-warning
-
-Did you notice that there are similarly-named function commands from different packages? E.g. `chisq.test` and `fisher.test` are in the {{janitor}} package and they mask the identically named commands from {{stats}}. This is because the last-loaded package does the masking, but **all functions** from all loaded packages are available!! Just remember always to **name** your code-command with the package from whence it came!
-So use `dplyr::filter()` / `dplyr::summarize()` and **not** just `filter()` or `summarize()`, since these commands could exist across multiple packages, which you may have loaded **last**. And you will avoid a lot of coding grief. 
-
-(One can also use the `conflicted` package to set this up, but this is simpler for beginners like us. )
-
-:::
-
 
 ## {{< iconify ic baseline-input >}} Read Data
-- Use `readr::read_csv()`; or `data(...)` if the data is in a package
+- Use `readr::read_csv()`; or `data(...)` if the data is in a package. **Do not** use `read.csv()`!!
 
 ```{r}
 #| label: read-data
@@ -234,7 +240,7 @@ penguins
 - Use `mosaic::inspect()` OR `skimr::skim()`
 - Use `dplyr::summarise()`
 - Use `crosstable::crosstable()`
-- Highlight any interesting summary stats or data imbalances, 
+- Highlight any **interesting summary stats** or **data imbalances**, 
 especially across groups
 
 ```{r}
@@ -265,6 +271,7 @@ skimr::skim(penguins)
 
 ## {{< iconify carbon clean >}} Data Munging
 
+- Drop NA data ( since that is all we can do now. Sigh. )
 - Convert variables to factors as needed
 - Reformat / Rename other variables as needed
 - Clean badly formatted columns (e.g. text + numbers) using `tidyr::separate_**_**()`
@@ -278,7 +285,15 @@ skimr::skim(penguins)
 #| label: data-munging
 
 dataset_modified <- data %>% 
-  dplyr::mutate(across(where(is.character), as.factor)) 
+  janitor::clean_names(case = "snake") %>% # clean names
+  
+  dplyr::filter(!is.na(target_variable)) %>% # drop NA in target variable or leave blank for all columns
+  
+  dplyr::mutate(across(where(is.character), as.factor)) %>% 
+  # Convert character variables to factors
+  # Check if other integer variables are actually factors
+  
+  dplyr::relocate(where(is.factor), .after = rownames) # move factors to the right of rownames
 # And so on
 
 dataset_modified %>% tinytable::tt()
@@ -350,15 +365,19 @@ Describe what the graph/table/test/models show and why it is all so interesting.
 1. Nicola Rennie.(2025). <https://nrennie.rbind.io/art-of-viz/>
 1. <https://shancarter.github.io/ucb-dataviz-fall-2013/classes/facing-the-abyss/>
 
-2. Colour Palettes
+##### Colour Palettes
 
 Over 2500 colour palettes are available in the `paletteer` package. Can you find `tayloRswift`? `wesanderson`? `harrypotter`? `timburton`? You could also find/define palettes that are in line with your Company's logo / colour schemes. 
 
 <br><br>
 Here are the Qualitative Palettes: (searchable)
 <br><br>
+
 ```{r}
 #| echo: false
+library(paletteer)
+library(wesanderson)
+library(gameofthrones)
 library(reactable)
 palettes_d_names %>% reactable::reactable(data = ., filterable = TRUE, minRows = 10)
 ```
@@ -389,3 +408,6 @@ scale_colour_paletteer_c(name = "Legend Name",
 
 ```
 
+See the `paletteer` gallery <https://pmassicotte.github.io/paletteer_gallery/> for more information. 
+
+And also Emil Hvitfeldt's `paletteer` page: <https://emilhvitfeldt.github.io/paletteer/
