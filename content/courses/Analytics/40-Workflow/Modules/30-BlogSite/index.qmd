@@ -51,40 +51,42 @@ editor:
 
 1. In RStudio, in your console:
 
-  - `install.packages(usethis)`
-  - `library(usethis)`
-  - `usethis::use_git_config(user.name = "Your Name", user.email = "Your Email ID used on GitHub")`
+    - `install.packages(usethis)`
+    - `library(usethis)`
+    - `usethis::use_git_config(user.name = "Your Name", user.email = "Your Email ID used on GitHub")`
 
 2. Generate a Personal Access Token(PAT) (One Time Only, usually)
 
-  - `usethis::create_github_token()`
-This will open a browser window and ask you to log in to GitHub. In the popup window, give your token a logical name **you can remember**(e.g. "For my Mac"), and remember why you created it. Check the `scopes` of the PAT; the defaults are OK. Make sure selecting `repo`, `user`, and `workflow` are checked. **Save the PAT** in your password manager. Default `Expiry` is 30days; we can set the PAT to not expire too. (I have.)
+    - `usethis::create_github_token()`\
+This will open a browser window and ask you to log in to GitHub. In the popup window, give your token a logical name **you can remember**(e.g. "For my Mac"), and remember why you created it. Check the `scopes` of the PAT; the defaults are OK. Make sure selecting `repo`, `user`, and `workflow` are checked. [**Save the PAT** in your password manager]{style="background-color: yellow;"}. Default `Expiry` is 30days; we can set the PAT to not expire too. (I have.)
 
-3. Let RStudio have your PAT (One Time Only, usually)
+3. Let RStudio have your PAT (One Time Only, usually). Once more, in your console: 
 
-  - In your console: `gitcreds::gitcreds_set()` and paste the PAT when asked. 
+    - `install.packages("gitcreds")`
+    - `library(gitcreds)`
+    - `gitcreds::gitcreds_set()` and paste the PAT when asked. 
 
 4. Check if all is OK using one or more of:
 
-  - `usethis::gh_token_help()`
-  - `usethis::git_sitrep()`
-  - `gh::gh_whoami()`
+    - `usethis::gh_token_help()`
+    - `usethis::git_sitrep()`
+    - `gh::gh_whoami()`, after `install.packages("gh")` and `library(gh)`
 
-4. Check in RStudio if has **automatically** detected your Git installation.
+5. Check in RStudio if has **automatically** detected your Git installation.
 
-  - `Tools -> Global Options -> Git/SVN`
+    - `Tools -> Global Options -> Git/SVN`
 
-![RStudio Project Options Window](../../../../../materials/images/windows-rstudio-git-executable-screenshot.png){#fig-RStudio-Git-Executable fig-align="center" width="100%"}
+![RStudio Project Options Window](../../../../../materials/images/windows-rstudio-git-executable-screenshot.png){#fig-RStudio-Git-Executable fig-align="center" width="60%"}
 
 The `Git Executable` field should be like: 
 
-- Windows: `C:/Program Files/Git/bin/git.exe`.
-- MacOS:`/usr/bin/git`
+  - Windows: `C:/Program Files/Git/bin/git.exe`.
+  - MacOS:`/usr/bin/git`
 
 
 5. Let RStudio know which project branch to commit/push to GitHub. (Default is "main")
 
-  - `usethis::git_default_branch_configure()`
+    - `usethis::git_default_branch_configure()`
 
 
 ## Creating your Blog Project in RStudio (One Time Only)
@@ -100,23 +102,38 @@ Name your Blog, browse to where you want the Blog Project Folder (default is fin
 RStudio will restart with a new Blog Project. The Files pane should like this:
 
 ![Quarto Blog Contents](../../../../../materials/images/grand-new-blog.png){#fig-Grand-New-Blog fig-align="center" width="100%"}
+
 The `posts` folder contains dummy blog posts, which you can retain for now and delete once your own content has matured.
 
 ## Making your Blog ready to publish (Now, and every time you have new content)
 
-In your Terminal:
+1. Render all Posts:In your Terminal:
 
-- `quarto render`
+    - `quarto render`\
 This will render all posts and prepare `_site` and `_freeze` folders in your Files tab. Check these. 
-- `quarto preview`
+
+2.  Preview all Posts:In your Terminal:
+
+    - `quarto preview`\
 This will pop up your browser and show you a preview of your Blog website. Check the look and feel, the typos.
 
 ## Pushing to GitHub for the First Time
 
-In your Console:
+1. "Commit" all files: In your Console:
 
-- `usethis::use_git()`: This will throw up a funky set of messages asking if you are ready to `commit` all files to `push` to Github. Choose the appropriate reply and enter. 
-- `usethis::use_github()`: This will create your new repository on Github and `push` all the committed files there. Your browser will open in Github and show you the contents of your new Blog repository.
+    - `usethis::use_git()`\
+This will throw up a funky set of messages asking if you are ready to `commit` all files to `push` to Github. Choose the appropriate reply and enter. 
+
+2. Push to New Github Repo: In your Console:
+
+    - `usethis::use_github()`\
+This will create your new repository on Github and `push` all the committed files there. Your browser will open in Github and show you the contents of your new Blog repository.
+
+
+::: callout-note
+### Can't use this again?
+As far as I know, this process, though simple, can only be used at start up time. Can't use this every time you have new content. For that, use the Git pane in RStudio, or a GUI git client such as [Gitkraken](https://www.gitkraken.com) (recommended).
+:::
 
 
 ## Connecting to Netlify
@@ -160,21 +177,19 @@ In your Console:
 
 1. **Using GUI for git commit and push**: Instead of using the Terminal, or the Git pane in Rstudio, there is a better way. This is a GUI, and one can see the files, the history of commits/pushes, the commit messages, revert back to a point in history, make brances...all that visually, without some tough-looking git commands:
 
-  - So, install a git client, such as [Gitkraken](https://www.gitkraken.com). 
-  - It offers a ready prompt to log in with Github, accept that, filling in ID and password. 
-  - Open `File ->New tab` -> `Browse for Repo` and browse to your Blog project folder (which is what you open in RStudio)
-  - You will a list of previous commits, and a bunch of new edited / changed files which are default labelled `WIP`. (Work in Progress, peasants)
-
-![Gitkraken Window](../../../../../materials/images/gitkraken-wip.png){#fig-Gitkraken-WIP fig-align="center" width="100%"}
-
-  - Click on `Stage All` and type in a memorable `commit` message in the box below at right.
-  - The `WIP` will be replaced by your `commit message`.
-  - Once `staging` is done, hit the `Push` button on the main tool bar. 
-  - After Gitkraken is done, a brief popup will show stating `push` was successful.
-  - Your website should be updated in a few minutes.
-  
+    - So, install a git client, such as [Gitkraken](https://www.gitkraken.com). 
+    - It offers a ready prompt to log in with Github, accept that, filling in ID and password. 
+    - Open `File ->New tab` -> `Browse for Repo` and browse to your Blog project folder (which is what you open in RStudio)
+    - You will a list of previous commits, and a bunch of new edited / changed files which are default labelled `WIP`. (Work in Progress, peasants)
+    - Click on `Stage All` and type in a *memorable* `commit` message in the box below at right.
+    - The `WIP` will be replaced by your `commit message`.
+    - Once `staging` is done, hit the `Push` button on the main tool bar. 
+    - After Gitkraken is done, a brief popup will show stating `push` was successful.
+    - Your website should be updated in a few minutes.
+    
 Yeah, peasants, you're welcome as always.
 
+![Gitkraken Window](../../../../../materials/images/gitkraken-wip.png){#fig-Gitkraken-WIP fig-align="center" width="100%"}
 
 ## Workflow Diagram
 
@@ -220,11 +235,8 @@ Done for Now -> RStudio: "Rinse and Repeat"
 ## References
 
 1. <https://jcoliver.github.io/learn-r/010-github.html>
-
 1. <https://info5940.infosci.cornell.edu/setup/git/git-configure/>
-
 1. <https://posit-conf-2024.github.io/quarto-websites/>
-
 1. Alice Bartlett. *Git for Humans* <https://speakerdeck.com/alicebartlett/git-for-humans>
 
 

@@ -1,0 +1,1340 @@
+---
+title: "\U0001F554 Time Series"
+author: Arvind V
+date: 15/Dec/2022
+date-modified: "`r Sys.Date()`"
+abstract: Events, Trends, Seasons, and Changes over Time
+subtitle: Time Series
+order: 50
+categories:
+  - CandleStick Graphs
+  - Heatmap Graphs (over time)
+  - Line Graphs
+  - Time Series
+image: feature.jpg
+bibliography: 
+  - grateful-refs.bib
+citation: true
+#suppress-bibliography: true
+---
+
+## {{< iconify noto-v1 package >}} Setting up R Packages
+
+```{r}
+#| label: setup
+#| message: false
+
+library(tidyverse)
+library(mosaic)
+library(ggformula) # Our Formula based graphing package
+
+# Wrangling
+library(lubridate)  # Deal with dates. Part of the tidyverse anyway!
+
+library(fpp3) # Robert Hyndman's textbook package, Loads all the core time series packages, see messages
+
+# Plots
+library(timetk) # Tidy Time series analysis and plots
+library(tsbox) # Plotting and Time Series File Transformations
+# library(TSstudio) # Plots, Decomposition, and Modelling with Time Series.
+# Seems hard to get to work in Quarto ;-()
+library(timetk) # Visualizing, Wrangling and Modelling Time Series by Matt Dancho
+
+# Modelling
+library(sweep) # New (07/2023) package to bring broom-like features to time series models
+
+# devtools::install_github("FinYang/tsdl")
+library(tsdl) # Time Series Data Library from Rob Hyndman
+
+
+```
+
+#### Plot Fonts and Theme
+
+```{r}
+#| label: plot-theme
+#| echo: true
+#| cache: false
+#| code-fold: true
+#| messages: false
+#| warning: false
+
+library(systemfonts)
+library(showtext)
+library(tidyverse)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../../../fonts/Alegreya-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+showtext_auto(enable = TRUE) #enable showtext
+##
+theme_custom <- function(){ 
+    font <- "Alegreya"   #assign font family up front
+    '%+replace%' <- ggplot2::'%+replace%' # nolint
+        
+    ggplot2::theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
+    
+    theme(
+      text = element_text(family = font),  #set base font family
+      
+      #text elements
+      plot.title = element_text(                 #title
+                   family = font,          #set font family
+                   size = 24,                    #set font size
+                   face = 'bold',                #bold typeface
+                   hjust = 0,                    #left align
+                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
+      plot.title.position = "plot", 
+      
+      plot.subtitle = element_text(              #subtitle
+                   family = font,          #font family
+                   size = 14,                   #font size
+                   hjust = 0,                   #left align
+                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
+      
+      plot.caption = element_text(               #caption
+                   family = font,          #font family
+                   size = 9,                     #font size
+                   hjust = 1),                   #right align
+      
+      plot.caption.position = "plot",            #right align
+      
+      axis.title = element_text(                 #axis titles
+                   family = "Roboto Condensed",  #font family
+                   size = 12),                   #font size
+      
+      axis.text = element_text(                  #axis text
+                   family = "Roboto Condensed",  #font family
+                   size = 9),                    #font size
+      
+      axis.text.x = element_text(                #margin for axis text
+                    margin = margin(5, b = 10))
+      
+      #since the legend often requires manual tweaking 
+      #based on plot content, don't define it here
+    )
+}
+
+## Use available fonts in ggplot text geoms too!
+ggplot2::update_geom_defaults(geom = "text",new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
+
+```
+
+
+
+
+
+```{r}
+#| label: Extra Pedagogical Packages
+#| echo: false
+#| message: false
+
+library(checkdown)
+library(epoxy)
+library(grateful)
+
+```
+
+::: callout-tip
+### `mosaic` and `ggformula` command template
+
+Note the standard method for all commands from the `mosaic` and
+`ggformula` packages: `goal( y ~ x | z, data = _____)`
+
+With `ggformula`, one can create any graph/chart using:
+`gf_***(y ~ x | z, data = _____)`
+
+In practice, we often use: `dataframe %>%  gf_***(y ~ x | z)` which has
+cool benefits such as "autocompletion" of variable names, as we shall
+see. The "\*\*\*" indicates what kind of graph you desire: histogram,
+bar, scatter, density; the "\_\_\_" is the name of your dataset that you
+want to plot with.
+:::
+
+::: callout-tip
+### `ggplot` command template
+
+The `ggplot`2 template is used to identify the dataframe, identify the x
+and y axis, and define visualized layers:
+
+`ggplot(data = ---, mapping = aes(x = ---, y = ---)) + geom_----()`
+
+Note: ---- is meant to imply text you supply. e.g. function names, data
+frame names, variable names.
+
+It is helpful to see the argument mapping, above. In practice, rather
+than typing the formal arguments, code is typically shorthanded to this:
+
+`dataframe %>%  ggplot(aes(xvar, yvar)) + geom_----()`
+:::
+
+
+
+## {{< iconify openmoji japanese-symbol-for-beginner >}} Introduction
+
+Any metric that is measured over regular time intervals forms a **time
+series**. Analysis of Time Series is commercially important because of
+industrial need and relevance, especially with respect to Forecasting
+(Weather data, sports scores, population growth figures, stock prices,
+demand, sales, supply...). For example, in the graph shown below are the
+temperatures over time in two US cities:
+
+<iframe width="100%" height="514" frameborder="0" src="https://observablehq.com/embed/f274bd3d517cf495?cells=LineChart">
+
+</iframe>
+
+What can we do with Time Series? As with other datasets, we have to
+begin by answering fundamental questions, such as:
+
+1.  What are the **types** of time series?
+2.  How do we **visualize** time series?
+3.  How might we **summarize** time series to get aggregate numbers, say
+    by week, month, quarter or year?
+4.  How do we **decompose** the time series into level, trend, and
+    seasonal components?
+5.  Hoe might we make a **model** of the underlying process that creates
+    these time series?
+6.  How do we make useful **forecasts** with the data we have?
+
+We will first look at the **multiple data formats** for time series in
+R. Alongside we will look at the R packages that work with these formats
+and create graphs and measures using those objects. Then we examine
+*data wrangling* of time series, where we look at packages that offer
+`dplyr`-like ability to group and summarize time series using the
+`time` variable. We will finally look at obtaining the components of the
+time series and try our hand at modelling and forecasting.
+
+## {{< iconify game-icons time-synchronization >}} {{< iconify flat-color-icons line-chart >}} Time Series Formats, Conversion, and Plotting
+
+There are multiple formats for time series data. The ones that we are
+likely to encounter most are:
+
+-   [The **ts** format]{.underline}: We may simply have a single series
+    of measurements that are made over time, stored as a **numerical
+    vector**. The `stats::ts()` function will convert a numeric vector
+    into an R time series `ts` object, which is the most basic time
+    series object in R. The base-R `ts` object is used by established
+    packages `forecast` and is also supported by newer packages such as
+    `tsbox`.
+
+-   [The **tibble** format]{.underline}: the simplest and most familiar
+    data format is of course the standard tibble/data frame, with or
+    without an explicit `time` column/variable to indicate that the
+    other variables vary with time. The standard tibble object is used
+    by many packages, e.g. `timetk` & `modeltime`.
+
+-   [The modern **tsibble** format]{.underline}: this is a new modern
+    format for time series analysis. The special `tsibble` object ("time
+    series tibble") is used by `fable`, `feasts` and others from the
+    [`tidyverts`](https://tidyverts.org/) set of packages.
+
+There are many other `time-oriented` data formats too...[probably too
+many](https://xkcd.com/927), such a `tibbletime` and `TimeSeries` objects. For now the best way to deal with these, should you encounter them, is to convert them (Using [tsbox](https://docs.ropensci.org/tsbox/)) to a `tibble` or a `tsibble` and work with these.
+
+![Standards](https://imgs.xkcd.com/comics/standards.png){fig-align="center"}
+
+To start, we will use simple `ts` data first, and then do
+another with `tibble` format that we can plot *as is*. We will then do
+more after conversion to `tsibble` format, and then a third example with
+a ground-up `tsibble` dataset.
+
+### {{< iconify vaadin hourglass-start >}} Base-R `ts` format data
+
+There are a few datasets in base R that are in `ts` format already.
+
+```{r ts-data}
+
+AirPassengers
+str(AirPassengers)
+
+```
+
+This can be easily plotted using base R and other more recent packages:
+
+```{r}
+#| message: false
+#| results: hold
+#| layout-ncol: 2
+
+# Base R
+plot(AirPassengers)
+
+# tsbox static plot
+tsbox::ts_plot(AirPassengers,ylab = "Passengers")
+
+```
+
+One can see that there is an upward *trend* and also *seasonal
+variations* that also increase over time. This is an example of a *multiplicative* time series, which we will discuss later. 
+
+Let us take data that is "time oriented" but not in `ts` format. We use
+the command `ts` to convert a numeric vector to `ts` format: the syntax
+of `ts()` is:
+
+Syntax: `objectName <- ts(data, start, end, frequency)`, where,
+
+-   `data` : represents the data vector
+-   `start` : represents the first observation in time series
+-   `end` : represents the last observation in time series
+-   `frequency` : represents number of observations per unit time. For
+    example *1=annual, 4=quarterly, 12=monthly, 7=weekly*, etc.
+
+We will pick simple **numerical vector data** ( i.e. not a time series )
+`ChickWeight`:
+
+```{r}
+#| label: ts using stats-ts
+
+ChickWeight %>% head()
+
+# Filter for Chick #1 and for Diet #1
+ChickWeight_ts <- ChickWeight %>% 
+  filter(Chick == 1, Diet ==1) %>% 
+  select(weight, Time)
+
+ChickWeight_ts <- stats::ts(ChickWeight_ts$weight, frequency = 2) 
+str(ChickWeight_ts)
+
+```
+
+Now we can plot this in many ways:
+
+```{r}
+#| results: hold
+#| layout-ncol: 3
+
+plot(ChickWeight_ts) # Using base-R
+
+# ts_boxable(ChickWeight_ts)
+# Using tsbox
+tsbox::ts_plot(ChickWeight_ts,
+               ylab = "Weight of Chick #1")
+
+```
+
+```{r}
+#| column: body-outset-right
+
+# Using TSstudio
+TSstudio::ts_plot(ChickWeight_ts,
+                  Xtitle = "Time", 
+                  Ytitle = "Weight of Chick #1")
+
+```
+
+We see that the weights of a young chick specimen increases over time.
+
+### {{< iconify mdi table-clock >}} `tibble` data
+
+The `ts` data format can handle *only one time series*. If we want multiple time series, based on say *Qualitative* variables, we need other data formats. Using the familiar `tibble` structure opens up new possibilities.\
+
+-   We can have **multiple** **time series** within a tibble (think of numerical time-series data like `GDP`, `Population`, `Imports`, `Exports` for multiple countries as with the `gapminder`[^1]data we saw earlier).\
+-   It also allows for data processing with `dplyr` such as filtering
+    and summarizing.\
+
+::: column-margin
+#### `gapminder` data
+
+```{r}
+#| echo: false
+library(gapminder)
+gapminder %>% select(country, gdpPercap, pop, lifeExp, everything())
+
+```
+:::
+
+Let us read and inspect in the `US births data` from 2000 to 2014.
+Download this data by clicking on the icon below, and saving the
+downloaded file in a sub-folder called `data` inside your project.
+
+{{< downloadthis ../data/US_births_2000-2014_SSA.csv dname="US_births_2000-2014_SSA" label="Download the US Births data" icon="database-fill-down" type="info" >}}
+
+Read this data in:
+
+```{r}
+#| label: using-tibble-data-1
+#| message: false
+
+
+births_2000_2014 <- read_csv("../data/US_births_2000-2014_SSA.csv")
+glimpse(births_2000_2014)
+inspect(births_2000_2014)
+births_2000_2014
+
+```
+
+This is just a `tibble` containing a single data variable `births` that
+varies over time. All other variables, although depicting time, are
+numerical columns. There are no Qualitative variables (yet!).
+
+#### Plotting `tibble` time series
+
+:::{.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+##### Using ggformula
+
+We will now plot this using `ggformula`. Using the separate
+`year/month/week` and `day_of_week / day_of_month` columns, we can plot
+births over time, colouring by `day_of_week`, for example:
+
+```{r}
+#| label: using ggformula
+#| layout-ncol: 2
+
+# grouping by day_of_week
+births_2000_2014 %>% 
+  gf_line(births ~ year, 
+          group = ~ day_of_week, 
+          color = ~ day_of_week) %>% 
+  gf_point(title = "By Day of Week") %>% 
+  gf_theme(scale_colour_distiller(palette = "Paired"))
+
+
+# Grouping by date_of_month
+births_2000_2014 %>% 
+  gf_line(births ~ year, 
+          group = ~ date_of_month, 
+          color = ~ date_of_month) %>% 
+  gf_point(title = "By Date of Month") %>% 
+  gf_theme(scale_colour_distiller(palette = "Paired")) 
+
+```
+
+Not particularly illuminating. This is because the data is **daily** and
+we have considerable variation over time, and here we have too much data
+to visualize. **Summaries** will help, so we could calculate the the
+**mean births on a month basis** in each year and plot that:
+
+```{r}
+#| label: using-tibble-data-3
+#| message: false
+#| layout-ncol: 2
+
+births_2000_2014_monthly <- births_2000_2014 %>% 
+# Convert month to factor/Qual variable!
+# So that we can have discrete colours for each month
+# Using base::factor()
+# Could use forcats::as_factor() also
+  mutate(month = base::factor(month, labels = month.abb)) %>%
+# `month.abb` is a built-in dataset containing names of months.
+  group_by(year, month) %>% 
+  summarise(mean_monthly_births = mean(births, na.rm = TRUE))
+births_2000_2014_monthly
+
+births_2000_2014_monthly %>% 
+  gf_line(mean_monthly_births ~ year, 
+          group = ~ month, 
+          colour = ~ month, linewidth = 1) %>% 
+  gf_point(size = 1.5, title = "Summaries of Monthly Births over the years") %>% 
+    # palette for 12 colours
+  gf_theme(scale_colour_brewer(palette = "Paired")) 
+
+
+```
+
+
+::: callout-note
+These are graphs *for the same month each year*: we have a January graph
+and a February graph and so on. So...average births per month were
+higher in all months during 2005 to 2007 and have dropped since.
+:::
+
+We can do similar graphs using `day_of_week` as our basis for grouping,
+instead of month:
+
+```{r}
+#| message: false
+#| warning: false
+#| layout-ncol: 2
+
+births_2000_2014_weekly <- births_2000_2014 %>% 
+  mutate(day_of_week = base::factor(day_of_week,
+          levels = c(1,2,3,4,5,6,7), 
+          labels = c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"))) %>% 
+  group_by(year, day_of_week) %>% 
+  summarise(mean_daily_births = mean(births, na.rm = TRUE))
+births_2000_2014_weekly
+
+births_2000_2014_weekly %>%   
+  gf_line(mean_daily_births ~ year, 
+          group = ~ day_of_week, 
+          colour = ~ day_of_week, 
+          linewidth = 1,
+          data = .) %>% 
+  gf_point(size = 2) %>% 
+  # palette for 12 colours
+  gf_theme(scale_colour_brewer(palette = "Paired"))
+
+
+```
+
+::: callout-note
+### Why are fewer babies born on weekends?
+
+Looks like an interesting story here...there are significantly fewer
+births on average on Sat and Sun, over the years! Why? Should we watch
+[Grey's Anatomy](https://www.hotstar.com/in/tv/greys-anatomy/14823) ?
+:::
+
+::: callout-important
+Note that this is still using just `tibble` data, without converting it
+or using it as a `time series`. So far we are simply treating the
+`year/month/day` variables are simple variables and using `dplyr` to
+group and summarize. We have not created an explicit `time` or `date`
+variable.
+:::
+
+##### Using tsbox and TSstudio
+
+Let us create a `time` variable in our dataset now:
+
+-   `tsbox::ts_plot` needs just the `date` and the `births` columns to
+    plot with and not be confused by the other numerical columns, so let
+    us create a single `date` column from these three, but retain them
+    for now.
+-   `TSstudio::ts_plot` also needs a `date` column.
+
+So there are several numerical variables for `year`, `month`, and
+`day_of_month`, `day_of_week`, and of course the `births` on a **daily basis**.
+
+We use the `lubridate` package from the `tidyverse`:
+
+```{r}
+
+births_timeseries <- 
+  births_2000_2014 %>% 
+  mutate(date = lubridate::make_date(year = year,
+                                     month = month,
+                                     day = date_of_month)) %>% 
+  select(date, births, year, month,date_of_month, day_of_week)
+
+births_timeseries
+
+```
+
+::: callout-tip
+### Extract from `help(tsbox)`
+
+In data frames, i.e., in a data.frame, a data.table, or a tibble, `tsbox`
+stores one or multiple time series in the 'long' format. `tsbox` detects a
+value, a `time` column, and zero, one or several `id` columns. Column detection is done in the following order:
+
+-   Starting on the **right**, the first first numeric or integer column is
+    used as `value` column.\
+-   Using the remaining columns and starting on the right again, the
+    first Date, POSIXct, numeric or character column is used as `time`
+    column. character strings are parsed by anytime::anytime(). The
+    timestamp, time, indicates the beginning of a period.\
+-   **All remaining columns** are `id` columns. Each unique combination of id columns points to a (unique) time series.
+
+Alternatively, the time column and the value column to be **explicitly
+named** as `time` and `value`. If explicit names are used, the column
+order will be ignored. If columns are detected automatically, a message
+is returned.
+:::
+
+Plotting this directly, after selecting the relevant variables, so that
+they will be auto-detected:
+
+```{r}
+#| message: true
+births_timeseries %>% 
+  select(date, births) %>% 
+  tsbox::ts_plot()
+
+```
+
+
+```{r}
+#| fig-width: 3
+births_timeseries %>% 
+  select(date, births) %>% 
+  TSstudio::ts_plot(Xtitle = "Year",
+                    Ytitle = "Births",
+                    title = "Births Time Series",
+                    Xgrid = TRUE,Ygrid = TRUE,
+                    slider = TRUE,
+                    width = 1) # linewidth
+```
+
+Quite messy, as before. We need use the summarised data, as before. We
+will do this in the next section. 
+
+##### Using ggplot
+
+We will now plot this using `ggplot` for completeness. Using the separate
+`year/month/week` and `day_of_week / day_of_month` columns, we can plot
+births over time, colouring by `day_of_week`, for example:
+
+```{r}
+#| label: using ggplot
+#| layout-ncol: 2
+
+# grouping by day_of_week
+births_2000_2014 %>% 
+  ggplot(aes(year, births,
+             group = day_of_week, 
+             color = day_of_week)) + 
+  geom_line() +  
+  geom_point() +
+  labs(title = "By Day of Week") + 
+  scale_colour_distiller(palette = "Paired")
+
+# Grouping by date_of_month
+births_2000_2014 %>%  ggplot(aes(year, births,
+                                 group = date_of_month, 
+                                 color = date_of_month)) + 
+  geom_line() + 
+  geom_point() +  
+  labs(title = "By Date of Month") + 
+  scale_colour_distiller(palette = "Paired")
+
+```
+
+```{r}
+#| label: using-tibble-data-3b
+#| message: false
+#| layout-ncol: 2
+
+births_2000_2014_monthly <- births_2000_2014 %>% 
+# Convert month to factor/Qual variable!
+# So that we can have discrete colours for each month
+# Using base::factor()
+# Could use forcats::as_factor() also
+
+  mutate(month = base::factor(month, labels = month.abb)) %>%
+# `month.abb` is a built-in dataset containing names of months.
+
+  group_by(year, month) %>% 
+  summarise(mean_monthly_births = mean(births, na.rm = TRUE))
+births_2000_2014_monthly
+###
+births_2000_2014_monthly %>% 
+  ggplot(aes(year, mean_monthly_births,
+               group = month, colour = month)) + 
+  geom_line(linewidth = 1) + 
+  geom_point(size = 1.5) + 
+  labs(title = "Summaries of Monthly Births over the years") + 
+    
+  # palette for 12 colours
+  scale_colour_brewer(palette = "Paired")
+
+
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| layout-ncol: 2
+births_2000_2014_weekly <- births_2000_2014 %>% 
+  mutate(day_of_week = base::factor(day_of_week,
+          levels = c(1,2,3,4,5,6,7), 
+          labels = c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"))) %>% 
+  group_by(year, day_of_week) %>% 
+  summarise(mean_daily_births = mean(births, na.rm = TRUE))
+births_2000_2014_weekly
+
+births_2000_2014_weekly %>%
+  ggplot(aes(year, mean_daily_births, 
+             group = day_of_week,
+             colour = day_of_week)) + 
+  geom_line() + 
+  geom_point() + 
+    
+  # palette for 12 colours
+  scale_colour_brewer(palette = "Paired")
+
+
+```
+
+:::
+
+
+
+{{< pagebreak >}}
+
+### {{< iconify icon-park database-time >}} `tsibble` data
+
+Finally, we have `tsibble` ("time series tibble") format data, which
+contains three main components:
+
+-   an `index` variable that defines time;
+-   a set of `key` variables, usually **categorical**, that define sets
+    of observations, over time. This allows for each combination of the
+    categorical variables to define a **separate time series**.
+-   a set of **quantitative** variables, that represent the quantities
+    that vary over time (i.e `index`)
+
+Here is Robert Hyndman's video introducing tsibbles:
+
+{{< video https://youtu.be/EwjvA2OcdHs >}}
+
+The package `tsibbledata` contains several ready made `tsibble` format
+data. [Run `data(package = "tsibbledata")` in your Console to find out
+about these.]{.aside} Let us try `PBS`, which is a dataset containing
+Monthly Medicare prescription data in Australia.
+
+```{r}
+#| label: PBS
+#| message: true
+
+data("PBS")
+# inspect(PBS) # does not work since mosaic cannot handle tsibbles
+PBS
+
+```
+
+[Data Description:]{.underline}
+This is a large-ish dataset:[Run `PBS` in your console]{.aside}
+
+-   67K observations
+-   336 combinations of `key` variables (`Concession`, `Type`, `ATC1`,
+    `ATC2`) which are categorical, as foreseen.
+-   Data appears to be *monthly,* as indicated by the `1M`.
+-   the time index variable is called `Month`, formatted as `yearmonth`, a new type of variable introduced in the `tsibble` package
+
+Note that there are multiple **Quantitative variables** (`Scripts`,`Cost`), each sliced into 336 time-series, a feature which is not supported in the `ts` format, but is supported in a `tsibble`. The **Qualitative Variables** are described below. [Type `help("PBS")` in your Console.]{.aside}
+
+The data is dis-aggregated/grouped using four `keys`:\
+- `Concession`: Concessional scripts are given to pensioners, unemployed, dependents, and other card holders\
+- `Type`: Co-payments are made until an individual's script expenditure hits a threshold (\$290.00 for concession, \$1141.80 otherwise). Safety net subsidies are provided to individuals exceeding this amount.\
+- `ATC1`: Anatomical Therapeutic Chemical index (level 1). 15 types\
+- `ATC2`: Anatomical Therapeutic Chemical index (level 2). 84 types, nested inside `ATC1`.
+
+Let us simply plot `Cost` over time:
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+
+### Using ggformula
+
+```{r PBS-Cost-ggformulas}
+
+PBS %>% 
+  gf_point(Cost ~ Month, data = .) %>% 
+  gf_line(title = "PBS Costs vs time") 
+```
+
+
+
+### Using ggplot
+
+```{r PBS-Cost-ggplot}
+
+PBS %>% ggplot(aes(Month, Cost)) + 
+  geom_point() + 
+  geom_line() + 
+  labs(title = "PBS Costs vs time") 
+
+```
+
+:::
+
+This basic plot is quite messy, and it is now time (sic!) for us to look
+at summaries of the data using `dplyr`-like verbs.
+
+
+## {{< iconify eos-icons data-mining >}} Time-Series Wrangling
+
+We have now arrived at the need to *filter, group, and summarize* time-series data. We can do this in two ways, with two packages:
+
+::: callout-tip
+## `tsibble` has `dplyr`-like functions
+
+Using `tsibble` data, the `tsibble` package has specialized **filter** and **group_by** functions to do with the `index` (i.e time) variable and the `key` variables, such as `index_by()` and `group_by_key()`.
+
+Filtering based on Qual variables can be done with `dplyr`. We can use `dplyr` functions such as `group_by`, `mutate()`, `filter()`, `select()` and `summarise()` to work with `tsibble` objects. 
+
+:::
+
+::: callout-tip
+## `timetk` **also** has `dplyr`-like functions!
+Using tibbles, `timetk` provides functions such as `summarize_by_time`, `filter_by_time` and `slidify` that are quite powerful. Again, as with `tsibble`, `dplyr` can always be used for other variables (i.e non-time). 
+:::
+
+
+Let us first see how many observations there are for each combo of
+`keys:`
+
+
+
+```{r}
+#| layout: [[10, 45,45]]
+#| column: page-inset-right
+
+PBS %>% 
+  count()
+
+# Grouped Counts
+PBS %>% 
+  tsibble::group_by_key(ATC1, ATC2, Concession, Type) %>% 
+  dplyr::count()
+
+# dplyr grouping
+PBS %>% 
+  dplyr::group_by(ATC1, ATC2) %>% 
+  dplyr::count()
+
+```
+
+
+We have 336 combinations of **Qualitative** variables, each combo
+containing 204 observations (except some! Take a look!): so let us
+filter for a few such combinations and plot:
+
+```{r}
+#| layout-ncol: 2
+
+# Costs
+PBS %>% 
+  tsibble::group_by_key(ATC1, ATC2, Concession, Type) %>%
+  gf_line(Cost ~ Month, 
+          colour = ~ Type, 
+          data = .) %>% 
+  gf_point(title = "Costs, per Month") 
+
+# Scripts
+PBS %>% 
+  tsibble::group_by_key(ATC1, ATC2, Concession, Type) %>%
+  gf_line(Scripts ~ Month, 
+          colour = ~ Type, 
+          data = .) %>% 
+  gf_point(title = "Scripts, per Month") 
+
+
+# Costs variable for a specific combo of Qual variables(keys)
+PBS %>% 
+  dplyr::filter(Concession == "General", 
+                      ATC1 == "A",
+                      ATC2 == "A10") %>% 
+  gf_line(Cost ~ Month, 
+          colour = ~ Type, 
+          data = .) %>% 
+  gf_point(title = "Costs, per Month for General/A/A10 category patients")
+
+
+# Scripts variable for a specific combo of Qual variables(keys)
+PBS %>% 
+  dplyr::filter(Concession == "General", 
+                      ATC1 == "A",
+                      ATC2 == "A10") %>% 
+  gf_line(Scripts ~ Month, 
+          colour = ~ Type, 
+          data = .) %>% 
+  gf_point(title = "Scripts, per Month for General/A/A10 category patients") 
+
+
+```
+
+As can be seen, very different time patterns based on the two `Type`s of
+payment methods, and also with `Costs` and `Scripts`. Strongly seasonal
+for both, with seasonal variation increasing over the years,  a clear sign of a *multiplicative time series*. There is a strong upward *trend* with both types of subsidies, `Safety net` and `Co-payments`. But these trends are somewhat different in magnitude for specific combinations of `ATC1` and `ATC2` categories. 
+
+We can use `tsibble`'s dplyr-like commands to develop summaries by year,
+quarter, month(original data): Look carefully at the new time variable
+created each time:
+
+```{r}
+#| column: body-outset-right
+
+# Original Data
+PBS
+
+
+# Cost Summary by Month, which is the original data
+# Only grouping happens here
+# New Variable Name to make grouping visible
+PBS %>% 
+  tsibble::group_by_key(ATC1, ATC2, Concession, Type) %>% 
+  tsibble::index_by(Month_Group = Month) %>% 
+  dplyr::summarise(across(.cols = c(Cost, Scripts),
+                          .fn = mean,
+                          .names = "mean_{.col}"))
+
+
+# Cost Summary by Quarter
+PBS %>% 
+  tsibble::group_by_key(ATC1, ATC2, Concession, Type) %>% 
+  tsibble::index_by(Year_Quarter = yearquarter(Month)) %>% # And the change here!
+  dplyr::summarise(across(.cols = c(Cost, Scripts),
+                          .fn = mean,
+                          .names = "mean_{.col}"))
+
+
+# Cost Summary by Year
+PBS %>% 
+  tsibble::group_by_key(ATC1, ATC2, Concession, Type) %>% 
+  index_by(Year_Group = year(Month)) %>% # Note this change!!!
+  dplyr::summarise(across(.cols = c(Cost, Scripts),
+                          .fn = mean,
+                          .names = "mean_{.col}"))
+
+```
+
+Finally, it may be a good idea to convert some `tibble` into a `tsibble`
+to leverage some of functions that `tsibble` offers:
+
+```{r tibble-to-tsibble}
+
+births_tsibble <- births_2000_2014 %>% 
+  mutate(date = lubridate::make_date(year = year,
+                                     month = month,
+                                     day = date_of_month)) %>%
+  # Convert to tsibble
+  tsibble::as_tsibble(index = date) # Time Variable
+
+births_tsibble
+
+```
+
+This is DAILY data of course. Let us say we want to *group by month and plot mean monthly births* as before, but now using `tsibble` and the `index` variable:
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+### tsibble vs timetk: Basic Plot
+
+```{r}
+#| label: tsibble-with-time-variable-processing
+#| layout-ncol: 2
+#| results: hold
+#| column: body-outset-right
+
+births_tsibble %>%
+  gf_line(births ~ date, 
+          data = ., 
+          title = "Basic tsibble plotted with ggformula")
+
+
+# timetk **can** plot tsibbles. 
+births_tsibble %>% 
+  timetk::plot_time_series(.date_var = date, 
+                           .value = births,
+                           .title = "Tsibble Plotted with timetk")
+
+```
+
+### tsibble vs timetk: Grouped Plot 1
+
+```{r}
+#| label: Per month Aggregation
+#| layout-ncol: 2
+#| results: hold
+#| column: body-outset-right
+
+births_tsibble %>% 
+  tsibble::index_by(month_index = ~ tsibble::yearmonth(.)) %>% 
+  dplyr::summarise(mean_births = mean(births, na.rm = TRUE)) %>% 
+  gf_point(mean_births ~ month_index, 
+           data = ., 
+           title = "Monthly Aggregate with tsibble") %>% 
+  gf_line() %>% 
+  gf_smooth(se = FALSE, method = "loess") 
+
+births_timeseries %>% 
+  # timetk cannot wrangle tsibbles
+  # timetk needs tibble or data frame
+  timetk::summarise_by_time(.date_var = date, 
+                            .by = "month", 
+                            mean = mean(births)) %>% 
+  timetk::plot_time_series(date, mean,
+                           .title = "Monthly aggregate births with timetk",
+                           .x_lab = "year", 
+                           .y_lab = "Mean Monthly Births")
+
+```
+
+Apart from the bump during in 2006-2007, there are also **seasonal trends** that repeat each year, which we glimpsed earlier.
+
+### tsibble vs timetk: Grouped Plot 2
+
+```{r}
+#| label: Per Year Aggregation
+#| layout-ncol: 2
+#| results: hold
+#| column: body-outset-right
+
+births_tsibble %>% 
+  tsibble::index_by(year_index = ~ lubridate::year(.)) %>% 
+  dplyr::summarise(mean_births = mean(births, na.rm = TRUE)) %>%
+  gf_point(mean_births ~ year_index, data = .) %>% 
+  gf_line() %>% 
+  gf_smooth(se = FALSE, method = "loess") 
+
+
+births_timeseries %>% 
+  timetk::summarise_by_time(.date_var = date, 
+                            .by = "year", 
+                            mean = mean(births)) %>% 
+  timetk::plot_time_series(date, mean,
+                           .title = "Yearly aggregate births with timetk",
+                           .x_lab = "year", 
+                           .y_lab = "Mean Yearly Births")
+
+```
+
+
+::: {.content-hidden}
+### Errors
+
+Ah yes....
+
+```{r}
+#|label: Why not use dplyr group_by for tsibbles?
+#| layout-ncol: 3
+#| fig-subcap: 
+#|  - "group_by on original tibble (OK)"
+#|  - "group_by on tsibble(error)"
+#|  - "index-by on tsibble (OK)"
+
+# The original dataset allows dplyr:group_by + summarize
+births_2000_2014 %>% 
+  dplyr::group_by(year) %>% 
+  summarise(mean_births = mean(births, na.rm = TRUE))
+
+# tsibble data does not work with dplyr::group_by + summarize
+births_tsibble %>% 
+  dplyr::group_by(year) %>% 
+# This grouping does not give a proper result
+# The grouping by `index` is different from dplyr::group_by
+# Annual Birth Average as before
+  summarise(mean_births = mean(births, na.rm = TRUE)) 
+# Should give 15 rows, one per year, but does not!
+
+
+# tsibble works with index_by + summarize
+births_tsibble %>% 
+  tsibble::index_by(year) %>% 
+  dplyr::summarise(mean_births = mean(births, na.rm = TRUE)) 
+# 15 rows, one for each year
+
+```
+:::
+
+:::
+
+## {{< iconify game-icons candles >}} Candle-Stick Plots
+
+Hmm...can we try to plot **boxplots over time** (Candle-Stick Plots)?
+Over month / quarter or year?
+
+### {{< iconify iwwa month >}} Monthly Box Plots
+
+```{r}
+#| label: Candle-stick Plots
+#| layout-ncol: 2
+#| results: hold
+births_tsibble %>%
+  index_by(month_index = ~ yearmonth(.)) %>% 
+  # 15 years
+  # No need to summarise, since we want boxplots per year / month
+  gf_boxplot(births ~ date, 
+             group =  ~ month_index, 
+             fill = ~ month_index, data = .) 
+  # plot the groups
+  # 180 plots!!
+
+births_timeseries %>% 
+  # timetk::summarise_by_time(.date_var = date, 
+  #                           .by = "month", 
+  #                           mean = mean(births)) %>% 
+  timetk::plot_time_series_boxplot(date, births,
+                           .title = "Monthly births with timetk",
+                           .x_lab = "year", .period = "month",
+                           .y_lab = "Mean Monthly Births")
+
+```
+
+### {{< iconify system-uicons pie-quarter >}} Quarterly boxplots
+
+```{r}
+births_tsibble %>%
+  index_by(qrtr_index = ~ yearquarter(.)) %>% # 60 quarters over 15 years
+  # No need to summarise, since we want boxplots per year / month
+  gf_boxplot(births ~ date, 
+             group = ~ qrtr_index,
+             fill = ~ qrtr_index,
+             data = .)  # 60 plots!!
+
+births_timeseries %>% 
+  timetk::plot_time_series_boxplot(date, births,
+                           .title = "Quarterly births with timetk",
+                           .x_lab = "year", .period = "quarter",
+                           .y_lab = "Mean Monthly Births")
+```
+
+### {{< iconify fluent-mdl2 calendar-year >}} Yearwise boxplots
+
+```{r}
+births_tsibble %>% 
+  index_by(year_index = ~ lubridate::year(.)) %>% # 15 years, 15 groups
+    # No need to summarise, since we want boxplots per year / month
+
+  gf_boxplot(births ~ date, 
+             group = ~ year_index, 
+             fill = ~ year_index, 
+             data = .) %>%  # plot the groups 15 plots
+  gf_labs(title = "Yearly aggregate births with ggformula") %>% 
+  gf_theme(scale_fill_distiller(palette = "Spectral")) 
+
+births_timeseries %>% 
+  timetk::plot_time_series_boxplot(date, births,
+                           .title = "Yearly aggregate births with timetk",
+                           .x_lab = "year", .period = "year",
+                           .y_lab = "Births")
+```
+
+Although the graphs are very busy, they do reveal seasonality trends at
+different periods.
+
+{{< pagebreak >}}
+
+::: {.content-hidden}
+## {{< iconify icon-park trend-two >}} {{< iconify icon-park-outline cycle >}} {{< iconify fad modrandom >}} Seasons, Trends, Cycles, and Random Changes
+
+Here are how the different types of patterns in time series are as
+follows:
+
+> `Trend`: A trend exists when there is a long-term increase or decrease
+> in the data. It does not have to be linear. Sometimes we will refer to
+> a trend as "changing direction", when it might go from an increasing
+> trend to a decreasing trend.
+
+> `Seasonal`: A seasonal pattern occurs when a time series is affected
+> by seasonal factors such as the time of the year or the day of the
+> week. Seasonality is always of a fixed and known period. The monthly
+> sales of drugs (with the PBS data) shows seasonality which is induced
+> partly by the change in the cost of the drugs at the end of the
+> calendar year.
+
+> `Cyclic`: A cycle occurs when the data exhibit rises and falls that
+> are not of a fixed frequency. These fluctuations are usually due to
+> economic conditions, and are often related to the "business cycle".
+> The duration of these fluctuations is usually at least 2 years.
+
+The function `feasts::STL` allows us to create these **decompositions**.
+
+Let us try to find and plot these patterns in Time Series.
+
+```{r}
+#| label: STL-model-yearly
+#| column: screen-inset
+
+
+births_STL_yearly <- 
+  births_tsibble %>% 
+  fabletools::model(STL(births ~ season(period = "year")))
+
+fabletools::components(births_STL_yearly)
+
+```
+
+::: column-screen-inset
+```{r}
+#| fig-column: screen-inset
+#| column: screen-inset
+feasts::autoplot(components(births_STL_yearly))
+
+```
+:::
+
+:::
+How about a heatmap? We can cook up a categorical variable based on the
+number of births (low, fine, high) and use that to create a heatmap:
+
+```{r}
+
+births_2000_2014 %>%
+  mutate(birthrate = case_when(births >= 10000 ~ "high",
+                               births <= 8000 ~ "low",
+                               TRUE ~ "fine")) %>%
+  
+  gf_tile(
+    data = .,
+    year ~ month,
+    fill = ~ birthrate,
+    color = "black"
+  ) %>%
+  
+  gf_theme(scale_x_time(
+    breaks = 1:12,
+    labels = c("Jan","Feb","Mar","Apr",
+               "May","Jun","Jul","Aug",
+               "Sep","Oct","Nov","Dec")
+  )) %>%
+  
+  gf_theme(theme_classic())
+
+```
+
+## {{< iconify fluent-mdl2 decision-solid >}} Conclusion
+
+We have seen a good few data formats for time series, and how to work
+with them and plot them. We have also seen how to decompose time series
+into periodic and aperiodic components, which can be used to make
+business decisions.
+
+
+## {{< iconify icon-park me >}} Your Turn
+
+1.  Choose some of the datasets in the `tsdl` and in the `tsibbledata`
+    packages. Plot basic, filtered and model-based graphs for these and
+    interpret.
+
+## {{< iconify ooui references-ltr >}} References
+
+1.  Robert Hyndman, *Forecasting: Principles and Practice (Third
+    Edition)*. [available online](https://otexts.com/fpp3/)
+
+2.  [Time Series Analysis at Our Coding
+    Club](https://ourcodingclub.github.io/tutorials/time/)
+
+## {{< iconify ep reading >}} Readings
+
+1.  [The Nuclear Threat---The Shadow Peace, part
+    1](http://www.fallen.io/shadow-peace/1/)
+
+2.  [11 Ways to Visualize Changes Over Time -- A
+    Guide](https://flowingdata.com/2010/01/07/11-ways-to-visualize-changes-over-time-a-guide/)
+
+3.  [What is seasonal adjustment and why is it
+    used?](http://junkcharts.typepad.com/junk_charts/2010/11/what-is-seasonal-adjustment-and-why-is-it-used.html)
+
+4.  [The start-at-zero
+    rule](http://junkcharts.typepad.com/junk_charts/2005/09/the_startatzero.html)
+
+
+------------------------------------------------------------------------
+
+[^1]: https://www.gapminder.org/data/
+
+
+
+## Extra Stuff{.hidden}
+
+##### Using tsbox and TSstudio
+
+Let us create a `time` variable in our dataset now:
+
+-   `tsbox::ts_plot` needs just the `date` and the `births` columns to
+    plot with and not be confused by the other numerical columns, so let
+    us create a single `date` column from these three, but retain them
+    for now.
+-   `TSstudio::ts_plot` also needs a `date` column.
+
+So there are several numerical variables for `year`, `month`, and
+`day_of_month`, `day_of_week`, and of course the `births` on a **daily basis**.
+
+We use the `lubridate` package from the `tidyverse`:
+
+```{r}
+
+births_timeseries <- 
+  births_2000_2014 %>% 
+  mutate(date = lubridate::make_date(year = year,
+                                     month = month,
+                                     day = date_of_month)) %>% 
+  select(date, births, year, month,date_of_month, day_of_week)
+
+births_timeseries
+
+```
+
+
+
+::: callout-tip
+### Extract from `help(tsbox)`
+
+In data frames, i.e., in a data.frame, a data.table, or a tibble, `tsbox`
+stores one or multiple time series in the 'long' format. `tsbox` detects a
+value, a `time` column, and zero, one or several `id` columns. Column detection is done in the following order:
+
+-   Starting on the **right**, the first first numeric or integer column is
+    used as `value` column.\
+-   Using the remaining columns and starting on the right again, the
+    first Date, POSIXct, numeric or character column is used as `time`
+    column. character strings are parsed by anytime::anytime(). The
+    timestamp, time, indicates the beginning of a period.\
+-   **All remaining columns** are `id` columns. Each unique combination of id columns points to a (unique) time series.
+
+Alternatively, the time column and the value column to be **explicitly
+named** as `time` and `value`. If explicit names are used, the column
+order will be ignored. If columns are detected automatically, a message
+is returned.
+:::
+
+Plotting this directly, after selecting the relevant variables, so that
+they will be auto-detected:
+
+```{r}
+#| message: true
+births_timeseries %>% 
+  select(date, births) %>% 
+  tsbox::ts_plot()
+
+```
+
+
+
+
+```{r}
+#| fig-width: 3
+births_timeseries %>% 
+  select(date, births) %>% 
+  TSstudio::ts_plot(Xtitle = "Year",
+                    Ytitle = "Births",
+                    title = "Births Time Series",
+                    Xgrid = TRUE,Ygrid = TRUE,
+                    slider = TRUE,
+                    width = 1) # linewidth
+```
+Quite messy, as before. We need use the summarised data, as before. We
+will do this in the next section. 
+
+
+
+
+
+
+## {{< iconify ooui references-rtl >}} References
+
+::: {#refs style="font-size: 60%;"}
+
+
+
+###### {{< iconify lucide package-check >}} R Package Citations
+
+
+```{r}
+#| echo: false
+# scan_packages()
+cite_packages(
+  output = "table",
+  out.dir = ".",
+  out.format = "html",
+  pkgs = c("ggridges", "NHANES", "TeachHist",
+           "TeachingDemos")
+) %>%
+  knitr::kable(format = "simple")
+
+```
+:::

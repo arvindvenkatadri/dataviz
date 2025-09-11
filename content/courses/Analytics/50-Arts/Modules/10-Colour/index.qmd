@@ -5,6 +5,8 @@ author: Arvind V.
 date: 22/May/2021
 date-modified: " `r Sys.Date()` "
 order: 10
+bibliography: 
+  - grateful-refs.bib
 ---
 
 ## {{< iconify noto-v1 package >}} Setting up R Packages
@@ -143,7 +145,7 @@ flextable::set_flextable_defaults(font.family = "Roboto Condensed")
 
 ## {{< iconify openmoji japanese-symbol-for-beginner >}} Introduction
 
-We will look at how to use colour scales and palettes to embellish our plots in `ggplot2`.
+We will look at how to use colour scales and palettes to embellish our plots in `{{ggplot2}}`.
 
 ## {{< iconify file-icons influxdata >}} Examine the Data
 
@@ -241,7 +243,7 @@ Continuous variables, on the other hand, can take on any value within a range. F
 
 ## {{< iconify emojione-monotone artist-palette >}} Colour Palettes
 
-Colour palettes are a set of colours that can be used to represent data in a visual way. They are used to make plots more visually appealing and to help convey information more effectively. In R, there are many packages that provide colour palettes, and they can be used in `ggplot2` to create beautiful and informative plots.
+Colour palettes are a set of colours that can be used to represent data in a visual way. They are used to make plots more visually appealing and to help convey information more effectively. In R, there are many packages that provide colour palettes, and they can be used in `{{ggplot2}}` to create beautiful and informative plots.
 Colour palettes can be used to represent different types of data, such as categorical, ordinal, and continuous data. 
 
 There are three main types of colour palettes in R:
@@ -256,7 +258,7 @@ Let us now create plots that show the effect of these palettes on the penguins d
 
 ### Create a simple set of scatter plots
 
-We will create simple base plots in `ggplot` and see how we may alter the colour scales using palettes.
+We will create simple base plots in `{{ggplot2}}` and see how we may alter the colour scales using palettes.
 
 
 ```{r}
@@ -297,7 +299,7 @@ patchwork::wrap_plots(p1,p2, ncol = 2) + plot_annotation(tag_levels = "1", tag_p
 
 Note that these use the **default colours** in R. We did not specify any colour scales, so the default colours are used. The first plot uses a **qualitative** variable (species) and the second plot uses a **quantitative** variable (bill length).
 
-Note the colour legends next to either of the plots: this shows the default colours used by `ggplot2` for the discrete and continuous variables.
+Note the colour legends next to either of the plots: this shows the default colours used by `{{ggplot2}}` for the discrete and continuous variables.
 
 ## {{< iconify game-icons chameleon-glyph >}} Changing Colour Scales ~~with chameleon ease~~
 
@@ -324,7 +326,7 @@ Now to use these!
 
 ### Using `ggplot2` colour scales
 
-Let us just assure ourselves of the "default-ness" of `ggplot2` colours, when we do not specify a palette or colour scale.
+Let us just assure ourselves of the "default-ness" of `{{ggplot2}}` colours, when we do not specify a palette or colour scale.
 
 ```{r}
 #| label: fig-penguins-ggplot-scales
@@ -336,24 +338,25 @@ Let us just assure ourselves of the "default-ness" of `ggplot2` colours, when we
 p10 <- p1 %>% 
   gf_refine(scale_color_discrete()) 
 
-
 p20 <- p2 %>% 
     gf_refine(scale_color_continuous()) 
 
-patchwork::wrap_plots(p10,p20, ncol = 2) + plot_annotation(tag_levels = "1", tag_prefix = "P")
+patchwork::wrap_plots(p10,p20, ncol = 2) + 
+  plot_annotation(tag_levels = "1", tag_prefix = "P")
 
 ```
 
-No change, as we are using the default colours in `ggplot2`. we expected this, of course. 
+No change, as we are using the default colours in `{{ggplot2}}`. we expected this, of course. 
 
 
 ### Using `RColorBrewer`
 
-Let us examine the palettes available in the `RColorBrewer` package.
+Let us examine the palettes available in the `{{RColorBrewer}}` package.
 
 ```{r}
 #| label: fig-rcolor-brewer-palettes
 #| fig-cap: "Colour Palettes in RColorBrewer"
+#| fig-height: 7
 #| results: hold
 #| code-fold: true
 
@@ -390,7 +393,7 @@ Note the legend changes again! The colours are now from the `RColorBrewer` packa
 The [`paletteer`](https://emilhvitfeldt.github.io/paletteer/) package by Emil Hvitfeldt contains over 2000 palettes and seems to have everything accessible in a simple way!
 
 ::: callout-note
-NOTE: In order to access some palettes in `paletteer`, you may be asked to install other packages. E.g. `harrypotter` or `scico`. These need not be brought into your session using `library()` but are accessed directly by `paletteer` which is very convenient!!
+NOTE: In order to access some palettes in `{{paletteer}}`, you may be asked to install other packages. E.g. `{{harrypotter}}` or `{{scico}}`. These need not be brought into your session using `library()` but are accessed directly by `{{paletteer}}` which is very convenient!!
 :::
 
 
@@ -417,7 +420,7 @@ palettes_c_names %>% reactable::reactable(data = ., filterable = TRUE, minRows =
 
 ::: callout-note
 ### Dynamic Palettes from `paletteer`
-Dynamic palettes are those that can change based on the data they are applied to, where the colors of the palette depend on the number of colors you need, like the `green.pal` palette from the `cartography` package. They are useful for creating plots that adapt to the data being visualized. 
+Dynamic palettes are those that can change based on the data they are applied to, where the colors of the palette depend on the number of colors you need, like the `green.pal` palette from the `{{cartography}}` package. They are useful for creating plots that adapt to the data being visualized. 
 
 Dynamic palettes are available for both discrete and continuous variables in `paletteer`.
 :::
@@ -444,7 +447,6 @@ p12 <- p1 +
   labs(title = "",
        subtitle = "ggThemes Palette: Qualitative")
 
-
 # I like Vermeer's "Girl with the Pearl Earring"!
 p13 <- p1 +
   scale_colour_paletteer_d("dutchmasters::pearl_earring") +
@@ -462,6 +464,7 @@ OK, one of the Games of Thrones Palettes, and Harry Potter palette, both for QUA
 ```{r}
 #| label: paletteer_continuous_palettes
 #| code-fold: true
+#| 
 p22 <- p2 + 
   scale_color_got(option = "jon_snow") +
   labs(title = "",
@@ -480,13 +483,13 @@ patchwork::wrap_plots(p22,p23, ncol = 2) + plot_annotation(title = 'Using the go
 ```
 
 
-#### Using Manual Scales
+### Using Manual Scales
 
 There are a good few ways in which we can manually specify colour scales for both Qual and Quant variables in ggplot.  There are built in functions for developing colour gradients and palettes, for Quant variables, such as `scale_colour_gradient()`, `scale_colour_gradient2()`, and `scale_colour_gradientn()`.
 
 For Qual variables, we can use `scale_colour_manual()` or `scale_fill_manual()` alog with a vector of colours, or a named vector of colours.
 
-###### Continuous Two-Colour Gradients
+#### Continuous Two-Colour Gradients
 
 Creates a pallete containing *continuous* shades between two colours:
 
@@ -505,7 +508,7 @@ p2 +
 
 ```
 
-###### Continuous Three-Colour Gradients
+#### Continuous Three-Colour Gradients
 
 Sometimes we want a palette this way: a *midpoint* colour, and colours for the two extremes of a continuous variable:
 
@@ -534,7 +537,7 @@ p2 +
 
 ```
 
-###### Continuous n-Colour Gradients - grDevices package
+#### Continuous n-Colour Gradients - grDevices package
 
 
 ```{r}
@@ -554,7 +557,8 @@ p2 +
 ```
 
 
-###### Continuous n-Colour Gradients - `wesanderson` Palettes
+#### Continuous n-Colour Gradients - `wesanderson` Palettes
+
 Let us look at the [`wesanderson` package](https://github.com/karthik/wesanderson), which has some beautiful colour palettes inspired by Wes Anderson's movies.
 
 ```{r}
@@ -587,7 +591,7 @@ p2 +
 
 ```
 
-###### Discrete `wesanderson` Palettes
+#### Discrete `wesanderson` Palettes
 
 ```{r}
 #| label: Discrete_wesanderson
@@ -616,13 +620,17 @@ p1 +
 
 ## {{< iconify mingcute thought-line >}} Wait, But Why?
 
-Why do we need all these colour palettes? Why not just use the default colours in `ggplot2`?
-The default colours in `ggplot2` are not always suitable for all types of data. For example, if you have a categorical variable with many levels, the default colours may not be distinct enough to differentiate between the levels. Similarly, if you have a continuous variable with a wide range of values, the default colours may not be able to represent the data effectively.
+Why do we need all these colour palettes? Why not just use the default colours in `{{ggplot2}}`?
+The default colours in `{{ggplot2}}` are not always suitable for all types of data. For example, if you have a categorical variable with many levels, the default colours may not be distinct enough to differentiate between the levels. Similarly, if you have a continuous variable with a wide range of values, the default colours may not be able to represent the data effectively.
+
 Using colour palettes allows you to choose colours that are more suitable for your data, and that can help convey information more effectively. It also allows you to create more visually appealing plots that are easier to interpret.
+
+Finally, colours in charts also reflect your brand! Websites like The Economist and FiveThirtyEight have their own branded palettes. 
+Color Selection websites like [Coolors](https://coolors.co/) can help you create colour palettes that match your brand colours.
 
 ## {{< iconify fluent-mdl2 decision-solid >}} Conclusion
 
-We have seen how to use colour palettes in `ggplot2` to enhance our plots. We have used the `RColorBrewer`, `paletteer`, and `wesanderson` packages to create beautiful and informative plots. We have also seen how to use manual colour scales to create custom colour palettes.
+We have seen how to use colour palettes in `{{ggplot2}}` to enhance our plots. We have used the `RColorBrewer`, `{{paletteer}}`, and `{{wesanderson}}` packages to create beautiful and informative plots. We have also seen how to use manual colour scales to create custom colour palettes.
 
 We have also seen how to use colour scales for both discrete and continuous variables, and how to use different types of colour palettes for different types of data.
 
@@ -631,6 +639,7 @@ We have also seen how to use colour scales for both discrete and continuous vari
 1. Lisa Charlotte Muth. *How to pick more beautiful colors for your data visualizations*. <https://www.datawrapper.de/blog/beautifulcolors>
 1. Albert Rapp. (2022). *4 Ways to use colors in ggplot more efficiently* <https://albert-rapp.de/posts/ggplot2-tips/07_four_ways_colors_more_efficiently/07_four_ways_colors_more_efficiently>
 1. Emil Hvitfeldt. (2023). *paletteer: A Palette Manager for R*. <https://emilhvitfeldt.github.io/paletteer/>
+1. David Keyes.(2019). *Themes to Improve Your ggplot Figures*. <https://rfortherestofus.com/2019/08/themes-to-improve-your-ggplot-figures/>
 1. <https://coolors.co/> - A website to generate colour palettes.
 
 ::: {#refs style="font-size: 60%;"}
@@ -644,7 +653,7 @@ cite_packages(
   output = "table",
   out.dir = ".",
   out.format = "html",
-  pkgs = c("paletteer", "RColorBrewer", "ggthemes", "patchwork", "grDevices", "reactable", "wesanderson", "gameofthrones", "harrypotter")) %>%
+  pkgs = c("paletteer", "ggthemes", "patchwork", "grDevices", "reactable", "wesanderson", "gameofthrones", "harrypotter")) %>%
   knitr::kable(format = "simple")
 
 ```

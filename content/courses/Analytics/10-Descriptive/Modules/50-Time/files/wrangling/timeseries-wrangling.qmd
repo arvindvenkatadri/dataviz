@@ -1,0 +1,1819 @@
+---
+title: "\U0001F554 Time Series Wrangling"
+date: 15/Dec/2022
+date-modified: "`r Sys.Date()`"
+abstract: Grouping, Filtering, and Summarizing Time Series Data
+categories:
+  - Time Series
+  - Filtering
+  - Summarizing
+image: feature.jpg
+bibliography: 
+  - grateful-refs.bib
+citation: true
+#suppress-bibliography: true
+webr:
+  packages: ['readr', 'tidyr', 'dplyr','lubridate', 'ggformula','mosaic', 'skimr', 'timetk', 'tsibble', 'tsibbledata','TSstudio','scales']
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+## {{< iconify mdi web-check >}} Using web-R
+This tutorial uses `web-r` that allows you to run all code within your browser, on all devices. Most code chunks herein are formatted in a tabbed structure (like in an old-fashioned library), with duplicated code. The tabs in front have regular R code that will work when copy-pasted in your RStudio session. The tab "behind" has the `web-R` code that can work directly in your browser, and can be modified as well. ~~The R code is also there to make sure you have original code to go back to, when you have made several modifications to the code on the `web-r` tabs and need to compare your code with the original!~~ If you have messed up the code there, then you can hit the "recycle" button on the `web-r` tab to go back to the original!
+
+#### Keyboard Shortcuts
+
+- Run selected code using either:
+  - macOS: <kbd>⌘</kbd> + <kbd>↩/Return</kbd>
+  - Windows/Linux: <kbd>Ctrl</kbd> + <kbd>↩/Enter</kbd>
+- Run the entire code by clicking the "Run code" button or pressing <kbd>Shift</kbd>+<kbd>↩</kbd>. 
+
+## {{< iconify noto-v1 package >}} Setting up R Packages
+
+```{r}
+#| label: setup
+#| message: false
+knitr::opts_chunk$set(tidy = "styler")
+library(mosaic)
+library(tidyverse)
+library(ggformula) # Our Formula based graphing package
+library(scales) # Some nice time-oriented scales in graphs!
+library(tsibble)
+library(timetk)
+
+# Datasets
+library(tsibbledata)
+
+```
+
+#### Plot Fonts and Theme
+
+```{r}
+#| label: plot-theme
+#| echo: true
+#| cache: false
+#| code-fold: true
+#| messages: false
+#| warning: false
+
+library(systemfonts)
+library(showtext)
+library(tidyverse)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../../../fonts/Alegreya-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+showtext_auto(enable = TRUE) #enable showtext
+##
+theme_custom <- function(){ 
+    font <- "Alegreya"   #assign font family up front
+    '%+replace%' <- ggplot2::'%+replace%' # nolint
+        
+    ggplot2::theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
+    
+    theme(
+      text = element_text(family = font),  #set base font family
+      
+      #text elements
+      plot.title = element_text(                 #title
+                   family = font,          #set font family
+                   size = 24,                    #set font size
+                   face = 'bold',                #bold typeface
+                   hjust = 0,                    #left align
+                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
+      plot.title.position = "plot", 
+      
+      plot.subtitle = element_text(              #subtitle
+                   family = font,          #font family
+                   size = 14,                   #font size
+                   hjust = 0,                   #left align
+                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
+      
+      plot.caption = element_text(               #caption
+                   family = font,          #font family
+                   size = 9,                     #font size
+                   hjust = 1),                   #right align
+      
+      plot.caption.position = "plot",            #right align
+      
+      axis.title = element_text(                 #axis titles
+                   family = "Roboto Condensed",  #font family
+                   size = 12),                   #font size
+      
+      axis.text = element_text(                  #axis text
+                   family = "Roboto Condensed",  #font family
+                   size = 12),                    #font size
+      
+      axis.text.x = element_text(                #margin for axis text
+                    margin = margin(5, b = 10))
+      
+      #since the legend often requires manual tweaking 
+      #based on plot content, don't define it here
+    )
+}
+
+## Use available fonts in ggplot text geoms too!
+ggplot2::update_geom_defaults(geom = "text",new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
+
+```
+
+
+
+
+
+
+```{r}
+#| label: Extra Pedagogical Packages
+#| echo: false
+#| message: false
+
+library(checkdown)
+library(epoxy)
+library(grateful)
+
+```
+
+## {{< iconify openmoji japanese-symbol-for-beginner >}} Introduction
+
+We have now arrived at the need to start from raw, multiple time series
+data and `filter`, `group`, and `summarize` these time series grasp
+their meaning, a process known as "wrangling".
+
+::: callout-note
+### Wrangling with `dplyr`
+
+The tutorial for wrangling using `dplyr` is
+[here](../../../../../../labs/r-labs/tidy/dplyr.qmd).
+:::
+
+Here, we will first use the `births` data we encountered earlier which
+had a *single time series*, and then proceed to a more complex example
+which has multiple time-series.
+
+## {{< iconify eos-icons data-mining >}} Time-Series Wrangling
+
+We can do this in two ways, and with two packages:
+
+::: callout-note
+### Two Wrangling "Dimensions"
+
+For all the above operations, we can either use `time` variable as the
+basis, by filtering for specific periods, or computing summaries over
+larger intervals of time e.g. month, quarter, year;
+
+AND/OR
+
+We can do the same over `space` variables, i.e. the Qualitative
+variables that define individual time series, and based on which we can
+filter and and analyze these specific time series. Each unique setting of these Qualitative variables could potentially define a time series! There are 336 groups/combinations of them in `PBS`, but not all are unique time series, since some of the Qual variables are `nested` inside others, e.g `ATC1_desc` provides more info on each value of `ATC1` and is not truly a separate Qual variable.
+:::
+
+And the packages are:
+
+::: callout-tip
+### `tsibble` has `dplyr`-like functions
+
+Using `tsibble` data, the `tsibble` package has specialized **filter**
+and **group_by** functions to do with the `index` (i.e time) variable
+and the `key` variables, such as `index_by()` and `group_by_key()`.
+
+(Filtering based on Qual variables can be done with `dplyr`. We can use
+`dplyr` functions such as `group_by`, `mutate()`, `filter()`, `select()`
+and `summarise()` to work with `tsibble` objects.)
+:::
+
+::: callout-tip
+### `timetk` **also** has `dplyr`-like functions!
+
+Using tibbles, `timetk` provides functions such as `summarize_by_time`,
+`filter_by_time` and `slidify` that are quite powerful. Again, as with
+`tsibble`, `dplyr` can always be used for other Qual variables (i.e
+non-time).
+:::
+
+## {{< iconify pajamas issue-type-test-case >}} Case Study #1: Births Dataset
+
+As a second example let us read and inspect in the now familiar
+`US births data` from 2000 to 2014. Download this data by clicking on
+the icon below, and saving the downloaded file in a sub-folder called
+`data` inside your project.
+
+{{< downloadthis ../data/US_births_2000-2014_SSA.csv dname="US_births_2000-2014_SSA" label="Download the US Births data" icon="database-fill-down" type="info" >}}
+
+
+```{webr-r}
+#| context: setup
+## https://github.com/fivethirtyeight/data/blob/master/births/US_births_2000-2014_SSA.csv
+
+births_2000_2014 <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/births/US_births_2000-2014_SSA.csv")
+
+```
+
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+### {{< iconify la r-project >}} R
+
+```{r}
+#| label: timeseries-and-tsibble-1
+#| message: false
+
+# Step1: Read the data
+births_2000_2014 <- read_csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/births/US_births_2000-2014_SSA.csv")
+
+```
+
+Let us make a `date` column out of the individual year/month/day columns: 
+
+::::{.columns}
+:::{.column}
+```{r}
+#| label: making-time-column
+#| eval: false
+# Step2: Convert year + month + date_of_month to "date"
+births_timeseries <- 
+  births_2000_2014 %>% 
+  mutate(date = lubridate::make_date(year = year,
+                                     month = month,
+                                     day = date_of_month)) %>%
+  select(date, births)
+
+births_timeseries
+class(births_timeseries)
+
+```
+
+Note that this is still *just a tibble*, with a time-formatted column.
+Next let us create a full-blown `tsibble` with the same data:
+:::
+:::{.column}
+```{r}
+#| ref.label: making-time-column
+#| echo: false
+```
+
+
+:::
+::::
+
+::::{.columns}
+:::{.column}
+```{r}
+#| label: data-to-tsibble
+#| eval: false
+# Step3: Convert to tsibble
+# combine the year/month/date_of_month columns into a date
+# drop them thereafter
+births_tsibble <- 
+  births_2000_2014 %>%
+  mutate(index = lubridate::make_date(year = year, 
+                                      month = month,
+                                      day = date_of_month)) %>%
+  tsibble::as_tsibble(index = index) %>%
+  select(index, births)
+
+births_tsibble
+class(births_tsibble)
+
+```
+Both data frames look identical, except for data class difference. This
+is DAILY data of course. 
+
+:::
+:::{.column}
+```{r}
+#| ref.label: data-to-tsibble
+#| echo: false
+```
+
+
+:::
+::::
+
+We will (sadly) need both formats; the `tsibble` packages needs, well, tsibble-formats, and `timetk` cannot, it seems, handle tsibble-formats and needs regular tibbles. Sigh. 
+
+
+### {{< iconify noto-v1 spider-web >}} web-r
+```{webr-r}
+#| label: timeseries and tsibble with webr
+#| layout-ncol: 2
+#| message: false
+
+births_timeseries <- 
+  births_2000_2014 %>% 
+  mutate(date = lubridate::make_date(year = year,
+                                     month = month,
+                                     day = date_of_month)) %>%
+  select(date, births)
+births_timeseries %>% head(6)
+##
+class(births_timeseries)
+
+```
+
+```{webr-r}
+# Convert to tsibble
+# combine the year/month/date_of_month columns into a date
+# drop them thereafter
+births_tsibble <- 
+  births_2000_2014 %>%
+  mutate(index = lubridate::make_date(year = year,month = month,
+                                     day = date_of_month)) %>%
+  tsibble::as_tsibble(index = index) %>%
+  select(index, births)
+
+births_tsibble
+class(births_tsibble)
+
+```
+
+
+:::
+
+## {{< iconify mdi chart-line >}} Basic Time Series Plot
+
+Let us plot the timeseries using the `tsibble` data, with both `ggformula` and `timetk`:
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+### {{< iconify la r-project >}} R
+Let us try a basic plot with both `tsibble` vs `timetk` packages.
+
+```{r}
+#| label: tsibble-with-time-variable-processing
+#| layout-ncol: 2
+#| results: hold
+#| 
+#column: body-outset-right
+# Set graph theme
+theme_set(new = theme_custom())
+#
+births_tsibble %>%
+  gf_line(births ~ index, 
+          data = ., 
+          title = "Basic tsibble plotted with ggformula") 
+
+# timetk **can** plot tsibbles. 
+births_tsibble %>% 
+  timetk::plot_time_series(.date_var = index,
+                           .value = births, .interactive = FALSE,
+                           .title = "Tsibble Plotted with timetk")
+
+```
+
+### {{< iconify noto-v1 spider-web >}} web-r
+```{webr-r}
+#| label: basic-plot-webr
+
+births_tsibble %>%
+  gf_line(births ~ index, 
+          data = ., 
+          title = "Basic tsibble plotted with ggformula")
+
+# timetk **can** plot tsibbles. 
+births_tsibble %>% 
+  timetk::plot_time_series(.date_var = index, 
+                           .value = births, .interactive = FALSE,
+                           .title = "Tsibble Plotted with timetk")
+
+
+```
+
+:::
+
+
+## {{< iconify carbon chart-average >}} Aggregation and Averaging 
+
+Let us plot the time series using the `tsibble` data, with both `ggformula` and `timetk`, this time grouping by month and get monthly aggregates to get a summary:
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+### {{< iconify la r-project >}} R
+
+Here we plot Monthly Aggregates with both `ggformula` and `timetk`:
+
+::::{.columns}
+:::{.column}
+```{r}
+#| label: Per-month-aggregation
+#| eval: false
+
+# Set graph theme
+theme_set(new = theme_custom())
+##
+births_tsibble %>% 
+  tsibble::index_by(month_index = ~ tsibble::yearmonth(.)) %>% 
+  dplyr::summarise(mean_births = mean(births, na.rm = TRUE)) %>% 
+  gf_point(mean_births ~ month_index, 
+           data = ., 
+           title = "Monthly Aggregate with tsibble + ggformula") %>% 
+  gf_line() %>% 
+  gf_smooth(se = FALSE, method = "loess")  %>% 
+  gf_labs(x = "Year", y = "Mean Monthly Births")
+
+##
+##
+##
+##
+births_timeseries %>% 
+  
+  # cannot use tsibble here
+  # tsibble format cannot be summarized/wrangled by timetk
+
+  timetk::summarize_by_time(.date_var = date, 
+                            .by = "month", 
+                            month_mean = mean(births)) %>% 
+  timetk::plot_time_series(date, month_mean,
+                           .title = "Monthly aggregate births with timetk",
+                           .interactive = FALSE,
+                           .x_lab = "year", 
+                           .y_lab = "Mean Monthly Births")
+
+```
+:::
+:::{.column}
+```{r}
+#| ref.label: Per-month-aggregation
+#| echo: false
+```
+
+
+
+
+
+:::
+::::
+
+
+### {{< iconify noto-v1 spider-web >}} web-r
+
+```{webr-r}
+#| label: Per-month-Aggregation-with-webr
+#| layout-ncol: 2
+#| results: hold
+# column: body-outset-right
+
+births_tsibble %>% 
+  tsibble::index_by(month_index = ~ tsibble::yearmonth(.)) %>% 
+  dplyr::summarise(mean_births = mean(births, na.rm = TRUE)) %>% 
+  gf_point(mean_births ~ month_index, 
+           data = ., 
+           title = "Monthly Aggregate with tsibble + ggformula") %>% 
+  gf_line() %>% 
+  gf_smooth(se = FALSE, method = "loess") %>% 
+  gf_labs(x = "Year", y = "Mean Monthly Births")
+
+
+births_timeseries %>% 
+  
+  # cannot use tsibble here
+  # tsibble format cannot be summarized/wrangled by timetk
+
+  timetk::summarize_by_time(.date_var = date, 
+                            .by = "month", 
+                            month_mean = mean(births)) %>% 
+  timetk::plot_time_series(date, month_mean,
+                           .title = "Monthly aggregate births with timetk",
+                           .interactive = FALSE,
+                           .x_lab = "year", 
+                           .y_lab = "Mean Monthly Births")
+```
+
+:::
+
+Apart from the bump during in 2006-2007, there are also **seasonal
+trends** that repeat each year, which we glimpsed earlier. We will analyse seasonal trends in another module. 
+
+
+Let us try getting *annual aggregates*.
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+
+### {{< iconify la r-project >}} R
+
+::::{.columns}
+:::{.column}
+```{r}
+#| label: annual-aggregation
+#| eval: false
+# Set graph theme
+theme_set(new = theme_custom())
+
+births_tsibble %>% 
+  tsibble::index_by(year_index = ~ lubridate::year(.)) %>% 
+  ## tsibble does not have a "year" function? So using lubridate..
+  ## Summarize
+  dplyr::summarise(mean_births = mean(births, na.rm = TRUE)) %>%
+  ##Plot
+  gf_point(mean_births ~ year_index, data = .) %>% 
+  gf_line() %>% 
+  gf_smooth(se = FALSE, method = "loess")
+##
+##
+##
+##
+##
+births_timeseries %>%
+  ## Summarize
+  timetk::summarise_by_time(.date_var = date, 
+                            .by = "year", 
+                            mean = mean(births)) %>% 
+  ## Plot
+  timetk::plot_time_series(date, mean,
+                           .title = "Yearly aggregate births with timetk",
+                           .interactive = FALSE,
+                           .x_lab = "year", 
+                           .y_lab = "Mean Yearly Births")
+
+```
+
+:::
+:::{.column}
+```{r}
+#| ref.label: annual-aggregation
+#| echo: false
+```
+
+
+
+
+
+:::
+::::
+
+
+### {{< iconify noto-v1 spider-web >}} web-r
+
+```{webr-r}
+#| label: Per Year-Aggregation-with-webr
+#| layout-ncol: 2
+#| results: hold
+# column: body-outset-right
+
+births_tsibble %>% 
+  tsibble::index_by(year_index = ~ lubridate::year(.)) %>% 
+  ## tsibble does not have a "year" function? So using lubridate..
+  ## Summarize
+  dplyr::summarise(mean_births = mean(births, na.rm = TRUE)) %>%
+  ##Plot
+  gf_point(mean_births ~ year_index, data = .) %>% 
+  gf_line() %>% 
+  gf_smooth(se = FALSE, method = "loess") 
+####
+births_timeseries %>%
+  ## Summarize
+  timetk::summarise_by_time(.date_var = date, 
+                            .by = "year", 
+                            mean = mean(births)) %>% 
+  ## Plot
+  timetk::plot_time_series(date, mean,
+                           .title = "Yearly aggregate births with timetk",
+                           .interactive = FALSE,
+                           .x_lab = "year", 
+                           .y_lab = "Mean Yearly Births")
+
+```
+
+:::
+
+
+
+
+
+
+### {{< iconify game-icons detour >}} A small detour{.hidden}
+
+Ah yes....errors. There is a curious interplay between `dplyr` and `tsibble`...they play together but not all the time, it would seem. 
+
+The original births tibble dataset allows `dplyr:group_by + summarize`:
+
+```{r}
+#| label: Errors-1
+
+# The original dataset allows dplyr:group_by + summarize
+births_2000_2014 %>% 
+  dplyr::group_by(year) %>% 
+  summarise(mean_births = mean(births, na.rm = TRUE))
+
+```
+
+However, `tsibble`-converted data does not quite work with `dplyr::group_by+summarize`:
+
+```{r}
+#| label: Errors-2
+#| eval: false
+#| echo: fenced
+
+# This code will not work
+births_tsibble %>% 
+# Grouping does not work. Here is the problem
+  dplyr::group_by(index) %>% 
+
+# Trying to get Annual Birth Average as before
+# Should give 15 rows, one per year, but does not!
+  summarise(mean_births = mean(births, na.rm = TRUE)) 
+
+```
+
+Even if we pull out the `year` information in `index`, it gives confusing results...
+
+```{r}
+#| label: Error-3
+births_tsibble %>% 
+# All right, try to pull the year info from `index` then
+  mutate(dplyr_year = lubridate::year(index)) %>% 
+# Grouping does not work
+  dplyr::group_by(dplyr_year) %>% 
+
+# Trying to get Annual Birth Average as before
+# Should give 15 rows, one per year, but does not!
+  summarise(mean_births = mean(births, na.rm = TRUE)) 
+
+```
+
+This grouping does not give a proper result (though it does show 15 groups.)
+
+Using `tsibble::index_by()` and then `dplyr::summarize()` does the trick...so all right. The `index_by()` operation is different from that of `dplyr::group_by()`!
+
+```{r}
+#| label: Errors-4
+#|  
+# tsibble works with index_by + summarize
+# 15 rows, one for each year
+births_tsibble %>% 
+  # tsibble can get year info from index
+  tsibble::index_by(year_date = year(index)) %>% 
+  dplyr::summarise(mean_births = mean(births, na.rm = TRUE)) 
+
+```
+
+
+
+## {{< iconify game-icons candles >}} Candle-Stick Plots
+
+Hmm...can we try to plot **boxplots over time** (Candle-Stick Plots)?
+Over month, quarter or year?
+
+
+### {{< iconify iwwa month >}} Monthly Box Plots
+
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+### {{< iconify la r-project >}} R
+::::{.columns}
+:::{.column}
+```{r}
+#| label: Monthly-boxplots
+#| eval: false
+
+# Set graph theme
+theme_set(new = theme_custom())
+
+births_tsibble %>%
+  index_by(month_index = ~ yearmonth(.)) %>%
+  # 15 years
+  # No need to summarise, since we want boxplots per year / month
+  # Plot the groups
+  # 180 plots!!
+  gf_boxplot(births ~ index, group =  ~ month_index,
+             fill = ~ month_index,
+             data = ., 
+             title = "Boxplots of Births by Month",
+             caption = "tsibble + ggformula") 
+
+           
+####
+####
+####
+####
+births_tsibble %>% # Can try births_timeseries too
+  timetk::plot_time_series_boxplot(
+              index, births, 
+             .period = "month",
+             .plotly_slider = TRUE,
+             .title = "Boxplots of Births by Month",
+             .interactive = TRUE,
+             .x_lab = "year", 
+             .y_lab = "Mean Monthly Births"
+                                   )
+
+```
+`timetk` can take tsibble-format data to *plot with*, but cannot perform aggregation: `summarize_by_time()` will throw an error!
+
+:::
+:::{.column}
+```{r}
+#| ref.label: Monthly-boxplots
+#| echo: false
+```
+
+
+
+
+
+:::
+::::
+
+
+### {{< iconify noto-v1 spider-web >}} web-r
+```{webr-r}
+#| label: Monthly_boxplots with webr
+#| layout-ncol: 2
+#| results: hold
+births_tsibble %>%
+  index_by(month_index = ~ yearmonth(.)) %>%
+  # 15 years
+  # No need to summarise, since we want boxplots per year / month
+  # Plot the groups
+  # 180 plots!!
+  gf_boxplot(births ~ index, group =  ~ month_index,
+             fill = ~ month_index,
+             data = ., 
+             title = "Boxplots of Births by Month",
+             caption = "tsibble + ggformula")
+           
+###
+births_tsibble %>% # Can try births_timeseries too
+  timetk::plot_time_series_boxplot(index, births, .period = "month",
+                                   .plotly_slider = TRUE,
+                                   .title = "Boxplots of Births by Month",
+                                   .interactive = TRUE,
+                                   .x_lab = "year", 
+                                   .y_lab = "Mean Monthly Births"
+                                   )
+```
+
+:::
+
+
+We see 180 boxplots...yes this is still too busy a plot for us to learn
+much from.
+
+## {{< iconify system-uicons pie-quarter >}} Quarterly boxplots
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+### {{< iconify la r-project >}} R
+
+::::{.columns}
+:::{.column}
+```{r}
+#| label: Quarterly-boxplots
+#| eval: false
+
+# Set graph theme
+theme_set(new = theme_custom())
+
+births_tsibble %>%
+  index_by(qrtr_index = ~ yearquarter(.)) %>% # 60 quarters over 15 years
+  # No need to summarise, since we want boxplots per year / month
+  gf_boxplot(births ~ index, 
+             group = ~ qrtr_index,
+             fill = ~ qrtr_index,
+             data = .) # 60 plots!!
+###
+###
+###
+###
+###
+
+births_tsibble %>% # Can try births_timeseries too
+  timetk::plot_time_series_boxplot(
+               index, births, 
+              .period = "quarter",
+              .title = "Quarterly births with timetk",
+              .interactive = TRUE,
+              .plotly_slider = TRUE,
+              .x_lab = "year",
+              .y_lab = "Mean Quarterly Births")
+
+```
+
+:::
+:::{.column}
+```{r}
+#| ref.label: Quarterly-boxplots
+#| echo: false
+```
+
+:::
+::::
+
+### {{< iconify noto-v1 spider-web >}} web-r
+```{webr-r}
+#| label: Quarterly_boxplots with webr
+births_tsibble %>%
+  index_by(qrtr_index = ~ yearquarter(.)) %>% # 60 quarters over 15 years
+  # No need to summarise, since we want boxplots per year / month
+  gf_boxplot(births ~ index, 
+             group = ~ qrtr_index,
+             fill = ~ qrtr_index,
+             data = .) # 60 plots!!
+###
+births_tsibble %>% # Can try births_timeseries too
+  timetk::plot_time_series_boxplot(
+                            index, births, .period = "quarter",
+                           .title = "Quarterly births with timetk",
+                           .interactive = TRUE,
+                           .plotly_slider = TRUE,
+                           .x_lab = "year",
+                           .y_lab = "Mean Monthly Births")
+```
+
+:::
+
+We have 60 boxplots...over a period of 15 years, one box plot per
+quarter...
+
+### {{< iconify fluent-mdl2 calendar-year >}} Yearwise boxplots
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+### {{< iconify la r-project >}} R
+
+::::{.columns}
+:::{.column}
+```{r}
+#| label: annual-boxplots
+#| eval: false
+
+# Set graph theme
+theme_set(new = theme_custom())
+
+births_tsibble %>% 
+  index_by(year_index = ~ lubridate::year(.)) %>% # 15 years, 15 groups
+  # No need to summarise, since we want boxplots per year / month
+
+  gf_boxplot(births ~ index, 
+              group = ~ year_index, 
+              fill = ~ year_index, 
+             data = .) %>%  # plot the groups 15 plots
+  gf_theme(scale_fill_distiller(palette = "Spectral")) 
+####
+####
+####
+####
+####
+####
+
+births_tsibble %>% 
+  timetk::plot_time_series_boxplot(
+              index, births, .period = "year",
+              .title = "Yearly aggregate births with timetk",
+              .interactive = TRUE,
+              .plotly_slider = TRUE,
+              .x_lab = "year",
+              .y_lab = "Births")
+```
+
+:::
+:::{.column}
+```{r}
+#| ref.label: annual-boxplots
+#| echo: false
+```
+
+:::
+::::
+
+
+### {{< iconify noto-v1 spider-web >}} web-r
+```{webr-r}
+#| label: Annual_boxplots with webr
+births_tsibble %>% 
+  index_by(year_index = ~ lubridate::year(.)) %>% # 15 years, 15 groups
+    # No need to summarise, since we want boxplots per year / month
+
+  gf_boxplot(births ~ index, 
+              group = ~ year_index, 
+              fill = ~ year_index, 
+             data = .) %>%  # plot the groups 15 plots
+  gf_theme(scale_fill_distiller(palette = "Spectral"))
+###
+
+births_tsibble %>% 
+  timetk::plot_time_series_boxplot(
+            index, births, .period = "year",
+            .title = "Yearly aggregate births with timetk",
+            .interactive = TRUE,
+            .plotly_slider = TRUE,
+            .x_lab = "year",
+            .y_lab = "Births")
+```
+:::
+
+This looks much better...We can more easily see that 2006-2009 the
+births were somewhat higher, because the medians in these years are the
+highest.
+
+
+## {{< iconify pajamas issue-type-test-case >}} Case Study #2: PBS Dataset
+
+We previously encountered the `PBS` dataset from the `tsibbledata`
+package earlier, which is a dataset containing Monthly Medicare
+prescription data in Australia. We will resume from there:
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+### {{< iconify la r-project >}} R
+```{r}
+#| label: PBS
+
+data("PBS", package = "tsibbledata")
+PBS
+glimpse(PBS)
+# inspect(PBS) # does not work since mosaic cannot handle tsibbles
+# skimr::skim(PBS) # does not work, need to investigate
+
+```
+
+### {{< iconify noto-v1 spider-web >}} web-r
+```{webr-r}
+#| label: PBS webr
+
+data("PBS", package = "tsibbledata")
+PBS
+glimpse(PBS)
+# inspect(PBS) # does not work since mosaic cannot handle tsibbles
+# skimr::skim(PBS) # does not work, need to investigate
+
+```
+:::
+
+
+### {{< iconify fluent group-list-20-filled >}} Counts by Qual variables
+
+Let us first see how many observations there are for each combo of
+`keys:`
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+### {{< iconify la r-project >}} R
+
+::::{.columns}
+:::{.column}
+```{r}
+#| label: count-type
+#| eval: false
+
+## Types
+PBS %>% 
+  dplyr::count(Type) # 2 Types
+
+```
+:::
+:::{.column}
+```{r}
+#| ref.label: count-type
+#| echo: false
+```
+
+:::
+::::
+
+::::{.columns}
+:::{.column}
+```{r}
+#| label: count-concessions
+#| eval: false
+## Concessions
+PBS %>% count(Concession) # 2 Types
+
+```
+:::
+:::{.column}
+```{r}
+#| ref.label: count-concessions
+#| echo: false
+```
+
+:::
+::::
+
+::::{.columns}
+:::{.column}
+```{r}
+#| label: count-act1
+#| eval: false
+## ATC1
+PBS %>% count(ATC1) # 15 ATC1 groups
+```
+:::
+:::{.column}
+```{r}
+#| ref.label: count-act1
+#| echo: false
+```
+
+:::
+::::
+
+::::{.columns}
+:::{.column}
+```{r}
+#| label: count-act2
+#| eval: false
+## ATC2
+PBS %>% count(ATC2) # 84 ATC2 groups
+```
+:::
+:::{.column}
+```{r}
+#| ref.label: count-act2
+#| echo: false
+```
+
+:::
+::::
+
+
+::::{.columns}
+:::{.column}
+```{r}
+#| label: count-act1-act2
+#| eval: false
+
+# dplyr grouping with ATC1 and ATC2
+PBS %>% 
+  dplyr::group_by(ATC1, ATC2) %>% 
+  count() # Still 84; ATC2 is nested in ATC1
+```
+:::
+:::{.column}
+```{r}
+#| ref.label: count-act1-act2
+#| echo: false
+```
+
+:::
+::::
+
+
+::::{.columns}
+:::{.column}
+```{r}
+#| label: count-all-groups
+#| eval: false
+## All possible groups
+PBS %>% 
+  group_by(ATC1, ATC2, Concession, Type) %>% 
+  count() # 336 overall groups
+
+```
+:::
+:::{.column}
+```{r}
+#| ref.label: count-all-groups
+#| echo: false
+```
+
+:::
+::::
+
+
+### {{< iconify noto-v1 spider-web >}} web-r
+
+```{webr-r}
+#| label: counts webr
+
+## Types
+PBS %>% 
+  dplyr::count(Type) # 2 Types
+
+## Concessions
+PBS %>% count(Concession) # 2 Types
+
+## ATC1
+PBS %>% count(ATC1) # 15 ATC1 groups
+
+## ATC2
+PBS %>% count(ATC2) # 84 ATC2 groups
+
+
+# dplyr grouping with ATC1 and ATC2
+PBS %>% 
+  dplyr::group_by(ATC1, ATC2) %>% 
+  count() # Still 84; ATC2 is nested in ATC1
+
+## All possible groups
+PBS %>% 
+  group_by(ATC1, ATC2, Concession, Type) %>% 
+  count() # 336 overall groups
+
+```
+
+
+:::
+
+
+::: callout-note
+### Data Dictionary for `PBS`
+
+This is a large-ish dataset: (Run `PBS` in your console)
+
+-   67K observations
+
+-   Quant Variables: Two Quant variables (`Scripts` and `Cost`)
+-   Time Variable:
+    -   Data appears to be *monthly,* as indicated by the `1M`.
+    -   the time index variable is called `Month`
+    -   formatted as `yearmonth`, a new type of variable introduced in
+        the `tsibble` package. `yearmonth` does **not** show in
+        `glimpse` output!
+        
+-   Qual variables:
+    -   `Concession`: `Concessional` and `General` (Concessional
+        `scripts` are given to pensioners, unemployed, dependents, and
+        other card holders)
+    -   `Type`: `Co-payments` and `Safety Net`
+    -   `ATC1`: Anatomical Therapeutic Chemical index (level 1).
+        -   15 types
+-   `ATC2`: Anatomical Therapeutic Chemical index (level 2).
+    -   84 types, nested inside `ATC1`.
+
+:::
+
+
+We will start with the familiar basic messy plot, and work our way
+towards filtering, summaries, and averages.
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+### {{< iconify la r-project >}} R
+
+
+::::{.columns}
+:::{.column width="60%"}
+```{r}
+#| label: Basic-PBS-plot-ggformula
+#| eval: false
+
+# Set graph theme
+theme_set(new = theme_custom())
+
+PBS %>%
+  gf_point(Cost ~ Month, data = .) %>%
+  gf_line(title = "PBS Costs vs time", 
+          caption = "ggformula")
+
+```
+
+:::
+:::{.column width="40%"}
+```{r}
+#| ref.label: Basic-PBS-plot-ggformula
+#| echo: false
+```
+
+:::
+::::
+
+### {{< iconify noto-v1 spider-web >}} web-r
+```{webr-r}
+
+PBS %>% 
+  gf_point(Cost ~ Month, data = .) %>% 
+  gf_line(title = "PBS Costs vs time", caption = "ggformula") 
+```
+
+
+```{webr-r}
+PBS %>% ggplot(aes(Month, Cost)) + 
+  geom_point() + 
+  geom_line() + 
+  labs(title = "PBS Costs vs time") 
+
+```
+
+
+:::
+
+As noted earlier, this basic plot is quite messy. Other than an overall
+rising trend and more vigorous variations pointing to a multiplicative
+process, we cannot say more. There is simply too much happening here and
+it is now time (sic!) for us to look at summaries of the data using
+`dplyr`-like verbs. We will perform summaries with `tsibble` and plots
+with `ggformula` first. Then we will use `timetk` to perform both
+operations.
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+### {{< iconify la r-project >}} R
+
+::::{.columns}
+:::{.column width="60%"}
+
+```{r}
+#| label: PBS-Costs-filtered-ggformula
+#| eval: false
+
+# Set graph theme
+theme_set(new = theme_custom())
+
+# Costs variable for a specific combo of Qual variables(keys)
+PBS %>% 
+  dplyr::filter(Concession == "General", 
+                ATC1 == "A") %>% 
+  gf_line(Cost ~ Month, 
+          colour = ~ Type, 
+          data = .) %>% 
+  gf_point(title = "Costs per Month for General A category patients") %>%
+  gf_refine(scale_y_continuous(labels = scales::label_comma()))
+
+
+```
+
+:::
+:::{.column width="40%"}
+```{r}
+#| ref.label: PBS-Costs-filtered-ggformula
+#| echo: false
+```
+
+:::
+::::
+
+
+### {{< iconify noto-v1 spider-web >}} web-r
+```{webr-r}
+#| label: PBS-Costs-filtered-ggformula-webr
+
+# Costs variable for a specific combo of Qual variables(keys)
+PBS %>% 
+  dplyr::filter(Concession == "General", 
+                ATC1 == "A") %>% 
+  gf_line(Cost ~ Month, 
+          colour = ~ Type, 
+          data = .) %>% 
+  gf_point(title = "Costs per Month for General A category patients") %>%
+  gf_refine(scale_y_continuous(labels = scales::label_comma()))
+
+```
+
+:::
+
+
+::: callout-note
+### Insights
+
+As can be seen:
+
+-   strongly seasonal for both `Type`s of graphs;
+-   seasonal variation increasing over the years, a clear sign of a
+    *multiplicative time series*, especially for `Safety net`.
+-   Upward *trend* with both types of subsidies, `Safety net` and
+    `Co-payments`.
+-   `Co-payments` type have some kind of dip around the year 2000...
+-   But this is still messy and overwhelming and we could certainly use
+    some summaries/aggregates/averages.
+:::
+
+We can now use `tsibble`'s dplyr-like commands to develop summaries by year,
+quarter, month(original data): Look carefully at the new time variable
+created each time, and the size the data frame decrease with each
+aggregation:
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+### {{< iconify la r-project >}} R
+
+::::{.columns}
+:::{.column width="60%"}
+
+```{r}
+#| label: summary-month
+#| eval: false
+
+# Cost Summary by Month, which is the original data
+# New Variable Name to make grouping visible
+PBS_month <-  PBS %>% 
+  dplyr::filter(Concession == "General", 
+                ATC1 == "A") %>% 
+  tsibble::index_by(Month_Date = Month) %>% 
+  dplyr::summarise(
+            across(.cols = c(Cost, Scripts),
+                   .fn = mean,
+                   .names = "mean_{.col}"))
+
+PBS_month
+```
+
+
+:::
+:::{.column width="40%"}
+```{r}
+#| ref.label: summary-month
+#| echo: false
+```
+
+:::
+::::
+
+::::{.columns}
+:::{.column width="60%"}
+
+```{r}
+#| label: summary-month-plot
+#| eval: false
+# Set graph theme
+theme_set(new = theme_custom())
+PBS_month %>% 
+  mutate(Month_Date = as_date(Month_Date)) %>%
+  gf_line(mean_Cost ~ Month_Date) %>%
+  gf_line(mean_Scripts ~ Month_Date, 
+          title = "Mean Costs and Scripts for General + A category",
+          subtitle = "Means over General + A category ") %>%
+  gf_refine(scale_y_continuous(labels = scales::label_comma()))
+
+```
+
+
+:::
+:::{.column width="40%"}
+
+```{r}
+#| ref.label: summary-month-plot
+#| echo: false
+```
+
+:::
+::::
+
+
+### {{< iconify noto-v1 spider-web >}} web-r
+```{webr-r}
+#| label: summary-month-webr
+#| layout-ncol: 2
+
+# Cost Summary by Month, which is the original data
+# New Variable Name to make grouping visible
+PBS_month <-  PBS %>% 
+  dplyr::filter(Concession == "General", 
+                ATC1 == "A") %>% 
+  tsibble::index_by(Month_Date = Month) %>% 
+  dplyr::summarise(across(.cols = c(Cost, Scripts),
+                          .fn = mean,
+                          .names = "mean_{.col}"))
+PBS_month
+###
+PBS_month %>% 
+  mutate(Month_Date = as_date(Month_Date)) %>%
+  gf_line(mean_Cost ~ Month_Date) %>%
+  gf_line(mean_Scripts ~ Month_Date, 
+          title = "Mean Costs and Scripts for General + A category",
+          subtitle = "Means over General + A category ") %>%
+  gf_refine(scale_y_continuous(labels = scales::label_comma()))
+
+```
+
+:::
+
+
+::: callout-note
+### Insights
+
+As can be seen:
+To Be Written Up !!!
+:::
+
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+### {{< iconify la r-project >}} R
+
+::::{.columns}
+:::{.column width="60%"}
+
+```{r}
+#| label: PBS-quarterly
+#| eval: false
+
+# Cost Summary by Quarter
+PBS_quarter <- 
+  PBS %>% 
+  tsibble::index_by(Quarter_Date = yearquarter(Month)) %>% # And the change here!
+  dplyr::summarise(across(.cols = c(Cost, Scripts),
+                          .fn = mean,
+                          .names = "mean_{.col}"))
+PBS_quarter
+```
+:::
+:::{.column width="40%"}
+
+```{r}
+#| ref.label: PBS-quarterly
+#| echo: false
+```
+
+:::
+::::
+
+
+::::{.columns}
+:::{.column width="60%"}
+
+```{r}
+#| label: PBS-quarterly-plot
+#| eval: false
+# Set graph theme
+theme_set(new = theme_custom())
+#
+PBS_quarter %>% 
+  gf_line(mean_Cost ~ Quarter_Date) %>%
+  gf_refine(scale_y_continuous(labels = scales::label_comma()))
+
+```
+:::
+:::{.column width="40%"}
+
+```{r}
+#| ref.label: PBS-quarterly-plot
+#| echo: false
+```
+
+:::
+::::
+
+
+### {{< iconify noto-v1 spider-web >}} web-r
+```{webr-r}
+#| label: PBS-quarterly-webr
+# Cost Summary by Quarter
+PBS_quarter <- 
+  PBS %>% 
+  tsibble::index_by(Quarter_Date = yearquarter(Month)) %>% # And the change here!
+  dplyr::summarise(across(.cols = c(Cost, Scripts),
+                          .fn = mean,
+                          .names = "mean_{.col}"))
+PBS_quarter
+
+```
+
+
+```{webr-r}
+
+PBS_quarter %>% 
+  gf_line(mean_Cost ~ Quarter_Date) %>%
+  gf_refine(scale_y_continuous(labels = scales::label_comma()))
+
+```
+
+:::
+
+::: callout-note
+### Insights
+
+As can be seen:
+TBD
+:::
+
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+### {{< iconify la r-project >}} R
+
+
+::::{.columns}
+:::{.column width="60%"}
+```{r}
+#| label: PBS-annual-table
+#| eval: false
+
+# Cost Summary by Year
+PBS_year <- PBS %>% 
+  index_by(Year_Date = year(Month)) %>% # Note this change!!!
+  dplyr::summarise(across(.cols = c(Cost, Scripts),
+                          .fn = mean,
+                          .names = "mean_{.col}"))
+PBS_year
+```
+:::
+:::{.column width="40%"}
+
+```{r}
+#| ref.label: PBS-annual-table
+#| echo: false
+```
+
+:::
+::::
+
+
+::::{.columns}
+:::{.column width="60%"}
+```{r}
+#| label: PBS-annual-plot
+#| eval: false
+# Set graph theme
+theme_set(new = theme_custom())
+#
+PBS_year %>% 
+  gf_line(mean_Cost ~ Year_Date) %>%
+  gf_refine(scale_y_continuous(labels = scales::label_comma()))
+
+```
+
+:::
+:::{.column width="40%"}
+
+```{r}
+#| ref.label: PBS-annual-plot
+#| echo: false
+```
+
+:::
+::::
+
+
+### {{< iconify noto-v1 spider-web >}} web-r
+```{webr-r}
+#| label: PBS-annual-webr
+# Cost Summary by Year
+PBS_year <- PBS %>% 
+  index_by(Year_Date = year(Month)) %>% # Note this change!!!
+  dplyr::summarise(across(.cols = c(Cost, Scripts),
+                          .fn = mean,
+                          .names = "mean_{.col}"))
+PBS_year
+PBS_year %>% 
+  gf_line(mean_Cost ~ Year_Date) %>%
+  gf_refine(scale_y_continuous(labels = scales::label_comma()))
+
+```
+
+:::
+
+
+::: callout-note
+### Insights
+
+As can be seen:
+TBD. I must write this up soon!
+:::
+
+
+### Using `timetk`
+
+::: callout-note
+### The `time` variable for `timetk`
+
+The PBS-derived `tsibbles` have their "time-oriented" variables formatted
+as`yearmonth,yearquarter` and `dbl`, as seen. We need to mutate these
+into a proper date format for the `timetk` package to summarise them
+successfully. (Plotting a tsibble with timetk is possible, as seen
+earlier.)
+:::
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+### {{< iconify la r-project >}} R
+::::{.columns}
+:::{.column width="60%"}
+```{r}
+#| label: Summary-over-months-with-timetk
+#| eval: false
+#| message: false
+
+# Set graph theme
+theme_set(new = theme_custom())
+
+PBS %>% 
+  mutate(Month_Date = lubridate::as_date(Month)) %>%
+##
+  timetk::summarise_by_time(
+    .date_var = Month_Date,
+    .by = "month",
+    mean_Cost = mean(Cost)) %>%
+##
+  timetk::plot_time_series(
+    .date_var = Month_Date, 
+    .value = mean_Cost,
+    .interactive = FALSE,
+    .x_lab = "Time", .y_lab = "Costs",
+    .title = "Mean Costs by Month") + 
+  labs(caption = "Tsibble Plotted with timetk")
+
+```
+:::
+:::{.column width="40%"}
+
+```{r}
+#| ref.label: Summary-over-months-with-timetk
+#| echo: false
+```
+
+:::
+::::
+
+
+### {{< iconify noto-v1 spider-web >}} web-r
+```{webr-r}
+#| label: Summary over months with timetk webr
+#| message: false
+PBS %>% 
+  mutate(Month_Date = lubridate::as_date(Month)) %>%
+##
+  timetk::summarise_by_time(.date_var = Month_Date,
+                            .by = "month",
+                            mean_Cost = mean(Cost)) %>%
+##
+  timetk::plot_time_series(.date_var = Month_Date, 
+                           .value = mean_Cost,
+                           .interactive = FALSE,
+                           .x_lab = "Time", .y_lab = "Costs",
+                           .title = "Mean Costs by Month") + 
+  labs(caption = "Tsibble Plotted with timetk")
+
+```
+
+:::
+
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+### {{< iconify la r-project >}} R
+
+::::{.columns}
+:::{.column width="60%"}
+
+```{r}
+#| label: Summary-over-quarters-with-timetk
+#| eval: false
+#| message: false
+# Set graph theme
+theme_set(new = theme_custom())
+
+PBS %>% 
+  mutate(Month_Date = lubridate::as_date(Month)) %>%
+  as_tibble() %>%
+  ##
+  timetk::summarise_by_time(.date_var = Month_Date,
+                            .by = "quarter",
+                            mean_Cost = mean(Cost)) %>%
+  ##
+  timetk::plot_time_series(.date_var = Month_Date, 
+                           .value = mean_Cost,
+                           .interactive = FALSE,
+                           .x_lab = "Time", .y_lab = "Costs",
+                           .title = "Mean Costs by Quarter") + 
+  labs(caption = "Tsibble Plotted with timetk")
+
+```
+
+:::
+:::{.column width="40%"}
+
+```{r}
+#| ref.label: Summary-over-quarters-with-timetk
+#| echo: false
+```
+
+:::
+::::
+
+
+
+### {{< iconify noto-v1 spider-web >}} web-r
+```{webr-r}
+
+PBS %>% 
+  mutate(Month_Date = lubridate::as_date(Month)) %>%
+  as_tibble() %>%
+  ##
+  timetk::summarise_by_time(.date_var = Month_Date,
+                            .by = "quarter",
+                            mean_Cost = mean(Cost)) %>%
+  ##
+  timetk::plot_time_series(.date_var = Month_Date, 
+                           .value = mean_Cost,
+                           .interactive = FALSE,
+                           .x_lab = "Time", .y_lab = "Costs",
+                           .title = "Mean Costs by Quarter") + 
+  labs(caption = "Tsibble Plotted with timetk")
+
+```
+
+:::
+
+
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+### {{< iconify la r-project >}} R
+
+::::{.columns}
+:::{.column width="60%"}
+
+```{r}
+#| label: Summary-over-years-with-timetk
+#| eval: false
+# Set graph theme
+theme_set(new = theme_custom())
+PBS %>% 
+  mutate(Month_Date = lubridate::as_date(Month)) %>%
+  as_tibble() %>%
+  ##
+  timetk::summarise_by_time(.date_var = Month_Date,
+                            .by = "year",
+                            mean_Cost = mean(Cost)) %>%
+  ##
+  timetk::plot_time_series(.date_var = Month_Date, 
+                           .value = mean_Cost,
+                           .interactive = FALSE,
+                           .x_lab = "Time", .y_lab = "Costs",
+                           .title = "Mean Costs by Year") + 
+  labs(caption = "Tsibble Plotted with timetk")
+
+```
+:::
+:::{.column width="40%"}
+
+```{r}
+#| ref.label: Summary-over-years-with-timetk
+#| echo: false
+```
+
+:::
+::::
+
+
+
+### {{< iconify noto-v1 spider-web >}} web-r
+```{webr-r}
+PBS %>% 
+  mutate(Month_Date = lubridate::as_date(Month)) %>%
+  as_tibble() %>%
+  ##
+  timetk::summarise_by_time(.date_var = Month_Date,
+                            .by = "year",
+                            mean_Cost = mean(Cost)) %>%
+  ##
+  timetk::plot_time_series(.date_var = Month_Date, 
+                           .value = mean_Cost,
+                           .interactive = FALSE,
+                           .x_lab = "Time", .y_lab = "Costs",
+                           .title = "Mean Costs by Year") + 
+  labs(caption = "Tsibble Plotted with timetk")
+
+```
+
+:::
+
+## {{< iconify fluent-mdl2 decision-solid >}} Conclusion
+
+We have learnt how to filter, summarize and compute various aggregate
+metrics from them and to plot these. Both `tsibble` and `timetk` offer
+similar capability here.
+
+## {{< iconify icon-park me >}} Your Turn
+
+1.  Choose some of the data sets in the `tsdl` and in the `tsibbledata`
+    packages. Plot basic, filtered and summarized graphs for these and
+    interpret.
+
+## {{< iconify ooui references-rtl >}} References
+
+1. Robert Hyndman, *Forecasting: Principles and Practice (Third Edition)*.
+[available online](https://otexts.com/fpp3/)\
+1. [Time Series Analysis at Our Coding
+Club](https://ourcodingclub.github.io/tutorials/time/)\
+
+::: {#refs style="font-size: 60%;"}
+###### {{< iconify lucide package-check >}} R Package Citations
+
+```{r}
+#| echo: false
+# scan_packages()
+cite_packages(
+  output = "table",
+  out.dir = ".",
+  out.format = "html",
+  pkgs = c("gapminder","timetk", 
+           "tsibble", "tsibbledata")
+) %>%
+  knitr::kable(format = "simple")
+
+```
+:::

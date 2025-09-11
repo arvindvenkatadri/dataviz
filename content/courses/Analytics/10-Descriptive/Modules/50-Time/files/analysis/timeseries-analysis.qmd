@@ -1,0 +1,826 @@
+---
+title: "Analysis of Time Series in R"
+date: 28/Dec/2022
+date-modified: "`r Sys.Date()`"
+bibliography: 
+  - grateful-refs.bib
+citation: true
+
+---
+
+## {{< iconify noto-v1 package >}} Setting up R Packages
+
+```{r}
+#| label: setup
+#| include: true
+
+library(tidyverse) # For tidy data processing and plotting
+library(lubridate)  # Deal with dates
+
+library(mosaic) # Out go to package for everything
+
+library(fpp3) # Robert Hyndman's time series analysis package
+library(timetk)  # Convert data frames to time series-specific objects
+library(forecast)  # Make forecasts and decompose time series
+
+# devtools::install_github("FinYang/tsdl")
+library(tsdl) # Time Series Data Library from Rob Hyndman
+
+
+```
+
+```{r}
+#| label: Extra Pedagogical Packages
+#| echo: false
+#| message: false
+
+library(checkdown)
+library(epoxy)
+library(TeachHist)
+library(TeachingDemos)
+library(grateful)
+
+```
+
+#### Plot Fonts and Theme
+
+```{r}
+#| label: plot-theme
+#| echo: true
+#| cache: false
+#| code-fold: true
+#| messages: false
+#| warning: false
+
+library(systemfonts)
+library(showtext)
+library(tidyverse)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../../../fonts/Alegreya-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+showtext_auto(enable = TRUE) #enable showtext
+##
+theme_custom <- function(){ 
+    font <- "Alegreya"   #assign font family up front
+    '%+replace%' <- ggplot2::'%+replace%' # nolint
+        
+    ggplot2::theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
+    
+    theme(
+      text = element_text(family = font),  #set base font family
+      
+      #text elements
+      plot.title = element_text(                 #title
+                   family = font,          #set font family
+                   size = 24,                    #set font size
+                   face = 'bold',                #bold typeface
+                   hjust = 0,                    #left align
+                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
+      plot.title.position = "plot", 
+      
+      plot.subtitle = element_text(              #subtitle
+                   family = font,          #font family
+                   size = 14,                   #font size
+                   hjust = 0,                   #left align
+                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
+      
+      plot.caption = element_text(               #caption
+                   family = font,          #font family
+                   size = 9,                     #font size
+                   hjust = 1),                   #right align
+      
+      plot.caption.position = "plot",            #right align
+      
+      axis.title = element_text(                 #axis titles
+                   family = "Roboto Condensed",  #font family
+                   size = 12),                   #font size
+      
+      axis.text = element_text(                  #axis text
+                   family = "Roboto Condensed",  #font family
+                   size = 12),                    #font size
+      
+      axis.text.x = element_text(                #margin for axis text
+                    margin = margin(5, b = 10))
+      
+      #since the legend often requires manual tweaking 
+      #based on plot content, don't define it here
+    )
+}
+
+## Use available fonts in ggplot text geoms too!
+ggplot2::update_geom_defaults(geom = "text",new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
+
+```
+
+
+
+## {{< iconify fxemoji japanesesymbolforbeginner >}} Introduction
+
+We have seen how to plot different formats of time series, and how to create summary plots using packages like `tsibble` and `timetk`. 
+
+We will now see how a time series can be broken down to its components so as
+to systematically understand and analyze it. Thereafter, we examine how to model the timeseries, and make forecasts, a task more like synthesis. 
+
+We have to begin by answering fundamental questions such as:
+
+1.  What are the types of time series?
+2.  How does one process and analyze time series data?
+3.  How does one plot time series?
+4.  How to decompose it? How to extract a level, a trend, and seasonal
+    components from a time series?
+5.  What is auto correlation etc.
+6. What is a stationary time series?
+
+## {{< iconify grommet-icons test >}} Case Study -1: Walmart Sales Dataset from `timetk`
+
+Let us inspect what datasets are available in the package `timetk`. Type
+`data(package = "timetk")` in your Console to see what datasets are
+available.
+
+Let us choose the Walmart Sales dataset. See here for more details:
+[Walmart Recruiting - Store Sales Forecasting
+\|Kaggle](https://www.kaggle.com/competitions/walmart-recruiting-store-sales-forecasting/data)
+
+```{r}
+#| label: examine-walmart_data
+#| layout-ncol: 2
+walmart_sales_weekly
+glimpse(walmart_sales_weekly)
+inspect(walmart_sales_weekly)
+
+# Try this in your Console
+# help("walmart_sales_weekly")
+
+```
+
+The data is described as:
+
+> A tibble: 9,743 x 3
+>
+> -   `id` Factor. Unique series identifier (4 total)
+> -   `Store` Numeric. Store ID.
+> -   `Dept` Numeric. Department ID.
+> -   `Date` Date. Weekly timestamp.
+> -   `Weekly_Sales` Numeric. Sales for the given department in the
+>     given store.
+> -   `IsHoliday` Logical. Whether the week is a "special" holiday for
+>     the store.
+> -   `Type` Character. Type identifier of the store.
+> -   `Size` Numeric. Store square-footage
+> -   `Temperature` Numeric. Average temperature in the region.
+> -   `Fuel_Price` Numeric. Cost of fuel in the region.
+> -   `MarkDown1, MarkDown2, MarkDown3, MarkDown4, MarkDown5` Numeric.
+>     Anonymized data related to promotional markdowns that Walmart is
+>     running. MarkDown data is only available after Nov 2011, and is
+>     not available for all stores all the time. Any missing value is
+>     marked with an NA.
+> -   `CPI` Numeric. The consumer price index.
+> -   `Unemployment` Numeric. The unemployment rate in the region.
+
+Very cool to know that `mosaic::inspect()` identifies `date` variables
+separately!
+
+::: callout-note
+### Not yet a time series!
+This is still a `tibble`, with a time-oriented variable of course, but
+not yet a time-series object. The data frame has the YMD columns
+repeated for each `Dept`, giving us what is called "long" form data. To
+deal with this repetition, we will always need to split the
+`Weekly_Sales` by the `Dept` column before we plot or analyze.
+:::
+
+
+```{r}
+#|label: walmart sales tsibble
+walmart_tsibble <- 
+  walmart_sales_weekly %>% 
+  as_tsibble(index = Date, # Time Variable
+             key = c(id, Store, Dept, Type))
+             
+  #  Identifies unique "subject" who are measures
+  #  All other variables such as Weekly_sales become "measured variable"
+  #  Each observation should be uniquely identified by index and key
+walmart_tsibble
+
+
+```
+
+### {{< iconify flat-color-icons line-chart >}} Basic Time Series Plots
+
+The easiest way is to use `autoplot` from the `feasts` package. You may
+need to specify the actual measured variable, if there is more than one
+numerical column:
+
+```{r feasts-basic-plot}
+
+# Set graph theme
+theme_set(new = theme_custom())
+#
+feasts::autoplot(walmart_tsibble, .vars = Weekly_Sales)
+
+```
+
+`timetk` gives us *interactive plots* that may be more evocative than
+the static plot above. The basic plot function with `timetk` is
+`plot_time_series`. There are arguments for the date variable, the value
+you want to plot, colours, groupings etc.
+
+Let us explore this dataset using `timetk`, using our trusted method of
+asking Questions:
+
+:::callout-note
+**Q.1 How are the weekly sales different for each Department?**
+
+There are 7 number of Departments. So we should be fine plotting them
+and also **facetting** with them, as we will see in a bit:
+
+```{r}
+#| label: Plot-with-timetk
+#| message: false
+
+walmart_tsibble %>% 
+  timetk::plot_time_series(.date_var = Date, 
+                           .value = Weekly_Sales,
+                           .color_var = Dept, 
+                           .legend_show = TRUE,
+                           .title = "Walmart Sales Data by Department",
+                           .smooth = FALSE)
+
+```
+:::
+
+:::callout-note
+**Q.2. What do the sales per Dept look like during the month of December
+(Christmas time) in 2012? Show the individual Depts as facets.**
+
+We can of course **zoom** into the interactive plot above, but if we
+were to plot it anyway:
+
+```{r filtering-by-time}
+
+# Only include rows from  1 to December 31, 2011
+# Data goes only up to Oct 2012
+
+walmart_tsibble %>% 
+  # Each side of the time_formula is specified as the character 'YYYY-MM-DD HH:MM:SS',
+  timetk::filter_by_time(.date_var = Date,
+                         .start_date = "2011-12-01",
+                         .end_date = "2011-12-31") %>%
+
+  plot_time_series(.date_var = Date, 
+                   .value = Weekly_Sales, 
+                   .color_var = Dept, 
+                   .facet_vars = Dept, 
+                   .facet_ncol = 2,
+                   .smooth = FALSE) # Only 4 points per graph
+
+```
+
+Clearly the "unfortunate"
+[Dept#13](https://u.osu.edu/vanzandt/2019/04/12/is-13-really-that-unlucky/)
+has seen something of a Christmas drop in sales, as has Dept#38 ! The
+rest, all is well, it seems...
+:::
+
+
+### {{< iconify carbon chart-average >}} Too much noise? How about some averaging?
+
+:::callout-note
+**Q.3 How do we smooth out some of the variations in the time series to
+be able to understand it better?**
+
+Sometimes there is too much noise in the time series observations and we
+want to take what is called a **rolling average**. For this we will use
+the function `timetk::slidify` to create an averaging function of our
+choice, and then apply it to the time series using regular
+`dplyr::mutate`
+
+```{r averaging-function}
+
+# Let's take the average of Sales for each month in each Department.
+# Our **function** will be named "rolling_avg_month": 
+
+rolling_avg_month = timetk::slidify(.period = 4, # every 4 weeks
+                            .f = mean, # The function to use
+                            .align = "center", # Aligned with middle of month
+                            .partial = TRUE) # To catch any leftover half weeks
+rolling_avg_month
+
+
+```
+
+OK, `slidify` creates a `function`! Let's apply it to the Walmart Sales
+time series...
+
+```{r averaging}
+
+walmart_tsibble %>% 
+  # group_by(Dept) %>% # Is this needed?
+  mutate(avg_monthly_sales = rolling_avg_month(Weekly_Sales)) %>% 
+  # ungroup() %>% # Is this needed?
+  timetk::plot_time_series(Date, avg_monthly_sales,
+                           .color_var = Dept, # Does the grouping!
+                           .smooth = FALSE)
+
+```
+
+Curves are smoother now. Need to check whether the `averaging` was done
+on a per-`Dept` basis...should we have had a `group_by(Dept)` before the
+averaging, and `ungroup()` before plotting? Try it !!
+
+:::
+
+
+### {{< iconify ph:puzzle-piece-bold >}}{{< iconify svg-spinners clock >}} Decomposing Time Series: Trends, Seasonal Patterns, and Cycles
+
+Each data point ($Y_t$) at time $t$ in a Time Series can be expressed as
+either a sum or a product of 4 components, namely, Seasonality($S_t$),
+Trend($T_t$), Cyclic, and Error($e_t$) (a.k.a White Noise).
+
+-   *Trend*: pattern exists when there is a long-term increase or decrease
+    in the data.
+-   *Seasonal*: pattern exists when a series is influenced by seasonal
+    factors (e.g., the quarter of the year, the month, or day of the
+    week).
+-   *Cyclic*: pattern exists when data exhibit rises and falls that are
+    not of fixed period (duration usually of at least 2 years). *Often
+    combined with Trend into "Trend-Cycle"*.
+-   *Error or Noise*: Random component
+
+When data is **non-seasonal** this means breaking it up into only *trend* and
+*irregular* components. To estimate the trend component of a
+non-seasonal time series that can be described using an additive model,
+it is common to use a **smoothing method**, such as calculating the
+*simple moving average of the time series*.
+
+`timetk` has the ability to achieve this: Let us plot the `trend`,
+`seasonal`, `cyclic` and `irregular` aspects of `Weekly_Sales` for Dept
+38:
+
+```{r decompose-time-series}
+
+walmart_tsibble %>% 
+  filter(Dept == "38") %>% 
+  timetk::plot_stl_diagnostics(.data = .,
+                               .date_var = Date, 
+                               .value = Weekly_Sales)
+
+```
+
+We can do this for **all** `Dept`s using `fable` and `fabletools`:
+
+```{r}
+#| label:  Decomposing_trends
+
+# Set graph theme
+theme_set(new = theme_custom())
+##
+walmart_decomposed <- 
+  walmart_tsibble %>% 
+  
+  # If we want to filter, we do it here
+  #filter(Dept == "38") %>% 
+  # 
+
+fabletools::model(stl = STL(Weekly_Sales))
+
+fabletools::components(walmart_decomposed)
+
+feasts::autoplot(components((walmart_decomposed)))
+
+```
+
+
+
+## {{< iconify pajamas issue-type-test-case >}} Case Study #2: Dataset from `nycflights13`
+
+Let us try the flights dataset from the package `nycflights13`. Try
+`data(package = "nycflights13")` in your Console.
+
+We have the following datasets in the `nycflights13` package:
+
+-   `airlines` Airline names.
+-   `airports` Airport metadata
+-   `flights` Flights data
+-   `planes` Plane metadata.
+-   `weather` Hourly weather data
+
+Let us analyze the `flights` data:
+
+```{r}
+
+data("flights", package = "nycflights13")
+glimpse(flights)
+mosaic::inspect(flights)
+
+```
+
+We have *time-related* columns; Apart from `year, month, day` we have
+`time_hour`; and time-event numerical data such as `arr_delay` (arrival
+delay) and `dep_delay` (departure delay). We also have categorical data
+such as `carrier, origin, dest`, `flight` and `tailnum` of the aircraft.
+It is also a large dataset containing 330K entries. Enough to play
+with!!
+
+Let us replace the `NA`s in `arr_delay` and `dep_delay` with zeroes for
+now, and convert it into a time-series object with `tsibble`:
+
+```{r}
+
+flights_delay_ts <- flights %>% 
+  
+  mutate(arr_delay = replace_na(arr_delay, 0), 
+         dep_delay = replace_na(dep_delay, 0)) %>% 
+  
+  select(time_hour, arr_delay, dep_delay, 
+         carrier, origin, dest, 
+         flight, tailnum) %>% 
+  
+  tsibble::as_tsibble(index = time_hour, 
+                      # All the remaining identify unique entries
+                      # Along with index
+                      # Many of these variables are common
+                      # Need *all* to make unique entries!
+                      key = c(carrier, origin, dest,flight, tailnum), 
+                      validate = TRUE) # Making sure each entry is unique
+
+
+flights_delay_ts
+
+
+```
+
+:::callout-note
+
+**Q.1. Plot the monthly average arrival delay by carrier**
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+### Using tsibble
+
+```{r}
+#| layout-ncol: 2
+
+# Set graph theme
+theme_set(new = theme_custom())
+#
+mean_arr_delays_by_carrier <- 
+  flights_delay_ts %>%
+  group_by(carrier) %>% 
+  
+  index_by(month = ~ yearmonth(.)) %>% 
+  # index_by uses (year, yearquarter, yearmonth, yearweek, as.Date)
+  # to create a new column to show the time-grouping
+  # year / quarter / month/ week, or day...
+  # which IS different from traditional dplyr
+  
+  summarise(mean_arr_delay = 
+              mean(arr_delay, na.rm = TRUE)
+  )
+
+mean_arr_delays_by_carrier
+
+# colours from the "I want Hue" website
+colour_values <- c("#634bd1","#35d25a","#757bff","#fa9011","#72369a",
+               "#617d00","#d094ff","#81d8a4","#e63d2d","#0080c0",
+               "#9e4500","#98a9ff","#efbd7f","#474e8c","#ffa1e4",
+               "#8a3261","#a6c1f8","#a16e96")
+
+# Plotting with ggformula
+mean_arr_delays_by_carrier %>%
+  gf_hline(yintercept = 0, color = "grey") %>%
+  gf_line(
+    mean_arr_delay ~ month,
+    group = ~ carrier,
+    color = ~ carrier,
+    linewidth = 1.5,
+    title = "Average Monthly Arrival Delays by Carrier",
+    caption = "Using tsibble + ggformula"
+  ) %>%
+  
+  gf_facet_wrap(vars(carrier), nrow = 4) %>%
+
+  gf_refine(scale_color_manual(name = "Airlines",
+                               values = colour_values)) %>%
+
+  gf_theme(theme(axis.text.x = element_text(angle = 45, 
+                                            hjust = 1, 
+                                            size = 6)))
+
+
+```
+
+### Using timetk
+```{r}
+#| layout-ncol: 2
+#| message: false
+
+mean_arr_delays_by_carrier2 <- 
+  flights_delay_ts %>% 
+  as_tibble() %>%
+  group_by(carrier) %>% 
+  
+  # summarize_by_time REQUIRES a tibble
+  # Cannot do this with a tsibble
+  timetk::summarise_by_time(.date_var = time_hour,
+                            .by = "month",
+                            mean_arr_delay = mean(arr_delay))
+
+
+mean_arr_delays_by_carrier2
+colour_values <- c("#634bd1","#35d25a","#757bff","#fa9011","#72369a",
+               "#617d00","#d094ff","#81d8a4","#e63d2d","#0080c0",
+               "#9e4500","#98a9ff","#efbd7f","#474e8c","#ffa1e4",
+               "#8a3261","#a6c1f8","#a16e96")
+p <- mean_arr_delays_by_carrier2 %>%
+  
+  timetk::plot_time_series(
+    #.data = .,
+    .date_var = time_hour, # no change to time variable name!
+    .value = mean_arr_delay,
+    .color_var = carrier,
+    .facet_vars = carrier,
+    .smooth = FALSE,
+    # .smooth_degree = 1,
+    # keep .smooth off since it throws warnings if there are too few points
+    # Like if we do quarterly or even yearly summaries
+    # Use only for smaller values of .smooth_degree (0,1)
+    .interactive = FALSE, .line_size = 2,
+    .facet_ncol = 4,.legend_show = FALSE, .facet_scales = "fixed",
+    .title = "Average Monthly Arrival Delays by Carrier",
+    .y_lab = "Arrival Delays over Time", .x_lab = "Time"
+  ) + 
+  geom_hline(yintercept = 0, color = "grey") + 
+  scale_colour_manual(name = "Airline", 
+                      values = colour_values) +
+  theme_classic() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(caption = "Using timetk")
+
+# Reverse the layers in the plot
+# Zero line BELOW, time series above
+# https://stackoverflow.com/questions/20249653/insert-layer-underneath-existing-layers-in-ggplot2-object
+
+p$layers = rev(p$layers)
+p
+
+```
+
+Insights:
+- Clearly airline `OO` has had some serious arrival delay problems in the first half of 2013...
+- most other delays are around the zero-line, with some variations in both directions
+
+:::
+
+:::
+
+
+
+
+:::callout-note
+**Q.2. Plot a candlestick chart for total flight delays for a particular month for
+each origin across airlines!**
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+### Using ggformula
+
+```{r}
+
+# Set graph theme
+theme_set(new = theme_custom())
+##
+flights_delay_ts %>%
+  mutate(total_delay = arr_delay + dep_delay,
+         month = lubridate::month(time_hour, 
+                                  # Makes ordinal factor with month labels
+                                  label = TRUE)) %>% 
+  filter(month == "Dec") %>%
+  
+  gf_boxplot(total_delay ~ ., 
+             color = ~ origin, 
+             fill = ~ origin, alpha = 0.3) %>%
+  gf_facet_wrap(vars(carrier), nrow = 3, scales = "free_y") %>%
+  gf_theme(theme(axis.text.x = element_blank()))
+
+
+```
+
+### Using timetk
+
+```{r}
+
+flights_delay_ts %>% 
+  mutate(total_delay = arr_delay + dep_delay) %>%
+  timetk::filter_by_time(.start_date = "2013-12", 
+                         .end_date = "2013-12") %>%
+  
+  timetk::plot_time_series_boxplot(
+    .date_var = time_hour,
+    .value = total_delay,
+    .color_var = origin,
+    .facet_vars = carrier,
+    .period = "month",
+    .interactive = FALSE,
+    # .smooth_degree = 1,
+    # keep .smooth off since it throws warnings if there are too few points
+    # Like if we do quarterly or even yearly summaries
+    # Use only for smaller values of .smooth_degree (0,1)
+    .smooth = FALSE
+  )
+    
+    
+```
+
+Insights:
+- JFK has more outliers in total_delay than EWR and LGA
+- Just a hint of more delays in April... and July?
+
+
+:::
+
+:::
+
+
+
+
+:::callout-note
+**Q.3. Plot a heatmap chart for total flight delays by origin,
+aggregated by month**
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+### Using tsibble + ggformula
+```{r}
+# Set graph theme
+theme_set(new = theme_custom())
+##
+avg_delays_month <- flights_delay_ts %>% 
+  group_by(origin) %>% 
+  mutate(total_delay = arr_delay + dep_delay) %>% 
+  index_by(month = ~ yearmonth(.)) %>% 
+  # index_by uses (year, yearquarter, yearmonth, yearweek, as.Date)
+  # to create a new column to show the time-grouping
+  # year / quarter / month/ week, or day...
+  # which IS different from traditional dplyr
+    summarise(mean_monthly_delay = mean(total_delay, na.rm = TRUE)
+  )
+
+avg_delays_month 
+# three origins 12 months therefore 36 rows
+# Tsibble index_by + summarise also gives us a  month` column 
+
+
+
+ggformula::gf_tile(origin ~ month, fill = ~ mean_monthly_delay, 
+                   color = "black", data = avg_delays_month,
+                   title = "Mean Flight Delays from NY Airports in 2013") %>% 
+  gf_theme(scale_fill_viridis_c(option = "A")) 
+  
+# "magma" (or "A") inferno" (or "B") "plasma" (or "C") 
+# "viridis" (or "D") "cividis" (or "E") 
+# "rocket" (or "F") "mako" (or "G") "turbo" (or "H")
+
+
+```
+
+
+### Using timetk
+
+
+
+:::
+Insights:
+- TBD
+- TBD
+
+:::
+
+
+
+## {{< iconify icon-park trend-two >}} {{< iconify icon-park-outline cycle >}} {{< iconify fad modrandom >}} Seasons, Trends, Cycles, and Random Changes
+
+Here are how the different types of patterns in time series are as
+follows:
+
+> `Trend`: A trend exists when there is a long-term increase or decrease
+> in the data. It does not have to be linear. Sometimes we will refer to
+> a trend as "changing direction", when it might go from an increasing
+> trend to a decreasing trend.
+
+> `Seasonal`: A seasonal pattern occurs when a time series is affected
+> by seasonal factors such as the time of the year or the day of the
+> week. Seasonality is always of a fixed and known period. The monthly
+> sales of drugs (with the PBS data) shows seasonality which is induced
+> partly by the change in the cost of the drugs at the end of the
+> calendar year.
+
+> `Cyclic`: A cycle occurs when the data exhibit rises and falls that
+> are not of a fixed frequency. These fluctuations are usually due to
+> economic conditions, and are often related to the "business cycle".
+> The duration of these fluctuations is usually at least 2 years.
+
+The function `feasts::STL` allows us to create these **decompositions**.
+
+Let us try to find and plot these patterns in Time Series.
+
+```{r}
+#| label: STL-model-yearly
+#| column: screen-inset
+births_2000_2014 <- read_csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/births/US_births_2000-2014_SSA.csv")
+##
+births_tsibble <- 
+  births_2000_2014 %>%
+  mutate(index = lubridate::make_date(year = year, 
+                                      month = month,
+                                      day = date_of_month)) %>%
+  tsibble::as_tsibble(index = index) %>%
+  select(index, births)
+##
+births_STL_yearly <- 
+  births_tsibble %>% 
+  fabletools::model(STL(births ~ season(period = "year")))
+
+fabletools::components(births_STL_yearly)
+
+```
+
+::: column-screen-inset
+
+```{r}
+#| fig-column: screen-inset
+#| column: screen-inset
+
+# Set graph theme
+theme_set(new = theme_custom())
+##
+feasts::autoplot(components(births_STL_yearly))
+
+```
+:::
+
+
+
+## {{< iconify fluent-mdl2 decision-solid >}} Conclusion
+
+We can plot most of the common Time Series Plots with the help of the
+**tidyverts** packages: ( `tsibble`, `feast`, `fable` and `fabletools`)
+, along with `timetk` and `ggformula`.
+
+There are other plot packages to investigate, such as
+[dygraphs](https://rstudio.github.io/dygraphs/index.html)
+
+Recall that we have used the `tsibble` format for the data. There are
+other formats such as `ts`, `xts` and others which are meant for time
+series analysis. But for our present purposes, we are able to do things
+with the capabilities of `timetk`.
+
+## {{< iconify ooui references-rtl >}} References
+
+1.  Rob J Hyndman and George Athanasopoulos, *Forecasting:
+    Principles and Practice (3rd ed)*, Available Online
+    <https://otexts.com/fpp3/>
+
+2.  [What is seasonal adjustment and why is it used?](http://junkcharts.typepad.com/junk_charts/2010/11/what-is-seasonal-adjustment-and-why-is-it-used.html)
+
+3.  [The start-at-zero rule](http://junkcharts.typepad.com/junk_charts/2005/09/the_startatzero.html)
+
+::: {#refs style="font-size: 60%;"}
+
+###### {{< iconify lucide package-check >}} R Package Citations
+    
+```{r}
+#| echo: false
+#scan_packages()
+cite_packages(
+  output = "table",
+  out.dir = ".",
+  out.format = "html",
+  pkgs = c("ggridges", "NHANES", "TeachHist",
+           "TeachingDemos")
+) %>%
+  knitr::kable(format = "simple")
+
+```
+:::

@@ -5,6 +5,8 @@ date: 2021/7/30
 author: Arvind V. 
 date-modified: "`r Sys.Date()`"
 order: 35
+bibliography: 
+  - grateful-refs.bib
 ---
 
 ```{r}
@@ -24,17 +26,29 @@ library(showtext)   ## add google fonts to plots
 
 ```
 
+```{r}
+#| label: Extra Pedagogical Packages
+#| echo: false
+#| message: false
+
+library(checkdown)
+library(epoxy)
+library(grateful)
+
+```
+
+
 ## Introduction
 
-We may have been using `ggplot2` for a while now, but there is always more to learn about the aesthetics of our plots. Here we will look at annotating our graphs and plots. 
+We may have been using `{{ggplot2}}` for a while now, but there is always more to learn about the aesthetics of our plots. Here we will look at annotating our graphs and plots. 
 
 Annotations help to draw attention to specific parts or the graph, specific areas of interest that are useful in telling the story .
 
-We have already seen the `annotate()` command from `ggplot2` first ( and the new `gf_annotate()` from `ggformula`). Here we will look at some of the intrigung features from the `ggforce` package. 
+We have already seen the `annotate()` command from `{{ggplot2}}` first ( and the new `gf_annotate()` from `ggformula`). Here we will look at some of the intrigung features from the `ggforce` package. 
 
 ### Fonts and Themes
 
-AAs we learnt in the [Fonts Module](../20-Fonts/index.qmd), let us set the ggplot theme with fonts for both the chart defining elements **and** our annotations. I am going to use local fonts from my machine, that I have downloaded from Google Fonts earlier and saved in a `fonts` folder at the root of my project.
+As we learnt in the [Fonts Module](../20-Fonts/index.qmd), let us set the ggplot theme with fonts for both the chart defining elements **and** our annotations. I am going to use local fonts from my machine, that I have downloaded from Google Fonts earlier and saved in a `fonts` folder at the root of my project.
 
 ```{r}
 #| label: add-local-fonts
@@ -172,13 +186,12 @@ penguins %>%
 
 ## Basic Plot
 
-A basic scatter plot, which we will use to highlight and draw attention to specific areas of the plot. We will include, for the sake of retaining context, the fonts and labels that we have used in previous modules. And we will also use `ggtext` to format the axis titles and the plot title.
+A basic scatter plot, which we will use to highlight and draw attention to specific areas of the plot. We will include, for the sake of retaining context, the fonts and labels that we have used in previous modules. And we will also use `{{ggtext}}` to format the axis titles and the plot title.
 
 
 ```{r}
 #| label: basic-ggformula-plot
 #| code-fold: true
-
 
 p1 <- gf_point(data = penguins, bill_dep ~ bill_len, 
               color = ~ body_mass, alpha = 0.8, size = 3.5) %>% 
@@ -211,15 +224,15 @@ p1
 
 
 
-## Using `{ggforce}`
+## Using `{{ggforce}}`
 
 From [Thomas Lin Pedersen's website](www.ggforce.data-imaginist.com) → www.ggforce.data-imaginist.com
 
-> `ggforce` is a package aimed at providing missing functionality to `ggplot2` through the extension system introduced with `ggplot2` v2.0.0. Broadly speaking `ggplot2` has been aimed primarily at explorative data visualization in order to investigate the data at hand, and less at providing utilities for composing custom plots a la `D3.js`. `ggforce` is mainly an attempt to address these “shortcoming” (design choices might be a better description). The goal is to provide a repository of geoms, stats, etc. that are as well documented and implemented as the official ones found in `ggplot2`.
+> `{{ggforce}}` is a package aimed at providing missing functionality to `{{ggplot2}}` through the extension system introduced with `{{ggplot2}}` v2.0.0. Broadly speaking `{{ggplot2}}` has been aimed primarily at explorative data visualization in order to investigate the data at hand, and less at providing utilities for composing custom plots a la `D3.js`. `{{ggforce}}` is mainly an attempt to address these “shortcoming” (design choices might be a better description). The goal is to provide a repository of geoms, stats, etc. that are as well documented and implemented as the official ones found in `{{ggplot2}}`.
 
 
 
-We will start with the basic plot, with the fonts, labels and `ggtext` related work done up to now: First, let us update the theme to use the `ggtext` options, and then we will add the `ggforce` annotations.
+We will start with the basic plot, with the fonts, labels and `{{ggtext}}` related work done up to now: First, let us update the theme to use the `{{ggtext}}` options, and then we will add the `{{ggforce}}` annotations.
 
 ```{r}
 #| eval: false
@@ -373,4 +386,23 @@ p1 +
              size = 3.5)
 
 ```
+
+
+::: {#refs style="font-size: 60%;"}
+###### {{< iconify lucide package-check >}} R Package Citations
+
+```{r}
+#| echo: false
+#scan_packages()
+cite_packages(
+  output = "table",
+  out.dir = ".",
+  out.format = "html",
+  pkgs = c("fpp3", "gghighlight", "timetk","tsbox", "tsdl", "tsibble", 
+           "tsibbledata", "TSstudio")
+) %>%
+  knitr::kable(format = "simple")
+
+```
+:::
 

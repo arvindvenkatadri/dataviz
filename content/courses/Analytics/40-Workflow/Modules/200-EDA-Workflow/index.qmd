@@ -26,18 +26,18 @@ The best charts come from understanding your data, asking good questions from it
 
 ## {{< iconify ic baseline-folder >}} Set up your Project
 
-- Create a new Project in RStudio. File -> New Project -> Quarto Blog
+- Create a new Project in RStudio. `File -> New Project -> Quarto Blog`
 - Create a new Quarto document: all your Quarto documents should be in the `posts/` folder. See the samples therein to get an idea. 
-- Save the document with a meaningful name, e.g. `EDA-Workflow.qmd`
-- Create a new folder in the Project for your data files, e.g. `data/`. This can be at the inside the `posts/` folder.
+- Save the document with a meaningful name, e.g. `EDA-Workflow-1.qmd`
+- Create a new folder in the Project for your data files, e.g. `data/`. This can be at the [inside the `posts/` folder]{style="background-color:yellow;"}.
 - Store all datasets within this folder, and refer to them with relative paths, e.g. `../data/mydata.csv` in any other Quarto document in the Project. (`../` means "go up one level from the current folder".)
 
 
-Now edit the `*.qmd* file which you are editing for this report to include the following sections, YAML, code chunks, and text as needed.
+Now edit the `*.qmd` file which you are editing for this report to include the following sections, YAML, code chunks, and text as needed.
 
 
 ::: callout-note
-### Download ***this*** document as a Work Template
+### Download ***this here*** document as a Work Template
 Hit the `</>Code` button at upper right to copy/save this very document as a Quarto Markdown template for your work. 
 Delete the text that you don't need, but keep most of the Sections as they are!
 
@@ -47,12 +47,14 @@ Delete the text that you don't need, but keep most of the Sections as they are!
 ## {{< iconify noto-v1 package >}} Setting up R Packages
 
 1. Install packages using `install.packages()` in your Console. 
-1. Load up your libraries in a `setup` chunk: 
-1. Add `knitr` options to your YAML header, so that all your plots are rendered in high quality PNG format.
+1. Load up your libraries in a `setup` chunk.
+1. Set `df-print: paged` so that (long) data frames print as nice paged tables and do not overrun your HTML page. 
+1. Add `{{knitr}}` options to your YAML header, so that all your plots are rendered in high quality PNG format.
 
 ```yaml
 title: "My Document"
 format: html
+df-print: paged
 knitr:
   opts_chunk:
     dev: "ragg_png"
@@ -75,7 +77,6 @@ library(ggformula)
 library(ggridges)
 library(skimr)
 library(janitor) 
-##
 library(GGally)
 library(corrplot)
 library(corrgram)
@@ -83,7 +84,6 @@ library(crosstable) # Summary stats tables
 library(kableExtra)
 library(tinytable) # Static tables
 library(DT) # Interactive tables
-## 
 library(paletteer) # Colour Palettes for Peasants
 ##
 ## Add other packages here as needed, e.g.:
@@ -109,7 +109,7 @@ If you would rather not have all the messages and warnings from loading packages
 Did you notice that there are similarly-named function commands from different packages? E.g. `chisq.test` and `fisher.test` are in the `{{janitor}}` package and they mask the identically-named commands from `{{stats}}`. This is because the last-loaded package does the masking, but **all functions** from all loaded packages are available!! Just remember always to **name** your code-command with the package from whence it came!
 So use `dplyr::filter()` / `dplyr::summarize()` and **not** just `filter()` or `summarize()`, since these commands could exist across multiple packages, which you may have loaded **last**. And you will avoid a lot of coding grief. 
 
-(One can also use the `conflicted` package to set this up, but this is simpler for beginners like us. )
+(One can also use the `{{conflicted}}` package to set this up, but this is simpler for beginners like us. )
 
 :::
 
@@ -123,7 +123,7 @@ Set up a theme for your plots. This is a good time to set up your own theme, or 
 #| label: Plot Sizing and theming
 #| code-fold: true
 #| message: false
-#| warning: true
+#| warning: false
 
 # Chunk options
 knitr::opts_chunk$set(
@@ -136,10 +136,16 @@ knitr::opts_chunk$set(
 ### https://rpubs.com/mclaire19/ggplot2-custom-themes
 ### https://stackoverflow.com/questions/74491138/ggplot-custom-fonts-not-working-in-quarto
 
-# We have locally downloaded the `Alegreya` and `Roboto Condensed` fonts.
+# We have locally downloaded the `Alegreya` and `Roboto Condensed` fonts. 
+# They are located in a folder labelled `fonts` at the project root level.
 # This ensures we are GDPR-compliant, and not using Google Fonts directly.
 # Let us import these local fonts into our session and use them to define our ggplot theme. 
 library(sysfonts)
+library(showtext)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+showtext_opts(dpi = 96) #set DPI for showtext
 
 sysfonts::font_add(family = "Alegreya", 
                    regular = "../../../../../../fonts/Alegreya-Regular.ttf",
@@ -228,7 +234,7 @@ theme_set(new = theme_custom())
 #| label: read-data
 data(penguins, package = "palmerpenguins") 
 
-penguins <- penguins %>% janitor::clean_names() # Part of the process
+penguins <- penguins %>% janitor::clean_names(case = "snake") # Part of the process
 
 penguins
 
