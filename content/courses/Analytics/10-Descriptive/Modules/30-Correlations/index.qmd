@@ -117,7 +117,7 @@ theme_custom <- function(){
     font <- "Alegreya"   #assign font family up front
     '%+replace%' <- ggplot2::'%+replace%' # nolint
         
-    theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
+    theme_bw(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
     
     theme(
       text = element_text(family = font),  #set base font family
@@ -256,7 +256,7 @@ The word **correlation** is used in everyday life to denote some form of associa
 
 ## {{< iconify grommet-icons test >}} Case Study-1: `HollywoodMovies2011` dataset
 
-Let us look at the `HollywoodMovies2011` dataset from the `Lock5withR` package. 
+Let us look at the `HollywoodMovies2011` dataset from the `{{Lock5withR}}` package. 
 
 ```{r}
 #| label: load-movies
@@ -272,7 +272,7 @@ movies_modified <- HollywoodMovies2011 %>%
 ```
 
 ::: callout-note
-The dataset is also available by clicking the icon below ( in case you are not able to install `Lock5withR`):
+The dataset is also available by clicking the icon below ( in case you are not able to install `{{Lock5withR}}`):
 
 ```{r, echo = FALSE}
 movies_modified %>% download_this(output_name = "movies_modified", output_extension = ".csv", button_label = "Hollywood Movies Dataset", button_type = "default", icon = "fa fa-save",   class = "hvr-sweep-to-left")
@@ -758,9 +758,15 @@ where $E$ is the *expectation operator* ( i.e taking mean ). Think of this
 as *the average of the products of two scaled variables*.
 
 ```{r}
+#| label: fig-correlation-calc
+#| fig-cap: Showing Calculation of Correlation Coefficient
+#| fig-subcap:
+#| - Segments show deviations from means
+#| - Red Areas are positive, Blue areas are negative
 #| echo: false
 #| warning: false
 #| message: false
+#| layout-ncol: 2
 
 ggplot2::theme_set(new = theme_custom())
 
@@ -803,6 +809,10 @@ demo_dat %>%
             annotate(geom='text', x = 4.25, y= 2.2, 
                      label = TeX("$(x_1, y_1)$", output='character'), parse=TRUE))
 
+## Positive correlation
+x <- rnorm(25)
+y <- x + rnorm(25,3, .5)
+cor.rect.plot(x,y, xlab = "Variable X", ylab = "Variable Y", main = "Positive Correlation")
 
 ```
 
@@ -812,7 +822,7 @@ demo_dat %>%
 We can see $(x-\mu_x)/\sigma_x$ is a centering and scaling of the
 variable $x$. Recall from our discussion on [Distributions](../../Modules/26-Densities/index.qmd) that this is called the `z-score` of x.
 
-Pearson correlation *assumes* that the relationship between the two variables is **linear**. There are of course [**many other types of correlation measures**]{.bg-yellow .black}: some which work when this is not so. Type `vignette("types", package = "correlation")` in your Console to see the vignette from the `correlation` package that discusses various types of correlation measures.
+Pearson correlation *assumes* that the relationship between the two variables is **linear**. There are of course [**many other types of correlation measures**]{.bg-yellow .black}: some which work when this is not so. Type `vignette("types", package = "correlation")` in your Console to see the vignette from the `{{correlation}}` package that discusses various types of correlation measures.
 :::
 
 OK, so how do we calculate this correlation coefficient? And how do we visualize it too? ( Remember: we want to visualize our analysis! )
@@ -820,8 +830,7 @@ OK, so how do we calculate this correlation coefficient? And how do we visualize
 
 ## {{< iconify ph chart-pie-bold >}} Correlation Plots and Scores
 
-We will use the `GGally` package to visualize correlation scores, and 
-a formal **correlation test** with the `mosaic` package to calculate them. 
+We will use the `{{GGally}}` package to visualize correlation scores, and  a formal **correlation test** with the `{{mosaic}}` package to calculate them. 
 
 ### Using GGally
 
@@ -920,6 +929,7 @@ mosaic::cor_test(foreign_gross ~ budget, data = movies_modified) %>%
 ::: callout-note
 
 ## Business Insights from Correlation Tests
+
 The `budget` and `profitability` are not well correlated, sadly. We see this from the `p.value` which is $0.34$ and the confidence values for the correlation `estimate` which also cover $0$.
 
 However, both `DomesticGross` and `ForeignGross` are well correlated with `budget`. 
@@ -931,7 +941,7 @@ Look at the `conf.low` and `conf.high` coloumns: these are ***calculated uncerta
 
 #### {{< iconify carbon chart-error-bar-alt >}} The ErrorBar Plot for Correlations
 
-As stated earlier, in our dataset we have a specific `dependent` or `target` variable, which represents the outcome of our experiment or our business situation. The remaining variables are usually `independent` or `predictor` variables. A very useful thing to know, and to view, would be the correlations of *all* independent variables. Using the `correlation` package from the `easystats` family of R packages, this can be very easily achieved. 
+As stated earlier, in our dataset we have a specific `dependent` or `target` variable, which represents the outcome of our experiment or our business situation. The remaining variables are usually `independent` or `predictor` variables. A very useful thing to know, and to view, would be the correlations of *all* independent variables. Using the `{{correlation}}` package from the `{{easystats}}` family of R packages, this can be very easily achieved. 
 Let us quickly do this for the familiar `mtcars` dataset: we will quickly `glimpse` it, identify the target variable, and plot the correlations: 
 
 ```{r}
@@ -1094,11 +1104,11 @@ datasaurus_dozen %>% download_this(output_name = "datasaurus", output_extension 
 
 ## {{< iconify fluent-mdl2 decision-solid >}} Conclusions
 
-Scatter Plots give a us sense of change; whether it is linear or non-linear. We can get an idea of correlation between variables with a scatter plot. Our workflow for evaluating correlations between target variable and several other predictor variables uses several packages such as `GGally`, `corrplot`, `correlation`, and of course `mosaic` for correlation tests.
+Scatter Plots give a us sense of change; whether it is linear or non-linear. We can get an idea of correlation between variables with a scatter plot. Our workflow for evaluating correlations between target variable and several other predictor variables uses several packages such as `{{GGally}}`, `{{corrplot}}`, `{{correlation}}`, and of course `{{mosaic}}` for correlation tests.
 
 ## {{< iconify eos-icons ai >}} AI Generated Summary and Podcast
 
-This document focusses on correlation between quantitative variables. It examines different ways to visualize correlations, including scatter plots and correlograms. The document provides examples of how to use R packages like `GGally` and `corrplot` to create these visualizations and `correlation tests` to assess the strength and significance of relationships between variables. The tutorial uses the `HollywoodMovies2011` and `mtcars` datasets as examples to demonstrate these concepts.
+This document focusses on correlation between quantitative variables. It examines different ways to visualize correlations, including scatter plots and *correlograms*. The document provides examples of how to use R packages like `{{GGally}}` and `{{corrplot}}` to create these visualizations and `correlation tests` to assess the strength and significance of relationships between variables. The tutorial uses the `HollywoodMovies2011` and `mtcars` datasets as examples to demonstrate these concepts.
 <br><br>
 <center>
 ```{r}

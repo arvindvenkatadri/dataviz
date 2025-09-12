@@ -109,7 +109,7 @@ theme_custom <- function(){
     font <- "Alegreya"   #assign font family up front
     '%+replace%' <- ggplot2::'%+replace%' # nolint
     
-    theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
+    theme_bw(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
     
     theme(
       text = element_text(family = font),  #set base font family
@@ -248,13 +248,13 @@ Recall the *API*: the programming interface to each of `mosaic`, `ggformula`, an
 ::: callout-tip
 ### `mosaic` and `ggformula` command template
 
-Note the standard method for all commands from the `mosaic` and
-`ggformula` packages: `goal( y ~ x | z, data = _____)`
+Note the standard method for all commands from the `{{mosaic}}` and
+`{{ggformula}}` packages: `goal( y ~ x | z, data = _____)`
 
-With `mosaic`, one can create a statistical correlation test between two variables as:
+With `{{mosaic}}`, one can create a statistical correlation test between two variables as:
 `cor_test(y ~ x, data = ______ )`
 
-With `ggformula`, one can create any graph/chart using:
+With `{{ggformula}}`, one can create any graph/chart using:
 `gf_***(y ~ x | z, data = _____)`
 In practice, we often use: `dataframe %>%  gf_***(y ~ x | z)` which has
 cool benefits such as "autocompletion" of variable names, as we shall
@@ -706,6 +706,7 @@ taxi_modified %>%
 
 
 #### {{< iconify noto-v1 spider-web >}} web-r-2
+
 ```{webr-r}
 
 taxi_modified %>% 
@@ -739,8 +740,7 @@ taxi_modified %>%
 
 - Counting the frequency of `tip` by `local` gives us grouped counts, but we cannot tell the percentage per group (local or not) of those who tip and those who do not. 
 - We need per-group percentages because the number of `local` trips are not balanced
-- Hence with `tidyplots`, we find that `add_barstack_relative` gives the clearest visual indication of a difference in proportion.
-- Likewise with `ggformula`, we tried bar charts with `position = stack`, but finally it is the `position = fill` that works best.
+- With `{{ggformula}}`, we tried bar charts with `position = stack`, but finally it is the `position = fill` that works best.
 - We see that the percentage of tippers is somewhat higher with people who make non-local trips. Not surprising. 
 
 :::
@@ -934,7 +934,7 @@ taxi_modified %>%
 
 #### Business Insights-3
 
-- Using `stack`-ed, `dodge`-ed, and `fill`-ed in ggformula (and `bars`, `absolute-stacked-bars`, and `relative-stacked-bars` in tidyplots) in bar plots gives us different ways of looking at the sets of counts;
+- Using `stack`-ed, `dodge`-ed, and `fill`-ed in `{{ggformula}}` in bar plots gives us different ways of looking at the sets of counts;
 - `fill`: gives us a per-group proportion of another Qual variable for a chosen Qual variable. This chart view is useful in [Inference for Proportions](../../../20-Inference/Modules/190-TwoProp/index.qmd);
 - Most cab `company`-ies have similar usage, if you neglect the `other` category of `company`;
 - Does seem that of all the `company`-ies, `tips` are not so good for the `Flash Cab` company. A driver issue? Or are the cars too old? Or don't they offer service everywhere?
@@ -1206,7 +1206,7 @@ Both are useful!
 :::
 
 
-We have already seen `gf_props` in our two case studies above. Also check out `gf_percents` ! These are both very useful `ggformula` functions!
+We have already seen `gf_props` in our two case studies above. Also check out `gf_percents` ! These are both very useful `{{ggformula}}` functions!
 
 :::: {.columns}
 ::: {.column}
@@ -1305,18 +1305,19 @@ gf_percents(~ substance,
 
 When we see situations such as this, where data has one or more Qual variables that are *binary*(Yes/No), we are always interested in whether these proportions of Yes/No are really different, or if we are just seeing the result of random chance. This is usually mechanized by a Stat Test called a [Single Proportion Test](../../../20-Inference/Modules/180-OneProp/index.qmd) or, when we have more than one, a [Multiple Proportion Test](../../../20-Inference/Modules/190-TwoProp/index.qmd). 
 
+
 ## {{< iconify openmoji person >}} Your Turn
 
-<a href="../../../../../materials/Data/qdd-data.zip">
-<i class="fa-solid fa-database"></i> Datasets</a>
+<a href="../../../../../materials/Data/qdd-data.zip"><i class="fa-solid fa-database"></i> Datasets</a>
 
 1.  Click on the Dataset Icon above, and unzip that archive. Try to make Bar plots with each of them, using one or more Qual variables.
     
 2.  A dataset from calmcode.io <https://calmcode.io/datasets.html>
 
 ```{r}
-#| label: data download
+#| label: data-download
 #| echo: false
+#| 
 airbnb <- read.table("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/1_OneNum.csv", header=TRUE)
 
 apartments <- read.table("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/2_TwoNum.csv", header=T, sep=",") %>% select(GrLivArea, SalePrice)
@@ -1327,20 +1328,23 @@ apartments <- read.table("https://raw.githubusercontent.com/holtzy/data_to_viz/m
 
 ```{r, echo = FALSE}
 airbnb %>% download_this(output_name = "airbnb",output_extension = ".csv", button_label = "AiRbnb data", button_type = "default", icon = "fa fa-save")
+
 ```
+
 
 4.  Apartment price vs ground living area:
 
 ```{r, echo = FALSE}
 apartments %>% download_this(output_name = "apartments", output_extension = ".csv", button_label = "Apartment Data", button_type = "default", icon = "fa fa-save",   class = "hvr-sweep-to-left")
+
 ```
-<br>
+
 
 5.  Fertility: This rather large and interesting Fertility related dataset from <https://vincentarelbundock.github.io/Rdatasets/csv/AER/Fertility.csv>
 
 {{< downloadthis data/Fertility.csv dname="Fertility" label="Download the Fertility Data" icon="database-fill-down" type="info" >}}
 
-6. Songs by Kishore Kumar: <https://sunilslists.com/hindi-songs/luminaries-hindi-songs/kishore-kumar-songs-all/
+6. Songs by Kishore Kumar: <https://sunilslists.com/hindi-songs/luminaries-hindi-songs/kishore-kumar-songs-all>
 
 `glimpse` / `skim` / `inspect` the dataset in each case, state that Data Dictionary, and develop a set of Questions that
 can be answered by appropriate stat measures, or by using a chart to

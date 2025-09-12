@@ -85,7 +85,7 @@ showtext_auto(enable = TRUE) #enable showtext
 theme_custom <- function(){ 
     font <- "Alegreya"   #assign font family up front
     
-    theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
+    theme_bw(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
     
     theme(
       text = element_text(family = font),  #set base font family
@@ -243,6 +243,8 @@ default_modified %>%
 :::
 
 ::: g-col-6
+
+
 ...it is pretty much clear from @fig-naive-linear-model that something
 is very odd. (no pun intended! See below!) If the only possible values
 for `default` are $No = 0$ and $Yes = 1$, how could we interpret
@@ -296,6 +298,8 @@ What can we try? In dummy encoding our target variable, we found a range of \[0,
 ::: g-col-6
 
 ```{r}
+#| label: fig-variance-plot
+#| fig-cap: "Variance vs Mean for Binomial Distribution"
 #| echo: false
 ggplot2::theme_set(new = theme_custom())
 
@@ -339,7 +343,7 @@ counter with transformations such as the $log()$ function. More on this
 very shortly!
 ::::::
 
-###### 4. Odds?: 
+###### 4. Odds?
 
 How would one "extend" the range of a target variable
     from \[0,1\] to $[-\infty, \infty]$ ? One step would be to try the
@@ -355,12 +359,15 @@ probabilities, that of the event and its complement. In the `Default`
 dataset just considered, the odds of default and the odds of non-default
 can be calculated as:
 
+::::: grid
+::: g-col-4
 ```{r}
 #| echo: false
 default_modified %>% group_by(default) %>% count()
 
 ```
-
+:::
+::: g-col-8
 $$
 \begin{align}
 p(Default) &= 333/(333 + 9667)\\ \nonumber
@@ -379,7 +386,13 @@ Odds~of~Default &=p(Default)/(1-p(Default))\\ \nonumber
 \end{align}
 $$
 
-and `OddsNoDefault` = $0.9667/(1-0.9667) = 29$.
+and 
+
+$$
+Odds~No~Default = 0.9667/(1-0.9667) = 29
+$$.
+:::
+:::::
 
 Now, [*odds* cover half of real number line, i.e. $[0, \infty]$]{.black
 .bg-yellow} ! Clearly, when the probability `p` of an event is $0$, the
@@ -414,7 +427,7 @@ with the probability curve earlier.
 #| echo: false
 #| warning: false
 #| layout-ncol: 2
-#| fig-cap: "Odds Plot"
+#| fig-cap: "Odds vs Probability"
 #| fig-subcap: 
 #|   - "Odds"
 #|   - "Log Odds"
@@ -501,6 +514,8 @@ function of the weighted sum of predictors and is limited to the range
 #|   - "naive linear regression model"
 #|   - "logistic regression model"
 #|   - "log odds gives linear models"
+
+library(latex2exp)
 ggplot2::theme_set(new = theme_custom())
 
 default_modified %>%
@@ -541,12 +556,20 @@ mutate(default = if_else(default == "No", -1000, 1000)) %>%
            subtitle = "Log(odds) on Y-axis gives Straight Line Model",
            caption = "Y-axis limits are meant to be +/- infinity!!") %>%
   gf_abline(intercept = -1500, slope = 1.0) %>%
-  gf_refine(scale_color_fermenter(palette = "RdBu",guide = "none")) %>% 
-gf_refine(annotate("text", y = -250, x = 2000, label = "Logistic Regression\n model")) %>%
-  gf_refine(annotate("text", y = 25, x = 2000,
-                     label = expression(y == beta[0] + beta[1] * Balance))) %>% 
-  gf_refine(annotate("text", x = 300, y = 900, label = "P(default) = 1")) %>% 
-  gf_refine(annotate("text", x = 300, y = -900, label = "P(default) = 0"))
+  gf_annotate(geom = "text", y = -250, x = 2000, 
+            label = "Logistic Regression\n model") %>%
+  ##
+  ## See <https://stackoverflow.com/questions/12514612/how-to-annotate-ggplot-with-latex#comment69094909_40528496>
+  ##annotate(geom='text', x=3, y=3, label=Tex("$\\hat{Y} = B_0 + B_1X_1", output='character'), parse=TRUE)
+  ##
+  gf_annotate(geom = "label", x = 2000, y = -25,
+    label = TeX("$y = beta_0 + beta_1 * balance", output='character'),
+    parse = TRUE, color = "black", fill = "moccasin"
+  ) %>% 
+  gf_refine(scale_color_fermenter(palette = "RdBu",
+                                  guide = "none")) %>% 
+  gf_annotate("text", x = 300, y = 900, label = "P(default) = 1") %>% 
+  gf_annotate("text", x = 300, y = -900, label = "P(default) = 0")
 
 ```
 
@@ -728,7 +751,8 @@ Let us use `GGally` to plot a set of combo-plots for our modified
 dataset:
 
 ```{r}
-#| label: pairs-plot-1
+#| label: fig-pairs-plot-1
+#| fig-cap: "Pairs Plot for Cancer Data"
 #| code-fold: true
 #| message: false
 ggplot2::theme_set(new = theme_custom())
@@ -1039,11 +1063,7 @@ ggplot2::theme_set(new = theme_custom())
 
 colors <- RColorBrewer::brewer.pal(3, "Set1")
 cancer_modified_sample %>% 
-  gf_point(diagnosis_malignant ~ radius_mean, 
-           colour = ~ diagnosis, size = 4, 
-           title = "Multiple Models",
-           subtitle = "Varying beta_0 and beta_1") %>% 
-  gf_smooth(
+  gf_smooth(diagnosis_malignant ~ radius_mean, 
     method = glm,
     method.args = list(family = "binomial"),
     se = FALSE,
@@ -1052,7 +1072,11 @@ cancer_modified_sample %>%
   gf_refine(scale_colour_brewer(palette = "Set1")) %>%
 ## Overlaid regression curves
     gf_fun(ilogit(x * (beta1_sample - 0.002) + beta0_sample - 1) ~ x, xlim = c(10,20), color = "orange") %>% 
-  gf_fun(ilogit(x * (beta1_sample + 0.0075) + beta0_sample + 1) ~ x, xlim = c(10,20), color = "limegreen")
+  gf_fun(ilogit(x * (beta1_sample + 0.0075) + beta0_sample + 1) ~ x, xlim = c(10,20), color = "limegreen") %>% 
+  gf_point(diagnosis_malignant ~ radius_mean, 
+           colour = ~ diagnosis, size = 4, 
+           title = "Multiple Models",
+           subtitle = "Varying beta_0 and beta_1") 
 
 
 ```
@@ -1064,7 +1088,14 @@ We now project the actual points on to the regression curve, to obtain
 the predicted probability for each point.
 
 ```{r}
-#| echo: false
+#| label: fig-point-projection
+#| fig-cap: "Point Projection and Probability Lookup"
+#| fig-subcap:
+#| - "Point Projection Model #1"
+#| - "Probability Lookup Model #1"
+#| - "Point Projection Model #2"
+#| - "Probability Lookup Model #2"
+#| code-fold: true
 #| layout-ncol: 2
 #| 
 ggplot2::theme_set(new = theme_custom())
