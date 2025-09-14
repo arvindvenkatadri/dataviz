@@ -232,7 +232,7 @@ theme_set(new = theme_custom())
 
 ```{r}
 #| label: read-data
-data(penguins, package = "palmerpenguins") 
+data(penguins, package = "datasets") 
 
 penguins <- penguins %>% janitor::clean_names(case = "snake") # Part of the process
 
@@ -256,6 +256,25 @@ skimr::skim(penguins)
 
 ```
 
+```{r}
+#| label: data-examine-2
+penguins %>% crosstable::crosstable(body_mass + bill_len + bill_dep ~ species) %>% 
+  as_flextable() %>% 
+  flextable::theme_vader() %>% # Darth Vadhyaar theme
+  flextable::fontsize(size = 10, part = "all") %>% 
+  flextable::autofit()
+
+```
+
+::: callout-note
+### Insights from Data Examination of `penguins`
+- `body_mass`: Gentoo penguins look to be the heaviest, followed by Chinstrap and then Adelie
+- `bill_length`: Adelie penguins have the shortest bills.
+- `bill_depth`: No huge difference in bill depth across species
+
+Etc.
+
+:::
 ## {{< iconify streamline dictionary-language-book-solid >}} Data Dictionary and Experiment Description
 
 - ***Data Dictionary***: A table containing the variable names, their interpretation, and their nature(Qual/Quant/Ord...)
