@@ -81,16 +81,15 @@ library(embedr) # Embed multimedia in HTML files
 
 ```
 
-#### Plot Fonts and Theme
+### Plot Fonts and Theme
 
 ```{r}
-#| label: plot-theme
-#| echo: true
+#| label: plot-theme-ggplot4
 #| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
-
+#| 
 library(systemfonts)
 library(showtext)
 ## Clean the slate
@@ -112,54 +111,32 @@ sysfonts::font_add(family = "Roboto Condensed",
 showtext_auto(enable = TRUE) #enable showtext
 ##
 theme_custom <- function(){ 
-    font <- "Alegreya"   #assign font family up front
-    '%+replace%' <- ggplot2::'%+replace%' # nolint
+
+    theme_bw(base_size = 10) + 
     
-    theme_bw(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
+    theme_sub_axis(title = element_text(family = "Roboto Condensed", 
+                                       size = 8),
+                   text = element_text(family = "Roboto Condensed", 
+                                       size = 6)) + 
     
-    theme(
-      text = element_text(family = font),  #set base font family
-      
-      #text elements
-      plot.title = element_text(                 #title
-                   family = font,          #set font family
-                   size = 24,                    #set font size
-                   face = 'bold',                #bold typeface
-                   hjust = 0,                    #left align
-                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
-      plot.title.position = "plot", 
-      
-      plot.subtitle = element_text(              #subtitle
-                   family = font,          #font family
-                   size = 14,                   #font size
-                   hjust = 0,                   #left align
-                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
-      
-      plot.caption = element_text(               #caption
-                   family = font,          #font family
-                   size = 9,                     #font size
-                   hjust = 1),                   #right align
-      
-      plot.caption.position = "plot",            #right align
-      
-      axis.title = element_text(                 #axis titles
-                   family = "Roboto Condensed",  #font family
-                   size = 12),                   #font size
-      
-      axis.text = element_text(                  #axis text
-                   family = "Roboto Condensed",  #font family
-                   size = 12),                    #font size
-      
-      axis.text.x = element_text(                #margin for axis text
-                    margin = margin(5, b = 10))
-      
-      #since the legend often requires manual tweaking 
-      #based on plot content, don't define it here
-    )
+    theme_sub_legend(text = element_text(family = "Roboto Condensed", 
+                                         size = 6),
+                     title = element_text(family = "Alegreya", 
+                                          size = 8)) + 
+    
+    theme_sub_plot(title = element_text(family = "Alegreya", 
+                                        size = 14, face = "bold"),
+                   title.position = "plot",
+                   subtitle = element_text(family = "Alegreya", 
+                                           size = 10),
+                   caption = element_text(family = "Alegreya", 
+                                          size = 6),
+                   caption.position = "plot")
+    
 }
 
 ## Use available fonts in ggplot text geoms too!
-ggplot2::update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text", new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -177,24 +154,15 @@ ggplot2::update_geom_defaults(geom = "label", new = list(
 ## Set the theme
 ggplot2::theme_set(new = theme_custom())
 
-```
-
-```{webr-r}
-#| context: setup
-#| label: webr-cell-1
-
-## Set the theme
-ggplot2::theme_set(new = theme_classic())
-
-# Read the data. Always use base-R. 
-# race_df <- read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-10-26/race.csv")
-# rank_df <- read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-10-26/ultra_rankings.csv")
-data(diamonds, package = "ggplot2")
-diamonds_modified <- diamonds %>%
-  janitor::clean_names() %>% 
-  janitor::remove_empty() # Empty columns and rows if any
+## tinytable options
+options("tinytable_tt_digits" = 2)
+options("tinytable_format_num_fmt" = "significant_cell")
+options(tinytable_html_mathjax = TRUE)
 
 ```
+
+
+
 
 ## {{< iconify fxemoji japanesesymbolforbeginner >}} What graphs will we see today?
 
@@ -220,27 +188,30 @@ read_csv("../../../../../materials/Data/pronouns.csv") %>%
 ## {{< iconify icons8 idea >}} Inspiration
 
 
-::: {#fig-golf-drive-evolution layout-nrow=2}
+::: {#fig-golf-drive-evolution layout-ncol=2}
 
-![](../../../../../materials/images/Golf-Drive-Distance-1983.png)
+![](../../../../../materials/images/Golf-Drive-Distance-1983.png){height=200}
 
 
-![](../../../../../materials/images/Golf-Drive-distance-2017.png)
+![](../../../../../materials/images/Golf-Drive-distance-2017.png){height=200}
 
 Golf Drive Distance over the years
 :::
 
+### What does this Chart tell us?
 
 What do we see here? In about two-and-a-half decades, golf drive distances have increased, *on the average*, by 35 yards. The maximum distance has also gone up by 30 yards, and the minimum is now at 250 yards, which was close to average in 1983! What was a decent average in 1983 is just the bare minimum in 2017!!
 
 Is it the dimples that the golf balls have? But these have been around a long time...or is it the clubs, and the swing technique invented by more recent players? 
+
+### Hans Rosling's famous Presentation
 
 Now, let us listen to the late great Hans Rosling from the [Gapminder
 Project](https://www.gapminder.org), which aims at telling stories of
 the world with data, to remove systemic biases about poverty, income and
 gender related issues.
 
-{{< video https://vimeo.com/127511255 >}}
+{{< video https://vimeo.com/127511255  width="600" height="400" >}}
 
 ## {{< iconify mdi food-processor-outline >}} How do Histograms Work?
 
@@ -259,8 +230,11 @@ Histograms do not usually show spaces between buckets because the buckets repres
 
 ## {{< iconify grommet-icons test >}} Case Study-1: `diamonds` dataset
 
+::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
+
+### Read the Data
 We will first look at at a dataset that is directly available in R, the
-`diamonds` dataset. As always, we will use our munging process to clean up the data for analysis
+`diamonds` dataset. As always, we will use our munging process to clean up the data for analysis.
 
 ```{r}
 #| label: load-diamonds
@@ -269,7 +243,11 @@ glimpse(diamonds)
 
 ```
 
-We have ~54000 observations, with 10 variables. There are no missing values in any variable. It is a nice mix of Quantitative and Qualitative variables. Since the variables are nicely converted to factor where needed, and the names are already clean we will just use `janitor` to essentially rename our dataset.
+We have ~54000 observations, with 10 variables. There are no missing values in any variable. It is a nice mix of Quantitative and Qualitative variables. 
+
+### Data Munging
+
+Since the variables are nicely converted to factor where needed, and the names are already clean we will just use `janitor` to essentially rename our dataset.
 
 ```{r}
 #| label: data-munging
@@ -278,8 +256,11 @@ We have ~54000 observations, with 10 variables. There are no missing values in a
 diamonds_modified <- diamonds %>%
   janitor::clean_names(case = "snake") %>% 
   janitor::remove_empty(which = c("rows", "cols")) # Empty columns and rows if any
-
+diamonds_modified %>% glimpse()
 ```
+
+:::
+
 
 
 ### {{< iconify file-icons influxdata >}} Examine the Data
@@ -337,8 +318,12 @@ inspect(diamonds_modified)
 
 ### {{< iconify streamline dictionary-language-book-solid >}} Data Dictionary
 
+:::: {.columns}
+::: {.column}
 ![Diamond Dimensions](xyztabledepth.png){#fig-diamond-dimensions}
+:::
 
+::: {.column}
 
 ::: callout-note
 ### Quantitative Data
@@ -351,7 +336,9 @@ inspect(diamonds_modified)
   - `y`(dbl): width in mm	0-58.9
   - `z`(dbl): depth in mm	0-31.8
 :::
+:::
 
+::: {.column}
 ::: callout-note
 ### Qualitative Data
 - `cut`<ord>: diamond cut	Fair, Good, Very Good, Premium, Ideal
@@ -359,9 +346,10 @@ inspect(diamonds_modified)
 - `clarity`. measurement of how clear the diamond is	I1 (worst), SI2, SI1, VS2, VS1, VVS2, VVS1, IF (best).
 
 These have 5, 7, and 8 levels respectively. The fact that the `class` for these is `ordered` suggests that these are factors and that the levels have a sequence/order.
-  
+:::
 :::
 
+::: {.column}
 
 ::: callout-note
 ### Business Insights on Examining the `diamonds` dataset
@@ -373,12 +361,12 @@ These have 5, 7, and 8 levels respectively. The fact that the `class` for these 
 -   There are no missing values for any variable, all are complete with
     54K entries.
 :::
+:::
+::::
 
-### {{< iconify carbon clean >}} Data Munging
-
-We will not do any data munging for this dataset, as it is already clean and ready to use.
 
 ### {{< iconify  material-symbols lab-research >}} Hypothesis and Research Questions
+
 Let us formulate a few Questions about this dataset. At some point, we might develop a hunch or two, and these would become our hypotheses to investigate. This is an iterative process!
 
 ::: callout-note
@@ -398,11 +386,7 @@ These should do for now. Try and think of more Questions!
 
 Let's plot some histograms to answer each of the Hypothesis questions above. 
 
-::: {.column-page-inset-right}
 ### {{< iconify el question-sign >}} Question-1: What is the distribution of the target variable `price`?
-
-::: callout-note
-### Question-1: What is the distribution of the target variable `price`?
 
 ::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
 
@@ -488,18 +472,14 @@ gf_histogram(~ price, data = diamonds_modified,
 
 ```
 
-:::
+
 ### Business Insights-1
 - The `price` distribution is heavily skewed to the right.\
 - There are a great many diamonds at relatively low prices, but there are a good few diamonds at very high prices too.\
 - Using a high number of bins does not materially change the view of the histogram.\
-
 :::
 
 ### {{< iconify el question-sign >}} Question-2: What is the distribution of the predictor variable `carat`?
-
-::: callout-note
-### Question-1: Question-2: What is the distribution of the predictor variable `carat`?
 
 ::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
 
@@ -585,7 +565,6 @@ diamonds_modified %>%
           caption = "ggformula")
 ```
 
-:::
 ### Business Insights-2
 - `carat` also has a heavily right-skewed distribution.\
 - However, there is a marked "discreteness" to the distribution. Some values of carat are far more common than others. For example, 1, 1.5, and 2 carat diamonds are large in number.\
@@ -595,10 +574,6 @@ diamonds_modified %>%
 
 
 ### {{< iconify el question-sign >}} Question-3: Does a `price` distribution vary based upon type of `cut`, `clarity`, and `color`?
-
-::: callout-note
-
-### Does a `price` distribution vary based upon type of `cut`, `clarity`, and `color`?
 
 ::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
 
@@ -758,8 +733,6 @@ diamonds_modified %>%
 
 ```
 
-:::
-
 ### Business Insights-3
 
 -   The price distribution is heavily skewed to the right AND This
@@ -772,16 +745,14 @@ diamonds_modified %>%
     defines the bars in the histogram very well.
 :::
 
-::: callout-important
+
 ### A Hypothesis
 
-The surprise insight above should lead you to make a Hypothesis! You
-should decide whether you want to investigate this question further,
+- The surprise insight above should lead you to make a Hypothesis! 
+
+- You should decide whether you want to investigate this question further,
 making more graphs, as we will see. Here, we are making a **Hypothesis**
 that more than just `cut` determines the `price` of a diamond.
-:::
-
-:::
 
 
 
@@ -798,6 +769,7 @@ runExample("01_hello")      # an interactive histogram
 
 ```
 
+::: {.content-visible when-format="html" unless-format="revealjs"}
 ## {{< iconify grommet-icons test >}} Case Study-2: `race` dataset
 
 ### {{< iconify mdi database-import-outline >}} Import data
@@ -1412,29 +1384,46 @@ Mid-day starts show a curious double hump in finish times that should be
 studied.
 :::
 
+:::
+
+
 ## {{< iconify entypo new >}} Distributions and Densities in the Wild
 
+:::: {.columns}
+
+::: {.column width="50%"}
 Before we conclude, let us look at a real world dataset: populations of
 countries. This dataset was taken from Kaggle
 <https://www.kaggle.com/datasets/ulrikthygepedersen/populations>. Click
 on the icon below to save the file into a *subfolder* called `data` in
-your project folder:
+your project folder.
+:::
+
+:::{.column width="50%"}
 
 {{< downloadthis data/populations.csv dname=populations label="Download the Populations data" icon=database-fill-down type=info class=data-button id=populations >}}
+:::
+
+::::
 
 ```{r}
+#| code-fold: true
 #| layout-nrow: 2
 pop <- read_csv("data/populations.csv")
 pop
-inspect(pop)
+glimpse(pop)
 
 ```
 
+
+### Real World Histograms
+The `value` variable in this dataset is the population of a country.
 Let us plot densities/histograms for `value`:
 
 ```{r}
-#| label: skewed-histogram
+#| label: fig-skewed-histogram
 #| layout-ncol: 2
+#| code-fold: true
 ggplot2::theme_set(new = theme_custom())
 
 gf_histogram(~ value, data = pop, title = "Long Tailed Histogram") 
@@ -1445,13 +1434,17 @@ gf_density(~ value, data = pop, title = "Long Tailed Density")
 These graphs convey very little to us: the data is very heavily skewed
 to the right and much of the chart is empty. There are many countries
 with small populations and a few countries with very large populations.
-Such distributions are also called **"long tailed"** distributions. To
-develop better insights with this data, we should transform the variable
-concerned, using say a "log" transformation:
+Such distributions are also called **"long tailed"** distributions. 
+
+### Transforming the Variable
+
+To develop better insights with this data, we should transform the variable concerned, using say a "log" transformation:
 
 ```{r}
-#| label: skewed-density
+#| code-fold: true
+#| label: fig-skewed-density-with-transformation
 #| layout-ncol: 2
+
 ggplot2::theme_set(new = theme_custom())
 
 gf_histogram(~ log10(value), data = pop, title = "Histogram with Log transformed x-variable") 
@@ -1462,23 +1455,31 @@ gf_density(~ log10(value), data = pop, title = "Density with Log transformed x-v
 Be prepared to transform your data with `log` or `sqrt` transformations
 when you see skewed distributions! 
 
-### {{< iconify openmoji peacock >}} {{< iconify fluent-emoji-high-contrast swan >}} Pareto, Power Laws, and Fat Tailed Distributions
+### {{< iconify openmoji peacock >}} {{< iconify fluent-emoji-high-contrast swan >}} Pareto, Power Laws, and Fat-Tailed Distributions
 
 City Populations, Sales across product categories, Salaries, Instagram connections, number of customers vs Companies, net worth / valuation of Companies, extreme events on stock markets....all of these could have highly skewed distributions. In such a case, the standard statistics of mean/median/sd may not convey too much information. With such distributions, one additional observation on say net worth, like say Mr Gates', will change these measures completely. (More when we discuss [Sampling](../../../20-Inference/Modules/20-SampProb/index.qmd))
 
 Since very large observations are indeed possible, if not highly probable, [one needs to look at the *result* of such an observation and its impact on a situation]{.black .bg-light-red} rather than [its (mere) probability]{.black .bg-light-green}. Classical statistical measures and analysis cannot apply with long-tailed distributions. More on this later in the Module on Statistical Inference, but for now, here is a video that talks in detail about *fat-tailed distributions*, and how one should use them and get used to them:
 
-{{< video https://youtu.be/Wcqt49dXtm8 >}}
+### {{< iconify openmoji peacock >}} {{< iconify fluent-emoji-high-contrast swan >}} Pareto, Power Laws, and Fat-Tailed Distributions
 
+{{< video https://youtu.be/Wcqt49dXtm8  width="680" height="500" >}}
 
-Several distribution shapes exist, here is an illustration of the 6 most common ones:
+### {{< iconify ph chart-bar-horizontal-fill >}} Types of Distribution Shapes
 
+:::: {.columns}
+::: {.column}
 ```{r}
-#| label: fig-Type_of_Distributions
-#| echo: false
+#| label: fig-Type-of-Distributions
+#| code-fold: true
 #| warning: false
 #| message: false
 #| fig-cap: Type of Distributions
+#| out-height: 40%
+#| out-width: 80%
+
+#options(ragg.max_dim = 7000) # to avoid error in ragg device
+
 # Build dataset with different distributions
 library(hrbrthemes)
 
@@ -1504,17 +1505,24 @@ data %>%
 What insights could you develop based on these distribution shapes?\
 
 - *Bimodal*: Maybe two different systems or phenomena or regimes under which the data unfolds. Like the geyser dataset (`r data(faithful, package = "datasets") `. Or a machine that works differently when cold and when hot. Intermittent faulty behaviour...\
+
+
+
+
+:::
+
+::: {.column}
 - *Comb*: Some specific Observations occur predominantly, in an otherwise even spread or observations. In a survey many respondents round off numbers to nearest 100 or 1000. Check the distribution of the diamonds dataset for `carat` values which are suspiciously integer numbers in too many cases.\
 - *Edge Peak*: Could even be a data entry artifact!! All unknown / unrecorded observations are recorded as $999$ !!`r emoji::emoji("scream_cat")`\
 - *Normal*: Just what it says! Course Marks in a Univ cohort...\
 - *Skewed*: Income, or friends count in a set of people. Do UI/UX peasants have more followers on Insta than say CAP people?\
 - *Uniform*: The World is ~~not~~ flat. Anything can happen within a range. But not much happens outside! Sharp limits...
+:::
+::::
 
 ## {{< iconify ph bell-simple-z-duotone >}} Z-scores
 
-Often when we compute wish to compare distributions with different
-values for means and standard deviations, we resort to a *scaling* of
-the variables that are plotted in the respective distributions.
+Look at the 4 graphs below:
 
 ::: {#fig-z-scores-and-probabilities}
 ```{r}
@@ -1523,8 +1531,8 @@ the variables that are plotted in the respective distributions.
 #| code-fold: true
 #| layout-nrow: 2
 #| layout-ncol: 2
-#| column: page-inset-right
-
+#| out-height: 40%
+#| out-width: 70%
 
 TeachHistDens(Mean = 60, Sd = 5, VLine1 = 70, AxisFontSize = 14)
 
@@ -1570,22 +1578,33 @@ xpnorm(mean = 60, sd = 5, q = 70, return = "plot", alpha = 0.3,
 
 ```
 
+### Understanding Z-scores
+
+:::: {.columns}
+::: {.column}
+Often when we compute wish to compare distributions with different
+values for means and standard deviations, we resort to a *scaling* of
+the variables that are plotted in the respective distributions.
+
 Although the densities all look the same, they are are quite different!
 The x-axis in each case has *two scales*: one is the actual value of the
 x-variable, and the other is the *z-score* which is calculated as:
 
 $$
-\Large{z_x = \frac{x - \mu_{x}}{\sigma_x}}
+z_x = \frac{x - \mu_{x}}{\sigma_x}
 $${#eq-zcores}
 
 where $\mu_x$ and $\sigma_x$ are the mean and standard deviation of the x-variable.[The `z-score` is the distance from the `mean` scaled by the `sd`]{style="background-colr=yellow;"}. 
 
+:::
+::: {.column}
 In the figures above, the ***absolute values*** of the random variables $x_i$ is always $10$ from the (identical) means $\mu_i$. However since the $\sigma_i$ are different, the `z-score` is different in each case. In the left column, the `z-score` is $2$; in the right column it is $0.6667$.
 
 We note that the variation in density is the **same** at the same values of `z-score`. 
 
 When we make comparisons of two random variables, our comparisons are done most easily when we compare `z-scores` to calculate probabilities, or differences in `z-scores` at identical probabilities.
-
+:::
+::::
 
 ## {{< iconify mingcute thought-line >}} Wait, But Why?
 
@@ -1610,27 +1629,26 @@ To complicate matters: Having said all that, the histogram is really a bar chart
 
 ## {{< iconify openmoji person >}} Your Turn
 
+:::: {.columns}
+
+::: {.column width="50%"}
 1. Old Faithful Data in R (Find it!)
-
-::: callout-note
-### 2. Wage and Education Data from Canada
-
-{{< downloadthis data/SLID.csv dname="SLID" label="Download the Wages/Education Dataset" icon="database-fill-down" type="info" >}}
-
-:::
-
-::: callout-note
-### 3. Time taken to Open or Close Packages
+2. Wage and Education Data from Canada
+3. Time taken to Open or Close Packages
 
 Some Design Students/HCD peasants tested Elderly people, some with and some without hand pain, and observed how long they took to open or close typical packages for milk, cheese, bottles etc. 
+:::
+
+::: {.column width="50%"}
+
+{{< downloadthis data/SLID.csv dname="SLID" label="Download the Wages/Education Dataset" icon="database-fill-down" type="info" >}}
 
 {{< downloadthis data/Usability_Test_Opening_Times.xlsx dname="Opening_Times" label="Download the Package Opening Times xlsx" icon="database-fill-down" type="info" >}}
 
 {{< downloadthis data/Usability_Test_Closing_Times.xlsx dname="Opening_Times" label="Download the Package Closing Times xlsx" icon="database-fill-down" type="info" >}}
+
 :::
-
-
-`inspect` the dataset in each case and develop a set of Questions, that can be answered by appropriate stat measures, or by using a chart to show the distribution. 
+::::
 
 ::: callout-tip
 Note: reading `xlsx` files into R may need the the `{{readxl}}` package. Install it!!
@@ -1639,7 +1657,7 @@ Note: reading `xlsx` files into R may need the the `{{readxl}}` package. Install
 
 ## {{< iconify eos-icons ai >}} AI Generated Summary and Podcast
 
-This module is an excerpt from a guide on learning statistical analysis using metaphors. The text focuses on the concept of quantitative variables and how histograms can be used to visualize their distribution. The author illustrates these concepts through real-world examples using datasets such as diamond prices, ultramarathon race times, and global population figures. By analyzing these datasets with histograms, the author explores various aspects of data distributions, including skewness, bimodality, and the presence of outliers. The guide also introduces additional tools like the `{{crosstable}}` package and `z-scores` to enhance data analysis. Finally, the author encourages readers to apply these concepts to real-world datasets, developing questions and insights through the use of histograms and statistical measures.
+The author illustrates these concepts through real-world examples using datasets such as diamond prices, ultramarathon race times, and global population figures. By analyzing these datasets with histograms, the author explores various aspects of data distributions, including skewness, bimodality, and the presence of outliers. The guide also introduces additional tools like the `{{crosstable}}` package and `z-scores` to enhance data analysis. Finally, the author encourages readers to apply these concepts to real-world datasets, developing questions and insights through the use of histograms and statistical measures.
 
 - What patterns emerge from the distributions of quantitative variables in each dataset, and what insights can we gain about the relationships between these variables?
 
@@ -1666,7 +1684,7 @@ embedr::embed_audio("../../../../../materials/audio/Quantities.wav")
 1. Sebastian Sauer, *Plotting multiple plots using purrr::map and ggplot* [](https://data-se.netlify.app/2021/02/06/plotting-multiple-plots-using-purrr-map-and-ggplot/)\
 
 ::: {#refs style="font-size: 60%;"}
-###### {{< iconify lucide package-check >}} R Package Citations
+{{< iconify lucide package-check >}} R Package Citations
 
 ```{r}
 #| echo: false

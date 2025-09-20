@@ -42,54 +42,32 @@ sysfonts::font_add(family = "Roboto Condensed",
 showtext_auto(enable = TRUE) #enable showtext
 ##
 theme_custom <- function(){ 
-    font <- "Alegreya"   #assign font family up front
-    '%+replace%' <- ggplot2::'%+replace%' # nolint
-        
-    theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
+
+    theme_bw(base_size = 10) + 
     
-    theme(
-      text = element_text(family = font),  #set base font family
-      
-      #text elements
-      plot.title = element_text(                 #title
-                   family = font,          #set font family
-                   size = 24,                    #set font size
-                   face = 'bold',                #bold typeface
-                   hjust = 0,                    #left align
-                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
-      plot.title.position = "plot", 
-      
-      plot.subtitle = element_text(              #subtitle
-                   family = font,          #font family
-                   size = 14,                   #font size
-                   hjust = 0,                   #left align
-                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
-      
-      plot.caption = element_text(               #caption
-                   family = font,          #font family
-                   size = 9,                     #font size
-                   hjust = 1),                   #right align
-      
-      plot.caption.position = "plot",            #right align
-      
-      axis.title = element_text(                 #axis titles
-                   family = "Roboto Condensed",  #font family
-                   size = 12),                   #font size
-      
-      axis.text = element_text(                  #axis text
-                   family = "Roboto Condensed",  #font family
-                   size = 9),                    #font size
-      
-      axis.text.x = element_text(                #margin for axis text
-                    margin = margin(5, b = 10))
-      
-      #since the legend often requires manual tweaking 
-      #based on plot content, don't define it here
-    )
+    theme_sub_axis(title = element_text(family = "Roboto Condensed", 
+                                       size = 8),
+                   text = element_text(family = "Roboto Condensed", 
+                                       size = 6)) + 
+    
+    theme_sub_legend(text = element_text(family = "Roboto Condensed", 
+                                         size = 6),
+                     title = element_text(family = "Alegreya", 
+                                          size = 8)) + 
+    
+    theme_sub_plot(title = element_text(family = "Alegreya", 
+                                        size = 14, face = "bold"),
+                   title.position = "plot",
+                   subtitle = element_text(family = "Alegreya", 
+                                           size = 10),
+                   caption = element_text(family = "Alegreya", 
+                                          size = 6),
+                   caption.position = "plot")
+    
 }
 
 ## Use available fonts in ggplot text geoms too!
-update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text", new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -105,13 +83,12 @@ ggplot2::update_geom_defaults(geom = "label", new = list(
 )
 
 ## Set the theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ## tinytable options
 options("tinytable_tt_digits" = 2)
 options("tinytable_format_num_fmt" = "significant_cell")
 options(tinytable_html_mathjax = TRUE)
-
 
 
 literacy <- readxl::read_xlsx("../../../../../materials/Data/US_literacy_SETables.xlsx",sheet = "S1",skip = 3) %>% 
@@ -134,7 +111,6 @@ literacy %>%
 
 docVisits <- read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/AER/DoctorVisits.csv")
 glimpse(docVisits)
-docVisits %>% DT::datatable()
 
 
 docVisits_modified <- docVisits %>%
@@ -177,22 +153,35 @@ docVisits_modified %>%
 
 
 diamonds %>% dplyr::glimpse() 
+
+
+
 diamonds %>% mosaic::inspect() 
+
+
 diamonds %>% skimr::skim()
 
 
 ## Counting by the obvious factor variables
 docVisits_modified %>% dplyr::count(gender) %>% tt()
+
+
 docVisits_modified %>% dplyr::count(private) %>% tt()
-## Counting in pairs
+
+
 docVisits_modified %>% dplyr::count(across(.cols = c(gender, private))) %>% tt()
-## Counting by all factor variables
+
+
+
 docVisits %>% count(across(where(is.character))) %>% tt()
 
 
 # Single Variable, Single Summary
 docVisits %>% 
   dplyr::summarise(mean_income = mean(income, na.rm = T))
+
+
+
 # Single Variable, Multiple Summaries
 docVisits_modified %>% 
   dplyr::summarise(mean_visits = mean(visits, na.rm = T),
@@ -200,6 +189,7 @@ docVisits_modified %>%
                    min_visits = min(visits, na.rm = T),
                    max_visits = max(visits, na.rm = T)
                    )
+
 # Multiple Variables, Multiple Summaries
 docVisits_modified %>% 
   dplyr::summarise(across(.cols = c(visits, income), # select columns
@@ -224,7 +214,8 @@ docVisits_modified %>%
 
 
 #library(crosstable)
-crosstable(visits + income ~ gender + freepoor, data = docVisits_modified) %>% 
+crosstable(visits + income ~ gender + freepoor, 
+           data = docVisits_modified) %>% 
   crosstable::as_flextable()
 
 

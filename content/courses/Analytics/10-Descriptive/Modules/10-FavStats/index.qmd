@@ -76,15 +76,15 @@ library(embedr) # Embed multimedia in HTML files
 ```
 
 
-#### Plot Fonts and Theme
+### Plot Fonts and Theme
 
 ```{r}
-#| label: plot-theme
-#| echo: true
+#| label: plot-theme-ggplot4
+#| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
-
+#| 
 library(systemfonts)
 library(showtext)
 ## Clean the slate
@@ -106,54 +106,32 @@ sysfonts::font_add(family = "Roboto Condensed",
 showtext_auto(enable = TRUE) #enable showtext
 ##
 theme_custom <- function(){ 
-    font <- "Alegreya"   #assign font family up front
-    '%+replace%' <- ggplot2::'%+replace%' # nolint
-        
-    theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
+
+    theme_bw(base_size = 10) + 
     
-    theme(
-      text = element_text(family = font),  #set base font family
-      
-      #text elements
-      plot.title = element_text(                 #title
-                   family = font,          #set font family
-                   size = 24,                    #set font size
-                   face = 'bold',                #bold typeface
-                   hjust = 0,                    #left align
-                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
-      plot.title.position = "plot", 
-      
-      plot.subtitle = element_text(              #subtitle
-                   family = font,          #font family
-                   size = 14,                   #font size
-                   hjust = 0,                   #left align
-                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
-      
-      plot.caption = element_text(               #caption
-                   family = font,          #font family
-                   size = 9,                     #font size
-                   hjust = 1),                   #right align
-      
-      plot.caption.position = "plot",            #right align
-      
-      axis.title = element_text(                 #axis titles
-                   family = "Roboto Condensed",  #font family
-                   size = 12),                   #font size
-      
-      axis.text = element_text(                  #axis text
-                   family = "Roboto Condensed",  #font family
-                   size = 9),                    #font size
-      
-      axis.text.x = element_text(                #margin for axis text
-                    margin = margin(5, b = 10))
-      
-      #since the legend often requires manual tweaking 
-      #based on plot content, don't define it here
-    )
+    theme_sub_axis(title = element_text(family = "Roboto Condensed", 
+                                       size = 8),
+                   text = element_text(family = "Roboto Condensed", 
+                                       size = 6)) + 
+    
+    theme_sub_legend(text = element_text(family = "Roboto Condensed", 
+                                         size = 6),
+                     title = element_text(family = "Alegreya", 
+                                          size = 8)) + 
+    
+    theme_sub_plot(title = element_text(family = "Alegreya", 
+                                        size = 14, face = "bold"),
+                   title.position = "plot",
+                   subtitle = element_text(family = "Alegreya", 
+                                           size = 10),
+                   caption = element_text(family = "Alegreya", 
+                                          size = 6),
+                   caption.position = "plot")
+    
 }
 
 ## Use available fonts in ggplot text geoms too!
-update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text", new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -169,17 +147,14 @@ ggplot2::update_geom_defaults(geom = "label", new = list(
 )
 
 ## Set the theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ## tinytable options
 options("tinytable_tt_digits" = 2)
 options("tinytable_format_num_fmt" = "significant_cell")
 options(tinytable_html_mathjax = TRUE)
 
-
 ```
-
-
 
 
 ## {{< iconify fxemoji japanesesymbolforbeginner >}} How do we Grasp Data?
@@ -192,8 +167,8 @@ grasping it.
 The first thing we need to do, therefore, is to reduce it to **a few
 salient numbers** that allow us to summarize the data.
 
-::: callout-important
-## Reduction is Addition
+
+### Reduction is Addition
 
 Such a **reduction** may seem paradoxical but is one of the important
 tenets of statistics: reduction, while taking away information, ends up
@@ -213,11 +188,16 @@ book is: **Aggregation**
 > observations, you can actually gain information by **throwing
 > information away**! In taking a simple arithmetic mean, we discard the
 > individuality of the measures, subsuming them to one summary.
-:::
+
+
+### Throwing Away Data with Brad Pitt
 
 Let us get some inspiration from Brad Pitt, from the movie [Moneyball](https://www.netflix.com/in/title/70201437), which is about applying Data Analytics to the game of baseball.
 
 {{< video https://www.youtube-nocookie.com/embed/PlKDQqKh03Y >}}
+
+### Literacy in the USA
+
 And then, an example from a more sombre story:
 
 ```{r}
@@ -246,17 +226,32 @@ literacy %>%
 
 This ghastly-looking @tbl-table-1 depicts U.S. adults with **low English literacy and numeracy skills**—or low-skilled adults—at two points in the 2010s, in the years 2012/20141 and 2017, using data from the Program for the [International Assessment of Adult Competencies (PIAAC)](https://gpseducation.oecd.org/Home). As can be seen, the summary table is quite *surprising in absolute terms*, for a developed country like the US, and the numbers have *increased* from 2012/2014 to 2017!
 
-So why do we need to summarise data? Summarization is an act of *throwing away data to make more sense*, as stated by [@stigler2016] and also in the movie by [Brad Pitt aka Billy Beane](https://www.netflix.com/in/title/70201437). **To summarize is to understand**. Add to that the fact that our [Working Memories can hold maybe 7 items](https://www.wikiwand.com/en/The_Magical_Number_Seven,_Plus_or_Minus_Two), so it means information retention too. It is also a means of registering **surprise**: some of our first Questions about the data arise from an inspection of data summaries. 
 
-And if we don't summarise? [Jorge Luis Borges](https://www.wikiwand.com/en/Jorge_Luis_Borges), in a fantasy short story published in 1942, titled [“Funes the Memorious,”](https://www.sas.upenn.edu/~cavitch/pdf-library/Borges_FunesTheMemorious.pdf) he described a man, Ireneo Funes, who found after an accident that he could remember absolutely everything. He could reconstruct every day in the smallest detail, and he could even later reconstruct the reconstruction, but he was incapable of understanding. Borges wrote, “To think is to **forget details, generalize, make abstractions**. In the teeming world of Funes, there were only details.” (emphasis mine)
+### Why Summarize?
+
+So why do we need to summarise data? Summarization is an act of *throwing away data to make more sense*, as stated by [@stigler2016] and also in the movie by [Brad Pitt aka Billy Beane](https://www.netflix.com/in/title/70201437). 
+
+**To summarize is to understand**. 
+
+Add to that the fact that our [Working Memories can hold maybe 7 items](https://www.wikiwand.com/en/The_Magical_Number_Seven,_Plus_or_Minus_Two), so it means information retention too. 
+
+It is also a means of registering **surprise**: some of our first Questions about the data arise from an inspection of data summaries. 
+
+
+### And if we don't summarise? 
+
+[Jorge Luis Borges](https://www.wikiwand.com/en/Jorge_Luis_Borges), in a fantasy short story published in 1942, titled [“Funes the Memorious,”](https://www.sas.upenn.edu/~cavitch/pdf-library/Borges_FunesTheMemorious.pdf) he described a man, Ireneo Funes, who found after an accident that he could remember absolutely everything. He could reconstruct every day in the smallest detail, and he could even later reconstruct the reconstruction, but he was incapable of understanding. Borges wrote, “To think is to **forget details, generalize, make abstractions**. In the teeming world of Funes, there were only details.” (emphasis mine)
 
 Aggregation can yield great gains above the individual components in data. ***Funes was Big Data without Summary Statistics***.
+
 
 ## {{< iconify fe beginner >}} What graphs / numbers will we see today?
 
 | Variable #1 | Variable #2 |       Chart Names        |                                                                             "Chart Shape"                                                                              |
 |:-----------:|:-----------:|:------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-|     All     |     All     | Tables and Stat Measures | {{< iconify material-symbols table-chart-outline size=4x >}} {{< iconify tabler ruler-measure size=4x >}} {{< iconify lucide square-sigma size=4x >}}|
+|     All     |     All     | Tables and Stat Measures | {{< iconify material-symbols table-chart-outline size=2x >}} {{< iconify tabler ruler-measure size=2x >}} {{< iconify lucide square-sigma size=2x >}}|
+
+### What are Summaries?
 
 Before we plot a single chart, it is wise to take a look at several numbers that summarize the dataset under consideration. What might these be? Some obviously useful numbers are:
 
@@ -271,50 +266,70 @@ Before we plot a single chart, it is wise to take a look at several numbers that
 
 ## {{< iconify mdi food-processor-outline >}} How do these Summaries Work?
 
-**Quant variables**: Inspecting the `base::min`, `base::max`, [`mean`](https://openintro-ims.netlify.app/explore-numerical#sec-dotplots), [`median`](https://openintro-ims.netlify.app/explore-numerical#sec-boxplots), [`variance` and `sd`](https://openintro-ims.netlify.app/explore-numerical#sec-variance-sd) of each of the Quant variables tells us straightaway what the ranges of the variables are, and if there are some outliers, which could be normal, or maybe due to data entry error! Comparing two Quant variables for their ranges also tells us that we may have to $scale/normalize$ them for computational ease, if one variable has large numbers and the other has very small ones.
 
-**Qual variables**: With Qual variables, we understand the `levels` within each, and understand the total number of combinations of the levels across these. `Counts` **across levels, and across combinations of levels** tells us whether the data has sufficient readings for graphing, inference, and decision-making, of if certain levels/classes of data are under or over represented. 
+### Quant Variable Summaries
 
-**Together?**: We can use Quant and Qual together, to develop the above summaries (`min`, `max`,`mean`, `median` and `sd`) for Quant variables, again **across levels, and across combinations of levels** of single or multiple Quals, along with `counts`. This will tell us if our (sample) dataset already shows *quantitative differences* between  sub-classes in the population. 
+**Quant variables**: Inspecting the `base::min`, `base::max`, [`mean`](https://openintro-ims.netlify.app/explore-numerical#sec-dotplots), [`median`](https://openintro-ims.netlify.app/explore-numerical#sec-boxplots), [`variance` and `sd`](https://openintro-ims.netlify.app/explore-numerical#sec-variance-sd) of each of the Quant variables tells us straightaway what the ranges of the variables are, and if there are some outliers, which could be normal, or maybe due to data entry error! 
+
+Comparing two Quant variables for their ranges also tells us that we may have to $scale/normalize$ them for computational ease, if one variable has large numbers and the other has very small ones.
+
+### Qual Variable Summaries
+
+**Qual variables**: With Qual variables, we understand the `levels` within each, and understand the total number of combinations of the levels across these. 
+
+`Counts` **across levels, and across combinations of levels** tells us whether the data has sufficient readings for graphing, inference, and decision-making, of if certain levels/classes of data are under or over represented. 
+
+### Joint Summaries
+
+**Together?**: We can use Quant and Qual together, to develop the above summaries (`min`, `max`,`mean`, `median` and `sd`) for Quant variables, again **across levels, and across combinations of levels** of single or multiple Quals, along with `counts`. 
+
+This will tell us if our (sample) dataset already shows *quantitative differences* between  sub-classes in the population. 
+
+### Simpson's Paradox, Missing Data, and Imputation
 
 And this may also tell us if we are witnessing a [Simpson's Paradox situation](../30-Correlations/index.qmd#simpsons-paradox).  You may have to decide on what to do with this data sparseness, or just check your biases!
 
-For both types of variables, we need to keep an eye open for data entries that are *missing*! This may point to data gathering errors, which may be fixable. Or we will have to take a decision to let go of that entire observation (i.e. a row). Or even do what is called *imputation* to fill in values that are based on the other values in the same column, which sounds like we are making up data, but isn't so really. 
+For both types of variables, we need to keep an eye open for data entries that are *missing*! This may point to data gathering errors, which may be fixable. Or we will have to take a decision to let go of that entire observation (i.e. a row). 
+
+Or even do what is called *imputation* to fill in values that are based on the other values in the same column, which sounds like we are making up data, but isn't so really. 
 
 
-## {{< iconify wpf define-location >}} Some Quick Definitions
+## {{< iconify wpf define-location >}} Some Quick Summary Definitions
 
-::: callout-important
 ### Mean
+
 The sample mean, or average, of a Quantitative data variable can be calculated as the sum of the observed values divided by the number of observations:
 
 $$
-mean = \bar{x} = \frac{x_1 + x_2+ x_3....+x_n}{n}
+\large{mean = \bar{x} = \frac{x_1 + x_2+ x_3....+x_n}{n}}
 $$
-:::
 
-::: callout-important
 ### Variance and Standard Deviation
+
 Observations can be on either side of the mean, naturally. To measure the extent of these differences, we square and sum the differences between individual values and their mean, and take **their** average to obtain the (sample) `variance`:
 
 $$
-variance = s^2 = \frac{(x_1 - \bar{x})^2 + (x_2 - \bar{x})^2 + (x_2 - \bar{x})^2 +...(x_n - \bar{x})^2 +}{n-1}
+\large{variance = s^2 = \frac{(x_1 - \bar{x})^2 + (x_2 - \bar{x})^2 + (x_2 - \bar{x})^2 +...(x_n - \bar{x})^2}{n-1}}
 $$
+
 The standard deviation $s$ is just the square root of the variance. 
-
-:::
-
 (The $n-1$ is a [*mathematical nuance*](https://openintro-ims.netlify.app/explore-numerical#sec-variance-sd) to allow for the fact that we have used the data to calculate the mean before we get to $s^2$, and hence have "used up" one degree of randomness in the data. It gets us more robust results.)
 
-::: callout-important
+
 ### Median
-When the observations in a Quant variable are placed in order of their maginitude, the observation in tke middle is the `median`. Half the observations are below, and half are above, the `median`.
-:::
+
+When the observations in a Quant variable are placed in *order of their magnitude* (i.e. rank), the observation in the middle is the `median`. 
+
+Half the observations are below, and half are above, the `median`.
+
 
 
 ## {{< iconify grommet-icons test >}} Case Study: DocVisits
 
 We will (again) use [this superb repository of datasets created by Vincent Arel-Bundock](https://vincentarelbundock.github.io/Rdatasets/articles/data.html). Let us choose a modest-sized dataset, say this dataset on `Doctor Visits`, which is [available online here](https://vincentarelbundock.github.io/Rdatasets/csv/AER/DoctorVisits.csv) and read it into R. We will clean it, munge it, and prepare it in one shot with everything we learnt in the [Inspect Data](../06-Inspect/index.qmd) module.
+
+
+### Read the Data
 
 ```{r}
 #| label: tbl-read-docVisits
@@ -322,10 +337,8 @@ We will (again) use [this superb repository of datasets created by Vincent Arel-
 #| message: true
 docVisits <- read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/AER/DoctorVisits.csv")
 glimpse(docVisits)
-docVisits %>% DT::datatable()
 
 ```
-
 
 So 5190 rows and 13 columns. Several variables are of `class` `character` (`gender, private, freepoor, freerepat, nchronic, lchronic` ) and several are `double` (`visits, age, income, illness, reduced, health`).
 
@@ -364,6 +377,7 @@ docVisits_modified %>% glimpse()
 
 ```
 
+### Final Clean Data Table
 
 ```{r}
 #| label: tbl-final-cleaned-data
@@ -423,63 +437,155 @@ We will use:
 
 to develop our intuitions. 
 
+## Overall View of Data
+
 ::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
 
-### Overall View of Data
-
 We will introduce three functions to achieve this, one of which we already know. 
+
+#### dplyr::glimpse()
+
+We are familiar with `dplyr::glimpse()`, which gives us a quick overview of the data structure.
+
 ```{r}
-#| label: overall-view-of-data
+#| label: overall-glimpse-of-data
 
 diamonds %>% dplyr::glimpse() 
+
+
+```
+
+
+#### mosaic::inspect()
+```{r}
+#| label: overall-inspect-of-data
+
 diamonds %>% mosaic::inspect() 
+
+```
+
+The other two functions give detailed summaries of the data, separately for Qual and Quant variables. These are `mean`,`sd`,`median` and `quartiles` for Quant variables, and `levels` and `counts` for Qual variables. `missing` data is also flagged. 
+
+#### skimr::skim()
+
+```{r}
+#| label: overall-skim-of-data
 diamonds %>% skimr::skim()
 
 ```
-We are familiar with `dplyr::glimpse()`, which gives us a quick overview of the data structure.
-The other two functions give detailed summaries of the data, separately for Qual and Quant variables. These are `mean`,`sd`,`median` and `quartiles` for Quant variables, and `levels` and `counts` for Qual variables. `missing` data is also flagged. 
+
 In addition to these, `skimr::skim()` gives a neat little histogram of the Quant variables, which is very useful to get a quick idea of the distribution of values in the variables. It can also be used to detect ***Quant Variables*** that are actually ***Qual Variables***, detectable by a very limited set of bars in their histogram.
 
-### Summarise Qual Variables
+#### Business Insights
 
-What is the most important dialogue uttered in the movie ["Sholay"](https://youtu.be/chi9hsfYcDE)?
+- Which are the important Quant and Qual variables for your study?
+- What are their ***units***?
+- What are their ***ranges***? Are these sensible, e.g. 120% for a variable that is a percentage?
+- What are the ***levels** of the Qual variables of interest? Are they too many ( e.g. 34 manufacturers in the `mtcars` dataset? Or too few?
+- Understand the means and variances. Do they make sense? 
+- Could any relevant variable be missing altogether?
 
-We can simply perform ***Counts with all the Qual variables***, to get a sense of how many `levels` each variable has, how many observations per `level`, and therefore how many ***combinations of levels*** this data could have. 
+:::
 
+## Summarise Qual Variables
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
+
+#### Gender
 ```{r}
-#| label: tbl-docVisits-counts-and-tables
-#| tbl-cap: "Counts of Qual Variables in `docVisits`"
-#| tbl-subcap: 
-#|   - "Counts of `gender`"
-#|   - "Counts of `private`"
-#|   - "Counts of `gender` and `private`"
-#|   - "Counts of all Qual variables!!"
+#| label: tbl-count-gender
+#| tbl-cap: "Counts by Gender in `docVisits`"
 #| code-fold: true
 #| 
 ## Counting by the obvious factor variables
 docVisits_modified %>% dplyr::count(gender) %>% tt()
+
+```
+
+
+
+#### Private
+```{r}
+#| label: tbl-count-by-private
+#| tbl-cap: "Counts of Private in `docVisits`"
+#| code-fold: true
+#| 
+
 docVisits_modified %>% dplyr::count(private) %>% tt()
-## Counting in pairs
+
+```
+
+#### Gender and Private
+
+```{r}
+#| label: tbl-gender-and-private
+#| tbl-cap: "Counts of `gender` and `private`"
+#| code-fold: true
+#| 
 docVisits_modified %>% dplyr::count(across(.cols = c(gender, private))) %>% tt()
-## Counting by all factor variables
+
+
+```
+
+#### All Factors
+
+```{r}
+#| label: tbl-count-by-all-factors
+#| tbl-cap: "Counts of all Qual variables in `docVisits`"
+#| code-fold: true
+
 docVisits %>% count(across(where(is.character))) %>% tt()
 
 ```
 
-The last output is a count of observations for each combination of levels of the 6 Qual variables. There are 24 such combinations. It should be possible using this table to understand a little about the nature of Experiment conducted by those who created this dataset.
 
 
-### Summarise Quant Variables
+
+#### Business Insights
+
+What is the most important dialogue uttered in the movie ["Sholay"](https://youtu.be/chi9hsfYcDE)?
+
+- Which are the important Qual variables for your study?
+- Are the counts with respect the *levels* of these Qual variables nearly identical? Or is the data *skewed* towards certain levels?
+- Are there any levels that have *very few* observations?
+- Are there any levels that are *missing* altogether?
+- What *combinations* of levels are relevant for your study?
+- Are there any combinations of levels that are *missing* altogether?
+
+From the above, some Qual variables are balanced, but not all combinations of Qual variables! But that may be OK, if your Question of interest does not involve those combinations.
+
+:::
+
+
+## Summarise Quant Variables
 
 How about summaries for Quant variables?
 
+::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
+
+#### Single Variable, Single Summary
+
 ```{r}
-#| label: using-dplyr-summarize
+#| label: dplyr-summarize-one-var-one-stat
 #| resuls: hold
+#| code-fold: true
+#| 
 
 # Single Variable, Single Summary
 docVisits %>% 
   dplyr::summarise(mean_income = mean(income, na.rm = T))
+
+```
+
+#### Single Variable, Multiple Summaries
+
+```{r}
+#| label: dplyr-summarize-one-var-mult-stat
+#| resuls: hold
+#| code-fold: true
+#| 
+
+
 # Single Variable, Multiple Summaries
 docVisits_modified %>% 
   dplyr::summarise(mean_visits = mean(visits, na.rm = T),
@@ -487,6 +593,16 @@ docVisits_modified %>%
                    min_visits = min(visits, na.rm = T),
                    max_visits = max(visits, na.rm = T)
                    )
+```
+
+#### Single Variable, Multiple Summaries
+
+```{r}
+#| label: dplyr-summarize-mult-var-mult-stat
+#| resuls: hold
+#| code-fold: true
+#| 
+
 # Multiple Variables, Multiple Summaries
 docVisits_modified %>% 
   dplyr::summarise(across(.cols = c(visits, income), # select columns
@@ -499,20 +615,34 @@ docVisits_modified %>%
 
 
 ```
-We can set up summaries of Quant variables singly, or in pairs, or even all together. This gives us the ***relative size*** of the Quant variables in the dataset. The resultant output may not be useful in all cases, but it is easy to generate and see if anything useful emerges.
+
+#### Business Insights
+
+- Do different Quant variables have very different ranges? If so, you may have to $scale/normalize$ them for computational ease.
+- Do the means and medians differ significantly? If so, the distribution may be skewed, and you may have to use the `median` as a more robust measure of central tendency. And also use `quartiles` to summarize the spread of the data. Transformations such as `log` or `sqrt` may also help.
+
+:::
 
 
-### {{< iconify vaadin group >}} {{< iconify carbon summary-kpi >}} Grouped Summaries
+## {{< iconify vaadin group >}} {{< iconify carbon summary-kpi >}} Grouped Summaries
 
+### Why Grouped Summaries?
 We saw that we could obtain **numerical summary stats** such as `means, medians, quartiles, maximum/minimum` of **entire** Quantitative variables, i.e the complete column. However, we often need identical numerical summary stats of parts of a Quantitative variable. Why?
 
 Note that we have *Qualitative* variables as well in a typical dataset. These Qual variables help us to [**group** the entire dataset based on their combinations of **levels**]{style="background-color: yellow;"}. We can now think of *summarizing Quant variables* within each such group. This will give us an idea whether different segments of the population, as defined by Qual variables and their levels, are relatively similar, or if there are significant differences between groups.
+
+### Creating Group Summaries
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
+
+#### dplyr::group_by() and dplyr::summarize()
 
 We can use `dplyr::group_by()` to make groups in the data, and then use `dplyr::summarize()` to get the summaries we need.
 
 ```{r}
 #| label: summaries-over-levels-of-Qual
 #| message: false
+#| code-fold: true
 
 docVisits_modified %>%
   group_by(gender) %>% 
@@ -526,28 +656,21 @@ docVisits_modified %>%
 
 ```
 
-::: callout-note
-### Business Insights from Grouped Quant Summaries (`docVisits`)
 
-Clearly the people who are `freepoor` ( On Govt Insurance) AND with a chronic condition are *those who have lower average income* and *a higher average number of visits* to the doctor...but there are relatively few of them (n = 55) in this dataset...
-
-:::
-
-### {{< iconify la r-project >}} crosstable
-
-::: callout-note
-### Introducing `crosstable`
+#### {{< iconify la r-project >}} Intro to crosstable
 
 The package `{{crosstable}}` allows us to rapidly summarize multiple variables grouped and split by other variables, and presents the results in an elegant  form. It also conveniently uses the **formula interface** that makes the code very crisp, and which we will be encountering with other important packages too. 
 We will find occasion to meet `{{crosstable}}` again when we do [Inference. ](../../../20-Inference/listing.qmd)
-:::
+
+#### {{< iconify la r-project >}} Using crosstable
 
 ```{r}
 #| label: tbl-summaries-crosstable
 #| tbl-cap: "Crosstable Summary of `visits` and `income` over `gender` and `freepoor`"
 
 #library(crosstable)
-crosstable(visits + income ~ gender + freepoor, data = docVisits_modified) %>% 
+crosstable(visits + income ~ gender + freepoor, 
+           data = docVisits_modified) %>% 
   crosstable::as_flextable()
 
 ```
@@ -555,6 +678,13 @@ crosstable(visits + income ~ gender + freepoor, data = docVisits_modified) %>%
 
 
 (The `as_flextable` command from the `{{crosstable}}` package helped to render this elegant HTML table we see. It should be possible to do Word/PDF also, which we might see later.)
+
+#### Business Insights from Grouped Quant Summaries (`docVisits`)
+
+Clearly the people who are `freepoor` ( On Govt Insurance) AND with a chronic condition are *those who have lower average income* and *a higher average number of visits* to the doctor...but there are relatively few of them (n = 55) in this dataset...
+
+- Are there differences in mean of Quant variables across levels of single or multiple Qual variables? This could be a *first look* at whether the population is *fractured* into sub-groups and could be a point of research interest. E.g. disparity in interest in a product across groups.
+- Does `sd` differ significantly across groups? This could indicate that some groups are more *heterogeneous* than others, and may need to be studied further.
 
 :::
 
@@ -574,13 +704,18 @@ The `{{dplyr}}` package is capable of doing much more than just `count`, `group_
 |--------------------------------------------------------------|
 
 ## {{< iconify bi person-up >}} Your Turn
+:::: {.columns}
+::: {.column width="30%"}
+1. Star Trek Books
+1. Math Anxiety! Hah! 
+1. Cardio Data Sets 
+1. Neuro Data Sets 
+1. Datasets from the Lock5 Textbook(@Lock5withR, @Lock5Data)
+:::
 
-1. Try your hand at these datasets below. Look at the data, state the data dictionary, contemplate a few Research Questions and answer them with Summaries and Tables in Quarto!
-
-1. Try adding more *summary functions* to the summary table? Which might you choose? Why?
-
+::: {.column width="60%"}
 ::: callout-note
-### Star Trek Books
+### 
 
 ```{r echo=FALSE}
 
@@ -594,7 +729,7 @@ Which would be the `Group By` variables here? And what would you summarize? With
 :::
 
 ::: callout-note
-### Math Anxiety! Hah! 
+### 
 
 ```{r echo=FALSE}
 
@@ -606,32 +741,25 @@ MathAnxiety %>%
 ```
 :::
 
-3. Cardio DataSets 
-
-Try the datasets in the package `{{CardioDataSets}}`.
 ```{{r}}
 library(CardioDataSets)
 data(package = "CardioDataSets") # Lists datasets in the package
-
 ```
 
-4. Neuro Data Sets 
-
-Try the datasets in the package `{{NeuroDataSets}}`.
 ```{{r}}
 library(NeuroDataSets)
 data(package = "NeuroDataSets") # Lists datasets in the package
-
 ```
 
-5. Datasets from the Lock5 Textbook(@Lock5withR, @Lock5Data)
 ```{{r}}
 library(Lock5Data)
 library(Lock5withR)
 data(package = "Lock5Data") # Lists datasets in the package
 data(package = "Lock5withR") # Lists datasets in the package
-
 ```
+:::
+
+::::
 
 
 ## {{< iconify mingcute thought-line >}} Wait, But Why?
@@ -688,7 +816,7 @@ used_here()
 1. Lock, Lock, Lock, Lock, and Lock. (2021). *Statistics: Unlocking the Power of Data, 3rd Edition)*. <https://media.wiley.com/product_data/excerpt/69/11196821/1119682169-32.pdf>
 
 ::: {#refs style="font-size: 60%;"}
-###### {{< iconify lucide package-check >}} R Package Citations
+{{< iconify lucide package-check >}} R Package Citations
 
 ```{r}
 #| echo: false

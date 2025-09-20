@@ -71,7 +71,7 @@ library(embedr) # Embed multimedia in HTML files
 
 ```
 
-#### Plot Fonts and Theme
+### Plot Fonts and Theme
 
 ```{r}
 #| label: plot-theme
@@ -165,7 +165,7 @@ ggplot2::update_geom_defaults(geom = "label", new = list(
 )
 
 ## Set the theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
 
 ```
 
@@ -176,9 +176,13 @@ theme_set(new = theme_custom())
 
 We spoke of Experiments and Data Gathering in the first module [Nature of Data](../05-NatureData/index.qmd#sec-where-data). This helped us to **obtain** data.
 
-Our first task is to get acquainted with our data, to check the variables, the size of the dataset, how it is formatted, to eat it, as it were. We need to **inspect** the data, to understand what it is telling us. The physical significance of each variable needs to sink in before we can do anything with it. This is especially important in ***design***, since we may be working in domains that are not within our own range of acqaintance or expertise. It is also an important step in the data analysis process.
+Our first task is to get acquainted with our data, to check the variables, the size of the dataset, how it is formatted, to eat it, as it were. 
 
-So we look at:
+We need to **inspect** the data, to understand what it is telling us. The physical significance of each variable needs to sink in before we can do anything with it. 
+
+This is especially important in ***design***, since we may be working in domains that are not within our own range of acqaintance or expertise. It is also an important step in the data analysis process.
+
+### What do we look for?
 
 - How big is the dataset? How many rows and how many columns? Recall: Rows are observations, and columns are variables in the data
 - What types of columns do we have? Quant? Qual? How many of each?
@@ -192,15 +196,20 @@ All this inspection will lead to:
 
 ## {{< iconify mdi food-processor-outline >}} How do these Inspections Work?
 
-We will step-by-step proceed as follows:
+### Steps in Data Inspection and Cleaning
+Inspection:
 
-- Use `readr::read_cv()` to read the data
-- Variables Names: `base::names()` and `dplyr::glimpse()`
+- Use `readr::read_csv()` or `readr::read_delim()` to read the data
+- Inspect Variables Names: `base::names()` and `dplyr::glimpse()`
 - Discover Data Dimension/Size: `base::dim()`
 - Structure of the data: `utils::str()` [ Optional, but very useful. ]
 - Look for missing data: `visdat::vis_dat()` and `visdat::vis_miss()`
-- Clean up missing data: `naniar::replace_with_na_all()`
+
+And Munging: 
+
 - Clean the variable names: `janitor::clean_names()`
+- Clean up missing data: `naniar::replace_with_na_all()`
+- Make factors and rearrange factors to the left of our table using `dplyr::mutate()`, `dplyr::as.factor()`, followed by `dplyr::relocate()`
 - Make a cool table for our cleaned data with `tinytable::tt()` (static) or `DT::datatable()` (interactive)
 
 
@@ -222,6 +231,7 @@ fastfood <- readr::read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/
 
 The output from `readr::read_csv()` tells us that the data frame contains 515 rows and 18 columns. At this point we can't tell if there are missing values anywhere, or even if there are badly formatted data values anywhere.
 
+## Data Inspection
 
 ### {{< iconify ri custom-size >}} The Size of our Dataset
 
@@ -231,10 +241,12 @@ We already discover from the `read_csv()` output that the dataset has 515 rows a
 #| label: data-dim
 
 dim(fastfood)
+
 ```
+
 This tells us that the dataset has 515 rows and 18 columns.
 
-### {{< iconify carbon structure >}} Variables in our Dataset
+### {{< iconify carbon structure >}} Variables Names
 
 Again, `read_csv()` tells us that some columns are `character`, some are `double` and some are `integer`. We can use `names()` and `dplyr::glimpse()` to get more information about the variables in the dataset.
 
@@ -246,6 +258,8 @@ base::names(fastfood)
 
 ```
 
+### {{< iconify carbon structure >}} Variable Types
+
 ```{r}
 #| label: structure-data-2
 #| echo: true
@@ -256,43 +270,71 @@ dplyr::glimpse(fastfood)
 
 By and large, the entries look good. There are no cases, immediately, of `character` data lurking in Quant variables and such like. 
 
+## Data Munging
+
+We need to deal with:
+
+- Variable Naming
+- Variable Type conversion
+- Dealing with Missing Data
+- Locating Variables for Attention!
+
+### {{< iconify carbon clean >}} Variable Name Options
+
+As a part of the process, we should make sure that the **variable names** (not entries!!) are formatted in a "clean" way: there are a few options here, such as `camelCase`, `snake_case`, `kebab-case`, or `dot.case`. We will use the `{{janitor}}` package to do this, and also to make sure that the variable names are unique. AND, we will stick with `snake_case` for the rest of this course. 
+
+In this specific case, the variables names look evocative and meaningful enough, without being verbose; they seem just right. But as names in data become complex, with special characters ( `%$#@!*_|?` etc.), this becomes very useful.
+
+We will also not touch the original data, but save the modified data in a new variable called `fast_food_modified`. This is a good practice, as it allows us to keep the original data intact, and also to compare the two if needed.
+
+
+### Name Cleaning
+
+```{r}
+#| label: clean-fastfood
+
+fast_food_modified <- fastfood %>%
+  janitor::clean_names(case = "snake") # clean names
+
+fast_food_modified
+
+```
+
+This cleaning up was not needed here, since the original names were already good. But it is a good practice to do this, as it will save you a lot of headaches later on.
+
 ### {{< iconify file-icons influxdata >}} Check for Missing Data
 
 Let us use the `{{visdat}}` package to visualize this:
 
 ```{r}
 #| label: fig-visdat-missing-data
+#| code-fold: true
 #| layout-ncol: 2
 #| fig-cap: "Visualizing Missing Data with visdat"
 #| fig-subcap: 
 #| - "vis_miss()"
 #| - "vis_dat()"
-visdat::vis_miss(fastfood) +
-  ggtitle(label = "Missing Data in fastfood Dataset") + 
-  theme(plot.title = element_text(size = 20, hjust = 0.5))
 
-visdat::vis_dat(fastfood, sort_type = TRUE, palette = "cb_safe") +
-  labs(title = "Missing Data in fastfood Dataset", 
-       subtitle = "Showing Variable Types") + 
-  theme(plot.title = element_text(size = 20, hjust = 0.5),
-        plot.subtitle = element_text(size = 18, hjust = 0.5))
+visdat::vis_miss(fastfood)
+visdat::vis_dat(fastfood, sort_type = TRUE, palette = "cb_safe")
 
 ```
 
-It is clear that there are quite a few missing values in a few columns: `vit_a`, `vit_c` and `calcium`. Some missing values are also present in `fiber`. 
 
-So what can one do? 
 
+### What to Do with Missing Data
+
+It is clear that there are quite a few missing values in a few columns: `vit_a`, `vit_c` and `calcium`. Some missing values are also present in `fiber`. So what can one do? 
 
 A. **Remove rows with missing values**:
-
 We can use the `tidyr::drop_na()` command to check for empty locations in a any column, and drop rows containing NA values. Note that this will **remove entire rows** with missing values in *any column*, keeping only **complete rows**. This is a drastic step, and should be done with care. 
 
 B. **Impute missing values**:
-
 *"Imputation"* refers to a technique of inserting data values where they are lacking.  This is for a more sophisticated data practitioner, and also requires domain expertise into the subject matter of the dataset itself. We can use the [`simputation`](https://cran.r-project.org/web/packages/simputation/vignettes/intro.html) package to impute missing values using various methods, such as trend detection for Quant variables, and using classification for Qual data. This is a more advanced topic, and we will not cover it here.
 
 For our work here, to learn, we will use method A, and simply drop the cells containing `NA`, whenever we have to. 
+
+### The `naniar` package
 
 The `{{naniar}}` package has two built-in lists for common missing value codes: `naniar::common_na_numbers` for Quant variables, and `naniar::common_na_strings`. We can use these to replace these values with `NA`.
 
@@ -304,48 +346,54 @@ common_na_numbers
 
 ```
 
+### Replace Missing Values with `NA`
 
 ```{r}
 #| label: replace-missing-with-na
-#| 
+#| code-fold: true
+
 fast_food_modified <- fastfood %>%
   naniar::replace_with_na_all(condition = ~.x %in% common_na_numbers) %>% 
   replace_with_na_all(condition = ~.x %in% common_na_strings)
 
 glimpse(fast_food_modified)
+
 ```
 
 Note that with large datasets, this replacement of strings and numbers with `naniar::replace_with_na_all()` takes a lot of time to execute. 
 
+### {{< iconify streamline dictionary-language-book-solid >}} Data Munging
 
-### {{< iconify carbon clean >}} Clean the Variable Names
+We see that there are certain variables that must be converted to **factors** for analytics purposes, since they are unmistakably **Qualitative** in nature. Let us do that now, for use later:
 
-As a part of the process, we should make sure that the **variable names** (not entries!!) are formatted in a "clean" way: there are a few options here, such as `camelCase`, `snake_case`, `kebab-case`, or `dot.case`. We will use the `{{janitor}}` package to do this, and also to make sure that the variable names are unique. AND, we will stick with `snake_case` for the rest of this course. 
-
-In this specific case, the variables names look evocative and meaningful enough, without being verbose; they seem just right. But as names in data become complex, with special characters ( `%$#@!*_|?` etc.), this becomes very useful.
-
-We will also not touch the original data, but save the modified data in a new variable called `mpg_modified`. This is a good practice, as it allows us to keep the original data intact, and also to compare the two if needed.
 
 ```{r}
-#| label: clean-fastfood
-
+#| label: data-munging
+#| code-fold: true
+#| 
 fast_food_modified <- fast_food_modified %>%
-  janitor::clean_names(case = "snake") # clean names
+  mutate(
+    restaurant = as.factor(restaurant),
+    salad = as.factor(salad),
+    item = as.factor(item) 
+  ) %>%
+  rename("dish" = item) %>% # rename item to dish
 
-fast_food_modified
+ # arrange the Qual variables first, Quant next
+  dplyr::relocate(where(is.factor), .after = rownames)
+
+glimpse(fast_food_modified)
 
 ```
-This cleaning up was not needed here, since the original names were already good. But it is a good practice to do this, as it will save you a lot of headaches later on.
 
 
-
-### {{< iconify streamline dictionary-language-book-solid >}} Data Dictionary and Munging, and Printing
-
-
-#### Data Dictionary
+### Data Dictionary
 
 Using all the above methods, we can now create a data dictionary for the `fastfood_modified` dataset. This is a good practice, as it helps us to understand the data better, and also to communicate with others about the data.
 
+:::: {.columns}
+
+::: {.column width="50%"}
 ::: callout-note
 ### Quantitiative Data
 - `calories`(int): Calories in the dish
@@ -364,41 +412,27 @@ Using all the above methods, we can now create a data dictionary for the `fastfo
 - `calcium`(int): Calcium in % Daily Value
 - `iron`(int): Iron in % Daily Value
 :::
-
-::: callout-note
-### Qualitative Data
-- `restaurant`(chr): Name of the restaurant
-- `item`(chr): Name of the dish
-- `salad` (chr): Is it a salad? (Yes/No)
-- `rownames`(int): Row ID
 :::
 
-#### Data Munging
+::: {.column width="50%"}
+::: callout-note
+### Qualitative Data
+- `restaurant`(fct): Name of the restaurant
+- `item`(fct): Name of the dish
+- `salad` (fct): Is it a salad? (Yes/No)
+- `rownames`(int): Row ID
+:::
+:::
 
-We see that there are certain variables that must be converted to **factors** for analytics purposes, since they are unmistakably **Qualitative** in nature. Let us do that now, for use later:
+::::
 
 
-```{r}
-#| label: data-munging
-#| echo: true
-fast_food_modified <- fast_food_modified %>%
-  mutate(
-    restaurant = as.factor(restaurant),
-    salad = as.factor(salad),
-    item = as.factor(item) 
-  ) %>%
-  rename("dish" = item) %>% # rename item to dish
-
- # arrange the Qual variables first, Quant next
-  dplyr::relocate(where(is.factor), .after = rownames)
-
-glimpse(fast_food_modified)
-
-```
-
-#### {{< iconify mdi table-star >}} Data Table for Reporting
+## {{< iconify mdi table-star >}} Data Table for Reporting
 
 It is usually a good idea to make crisp business-like tables to show your data. There are many methods to do this. 
+
+
+### Static Table Reporting
 
 For ***Static Tables*** ( to be published in reports, papers, etc.), one of the simplest and effective ones is to use the `tt` set of commands from `{{tinytable}}`. (The `kable` set of commands from the `{{knitr}}` and `{{kableExtra}}` packages also are a good choice):
 
@@ -412,10 +446,14 @@ fast_food_modified %>%
   head(10) %>% 
   tinytable::tt(caption = "Fast Food Dataset (Clean)") %>%
   tinytable::theme_html(class = "table table-hover table-striped table-condensed") %>% 
+  style_tt(fontsize = 0.8) %>% 
 
   stats::setNames(c("Row ID", "Restaurant", "Dish", "Calories", "Calories from fat","Total Fat (g)", "Saturated Fat (g)", "Trans Fat (g)", "Cholesterol (mg)", "Sodium (mg)", "Carbohydrates (g)", "Fiber (g)", "Sugars (g)", "Protein (g)", "Vitamin A (% DV)", "Vitamin C (% DV)", "Calcium (% DV)", "Iron (% DV)"))
 
 ```
+
+
+### Interactive Table Reporting
 
 ***Dynamic Tables*** can be easily made using the `{{DT}}` package, which allows for sorting, searching, and pagination. This is useful for exploring the data interactively. Here is an example:
 
@@ -426,9 +464,9 @@ fast_food_modified %>%
 
 fast_food_modified %>%
   DT::datatable(
+    style = 'default',
     caption = htmltools::tags$caption(
-      style = 'caption-side: top; text-align: left; color: black; font-size: 150%;',
-      'Fast Food Dataset (Clean)'
+      style = 'caption-side: top; text-align: left; color: black; font-size: 100%;', 'Fast Food Dataset (Clean)'
     ),
     options = list(pageLength = 10, autoWidth = TRUE)
   ) %>%
@@ -440,7 +478,7 @@ fast_food_modified %>%
 ```
 
 
-## {{< iconify bi person-up >}} Your Turn
+#### {{< iconify bi person-up >}} Your Turn
 
 1. See if you can do this for this messy dataset which you can download by clicking on the button below the table:
 
@@ -456,7 +494,8 @@ penguins_messy <- penguins %>%
   make_missing(cols = c("species", "island"), missing = " ") %>% 
   make_missing(cols = c("bill_len", "bill_dep"), missing = c(NA, 999))
 
-penguins_messy %>% DT::datatable()
+penguins_messy %>% head(6) %>% 
+  knitr::kable(format = "simple")
 ## Download button
 
 penguins_messy %>% download_this(output_name = "Messy_Penguins", output_extension = ".csv", button_label = "Messy Penguins data", button_type = "default", icon = "fa fa-save")
@@ -496,7 +535,7 @@ Make these part of your *Workflow*.
 1. Vincent Arel-Bundock. *RDatasets*. <https://vincentarelbundock.github.io/Rdatasets/>.
 
 ::: {#refs style="font-size: 60%;"}
-###### {{< iconify lucide package-check >}} R Package Citations
+{{< iconify lucide package-check >}} R Package Citations
 
 ```{r}
 #| echo: false
