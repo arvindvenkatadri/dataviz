@@ -75,16 +75,15 @@ library(embedr) # Embed multimedia in HTML files
 
 ```
 
-#### Plot Fonts and Theme
+### Plot Fonts and Theme
 
 ```{r}
-#| label: plot-theme
-#| echo: true
+#| label: plot-theme-ggplot4
 #| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
-
+#| 
 library(systemfonts)
 library(showtext)
 ## Clean the slate
@@ -106,54 +105,32 @@ sysfonts::font_add(family = "Roboto Condensed",
 showtext_auto(enable = TRUE) #enable showtext
 ##
 theme_custom <- function(){ 
-    font <- "Alegreya"   #assign font family up front
-    '%+replace%' <- ggplot2::'%+replace%' # nolint
+
+    theme_bw(base_size = 10) + 
     
-    theme_bw(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
+    theme_sub_axis(title = element_text(family = "Roboto Condensed", 
+                                       size = 8),
+                   text = element_text(family = "Roboto Condensed", 
+                                       size = 6)) + 
     
-    theme(
-      text = element_text(family = font),  #set base font family
-      
-      #text elements
-      plot.title = element_text(                 #title
-                   family = font,          #set font family
-                   size = 24,                    #set font size
-                   face = 'bold',                #bold typeface
-                   hjust = 0,                    #left align
-                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
-      plot.title.position = "plot", 
-      
-      plot.subtitle = element_text(              #subtitle
-                   family = font,          #font family
-                   size = 14,                   #font size
-                   hjust = 0,                   #left align
-                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
-      
-      plot.caption = element_text(               #caption
-                   family = font,          #font family
-                   size = 9,                     #font size
-                   hjust = 1),                   #right align
-      
-      plot.caption.position = "plot",            #right align
-      
-      axis.title = element_text(                 #axis titles
-                   family = "Roboto Condensed",  #font family
-                   size = 12),                   #font size
-      
-      axis.text = element_text(                  #axis text
-                   family = "Roboto Condensed",  #font family
-                   size = 12),                    #font size
-      
-      axis.text.x = element_text(                #margin for axis text
-                    margin = margin(5, b = 10))
-      
-      #since the legend often requires manual tweaking 
-      #based on plot content, don't define it here
-    )
+    theme_sub_legend(text = element_text(family = "Roboto Condensed", 
+                                         size = 6),
+                     title = element_text(family = "Alegreya", 
+                                          size = 8)) + 
+    
+    theme_sub_plot(title = element_text(family = "Alegreya", 
+                                        size = 14, face = "bold"),
+                   title.position = "plot",
+                   subtitle = element_text(family = "Alegreya", 
+                                           size = 10),
+                   caption = element_text(family = "Alegreya", 
+                                          size = 6),
+                   caption.position = "plot")
+    
 }
 
 ## Use available fonts in ggplot text geoms too!
-ggplot2::update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text", new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -171,8 +148,12 @@ ggplot2::update_geom_defaults(geom = "label", new = list(
 ## Set the theme
 ggplot2::theme_set(new = theme_custom())
 
-```
+## tinytable options
+options("tinytable_tt_digits" = 2)
+options("tinytable_format_num_fmt" = "significant_cell")
+options(tinytable_html_mathjax = TRUE)
 
+```
 
 
 
@@ -182,9 +163,8 @@ ggplot2::theme_set(new = theme_custom())
 |:-------------:|:--------------:|:------------------:|:--------------------:|:------:|
 |    Quant    |    Qual   | Box Plot | {{< iconify carbon box-plot size=4x >}} |
 
-## {{< iconify tabler variable >}} What kind of Data Variables will we choose?
+### {{< iconify tabler variable >}} What kind of Data Variables will we choose?
 
-::: column-page-inset-right
 ```{r}
 #| message: false
 #| echo: false
@@ -222,6 +202,8 @@ MKdescr::illustrate.boxplot(data)
 
 ```
 
+### How are Boxplots Computed?
+
 The internal process of this plot is as follows:
 
 (Hat tip to student [Tanya Michelle Justin](https://www.linkedin.com/in/tanya-michelle-justin-9692bb306/) for a good question on outlier calculation)
@@ -239,26 +221,27 @@ The internal process of this plot is as follows:
   
 As a result of this, while the box-part of the boxplot always shows 2 full quartiles, the whiskers may not stretch through their quartiles, since some **values** may be outliers on either side. 
 
-::: callout-note
+
 ### Ranks and Values
+
 The Quant variable is *ordered* based on the **values** from min to max. So you could imagine that each **value** has a **rank** or sequence number. The `min` value has $rank = 1$ and the `max` value has $rank = length(var)$.
 
-:::
-
-::: callout-note
 ### Histograms and Box Plots
+
 Note how the histogram that dwells upon the `mean` and `standard deviation`, whereas the boxplot focuses on the `median` and `quartiles`.
+
 The former uses the *values* of the Quant variable, whereas the latter uses their *sequence number* or *ranks*. 
-:::
 
 Box plots are often used for example in HR operations to understand Salary distributions across grades of employees. Marks of students in competitive exams are also declared using Quartiles. 
+
+### Box Plots and Outliers
 
 Box plots can show skew in distributions, with a large number of outliers on one side, as in @fig-distributions-boxplots.
 
 
 ```{r}
 #| label: fig-distributions-boxplots
-#| echo: false
+#| code-fold: true
 #| warning: false
 #| fig-cap:
 #| - "Skewed Distributions and Boxplots"
@@ -276,7 +259,8 @@ center = rbeta(5000, 1.5, 1.5) * 10) %>%
                names_to = "type", values_to = "value")
 rand_data %>% 
   gf_dhistogram(~ value, fill = ~ type, alpha = 0.3) %>% 
-  gf_boxplot(0.3 ~ value, fill = ~ type, alpha = 0.3, width = 0.05) %>%
+  gf_boxplot(0.3 ~ value, fill = ~ type, alpha = 0.3, 
+             width = 0.05, orientation = "y") %>%
   gf_vline(data = rand_data %>% 
               dplyr::group_by(type) %>% 
               dplyr::summarise(mean = mean(value)), inherit = F,
@@ -289,6 +273,8 @@ rand_data %>%
 
 ```
 
+### Box Plots and Skewness
+
 In other cases, there may be no outliers, but the "bottom" and the "lid" of the box may not be the same size!
 
 ::: {#fig-three-boxplots layout-ncol=2}
@@ -297,24 +283,25 @@ In other cases, there may be no outliers, but the "bottom" and the "lid" of the 
 
 
 ![Density and Skewness](../../../../../materials/images/Relationship_between_mean_and_median_under_different_skewness.png){#fig-distribution-skewness}
-
-Box Plot Discussions
-
 :::
+
 
 In the @fig-three-boxplots, we see the difference between boxplots that show *symmetric* and *skewed* distributions. The "lid" and the "bottom" of the box are not of similar width in distributions with significant skewness. 
 
 Compare these with the corresponding @fig-distribution-skewness.
 
-:::
 
-## {{< iconify grommet-icons test >}} Case Study-1: `gss_wages` dataset
+## Plotting Box Plots
 
 We will first look at Wage data from the General Social Survey (1974-2018) conducted in the USA, which is used to illustrate wage discrepancies by gender (while also considering respondent occupation, age, and education). This is available on [Vincent Arel-Bundock's superb repository of datasets](https://vincentarelbundock.github.io/Rdatasets/articles/data.html). Let us read into R *directly from the website*. 
 
+
+
+## {{< iconify grommet-icons test >}} Case Study-1: `gss_wages` dataset
+
 ::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
 
-### {{< iconify la r-project >}} R
+### {{< iconify la r-project >}} Read Data
 
 ```{r}
 #| label: read_gss_wage_data
@@ -334,10 +321,11 @@ ggplot2::theme_set(theme_classic())
 wages <- read.csv("https://vincentarelbundock.github.io/Rdatasets/csv/stevedata/gss_wages.csv")
 
 ```
+
 :::
 
 
-### {{< iconify file-icons influxdata >}} Examine the Data
+### {{< iconify file-icons influxdata >}} Inspect Data
 
 As per our Workflow, we will look at the data using all the three
 methods we have seen.
@@ -390,6 +378,13 @@ wages %>%
 
 ```
 
+#### Business Insights
+
+- Much data is missing in the target variable `realinc` (income).
+- Good mix of Qual and Quant variables
+
+
+
 :::
 
 ### {{< iconify carbon clean >}} Data Munging
@@ -404,6 +399,8 @@ It turns out that following our process of munging the data using the `{{naniar}
 
 ```{r}
 #| label: data-cleanup
+#| code-fold: true
+#| 
 
 wages_clean <- wages %>% 
   
@@ -425,18 +422,26 @@ glimpse(wages_clean)
 
 From the [dataset documentation page](https://vincentarelbundock.github.io/Rdatasets/doc/stevedata/gss_wages.html), we note that this is a large dataset (61K rows), with 11 variables:\
 
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
 ::: callout-note
 ### Qualitative Data
 
-  - `occrecode`(chr): recode of the occupation code into one of 11 main categories\
-  - `wrkstat`(chr): the work status of the respondent (full-time, part-time, temporarily not working, unemployed (laid off), retired, school, housekeeper, other). 8 levels.\ 
-  - `gender`(chr): respondent's gender (male or female). 2 levels.\
-  - `educcat`(chr): respondent's degree level (Less Than High School, High School, Junior College, Bachelor, or Graduate). 5 levels.\
-  - `maritalcat`(chr): respondent's marital status (Married, Widowed, Divorced, Separated, Never Married). 5 levels.\
+  - `occrecode`(fct): recode of the occupation code into one of 11 main categories\
+  - `wrkstat`(fct): the work status of the respondent (full-time, part-time, temporarily not working, unemployed (laid off), retired, school, housekeeper, other). 8 levels.\ 
+  - `gender`(fct): respondent's gender (male or female). 2 levels.\
+  - `educcat`(fct): respondent's degree level (Less Than High School, High School, Junior College, Bachelor, or Graduate). 5 levels.\
+  - `maritalcat`(fct): respondent's marital status (Married, Widowed, Divorced, Separated, Never Married). 5 levels.\
   - [`childs`(dbl): number of children (0-8)]{style="background-color: yellow;"}
-  
 :::
 
+:::
+::: {.column width="10%"}
+:::
+::: {.column width="40%"}
 
 ::: callout-note
 ### Quantitative Data
@@ -446,9 +451,13 @@ From the [dataset documentation page](https://vincentarelbundock.github.io/Rdata
   - `age`(dbl): the respondent's age in years
   - `occ10`(dbl): respondent's occupation code (2010)
   - `prestg10`(dbl): respondent's occupational prestige score (2010)
+:::
 
 
 :::
+::::
+
+### {{< iconify material-symbols table-chart >}} Data Table
 
 ```{r}
 #| label: tbl-dt-for-data
@@ -470,21 +479,13 @@ wages_clean %>%
   )
 ```
 
+### {{< iconify  material-symbols lab-research >}} Experiment Description
 
-::: callout-note
-### Business Insights based on `wages` dataset
-- Fair amount of missing data; however with 61K rows, we can for the present simply neglect the missing data. 
-- Good mix of Qual and Quant variables
-:::
-
-
-### {{< iconify  material-symbols lab-research >}} Hypothesis and Research Questions
 
 - The *target variable* for an experiment that resulted in this data might be the `realinc` variable, the resultant income of the individual. Which is numerical variable. 
 - The *predictor variables* could be `gender`, `educcat`, `maritalcat`, and `wrkstat` (all categorical variables), **and** `age` and `childs` (numerical variables).
 - Note that `childs` is a coded as numerical variable, but it is actually a count of children, and so it can be treated as a categorical variable with 9 levels (0 to 8). We have done that above. 
 
-::: callout-note  
 ### Research Questions:
   - What is the basic distribution of `realrinc`?
   - Is `realrinc` affected [by]{style="background-color: yellow;"} `gender`? 
@@ -493,8 +494,6 @@ wages_clean %>%
   - Do combinations of these factors have an effect on the target variable?
   
 These should do for now! But we should make more questions when have seen some plots!
-
-:::
 
 ::: callout-note
 ### {{< iconify streamline-emojis monkey-face >}} The Monkey Grammarian's Note
@@ -509,12 +508,10 @@ See that [preposition "by"]{style="background-color: yellow;"} in the questions 
 
 ### {{< iconify el question-sign >}} Question-1: What is the basic distribution of `realrinc`?
 
-::: callout-note
-### Question-1: What is the basic distribution of `realrinc`?
-
 ::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
 
-### Using ggformula
+#### Using ggformula
+
 :::: {.columns}
 ::: {.column}
 ```{r}
@@ -523,7 +520,7 @@ See that [preposition "by"]{style="background-color: yellow;"} in the questions 
 ggplot2::theme_set(new = theme_custom())
 
 wages_clean %>% 
-  gf_boxplot(realrinc ~ "Overall") %>% # Dummy X-axis "variable"
+  gf_boxplot(realrinc ~ "Overall", orientation = "x") %>% # Dummy X-axis "variable"
   gf_labs(title = "Plot 1A: Income has a skewed distribution",
           subtitle = "Many outliers on the high side",
           x = "", y = "Income") #Blank out the X-axis title
@@ -538,9 +535,11 @@ wages_clean %>%
 :::
 ::::
 
-### Using ggplot
+#### Using ggplot
 ```{r}
 #| label: realincome-ggplot
+#| code-fold: true
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 wages_clean %>% 
@@ -550,14 +549,14 @@ wages_clean %>%
           subtitle = "Many outliers on the high side")
 ```
 
-### {{< iconify noto-v1 spider-web >}} web-r
+#### {{< iconify noto-v1 spider-web >}} web-r
 ```{webr-r}
 
 wages %>% 
   janitor::clean_names(case = "snake") %>% 
   janitor::remove_empty(which = c("rows", "cols")) %>% 
   tidyr::drop_na(realrinc) %>% 
-  gf_boxplot(realrinc ~ "Income") %>% # Dummy X-axis "variable"
+  gf_boxplot(realrinc ~ "Income",orientation = "x") %>% # Dummy X-axis "variable"
   gf_labs(title = "Plot 1A: Income has a skewed distribution",
           subtitle = "Many outliers on the high side")
 ##
@@ -572,10 +571,7 @@ wages %>%
 
 ```
 
-
-
-:::
-### Business Insights-1
+#### Business Insights-1
 - Income is a very skewed distribution, as might be expected. 
 - Presence of many higher-side outliers is noted. 
 
@@ -584,10 +580,9 @@ wages %>%
 
 
 ### {{< iconify el question-sign >}} Question-2: Is `realrinc` affected by `gender`? 
-::: callout-note
-### Question-2: Is `realrinc` affected by `gender`? 
 
 ::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
 ### Using ggformula
 :::: {.columns}
 ::: {.column}
@@ -598,7 +593,7 @@ wages %>%
 ggplot2::theme_set(new = theme_custom())
 
 wages_clean %>% 
-  gf_boxplot(gender ~ realrinc) %>% 
+  gf_boxplot(gender ~ realrinc,orientation = "y") %>% 
   gf_labs(y = "Gender", x = "Income", title = "Plot 2A: Income by Gender")
 
 ```
@@ -622,7 +617,7 @@ wages_clean %>%
 ggplot2::theme_set(new = theme_custom())
 
 wages_clean %>% 
-  gf_boxplot(gender ~ log10(realrinc)) %>% 
+  gf_boxplot(gender ~ log10(realrinc),orientation = "y") %>% 
   gf_labs(y = "Gender", x = "Income", title = "Plot 2B: Log(Income) by Gender")
 
 ```
@@ -645,7 +640,7 @@ wages_clean %>%
 ggplot2::theme_set(new = theme_custom())
 
 wages_clean %>% 
-  gf_boxplot(gender ~ realrinc, fill = ~ gender) %>% 
+  gf_boxplot(gender ~ realrinc, fill = ~ gender,orientation = "y") %>% 
   gf_refine(scale_x_log10(), scale_fill_brewer(palette = "Set1")) %>% 
   gf_labs(y = "Gender", x = "Income", title = "Plot 2C: Income filled by Gender, log scale")
 
@@ -693,27 +688,26 @@ wages %>%
   janitor::clean_names(case = "snake") %>% 
   janitor::remove_empty(which = c("rows", "cols")) %>% 
   tidyr::drop_na(realrinc) %>% 
-  gf_boxplot(gender ~ realrinc) %>% 
+  gf_boxplot(gender ~ realrinc,orientation = "y") %>% 
   gf_labs(title = "Plot 2A: Income by Gender")
 ##
 wages %>% 
   janitor::clean_names(case = "snake") %>% 
   janitor::remove_empty(which = c("rows", "cols")) %>% 
   tidyr::drop_na(realrinc) %>% 
-  gf_boxplot(gender ~ log10(realrinc)) %>% 
+  gf_boxplot(gender ~ log10(realrinc),orientation = "y") %>% 
   gf_labs(title = "Plot 2B: Log(Income) by Gender")
 ##
 wages %>% 
   janitor::clean_names(case = "snake") %>% 
   janitor::remove_empty(which = c("rows", "cols")) %>% 
   tidyr::drop_na(realrinc) %>% 
-  gf_boxplot(gender ~ realrinc, fill = ~ gender) %>% 
+  gf_boxplot(gender ~ realrinc, fill = ~ gender,orientation = "y") %>% 
   gf_refine(scale_x_log10(), scale_fill_brewer(palette = "Set1")) %>% 
   gf_labs(title = "Plot 2C: Income filled by Gender, log scale")
 
 ```
 
-:::
 
 ### Business Insights-2
 
@@ -724,9 +718,10 @@ wages %>%
 
 :::
 
+
+
 ### {{< iconify el question-sign >}} Question-3: Is `realrinc` affected by `educcat`? 
-::: callout-note
-### Question-3: Is `realrinc` affected by `educcat`? 
+
 
 ::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
 
@@ -739,7 +734,7 @@ wages %>%
 ggplot2::theme_set(new = theme_custom())
 
 wages_clean %>% 
-  gf_boxplot(educcat ~ realrinc) %>% 
+  gf_boxplot(educcat ~ realrinc,orientation = "y") %>% 
   gf_labs(title = "Plot 3A: Income by Education Category")
 
 ```
@@ -762,7 +757,7 @@ wages_clean %>%
 ggplot2::theme_set(new = theme_custom())
 
 wages_clean %>% 
-  gf_boxplot(educcat ~ log10(realrinc)) %>% 
+  gf_boxplot(educcat ~ log10(realrinc),orientation = "y") %>% 
   gf_labs(title = "Plot 3B: Log(Income) by Education Category")
 
 ```
@@ -787,8 +782,7 @@ ggplot2::theme_set(new = theme_custom())
 wages_clean %>% 
   gf_boxplot(
     reorder(educcat, realrinc, FUN = median) ~ log(realrinc), 
-            fill = ~ educcat,
-            alpha = 0.5) %>% 
+            fill = ~ educcat, alpha = 0.5, orientation = "y") %>% 
   gf_labs(title = "Plot 3C: Log(Income) by Education Category, sorted",
           x = "Log Income", 
           y = "Education Category") %>%
@@ -814,7 +808,7 @@ ggplot2::theme_set(new = theme_custom())
 
 wages_clean %>% 
   gf_boxplot(reorder(educcat, realrinc, FUN = median) ~ realrinc, 
-             fill = ~ educcat,
+             fill = ~ educcat, orientation = "y",
              alpha = 0.5) %>% 
   gf_refine(scale_x_log10()) %>% 
   gf_labs(title = "Plot 3D: Income by Education Category, sorted",
@@ -886,14 +880,14 @@ wages %>%
   janitor::clean_names(case = "snake") %>% 
   janitor::remove_empty(which = c("rows", "cols")) %>% 
   tidyr::drop_na(realrinc) %>% 
-  gf_boxplot(educcat ~ realrinc) %>% 
+  gf_boxplot(educcat ~ realrinc,orientation = "y") %>% 
   gf_labs(title = "Plot 3A: Income by Education Category")
 ##
 wages %>% 
   janitor::clean_names(case = "snake") %>% 
   janitor::remove_empty(which = c("rows", "cols")) %>% 
   tidyr::drop_na(realrinc) %>% 
-  gf_boxplot(educcat ~ log10(realrinc)) %>% 
+  gf_boxplot(educcat ~ log10(realrinc),orientation = "y") %>% 
   gf_labs(title = "Plot 3B: Log(Income) by Education Category")
 ##
 wages %>% 
@@ -901,7 +895,7 @@ wages %>%
   janitor::remove_empty(which = c("rows", "cols")) %>% 
   tidyr::drop_na(realrinc) %>% 
   gf_boxplot(reorder(educcat, realrinc, FUN = median) ~ log(realrinc), 
-             fill = ~ educcat,
+             fill = ~ educcat, orientation = "y",
              alpha = 0.5) %>% 
   gf_labs(title = "Plot 3C: Log(Income) by Education Category, sorted",
           x = "Log Income", y = "Education Category")
@@ -911,7 +905,7 @@ wages %>%
   janitor::remove_empty(which = c("rows", "cols")) %>% 
   tidyr::drop_na(realrinc) %>% 
   gf_boxplot(reorder(educcat, realrinc, FUN = median) ~ realrinc, 
-             fill = ~ educcat,
+             fill = ~ educcat,orientation = "y",
              alpha = 0.5) %>% 
   gf_refine(scale_x_log10()) %>% 
   gf_labs(title = "Plot 3D: Income by Education Category, sorted",
@@ -920,7 +914,6 @@ wages %>%
 
 ```
 
-:::
 ### Business Insights-3
 
 - `realrinc` rises with `educcat`, which is to be expected.
@@ -931,6 +924,7 @@ wages %>%
 We can do similar work with the other Qual variables. Let us now see how we can use more than one Qual variable and answer the last hypothesis, Question 4.
 
 ### {{< iconify el question-sign >}} Question-4: Is the target variable `realrinc` affected by combinations of Qual factors `gender`, `educcat`, `maritalcat` and `childs`?
+
 ::: callout-important 
 This is a rather complex question and could take us deep into [Modelling](https://r4ds.had.co.nz/model-building.html). Ideally we ought to:
 
@@ -946,9 +940,8 @@ So will simply plot box plots showing effects on the target variable of *combina
 
 We will also drop NA values all around this time, to avoid seeing boxplots for undocumented categories.
 
-::: callout-note
-### Question-4: Is `realrinc` affected by combinations of factors?
 
+### Question-4: Is `realrinc` affected by combinations of factors?
 
 ::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
 
@@ -962,7 +955,7 @@ ggplot2::theme_set(new = theme_custom())
 
 wages_clean %>% 
   gf_boxplot(reorder(educcat, realrinc) ~ log10(realrinc),
-             fill = ~ educcat, 
+             fill = ~ educcat, orientation = "y",
              alpha = 0.5) %>% 
   gf_facet_wrap(vars(childs)) %>% 
   gf_refine(scale_fill_brewer(type = "qual", palette = "Dark2")) %>% 
@@ -993,7 +986,7 @@ wages_clean %>%
   mutate(childs = as_factor(childs)) %>% 
   gf_boxplot(childs ~ log10(realrinc),
              group = ~ childs,
-             fill = ~ childs, 
+             fill = ~ childs, orientation = "y",
              alpha = 0.5) %>% 
   gf_facet_wrap(~ gender) %>% 
   gf_refine(scale_fill_brewer(type = "qual", palette = "Set3")) %>% 
@@ -1054,7 +1047,7 @@ wages %>%
   janitor::remove_empty(which = c("rows", "cols")) %>% 
   drop_na() %>% 
   gf_boxplot(reorder(educcat, realrinc) ~ log10(realrinc),
-             fill = ~ educcat, 
+             fill = ~ educcat, orientation = "y",
              alpha = 0.5) %>% 
   gf_facet_wrap(vars(childs)) %>% 
   gf_refine(scale_fill_brewer(type = "qual", palette = "Dark2")) %>% 
@@ -1065,7 +1058,7 @@ wages %>%
   janitor::remove_empty(which = c("rows", "cols")) %>% 
   drop_na() %>% 
   dplyr::mutate(childs = as_factor(childs)) %>% 
-  gf_boxplot(childs ~ log10(realrinc),
+  gf_boxplot(childs ~ log10(realrinc),orientation = "y",
              group = ~ childs,
              fill = ~ childs, 
              alpha = 0.5) %>% 
@@ -1077,7 +1070,6 @@ wages %>%
 
 ```
 
-:::
 
 ### Business Insights-4
 
@@ -1209,8 +1201,7 @@ Foundation of “Student’s” t*. Journal of Economic Perspectives—Volume 22
 [^2]: The term *throwing a shade* can be found in Jane Austen's novel Mansfield Park (1814). Young Edmund Bertram is displeased with a dinner guest's disparagement of the uncle who took her in: "With such warm feelings and lively spirits it must be difficult to do justice to her affection for Mrs. Crawford, without throwing a shade on the Admiral."
 
 
-::: {#refs style="font-size: 60%;"}
-###### {{< iconify lucide package-check >}} R Package Citations
+### {{< iconify lucide package-check >}} R Package Citations
 
 ```{r}
 #| echo: false
@@ -1224,4 +1215,5 @@ cite_packages(
   knitr::kable(format = "simple")
 
 ```
-:::
+
+

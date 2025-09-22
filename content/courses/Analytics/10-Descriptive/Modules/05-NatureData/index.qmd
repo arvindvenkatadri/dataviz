@@ -98,69 +98,62 @@ my_bolds <- c("#7F3C8D","#11A579","#3969AC","#F2B701","#E73F74","#80BA5A","#E683
   
 ```
 
-#### Plot Fonts and Theme
+### Plot Fonts and Theme
 
 ```{r}
-#| label: plot-theme
-#| echo: fenced
+#| label: plot-theme-ggplot4
 #| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
-
+#| 
+library(systemfonts)
 library(showtext)
-font_add(family = "Alegreya", regular = "../../../../fonts/Alegreya/Alegreya-Regular.ttf")
-font_add(family = "Roboto Condensed", regular = "../../../../fonts/RobotoCondensed-Regular.ttf")
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
 showtext_auto(enable = TRUE) #enable showtext
 ##
 theme_custom <- function(){ 
-    font <- "Alegreya"   #assign font family up front
+
+    theme_bw(base_size = 10) + 
     
-    theme_classic(base_size = 14) %+replace%    #replace elements we want to change
+    theme_sub_axis(title = element_text(family = "Roboto Condensed", 
+                                       size = 8),
+                   text = element_text(family = "Roboto Condensed", 
+                                       size = 6)) + 
     
-    theme(
-      text = element_text(family = font),  #set base font family
-      
-      #text elements
-      plot.title = element_text(                 #title
-                   family = "Alegreya",          #set font family
-                   size = 18,                    #set font size
-                   face = 'bold',                #bold typeface
-                   hjust = 0,                    #left align
-                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
-      plot.title.position = "plot", 
-      
-      plot.subtitle = element_text(              #subtitle
-                   family = "Alegreya",          #font family
-                   size = 14,                   #font size
-                   hjust = 0,                   #left align
-                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
-      
-      plot.caption = element_text(               #caption
-                   family = "Alegreya",          #font family
-                   size = 9,                     #font size
-                   hjust = 1),                   #right align
-      
-      plot.caption.position = "plot",            #right align
-      
-      axis.title = element_text(                 #axis titles
-                   family = "Roboto Condensed",  #font family
-                   size = 12),                   #font size
-      
-      axis.text = element_text(                  #axis text
-                   family = "Roboto Condensed",  #font family
-                   size = 9),                    #font size
-      
-      axis.text.x = element_text(                #margin for axis text
-                    margin = margin(5, b = 10))
-      
-      #since the legend often requires manual tweaking 
-      #based on plot content, don't define it here
-    )
+    theme_sub_legend(text = element_text(family = "Roboto Condensed", 
+                                         size = 6),
+                     title = element_text(family = "Alegreya", 
+                                          size = 8)) + 
+    
+    theme_sub_plot(title = element_text(family = "Alegreya", 
+                                        size = 14, face = "bold"),
+                   title.position = "plot",
+                   subtitle = element_text(family = "Alegreya", 
+                                           size = 10),
+                   caption = element_text(family = "Alegreya", 
+                                          size = 6),
+                   caption.position = "plot")
+    
 }
 
 ## Use available fonts in ggplot text geoms too!
-ggplot2::update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text", new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -178,12 +171,15 @@ ggplot2::update_geom_defaults(geom = "label", new = list(
 ## Set the theme
 ggplot2::theme_set(new = theme_custom())
 
+## tinytable options
+options("tinytable_tt_digits" = 2)
+options("tinytable_format_num_fmt" = "significant_cell")
+options(tinytable_html_mathjax = TRUE)
+
 ```
 
 
-
-
-## {{< iconify mdi web-check >}} Using web-R
+### {{< iconify mdi web-check >}} Using web-R
 
 This tutorial uses `web-r` that allows you to run all code within your
 browser, on all devices. Most code chunks herein are formatted in a
@@ -195,7 +191,7 @@ well. The R code is also there to make sure you have original code to go
 back to, when you have made several modifications to the code on the
 `web-r` tabs and need to compare your code with the original!
 
-#### Keyboard Shortcuts
+### Keyboard Shortcuts
 
 -   Run selected code using either:
     -   macOS: <kbd>⌘</kbd> + <kbd>↩/Return</kbd>
@@ -265,6 +261,8 @@ a table of different kinds of questions you could use to query a
 dataset. The variable or variables that "answer" the question would be
 in the category indicated by the question.
 
+### Variables and Operations
+
 ::: column-page
 ```{r}
 #| message: false
@@ -275,6 +273,8 @@ pronouns %>% kbl() %>%
   kable_paper("hover", full_width = T)
 ```
 :::
+
+### Variables and Hierarchy
 
 As you go from [Qualitative to Quantitative data
 types](https://openintro-ims.netlify.app/data-hello.html#variable-types)
@@ -397,9 +397,14 @@ embedr::embed_audio("../../../../../materials/audio/NatureOfData.wav")
 
 
 
+### Randomized Trials
+
+These are the gold standard for experimental data. They involve randomly assigning subjects to treatment and control groups (e.g vaccine and no vaccine) to measure the effect of a treatment or intervention. This method helps eliminate bias and confounding variables, providing robust evidence for causal relationships. 
+
+{{< youtube eGRd8jBdNYg >}}<br>
+
 ## {{< iconify ooui references-ltr >}} References
 
-1.  Randomized Trials: These are the gold standard for experimental data. They involve randomly assigning subjects to treatment and control groups (e.g vaccine and no vaccine) to measure the effect of a treatment or intervention. This method helps eliminate bias and confounding variables, providing robust evidence for causal relationships. <br><br>{{< youtube eGRd8jBdNYg >}}<br>
 1.  Martyn Shuttleworth, Lyndsay T Wilson (Jun 26, 2009). *What is the Scientific Method?* Retrieved Mar 12, 2024 from Explorable.com: <https://explorable.com/what-is-the-scientific-method>
 1.  Adam E.M. Eltorai, Jeffrey A. Bakal, Paige C. Newell, Adena J. Osband (editors). (March 22, 2023) *Translational Surgery: Handbook for Designing and Conducting Clinical and Translational Research*. A very lucid and easily explained set of chapters. ( I have a copy. Yes.)
       - Part III. Clinical: fundamentals
@@ -417,9 +422,9 @@ embedr::embed_audio("../../../../../materials/audio/NatureOfData.wav")
     <u><DOI:10.1080/00031305.2015.1089789></u>. <u>[PDF
     here](hesterberg2015.pdf)</u>
 
+### {{< iconify lucide package-check >}} R Package Citations
 
 ::: {#refs style="font-size: 60%;"}
-###### {{< iconify lucide package-check >}} R Package Citations
 
 ```{r}
 #| echo: false
