@@ -140,71 +140,62 @@ knitr::opts_chunk$set(
 # They are located in a folder labelled `fonts` at the project root level.
 # This ensures we are GDPR-compliant, and not using Google Fonts directly.
 # Let us import these local fonts into our session and use them to define our ggplot theme. 
-library(sysfonts)
+library(systemfonts)
 library(showtext)
+library(ggrepel)
+library(marquee)
 ## Clean the slate
 systemfonts::clear_local_fonts()
 systemfonts::clear_registry()
+##
 showtext_opts(dpi = 96) #set DPI for showtext
-
-sysfonts::font_add(family = "Alegreya", 
-                   regular = "../../../../../../fonts/Alegreya-Regular.ttf",
-                   italic = "../../../../../../fonts/Alegreya-Italic.ttf",
-                   bold = "../../../../../../fonts/Alegreya-Bold.ttf",
-                   bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
 
 sysfonts::font_add(family = "Roboto Condensed", 
-                   regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
-                   italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
-                   bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
-                   bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
-
-
+  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+showtext_auto(enable = TRUE) #enable showtext
+##
 theme_custom <- function(){ 
-    font <- "Alegreya"   #assign font family up front
+
+    theme_bw(base_size = 10) + 
     
-    theme_classic(base_size = 14) %+replace%    #replace elements we want to change
+    theme_sub_axis(title = element_text(family = "Roboto Condensed", 
+                                       size = 8),
+                   text = element_text(family = "Roboto Condensed", 
+                                       size = 6)) + 
     
-    theme(
-      
-      text = element_text(family = "Alegreya"), #set default font family for all text
-      
-      #text elements
-      plot.title = element_text(                 #title
-                   family = font,                #set font family
-                   size = 24,                    #set font size
-                   face = 'bold',                #bold typeface
-                   hjust = 0,                    #left align
-                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
-      
-      plot.title.position = "plot", 
-      
-      plot.subtitle = element_text(              #subtitle
-                   family = font,                #font family
-                   size = 14,                   #font size
-                   hjust = 0,                   #left align
-                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
-      
-      plot.caption.position = "plot",            #right align
-      
-      axis.title = element_text(                 #axis titles
-                   family = "Roboto Condensed",  #font family
-                   size = 10),                   #font size
-      
-      axis.text = element_text(                  #axis text
-                   family = "Roboto Condensed",  #font family
-                   size = 12),                    #font size
-      
-      axis.text.x = element_text(                #margin for axis text
-                    margin = margin(5, b = 10))
-      
-      #since the legend often requires manual tweaking 
-      #based on plot content, don't define it here
-    )
+    theme_sub_legend(text = element_text(family = "Roboto Condensed", 
+                                         size = 6),
+                     title = element_text(family = "Alegreya", 
+                                          size = 8)) + 
+    
+    theme_sub_plot(title = element_text(family = "Alegreya", 
+                                        size = 14, face = "bold"),
+                   title.position = "plot",
+                   subtitle = element_text(family = "Alegreya", 
+                                           size = 10),
+                   caption = element_text(family = "Alegreya", 
+                                          size = 6),
+                   caption.position = "plot")
+    
 }
 
 ## Use available fonts in ggplot text geoms too!
-update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label", new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -212,7 +203,21 @@ update_geom_defaults(geom = "text",new = list(
 )
 )
 
-update_geom_defaults(geom = "label",new = list(
+ggplot2::update_geom_defaults(geom = "marquee", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "text_repel", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label_repel", new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -221,14 +226,24 @@ update_geom_defaults(geom = "label",new = list(
 )
 
 ## Set the theme
-theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_custom())
+
+## tinytable options
+options("tinytable_tt_digits" = 2)
+options("tinytable_format_num_fmt" = "significant_cell")
+options(tinytable_html_mathjax = TRUE)
+
+
+## Set defaults for flextable
+flextable::set_flextable_defaults(font.family = "Roboto Condensed")
 
 ```
 
 
 
 ## {{< iconify ic baseline-input >}} Read Data
-- Use `readr::read_csv()`; or `data(...)` if the data is in a package. **Do not** use `read.csv()`!!
+
+- Use `readr::read_csv()`; or `data(...)` if the data is in a package. - **Do not** use `read.csv()`!!
 
 ```{r}
 #| label: read-data
@@ -243,7 +258,7 @@ penguins
 ## {{< iconify file-icons influxdata >}} Examine Data
 
 - Use `dplyr::glimpse()`
-- Use `mosaic::inspect()` OR `skimr::skim()`
+- Use `skimr::skim()` OR `mosaic::inspect()` 
 - Use `dplyr::summarise()`
 - Use `crosstable::crosstable()`
 - Highlight any **interesting summary stats** or **data imbalances**, 
@@ -268,6 +283,7 @@ penguins %>% crosstable::crosstable(body_mass + bill_len + bill_dep ~ species) %
 
 ::: callout-note
 ### Insights from Data Examination of `penguins`
+
 - `body_mass`: Gentoo penguins look to be the heaviest, followed by Chinstrap and then Adelie
 - `bill_length`: Adelie penguins have the shortest bills.
 - `bill_depth`: No huge difference in bill depth across species
@@ -283,12 +299,14 @@ Etc.
 
 ::: callout-note
 ### Qualitative Variables
+
 - Categorical variables, e.g. `species`, `island`, `sex`
 - Use `dplyr::count()` to get counts of each category
 :::
 
 ::: callout-note
 ### Quantitative Variables
+
 - Continuous variables, e.g. `body_mass_g`, `flipper_length_mm`, `bill_length_mm`
 - Use `dplyr::summarise()` to get summary statistics of each variable
 :::
@@ -325,14 +343,15 @@ dataset_modified %>% tinytable::tt()
 
 ```
 
-Munge the variables **separately** if you need to specify factor `labels` and `levels` for each variable.
+Munge the variables **separately** using `base::factor(levels = ..., labels = ..., ordered = ...) ` if you need to specify factor `labels` and `levels` for each variable.
 
 ## {{< iconify  material-symbols lab-research >}} Form Hypotheses
 
 
 ### Question-1
+
 - State the Question or Hypothesis
-- (Temporarily) Drop variables using `dplyr::select()`
+- (Temporarily) Choose relevant variables using `dplyr::select()`
 - Create new variables if needed with `dplyr::mutate()`
 - Filter the data set using `dplyr::filter()`
 - Reformat data if needed with `tidyr::pivot_longer()` or `tidyr::pivot_wider()`
@@ -363,9 +382,11 @@ penguins %>%
 
 ### Inference-1
 
-Description or Surprise Insight from the above graph/table/test/model
+Description or Surprise Insight from the above graph/table/test/model, e.g.: 
 
-.
+- Gentoo penguins are the largetst, followed by Chinstrap and then Adelie
+- There is a positive correlation between flipper length and body mass, as seen by the general upward-right movement of the data points
+- And so on...
 .
 .
 .

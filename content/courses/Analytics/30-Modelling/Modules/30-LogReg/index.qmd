@@ -1,0 +1,1440 @@
+---
+title: "Modelling with Logistic Regression"
+abstract: "Predicting Qualitative Target Variables"
+author: Arvind V. 
+date: 13/Apr/2023
+date-modified: "`r Sys.Date()`"
+order: 30
+image: featured.png
+image-alt: ""
+categories: 
+  - Logistic Regression
+  - Qualitative Variable
+  - Probability
+  - Odds
+  - Log Transformation
+bibliography: 
+  - grateful-refs.bib
+citation: true
+#suppress-bibliography: true
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+## {{< iconify noto-v1 package >}} Setting up R Packages
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(ggformula)
+library(mosaic)
+library(skimr)
+library(GGally)
+library(infer)
+
+```
+
+```{r}
+#| label: Extra-Pedagogical-Packages
+#| echo: false
+#| message: false
+
+library(checkdown)
+library(epoxy)
+library(TeachHist)
+library(TeachingDemos)
+library(grateful)
+library(ggplot2)
+
+```
+
+#### Plot Fonts and Theme
+
+```{r}
+#| label: plot-theme-ggplot4
+#| cache: false
+#| code-fold: true
+#| messages: false
+#| warning: false
+#| 
+library(systemfonts)
+library(showtext)
+library(ggrepel)
+library(marquee)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+showtext_auto(enable = TRUE) #enable showtext
+##
+theme_custom <- function(){ 
+
+    theme_bw(base_size = 10) + 
+    
+    theme_sub_axis(title = element_text(family = "Roboto Condensed", 
+                                       size = 8),
+                   text = element_text(family = "Roboto Condensed", 
+                                       size = 6)) + 
+    
+    theme_sub_legend(text = element_text(family = "Roboto Condensed", 
+                                         size = 6),
+                     title = element_text(family = "Alegreya", 
+                                          size = 8)) + 
+    
+    theme_sub_plot(title = element_text(family = "Alegreya", 
+                                        size = 14, face = "bold"),
+                   title.position = "plot",
+                   subtitle = element_text(family = "Alegreya", 
+                                           size = 10),
+                   caption = element_text(family = "Alegreya", 
+                                          size = 6),
+                   caption.position = "plot")
+    
+}
+
+## Use available fonts in ggplot text geoms too!
+ggplot2::update_geom_defaults(geom = "text", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+ggplot2::update_geom_defaults(geom = "marquee", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "text_repel", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label_repel", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
+
+## tinytable options
+options("tinytable_tt_digits" = 2)
+options("tinytable_format_num_fmt" = "significant_cell")
+options(tinytable_html_mathjax = TRUE)
+
+
+## Set defaults for flextable
+flextable::set_flextable_defaults(font.family = "Roboto Condensed")
+
+```
+
+
+## {{< iconify openmoji japanese-symbol-for-beginner >}} Introduction
+
+Sometimes the dependent variable is Qualitative: an either/or
+categorization. for example, or the variable we want to predict might be
+`won` or `lost` the contest, `has an ailment` or `not`, `voted` or `not`
+in the last election, or `graduated` from college or `not`. There might
+even be more than two categories such as `voted for Congress`, `BJP`, or
+`Independent`; or `never smoker`, `former smoker`, or `current smoker`.
+
+## {{< iconify radix-icons box-model >}} The Logistic Regression Model
+
+We saw with the [**General Linear Model**](../20-LinReg/index.qmd#assumptions-in-linear-models) that it models the **mean** of
+a target *Quantitative* variable as a linear weighted sum of the
+predictor variables:
+
+$$
+\Large{y \sim N(x_i^T * \beta, ~~\sigma^2)}
+$$ {#eq-general-linear-model}
+
+This model is considered to be **general** because of the dependence on
+potentially *more than one explanatory variable*, v.s. the **simple**
+linear model:[^1] $y = \beta_0 + \beta_1*x_1 + \epsilon$. The general
+linear model gives us model "shapes" that start from [a simple straight
+line to a *p-dimensional hyperplane*]{.black .bg-yellow}.
+
+Although a very useful framework, there are some situations where
+general linear models are not appropriate:
+
+-   the range of Y is restricted (e.g. binary, count)
+-   the variance of Y depends on the mean (Taylor's Law)[^2]
+
+How do we use the familiar *linear model* framework when the
+target/dependent variable is *Categorical*?
+
+### Linear Models for Categorical Targets?
+
+Recall that we spoke of
+`dummy-encoded  Qualitative **predictor** variables` for our linear
+models and how we would **dummy encode** them using numerical values,
+such as 0 and 1, or +1 and -1. Could we try the same way for a
+**target** categorical variable?
+
+$$
+Y_i = \beta_0 + \beta_1*X_i + \epsilon_i\\ \nonumber
+$$ $$
+where\\\
+$$
+
+$$
+\begin{align}
+Y_i &= 0 ~ if ~~~"No"\\ \nonumber
+    &= 1 ~ if ~~~ "Yes"  \nonumber
+\end{align}
+$$
+
+Sadly this seems to not work for categorical dependent variables using a
+simple linear model as before. Consider the Credit Card `Default` data
+from the package `ISLR`.
+
+```{r}
+#| echo: false
+data(Default, package = "ISLR")
+###
+default_modified <- 
+  Default %>%
+## Convert diagnosis to factor
+  # mutate(default_factor = factor(default, levels = c("No", "Yes"),
+  #                           labels = c("0", "1"))) %>%
+## New Variable for graphing with gf_smooth(glm)
+mutate(default_yes = if_else(default == "Yes", 1, 0))
+default_modified
+
+```
+
+We see `balance` and `income` are quantitative **predictors**; `student`
+is a qualitative predictor, and `default` is a qualitative **target**
+variable. If we naively use a linear model equation as
+`model = lm(default ~ balance, data = Default)` and plot it, then...
+
+::::: grid
+::: g-col-6
+```{r}
+#| label: fig-naive-linear-model
+#| fig-cap: "Naive Linear Model"
+#| echo: false
+#| warning: false
+ggplot2::theme_set(new = theme_custom())
+
+lm_mod <- lm(default ~ balance, data = default_modified)
+default_modified %>%
+  gf_point(default ~ balance, colour = ~ default, alpha = 0.2,
+           title = "Student Credit Card Default data") %>% 
+  gf_abline(intercept = lm_mod$coefficients[1],
+            slope = lm_mod$coefficients[2],linewidth = 1) %>% 
+  gf_refine(scale_color_manual(values = c("dodgerblue","firebrick"))) 
+
+```
+:::
+
+::: g-col-6
+
+
+...it is pretty much clear from @fig-naive-linear-model that something
+is very odd. (no pun intended! See below!) If the only possible values
+for `default` are $No = 0$ and $Yes = 1$, how could we interpret
+predicted value of, say, $Y_i = 0.25$ or $Y_i = 1.55$, or perhaps
+$Y_i = -0.22$? Anything other than Yes/No is hard to interpret!
+:::
+:::::
+
+### {{< iconify ic baseline-report-problem >}} {{< iconify ant-design solution-outlined >}} Problems...and Solutions
+
+Where do we go from here?
+
+###### 1. Model Equation: 
+
+Let us state what we might desire of our model: despite this setback, we would still like our model to be as close as possible to the familiar linear model equation. 
+    
+$$
+    Y_i = \beta_0 + \beta_1*X_i + \epsilon_i\\ \nonumber
+$$ 
+$$
+    where\\\
+$$ 
+    
+$$
+    \begin{align}
+    Y_i &= 0 ~ if ~~~"No"\\ \nonumber
+    &= 1 ~ if ~~~ "Yes"  \nonumber
+    \end{align}
+$$ {#eq-linear-model}
+
+###### 2. Predictors and Weights: 
+
+We have quantitative **predictors** so
+    we still want to use a linear-weighted sum for the RHS (i.e
+    predictor side) of the model equation. 
+    What can we try to make this work? Especially for the LHS (i.e the
+target side)?
+
+###### 3. Making the LHS continuous? 
+
+What can we try? In dummy encoding our target variable, we found a range of \[0,1\], [which is the same
+    range for a **probability** value]{.black .bg-yellow}! Could we try
+    to use **probability of the outcome** as our target, even though we
+    are interested in binary outcomes? This would still leave us with a
+    range of $[0,1]$ for the target variable, as before.
+
+:::::: callout-note
+
+#### Binomially distributed target variable
+::::: grid
+::: g-col-6
+
+```{r}
+#| label: fig-variance-plot
+#| fig-cap: "Variance vs Mean for Binomial Distribution"
+#| echo: false
+ggplot2::theme_set(new = theme_custom())
+
+n <- 1
+gf_fun(p *(1 - p) *n ~ p, xlim = c(0, 1), linewidth = 1) %>% 
+    gf_labs(x = "Probability p",
+    y = "Variance",
+    title = "Variance vs Mean: A Nonlinear Relationship",
+    subtitle = "For the Binomial Distribution of p"
+  )
+
+```
+:::
+
+::: g-col-6
+
+[If we map our Categorical/Qualitative target variable into a
+Quantitative probability]{.black .bg-yellow}, we need immediately to
+look at the [**LINE** assumptions in linear
+regression](../20-LinReg/index.qmd#sec-assumptions-in-linear-models).
+
+:::
+
+:::::
+[In linear regression, we assume a normally distributed target
+variable]{.black .bg-yellow}, i.e. the residuals/errors around the
+predicted value are normally distributed. With a categorical target
+variable with two levels $0$ and $1$ it would be impossible for the
+errors $e_i = Y_i - \hat{Y_i}$ to have a *normal distribution*, as
+assumed for the statistical tests to be valid. The errors are bounded by
+$[0,1]$! [One candidate for the error distribution in this case is the
+*binomial distribution*]{.black .bg-yellow}, whose mean and variance are
+`p` and `np(1-p)` respectively.
+
+Note immediately that **the binomial variance moves with the mean**!
+The LINE assumption of *normality* is clearly violated. And from the
+figure above, extreme probabilities (near 1 or 0) are more stable (i.e.,
+have less error variance) than middle probabilities. So the model has
+[*"built-in" heteroscedasticity*]{.black .bg-yellow}, which we need to
+counter with transformations such as the $log()$ function. More on this
+very shortly!
+::::::
+
+###### 4. Odds?
+
+How would one "extend" the range of a target variable
+    from \[0,1\] to $[-\infty, \infty]$ ? One step would be to try the
+    **odds of the outcome**, instead of trying to predict the outcomes
+    directly (Yes or No), or their probabilities $[0,1]$.
+
+::: callout-note
+#### Odds
+
+Odds of an event with probability `p` of occurrence is defined as
+$Odds = p/(1-p)$. As can be seen, the odds are the *ratio* of two
+probabilities, that of the event and its complement. In the `Default`
+dataset just considered, the odds of default and the odds of non-default
+can be calculated as:
+
+::::: grid
+::: g-col-4
+```{r}
+#| echo: false
+default_modified %>% group_by(default) %>% count()
+
+```
+:::
+::: g-col-8
+$$
+\begin{align}
+p(Default) &= 333/(333 + 9667)\\ \nonumber
+           &= 0.333\\ \nonumber
+\end{align}
+$$ 
+
+
+therefore: 
+
+$$
+\begin{align}
+Odds~of~Default &=p(Default)/(1-p(Default))\\ \nonumber
+            &= 0.333/(1-0.333)\\ \nonumber
+            &= 0.5\\
+\end{align}
+$$
+
+and 
+
+$$
+Odds~No~Default = 0.9667/(1-0.9667) = 29
+$$.
+:::
+:::::
+
+Now, [*odds* cover half of real number line, i.e. $[0, \infty]$]{.black
+.bg-yellow} ! Clearly, when the probability `p` of an event is $0$, the
+odds are $0$...and when it nears $1$, the odds tend to $\infty$. So we
+have **transformed** a simple probability that lies between $[0,1]$ to
+odds lying between $[0, \infty]$. That's one step towards making a
+linear model possible; we have "removed" one of the limits on our linear
+model's prediction range by using `Odds` as our target variable.
+
+:::
+
+###### 5. Transformation using `log()`?
+    
+We need one more leap of faith: how do we convert a $[0, \infty]$ range to a $[-\infty, \infty]$? Can we try a log transformation?
+
+$$
+    log([0, \infty]) ~ = ~ [-\infty, \infty]
+$$ 
+
+
+  This extends the range of our Qualitative target to the same as with
+a Quantitative target!
+
+  There is an additional benefit if this `log()` transformation: the
+**Error Distributions with Odds targets**. See the plot below. Odds are
+a necessarily nonlinear function of probability; the slope of
+`Odds ~ probability` also depends upon the probability itself, as we saw
+with the probability curve earlier.
+
+```{r}
+#| label: fig-odds-plot
+#| echo: false
+#| warning: false
+#| layout-ncol: 2
+#| fig-cap: "Odds vs Probability"
+#| fig-subcap: 
+#|   - "Odds"
+#|   - "Log Odds"
+ggplot2::theme_set(new = theme_custom())
+
+gf_fun(p / (1 - p) ~ p, xlim = c(0.01, 0.9), linewidth = 1) %>% 
+  gf_labs(
+    x = "Probability p",
+    y= "Odds",
+    title = "Odds vs Probability",
+    subtitle = "A Nonlinear Relationship")
+
+###
+p <- seq(0.01, 0.95,0.01)
+odds <- p/(1-p)
+
+gf_line(log(odds)~ log(p),linewidth = 1) %>% 
+  gf_labs(
+    x = "log Probability p",
+    y= "log Odds",
+    title = "With log Transformation",
+    subtitle = "More linear now..")
+
+```
+
+To understand this issue intuitively, consider what happens to, say, a
+5% change in the odds ratio near 1.0. If the odds ratio is $1.0$, then
+the probabilities `p` and `1-p` are $0.5$, and $0.5$. A 20% increase in
+the odds ratio to $1.20$ would correspond to probabilities of $0.545$
+and $0.455$. However, if the original probabilities were $0.9$ and $0.1$
+for an odds ratio $9$, then a 20% increase (in odds ratio) to $10.8$
+would correspond to probabilities of $0.915$ and $0.085$, a much smaller
+change in the probabilities. The basic curve is non-linear and the `log`
+transformation flattens this out to provide a more linear relationship,
+which is what we desire.
+
+So in our model, instead of modeling *odds* as the dependent variable,
+we will use $log(odds)$, also known as the **logit**, defined as:
+
+$$
+\begin{align}
+log(odds_i) &= log\bigg[p_i/(1-p_i)\bigg]\\ \nonumber
+            &= logit(p_i)\\ 
+\end{align}
+$$ {#eq-logit}
+
+This is our **Logistic Regression Model**, which uses a Quantitative
+Predictor variable to predict a Categorical target variable. We write
+the model as ( for the `Default` dataset ) :
+
+$$
+\Large{logit(default) = \beta_0 + \beta_1 * balance}
+$$ {#eq-logistic-regression-1}
+
+
+This means that:
+
+$$
+log(p(default)/(1-p(default))) = \beta_0+\beta_1 * balance
+$$ 
+and therefore: 
+
+$$
+\begin{align}
+p(default) &= \frac{exp(\beta_0 + \beta_1 * balance)}{1 + exp(\beta_0 + \beta_1 * balance)}\\
+&= \frac{1}{1 + exp^{-(\beta_0 + \beta_1 * balance)}}
+\end{align}
+$$ {#eq-logistic-regression-2}
+
+From the @eq-logistic-regression-1 above it should be clear that a *unit
+increase* in `balance` should increase the odds of `default` by
+$\beta_1$ units. The RHS of @eq-logistic-regression-2 is a *sigmoid*
+function of the weighted sum of predictors and is limited to the range
+\[0,1\].
+
+::: column-page-right
+```{r}
+#| label: fig-model-plots
+#| echo: false
+#| warning: false
+#| layout-ncol: 3
+#| fig-cap: "Model Plots"
+#| fig-subcap: 
+#|   - "naive linear regression model"
+#|   - "logistic regression model"
+#|   - "log odds gives linear models"
+
+library(latex2exp)
+ggplot2::theme_set(new = theme_custom())
+
+default_modified %>%
+  gf_point(default ~ balance, colour = ~ default, size = 2,
+           title = "Student Credit Card Default data") %>%
+  gf_abline(intercept = lm_mod$coefficients[1],
+            slope = lm_mod$coefficients[2], linewidth = 1) %>%
+  gf_refine(scale_color_manual(values = c("dodgerblue","firebrick"))) 
+#######
+default_modified %>%
+  gf_point(
+    default_yes ~ balance,
+    color = ~ default, 
+    alpha = 0.3, size = 2,
+    ylab = "Probability of Default",
+    title = "Student Credit Card Default data") %>%
+  ## gf_smooth and gf_fun below give the same curve, of course.
+  gf_smooth(
+    method = glm,
+    method.args = list(family = "binomial"),
+    se = FALSE,
+    color = "black"
+  ) %>% 
+  # gf_fun(exp(0.01 * (x - 1600)) / (1 + exp(0.01 * (x - 1600))) + 1 ~ x,
+  #        xlim = c(1, 3000), linewidth = 2) %>%
+  gf_refine(annotate("text", y = 0.5, x = 1500, 
+                     label = "Logistic Regression\n model")) %>%
+  #gf_refine(scale_y_discrete(labels = c(0, 1))) %>% 
+  gf_refine(scale_color_manual(values = c("dodgerblue","firebrick"))) 
+####
+Default %>%
+mutate(default = if_else(default == "No", -1000, 1000)) %>%
+  gf_point(default ~ balance,
+           color = ~ default,
+           alpha = 0.2,
+           ylab = "Log(odds) of Default",
+           title = "Student Credit Card Default data",
+           subtitle = "Log(odds) on Y-axis gives Straight Line Model",
+           caption = "Y-axis limits are meant to be +/- infinity!!") %>%
+  gf_abline(intercept = -1500, slope = 1.0) %>%
+  gf_annotate(geom = "text", y = -250, x = 2000, 
+            label = "Logistic Regression\n model") %>%
+  ##
+  ## See <https://stackoverflow.com/questions/12514612/how-to-annotate-ggplot-with-latex#comment69094909_40528496>
+  ##annotate(geom='text', x=3, y=3, label=Tex("$\\hat{Y} = B_0 + B_1X_1", output='character'), parse=TRUE)
+  ##
+  gf_annotate(geom = "label", x = 2000, y = -25,
+    label = TeX("$y = beta_0 + beta_1 * balance", output='character'),
+    parse = TRUE, color = "black", fill = "moccasin"
+  ) %>% 
+  gf_refine(scale_color_fermenter(palette = "RdBu",
+                                  guide = "none")) %>% 
+  gf_annotate("text", x = 300, y = 900, label = "P(default) = 1") %>% 
+  gf_annotate("text", x = 300, y = -900, label = "P(default) = 0")
+
+```
+
+If we were to include `income` also as a *predictor* variable in the
+model, we might obtain something like:
+:::
+
+$$
+\begin{align}
+p(default) &= \frac{exp(\beta_0 + \beta_1 * balance + \beta_2 * income)}{1 + exp(\beta_0 + \beta_1 * balance + \beta_2 * income)}\\
+&= \frac{1}{1 + exp^{-(\beta_0 + \beta_1 * balance + \beta_2 * income)}}
+\end{align}
+$$ {#eq-logistic-regression-3}
+
+This model @eq-logistic-regression-3 is plotted a little differently,
+since it includes *three variables*. We'll see this shortly, with code.
+The thing to note is that the formula inside the `exp()` is a **linear
+combination** of the predictors!
+
+###### 6.Estimation of Model Parameters: 
+
+The parameters $\beta_i$ now
+    need to be estimated. How might we do that? This last problem is
+    that because we have made so many transformations to get to the
+    `logits` that we want to model, the logic of minimizing the **sum of
+    squared errors(SSE)** is no longer appropriate.
+
+::: callout-note
+#### Infinite SSE!!
+
+The probabilities for `default` are $0$ and $1$. At these values [the
+`log(odds)` will map respectively to $-\infty$ and $\infty$]{.black
+.bg-red} `r emoji::emoji("scream-cat")`. So if we naively try to take
+residuals, we will find that they are **all** $\infty$ !! Hence the Sum of Squared Errors $SSE$ cannot be computed and we need another way to assess the quality of our
+model.
+:::
+
+Instead, we will have to use [**maximum likelihood
+estimation(MLE)**](./#workflow-model-building) to estimate the
+models. The *maximum likelihood method* maximizes the probability of obtaining the data at hand against every choice of model parameters $\beta_i$. (And compare that method with the $X^2$ ("chi-squared") test and statistic instead of `t` and `F` to evaluate the model comparisons)
+
+:::: {.content-hidden when-format="html"}
+## {{< iconify tdesign function-curve >}} Generalized Linear Model
+
+::: callout-important
+A **generalized linear model** is made up of a linear predictor:
+
+$$
+\eta_i = \beta_0 + \beta_1x_{1i} + ... + \beta_px_{pi}
+$$
+
+and two functions:
+
+-   a link function that describes how the mean, $E(Y_i) = \mu_i$,
+    depends on the linear predictor:\
+
+$$
+    g(\mu_i) = \eta_i
+$$
+
+-   a variance function that describes how the variance, $var(Y_i)$
+    depends on the mean:\
+
+$$
+    var(Y_i) = \Phi*V(\mu_i)
+$$
+
+where the dispersion parameter $\Phi$ is a constant.
+:::
+
+For example we can obtain our *general linear model* with the following
+choice:
+
+$$
+\begin{align}
+& g(\mu_i) = \mu_i\\
+& Phi = 1
+\end{align}
+$$
+
+If now we assume that the *target* variable $Y_i$ is a **binomial**,
+i.e. a two-valued variable:\
+
+$$
+\begin{align}
+ & Y_i = binom(n_i,p_i)\\
+ & mean(Y_i) = n_ip_i\\
+ & var(Y_i) = n_ip_i(1-p_i)
+\end{align}
+$$
+
+Now, we wish to model the **proportions** $Y_i/n_i$, as our **target**.
+Then we can state that:\
+
+$$
+\begin{align}
+mean(Y_i/n_i) = p_i := \mu_i\\
+var(Y_i/n_i) = var(Y_i)/n_i^2 = \frac{p_i(1-p_i)}{n_i} := \sigma_i^2\\
+\end{align}
+$$
+
+Inspecting the above, we can write:
+
+$$
+\sigma_i^2 = \frac{\mu_i(1-\mu_i)}{n_i}
+$$
+
+and since the link function needs to map ${[-\infty, \infty]}$ to
+${[0,1]}$, we use the `logit` function:
+
+$$
+g(\mu_i) = logit(\mu_i) = log(\frac{\mu_i}{1-\mu_i})
+$$
+::::
+
+## {{< iconify flat-color-icons workflow >}} Workflow: Breast Cancer Dataset
+
+Let us proceed with the logistic regression workflow. We will use the
+well-known `Wisconsin breast cancer` dataset, readily available from
+[Vincent Arel-Bundock's
+website.](https://vincentarelbundock.github.io/Rdatasets/articles/data.html)
+
+## {{< iconify flat-color-icons workflow >}} Workflow: Read the Data
+
+```{r}
+#| label: read-data
+cancer <- read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/dslabs/brca.csv") %>% 
+  janitor::clean_names()
+glimpse(cancer)
+skim(cancer)
+
+```
+
+We see that there are 31 Quantitative variables, all named as `x_***`,
+and one Qualitative variable,`y`, which is a two-level target. (B =
+Benign, M = Malignant). The dataset has 569 observations, and no missing
+data.
+
+### {{< iconify flat-color-icons workflow >}} Workflow: Data Munging
+
+Let us rename `y` as `diagnosis` and take two other Quantitative
+parameters as `predictors`, suitably naming them too. We will also
+create a binary-valued variable called `diagnosis_malignant` (Binary,
+Malignant = 1, Benign = 0) for use as a `target` in our logistic
+regression model.
+
+```{r}
+#| label: data-munging
+#| code-fold: true
+cancer_modified <- cancer %>%
+  rename(
+    "diagnosis" = y,
+    "radius_mean" = x_radius_mean,
+    "concave_points_mean" = x_concave_pts_mean) %>%
+  ## Convert diagnosis to factor
+  mutate(diagnosis = factor(
+    diagnosis,
+    levels = c("B", "M"),
+    labels = c("B", "M"))) %>% 
+  ## New Variable
+  mutate(diagnosis_malignant = if_else(diagnosis == "M", 1, 0)) %>% 
+  select(radius_mean, concave_points_mean, diagnosis, diagnosis_malignant)
+  
+cancer_modified
+
+```
+
+::: callout-note
+#### Research Question
+
+How can we predict whether a cancerous tumour is `Benign` or
+`Malignant`, based on the variable `radius_mean` **alone**, and with
+both `radius_mean` and `concave_points_mean`?
+:::
+
+### {{< iconify flat-color-icons workflow >}} Workflow: EDA
+
+Let us use `GGally` to plot a set of combo-plots for our modified
+dataset:
+
+```{r}
+#| label: fig-pairs-plot-1
+#| fig-cap: "Pairs Plot for Cancer Data"
+#| code-fold: true
+#| message: false
+ggplot2::theme_set(new = theme_custom())
+
+cancer_modified %>% 
+  select(diagnosis, radius_mean, concave_points_mean) %>% 
+  GGally::ggpairs(mapping = aes(colour = diagnosis),
+                  switch = "both",
+  # axis labels in more traditional locations(left and bottom)
+  
+  progress = FALSE,
+  # no compute progress messages needed
+  
+  # Choose the diagonal graphs (always single variable! Think!)
+  diag = list(continuous = "densityDiag", alpha = 0.3),
+  # choosing density
+  
+  # Choose lower triangle graphs, two-variable graphs
+  lower = list(continuous = wrap("points", alpha = 0.3)),
+  
+  title = "Cancer Pairs Plot #1") + 
+  scale_color_brewer(palette = "Set1", 
+                     aesthetics = c("color", "fill"))
+  
+```
+
+::: callout-note
+#### Business Insights from GGally::ggpairs
+
+-   The counts for "B" and "M" are not terribly unbalanced; and both the
+    `radius_mean` and `concave_pts_mean` appear to have well-separated
+    box plot distributions for "B" and "M".
+-   Given the visible separation of the box-plots for both variables
+    `radius_mean` and `concave_pts_mean`, we can believe that these will
+    be good choices as predictors.
+-   Interestingly, `radius_mean` and `concave_pts_mean` are also
+    mutually well-correlated, with a $\rho = 0.823$; we may wish (later)
+    to choose (a pair of) predictor variables that are less strongly
+    correlated.
+:::
+
+### {{< iconify flat-color-icons workflow >}} Workflow: Model Building
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+#### {{< iconify mingcute code-fill >}} Model Code
+
+Let us code two models, using one and then both the predictor variables:
+
+```{r}
+#| label: tbl-simple-model
+#| code-fold: true
+#| tbl-cap: "Simple Model"
+#| 
+cancer_fit_1 <- glm(diagnosis_malignant ~ radius_mean, 
+                  data = cancer_modified, 
+                  family = binomial(link = "logit")) 
+
+cancer_fit_1 %>% broom::tidy()
+```
+
+The equation for the simple model is:
+
+```{r}
+#| echo: false
+#| eval: false
+equatiomatic::extract_eq(cancer_fit_1, use_coefs = TRUE,
+                         wrap = TRUE, show_distribution = TRUE,
+                         label = "simple-model"
+                           )
+```
+
+$$
+\begin{aligned}
+\operatorname{diagnosis\_malignant} &\sim Bernoulli\left(\operatorname{prob}_{\operatorname{diagnosis\_malignant} = \operatorname{1}}= \hat{P}\right) \\
+ \log\left[ \frac { \hat{P} }{ 1 - \hat{P} } \right] 
+ &= -15.25 + 1.03(\operatorname{radius\_mean})
+\end{aligned}
+$$ {#eq-simple-model}
+
+Increasing `radius_mean` by one unit changes the log odds by
+$\hat{\beta_1} = 1.033$ or equivalently it multiplies the odds by
+$exp(\hat{\beta_1}) =  2.809$. We can plot the model as shown below:
+
+```{r}
+#| label: fig-model-plot-1
+#| fig-cap: "Simple Model plot"
+#| warning: false
+#| code-fold: true
+ggplot2::theme_set(new = theme_custom())
+
+qthresh <- c(0.2, 0.5, 0.8)
+beta01 <- coef(cancer_fit_1)[1]
+beta11 <- coef(cancer_fit_1)[2]
+decision_point <- (log(qthresh / (1 - qthresh)) - beta01) / beta11
+##
+cancer_modified %>%
+  gf_point(
+    diagnosis_malignant ~ radius_mean,
+    colour = ~ diagnosis,
+    title = "diagnosis ~ radius_mean",
+    xlab = "Average radius",
+    ylab = "Diagnosis (1=malignant)", size = 3, show.legend = F) %>%
+  # gf_fun(exp(1.033 * radius_mean - 15.25) / (1 + exp(1.033 * radius_mean - 15.25)) ~ radius_mean, xlim = c(1, 30), linewidth = 3, colour = "red") %>%
+  gf_smooth(
+    method = glm,
+    method.args = list(family = "binomial"),
+    se = FALSE,
+    color = "black"
+  ) %>%
+  gf_vline(xintercept = decision_point, linetype = "dashed") %>%
+  gf_refine(annotate(
+    "text",
+    label = paste0("q = ", qthresh),
+    x = decision_point + 0.45,
+    y = 0.4,
+    angle = -90
+  ), scale_color_brewer(palette = "Set1")) %>%
+  gf_hline(yintercept = 0.5) %>% 
+  gf_theme(theme(plot.title.position = "plot")) %>% 
+  gf_refine(xlim(5, 30))
+
+  
+```
+
+The dotted lines show how the model can be used to classify the data in
+to two classes ("B" and "M") depending upon the threshold probability
+$q$.
+
+```{r}
+#| label: emi-tanaka-1
+#| eval: false
+#| echo: false
+ggplot2::theme_set(new = theme_custom())
+
+ggplot(cancer_modified, aes(radius_mean, diagnosis_malignant)) +
+  geom_point(aes(color = diagnosis, shape = diagnosis), alpha = 0.5, size = 3) + 
+  geom_smooth(method = glm, method.args = list(family = "binomial"), se = FALSE, color = "black") +
+  geom_vline(xintercept = decision_point, linetype = "dashed") +
+  scale_color_brewer(palette = "Set1") +
+  guides(color = "none", shape = "none") +
+  labs(title = "diagnosis ~ radius_mean",
+       x = "Average radius",
+       y = "Diagnosis (1=malignant)") +
+  theme(plot.title = element_text(family = "mono"),
+        plot.title.position = "plot") +
+  annotate("text", label = paste0("q = ", qthresh), 
+           x = decision_point + 0.25, y = 0.4, angle = -90)
+
+```
+
+Taking both predictor variables, we obtain the model:
+
+```{r}
+#| code-fold: true
+#| label: tbl-complex-model
+cancer_fit_2<- glm(diagnosis_malignant ~ radius_mean + concave_points_mean, 
+                  data = cancer_modified, 
+                  family = binomial(link = "logit")) 
+
+cancer_fit_2 %>% broom::tidy()
+
+```
+
+The equation for the more complex model is:
+
+```{r}
+#| echo: false
+#| eval: false
+#| 
+equatiomatic::extract_eq(cancer_fit_2, use_coefs = TRUE,
+                         wrap = TRUE, show_distribution = TRUE,
+                         label = "complex-model"
+                           )
+
+```
+
+$$
+\begin{aligned}
+\operatorname{diagnosis\_malignant} &\sim Bernoulli\left(\operatorname{prob}_{\operatorname{diagnosis\_malignant} = \operatorname{1}}= \hat{P}\right) \\
+ \log\left[ \frac { \hat{P} }{ 1 - \hat{P} } \right] 
+ &= -13.7 + 0.64(\operatorname{radius\_mean}) + 84.22(\operatorname{concave\_points\_mean})
+\end{aligned}
+$$ {#eq-complex-model}
+
+Increasing `radius_mean` by one unit changes the log odds by
+$\hat{\beta_1} = 0.6389$ or equivalently it multiplies the odds by
+$exp(\hat{\beta_1}) =  1.894$, provided `concave_points_mean` is held
+fixed.
+
+We can plot the model as shown below: we create a scatter plot of the
+two predictor variables. The superimposed diagonal lines are lines for
+several constant values of threshold probability $q$.
+
+```{r}
+#| label: fig-model-plot-2
+#| fig-cap: "Complex Model plot"
+#| code-fold: true
+ggplot2::theme_set(new = theme_custom())
+
+beta02 <- coef(cancer_fit_2)[1]
+beta12 <- coef(cancer_fit_2)[2]
+beta22 <- coef(cancer_fit_2)[3]
+##
+decision_intercept <- 1 / beta22 * (log(qthresh / (1 - qthresh)) - beta02)
+decision_slope <- -beta12 / beta22
+##
+cancer_modified %>% 
+  gf_point(concave_points_mean ~ radius_mean,
+           color = ~diagnosis, shape = ~diagnosis,
+          size = 3, alpha = 0.5) %>% 
+  gf_labs(x = "Average radius",
+       y = "Average concave\nportions of the\ncontours",
+       color = "Diagnosis",
+       shape = "Diagnosis",
+       title = "diagnosis ~ radius_mean + concave_points_mean") %>% 
+  gf_abline(slope = decision_slope, intercept = decision_intercept, 
+            linetype = "dashed") %>% 
+  gf_refine(
+  scale_color_brewer(palette = "Set1"),
+  annotate("text", label = paste0("q = ", qthresh), x = 10, y = c(0.08, 0.1, 0.115), angle = -17.155)) %>% 
+  gf_theme(theme(plot.title.position = "plot"))
+
+```
+
+
+#### {{< iconify flat-color-icons workflow >}} Workflow: Model Checking and Diagnostics {#sec-diagnostics}
+
+To Be Written Up. 
+Yeah, sure. 
+
+#### {{< iconify ic twotone-rule >}} Workflow: Checks for Uncertainty
+
+To Be Written Up.
+Hmph.
+
+#### {{< iconify simple-icons hypothesis >}} Logistic Regression Models as Hypothesis Tests
+
+To Be Written Up.
+(This is becoming a joke.)
+:::
+
+## Workflow: Logistic Regression Internals
+
+All that is very well, but what is happening under the hood of the `glm`
+command? Consider the `diagnosis` (target) variable and say the
+`average_radius` feature/predictor variable. What we do is:
+
+1.  Plot a scatter plot
+    `gf_point(diagnosis ~ average_radius, data = cancer_modified)`
+2.  Start with a sigmoid curve with some initial parameters
+    $\hat{\beta_1}$ and $\hat{\beta_0}$ that gives us some prediction of
+    the probability of `diagnosis` for any given `average_radius`
+3.  We know the target labels for each data point ( i.e. "B" and "M").
+    We can calculate [the ***likelihood*** of $\hat{\beta_1}$ and
+    $\hat{\beta_0}$, ***given*** the data]{.black .bg-yellow}.
+4.  We then change the values of $\hat{\beta_1}$ and$\hat{\beta_0}$ and
+    calculate the likelihood again.
+5.  The set of parameters with the ***maximum likelihood(ML)*** for
+    $\hat{\beta_1}$ and $\hat{\beta_0}$ gives us our logistic regression
+    model.
+6.  Use that model henceforth as a model for prediction.
+
+How does one find out the "ML" parameters? There is clearly a two step
+procedure:
+
+-   Find the likelihood of the data for the parameters $\beta_1$
+-   Maximize the likelihood by varying them. In practice, the changes to
+    the parameters (step 5) are made in accordance with a method such as
+    the [Newton-Raphson](https://www.geeksforgeeks.org/newton-raphson-method/) method that can rapidly find the ML values
+    for the parameters.
+
+### Likelihood Function
+
+Let us visualize the variations and computations from step(5). For the
+sake of clarity:
+
+-   we will take a small sample of the original dataset
+-   we take several different values for $\beta_0$ and $\beta_1$
+-   Use these get a set of regression curves
+-   which we superimpose on the scatter plot of the sample
+
+```{r}
+#| echo: false
+
+# This code is not to be dissected in class
+# For exposition purposes only
+# Discuss the results only (graphs)
+
+set.seed(1234)
+##
+cancer_modified_sample <- cancer_modified %>% 
+  slice_sample(n = 5, by = diagnosis_malignant)
+##
+glm_sample_model <- glm(data = cancer_modified_sample, 
+                  diagnosis_malignant ~ radius_mean,
+                  family = binomial(link = "logit"))
+#glm_sample_model
+beta0_sample = coef(glm_sample_model)[1]
+beta1_sample = coef(glm_sample_model)[2]
+
+```
+
+```{r}
+#| echo: false
+#| label: fig-multiple-models
+#| fig-cap: "Multiple Models"
+ggplot2::theme_set(new = theme_custom())
+
+colors <- RColorBrewer::brewer.pal(3, "Set1")
+cancer_modified_sample %>% 
+  gf_smooth(diagnosis_malignant ~ radius_mean, 
+    method = glm,
+    method.args = list(family = "binomial"),
+    se = FALSE,
+    color = "black", linewidth = 1.5
+  ) %>%
+  gf_refine(scale_colour_brewer(palette = "Set1")) %>%
+## Overlaid regression curves
+    gf_fun(ilogit(x * (beta1_sample - 0.002) + beta0_sample - 1) ~ x, xlim = c(10,20), color = "orange") %>% 
+  gf_fun(ilogit(x * (beta1_sample + 0.0075) + beta0_sample + 1) ~ x, xlim = c(10,20), color = "limegreen") %>% 
+  gf_point(diagnosis_malignant ~ radius_mean, 
+           colour = ~ diagnosis, size = 4, 
+           title = "Multiple Models",
+           subtitle = "Varying beta_0 and beta_1") 
+
+
+```
+
+In @fig-multiple-models, we see three models: the "optimum" one in
+black, and two others in [green]{.black .bg-green} and [orange]{.black .bg-gold} respectively.
+
+We now project the actual points on to the regression curve, to obtain
+the predicted probability for each point.
+
+```{r}
+#| label: fig-point-projection
+#| fig-cap: "Point Projection and Probability Lookup"
+#| fig-subcap:
+#| - "Point Projection Model #1"
+#| - "Probability Lookup Model #1"
+#| - "Point Projection Model #2"
+#| - "Probability Lookup Model #2"
+#| code-fold: true
+#| layout-ncol: 2
+#| 
+ggplot2::theme_set(new = theme_custom())
+
+plot_dat <- cancer_modified_sample %>% 
+  mutate(
+  curve1 = ilogit(radius_mean * (beta1_sample - 0.002) + beta0_sample - 1),
+  curve2 = ilogit(radius_mean * (beta1_sample + 0.0075) + beta0_sample + 1))
+#plot_dat
+## Now plot the two steps for each regression curve
+## 1. Point projection
+plot_dat %>% 
+  gf_point(diagnosis_malignant ~ radius_mean, 
+           colour = ~ diagnosis, size = 4, title = "Data Point Projection") %>% 
+    gf_smooth(
+    method = glm,
+    method.args = list(family = "binomial"),
+    se = FALSE,
+    color = "grey"
+  ) %>%
+  gf_refine(scale_color_brewer(palette = "Set1")) %>%
+## Overlaid regression curves
+    gf_fun(ilogit(x * (beta1_sample - 0.002) + beta0_sample - 1) ~ x, xlim = c(10,20), color = "orange",linewidth = 2) %>% 
+  gf_point(curve1 ~ radius_mean, size = 4) %>% 
+  gf_segment(curve1 + diagnosis_malignant ~ radius_mean + radius_mean, arrow = arrow(ends = "first", angle = 15, type = "closed", length = unit(0.125, "inches")))
+
+  # %>% 
+  # gf_segment(curve1 + curve1 ~ radius_mean + 0)
+
+## 2. probability lookup
+plot_dat %>% 
+  gf_point(diagnosis_malignant ~ radius_mean, 
+           colour = ~ diagnosis, size = 4, alpha = 0.3,
+           title = "Predicted Probability Lookup") %>% 
+    gf_smooth(
+    method = glm,
+    method.args = list(family = "binomial"),
+    se = FALSE,
+    color = "grey"
+  ) %>%
+  gf_refine(scale_color_brewer(palette = "Set1")) %>%
+  
+gf_fun(ilogit(x * (beta1_sample - 0.002) + beta0_sample - 1) ~ x, 
+       xlim = c(10,20), color = "orange", linewidth = 2) %>% 
+  gf_point(curve1 ~ radius_mean, size = 4) %>% 
+  #gf_segment(curve1 + diagnosis_malignant ~ radius_mean + radius_mean) %>% 
+  gf_segment(curve1 + curve1 ~ radius_mean + 10, 
+             arrow = arrow(ends = "last", angle = 15, 
+                           length = unit(0.1, "inches")))
+
+
+
+### Curve 2
+## Now plot the two steps for each regression curve
+## 1. Point projection
+plot_dat %>% 
+  gf_point(diagnosis_malignant ~ radius_mean, 
+           colour = ~ diagnosis, size = 4, title = "Data Point Projection") %>% 
+    gf_smooth(
+    method = glm,
+    method.args = list(family = "binomial"),
+    se = FALSE,
+    color = "grey"
+  ) %>%
+  gf_refine(scale_color_brewer(palette = "Set1")) %>%
+  ## Overlaid regression curves
+    gf_fun(ilogit(x * (beta1_sample + 0.0075) + beta0_sample + 1) ~ x, xlim = c(10,20), color = "limegreen", linewidth = 2) %>% 
+  gf_point(curve2 ~ radius_mean, size = 4) %>% 
+  gf_segment(curve2 + diagnosis_malignant ~ radius_mean + radius_mean) %>%  gf_segment(curve2 + diagnosis_malignant ~ radius_mean + radius_mean, arrow = arrow(ends = "first", angle = 15, type = "closed", length = unit(0.125, "inches")))
+
+## 2. probability lookup
+plot_dat %>% 
+  gf_point(diagnosis_malignant ~ radius_mean, 
+           colour = ~ diagnosis, size = 4, alpha = 0.3,
+           title = "Predicted Probability Lookup") %>% 
+    gf_refine(scale_color_brewer(palette = "Set1")) %>%
+    gf_smooth(
+    method = glm,
+    method.args = list(family = "binomial"),
+    se = FALSE,
+    color = "grey"
+  ) %>%
+gf_fun(ilogit(x * (beta1_sample + 0.0075) + beta0_sample + 1) ~ x, xlim = c(10,20), color = "limegreen", linewidth = 2) %>% 
+  gf_point(curve2 ~ radius_mean, size = 4) %>% 
+  #gf_segment(curve2 + diagnosis_malignant ~ radius_mean + radius_mean) %>% 
+  gf_segment(curve2 + curve2 ~ radius_mean + 10, arrow = arrow(ends = "last", angle = 15, length = unit(0.1, "inches")))
+
+```
+
+The predicted probability $p_i$ for each datum(radius_mean) is for the tumour being Malignant. If the datum corresponds to a tumour that is Benign, we must take $1-p_i$. Each datum point is assumed to be *independent*, so we can calculate the likelihood as a **product of probabilities**, as follows: In this way, we calculate the likelihood of the data, give the model parameters as:
+
+$$
+\large{
+\begin{equation}
+\begin{aligned}
+likelihood &=  \prod_{Malignant}^{}p_i ~ \times ~ \prod_{Benign}^{}(1 - p_i)\\
+&= \prod_{}^{}p_i^{y_{Malignant = 1}} ~ \times ~ (1-p_i)^{y_{Benign = 1}}\\
+&= \prod_{}^{}(p_i)^{y_i} ~\times~ (1-p_i)^{1-y_i}// 
+~since~labels~y_i~are~binary~1~or~0//
+\end{aligned}
+\end{equation}
+}
+$$
+
+Lastly, since this is a product of small numbers, it can lead to inaccuracies, so we take the log of the whole thing to make it into an addition, obtaining the **log-likelihood (LL)**:
+
+$$
+\large{
+\begin{equation}
+\begin{aligned}
+log~likelihood ~~ ll(\beta_i) &= log\prod_{}^{}(p_i)^{y_i} * (1-p_i)^{1-y_i}\\
+&= \sum_{}^{} y_i * log (p_i) + (1-y_i) * log(1 - p_i)\\
+\end{aligned}
+\end{equation}
+}
+$${#eq-log-likelihood}
+
+
+### Maximum Likelihood Estimation 
+
+We now need to find the (global) **maximum** of this quantity and determine the $\beta_i$. Flipping this problem around, we find the *maximum likelihood* by **minimizing** the slope/gradient of of the LL!! And, to minimize the *slope of the LL*, we use the [Newton-Raphson method](https://www.geeksforgeeks.org/newton-raphson-method/) or equivalent. Phew!
+
+::::: callout-note
+##### The Newton-Raphson Method
+:::: grid
+::: g-col-6
+
+```{r}
+#| label: newton-raphson
+#| echo: false
+ggplot2::theme_set(new = theme_custom())
+
+my_fun_exp = expression(0.005 * (x - 2)^3 + 5)
+my_fun_slope_exp = D(my_fun_exp, "x")
+my_fun <- function(x) {
+  0.005 * (x - 2)^3 + 5
+}
+my_fun_slope <- function(x) {
+  0.005 * (3 * (x - 2)^2)
+}
+### Iteration 1
+x1 <- 17
+y1 <- my_fun(x1)
+slope1 <- my_fun_slope(x1)
+intercept1 <- y1 - x1 * slope1
+
+## Iteration 2
+x2 <- - intercept1 / slope1
+y2 <- my_fun(x2)
+slope2 <- my_fun_slope(x2)
+intercept2 <- y2 - x2 * slope2
+
+## Iteration 3
+x3 <- - intercept2 / slope2
+y3 <- my_fun(x3)
+slope3 <- my_fun_slope(x3)
+intercept3 <- y3 - x3 * slope3
+
+##
+gf_fun(my_fun(x) ~ x, xlim = c(1, 20), linewidth = 2) %>%
+  gf_labs(x = "x", y = "y", title = "Newton-Raphson Minimization",
+          caption = "Grey lines are tangents") %>%
+  
+  # tangent 1
+  gf_abline(slope = slope1,
+            intercept = intercept1,
+            color = "grey") %>%
+  ## Imaginary y-axis moved to x1 for exposition purposes
+  gf_vline(xintercept = x1, linetype = "dashed", linewidth = 0.5) %>% 
+  gf_segment(y1 + 0 ~ x1 + x1, arrow = arrow(
+    ends = "first",
+    angle = 15,
+    length = unit(0.2, "inches")
+  )) %>%
+  gf_point(my_fun(x1) ~ x1, size = 4, color = "red") %>%
+  gf_point(0 ~ x1, size = 4, color = "red") %>%
+  
+  # tangent 2
+  gf_abline(
+    slope = slope2,
+    intercept = y2 - x2 * slope2,
+    color = "grey"
+  ) %>%
+  gf_segment(y2 + 0 ~ x2 + x2, arrow = arrow(
+    ends = "first",
+    angle = 15,
+    length = unit(0.2, "inches")
+  )) %>%   
+  gf_point(my_fun(x2) ~ x2, size = 4, color = "dodgerblue") %>%
+  gf_point(0 ~ x2, size = 4, color = "dodgerblue") %>%
+  
+  # tangent 3
+  gf_abline(
+    slope = slope3,
+    intercept = y3 - x3 * slope3,
+    color = "grey"
+  ) %>%
+  gf_segment(y3 + 0 ~ x3 + x3, arrow = arrow(
+    ends = "first",
+    angle = 15,
+    length = unit(0.2, "inches")
+  )) %>% 
+  gf_point(my_fun(x3) ~ x3, size = 4, color = "seagreen") %>%
+  gf_point(0 ~ x3, size = 4, color = "seagreen") %>%
+  
+  gf_refine(scale_y_continuous(expand = c(0, 0))) %>% 
+  gf_refine(annotate(geom = "text", x = x1 + 1.5, y = 2, 
+                     label = "(x1,0)"),
+            annotate(geom = "text", x = x1 + 1.5, y = y1, 
+                     label = "(x1,y1)"),
+            
+            annotate(geom = "text", x = x2 + 1.5, y = 2, 
+                     label = "(x2,0)"),
+            annotate(geom = "text", x = x2 + 1.5, y = y2, 
+                     label = "(x2,y2)"),
+            
+            annotate(geom = "text", x = x3 + 1.5, y = 2, 
+                     label = "(x3,0)"),
+            annotate(geom = "text", x = x3 + 1.5, y = y3 + 2, 
+                     label = "(x3,y3)"),
+            annotate(geom = "text", x = 15, y = 30, 
+                     label = "y = f(x)"),
+            annotate('curve',x = 16, y = 30, yend = 28,
+                     xend = 18, linewidth = 1, curvature = - 0.5,
+                     arrow = arrow(length = unit(0.5, 'cm'))), 
+                  
+            annotate(geom = "text", label = "Iter #1", 
+                     x = x1 - 1, 
+                     y = y1 + 1.5, color = "red"),
+            annotate(geom = "text", label = "Iter #2", 
+                     x = x2 - 1, 
+                     y = y2 + 1, color = "dodgerblue"),
+            annotate(geom = "text", label = "Iter #3", 
+                     x = x3 - 1, 
+                     y = y3 + 1.5, color = "seagreen"))
+# 
+# %>% 
+#   gf_refine(coord_equal())
+```
+
+
+:::
+
+::: g-col-6
+- The black curve $y = fx)$ is the function to be minimized, i.e. it is the **gradient of the LL function**. 
+- We start with any arbitrary starting value of $x = x1, y1 = f(x1)$ and calculate the tangent/slope/gradient equation $f'(x1)$ at point $(x1, y1) = (x1, f(x1))$. 
+- The tangent $f'(x1)$ cuts the $x-axis$ at $x2$.(Grey line).
+- Repeat.
+- Stop when the gradient becomes very small and $x_i$ changes very in successive iterations.
+
+:::
+
+::::
+
+How do we calculate the next value of x using the tangent?
+
+- At $(x1,y1)$, the tangent equation is: $y = y1 - slope1 * (x - x1)$.
+- This equation applies at point $(x2,0$), so $0 = y1 - slope1 *(x2 - x1)$. (NOTE: *Imagine that this is obtained by temporarily moving the y-axis to $x = x1$* (dotted line), so $y1$ in effect is the "c" in $y = mx + c$)
+- Solving for $x2$, we get: $x2 = y1/slope1 - x1 = f(x1)/f'(x1)$
+- Since $f(x)$ **is already the gradient of LL**, we have: $x2 = x1 - ll'(x1)/ll''(x1)$ !!
+
+:::::
+
+## To be written up
+
+- Formula for gradient of LL
+- Convergence of Newton- Raphson method for Maximum Likelihood
+- Hand Calculation of all steps (!!)
+- Bah.
+
+
+## {{< iconify fluent-mdl2 decision-solid >}} Conclusions
+
+- Logistic Regression is a great ML algorithm for predicting **Qualitative** target variables. 
+- It also works for *multi-level/multi-valued* Qual variables (multinomial logistic regression)
+- The internals of Logistic Regression are quite different compared to Linear Regression
+
+## {{< iconify ooui references-rtl >}} References {#sec-references}
+
+1.  Judd, Charles M. & McClelland, Gary H. & Ryan, Carey S. *Data
+    Analysis: A Model Comparison Approach to Regression, ANOVA, and
+    Beyond.* Routledge, Aug 2017. Chapter 14.
+1. Emi Tanaka.*Logistic Regression*
+    <https://emitanaka.org/iml/lectures/lecture-04A.html#/TOC>. Course:
+    ETC3250/5250, Monash University, Melbourne, Australia.
+1. Geeks for Geeks.*Logistic Regression*. <https://www.geeksforgeeks.org/understanding-logistic-regression/>
+1. Geeks for Geeks.*Maximum Likelihood Estimation*. <https://www.geeksforgeeks.org/probability-density-estimation-maximum-likelihood-estimation/>
+1.  <https://yury-zablotski.netlify.app/post/how-logistic-regression-works/>
+1.  <https://uc-r.github.io/logistic_regression>
+1.  <https://francisbach.com/self-concordant-analysis-for-logistic-regression/>
+1.  <https://statmath.wu.ac.at/courses/heather_turner/glmCourse_001.pdf>
+1.  <https://jasp-stats.org/2022/06/30/generalized-linear-models-glm-in-jasp/>
+1.  P. Bingham, N.Q. Verlander, M.J. Cheal (2004). *John Snow, William
+    Farr and the 1849 outbreak of cholera that affected London: a
+    reworking of the data highlights the importance of the water
+    supply*. Public Health Volume 118, Issue 6, September 2004, Pages
+    387-394. <u>[Read the
+    PDF.](https://sci-hub.se/https://doi.org/10.1016/j.puhe.2004.05.007)</u>
+1.  <https://peopleanalytics-regression-book.org/bin-log-reg.html>
+1. McGill University. *Epidemiology* <https://www.medicine.mcgill.ca/epidemiology/joseph/courses/epib-621/logfit.pdf>
+1. <https://arunaddagatla.medium.com/maximum-likelihood-estimation-in-logistic-regression-f86ff1627b67>
+1. Paul Roback & Julie Legler. (January 26, 2021). *Beyond Multiple Linear Regression: Applied Generalized Linear Models and Multilevel Models in R* <https://bookdown.org/roback/bookdown-BeyondMLR/>
+
+
+::: {#refs style="font-size: 60%;"}
+###### {{< iconify lucide package-check >}} R Package Citations
+
+```{r}
+#| echo: false
+# scan_packages()
+cite_packages(
+  output = "table",
+  out.dir = ".",
+  out.format = "html",
+  pkgs = c("ISLR","equatiomatic")
+) %>%
+  knitr::kable(format = "simple")
+
+```
+:::
+
+[^1]: <https://statmath.wu.ac.at/courses/heather_turner/glmCourse_001.pdf>
+
+[^2]: <https://en.wikipedia.org/wiki/Taylor%27s_law>

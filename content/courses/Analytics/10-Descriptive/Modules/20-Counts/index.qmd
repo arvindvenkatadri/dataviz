@@ -1,0 +1,1382 @@
+---
+title: <iconify-icon icon="eos-icons:counting" width="1.2em" height="1.2em"></iconify-icon> Counts 
+subtitle: "How Many of this and that? "
+author: Arvind V.
+date: 23/Jun/2024
+date-modified: "`r Sys.Date()`"
+abstract: "Bar Charts and their Siblings"
+order: 20
+image: preview.jpg
+image-alt: Image by rawpixel.com
+df-print: paged
+categories:
+- Qual Variables
+- Bar Charts
+- Column Charts
+bibliography: 
+  - references.bib
+  - grateful-refs.bib
+citation: true
+#suppress-bibliography: true
+# editor: 
+#   markdown: 
+#     wrap: 72
+webr:
+  packages: ['janitor','readr', 'tidyr', 'dplyr','mosaic', 'skimr', 'ggformula','ggridges', 'palmerpenguins', 'tidyplots', 'systemfonts', 'showtext']
+    
+---
+
+![You're Nothing but a Pack of Cards!!](../../../../../materials/images/1book41.jpg){height=250 fig-align="center"}
+
+:::: {.pa4}
+::: {.athelas .ml0 .mt0 .pl4 .black-90 .bl .bw2 .b--blue}
+["No matter what happens in life, be good to people. Being good to people is a wonderful legacy to leave behind."]{.f5 .f4-m .f3-l .lh-copy .measure .mt0}
+
+[ --- Taylor Swift]{.f6 .ttu .tracked .fs-normal}
+
+:::
+::::
+
+## {{< iconify noto-v1 package >}} Setting up R Packages
+
+```{r}
+#| label: setup
+#| include: true
+#| message: false
+#| warning: false
+
+library(tidyverse) # Sine qua non
+library(mosaic) # Out all-in-one package
+library(ggformula) # Graphing package
+library(skimr) # Looking at Data
+library(janitor) # Clean the data
+library(naniar) # Handle missing data
+library(visdat) # Visualise missing data
+library(tinytable) # Printing Static Tables for our data
+library(DT) # Interactive Tables for our data
+library(crosstable) # Multiple variable summaries
+library(marquee) # For Annotations with Fonts
+library(ggrepel) # Repel overlapping text labels in ggplot2
+```
+
+```{r}
+#| label: Extra-Pedagogical-Packages
+#| echo: false
+#| message: false
+
+library(checkdown)
+library(epoxy)
+library(TeachHist)
+library(TeachingDemos)
+library(visualize) # Plot Densities, Histograms and Probabilities as areas under the curve
+library(grateful)
+library(MKdescr)
+library(downloadthis)
+#devtools::install_github("mccarthy-m-g/embedr")
+library(embedr) # Embed multimedia in HTML files
+
+```
+
+#### Plot Fonts and Theme
+
+```{r}
+#| label: plot-theme-ggplot4
+#| cache: false
+#| code-fold: true
+#| messages: false
+#| warning: false
+#| 
+library(systemfonts)
+library(showtext)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+showtext_auto(enable = TRUE) #enable showtext
+##
+theme_custom <- function(){ 
+
+    theme_bw(base_size = 10) + 
+    
+    theme_sub_axis(title = element_text(family = "Roboto Condensed", 
+                                       size = 8),
+                   text = element_text(family = "Roboto Condensed", 
+                                       size = 6)) + 
+    
+    theme_sub_legend(text = element_text(family = "Roboto Condensed", 
+                                         size = 6),
+                     title = element_text(family = "Alegreya", 
+                                          size = 8)) + 
+    
+    theme_sub_plot(title = element_text(family = "Alegreya", 
+                                        size = 14, face = "bold"),
+                   title.position = "plot",
+                   subtitle = element_text(family = "Alegreya", 
+                                           size = 10),
+                   caption = element_text(family = "Alegreya", 
+                                          size = 6),
+                   caption.position = "plot")
+    
+}
+
+## Use available fonts in ggplot text geoms too!
+ggplot2::update_geom_defaults(geom = "text", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+ggplot2::update_geom_defaults(geom = "marquee", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "text_repel", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label_repel", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
+
+## tinytable options
+options("tinytable_tt_digits" = 2)
+options("tinytable_format_num_fmt" = "significant_cell")
+options(tinytable_html_mathjax = TRUE)
+
+
+## Set defaults for flextable
+flextable::set_flextable_defaults(font.family = "Roboto Condensed")
+
+```
+
+
+## {{< iconify fxemoji japanesesymbolforbeginner >}} What graphs will we see today?
+
+| Variable #1 | Variable #2 | Chart Names |                    Chart Shape    | 
+|:-------------:|:--------------:|:------------------:|:--------------------:|:------:|
+|    Qual   |    None     |  Bar Chart  | {{< iconify ion bar-chart size=4x >}}|
+
+## {{< iconify tabler variable >}} What kind of Data Variables will we choose?
+
+::: column-page-inset-right
+
+```{r}
+#| message: false
+#| echo: false
+#| warning: false
+read_csv("../../../../../materials/Data/pronouns.csv") %>% 
+  filter(No == "3") %>% 
+  tt(theme = "striped")
+  
+```
+:::
+
+
+### {{< iconify icons8 idea >}} Inspiration: Column Chart
+
+![Capital Cities](capitals-vs-rest.jpeg){#fig-column-chart-inspiration height=360 width=560}
+
+How much does the (financial) capital of a country contribute to its GDP? Which would be India's city? What would be the reduction in percentage? [And these Germans are crazy. (Toc, toc, toc, toc!)](https://www.youtube.com/watch?v=KfnnvifnpDU)
+
+Note how the axis variable that defines the bar `locations` is a ...Qual variable!
+
+
+### {{< iconify hugeicons api >}} ggformula and mosaic API
+
+- Recall the *API*: the programming interface to each of `mosaic`, `ggformula`, and `ggplot`. 
+- As stated earlier, `mosaic` and `ggformula` have a very similar, and intuitive, interface. 
+
+::: callout-tip
+Note the standard method for all commands from the `{{mosaic}}` and
+`{{ggformula}}` packages: `goal( y ~ x | z, data = _____)`
+
+With `{{mosaic}}`, one can create a statistical correlation test between two variables as:
+`cor_test(y ~ x, data = ______ )`
+
+With `{{ggformula}}`, one can create any graph/chart using:
+`gf_***(y ~ x | z, data = _____)`
+- In practice, we often use: `dataframe %>%  gf_***(y ~ x | z)` which has
+cool benefits such as "autocompletion" of variable names.
+- The " *** " indicates what kind of graph you desire: histogram,
+bar, scatter, density; 
+- The "-------" is the name of your dataset that you want to plot with.
+:::
+
+### {{< iconify hugeicons api >}} ggplot API
+
+::: callout-tip
+### `ggplot` command template
+
+`ggplot(data = ---, mapping = aes(x = ---, y = ---)) + geom_----()`
+
+- " ---- " is meant to imply text you supply. e.g. function names, data
+frame names, variable names.
+- It is helpful to see the argument mapping, above. 
+- In practice, rather than typing the formal arguments...
+- `ggplot` code is typically shorthanded to this:
+
+`dataframe %>%  ggplot(aes(xvar, yvar)) + geom_----()`
+- Note the change from `%>%` to `+` when adding a geom. Sigh. 
+
+:::
+
+
+## {{< iconify icon-park-outline chart-histogram >}} Bar Charts and Histograms
+
+### Bar Charts and Histograms: Similar but Different
+
+- **Bar Charts** show counts of observations with respect to a **Qualitative** variable. 
+- For instance, a shop inventory with shirt-sizes. 
+- Each *bar* has a height proportional to the *count* per shirt-size, in this example. 
+- Although **Histograms** may look similar to **Bar Charts**, the two are
+different. 
+- First, histograms show *continuous Quant data*. 
+- By contrast, bar charts show *categorical data*, such as shirt-sizes, or apples, bananas, carrots, etc. 
+- Visually speaking, histograms do not usually show spaces between bars because these are *continuous values*, 
+- While column charts *must* show spaces to separate each *category*.
+
+### {{< iconify mdi food-processor-outline >}} How do Bar Chart(s) Work?
+
+- Bar are used to show "counts" and "tallies" with respect to Qual variables: they answer the question `How Many?`. 
+- For instance, in a survey, how many people vs Gender? 
+- In a Target Audience survey on *Weekly Consumption*, how many low, medium, or high expenditure people?
+- Each Qual variable potentially has many levels as we saw in the [Nature of Data](../05-NatureData/index.qmd#what-are-data-types). 
+- In Weekly Consumption, `low`, `medium` and `high` were levels for the Qual variable `Expenditure`. 
+- Bar charts perform **internal counts** for each *level* of the Qual variable under consideration.
+- The Bar Plot is then a set of *disjoint* bars representing these counts; see the icon above, and then that for histograms!! 
+- The X-axis is the set of *levels* in the Qual variable, and the Y-axis represents the counts for each level.
+
+
+## {{< iconify grommet-icons test >}} Case Study-1: Chicago Taxi Rides dataset
+
+### {{< iconify la r-project >}} Read Data
+
+We will first look at at a dataset that speaks about taxi rides in Chicago in the year 2022. This is available on [Vincent Arel-Bundock's superb repository of datasets](https://vincentarelbundock.github.io/Rdatasets/articles/data.html). Let us read into R *directly from the website*. 
+ 
+```{r}
+#| label: read_chicago_taxi_data
+#| message: false
+#| code-fold: true
+#| 
+
+taxi <- read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/modeldata/taxi.csv") 
+
+taxi_modified <- taxi %>% 
+  naniar::replace_with_na_all(condition = ~.x %in% common_na_strings) %>%
+  naniar::replace_with_na_all(condition = ~.x %in% common_na_numbers) %>%
+  janitor::clean_names(case = "snake") %>% 
+  janitor::remove_empty()
+
+taxi_modified
+
+```
+
+The data has automatically been read into the `webr` session, so you can continue on to the next code chunk!
+
+
+### {{< iconify file-icons influxdata >}} Examine the Data
+
+As per our Workflow, we will look at the data using all the three
+methods we have seen.
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
+
+### {{< iconify la r-project >}} dplyr
+
+```{r}
+#| label: glimpse-taxi
+
+dplyr::glimpse(taxi)
+```
+
+
+### {{< iconify la r-project >}} skimr
+
+```{r}
+#| label: skim-taxi
+skimr::skim(taxi_modified)
+
+```
+
+### {{< iconify la r-project >}} mosaic
+
+```{r}
+#| label: inspect-taxi
+mosaic::inspect(taxi_modified)
+
+```
+
+### {{< iconify noto-v1 spider-web >}} web-r
+
+```{webr-r}
+#| label: glimpse-taxi-webr
+glimpse(taxi_modified)
+
+```
+
+```{webr-r}
+#| label: skim-taxi-webr
+skim(taxi_modified)
+
+```
+
+```{webr-r}
+#| label: inspect-taxi-webr
+inspect(taxi_modified)
+
+```
+:::
+
+
+### {{< iconify streamline dictionary-language-book-solid >}} Data Dictionary
+
+::: callout-note
+### Quantitative Data
+-   `distance`:  Continuous Quant variable, the distance of the trip in miles.
+
+:::
+
+::: callout-note
+### Qualitative Data
+- `tip`:  Yes/No type Qual variable, whether a tip was given or not.
+- `company`: 7 levels, the cab company that was used for the ride.
+- `local`: 2 levels, whether the trip was local or not.
+- `hour` :  24 levels, the hour of the day when the trip started.
+- `dow`: 7 levels, the day of the week.
+- `month`: 12 levels, the month of the year.
+
+:::
+
+
+### Business Insights on Examining the `taxi` dataset
+
+-   This is a large dataset (10K rows), 8 columns/variables.
+-   There are several Qualitative variables: `tip`(2), `company`(7) and `local`(2), `dow`(7), and `month`(12). These have levels as shown in the parenthesis. 
+- Note that `hour` despite being a discrete/numerical variable, it can be treated as a Categorical variable too. 
+-   `distance` is Quantitative.
+-   There are no missing values for any variable, all are complete with 10K entries.
+
+
+
+### {{< iconify carbon clean >}} Data Munging
+
+We will convert the `tip`, `company`, `dow`, `local`, `hour`, and `month` variables into factors beforehand.
+
+
+```{r}
+#| label: data-munging
+#| message: false
+#| code-fold: true
+
+## Convert `dow`, `local`, `month`, and `hour` into ordered factors
+taxi_modified <- taxi_modified %>%
+  dplyr::mutate(
+    
+    ## Variable "tip"
+    tip = base::factor(tip, levels = c("yes", "no"), 
+                 labels = c("yes", "no"),
+                 ordered = TRUE),
+    
+    ## Variable "company"
+    company = base::factor(company), # Any order is OK. 
+    
+    ## Variable "dow"
+    dow = base::factor(dow,
+         levels = c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"),
+         labels = c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"),
+    ordered = TRUE),
+    
+    ## Variable "local"
+    local = base::factor(local,
+                   levels = c("yes", "no"),
+                   labels = c("yes", "no"),
+                   ordered = TRUE),
+    
+    ## Variable "month"
+    month = base::factor(month, 
+                 levels = c("Jan", "Feb", "Mar", "Apr"),
+                 labels = c("Jan", "Feb", "Mar", "Apr"),
+                 ordered = TRUE),
+    
+    ## Variable "hour"
+    hour = base::factor(hour, levels = c(0:23), labels = c(0:23), 
+                  ordered = TRUE)) %>% 
+  dplyr::relocate(where(is.factor), .after = rownames) # Move all factors to the left
+
+taxi_modified %>% glimpse()
+
+```
+
+Looks clean and good. 
+
+### {{< iconify  material-symbols lab-research >}} Hypothesis and Research Questions
+
+- It is a good practice in Exploratory Data Analysis [to surmise the Experiment that lead to the gathering of this dataset]{style="background-color:yellow;"}
+- And what the **target variable** might be. 
+- This is the variable that is to be explained, or predicted, or modelled. 
+- The other variables are **explanatory variables**, or ***predictor variables***.
+- The ***target variable*** for an experiment that resulted in this data might be the `tip` variable
+- Since that looks like a response, or an outcome. 
+- It is a binary i.e. Yes/No type Qual variable. 
+- We will concentrate on the `tip` target variable to ask questions about the data, and then plot the answers to these questions.
+
+
+### Research Questions
+
+  1. Do more people  `tip` than not?
+  1. Does a `tip` depend upon whether the trip is `local` or not?
+  1. Do some cab `company`-ies get more tips than others?
+  1. And does a `tip` depend upon the `distance`, `hour` of day, and `dow` and `month`?
+
+Try and think of more Questions!
+
+## {{< iconify ic baseline-bar-chart >}} Plotting Barcharts
+
+Let's plot some bar graphs: recall that for bar charts, we need to
+choose **Qual** variables to count with! In each case, we will state a Hypothesis/Question and try to answer it with a chart. 
+
+
+### {{< iconify el question-sign >}} Question-1: Do more people `tip` than not?
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
+### ggformula-1
+
+```{r}
+#| label: bar-tip-ggformula
+#| code-fold: true
+#| 
+ggplot2::theme_set(new = theme_custom())
+
+gf_bar(~ tip, data = taxi_modified) %>%
+  gf_labs(title = "Plot 1A: Counts of Tips")
+
+```
+
+
+### ggplot-1
+
+```{r}
+#| label: bar-tip-ggplot
+#| code-fold: true
+
+ggplot2::theme_set(new = theme_custom())
+
+ggplot(taxi_modified)  + 
+  geom_bar(aes(x = tip)) + 
+  labs(title = "Plot 1A: Counts of Tips")
+
+```
+
+### {{< iconify noto-v1 spider-web >}} web-r-1
+
+```{webr-r}
+#| label: bar-charts-ggformula-webr
+#| layout-ncol: 3
+
+gf_bar(~ tip, data = taxi_modified) %>%
+  gf_labs(title = "Plot 1A: Counts of Tips")
+
+ggplot(taxi_modified)  + 
+  geom_bar(aes(x = tip)) + 
+  labs(title = "Plot 1A: Counts of Tips")
+
+```
+
+
+### Business Insights-1
+- Far more people do `tip` than not. Which is nice. 
+- (Future) The counts of `tip` are very imbalanced and if we are to setup a model for that ([logistic regression](../../../30-Modelling/Modules/30-LogReg/index.qmd)) we would need to  very carefully subset the data for `training` and `testing` our model. 
+
+:::
+
+
+
+### {{< iconify el question-sign >}} Question-2: Does the `tip` depend upon whether the trip is `local` or not?
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
+
+### ggformula-2
+:::: {.columns}
+::: {.column}
+```{r}
+#| label: ggformula21
+#| eval: false
+
+ggplot2::theme_set(new = theme_custom())
+
+taxi_modified %>% 
+  gf_bar(~ local, fill = ~ tip, 
+  position = "dodge") %>% 
+  gf_labs(title = "Plot 2A: Dodged Bar Chart") %>% 
+  gf_refine(scale_fill_brewer(palette = "Set1"))
+
+```
+:::
+
+::: {.column}
+```{r}
+#| ref-label: ggformula21
+#| echo: false
+```
+:::
+::::
+
+:::: {.columns}
+::: {.column}
+```{r}
+#| label: ggformula22
+#| eval: false
+
+ggplot2::theme_set(new = theme_custom())
+
+taxi_modified %>% 
+  gf_bar(~ local, fill = ~ tip, 
+  position = "stack") %>% 
+  gf_labs(title = "Plot 2B: Stacked Bar Chart",
+          subtitle = "Can we spot per group differences in proportions??") %>% 
+  gf_refine(scale_fill_brewer(palette = "Set1"))
+
+```
+:::
+
+::: {.column}
+```{r}
+#| ref-label: ggformula22
+#| echo: false
+```
+
+:::
+::::
+
+:::: {.columns}
+::: {.column}
+```{r}
+#| label: ggformula23
+#| eval: false
+
+ggplot2::theme_set(new = theme_custom())
+
+## Showing "per capita" percentages
+taxi_modified %>% 
+  gf_bar(~ local, fill = ~ tip, 
+  position = "fill") %>% 
+  gf_labs(title = "Plot 2C: Filled Bar Chart",
+          subtitle = "Shows Per group differences in Proportions!") %>% 
+  gf_refine(scale_fill_brewer(palette = "Set1"))
+
+```
+
+:::
+
+::: {.column}
+```{r}
+#| ref-label: ggformula23
+#| echo: false
+```
+
+:::
+::::
+
+:::: {.columns}
+::: {.column}
+```{r}
+#| label: ggformula24
+#| eval: false
+
+ggplot2::theme_set(new = theme_custom())
+
+## Showing "per capita" percentages
+## Better labelling of Y-axis 
+taxi_modified %>% 
+  gf_props(~ local, fill = ~ tip, 
+  position = "fill") %>% 
+  gf_labs(title = "Plot 2D: Filled Bar Chart",
+          subtitle = "Shows Per group differences in Proportions!") %>% 
+  gf_refine(scale_fill_brewer(palette = "Set1"))
+
+```
+:::
+
+::: {.column}
+```{r}
+#| ref-label: ggformula24
+#| echo: false
+```
+
+:::
+
+::::
+
+### ggplot-2
+```{r}
+#| layout-ncol: 2
+
+ggplot2::theme_set(new = theme_custom())
+
+taxi_modified %>%
+  ggplot() +
+  geom_bar(aes(x = local, fill = tip), position = "dodge") +
+  labs(title = "Plot 2A:Dodged Bar Chart") + 
+  scale_fill_brewer(palette = "Set1")
+##
+taxi_modified %>%
+  ggplot() +
+  geom_bar(aes(x = local, fill = tip), position = "stack") +
+  labs(title = "Plot 2B: Stacked Bar Chart", 
+       subtitle = "Can we spot per group differences in proportions??") + 
+  scale_fill_brewer(palette = "Set1")
+
+## Showing "per capita" percentages
+taxi_modified %>% 
+  ggplot() +
+  geom_bar(aes(x = local, fill = tip), position = "fill") +
+  labs(title = "Plot 2C: Filled Bar Chart", subtitle = "Shows Per group differences in Proportions!") + 
+  scale_fill_brewer(palette = "Set1")
+  
+## Showing "per capita" percentages
+## Better labelling of Y-axis
+taxi_modified %>%
+  ggplot() +
+  geom_bar(aes(x = local, fill = tip), position = "fill") +
+  labs(title = "Plot 2D: Filled Bar Chart", 
+       subtitle = "Shows Per group differences in Proportions!",
+       y = "Proportion") + 
+  scale_fill_brewer(palette = "Set1")
+
+```
+
+
+
+### {{< iconify noto-v1 spider-web >}} web-r-2
+
+```{webr-r}
+
+taxi_modified %>% 
+  gf_bar(~ local, fill = ~ tip, position = "dodge") %>% 
+  gf_labs(title = "Dodged Bar Chart") %>%  gf_refine(scale_fill_brewer(palette = "Set1")) 
+##
+taxi_modified %>% 
+  gf_bar(~ local, fill = ~ tip, position = "stack") %>% 
+  gf_labs(title = "Stacked Bar Chart",
+          subtitle = "Can we spot per group differences in proportions??") %>% gf_refine(scale_fill_brewer(palette = "Set1")) 
+
+## Showing "per capita" percentages
+taxi_modified %>% 
+  gf_bar(~ local, fill = ~ tip, position = "fill") %>% 
+  gf_labs(title = " Filled Bar Chart",
+          subtitle = "Shows Per group differences in Proportions!") %>%  gf_refine(scale_fill_brewer(palette = "Set1")) 
+## Showing "per capita" percentages
+## Better labelling of Y-axis
+taxi_modified %>% 
+  gf_props(~ local, fill = ~ tip, position = "fill") %>% 
+  gf_labs(title = " Filled Bar Chart",
+          subtitle = "Shows Per group differences in Proportions!") %>%  gf_refine(scale_fill_brewer(palette = "Set1")) 
+
+```
+
+
+
+
+### Business Insights-2
+
+- Counting the frequency of `tip` by `local` gives us grouped counts, but we cannot tell the percentage per group (local or not) of those who tip and those who do not. 
+- We need per-group percentages because the number of `local` trips are not balanced
+- With `{{ggformula}}`, we tried bar charts with `position = stack`, but finally it is the `position = fill` that works best.
+- We see that the percentage of tippers is somewhat higher with people who make non-local trips. Not surprising. 
+
+:::
+
+### {{< iconify el question-sign >}} Question-3: Do some cab `company`-ies get more `tips` than others?
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
+
+### ggformula-3
+:::: {.columns}
+::: {.column}
+```{r}
+#| label: ggformula31
+#| eval: false
+
+ggplot2::theme_set(new = theme_custom())
+
+taxi_modified %>% 
+  gf_bar(~ company, fill = ~ tip, position = "dodge") %>% 
+  gf_labs(title = "Plot 3A: Dodged Bar Chart") %>% 
+  gf_theme(theme(axis.text.x = element_text(size = 6, 
+                 angle = 45, hjust = 0.5))) %>%  gf_refine(scale_fill_brewer(palette = "Set1")) 
+
+```
+:::
+::: {.column}
+```{r}
+#| ref-label: ggformula31
+#| echo: false
+```
+
+:::
+::::
+
+:::: {.columns}
+::: {.column}
+```{r}
+#| label: ggformula32
+#| eval: false
+
+ggplot2::theme_set(new = theme_custom())
+
+taxi_modified %>% 
+  gf_bar(~ company, fill = ~ tip, position = "stack") %>% 
+  gf_labs(title = "Plot 3B: Stacked Bar Chart",
+          subtitle = "Can we spot per group differences in proportions??") %>% 
+  gf_theme(theme(axis.text.x = element_text(size = 6, angle = 45, hjust = 1))) %>% gf_refine(scale_fill_brewer(palette = "Set1")) 
+
+```
+:::
+::: {.column}
+```{r}
+#| ref-label: ggformula32
+#| echo: false
+```
+
+:::
+::::
+
+:::: {.columns}
+::: {.column}
+```{r}
+#| label: ggformula33
+#| eval: false
+
+ggplot2::theme_set(new = theme_custom())
+
+## Showing "per capita" percentages
+taxi_modified %>% 
+  gf_percents(~ company, fill = ~ tip, position = "fill") %>% 
+  gf_labs(title = "Plot 3C: Filled Bar Chart",
+          subtitle = "Shows Per group differences in Proportions!") %>% 
+  gf_theme(theme(axis.text.x = element_text(size = 6, angle = 45, hjust = 1))) %>% gf_refine(scale_fill_brewer(palette = "Set1")) 
+```
+
+:::
+::: {.column}
+```{r}
+#| ref-label: ggformula33
+#| echo: false
+```
+
+:::
+::::
+
+:::: {.columns}
+::: {.column}
+```{r}
+#| label: ggformula34
+#| eval: false
+ggplot2::theme_set(new = theme_custom())
+
+## Showing "per capita" percentages
+## Better labelling of Y-axis
+taxi_modified %>% 
+  gf_props(~ company, fill = ~ tip, position = "fill") %>% 
+  gf_labs(title = "Plot 3D: Filled Bar Chart",
+          subtitle = "Shows Per group differences in Proportions!") %>% 
+  gf_theme(theme(axis.text.x = element_text(size = 6, angle = 45, hjust = 1))) %>% gf_refine(scale_fill_brewer(palette = "Set1")) 
+
+```
+:::
+
+:::{.column}
+```{r}
+#| ref-label: ggformula34
+#| echo: false
+```
+
+:::
+::::
+
+
+### ggplot-3
+```{r}
+#| layout-ncol: 2
+
+ggplot2::theme_set(new = theme_custom())
+
+taxi_modified %>% 
+  ggplot() + 
+  geom_bar(aes(x = company, fill = tip), position = "dodge") + 
+  labs(title = "Plot 3A: Dodged Bar Chart") + 
+  theme(theme(axis.text.x = element_text(size = 6, angle = 45, hjust = 1))) + scale_fill_brewer(palette = "Set1")
+##
+taxi_modified %>% 
+  ggplot() + 
+  geom_bar(aes(x = company, fill = tip), position = "stack") +
+  labs(title = "Plot 3B: Stacked Bar Chart",
+       subtitle = "Can we spot per group differences in proportions??") +
+  theme(theme(axis.text.x = element_text(size = 6, angle = 45, hjust = 1))) + scale_fill_brewer(palette = "Set1")
+## Showing "per capita" percentages
+taxi_modified %>% 
+  ggplot() + 
+  geom_bar(aes(x = company, fill = tip), position = "fill") +
+  labs(title = "Plot 3C: Filled Bar Chart",
+       subtitle = "Shows Per group differences in Proportions!") +
+  theme(theme(axis.text.x = element_text(size = 6, angle = 45, hjust = 1))) + scale_fill_brewer(palette = "Set1")
+## Showing "per capita" percentages
+## Better labelling of Y-axis
+taxi_modified %>% 
+  ggplot() + 
+  geom_bar(aes(x = company, fill = tip), position = "fill") +
+  labs(title = "Plot 3D: Filled Bar Chart",
+       subtitle = "Shows Per group differences in Proportions!",
+       y = "Proportions") +
+  theme(theme(axis.text.x = element_text(size = 6, angle = 45, hjust = 1))) + scale_fill_brewer(palette = "Set1")
+
+```
+
+
+
+
+### {{< iconify noto-v1 spider-web >}} web-r-3
+
+```{webr-r}
+
+taxi_modified %>% 
+  gf_bar(~ company, fill = ~ tip, position = "dodge") %>% 
+  gf_labs(title = "Plot 3A: Dodged Bar Chart") %>% 
+  gf_theme(theme(axis.text.x = element_text(size = 6, angle = 45, hjust = 1))) %>% gf_refine(scale_fill_brewer(palette = "Set1"))
+##
+taxi_modified %>% 
+  gf_bar(~ company, fill = ~ tip, position = "stack") %>% 
+  gf_labs(title = "Plot 3B: Stacked Bar Chart",
+          subtitle = "Can we spot per group differences in proportions??") %>% 
+  gf_theme(theme(axis.text.x = element_text(size = 6, angle = 45, hjust = 1))) %>% gf_refine(scale_fill_brewer(palette = "Set1"))
+## Showing "per capita" percentages
+taxi_modified %>% 
+  gf_bar(~ company, fill = ~ tip, position = "fill") %>% 
+  gf_labs(title = "Plot 3C: Filled Bar Chart",
+          subtitle = "Shows Per group differences in Proportions!") %>% 
+  gf_theme(theme(axis.text.x = element_text(size = 6, angle = 45, hjust = 1))) %>% gf_refine(scale_fill_brewer(palette = "Set1"))
+## Showing "per capita" percentages
+## Better labelling of Y-axis
+taxi_modified %>% 
+  gf_props(~ company, fill = ~ tip, position = "fill") %>% 
+  gf_labs(title = "Plot 3D: Filled Bar Chart",
+          subtitle = "Shows Per group differences in Proportions!") %>% 
+  gf_theme(theme(axis.text.x = element_text(size = 6, angle = 45, hjust = 1))) %>% gf_refine(scale_fill_brewer(palette = "Set1"))
+
+```
+
+
+### Business Insights-3
+
+- Using `stack`-ed, `dodge`-ed, and `fill`-ed in `{{ggformula}}` in bar plots gives us different ways of looking at the sets of counts;
+- `fill`: gives us a per-group proportion of another Qual variable for a chosen Qual variable. This chart view is useful in [Inference for Proportions](../../../20-Inference/Modules/190-TwoProp/index.qmd);
+- Most cab `company`-ies have similar usage, if you neglect the `other` category of `company`;
+- Does seem that of all the `company`-ies, `tips` are not so good for the `Flash Cab` company. A driver issue? Or are the cars too old? Or don't they offer service everywhere?
+
+:::
+
+
+### {{< iconify el question-sign >}} Question-4: Does a `tip` depend upon the `distance`, `hour` of day, and `dow` and `month`? 
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
+
+
+### ggformula-4
+:::: {.columns}
+::: {.column}
+```{r}
+#| label: bar-tip-others-ggformula41
+#| eval: false
+ggplot2::theme_set(new = theme_custom())
+
+gf_bar(~ hour, fill = ~ tip, data = taxi_modified) %>%
+  gf_labs(title = "Plot 4A: Counts of Tips by Hour") %>% gf_refine(scale_fill_brewer(palette = "Set1"))
+
+
+```
+
+:::
+
+:::{.column}
+```{r}
+#| ref-label: bar-tip-others-ggformula41
+#| echo: false
+```
+
+:::
+::::
+
+
+:::: {.columns}
+::: {.column}
+```{r}
+#| label: bar-tip-others-ggformula42
+#| eval: false
+
+ggplot2::theme_set(new = theme_custom())
+
+gf_bar(~ dow, fill = ~ tip, data = taxi_modified) %>%
+  gf_labs(title = "Plot 4B: Counts of Tips by Day of Week") %>% gf_refine(scale_fill_brewer(palette = "Set1"))
+  
+```
+
+:::
+
+:::{.column}
+```{r}
+#| ref-label: bar-tip-others-ggformula42
+#| echo: false
+```
+
+:::
+::::
+
+
+
+:::: {.columns}
+::: {.column}
+```{r}
+#| label: bar-tip-others-ggformula43
+#| eval: false
+
+ggplot2::theme_set(new = theme_custom())
+
+gf_bar(~ month, fill = ~ tip, data = taxi_modified) %>%
+  gf_labs(title = "Plot 4C: Counts of Tips by Month") %>% gf_refine(scale_fill_brewer(palette = "Set1"))
+  
+```
+:::
+
+:::{.column}
+```{r}
+#| ref-label: bar-tip-others-ggformula43
+#| echo: false
+```
+
+:::
+::::
+
+
+
+
+:::: {.columns}
+::: {.column}
+```{r}
+#| label: bar-tip-others-ggformula44
+#| eval: false
+
+ggplot2::theme_set(new = theme_custom())
+
+gf_bar(~ month | dow, fill = ~ tip, data = taxi_modified) %>%
+  gf_labs(title = "Plot 4D: Counts of Tips by Day of Week and Month") %>% gf_refine(scale_fill_brewer(palette = "Set1"))
+  
+```
+:::
+
+:::{.column}
+```{r}
+#| ref-label: bar-tip-others-ggformula44
+#| echo: false
+```
+
+:::
+::::
+
+
+
+
+:::: {.columns}
+::: {.column}
+```{r}
+#| label: bar-tip-others-ggformula45
+#| eval: false
+
+ggplot2::theme_set(new = theme_custom())
+
+## This may be too busy a graph...
+gf_bar(~ dow | hour, fill = ~ tip, data = taxi_modified) %>%
+  gf_labs(title = "Plot 4E: Counts of Tips by Hour and Day of Week",
+          subtitle = "Is this plot arrangement easy to grasp?") %>% gf_refine(scale_fill_brewer(palette = "Set1"))
+
+```
+:::
+
+:::{.column}
+```{r}
+#| ref-label: bar-tip-others-ggformula45
+#| echo: false
+```
+
+:::
+::::
+
+
+
+
+:::: {.columns}
+::: {.column}
+```{r}
+#| label: bar-tip-others-ggformula46
+#| eval: false
+
+ggplot2::theme_set(new = theme_custom())
+
+## This is better!
+gf_bar(~ hour | dow, fill = ~ tip, data = taxi_modified) %>%
+  gf_labs(title = "Plot 4F: Counts of Tips by Hour and Day of Week",
+          subtitle = "Facetted by Day of Week")  %>% gf_refine(scale_fill_brewer(palette = "Set1"))
+
+```
+:::
+
+:::{.column}
+```{r}
+#| ref-label: bar-tip-others-ggformula46
+#| echo: false
+```
+
+:::
+::::
+
+
+### ggplot-4
+```{r}
+#| label: bar-tip-others-ggplot
+#| layout-ncol: 2
+#| layout-nrow: 2
+
+ggplot2::theme_set(new = theme_custom())
+
+gf_bar(~ hour, fill = ~ tip, data = taxi_modified) %>%
+  gf_labs(title = "Plot 4A: Counts of Tips by Hour") %>% gf_refine(scale_fill_brewer(palette = "Set1"))
+##
+ggplot(taxi_modified) + 
+  geom_bar(aes(x = dow, fill = tip)) + 
+  labs(title = "Plot 4B: Counts of Tips by Day of Week") + scale_fill_brewer(palette = "Set1")
+##
+ggplot(taxi_modified) + 
+  geom_bar(aes(x = month, fill = tip)) + 
+  labs(title = "Plot 4C: Counts of Tips by Month") + scale_fill_brewer(palette = "Set1")
+##
+ggplot(taxi_modified) + 
+  geom_bar(aes(x = month, fill = tip)) + 
+  facet_wrap(~ dow) + 
+  labs(title = "Plot 4D: Counts of Tips by Day of Week and Month") + scale_fill_brewer(palette = "Set1")
+##
+ggplot(taxi_modified) + 
+  geom_bar(aes(x = dow, fill = tip)) + 
+  facet_wrap(~ hour) + 
+  labs(title = "Plot 4E: Counts of Tips by Hour and Day of Week",
+       subtitle = "Is this plot arrangement easy to grasp?") + scale_fill_brewer(palette = "Set1")
+##
+ggplot(taxi_modified) + 
+  geom_bar(aes(x = hour, fill = tip)) + 
+  facet_wrap(~ dow) + 
+  labs(title = "Plot 4F: Counts of Tips by Hour and Day of Week",
+       subtitle = "Swapped the Facets") + scale_fill_brewer(palette = "Set1")
+```
+
+
+### {{< iconify noto-v1 spider-web >}} web-r-4
+
+```{webr-r}
+
+gf_bar(~ hour, fill = ~ tip, data = taxi_modified) %>%
+  gf_labs(title = "Plot 4A: Counts of Tips by Hour") %>% 
+  gf_refine(scale_fill_brewer(palette = "Set1"))
+##
+gf_bar(~ dow, fill = ~ tip, data = taxi_modified) %>%
+  gf_labs(title = "Plot 4B: Counts of Tips by Day of Week") %>% 
+  gf_refine(scale_fill_brewer(palette = "Set1"))
+##
+gf_bar(~ month, fill = ~ tip, data = taxi_modified) %>%
+  gf_labs(title = "Plot 4C: Counts of Tips by Month") %>% 
+  gf_refine(scale_fill_brewer(palette = "Set1"))
+
+##
+gf_bar(~ month | dow, fill = ~ tip, data = taxi_modified) %>%
+  gf_labs(title = "Plot 4D: Counts of Tips by Day of Week and Month") %>% 
+  gf_refine(scale_fill_brewer(palette = "Set1"))
+##
+## This may be too busy a graph...
+gf_bar(~ dow | hour, fill = ~ tip, data = taxi_modified) %>%
+  gf_labs(title = "Plot 4E: Counts of Tips by Hour and Day of Week",
+          subtitle = "Is this plot arrangement easy to grasp?") %>% 
+  gf_refine(scale_fill_brewer(palette = "Set1"))
+## This is better!
+gf_bar(~ hour | dow, fill = ~ tip, data = taxi) %>%
+  gf_labs(title = "Plot 4F: Counts of Tips by Hour and Day of Week",
+          subtitle = "Swapped the Facets") %>% 
+  gf_refine(scale_fill_brewer(palette = "Set1"))
+
+```
+
+
+### Business Insights-4
+
+- Note: We were using `fill = ~ tip` here! Why is that a good idea?
+- `tips` vs `hour`: There are always more people who `tip` than those who do not. Of course there are fewer **trips** during the early morning hours and the late night hours, based on the very small bar-pairs we see at those times
+- `tips` vs `dow`: Except for Sunday, the `tip` count patterns (Yes/No) look similar across all days.
+- `tips` vs `month`: We have data for 4 months only. Again, the `tip` count patterns (Yes/No) look similar across all months. Perhaps slightly fewer **trips** in Jan, when it is cold in Chicago and people may not go out much.
+- `tips` vs `dow` vs `month`: Very similar counts for `tips`(Yes/No) across day-of-week and month. 
+
+:::
+
+
+## {{< iconify mdi size-extra-large size=2x >}} Bar Plot Extras
+
+### gf-bar and gf-col
+
+- Note also that `gf_bar/geom_bar` takes only ONE variable (for the x-axis)
+- Whereas `gf_col/geom_col` needs both X and Y variables since it simply plots columns. 
+- Both are useful!
+- We have already seen `gf_props` in our two case studies above. 
+- Also check out `gf_percents` ! 
+
+### Proportions and Percentages
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
+
+### Chart #1
+:::: {.columns}
+::: {.column}
+
+```{r}
+#| label: props-chart-1
+#| eval: false
+ggplot2::theme_set(new = theme_custom())
+
+gf_props(~ substance,
+  data = mosaicData::HELPrct, fill = ~ sex,
+  position = "dodge") %>%
+  gf_labs(title = "Plotting Proportions using gf_props",
+          subtitle = "Option = dodge") %>% 
+  gf_refine(scale_fill_brewer(palette = "Set1"))
+
+```
+:::
+
+
+:::{.column}
+```{r}
+#| ref-label: props-chart-1
+#| echo: false
+```
+
+:::
+::::
+
+### Chart #2
+:::: {.columns}
+::: {.column}
+
+```{r}
+#| label: props-chart-2
+#| eval: false
+
+ggplot2::theme_set(new = theme_custom())
+
+gf_props(~ substance,
+  data = mosaicData::HELPrct, fill = ~ sex,
+  position = "fill") %>%
+  gf_labs(title = "Plotting Proportions using gf_props",
+          subtitle = "Option = fill") %>% 
+  gf_refine(scale_fill_brewer(palette = "Set1"))
+
+```
+
+:::
+
+::: {.column}
+
+```{r}
+#| ref-label: props-chart-2
+#| echo: false
+```
+
+:::
+::::
+
+
+### Chart #3
+:::: {.columns}
+::: {.column}
+```{r}
+#| label: percents-chart
+#| eval: false
+ggplot2::theme_set(new = theme_custom())
+
+gf_percents(~ substance,
+  data = mosaicData::HELPrct, fill = ~ sex,
+  position = "dodge") %>%
+  gf_refine(
+    scale_y_continuous(
+      labels = scales::label_percent(scale=1))) %>% 
+  gf_labs(title = "Plotting Percentages using gf_percents") %>% 
+  gf_refine(scale_fill_brewer(palette = "Set1"))
+
+```
+
+:::
+::: {.column}
+```{r}
+#| ref-label: percents-chart
+#| echo: false
+```
+
+:::
+::::
+
+
+:::
+
+
+## {{< iconify fluent important-12-regular >}} Are the Differences in Proportion Significant?
+
+- When we see situations such as this, where data has one or more Qual variables that are *binary*(Yes/No)..
+- We are always interested in whether these proportions of Yes/No are really different
+- Or if we are just seeing the result of random chance. 
+- This is usually mechanized by a Stat Test called a [Single Proportion Test](../../../20-Inference/Modules/180-OneProp/index.qmd) 
+- Or, when we have more than one, a [Multiple Proportion Test](../../../20-Inference/Modules/190-TwoProp/index.qmd). 
+
+
+## {{< iconify openmoji person >}} Your Turn
+
+1.  Click on the Dataset Icon, and unzip that archive. Try to make Bar plots with each of them, using one or more Qual variables. <a href="../../../../../materials/Data/qdd-data.zip"><i class="fa-solid fa-database"></i> Datasets</a>
+1.  A dataset from calmcode.io <https://calmcode.io/datasets.html>
+1.  AiRbnb Price Data on the French Riviera.
+1.  Apartment price vs ground living area.
+1.  Fertility: This rather large and interesting Fertility related dataset from <https://vincentarelbundock.github.io/Rdatasets/csv/AER/Fertility.csv>
+1. Songs by Kishore Kumar: <https://sunilslists.com/hindi-songs/luminaries-hindi-songs/kishore-kumar-songs-all>
+
+```{r}
+#| label: data-download
+#| echo: false
+#| 
+airbnb <- read.table("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/1_OneNum.csv", header=TRUE)
+
+apartments <- read.table("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/2_TwoNum.csv", header=T, sep=",") %>% select(GrLivArea, SalePrice)
+
+```
+
+```{r, echo = FALSE}
+airbnb %>% download_this(output_name = "airbnb",output_extension = ".csv", button_label = "AiRbnb data", button_type = "default", icon = "fa fa-save")
+
+```
+
+```{r, echo = FALSE}
+apartments %>% download_this(output_name = "apartments", output_extension = ".csv", button_label = "Apartment Data", button_type = "default", icon = "fa fa-save",   class = "hvr-sweep-to-left")
+
+```
+
+{{< downloadthis data/Fertility.csv dname="Fertility" label="Download the Fertility Data" icon="database-fill-down" type="info" >}}
+
+`glimpse` / `skim` / `inspect` the dataset in each case, state that Data Dictionary, and develop a set of Questions that
+can be answered by appropriate stat measures, or by using a chart to
+show the distribution.
+
+
+## {{< iconify mingcute thought-line >}} Wait, But Why?
+
+-   Always ~~count your chickens~~ count your data before you model or infer!
+-   Counts first give you an absolute sense of how much data you have.
+-   Counts by different Qual variables give you a sense of the **combinations** you have in your data: $(Male/Female) * (Income-Status) * (Old/Young) * (Urban/Rural)$ (Say 2 \* 3 \* 2 \* 2 = 24 combinations of data)
+-   Counts then give an idea whether your data is lop-sided: do you have too many observations of one category(level) and too few of another category(level) in a given Qual variable?
+-   Balance is important in order to draw decent inferences
+-   And for ML algorithms, to train them properly.
+
+
+### Counts from Literature
+
+![Zipf's Law](../../../../../materials/images/zipf.png){#fig-zipfs-law height=280 width=480}
+
+
+- Since the X-axis in bar charts is *Qualitative* (the bars don't touch, remember!) it is possible to sort the bars at will, based on the levels within the Qualitative variables. 
+See the approx [Zipf's Law distribution](https://www.wikiwand.com/en/Zipf%27s_law) for the English alphabet above
+- In @fig-zipfs-law, the letters of the alphabet are "levels" within a Qualitative variable
+- these levels have been sorted based on the frequency or count! 
+- This is what [Sherlock Holmes might have done](https://sherlock-holm.es/stories/pdf/a4/1-sided/danc.pdf), 
+- Or the method how they cracked the code to the treasure in [this story.](https://www.youtube.com/watch?v=hsKVFeywcRY)
+
+## {{< iconify fluent-mdl2 decision-solid >}} Conclusion
+
+-   Qualitative data variables can be plotted as **counts**, using Bar
+    Charts
+-   `gf_col` and `gf_bar` provide Bar charts; `gf_bar` performs `counts` internally, whereas `gf_col` requires pre-counted data.
+-   `gf_props` and `gf_percents` provide Bar charts of proportions and percentages, respectively
+-  `position = "dodge"` gives side-by-side bars for each level of a Qual variable
+-  `position = "stack"` gives stacked bars for each level of a Qual variable
+-  `position = "fill"` gives stacked bars scaled to 100% height, showing per-group proportions for each level of a Qual variable
+-  `facet_wrap(~ var)` or `facet_grid(var1 ~ var2)` allows us to create multiple plots based on one or two other Qual variables
+
+## {{< iconify eos-icons ai >}} AI Generated Summary and Podcast
+
+- This text excerpt focuses on bar charts and histograms as visualization tools for qualitative and quantitative data, respectively. - It walks the reader through the creation of bar charts using the R programming language, illustrating the concept through a case study using the Chicago taxi rides dataset. 
+- The author explores various scenarios and questions related to taxi tipping, such as the frequency of tips and their dependence on trip locality, company, hour of the day, and day of the week. 
+- Finally, the excerpt highlights the importance of understanding data counts before undertaking data modeling or inference, emphasizing the role of bar charts in revealing data distribution and potential imbalances.
+
+<center>
+```{r}
+#| echo: false
+embedr::embed_audio("../../../../../materials/audio/Counts.wav")
+``` 
+</center>
+
+
+## {{< iconify ooui references-rtl >}} References
+
+1. Daniel Kaplan and Randall Pruim. *ggformula: Formula Interface for ggplot2 (full version)*. <https://www.mosaic-web.org/ggformula/articles/pkgdown/ggformula-long.html>
+1. Winston Chang (2024). *R Graphics Cookbook*. <https://r-graphics.org>
+
+::: {#refs style="font-size: 60%;"}
+
+{{< iconify lucide package-check >}} R Package Citations
+
+```{r}
+#| echo: false
+#scan_packages()
+cite_packages(
+  output = "table",
+  out.dir = ".",
+  out.format = "html",
+  pkgs = c("ggformula", "ggplot2", "mosaic", "tidyplots", "tinyplot")
+) %>%
+  knitr::kable(format = "simple")
+
+```
+:::
+

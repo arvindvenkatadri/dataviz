@@ -1,0 +1,917 @@
+---
+title: <iconify-icon icon="clarity:bell-curve-line" width="1.2em" height="1.2em"></iconify-icon> Distributions
+subtitle: "The Hills are Shadows, said Tennyson"
+author: Arvind V. 
+date: 22/Jun/2024
+date-modified: "`r Sys.Date()`"
+abstract: "Quant and Qual Variable Graphs and their Siblings"
+order: 26
+image: preview.jpg
+image-alt: Image by rawpixel.com
+df-print: paged
+categories:
+- Quant Variables
+- Qual Variables
+- Density Plots
+- Ridge Plots
+bibliography: 
+  - references.bib
+  - grateful-refs.bib
+citation: true
+#suppress-bibliography: true
+# editor: 
+#   markdown: 
+#     wrap: 72
+webr:
+   packages: ['readr', 'tidyr', 'dplyr','mosaic', 'skimr', 'ggformula','ggridges', 'palmerpenguins','janitor']
+
+---
+
+
+:::: {.pa4}
+::: {.athelas .ml0 .mt0 .pl4 .black-90 .bl .bw2 .b--blue}
+["Never let the future disturb you. You will meet it, if you have to, with the same weapons of reason which today arm you against the present."]{.f5 .f4-m .f3-l .lh-copy .measure .mt0}
+
+[ ---  Marcus Aurelius]{.f6 .ttu .tracked .fs-normal}
+:::
+::::
+
+## {{< iconify noto-v1 package >}} Setting up R Packages
+
+```{r}
+#| label: setup
+#| include: true
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(mosaic)
+library(ggformula)
+library(skimr)
+##
+#install.packages("remotes")
+#library(remotes)
+#remotes::install_github("wilkelab/ggridges")
+library(ggridges) # Ridge Density Plots
+##
+library(janitor) # Data cleaning and tidying package
+library(visdat) # Visualize whole dataframes for missing data
+library(naniar) # Clean missing data
+library(DT) # Interactive Tables for our data
+library(tinytable) # Elegant Tables for our data
+library(ggrepel) # Repel overlapping text labels in ggplot2
+library(marquee) # Annotations in ggplot2
+
+```
+
+
+```{r}
+#| label: Extra Pedagogical Packages
+#| echo: false
+#| message: false
+
+library(checkdown)
+library(epoxy)
+library(TeachHist)
+library(TeachingDemos)
+library(visualize) # Plot Densities, Histograms and Probabilities as areas under the curve
+library(grateful)
+library(MKdescr)
+library(downloadthis)
+
+```
+
+#### Plot Fonts and Theme
+
+```{r}
+#| label: plot-theme-ggplot4
+#| cache: false
+#| code-fold: true
+#| messages: false
+#| warning: false
+#| 
+library(systemfonts)
+library(showtext)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+showtext_auto(enable = TRUE) #enable showtext
+##
+theme_custom <- function(){ 
+
+    theme_bw(base_size = 10) + 
+    
+    theme_sub_axis(title = element_text(family = "Roboto Condensed", 
+                                       size = 8),
+                   text = element_text(family = "Roboto Condensed", 
+                                       size = 6)) + 
+    
+    theme_sub_legend(text = element_text(family = "Roboto Condensed", 
+                                         size = 6),
+                     title = element_text(family = "Alegreya", 
+                                          size = 8)) + 
+    
+    theme_sub_plot(title = element_text(family = "Alegreya", 
+                                        size = 14, face = "bold"),
+                   title.position = "plot",
+                   subtitle = element_text(family = "Alegreya", 
+                                           size = 10),
+                   caption = element_text(family = "Alegreya", 
+                                          size = 6),
+                   caption.position = "plot")
+    
+}
+
+## Use available fonts in ggplot text geoms too!
+ggplot2::update_geom_defaults(geom = "text", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+ggplot2::update_geom_defaults(geom = "marquee", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "text_repel", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label_repel", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
+
+## tinytable options
+options("tinytable_tt_digits" = 2)
+options("tinytable_format_num_fmt" = "significant_cell")
+options(tinytable_html_mathjax = TRUE)
+
+
+## Set defaults for flextable
+flextable::set_flextable_defaults(font.family = "Roboto Condensed")
+
+```
+
+
+## {{< iconify fxemoji japanesesymbolforbeginner >}} What graphs will we see today?
+
+| Variable #1 | Variable #2 | Chart Names |                    Chart Shape    | 
+|:-------------:|:--------------:|:------------------:|:--------------------:|:------:|
+|    Quant    |    None     |  Density plot, Ridge Density Plot  | {{< iconify  mdi chart-bell-curve size=4x >}} |
+
+
+## {{< iconify tabler variable >}} What kind of Data Variables will we choose?
+
+```{r}
+#| message: false
+#| echo: false
+#| warning: false
+read_csv("../../../../../materials/Data/pronouns.csv") %>% 
+  filter(No == "1") %>% 
+  tt(theme = "striped")
+  
+```
+
+
+## {{< iconify icons8 idea >}} Inspiration
+
+```{r}
+#| label: fig-nebraska-avenue
+#| fig-cap: "Lincoln, Nebraska, in the Sun"
+#| fig-align: center
+#| code-fold: true
+#| warning: false
+#| message: false
+ggplot2::theme_set(new = theme_custom())
+
+lincoln_weather %>% 
+  gf_density_ridges_gradient(Month ~ `Max Temperature [F]`,
+                             group = ~ Month) %>% 
+  gf_refine(scale_fill_viridis_c(name = "Temperature [F]", 
+                                 option = "B")) %>% 
+  gf_labs(title = "Weather in Lincoln, Nebraska")
+
+```
+
+[April is the cruelest month](https://www.poetryfoundation.org/poems/47311/the-waste-land), said T.S Eliot. But December in Nebraska must be tough.
+
+## {{< iconify  mdi chart-bell-curve >}} What is a "Density Plot"?
+
+As we saw earlier, **Histograms** are best to show the distribution of raw **Quantitative data**, by displaying the number of values that fall within defined ranges, often called *buckets* or *bins*. 
+
+Sometimes it is useful to consider a chart where the *bucket width* shrinks to zero! 
+
+You might imagine a density chart as a histogram where the buckets are
+infinitesimally small, i.e. zero width. Think of the frequency density as a [differentiation (as in calculus)]() of the histogram. By taking the smallest of steps $\sim 0$, we get a measure of the *slope* of distribution. This may seem counter-intuitive,
+but densities have their uses in spotting the ranges in the data where
+there are more frequent values. In this, they serve a similar purpose as
+do histograms, but may offer insights not readily apparent with
+histograms, especially with default bucket widths. The *chunkiness* that we see in the histograms is removed and gives us a smooth curve showing in which *range* the data are more *frequent*. 
+
+## {{< iconify grommet-icons test >}} Case Study-1: `penguins` dataset
+
+We will first look at at a dataset that is available as a part of the `{{palmerpenguins}}` package (and also directly available in R now), the
+`penguins` dataset. Data were collected and made available by [Dr. Kristen Gorman](https://www.uaf.edu/cfos/people/faculty/detail/kristen-gorman.php) and the [Palmer Station, Antarctica LTER](https://pallter.marine.rutgers.edu/), a member of the [Long Term Ecological Research Network](https://lternet.edu/).
+
+### {{< iconify la r-project >}} Read the Data
+
+```{r}
+
+data(penguins_raw, package = "datasets")
+names(penguins_raw)
+
+```
+
+### {{< iconify file-icons influxdata >}} Examine the Data
+
+As per our Workflow, we will look at the data using all the three
+methods we have seen.
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+#### {{< iconify la r-project >}} dplyr
+```{r}
+#| label: glimpse-penguins
+#| 
+glimpse(penguins_raw)
+
+```
+
+
+#### {{< iconify la r-project >}} skimr
+```{r}
+#| label: skim-penguins
+skim(penguins_raw)
+
+```
+
+#### {{< iconify la r-project >}} mosaic
+
+```{r}
+#| label: inspect-penguins
+inspect(penguins_raw)
+```
+
+#### {{< iconify noto-v1 spider-web >}} web-r
+
+```{webr-r}
+#| label: glimpse-penguins-webr
+glimpse(penguins)
+
+```
+
+```{webr-r}
+#| label: skim-penguins-webr
+skim(penguins)
+
+```
+
+```{webr-r}
+#| label: inspect-penguins-webr
+inspect(penguins)
+
+```
+
+:::
+
+### {{< iconify carbon clean >}} Data Munging
+
+Among the variables that define the *physical measurements* of the penguins, there are a couple of entries that show missing data. Elsewhere there are more. The variable names also are *human-readable*, but not really *computer-readable*. 
+
+So let us follow through with our Data Munging Process: 
+
+```{r}
+#| label: data-cleanup
+
+penguins_clean <- penguins_raw %>% 
+  
+  naniar::replace_with_na_all(condition = ~.x %in% common_na_strings) %>% # replace common NA strings with actual NA
+  naniar::replace_with_na_all(condition = ~.x %in% common_na_numbers) %>%
+  
+  janitor::clean_names(case = "snake") %>% # clean names
+
+  dplyr::mutate(across(where(is.character), as_factor)) %>% # make factors
+  dplyr::relocate(where(is.factor)) # move factors to the right of rownames
+
+glimpse(penguins_clean)
+
+```
+
+```{r}
+#| label: tbl-dt-for-data
+#| tbl-cap: "Penguins Clean Dynamic Data Table"
+#| code-fold: true
+#| 
+
+penguins_clean %>%
+  DT::datatable(
+    caption = htmltools::tags$caption(
+      style = 'caption-side: top; text-align: left; color: black; font-size: 150%;',
+      'Penguins Dataset (Clean)'
+    ),
+    options = list(pageLength = 10, autoWidth = TRUE)
+  ) %>%
+  DT::formatStyle(
+    columns = names(penguins_clean),
+    fontFamily = 'Roboto Condensed',
+    fontSize = '12px'
+  )
+```
+
+### {{< iconify streamline dictionary-language-book-solid >}} Data Dictionary
+
+We will restrict ourselves to some of the variables that pertain, by and large, to the body dimensions of our penguins:
+
+::: callout-note
+### Qualitative Data
+- `sex`: male and female penguins
+- `species`: Three adorable types!
+- `island`: they have **islands** to themselves!!
+- `region`: Antarctica, duh!! Hmmm....
+
+::: {.column-margin}
+![Penguin Species](../../../../../materials/images/penguins.png){#fig-penguin-species}
+:::
+
+:::
+
+
+::: callout-note
+### Quantitative Data
+- `bill_length_mm`: The length of the penguins' bills
+- `bill_depth_mm`: See the picture!!
+- `flipper_length_mm`: Flippers! Penguins have "hands"!!
+- `body_mass_g`: Mass in grams. Grams? Grams??? Why, these penguins are like human babies!!`r emoji::emoji("heart")`
+- `culmen_depth_mm`: Depth of the culmen (the upper ridge of the bill)
+- `culmen_length_mm`: Length of the culmen
+
+
+::: {.column-margin}
+![Penguin Features](../../../../../materials/images/culmen_depth.png){#fig-penguin-features}
+:::
+:::
+
+
+
+::: callout-note
+### Business Insights on Examining the `penguins` dataset
+
+-  This is a smallish dataset (344 rows, 8 columns).
+-  They define the various physical dimensions of the penguins, along with other variables pertaining to their study.
+
+:::
+
+
+### {{< iconify mdi chart-bell-curve >}} Plotting Densities
+
+::: {.column-page-inset-right}
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+
+#### Using ggformula
+
+:::: {.columns}
+:::{.column}
+```{r}
+#| label: ggformula-1
+#| eval: false
+ggplot2::theme_set(new = theme_custom())
+
+gf_density( ~ body_mass_g, data = penguins_clean) %>%
+  gf_labs(title = "Plot A: Penguin Masses", caption = "ggformula")
+
+```
+
+:::
+
+::: {.column}
+```{r}
+#| ref-label: ggformula-1
+#| echo: false
+
+```
+:::
+::::
+
+:::: {.columns}
+:::{.column}
+```{r}
+#| label: ggformula-2
+#| eval: false
+ggplot2::theme_set(new = theme_custom())
+
+penguins_clean %>% gf_density( ~ body_mass_g, 
+                         fill = ~ species, 
+                         color = "black") %>%
+  gf_refine(scale_color_viridis_d(option = "magma", 
+                                  aesthetics = c("colour", "fill"))) %>%
+  gf_labs(title = "Plot B: Penguin Body Mass by Species", 
+          caption = "ggformula")
+
+```
+:::
+::: {.column}
+```{r}
+#| ref-label: ggformula-2
+#| echo: false
+```
+:::
+::::
+
+
+:::: {.columns}
+:::{.column}
+```{r}
+#| label: ggformula-3
+#| eval: false
+ggplot2::theme_set(new = theme_custom())
+
+penguins_clean %>%
+  gf_density(
+    ~ body_mass_g,
+    fill = ~ species,
+    color = "black",
+    alpha = 0.3
+  ) %>%
+  gf_facet_wrap(vars(sex)) %>%
+  gf_labs(title = "Plot C: Penguin Body Mass by Species and facetted by Sex", caption = "ggformula")
+
+```
+:::
+::: {.column}
+```{r}
+#| ref-label: ggformula-3
+#| echo: false
+
+```
+:::
+::::
+
+
+:::: {.columns}
+:::{.column}
+```{r}
+#| label: ggformula-4
+#| eval: false
+ggplot2::theme_set(new = theme_custom())
+
+penguins_clean %>%
+  gf_density( ~ body_mass_g, fill = ~ species, color = "black") %>%
+  gf_facet_wrap(vars(sex), scales = "free_y", nrow = 2) %>%
+  gf_labs(x = "Body Mass of Penguins", title = "Plot D: Penguin Body Mass by Species and facetted by Sex",
+          subtitle = "Free y-scale",
+          caption = "ggformula") %>%
+  gf_refine(scale_fill_brewer(palette = "Set1")) %>% 
+  gf_theme(theme(axis.text.x = element_text(angle = 45, 
+                                            hjust = 1)))
+
+```
+:::
+::: {.column}
+```{r}
+#| ref-label: ggformula-4
+#| echo: false
+
+```
+:::
+::::
+
+
+#### Using ggplot
+:::: {.columns}
+:::{.column}
+```{r}
+#| label: ggplot-1
+#| eval: false
+ggplot2::theme_set(new = theme_custom())
+
+penguins_clean <- penguins %>% drop_na()
+
+ggplot(data = penguins) + 
+  geom_density(aes(x = body_mass_g)) + 
+  labs(title = "Plot A: Penguin Masses",caption = "ggplot")
+
+```
+
+:::
+::: {.column}
+```{r}
+#| ref-label: ggplot-1
+#| echo: false
+
+```
+:::
+::::
+
+
+:::: {.columns}
+:::{.column}
+```{r}
+#| label: ggplot-2
+#| eval: false
+ggplot2::theme_set(new = theme_custom())
+
+penguins_clean %>% 
+  ggplot() + 
+  geom_density(aes(x = body_mass_g, fill = species), alpha = 0.3,
+                   color = "black") + 
+  scale_color_brewer(palette ="Set1",
+                        aesthetics = c("colour", "fill")) +
+  labs(title = "Plot B: Penguin Body Mass by Species",
+       caption = "ggplot")
+```
+:::
+::: {.column}
+```{r}
+#| ref-label: ggplot-2
+#| echo: false
+
+```
+:::
+::::
+
+
+:::: {.columns}
+:::{.column}
+```{r}
+#| label: ggplot-3
+#| eval: false
+ggplot2::theme_set(new = theme_custom())
+
+penguins_clean %>% ggplot() + 
+  geom_density(aes(x = body_mass_g, fill = species),
+                   color = "black",
+                   alpha = 0.3) + 
+  facet_wrap(vars(sex)) + 
+  labs(title = "Plot C: Penguin Body Mass by Species and facetted by Sex",caption = "ggplot") 
+
+```
+:::
+::: {.column}
+```{r}
+#| ref-label: ggplot-3
+#| echo: false
+
+```
+:::
+::::
+
+
+:::: {.columns}
+:::{.column}
+```{r}
+#| label: ggplot-4
+#| eval: false
+ggplot2::theme_set(new = theme_custom())
+
+penguins_clean %>% ggplot() + 
+  geom_density(aes(x = body_mass_g, fill = species),
+                   alpha = 0.3, 
+                   color = "black") + 
+  facet_wrap(vars(sex), scales = "free_y", nrow = 2) + 
+  labs(title = "Plot D: Penguin Body Mass by Species and facetted by Sex", 
+       subtitle = "Free y-scale", caption = "ggplot") + 
+  scale_fill_brewer(palette = "Set1") + 
+  theme(theme(axis.text.x = element_text(angle = 45,hjust = 1)))
+
+```
+:::
+::: {.column}
+```{r}
+#| ref-label: ggplot-4
+#| echo: false
+
+```
+:::
+::::
+
+
+
+#### {{< iconify noto-v1 spider-web >}} web-r
+```{webr-r}
+#| label: density-charts-ggformula-webr
+
+penguins_modified %>% 
+drop_na() %>% 
+gf_density( ~ body_mass_g, data = .) %>%
+  gf_labs(title = "Plot A: Penguin Masses", caption = "ggformula")
+
+```
+
+```{webr-r}
+
+penguins_modified %>% 
+drop_na() %>% 
+  gf_density( ~ body_mass_g, fill = ~ species, 
+                             color = "black") %>%
+  gf_refine(scale_color_viridis_d(option = "magma", 
+            aesthetics = c("colour", "fill"))) %>%
+  gf_labs(title = "Plot B: Penguin Body Mass by Species", 
+          caption = "ggformula")
+
+```
+
+```{webr-r}
+
+penguins_modified %>% 
+drop_na() %>% 
+  gf_density(
+    ~ body_mass_g,
+    fill = ~ species,
+    color = "black",
+    alpha = 0.3
+  ) %>%
+  gf_facet_wrap(vars(sex)) %>%
+  gf_labs(title = "Plot C: Penguin Body Mass by Species and facetted by Sex", caption = "ggformula")
+
+```
+
+```{webr-r}
+
+penguins_modified %>% 
+drop_na() %>% 
+  gf_density( ~ body_mass_g, fill = ~ species, color = "black") %>%
+  gf_facet_wrap(vars(sex), scales = "free_y", nrow = 2) %>%
+  gf_labs(title = "Plot D: Penguin Body Mass by Species and facetted by Sex",
+          subtitle = "Free y-scale",
+          caption = "ggformula") %>%
+  gf_theme(theme(axis.text.x = element_text(angle = 45, hjust = 1)))
+
+
+```
+
+```{webr-r}
+#| label: density-charts-ggplot-webr
+penguins_modified %>% 
+  drop_na() %>% 
+  ggplot() + 
+  geom_density(aes(x = body_mass_g)) + 
+  labs(title = "Plot A: Penguin Masses",caption = "ggplot")
+
+```
+
+```{webr-r}
+penguins_modified %>% 
+  drop_na() %>% 
+  ggplot() + 
+  geom_density(aes(x = body_mass_g, fill = species),
+                   color = "black") + 
+  scale_color_viridis_d(option = "magma",
+                        aesthetics = c("colour", "fill")) +
+  labs(title = "Plot B: Penguin Body Mass by Species",
+       caption = "ggplot")
+
+```
+
+```{webr-r}
+penguins_modified %>% 
+  drop_na() %>% 
+  ggplot() + 
+  geom_density(aes(x = body_mass_g, fill = species),
+                   color = "black",
+                   alpha = 0.3) + 
+  facet_wrap(vars(sex)) + 
+  labs(title = "Plot C: Penguin Body Mass by Species and facetted by Sex",caption = "ggplot")  
+
+```
+
+```{webr-r}
+penguins_modified %>% 
+  drop_na() %>% 
+  ggplot() + 
+  geom_density(aes(x = body_mass_g, fill = species), 
+                   color = "black") + 
+  facet_wrap(vars(sex), scales = "free_y", nrow = 2) + 
+  labs(title = "Plot D: Penguin Body Mass by Species and facetted by Sex", 
+       subtitle = "Free y-scale", caption = "ggplot") %>%
+  theme(theme(axis.text.x = element_text(angle = 45,hjust = 1)))
+
+
+```
+:::
+
+::: callout-note
+### Business Insights from `penguin` Densities
+
+Pretty much similar conclusions as with histograms. Although densities
+may not be used much in business contexts, they are *better* than
+histograms when *comparing multiple distributions*! So you should use
+them!
+:::
+
+:::
+
+### {{< iconify streamline nature-ecology-rainbow-arch-rain-colorful-rainbow-curve-half-circle >}} Ridge Plots
+
+Sometimes we may wish to show the distribution/density of a Quant
+variable, against several *levels* of a Qual variable. For instance, the
+prices of different items of furniture, based on the furniture "style"
+variable. Or the `sales` of a particular line of products, across
+different shops or cities. We did this with both histograms and
+densities, by colouring based on a Qual variable, and by facetting using
+a Qual variable. There is a third way, using what is called a *ridge 
+plot*. `{{ggformula}}` supports this plot by importing/depending upon the `{{ggridges}}` package. `{{ggridges}}` provides direct support for ridge plots, and can be used as an extension to `{{ggplot2}}` and `{{ggformula}}`.
+
+::: {.column-page-inset-right}
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
+
+#### Using ggformula
+:::: {.columns}
+::: {.column}
+```{r}
+#| label: ridgeplot-ggformula
+#| eval: false
+ggplot2::theme_set(new = theme_custom())
+
+gf_density_ridges(drv ~ hwy, fill = ~ drv, 
+                  alpha = 0.5, # colour saturation
+                  data = mpg) %>% 
+  gf_refine(scale_fill_brewer(name = "Drive Type",
+                              palette = "Spectral")) %>% 
+  gf_labs(title = "Mileage vs Drive Type",
+          subtitle = "Ridge Plot", 
+          x = "Highway Mileage", 
+          y = "Drive Type")
+
+```
+:::
+::: {.column}
+```{r}
+#| ref-label: ridgeplot-ggformula
+#| echo: false
+```
+
+:::
+::::
+
+
+#### Using ggplot
+
+:::: {.columns}
+::: {.column}
+```{r}
+#| label: ridgeplot-ggplot
+#| eval: false
+ggplot2::theme_set(new = theme_custom())
+
+ggplot(data = mpg, mapping = aes(x = hwy, y = drv, fill = drv)) + 
+  geom_density_ridges(alpha = 0.5) + 
+  scale_fill_brewer(name = "Drive Type", palette = "Spectral") +  
+  labs(title = "Mileage vs Drive Type",
+          subtitle = "Ridge Plot", 
+          x = "Highway Mileage", 
+          y = "Drive Type")
+
+
+```
+:::
+::: {.column}
+```{r}
+#| ref.label: ridgeplot-ggplot
+#| echo: false
+```
+
+:::
+::::
+
+
+
+#### {{< iconify noto-v1 spider-web >}} web-r
+
+```{webr-r}
+#| label: more-charts-webr
+
+gf_density_ridges(drv ~ hwy, fill = ~ drv, 
+                  alpha = 0.3, 
+                  rel_min_height = 0.005, data = mpg) %>% 
+  gf_refine(scale_y_discrete(expand = c(0.01, 0)),
+            scale_x_continuous(expand = c(0.01, 0))) %>% 
+  gf_labs(title = "Ridge Plot")
+
+
+```
+
+
+:::
+
+
+::: callout-note
+### Business Insights from `mpg` Ridge Plots
+
+This is another way of visualizing multiple distributions, of a Quant
+variable at different levels of a Qual variable. We see that the
+distribution of `hwy` mileage varies substantially with `drv` type.
+:::
+
+:::
+
+
+## {{< iconify mingcute thought-line >}} Wait, But Why?
+
+- Densities are sometimes easier to compare side by side. That is what [Claus Wilke](https://clauswilke.com/dataviz/) says, at least. Perhaps because they look less "busy" than histograms.
+- Ridge Density Plots are very cool when it comes to comparing the density of a Quant variable as it varies against the levels of a Qual variable, without having to `facet` or `group`.
+- It is possible to plot 2D-densities too, for **two** Quant variables, which give very evocative contour-like plots. Try to do this with the `faithful` dataset in R. 
+
+## {{< iconify fluent-mdl2 decision-solid >}} Conclusion
+
+-   Histograms and Frequency Distributions are both used for
+    Quantitative data variables
+-   Whereas Histograms "dwell upon" **counts**, **ranges**, **means** and **standard deviations**
+-   Frequency Density plots "dwell upon" **probabilities** and
+    **densities**
+-   Ridge Plots are **density plots** used for describing one Quant and
+    one Qual variable (by inherent splitting)
+-   We can split all these plots on the basis of another Qualitative
+    variable.(Ridge Plots are already split)
+-   Long tailed distributions need care in visualization and in
+    inference making!
+
+## {{< iconify openmoji person >}} Your Turn
+
+::: callout-note
+### Star Trek Books\
+```{r echo=FALSE}
+
+library(rtrek)
+star_trek_books <- stBooks
+star_trek_books %>% download_this(output_name = "star_trek_books", output_extension = ".csv", button_label = "Start Trek Book data", button_type = "default", icon = "fa fa-save")
+
+```
+
+Which would be the `Group By` variables here? And what would you summarize? With which function?
+:::
+
+::: callout-note
+### Math Anxiety! Hah! Peasants. 
+```{r echo=FALSE}
+
+library(resampledata3)
+data(MathAnxiety)
+MathAnxiety %>% 
+ download_this(output_name = "MathAnxiety", output_extension = ".csv", button_label = "Math Anxiety data", button_type = "default", icon = "fa fa-save")
+
+```
+:::
+
+## {{< iconify ooui references-rtl >}} References
+
+1. Winston Chang (2024). *R Graphics Cookbook*. <https://r-graphics.org>
+1. See the scrolly animation for a histogram at this website: [*Exploring Histograms, an essay by Aran Lunzer and Amelia McNamara*](https://tinlizzie.org/histograms/?s=09)\
+1. Minimal R using
+`mosaic`. <https://cran.r-project.org/web/packages/mosaic/vignettes/MinimalRgg.pdf>\
+1. Sebastian Sauer, [*Plotting multiple plots using purrr::map and ggplot*](https://data-se.netlify.app/2021/02/06/plotting-multiple-plots-using-purrr-map-and-ggplot/)\
+
+::: {#refs style="font-size: 60%;"}
+###### {{< iconify lucide package-check >}} R Package Citations
+
+```{r}
+#| echo: false
+#scan_packages()
+cite_packages(
+  output = "table",
+  out.dir = ".",
+  out.format = "html",
+  pkgs = c("ggridges", "NHANES", "TeachHist", "rtrek","resampledata3",
+           "TeachingDemos", "visualize", "tinytable", "tinyplot", "tidyplots")
+) %>%
+  knitr::kable(format = "simple")
+
+```
+:::

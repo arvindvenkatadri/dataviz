@@ -23,17 +23,14 @@ editor:
 #| message: false
 #| include: true
 
-# CRAN Packages
-library(tidyverse)
-library(mosaic)
-library(ggformula)
-library(broom)
-library(mosaicCore)
-library(mosaicData)
+library(tidyverse) # Sine Qua Non
+library(mosaic) # Our bag of tricks
+library(ggformula) # Our graphics package
+library(broom) # Tidying model outputs
 library(crosstable) # tabulated summary stats
-
 library(openintro) # datasets and methods
 library(resampledata3) # datasets
+library(mosaicData) # datasets
 library(statsExpressions) # datasets and methods
 library(ggstatsplot) # special stats plots
 library(ggExtra)
@@ -61,15 +58,16 @@ library(ggplot2)
 #### Plot Fonts and Theme
 
 ```{r}
-#| label: plot-theme
-#| echo: true
+#| label: plot-theme-ggplot4
 #| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
-
+#| 
 library(systemfonts)
 library(showtext)
+library(ggrepel)
+library(marquee)
 ## Clean the slate
 systemfonts::clear_local_fonts()
 systemfonts::clear_registry()
@@ -89,53 +87,32 @@ sysfonts::font_add(family = "Roboto Condensed",
 showtext_auto(enable = TRUE) #enable showtext
 ##
 theme_custom <- function(){ 
-    font <- "Alegreya"   #assign font family up front
+
+    theme_bw(base_size = 10) + 
     
-    theme_bw(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
+    theme_sub_axis(title = element_text(family = "Roboto Condensed", 
+                                       size = 8),
+                   text = element_text(family = "Roboto Condensed", 
+                                       size = 6)) + 
     
-    theme(
-      text = element_text(family = font),  #set base font family
-      
-      #text elements
-      plot.title = element_text(                 #title
-                   family = font,          #set font family
-                   size = 24,                    #set font size
-                   face = 'bold',                #bold typeface
-                   hjust = 0,                    #left align
-                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
-      plot.title.position = "plot", 
-      
-      plot.subtitle = element_text(              #subtitle
-                   family = font,          #font family
-                   size = 14,                   #font size
-                   hjust = 0,                   #left align
-                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
-      
-      plot.caption = element_text(               #caption
-                   family = font,          #font family
-                   size = 9,                     #font size
-                   hjust = 1),                   #right align
-      
-      plot.caption.position = "plot",            #right align
-      
-      axis.title = element_text(                 #axis titles
-                   family = "Roboto Condensed",  #font family
-                   size = 12),                   #font size
-      
-      axis.text = element_text(                  #axis text
-                   family = "Roboto Condensed",  #font family
-                   size = 9),                    #font size
-      
-      axis.text.x = element_text(                #margin for axis text
-                    margin = margin(5, b = 10))
-      
-      #since the legend often requires manual tweaking 
-      #based on plot content, don't define it here
-    )
+    theme_sub_legend(text = element_text(family = "Roboto Condensed", 
+                                         size = 6),
+                     title = element_text(family = "Alegreya", 
+                                          size = 8)) + 
+    
+    theme_sub_plot(title = element_text(family = "Alegreya", 
+                                        size = 14, face = "bold"),
+                   title.position = "plot",
+                   subtitle = element_text(family = "Alegreya", 
+                                           size = 10),
+                   caption = element_text(family = "Alegreya", 
+                                          size = 6),
+                   caption.position = "plot")
+    
 }
 
 ## Use available fonts in ggplot text geoms too!
-ggplot2::update_geom_defaults(geom = "text",new = list(
+ggplot2::update_geom_defaults(geom = "text", new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
@@ -150,8 +127,39 @@ ggplot2::update_geom_defaults(geom = "label", new = list(
 )
 )
 
+ggplot2::update_geom_defaults(geom = "marquee", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "text_repel", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label_repel", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
 ## Set the theme
 ggplot2::theme_set(new = theme_custom())
+
+## tinytable options
+options("tinytable_tt_digits" = 2)
+options("tinytable_format_num_fmt" = "significant_cell")
+options(tinytable_html_mathjax = TRUE)
+
+
+## Set defaults for flextable
+flextable::set_flextable_defaults(font.family = "Roboto Condensed")
 
 ```
 
@@ -160,8 +168,10 @@ ggplot2::theme_set(new = theme_custom())
 
 Correlations define how one variables varies with another. One of the basic Questions we would have of our data is: Does some variable have a significant correlation score with another in some way? Does $y$ vary with $x$? A **Correlation Test** is designed to answer exactly this question.  The block diagram below depicts the statistical procedures available to test for the significance of correlation scores between two variables. 
 
-
 In this module we will explore the **correlation coefficient** and how to test for its significance. We will also see how to use the **linear model** method to perform correlation tests, and how to use the **permutation test** to do so without any assumptions.
+
+
+### {{< iconify flat-color-icons workflow >}} Basic Definitions
 
 Before we begin, let us recap a few basic definitions:
 
@@ -191,23 +201,22 @@ $$
 
 Hence covariance is *the expectation of the product minus the product of the expectations* of the two variables. 
 
-::: callout-tip
-### Covariance uses [z-scores](../../../10-Descriptive/Modules/22-Histograms/index.qmd)!
-Note that in both cases we are dealing with **z-scores**: variable minus its mean, $x_i - \mu_x$, which we have seen when dealing with the CLT and the Gaussian Distribution. 
-:::
-
 So, finally, the coefficient of **correlation** between two variables is defined as:
 
 $$
 \begin{align}
-correlation ~ r &= \frac{cov(x,y)}{\sigma_x * \sigma_y}
-\\
-&= \frac{cov(x,y)}{\sqrt{var_x} * \sqrt{var_y}}
+correlation ~ r &= \frac{cov(x,y)}{\sigma_x * \sigma_y}\\
+&= \frac{\sum_{i = 1}^{n}(x_i - \mu_x)*(y_i - \mu_y)}{(\sigma_x * \sigma_y)(n-1)}\\
+&= \frac{\sum_{i = 1}^{n}\left(\frac{x_i - \mu_x}{\sigma_x}\right)*\left(\frac{y_i - \mu_y}{\sigma_y}\right)}{(n-1)}\\
 \end{align}
 $${#eq-corr}
 
-Thus correlation coefficient is the *covariance scaled by the geometric mean of the variances*. 
+which is the average of the product of the **z-scores** of the two variables.
 
+::: callout-tip
+### Correlation uses [z-scores](../../../10-Descriptive/Modules/22-Quantities/index.qmd)!
+Note that in both cases we are dealing with **z-scores**: variable minus its mean, $\frac{x_i - \mu_x}{\sigma_x}$, which we have seen when dealing with the CLT and the Gaussian Distribution. 
+:::
 
 ## {{< iconify pajamas issue-type-test-case >}} Case Study #1: Galton's famous dataset
 
@@ -221,13 +230,30 @@ data("Galton", package = "mosaicData")
 Galton
 ```
 
-The variables in this dataset are:
+```{r}
+skimr::skim(Galton)
+
+```
+
+So there are several correlations we can explore here: Children's `height` vs that of `father` or `mother`, based on `sex`. In essence we are replicating Francis Galton's famous study.
+
+### {{< iconify carbon clean >}} Data Munging
+
+Note that `nkids`, while coded as `int`, is actually a `factor` variable. Let us convert it to a factor:
+
+```{r}
+Galton_modified <- Galton %>% 
+  mutate(nkids = as_factor(nkids))
+```
+
+### {{< iconify streamline dictionary-language-book-solid >}} Data Dictionary
 
 ::: callout-note
 ### Qualitative Variables
 
-- `sex`(char): sex of the child
+- `sex`(fct): sex of the child
 - `family`(int): an ID for each family
+- `nkids`(fct): Number of children in each family
 :::
 
 ::: callout-note
@@ -236,17 +262,12 @@ The variables in this dataset are:
 - `father`(dbl): father's height in inches
 - `mother`(dbl): mother's height in inches
 - `height`(dbl): Child's height in inches
-- `nkids`(int): Number of children in each family
+
 :::
 
-```{r}
-inspect(Galton)
-```
+### {{< iconify flat-color-icons workflow >}} Workflow: Experiment, and Research Questions
 
-So there are several correlations we can explore here: Children's `height` vs that of `father` or `mother`, based on `sex`. In essence we are replicating Francis Galton's famous study.
-
-
-### {{< iconify flat-color-icons workflow >}} Workflow: Research Questions
+We can say that Galton may have measured the heights of fathers/mothers and their children, and recorded the `sex` of the child. He may have been interested in knowing if there is a correlation between the heights of the parents and their children, and if this correlation is different for sons and daughters. Hence the children's `height` is the *response* variable, and the `father`'s/`mother`'s heights are *explanatory* variables, as is `sex` of the child.
 
 ::: callout-note
 ## Question 1
@@ -260,33 +281,90 @@ So there are several correlations we can explore here: Children's `height` vs th
 Of course we can formulate more questions, but these are good for now! And since we are going to infer correlations by `sex`, let us split the dataset into two parts, one for the sons and one for the daughters, and quickly summarise them too:
 
 ```{r}
-Galton_sons <- Galton %>% 
+Galton_sons <- Galton_modified %>% 
   dplyr::filter(sex == "M") %>% 
   rename("son" = height)
-Galton_daughters <- Galton %>% 
+Galton_daughters <- Galton_modified %>% 
   dplyr::filter(sex == "F") %>% 
   rename("daughter" = height)
-dim(Galton_sons)
-dim(Galton_daughters)
+
 ```
 
+:::: {layout="[50,50]"}
+
+::: {#first-column}
+```{r}
+dim(Galton_sons)
+
+```
+
+Sons Data
+
+:::
+
+::: {#second-column}
+```{r}
+dim(Galton_daughters)
+
+```
+Daughters data
+
+:::
+::::
+
+
+
+
+
+:::: {layout="[50,50]"}
+
+::: {#first-column}
 
 ```{r}
 Galton_sons %>% 
   summarize(across(.cols = c(son, father), 
                    .fns = list(mean = mean, sd = sd)))
 
+```
+
+Sons Summary Stats
+
+:::
+
+::: {#second-column}
+```{r}
 Galton_daughters %>% 
   summarize(across(.cols = c(daughter, father), 
                    .fns = list(mean = mean, sd = sd)))
 ```
+
+Daughters Summary Stats
+:::
+
+
+::::
+
+
+::: callout-note
+### What did filtering do?
+Why are `father` means different for sons and daughters?? 
+When we filtered the dataset into two, the filtering by `sex` of the child also effectively filtered the heights of the `father` (and `mother`). This is proper and desired; but think!
+
+:::
 
 ### {{< iconify flat-color-icons workflow >}} Workflow: Visualization
 
 Let us first quickly plot a graph that is relevant to each of the two research questions.
 
 ```{r}
+#| label: fig-plot-galton
+#| fig-cap: "Heights of Sons and Daughters vs Fathers"
+#| fig-subcap:
+#|   - Sons
+#|   - Daughters
 #| layout-ncol: 2
+#| code-fold: true
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 Galton_sons %>% 
@@ -304,7 +382,7 @@ Galton_daughters %>%
           subtitle = "Galton dataset")
 ```
 
-We might even plot the **overall** heights together and colour by `sex` of the child:
+We might even plot the **overall** `height`s together and colour by `sex` of the child:
 
 ```{r}
 ggplot2::theme_set(new = theme_custom())
@@ -322,12 +400,6 @@ Galton %>%
 
 So daughters are shorter than sons, generally speaking, and both sets of heights seem related to that of the father. 
 
-::: callout-note
-### What did filtering do?
-When we filtered the dataset into two, the filtering by `sex` of the child also effectively filtered the heights of the `father` (and `mother`). This is proper and desired; but think!
-
-:::
-
 ### {{< iconify flat-color-icons workflow >}} Workflow: Assumptions
 
 For the *classical* correlation tests, we need that the variables are normally distributed. As before we check this with the `shapiro.test`:
@@ -342,10 +414,12 @@ shapiro.test(Galton_daughters$daughter)
 
 ```
 
-Let us also check the densities and quartile plots of the heights the dataset: 
+Let us also check the densities and quartile plots of the `height`s in the dataset: 
 
 ```{r}
 #| layout-ncol: 2
+#| code-fold: true
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 Galton %>% group_by(sex) %>% 
@@ -354,7 +428,8 @@ Galton %>% group_by(sex) %>%
   gf_fitdistr(dist = "dnorm") %>% 
   gf_refine(scale_fill_brewer(palette = "Set1")) %>%
   gf_facet_grid(vars(sex)) %>% 
-  gf_labs(title = "Facetted Density Plots")
+  gf_labs(title = "Facetted Density Plots") %>% 
+  gf_theme(legend.position = "none") # Think!
 ##
 Galton %>% group_by(sex) %>% 
   gf_qq(~ height, group = ~ sex, 
@@ -364,13 +439,17 @@ Galton %>% group_by(sex) %>%
   gf_facet_grid(vars(sex)) %>% 
   gf_labs(title = "Facetted QQ Plots",
           x = "Theoretical quartiles",
-          y = "Actual Data")
+          y = "Actual Data") %>% 
+  gf_theme(legend.position = "none") # Think!
 
 ```
 
 and the `father`'s heights:
 
 ```{r}
+#| code-fold: true
+#| layout-ncol: 2
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 Galton %>% group_by(sex) %>% 
@@ -380,7 +459,8 @@ Galton %>% group_by(sex) %>%
   gf_refine(scale_fill_brewer(name = "Sex of Child", palette = "Set1")) %>%
   gf_facet_grid(vars(sex)) %>% 
   gf_labs(title = "Fathers: Facetted Density Plots",
-                    subtitle = "By Sex of Child")
+                    subtitle = "By Sex of Child") %>% 
+  gf_theme(legend.position = "none") # Think!
 
 Galton %>% group_by(sex) %>% 
   gf_qq(~ father, group = ~ sex, # no this is not weird
@@ -391,7 +471,8 @@ Galton %>% group_by(sex) %>%
   gf_labs(title = "Fathers Heights: Facetted QQ Plots",
           subtitle = "By Sex of Child",
           x = "Theoretical quartiles",
-          y = "Actual Data")
+          y = "Actual Data") %>% 
+  gf_theme(legend.position = "none") # Think!
 
 ```
 
@@ -414,14 +495,16 @@ We perform the Pearson correlation test first: the data is **not normal** so we 
 ```{r}
 #| label: corr-tests-sons
 # Pearson (built-in test)
-cor_son_pearson <- cor.test(son ~ father, 
+cor_son_pearson <- mosaic::cor.test(son ~ father, 
                         method = "pearson", 
                         data = Galton_sons) %>% 
   broom::tidy() %>% 
   mutate(term = "Pearson Correlation r")
 cor_son_pearson
 
-cor_son_spearman <- cor.test(son ~ father, method = "spearman", data = Galton_sons) %>% 
+cor_son_spearman <- mosaic::cor.test(son ~ father, 
+                                     method = "spearman", 
+                                     data = Galton_sons) %>% 
   broom::tidy() %>% 
   mutate(term = "Spearman Correlation r")
 cor_son_spearman
@@ -433,14 +516,16 @@ Both tests state that the correlation between `son` and `father` is significant.
 ```{r}
 #| label: corr-tests-daughters
 # Pearson (built-in test)
-cor_daughter_pearson <- cor.test(daughter ~ father, 
+cor_daughter_pearson <- mosaic::cor.test(daughter ~ father, 
                         method = "pearson", 
                         data = Galton_daughters) %>% 
   broom::tidy() %>% 
   mutate(term = "Pearson Correlation r")
 cor_daughter_pearson
-##
-cor_daughter_spearman <- cor.test(daughter ~ father, method = "spearman", data = Galton_daughters) %>% 
+
+cor_daughter_spearman <- mosaic::cor.test(daughter ~ father, 
+                                          method = "spearman", 
+                                          data = Galton_daughters) %>% 
   broom::tidy() %>% 
   mutate(term = "Spearman Correlation r")
 cor_daughter_spearman
@@ -449,10 +534,346 @@ cor_daughter_spearman
 
 Again both tests state that the correlation between `daughter` and `father` is significant. 
 
-#### Intuitive
+#### {{< iconify game-icons dragon-head size=x >}}Intuitive
+
 What is happening under the hood in `cor.test`?
 
-To be Written Up! But when, Arvind? 
+Given that the correlation coefficient $r$ is a measure of the linear relationship between two variables, we can test its significance using a t-test. The formula for the t-value in a correlation test is derived from the relationship between the correlation coefficient and the t-distribution.
+
+The formula for the t-value is given by:
+$$t = \frac{r \sqrt{n - 2}}{\sqrt{1 - r^2}}$${#eq-tstat}
+where:
+
+- $t$ is the t-statistic,
+- $r$ is the Pearson correlation coefficient,
+- $n$ is the number of paired observations (sample size).
+- The degrees of freedom for this t-test is $df = n - 2$.
+
+The derivation of this t-statistic stems from the fact that the correlation coefficient can be expressed in terms of the slope of the regression line when one variable is regressed on the other. The t-test essentially tests whether the slope of this regression line is significantly different from zero, which would indicate a significant linear relationship between the two variables.
+
+::: callout-warning
+#### {{< iconify game-icons dragon-head size=4x >}} Dragons Ahead!!
+OK, if you like, you can stop here! But for you intrepid, [beamish people who possess vorpal swords](https://www.poetryfoundation.org/poems/42916/jabberwocky), here come the Dragons!!
+:::
+
+In [Linear Regression](../../../30-Modelling/Modules/20-LinReg/index.qmd), we saw that the `F-statistic` is a ratio of variances, and that it follows an `F-distribution`. How does this relate to correlation?
+
+- In regression we have a *target* variable (sons' `height`s) and a *predictor* variable (`father`s` heights), same as with our present study of correlation.
+- We look at how much one variable *explains*, or reduces the variance the other
+- i.e. How much the **variance** of the target variable (sons' `height`s) is reduced by the fact that we know the value(s) of a predictor variable (`father`s` heights).
+- Our measure of how well this reduction is happening is a ratio: a ratio of variances, also denoted as $r^2$, i.e. the square of the correlation coefficient.
+- We take the variance of the target variable, and the variance of the target variable *after* we have accounted for the predictor variable. 
+- The ratio of variances follows an `F-distribution` with appropriate degrees of freedom
+- This gives us our `F-value`, computed from our data. 
+    - We compare our computed `F-value` with the **critical F-value** `F-crit` for a probability of error of $5\%$, given by the `F-distribution` with appropriate degrees of freedom.
+    - If our `F-value` is well above `F_crit`, we state there is there very low probability (i.e.`p-value`) that this reduction happened simply by change and accept the hypothesis that there is significant correlation between the two variables. 
+- We relate the idea of *Regression* to *Correlation* by noting that the `t-value` for correlation must be simply the square root of the `F-value` for regression, since the `F-distribution` is for $r^2$ and the `t-distribution` is for $r$.
+
+::: callout-important
+### A Distribution for a Variance-Ratio??
+Why does the variance-ratio have a distribution??? The two variances appear to be single numbers !!! Is there anything that is ***not random*** in statistics?
+
+- Remember, we treat our data as a ***sample*** from a ***population***, in order to estimate the `regression slope` for the **population**.
+- The sample is random, and hence the variance of the sample is also random. 
+- If we took another sample, we would get a different variance. 
+- So the variance of a sample is a random variable, and hence the *ratio-of-variances* also has a distribution.
+Phew!
+:::
+
+::: callout-important
+### The F-statistic and its Distribution
+Why does the *ratio-of-variances* have an F-distribution? 
+
+- In our case, our **residuals** (deviations from the means) are assumed to be **normal**. 
+- The variance calculation ***squares*** these normally-distributed residuals, leading to a *chi-square* distribution for the individual variances. 
+- *The ratio of these two independent chi-squared variables, each divided by their respective degrees of freedom, follows an F-distribution*. 
+- This is a fundamental result in statistics that underpins the use of the F-test in statistical analysis.
+:::
+
+#### {{< iconify game-icons dragon-head size=4x >}} Derivation
+
+To derive the formula for the `t-value` in a correlation test, starting with a ratio of variances, we need to focus on the t-test for the significance of the Pearson correlation coefficient. The t-value assesses whether the observed correlation coefficient $r$ is significantly different from zero. Let’s proceed step-by-step, connecting the t-test to variances and ensuring a clear derivation.
+
+###### Step 1: Understanding the Pearson Correlation Coefficient
+
+The Pearson correlation coefficient $r$ measures the linear relationship between two variables $X$ and $Y$. It is defined as:
+
+$$r = \frac{\text{Cov}(X, Y)}{\sqrt{\text{Var}(X) \text{Var}(Y)}} = \frac{\sum (x_i - \bar{x})(y_i - \bar{y}) / (n-1)}{\sqrt{\left( \sum (x_i - \bar{x})^2 / (n-1) \right) \left( \sum (y_i - \bar{y})^2 / (n-1) \right)}}$$
+where:
+
+$\text{Cov}(X, Y)$ is the covariance of $X$ and $Y$,
+$\text{Var}(X)$ and $\text{Var}(Y)$ are the variances of $X$ and $Y$,
+$x_i$ and $y_i$ are the data points,
+$\bar{x}$ and $\bar{y}$ are the means,
+$n$ is the sample size.
+
+Simplifying, we get:
+$$r = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum (x_i - \bar{x})^2 \sum (y_i - \bar{y})^2}}$$
+
+This formula shows $r$ as a standardized measure of covariance relative to the product of standard deviations (square roots of variances).
+
+###### Step 2: Hypothesis Testing for Correlation
+
+To test whether the correlation is significantly different from zero, we use a t-test. The null hypothesis ($H_0$) is that the *population correlation coefficient* $\rho = 0$, and the alternative hypothesis ($H_a$) is $\rho \neq 0$ (for a two-tailed test). The t-statistic for testing the significance of $r$ is commonly given as:
+
+$$t = \frac{r \sqrt{n - 2}}{\sqrt{1 - r^2}}$${#eq-tstat}
+
+This t-statistic follows a t-distribution with $n - 2$ degrees of freedom under the null hypothesis. Our goal is to derive this formula, starting from a perspective involving variances.
+
+###### Step 3: Connecting to Variances via Linear Regression
+
+The t-test for the correlation coefficient is closely related to the t-test for the slope of a linear regression model. Suppose we regress $Y$ on $X$:
+$$Y = \beta_0 + \beta_1 X + \epsilon$$
+The slope $\beta_1$ estimates the change in $Y$ per unit change in $X$. The sample slope $b_1$ is:
+$$b_1 = \frac{\text{Cov}(X, Y)}{\text{Var}(X)} = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sum (x_i - \bar{x})^2}$$
+Notice the relationship between $b_1$ and $r$. Since:
+$$r = \frac{\text{Cov}(X, Y)}{\sqrt{\text{Var}(X) \text{Var}(Y)}}$$
+
+We can express the covariance as:
+$$\text{Cov}(X, Y) = r \sqrt{\text{Var}(X) \text{Var}(Y)}$$
+So:
+$$
+b_1 = \frac{r \sqrt{\text{Var}(X) \text{Var}(Y)}}{\text{Var}(X)} = r \sqrt{\frac{\text{Var}(Y)}{\text{Var}(X)}} = r \frac{s_y}{s_x}
+$${#eq-slope-corr}
+
+where $s_x = \sqrt{\text{Var}(X)} = \sqrt{\sum (x_i - \bar{x})^2 / (n-1)}$ and $s_y = \sqrt{\text{Var}(Y)}$ are the sample standard deviations.
+
+###### Step 4: t-Test for the Regression Slope
+
+To test $H_0: \beta_1 = 0$, we use the `t-statistic` for the slope:
+
+$$t = \frac{b_1}{\text{SE}(b_1)}$$
+where $\text{SE}(b_1)$ is the standard error of the `slope`. The variance of the slope estimate is derived from the regression model. Assuming the errors $\epsilon$ are normally distributed with variance $\sigma^2$, the variance of $b_1$ is:
+
+$$\text{Var}(b_1) = \frac{\sigma^2}{\sum (x_i - \bar{x})^2}$$
+The standard error is:
+$$\text{SE}(b_1) = \sqrt{\frac{\sigma^2}{\sum (x_i - \bar{x})^2}}$$
+Since $\sigma^2$ is unknown, we estimate it with the residual variance $s^2$:
+$$s^2 = \frac{\sum (y_i - \hat{y}_i)^2}{n - 2}$$
+where $\hat{y}_i = \bar{y} + b_1 (x_i - \bar{x})$ are the fitted values, and $n - 2$ accounts for the degrees of freedom (two parameters estimated: $\beta_0$ and $\beta_1$).
+Thus:
+$$\text{SE}(b_1) = \frac{s}{\sqrt{\sum (x_i - \bar{x})^2}}$$
+So the t-statistic is:
+
+$$t = \frac{b_1 \sqrt{\sum (x_i - \bar{x})^2}}{s}$$
+
+###### Step 5: Relating the Residual Variance to $r$
+
+The residual sum of squares is:
+$$\sum (y_i - \hat{y}_i)^2 = \sum (y_i - \bar{y} - b_1 (x_i - \bar{x}))^2$$
+
+To connect this to $r$, consider the proportion of variance explained by the regression. The coefficient of determination $r^2$ (for simple linear regression, this is the square of the correlation coefficient) is:
+$$r^2 = \frac{\text{SSR}}{\text{SST}} = 1 - \frac{\text{SSE}}{\text{SST}}$$
+where:
+
+- $\text{SSR} = \sum (\hat{y}_i - \bar{y})^2$ (sum of squares due to regression),
+- $\text{SSE} = \sum (y_i - \hat{y}_i)^2$ (sum of squares of errors),
+- $\text{SST} = \sum (y_i - \bar{y})^2$ (total sum of squares).
+
+Since $\hat{y}_i - \bar{y} = b_1 (x_i - \bar{x})$, we have:
+
+$$\text{SSR} = \sum (b_1 (x_i - \bar{x}))^2 = b_1^2 \sum (x_i - \bar{x})^2$$
+
+Substitute $b_1 = r \frac{s_y}{s_x}$:
+
+$$b_1^2 = r^2 \frac{s_y^2}{s_x^2} = r^2 \frac{\sum (y_i - \bar{y})^2 / (n-1)}{\sum (x_i - \bar{x})^2 / (n-1)} = r^2 \frac{\sum (y_i - \bar{y})^2}{\sum (x_i - \bar{x})^2}$$
+
+So:
+$$\text{SSR} = r^2 \frac{\sum (y_i - \bar{y})^2}{\sum (x_i - \bar{x})^2} \cdot \sum (x_i - \bar{x})^2 = r^2 \sum (y_i - \bar{y})^2$$
+Thus:
+$$r^2 = \frac{\text{SSR}}{\text{SST}} = \frac{r^2 \sum (y_i - \bar{y})^2}{\sum (y_i - \bar{y})^2} = r^2$$
+
+This confirms consistency. Now, the residual sum of squares is:
+$$\text{SSE} = \text{SST} (1 - r^2) = (1 - r^2) \sum (y_i - \bar{y})^2$$
+
+The residual variance is:
+$$s^2 = \frac{\text{SSE}}{n - 2} = \frac{(1 - r^2) \sum (y_i - \bar{y})^2}{n - 2}$$
+So:
+$$s = \sqrt{\frac{(1 - r^2) \sum (y_i - \bar{y})^2}{n - 2}}$$
+
+Step 6: Substitute into the t-Statistic
+
+Recall:
+$$t = \frac{b_1 \sqrt{\sum (x_i - \bar{x})^2}}{s}$$
+
+Substitute $b_1 = r \frac{s_y}{s_x}$, where $s_y = \sqrt{\sum (y_i - \bar{y})^2 / (n-1)}$, $s_x = \sqrt{\sum (x_i - \bar{x})^2 / (n-1)}$:
+
+$$b_1 = r \frac{\sqrt{\sum (y_i - \bar{y})^2 / (n-1)}}{\sqrt{\sum (x_i - \bar{x})^2 / (n-1)}} = r \sqrt{\frac{\sum (y_i - \bar{y})^2}{\sum (x_i - \bar{x})^2}}$$
+
+Now compute:
+$$b_1 \sqrt{\sum (x_i - \bar{x})^2} = r \sqrt{\frac{\sum (y_i - \bar{y})^2}{\sum (x_i - \bar{x})^2}} \cdot \sqrt{\sum (x_i - \bar{x})^2} = r \sqrt{\sum (y_i - \bar{y})^2}$$
+
+The standard error term involves:
+$$s = \sqrt{\frac{(1 - r^2) \sum (y_i - \bar{y})^2}{n - 2}}$$
+
+So:
+$$t = \frac{r \sqrt{\sum (y_i - \bar{y})^2}}{\sqrt{\frac{(1 - r^2) \sum (y_i - \bar{y})^2}{n - 2}}} = \frac{r \sqrt{\sum (y_i - \bar{y})^2} \cdot \sqrt{n - 2}}{\sqrt{(1 - r^2) \sum (y_i - \bar{y})^2}}$$
+
+The $\sqrt{\sum (y_i - \bar{y})^2}$ terms cancel out:
+$$t = \frac{r \sqrt{n - 2}}{\sqrt{1 - r^2}}$$
+
+Step 7: Linking to Ratio of Variances
+
+Our inquiry started with a “ratio of variances.” In the context of the t-test, the t-statistic can be interpreted through the lens of explained versus unexplained variance. From the regression perspective:
+$$r^2 = \frac{\text{SSR}}{\text{SST}} = \frac{\text{Explained Variance}}{\text{Total Variance}}$$
+The unexplained variance is:
+$$1 - r^2 = \frac{\text{SSE}}{\text{SST}}$$
+The t-statistic can be related to the F-statistic for regression, where:
+$$F = \frac{\text{SSR}/1}{\text{SSE}/(n-2)} = \frac{r^2 / 1}{(1 - r^2)/(n-2)}$$
+For simple linear regression, the t-statistic for the slope is the square root of the F-statistic:
+$$t^2 = F$$
+Let’s compute:
+$$F = \frac{r^2 (n - 2)}{1 - r^2}$$
+$$t = \sqrt{F} = \sqrt{\frac{r^2 (n - 2)}{1 - r^2}} = \frac{r \sqrt{n - 2}}{\sqrt{1 - r^2}}$$
+This matches our derived t-statistic, confirming that the ratio of explained to unexplained variance underpins the test.
+
+Final Answer
+
+The t-value for testing the significance of the Pearson correlation coefficient $r$, derived from the perspective of variances in a regression framework, is:
+
+$$t = \frac{r \sqrt{n - 2}}{\sqrt{1 - r^2}}$$
+This formula arises from the ratio of explained to unexplained variance in the regression model, where $r^2$ represents the proportion of variance in $Y$ explained by $X$, and $1 - r^2$ represents the unexplained variance, adjusted by the degrees of freedom $n - 2$.
+
+$$\Large{\boxed{t = \frac{r \sqrt{n - 2}}{\sqrt{1 - r^2}}}}$$
+
+
+
+On to the computations!
+
+#### By Hand
+
+[< WORK IN PROGRESS >]{style="background-color: yellow;"}
+
+:::: {layout="[15,15,15,15,15]"}
+
+::: {#first-column}
+A. Data Dimensions
+```{r}
+(dim(Galton_sons))
+```
+Sons Data: n = 465
+:::
+::: {#second-column}
+B. Variances
+```{r}
+(var_son <- var(Galton_sons$son))
+```
+Variance of Sons' Heights
+:::
+
+::: {#third-column}
+B. Variances
+```{r}
+(var_father <- var(Galton_sons$father))
+```
+Variance of Fathers' Heights
+:::
+::: {#fourth-column}
+C. Covariance
+```{r}
+(cov_son_father <- cov(Galton_sons$son, Galton_sons$father))
+```
+Covariance of Sons' and Fathers' Heights
+:::
+
+::: {#fifth-column}
+E. Estimate
+```{r}
+(corr_estimate <- cov_son_father / (sqrt(var_son) * sqrt(var_father)))
+
+```
+Correlation Estimate for Sons
+:::
+::::
+
+
+F. t-statistics
+
+We can now compute the `t-statistic` using the formula:
+$$
+t_{statistic} = \frac{r \sqrt{n - 2}}{\sqrt{1 - r^2}}
+$$
+We can look up the critical value of t from the `t-distribution` with $df = 463$ at a probability of error of $5\%$:
+
+:::: {layout="[50,50]"}
+::: {#first-column}
+
+```{r}
+(t_statistic<- corr_estimate/sqrt((1 - corr_estimate^2)/(465 - 2)))
+```
+F statistic for Sons
+:::
+::: {#second-column}
+
+```{r}
+(t_critical <- qt(p = 0.975, df = 463, log.p = FALSE))
+
+```
+Critical t value for Sons
+:::
+::::
+
+G. p-value
+
+Finally we can compute the `p-value` for this `t-statistic`:
+
+```{r}
+(p_value_son <- 2.0 * (1 - pt(q = t_statistic, df = 465 -2 )))
+
+```
+We see that the `p-value` is very small, and we can reject the null hypothesis of "no correlation" between `son` and `father` heights.
+
+H. Plotting the t-distribution
+
+```{r}
+#| label: fig-t-distribution
+#| layout-ncol: 2
+#| fig-cap: "t-distribution with df = 463"
+#| fig-subcap: 
+#|   - "t-statistic and t-critical marked"
+#|   - "Estimate and Confidence Intervals"
+#| code-fold: true
+#| 
+
+mosaic::xqt(p = c(0.025, 0.975), df = 463, 
+            return = c("plot"), alpha = 0.5, 
+            colour = "black", system = "gg") %>% 
+  gf_vline(xintercept = t_statistic, color = "red") %>%
+  gf_vline(xintercept = t_critical, color = "blue") %>%
+  gf_annotate(geom = "label", x = t_statistic, y = 0.3, 
+            label = "t-statistic", colour = "purple", size = 8) %>% 
+  gf_annotate(geom = "label", x = t_critical, y = 0.3,
+            label = "t-critical", colour = "purple", size = 8) %>% 
+  gf_labs(title = "t-distribution with df = 463",
+          subtitle = "Sons' Heights vs Fathers' Heights",
+          x = "t-value", y = "Density") %>% 
+  gf_refine(
+    scale_y_continuous(expand = expansion(mult = c(0, 0.1))),
+    scale_x_continuous(
+      breaks = c(-3, -2, -1, 0, 1, 2, 3, t_statistic, t_critical, 10),
+      limits = c(-4, 10),
+      labels = scales::number_format(accuracy = 0.01)))
+###
+df_corr <- cor_son_pearson$parameter
+mean_value <- cor_son_pearson$estimate
+
+gf_fun(dt(x = (x - mean_value) / sqrt(df_corr / (df_corr - 2)), 
+          df = df_corr) * (1 / sqrt(df_corr / (df_corr - 2))) ~ x, xlim = c(-5, 5)) %>% 
+  gf_labs(title = "t-Distribution with Non-Zero Mean",
+          subtitle = "Sons' Heights vs Fathers' Heights",
+          x = "Correlation Estimate", y = "Density") %>% 
+  gf_vline(xintercept = mean_value, color = "red") %>%
+  gf_annotate(geom = "label", x = mean_value, y = 0.3,
+            label = "Corr Estimate", colour = "purple", size = 8) %>% 
+  gf_vline(xintercept = cor_son_pearson$conf.low, color = "blue", linetype = "dashed") %>%
+  gf_vline(xintercept = cor_son_pearson$conf.high, color = "blue", linetype = "dashed") %>%
+  gf_annotate("segment", x = cor_son_pearson$conf.low, 
+              xend = cor_son_pearson$conf.high, y = 0.25, yend = 0.25,
+            arrow = arrow(ends = "both", length = unit(0.2, "inches")), color = "blue", size = 1)
+
+
+```
+
 
 #### Permutation Test
 
@@ -470,7 +891,7 @@ obs_daughter_corr
 ggplot2::theme_set(new = theme_custom())
 
 corr_daughter_null <- 
-  do(4999) * cor.test(daughter ~ shuffle(father), 
+  do(4999) * mosaic::cor.test(daughter ~ shuffle(father), 
                                           data = Galton_daughters) %>% 
   broom::tidy()
 corr_daughter_null
@@ -891,8 +1312,11 @@ Correlation tests are a powerful way to understand the relationship between two 
     Thulin](http://www.modernstatisticswithr.com/)\
 1.    [Jeffrey Walker "A
     linear-model-can-be-fit-to-data-with-continuous-discrete-or-categorical-x-variables"](https://www.middleprofessor.com/files/applied-biostatistics_bookdown/_book/intro-linear-models.html#a-linear-model-can-be-fit-to-data-with-continuous-discrete-or-categorical-x-variables)
+1. <https://grok.com/share/c2hhcmQtNA%3D%3D_5a4873eb-9c38-4ee2-a6dc-de1505c415d5>
     
-    
+## Examples
+
+1. <https://stats.libretexts.org/Courses/Citrus_College/Statistics_C1000%3A_Introduction_to_Statistics/10%3A_Correlation_and_Linear_Regression/10.04%3A_Hypothesis_Test_for_a_Correlation_Using_t-Test>
 
 ::: {#refs style="font-size: 60%;"}
 

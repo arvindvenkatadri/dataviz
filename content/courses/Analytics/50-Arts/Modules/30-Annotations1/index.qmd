@@ -23,6 +23,9 @@ library(ggtext)      ## add improved text rendering to ggplot2
 library(ggforce)     ## add missing functionality to ggplot2
 
 library(showtext)   ## add google fonts to plots
+library(ggrepel)      ## add repelling text labels to ggplot2
+library(marquee)     ## add text labels with fonts to ggplot2
+library(latex2exp)  ## use LaTeX expressions in plots
 
 ```
 
@@ -105,66 +108,83 @@ Let us set the ggplot theme:
 #| 
 
 theme_custom <- function(){ 
-    font <- "RobotoCondensed"   # Assign font family up front
+
+    theme_bw(base_size = 10) + 
     
-    theme_bw(base_size = 14, base_family = font) %+replace%    
-      
-      ## modify plot elements globally (for all following plots)
-      theme(
-        axis.ticks = element_line(color = "grey92"),
-        axis.ticks.length = unit(.5, "lines"),
-        
-        panel.grid.minor = element_blank(),
-        
-        legend.title = element_text(family = "Schoolbell", size = 12),
-        legend.text = element_text(family = "IbarraNova", color = "grey30"),
-        
-        plot.title = element_text(               #title
-                   family = "Alegreya",          #set font family
-                   size = 18,                    #set font size
-                   face = 'bold',                #bold typeface
-                   hjust = 0,                  #left align
-                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
-      
-        plot.title.position = "plot",
-        
-        plot.subtitle = element_text(family = "Alegreya", size = 12, 
-                                     color = "grey30",
-                                     hjust = 0,                   #left align
-                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
-      
-       plot.caption = element_text(             #caption
-                   family = font,                #font family
-                   size = 9,                     #font size
-                   hjust = 1),                   #right align
-       
-      plot.caption.position = "plot",            #right align to plot
-)
+    theme_sub_axis(title = element_text(family = "Roboto Condensed", 
+                                       size = 8),
+                   text = element_text(family = "Roboto Condensed", 
+                                       size = 6)) + 
+    
+    theme_sub_legend(text = element_text(family = "Roboto Condensed", 
+                                         size = 6),
+                     title = element_text(family = "Alegreya", 
+                                          size = 8)) + 
+    
+    theme_sub_plot(title = element_text(family = "Alegreya", 
+                                        size = 14, face = "bold"),
+                   title.position = "plot",
+                   subtitle = element_text(family = "Alegreya", 
+                                           size = 10),
+                   caption = element_text(family = "Alegreya", 
+                                          size = 6),
+                   caption.position = "plot")
+    
 }
 
-## Set the theme
-ggplot2::theme_set(new = theme_custom())
-
-
 ## Use available fonts in ggplot text geoms too!
-ggplot2::update_geom_defaults(geom = "text",new = list(
-  family = "RobotoCondensed",
+ggplot2::update_geom_defaults(geom = "text", new = list(
+  family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
   color = "#2b2b2b"
 )
 )
 ggplot2::update_geom_defaults(geom = "label", new = list(
-  family = "RobotoCondensed",
+  family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
   color = "#2b2b2b"
 )
 )
 
+ggplot2::update_geom_defaults(geom = "marquee", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "text_repel", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label_repel", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
+
+
+
+## tinytable options
+options("tinytable_tt_digits" = 2)
+options("tinytable_format_num_fmt" = "significant_cell")
+options(tinytable_html_mathjax = TRUE)
+
+
+## Set defaults for flextable
+flextable::set_flextable_defaults(font.family = "Roboto Condensed")
+
 ```
-
-
 
 
 ## Data
@@ -266,13 +286,18 @@ ggplot2::theme_set(new = theme_custom())
 p1 %>% 
   gf_annotate(geom = "rect", xmin = 45, xmax = 55, ymin = 15, ymax = 20, colour = "black", fill = "grey", alpha = 0.2) %>% 
   
-  gf_annotate(geom = "text", x = 55, y = 13.5, 
+  gf_annotate(geom = "label", x = 55, y = 13.5, fill = "moccasin",
            label = "Highly Educated\n Penguins") %>% 
   
   gf_annotate(geom = "curve", x = 57, y = 14.25,
            xend = 55, yend = 17.5, linewidth = 0.5,
     curvature = +0.5,
-    arrow = arrow(length = unit(0.5, 'cm')))
+    arrow = arrow(length = unit(0.5, 'cm'))) %>% 
+  
+## Some Math stuff
+  gf_annotate(geom = "text", x = 40, y = 22, 
+    label = latex2exp::TeX(r"(\textbf{Euler's identity} is $e^{i\pi} + 1 = 0$.)", output = "character"),
+    parse = TRUE, size = 8, color = "darkred")
 
 ```
 
@@ -291,7 +316,12 @@ p1 +
   annotate(geom = "curve", x = 57, y = 14.25,
            xend = 55, yend = 17.5,linewidth = 0.5,
     curvature = +0.5,
-    arrow = arrow(length = unit(0.5, 'cm')))
+    arrow = arrow(length = unit(0.5, 'cm'))) + 
+  
+  ## Some Math stuff
+  annotate(geom = "text", x = 40, y = 22, 
+    label = latex2exp::TeX(r"(\textbf{Euler's identity} is $e^{i\pi} + 1 = 0$.)", output = "character"),
+    parse = TRUE, size = 8, color = "darkred")
 
 ```
 

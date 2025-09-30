@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Arvind V.">
 <meta name="dcterms.date" content="2022-11-15">
-<title> Groups and Densities – The Mad Hatter's Guide to Data Viz and Stats in R</title>
+<title> Groups and Distributions – The Mad Hatter's Guide to Data Viz and Stats in R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -83,8 +83,8 @@ div.csl-indent {
 <script src="../../../../../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../../../../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../../../../../">
-<link href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/30-Correlations/index.html" rel="next">
-<link href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/26-Densities/index.html" rel="prev">
+<link href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/30-Change/index.html" rel="next">
+<link href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/26-Distributions/index.html" rel="prev">
 <link href="../../../../../../content/materials/icon-park-twotone--concept-sharing.svg" rel="icon" type="image/svg+xml">
 <script src="../../../../../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -334,7 +334,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"code":"\nggplot2::theme_set(theme_classic())\n# Read the data\ndata(diamonds, package = \"ggplot2\")\ndiamonds_modified <- diamonds %>% \n  janitor::clean_names(case = \"snake\") %>% \n  janitor::remove_empty(which = c(\"rows\", \"cols\")) %>% \n  dplyr::mutate(\n    across(where(is.character), as.factor)\n  )\n","id":1,"options":{"autorun":"true","classes":"","comment":"","context":"setup","dpi":72,"editor-max-height":"","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\ngf_violin(price ~ \"\", data = diamonds_modified, \n          draw_quantiles = c(0,.25,.50,.75)) %>%\n  gf_labs(title = \"Plot A: Violin plot for Diamond Prices\")","id":2,"options":{"autorun":"false","classes":"","collapse":"true","comment":"","context":"interactive","dpi":72,"editor-max-height":"","fig-cap":"","fig-height":5,"fig-width":7,"label":"Violin plots with ggformula webr","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\ngf_violin(price ~ cut, data = diamonds_modified,\n            draw_quantiles = c(0,.25,.50,.75)) %>% \n  gf_labs(title = \"Plot B: Price by Cut\")","id":3,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-max-height":"","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-3","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\ndiamonds_modified %>% \n  gf_violin(price ~ cut, \n             fill = ~ cut, \n             color = ~ cut,\n             alpha = 0.3,\n            draw_quantiles = c(0,.25,.50,.75)) %>% \n  gf_labs(title = \"Plot C: Price by Cut\")","id":4,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-max-height":"","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-4","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\ndiamonds_modified %>% \n  gf_violin(price ~ cut, \n             fill = ~ cut, \n             colour = ~ cut,             \n             alpha = 0.3,draw_quantiles = c(0,.25,.50,.75)) %>% \n  gf_facet_wrap(vars(clarity)) %>%\n  gf_labs(title = \"Plot D: Price by Cut facetted by Clarity\") %>%\n  gf_theme(theme(axis.text.x = element_text(angle = 45,hjust = 1)))","id":5,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-max-height":"","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-5","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\ndiamonds_modified %>% ggplot() + \n  geom_violin(aes(y = price, x = \"\"),\n              draw_quantiles = c(0,.25,.50,.75)) + # note: y, not x\n  labs(title = \"Plot A: violin for Diamond Prices\")","id":6,"options":{"autorun":"false","classes":"","collapse":"true","comment":"","context":"interactive","dpi":72,"editor-max-height":"","fig-cap":"","fig-height":5,"fig-width":7,"label":"Violin plots with ggplot webr","layout-ncol":"2","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\ndiamonds_modified %>% ggplot() + \n  geom_violin(aes(cut, price),\n              draw_quantiles = c(0,.25,.50,.75)) + \n  labs(title = \"Plot B: Price by Cut\")","id":7,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-max-height":"","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-7","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\ndiamonds_modified %>% ggplot() + \n  geom_violin(aes(cut, price, \n                  color = cut, fill = cut),\n              draw_quantiles = c(0,.25,.50,.75),\n              alpha = 0.4) +\n  labs(title = \"Plot C: Price by Cut\")","id":8,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-max-height":"","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-8","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\ndiamonds_modified %>% ggplot() + \n  geom_violin(aes(cut, \n                   price, \n                   color = cut, fill = cut), \n              draw_quantiles = c(0,.25,.50,.75),\n              alpha = 0.4)  +  \n  facet_wrap(vars(clarity)) +\n  labs(title = \"Plot D: Price by Cut facetted by Clarity\") +\n  theme(axis.text.x = element_text(angle = 45,hjust = 1))","id":9,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-max-height":"","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-9","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
+globalThis.qwebrCellDetails = [{"code":"\ngf_violin(price ~ \"\", data = diamonds_modified, \n          draw_quantiles = c(0,.25,.50,.75)) %>%\n  gf_labs(title = \"Plot A: Violin plot for Diamond Prices\")","id":1,"options":{"autorun":"false","classes":"","collapse":"true","comment":"","context":"interactive","dpi":72,"editor-max-height":"","fig-cap":"","fig-height":5,"fig-width":7,"label":"Violin plots with ggformula webr","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\ngf_violin(price ~ cut, data = diamonds_modified,\n            draw_quantiles = c(0,.25,.50,.75)) %>% \n  gf_labs(title = \"Plot B: Price by Cut\")","id":2,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-max-height":"","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-2","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\ndiamonds_modified %>% \n  gf_violin(price ~ cut, \n             fill = ~ cut, \n             color = ~ cut,\n             alpha = 0.3,\n            draw_quantiles = c(0,.25,.50,.75)) %>% \n  gf_labs(title = \"Plot C: Price by Cut\")","id":3,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-max-height":"","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-3","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\ndiamonds_modified %>% \n  gf_violin(price ~ cut, \n             fill = ~ cut, \n             colour = ~ cut,             \n             alpha = 0.3,draw_quantiles = c(0,.25,.50,.75)) %>% \n  gf_facet_wrap(vars(clarity)) %>%\n  gf_labs(title = \"Plot D: Price by Cut facetted by Clarity\") %>%\n  gf_theme(theme(axis.text.x = element_text(angle = 45,hjust = 1)))","id":4,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-max-height":"","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-4","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\ndiamonds_modified %>% ggplot() + \n  geom_violin(aes(y = price, x = \"\"),\n              draw_quantiles = c(0,.25,.50,.75)) + # note: y, not x\n  labs(title = \"Plot A: violin for Diamond Prices\")","id":5,"options":{"autorun":"false","classes":"","collapse":"true","comment":"","context":"interactive","dpi":72,"editor-max-height":"","fig-cap":"","fig-height":5,"fig-width":7,"label":"Violin plots with ggplot webr","layout-ncol":"2","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\ndiamonds_modified %>% ggplot() + \n  geom_violin(aes(cut, price),\n              draw_quantiles = c(0,.25,.50,.75)) + \n  labs(title = \"Plot B: Price by Cut\")","id":6,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-max-height":"","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-6","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\ndiamonds_modified %>% ggplot() + \n  geom_violin(aes(cut, price, \n                  color = cut, fill = cut),\n              draw_quantiles = c(0,.25,.50,.75),\n              alpha = 0.4) +\n  labs(title = \"Plot C: Price by Cut\")","id":7,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-max-height":"","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-7","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\ndiamonds_modified %>% ggplot() + \n  geom_violin(aes(cut, \n                   price, \n                   color = cut, fill = cut), \n              draw_quantiles = c(0,.25,.50,.75),\n              alpha = 0.4)  +  \n  facet_wrap(vars(clarity)) +\n  labs(title = \"Plot D: Price by Cut facetted by Clarity\") +\n  theme(axis.text.x = element_text(angle = 45,hjust = 1))","id":8,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-max-height":"","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-8","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
 
 </script><script type="module">
 // Declare startupMessageQWebR globally
@@ -1051,12 +1051,12 @@ globalThis.qwebrExecuteCode = async function (
 <link rel="stylesheet" href="../../../../../../css/vollkorn.css">
 <link rel="stylesheet" href="../../../../../../css/fraunces.css">
 <link rel="stylesheet" href="../../../../../../css/styles.css">
-<meta property="og:title" content=" Groups and Densities – The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta property="og:title" content=" Groups and Distributions – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:description" content="Quant and Qual Variable Graphs and their Siblings">
 <meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/28-Violins/preview.jpg">
 <meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
 <meta property="og:image:alt" content="Image by rawpixel.com">
-<meta name="twitter:title" content=" Groups and Densities – The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta name="twitter:title" content=" Groups and Distributions – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta name="twitter:description" content="Quant and Qual Variable Graphs and their Siblings">
 <meta name="twitter:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/28-Violins/preview.jpg">
 <meta name="twitter:image:alt" content="Image by rawpixel.com">
@@ -1113,7 +1113,7 @@ globalThis.qwebrExecuteCode = async function (
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/listing.html">Data Viz and Stats</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/10-Descriptive/listing.html">Descriptive Analytics</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/28-Violins/index.html"><iconify-icon icon="material-symbols:light-group-rounded" width="1.2em" height="1.2em"></iconify-icon> Groups and Densities</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/listing.html">Data Viz and Stats</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/10-Descriptive/listing.html">Descriptive Analytics</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/28-Violins/index.html"><iconify-icon icon="material-symbols:light-group-rounded" width="1.2em" height="1.2em"></iconify-icon> Groups and Distributions</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -1194,37 +1194,37 @@ globalThis.qwebrExecuteCode = async function (
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/20-BarPlots/index.html" class="sidebar-item-text sidebar-link">
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/20-Counts/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><iconify-icon icon="eos-icons:counting" width="1.2em" height="1.2em"></iconify-icon> Counts</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/22-Histograms/index.html" class="sidebar-item-text sidebar-link">
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/22-Quantities/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><iconify-icon icon="fluent-mdl2:quantity" width="1.2em" height="1.2em"></iconify-icon> Quantities</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/24-BoxPlots/index.html" class="sidebar-item-text sidebar-link">
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/24-Groups/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><iconify-icon icon="lucide:group" width="1.2em" height="1.2em"></iconify-icon> Groups</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/26-Densities/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><iconify-icon icon="clarity:bell-curve-line" width="1.2em" height="1.2em"></iconify-icon> Densities</span></a>
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/26-Distributions/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="clarity:bell-curve-line" width="1.2em" height="1.2em"></iconify-icon> Distributions</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/28-Violins/index.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><iconify-icon icon="material-symbols:light-group-rounded" width="1.2em" height="1.2em"></iconify-icon> Groups and Densities</span></a>
+ <span class="menu-text"><iconify-icon icon="material-symbols:light-group-rounded" width="1.2em" height="1.2em"></iconify-icon> Groups and Distributions</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/30-Correlations/index.html" class="sidebar-item-text sidebar-link">
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/30-Change/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><iconify-icon icon="icon-park-outline:change" width="1.2em" height="1.2em"></iconify-icon> Change</span></a>
   </div>
 </li>
@@ -1366,19 +1366,19 @@ globalThis.qwebrExecuteCode = async function (
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../../../../content/courses/Analytics/30-Modelling/Modules/LinReg/index.html" class="sidebar-item-text sidebar-link">
+  <a href="../../../../../../content/courses/Analytics/30-Modelling/Modules/20-LinReg/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Modelling with Linear Regression</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../../../../content/courses/Analytics/30-Modelling/Modules/LogReg/index.html" class="sidebar-item-text sidebar-link">
+  <a href="../../../../../../content/courses/Analytics/30-Modelling/Modules/30-LogReg/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Modelling with Logistic Regression</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../../../../content/courses/Analytics/30-Modelling/Modules/ModelTimeSeries/index.html" class="sidebar-item-text sidebar-link">
+  <a href="../../../../../../content/courses/Analytics/30-Modelling/Modules/50-ModelTimeSeries/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">🕔 Modelling and Predicting Time Series</span></a>
   </div>
 </li>
@@ -1657,7 +1657,7 @@ globalThis.qwebrExecuteCode = async function (
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">8</span> <iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusion</a></li>
   <li><a href="#your-turn" id="toc-your-turn" class="nav-link" data-scroll-target="#your-turn"><span class="header-section-number">9</span> <iconify-icon inline="" icon="openmoji:person" aria-label="Icon person from openmoji Iconify.design set." title="Icon person from openmoji Iconify.design set."></iconify-icon> Your Turn</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">10</span> <iconify-icon inline="" icon="ooui:references-rtl" aria-label="Icon references-rtl from ooui Iconify.design set." title="Icon references-rtl from ooui Iconify.design set."></iconify-icon> References</a></li>
-  </ul><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="slides-index.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></nav>
+  </ul></nav>
     </div>
 <!-- main -->
 <main class="content column-body" id="quarto-document-content"><script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.47.0/min/vs/loader.js"></script><script type="module" id="qwebr-monaco-editor-init">
@@ -1882,9 +1882,9 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
   };
   
 }
-</script><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/listing.html">Data Viz and Stats</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/10-Descriptive/listing.html">Descriptive Analytics</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/28-Violins/index.html"><iconify-icon icon="material-symbols:light-group-rounded" width="1.2em" height="1.2em"></iconify-icon> Groups and Densities</a></li></ol></nav><div class="quarto-title">
+</script><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/listing.html">Data Viz and Stats</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/10-Descriptive/listing.html">Descriptive Analytics</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/28-Violins/index.html"><iconify-icon icon="material-symbols:light-group-rounded" width="1.2em" height="1.2em"></iconify-icon> Groups and Distributions</a></li></ol></nav><div class="quarto-title">
 <h1 class="title">
-<iconify-icon icon="material-symbols:light-group-rounded" width="1.2em" height="1.2em"></iconify-icon> Groups and Densities</h1>
+<iconify-icon icon="material-symbols:light-group-rounded" width="1.2em" height="1.2em"></iconify-icon> Groups and Distributions</h1>
   <div class="quarto-categories">
     <div class="quarto-category">Qual Variables</div>
     <div class="quarto-category">Quant Variables</div>
@@ -1914,7 +1914,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">September 22, 2025</p>
+      <p class="date-modified">September 30, 2025</p>
     </div>
   </div>
     
@@ -1945,10 +1945,11 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/visdat/">visdat</a></span><span class="op">)</span> <span class="co"># Visualize whole dataframes for missing data</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/njtierney/naniar">naniar</a></span><span class="op">)</span> <span class="co"># Clean missing data</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rstudio/DT">DT</a></span><span class="op">)</span> <span class="co"># Interactive Tables for our data</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://vincentarelbundock.github.io/tinytable/">tinytable</a></span><span class="op">)</span> <span class="co"># Elegant Tables for our data</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://vincentarelbundock.github.io/tinytable/">tinytable</a></span><span class="op">)</span> <span class="co"># Elegant Tables for our data</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggrepel.slowkow.com/">ggrepel</a></span><span class="op">)</span> <span class="co"># Repel overlapping text labels away from each other</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://marquee.r-lib.org">marquee</a></span><span class="op">)</span> <span class="co"># To create text marquees in ggplot2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<section id="plot-fonts-and-theme" class="level4" data-number="1.0.1"><h4 data-number="1.0.1" class="anchored" data-anchor-id="plot-fonts-and-theme">
-<span class="header-section-number">1.0.1</span> Plot Fonts and Theme</h4>
+<section id="plot-fonts-and-theme" class="level4"><h4 class="anchored" data-anchor-id="plot-fonts-and-theme">Plot Fonts and Theme</h4>
 <div class="cell" data-messages="false">
 <details class="code-fold"><summary>Show the Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-lib/systemfonts">systemfonts</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/yixuan/showtext">showtext</a></span><span class="op">)</span></span>
@@ -1975,54 +1976,45 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <span><span class="fu"><a href="https://rdrr.io/pkg/showtext/man/showtext_auto.html">showtext_auto</a></span><span class="op">(</span>enable <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># enable showtext</span></span>
 <span><span class="co">##</span></span>
 <span><span class="va">theme_custom</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">font</span> <span class="op">&lt;-</span> <span class="st">"Alegreya"</span> <span class="co"># assign font family up front</span></span>
-<span>  <span class="st">"%+replace%"</span> <span class="op">&lt;-</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="st">"%+replace%"</span> <span class="co"># nolint</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">+</span></span>
 <span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">14</span>, base_family <span class="op">=</span> <span class="va">font</span><span class="op">)</span> <span class="op"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html">%+replace%</a></span> <span class="co"># replace elements we want to change</span></span>
-<span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span></span>
-<span>      text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>family <span class="op">=</span> <span class="va">font</span><span class="op">)</span>, <span class="co"># set base font family</span></span>
-<span></span>
-<span>      <span class="co"># text elements</span></span>
-<span>      plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># title</span></span>
-<span>        family <span class="op">=</span> <span class="va">font</span>, <span class="co"># set font family</span></span>
-<span>        size <span class="op">=</span> <span class="fl">24</span>, <span class="co"># set font size</span></span>
-<span>        face <span class="op">=</span> <span class="st">"bold"</span>, <span class="co"># bold typeface</span></span>
-<span>        hjust <span class="op">=</span> <span class="fl">0</span>, <span class="co"># left align</span></span>
-<span>        margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">5</span>, r <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">5</span>, l <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
-<span>      <span class="op">)</span>, <span class="co"># margin</span></span>
-<span>      plot.title.position <span class="op">=</span> <span class="st">"plot"</span>,</span>
-<span>      plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># subtitle</span></span>
-<span>        family <span class="op">=</span> <span class="va">font</span>, <span class="co"># font family</span></span>
-<span>        size <span class="op">=</span> <span class="fl">14</span>, <span class="co"># font size</span></span>
-<span>        hjust <span class="op">=</span> <span class="fl">0</span>, <span class="co"># left align</span></span>
-<span>        margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">5</span>, r <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">10</span>, l <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
-<span>      <span class="op">)</span>, <span class="co"># margin</span></span>
-<span></span>
-<span>      plot.caption <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># caption</span></span>
-<span>        family <span class="op">=</span> <span class="va">font</span>, <span class="co"># font family</span></span>
-<span>        size <span class="op">=</span> <span class="fl">9</span>, <span class="co"># font size</span></span>
-<span>        hjust <span class="op">=</span> <span class="fl">1</span></span>
-<span>      <span class="op">)</span>, <span class="co"># right align</span></span>
-<span></span>
-<span>      plot.caption.position <span class="op">=</span> <span class="st">"plot"</span>, <span class="co"># right align</span></span>
-<span></span>
-<span>      axis.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># axis titles</span></span>
-<span>        family <span class="op">=</span> <span class="st">"Roboto Condensed"</span>, <span class="co"># font family</span></span>
-<span>        size <span class="op">=</span> <span class="fl">12</span></span>
-<span>      <span class="op">)</span>, <span class="co"># font size</span></span>
-<span></span>
-<span>      axis.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># axis text</span></span>
-<span>        family <span class="op">=</span> <span class="st">"Roboto Condensed"</span>, <span class="co"># font family</span></span>
-<span>        size <span class="op">=</span> <span class="fl">12</span></span>
-<span>      <span class="op">)</span>, <span class="co"># font size</span></span>
-<span></span>
-<span>      axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span> <span class="co"># margin for axis text</span></span>
-<span>        margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span><span class="fl">5</span>, b <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/subtheme.html">theme_sub_axis</a></span><span class="op">(</span></span>
+<span>      title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span></span>
+<span>        family <span class="op">=</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span>        size <span class="op">=</span> <span class="fl">8</span></span>
+<span>      <span class="op">)</span>,</span>
+<span>      text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span></span>
+<span>        family <span class="op">=</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span>        size <span class="op">=</span> <span class="fl">6</span></span>
 <span>      <span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op">+</span></span>
 <span></span>
-<span>      <span class="co"># since the legend often requires manual tweaking</span></span>
-<span>      <span class="co"># based on plot content, don't define it here</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/subtheme.html">theme_sub_legend</a></span><span class="op">(</span></span>
+<span>      text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span></span>
+<span>        family <span class="op">=</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span>        size <span class="op">=</span> <span class="fl">6</span></span>
+<span>      <span class="op">)</span>,</span>
+<span>      title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span></span>
+<span>        family <span class="op">=</span> <span class="st">"Alegreya"</span>,</span>
+<span>        size <span class="op">=</span> <span class="fl">8</span></span>
+<span>      <span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op">+</span></span>
+<span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/subtheme.html">theme_sub_plot</a></span><span class="op">(</span></span>
+<span>      title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span></span>
+<span>        family <span class="op">=</span> <span class="st">"Alegreya"</span>,</span>
+<span>        size <span class="op">=</span> <span class="fl">14</span>, face <span class="op">=</span> <span class="st">"bold"</span></span>
+<span>      <span class="op">)</span>,</span>
+<span>      title.position <span class="op">=</span> <span class="st">"plot"</span>,</span>
+<span>      subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span></span>
+<span>        family <span class="op">=</span> <span class="st">"Alegreya"</span>,</span>
+<span>        size <span class="op">=</span> <span class="fl">10</span></span>
+<span>      <span class="op">)</span>,</span>
+<span>      caption <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span></span>
+<span>        family <span class="op">=</span> <span class="st">"Alegreya"</span>,</span>
+<span>        size <span class="op">=</span> <span class="fl">6</span></span>
+<span>      <span class="op">)</span>,</span>
+<span>      caption.position <span class="op">=</span> <span class="st">"plot"</span></span>
 <span>    <span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -2040,12 +2032,38 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <span>  color <span class="op">=</span> <span class="st">"#2b2b2b"</span></span>
 <span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/update_defaults.html">update_geom_defaults</a></span><span class="op">(</span>geom <span class="op">=</span> <span class="st">"marquee"</span>, new <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>  family <span class="op">=</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span>  face <span class="op">=</span> <span class="st">"plain"</span>,</span>
+<span>  size <span class="op">=</span> <span class="fl">3.5</span>,</span>
+<span>  color <span class="op">=</span> <span class="st">"#2b2b2b"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/update_defaults.html">update_geom_defaults</a></span><span class="op">(</span>geom <span class="op">=</span> <span class="st">"text_repel"</span>, new <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>  family <span class="op">=</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span>  face <span class="op">=</span> <span class="st">"plain"</span>,</span>
+<span>  size <span class="op">=</span> <span class="fl">3.5</span>,</span>
+<span>  color <span class="op">=</span> <span class="st">"#2b2b2b"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/update_defaults.html">update_geom_defaults</a></span><span class="op">(</span>geom <span class="op">=</span> <span class="st">"label_repel"</span>, new <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>  family <span class="op">=</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span>  face <span class="op">=</span> <span class="st">"plain"</span>,</span>
+<span>  size <span class="op">=</span> <span class="fl">3.5</span>,</span>
+<span>  color <span class="op">=</span> <span class="st">"#2b2b2b"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co">## Set the theme</span></span>
-<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## tinytable options</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span><span class="st">"tinytable_tt_digits"</span> <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span><span class="st">"tinytable_format_num_fmt"</span> <span class="op">=</span> <span class="st">"significant_cell"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>tinytable_html_mathjax <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="co">## Set defaults for flextable</span></span>
+<span><span class="fu">flextable</span><span class="fu">::</span><span class="fu"><a href="https://davidgohel.github.io/flextable/reference/set_flextable_defaults.html">set_flextable_defaults</a></span><span class="op">(</span>font.family <span class="op">=</span> <span class="st">"Roboto Condensed"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="qwebr-insertion-location-1"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section></section><section id="what-graphs-will-we-see-today" class="level2" data-number="2"><h2 data-number="2" class="anchored" data-anchor-id="what-graphs-will-we-see-today">
 <span class="header-section-number">2</span> <iconify-icon inline="" icon="fxemoji:japanesesymbolforbeginner" aria-label="Icon japanesesymbolforbeginner from fxemoji Iconify.design set." title="Icon japanesesymbolforbeginner from fxemoji Iconify.design set."></iconify-icon> What graphs will we see today?</h2>
 <table class="table">
@@ -2076,10 +2094,20 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <div class="cell-output-display">
 <!-- preamble start -->
 
-    <script>
+    <!-- tinytable mathjax start -->
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script><script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+    </script><!-- tinytable mathjax end --><script>
 
-      function styleCell_ndzvqep6y8snxy42pxjb(i, j, css_id) {
-          var table = document.getElementById("tinytable_ndzvqep6y8snxy42pxjb");
+      function styleCell_sddm4owxkm91xc11q2h6(i, j, css_id) {
+          var table = document.getElementById("tinytable_sddm4owxkm91xc11q2h6");
           var cell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -2088,8 +2116,8 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
               console.warn(`Cell at (${i}, ${j}) not found.`);
           }
       }
-      function spanCell_ndzvqep6y8snxy42pxjb(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_ndzvqep6y8snxy42pxjb");
+      function spanCell_sddm4owxkm91xc11q2h6(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_sddm4owxkm91xc11q2h6");
         const targetCell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
         if (!targetCell) {
           console.warn(`Cell at (${i}, ${j}) not found.`);
@@ -2120,24 +2148,24 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '1', j: 0 }, { i: '1', j: 1 }, { i: '1', j: 2 }, { i: '1', j: 3 }, { i: '1', j: 4 }, { i: '1', j: 5 },  ], css_id: 'tinytable_css_ieohwj6v416lqvxi1y0h',}, 
-          { positions: [ { i: '0', j: 0 }, { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 },  ], css_id: 'tinytable_css_fdctyu1dvtvygibtetjl',}, 
+          { positions: [ { i: '1', j: 0 }, { i: '1', j: 1 }, { i: '1', j: 2 }, { i: '1', j: 3 }, { i: '1', j: 4 }, { i: '1', j: 5 },  ], css_id: 'tinytable_css_jbivw48k9951n5ncz45v',}, 
+          { positions: [ { i: '0', j: 0 }, { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 },  ], css_id: 'tinytable_css_v891qbuq3wi75549ujnx',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_ndzvqep6y8snxy42pxjb(cell.i, cell.j, group.css_id);
+                  styleCell_sddm4owxkm91xc11q2h6(cell.i, cell.j, group.css_id);
               });
           });
       });
     </script><style>
       /* tinytable css entries after */
-      .table td.tinytable_css_ieohwj6v416lqvxi1y0h, .table th.tinytable_css_ieohwj6v416lqvxi1y0h { background-color: #ededed; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_fdctyu1dvtvygibtetjl, .table th.tinytable_css_fdctyu1dvtvygibtetjl { border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_jbivw48k9951n5ncz45v, .table th.tinytable_css_jbivw48k9951n5ncz45v { background-color: #ededed; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_v891qbuq3wi75549ujnx, .table th.tinytable_css_v891qbuq3wi75549ujnx { border-bottom: solid #d3d8dc 0.1em; }
     </style>
 <div class="container">
-      <table class="table table-striped" id="tinytable_ndzvqep6y8snxy42pxjb" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-striped" id="tinytable_sddm4owxkm91xc11q2h6" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
 <thead><tr>
 <th scope="col" data-row="0" data-col="0">No</th>
                 <th scope="col" data-row="0" data-col="1">Pronoun</th>
@@ -2401,6 +2429,8 @@ $ z       &lt;dbl&gt; 2.43, 2.31, 2.31, 2.63, 2.75, 2.48, 2.47, 2.53, 2.49, 2.39
 </div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div id="qwebr-insertion-location-1"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <div id="qwebr-insertion-location-2"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <div id="qwebr-insertion-location-3"></div>
@@ -2414,8 +2444,6 @@ $ z       &lt;dbl&gt; 2.43, 2.31, 2.31, 2.63, 2.75, 2.48, 2.47, 2.53, 2.49, 2.39
 <div id="qwebr-insertion-location-7"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <div id="qwebr-insertion-location-8"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<div id="qwebr-insertion-location-9"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </div>
 </div>
@@ -2497,12 +2525,12 @@ $ z       &lt;dbl&gt; 2.43, 2.31, 2.31, 2.63, 2.75, 2.48, 2.47, 2.53, 2.49, 2.39
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>From <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/24-BoxPlots/index.html#your-turn">Groups</a>
+<span class="screen-reader-only">Note</span>From <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/24-Groups/index.html#your-turn">Groups</a>
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <ol start="3" type="1">
-<li>Datasets from the earlier module on <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/24-BoxPlots/index.html#your-turn">Groups</a>.</li>
+<li>Datasets from the earlier module on <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/24-Groups/index.html#your-turn">Groups</a>.</li>
 </ol>
 </div>
 </div>
@@ -2520,8 +2548,8 @@ $ z       &lt;dbl&gt; 2.43, 2.31, 2.31, 2.63, 2.75, 2.48, 2.47, 2.53, 2.49, 2.39
 </li>
 </ol>
 <div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" data-entry-spacing="0" role="list">
-<section id="r-package-citations" class="level6" data-number="10.0.0.0.1"><h6 data-number="10.0.0.0.1" class="anchored" data-anchor-id="r-package-citations">
-<span class="header-section-number">10.0.0.0.1</span> <iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
+<section id="r-package-citations" class="level6"><h6 class="anchored" data-anchor-id="r-package-citations">
+<iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
 <div class="cell">
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
@@ -2600,7 +2628,7 @@ Wilke, Claus O. 2025. <em><span class="nocase">ggridges</span>: Ridgeline Plots 
   title = {\textless Iconify-Icon
     Icon=“material-Symbols:light-Group-Rounded” Width=“1.2em”
     Height=“1.2em”\textgreater\textless/Iconify-Icon\textgreater{}
-    {Groups} and {Densities}},
+    {Groups} and {Distributions}},
   date = {2022-11-15},
   url = {https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/28-Violins/},
   langid = {en},
@@ -2611,7 +2639,7 @@ V., Arvind. 2022. <span>“&lt;Iconify-Icon
 Icon=<span>‘material-Symbols:light-Group-Rounded’</span>
 Width=<span>‘1.2em’</span>
 Height=<span>‘1.2em’</span>&gt;&lt;/Iconify-Icon&gt; Groups and
-Densities.”</span> November 15, 2022. <a href="https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/28-Violins/">https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/28-Violins/</a>.
+Distributions.”</span> November 15, 2022. <a href="https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/28-Violins/">https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/28-Violins/</a>.
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -3019,12 +3047,12 @@ Densities.”</span> November 15, 2022. <a href="https://madhatterguide.netlify.
     }
   });
   </script><nav class="page-navigation column-body"><div class="nav-page nav-page-previous">
-      <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/26-Densities/index.html" class="pagination-link" aria-label="<iconify-icon icon=&quot;clarity:bell-curve-line&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> Densities">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><iconify-icon icon="clarity:bell-curve-line" width="1.2em" height="1.2em"></iconify-icon> Densities</span>
+      <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/26-Distributions/index.html" class="pagination-link" aria-label="<iconify-icon icon=&quot;clarity:bell-curve-line&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> Distributions">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><iconify-icon icon="clarity:bell-curve-line" width="1.2em" height="1.2em"></iconify-icon> Distributions</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/30-Correlations/index.html" class="pagination-link" aria-label="<iconify-icon icon=&quot;icon-park-outline:change&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> Change">
+      <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/30-Change/index.html" class="pagination-link" aria-label="<iconify-icon icon=&quot;icon-park-outline:change&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> Change">
         <span class="nav-page-text"><iconify-icon icon="icon-park-outline:change" width="1.2em" height="1.2em"></iconify-icon> Change</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>

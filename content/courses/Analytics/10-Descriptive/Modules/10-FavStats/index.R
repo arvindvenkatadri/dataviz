@@ -152,24 +152,27 @@ docVisits_modified %>%
   )
 
 
-diamonds %>% dplyr::glimpse() 
+docVisits_modified %>% dplyr::glimpse() 
 
 
 
-diamonds %>% mosaic::inspect() 
+docVisits_modified %>% skimr::skim()
 
 
-diamonds %>% skimr::skim()
+inspect_output <- docVisits_modified %>% mosaic::inspect()
+inspect_output[[1]] %>% tt()
+inspect_output[[2]] %>% tt()
 
 
 ## Counting by the obvious factor variables
 docVisits_modified %>% dplyr::count(gender) %>% tt()
 
 
-docVisits_modified %>% dplyr::count(private) %>% tt()
+docVisits_modified %>% dplyr::count(freepoor) %>% tt()
 
 
-docVisits_modified %>% dplyr::count(across(.cols = c(gender, private))) %>% tt()
+docVisits_modified %>% 
+  dplyr::count(across(.cols = c(freepoor, lchronic))) %>% tt()
 
 
 
@@ -194,9 +197,10 @@ docVisits_modified %>%
 docVisits_modified %>% 
   dplyr::summarise(across(.cols = c(visits, income), # select columns
                           
-                          .fns = list(mean = ~ mean(., na.rm = T), 
-                                       sd = sd, 
-                                       min = min, max = max)
+      .fns = list(mean = ~ mean(., na.rm = T), 
+                  sd = sd, 
+                  min = min, 
+                  max = max)
                           )
                    )
 
