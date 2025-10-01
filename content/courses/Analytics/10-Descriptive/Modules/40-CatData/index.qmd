@@ -60,6 +60,9 @@ library(marquee) # Marquee Text in ggplot
 
 ```
 
+
+
+
 ```{r}
 #| label: Extra Pedagogical Packages
 #| echo: false
@@ -71,113 +74,6 @@ library(epoxy)
 library(grateful)
 
 ```
-
-#### Plot Fonts and Theme
-
-```{r}
-#| label: plot-theme-ggplot4
-#| cache: false
-#| code-fold: true
-#| messages: false
-#| warning: false
-#| 
-library(systemfonts)
-library(showtext)
-## Clean the slate
-systemfonts::clear_local_fonts()
-systemfonts::clear_registry()
-##
-showtext_opts(dpi = 96) #set DPI for showtext
-sysfonts::font_add(family = "Alegreya",
-  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
-  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
-  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
-  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
-
-sysfonts::font_add(family = "Roboto Condensed", 
-  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
-  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
-  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
-  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
-showtext_auto(enable = TRUE) #enable showtext
-##
-theme_custom <- function(){ 
-
-    theme_bw(base_size = 10) + 
-    
-    theme_sub_axis(title = element_text(family = "Roboto Condensed", 
-                                       size = 8),
-                   text = element_text(family = "Roboto Condensed", 
-                                       size = 6)) + 
-    
-    theme_sub_legend(text = element_text(family = "Roboto Condensed", 
-                                         size = 6),
-                     title = element_text(family = "Alegreya", 
-                                          size = 8)) + 
-    
-    theme_sub_plot(title = element_text(family = "Alegreya", 
-                                        size = 14, face = "bold"),
-                   title.position = "plot",
-                   subtitle = element_text(family = "Alegreya", 
-                                           size = 10),
-                   caption = element_text(family = "Alegreya", 
-                                          size = 6),
-                   caption.position = "plot")
-    
-}
-
-## Use available fonts in ggplot text geoms too!
-ggplot2::update_geom_defaults(geom = "text", new = list(
-  family = "Roboto Condensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-ggplot2::update_geom_defaults(geom = "label", new = list(
-  family = "Roboto Condensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-
-ggplot2::update_geom_defaults(geom = "marquee", new = list(
-  family = "Roboto Condensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-ggplot2::update_geom_defaults(geom = "text_repel", new = list(
-  family = "Roboto Condensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-ggplot2::update_geom_defaults(geom = "label_repel", new = list(
-  family = "Roboto Condensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-
-## Set the theme
-ggplot2::theme_set(new = theme_custom())
-
-## tinytable options
-options("tinytable_tt_digits" = 2)
-options("tinytable_format_num_fmt" = "significant_cell")
-options(tinytable_html_mathjax = TRUE)
-
-
-## Set defaults for flextable
-flextable::set_flextable_defaults(font.family = "Roboto Condensed")
-
-```
-
 
 ## {{< iconify fe beginner >}} What graphs will we see today?
 
@@ -529,6 +425,7 @@ or `data frame` for further analysis.
 #| tbl-cap: Creating Contingency Tables from Case Form Data with `vcd`
 #| layout-ncol: 2
 #| code-fold: true
+#| 
 
 Arthritis %>% class()
 
@@ -550,7 +447,7 @@ vcd::structable(data = Arthritis, Improved ~ Treatment) %>%
 
 ```{r}
 #| label: tbl-base-case-form-ct
-#| tbl-cap: Creating Contingency Tables from Case Form Data with `base::ftable()`
+#| tbl-cap: "Creating Contingency Tables from Case Form Data with `base::ftable()`"
 #| layout-ncol: 2
 #| code-fold: true
 #| 
@@ -590,7 +487,7 @@ But it is a **set** of (two-way) Contingency Tables. So let us try!
 
 ```{r}
 #| label: tbl-vcd-freq-form-ct
-#| tbl-cap: Creating Contingency Tables from Frequency Form Data with `vcd`
+#| tbl-cap: "Creating Contingency Tables from Frequency Form Data with `vcd`"
 #| layout-ncol: 2
 #| code-fold: true
 #| 
@@ -615,7 +512,7 @@ as_tibble(rownames = "Admit-Dept") # Convert to tibble; ensure row names!
 
 ```{r}
 #| label: fig-base-freq-form-ct
-#| fig-cap: Creating Contingency Tables from Frequency Form Data with `base::ftable()`
+#| fig-cap: "Creating Contingency Tables from Frequency Form Data with `base::ftable()`"
 #| layout-ncol: 2
 #| code-fold: true
 #| 
@@ -639,7 +536,7 @@ How about a multi-table dataset, like `HairEyeColor`?
 
 ```{r}
 #| label: tbl-vcd-multitable-data-ct
-#| tbl-cap: Creating Contingency Tables from Table Form Data with `vcd`
+#| tbl-cap: "Creating Contingency Tables from Table Form Data with `vcd`"
 #| layout-ncol: 2
 #| code-fold: true
 #| 
@@ -665,7 +562,7 @@ vcd::structable(data = HairEyeColor, Sex ~ Hair + Eye) %>%
 
 ```{r}
 #| label: tbl-base-multitable-data-ct
-#| tbl-cap: Creating Contingency Tables from Table Form Data with `base::ftable()`
+#| tbl-cap: "Creating Contingency Tables from Table Form Data with `base::ftable()`"
 #| layout-ncol: 2
 #| code-fold: true
 #| 
@@ -708,7 +605,7 @@ Let us take the `GSS2002` dataset, and create a Contingency Table out of it. We 
 
 ```{r}
 #| label: tbl-gss2002-data
-#| tbl-cap: GSS 2002 Data
+#| tbl-cap: "GSS 2002 Data"
 #| code-fold: true
 #| warning: false
 
@@ -720,7 +617,7 @@ GSS2002 %>% head()
 
 ```{r}
 #| label: tbl-gss2002-ct
-#| tbl-cap: GSS 2002 Contingency Table
+#| tbl-cap: "GSS 2002 Contingency Table"
 #| code-fold: true
 #| warning: false
 #| 
@@ -746,7 +643,7 @@ process as shown below:\
     
 ```{r}
 #| label: fig-mosaic-plot-steps
-#| fig-cap: Mosaic Chart Steps for GSS2002 Data
+#| fig-cap: "Mosaic Chart Steps for GSS2002 Data"
 #| fig-subcap:
 #| - "Step#1: Education"
 #| - "Step#2: DeathPenalty"
@@ -788,7 +685,7 @@ Of course, `vcd::structable()` gives us one!
 
 ```{r}
 #| label:  fig-mosaic-plot-arthritis-vcd
-#| fig-cap: Arthritis Mosaic Plot
+#| fig-cap: "Arthritis Mosaic Plot"
 #| layout-ncol: 2
 #| code-fold: true
 #| 
@@ -811,6 +708,8 @@ labeling = labeling_border(
 
 
 ```
+
+
 There are visible differences in the counts for the `Improved` variable, based on the `Treatment` variable. The `Placebo` treatment has a much lower count for `Marked` improvement, and a higher count for `None` improvement. The `Treated` group has a higher count for `Marked` improvement, and a lower count for `None` improvement. We can make a hypothesis that the `Treatment` variable is related to the `Improved` variable, and that the `Treated` group has a higher chance of improvement than the `Placebo` group.
 
 
@@ -917,18 +816,20 @@ gss_summary <- GSS2002 %>%
   # Data is still grouped by `Education`
   # Add two more columns to facilitate mosaic Plot
   # These two columns are quite unusual...
-  mutate(edu_count = sum(count), 
+  dplyr::mutate(edu_count = sum(count), 
          edu_prop = count / sum(count)) %>%
-  ungroup()
+  dplyr::ungroup()
 gss_summary
 
 ```
 
 ::: columns
 ::: column
+
 ```{r}
-#| label: ggformula-marimekko
+#| label: fig-ggformula-marimekko
 #| eval: false
+#| include: false
 # This works but is not very intuitive...
 ggplot2::theme_set(new = theme_custom())
 
@@ -951,6 +852,7 @@ gf_col(edu_prop ~ Education, data = gss_summary,
   gf_theme(scale_fill_brewer(palette = "Set1"))
   
 ```
+
 :::
 
 ::: column
@@ -1005,9 +907,15 @@ We notice that the mosaic plots has coloured some tiles blue and some red. Why w
 #|   - "Tile-Wise Differences"
 #| layout-ncol: 3
 
-vcd::mosaic(Improved ~ Treatment, data = Arthritis, direction = "v", gp = shading_max, legend = FALSE)
-vcd::mosaic(Improved ~ Treatment, data = Arthritis, type = "expected", direction = "v", gp = shading_max, legend = FALSE)
-vcd::assoc(Treatment ~ Improved, data = Arthritis, gp = shading_max, legend = FALSE) # Note formula direction!
+vcd::mosaic(Improved ~ Treatment, data = Arthritis, 
+            direction = "v", gp = shading_max, legend = FALSE)
+vcd::mosaic(Improved ~ Treatment, data = Arthritis, 
+            type = "expected", direction = "v", gp = shading_max, 
+            legend = FALSE)
+vcd::assoc(Treatment ~ Improved, # Note formula direction!
+           data = Arthritis, 
+           gp = shading_max, 
+           legend = FALSE) 
 
 ```
 
@@ -1159,7 +1067,8 @@ None.
 ```{r}
 #| label: vcd-titanic-1
 #| eval: false
-vcd::structable(Survived ~ Sex, data = titanic) %>% 
+vcd::structable(Survived ~ Sex, 
+                data = titanic) %>% 
   vcd::mosaic(gp = shading_max)
 
 ```
@@ -1190,7 +1099,8 @@ So sadly Jack is far more likely to have died than Rose.
 ```{r}
 #| label: vcd-titanic-2
 #| eval: false
-vcd::structable(Survived ~ Class, data = titanic) %>% 
+vcd::structable(Survived ~ Class, 
+                data = titanic) %>% 
   vcd::mosaic(gp = shading_max)
 
 ```
@@ -1227,7 +1137,8 @@ Plot. We will use the `housetasks` dataset from the package `{{ggpubr}}`.
 #| 
 housetasks <- read.delim(
   system.file("demo-data/housetasks.txt", 
-              package = "ggpubr"), row.names = 1)
+              package = "ggpubr"), 
+              row.names = 1)
 housetasks
 
 inspect(housetasks)

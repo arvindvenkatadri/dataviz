@@ -1,0 +1,212 @@
+---
+title: "Uncertainty"
+order: 25
+author: Arvind V.
+date: 01/Oct/2025
+date-modified: "`r Sys.Date()`"
+summary: "Understanding and quantifying uncertainty in data analysis."
+abstract: |
+  In this module, we will explore the concept of uncertainty in data analysis. We will discuss different types of uncertainty, methods to quantify it, and how to communicate uncertainty effectively in our findings.
+df-print: paged
+bibliography: 
+  - grateful-refs.bib
+citation: true
+---
+
+
+![You're Nothing but a Pack of Cards!!](../../../../../materials/images/1book41.jpg){height=250 fig-align="center"}
+
+:::: {.pa4}
+::: {.athelas .ml0 .mt0 .pl4 .black-90 .bl .bw2 .b--blue}
+["Wrongs are often forgiven, but contempt never is. Our pride remembers it forever."]{.f5 .f4-m .f3-l .lh-copy .measure .mt0}
+
+[ --- Lord Chesterfield, statesman and writer (22 Sep 1694-1773)]{.f6 .ttu .tracked .fs-normal}
+
+:::
+::::
+
+
+
+## {{< iconify noto-v1 package >}} Setting up R Packages
+
+```{r}
+#| label: setup
+#| include: true
+#| message: false
+#| warning: false
+
+library(tidyverse) # Sine qua non
+library(mosaic) # Out all-in-one package
+library(ggformula) # Graphing package
+library(skimr) # Looking at Data
+library(janitor) # Clean the data
+library(naniar) # Handle missing data
+library(visdat) # Visualise missing data
+library(ggcompare) 
+library(ggstatsplot) # Graphs with statistical details
+library(tinytable) # Printing Static Tables for our data
+library(DT) # Interactive Tables for our data
+library(crosstable) # Multiple variable summaries
+library(marquee) # For Annotations with Fonts
+library(ggrepel) # Repel overlapping text labels in ggplot2
+
+```
+
+```{r}
+#| label: Extra-Pedagogical-Packages
+#| echo: false
+#| message: false
+
+library(checkdown)
+library(epoxy)
+library(TeachHist)
+library(TeachingDemos)
+library(visualize) # Plot Densities, Histograms and Probabilities as areas under the curve
+library(grateful)
+library(MKdescr)
+library(downloadthis)
+#devtools::install_github("mccarthy-m-g/embedr")
+library(embedr) # Embed multimedia in HTML files
+
+```
+
+#### Plot Fonts and Theme
+
+```{r}
+#| label: plot-theme-ggplot4
+#| cache: false
+#| code-fold: true
+#| messages: false
+#| warning: false
+#| 
+library(systemfonts)
+library(showtext)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+showtext_auto(enable = TRUE) #enable showtext
+##
+theme_custom <- function(){ 
+
+    theme_bw(base_size = 10) + 
+    
+    theme_sub_axis(title = element_text(family = "Roboto Condensed", 
+                                       size = 8),
+                   text = element_text(family = "Roboto Condensed", 
+                                       size = 6)) + 
+    
+    theme_sub_legend(text = element_text(family = "Roboto Condensed", 
+                                         size = 6),
+                     title = element_text(family = "Alegreya", 
+                                          size = 8)) + 
+    
+    theme_sub_plot(title = element_text(family = "Alegreya", 
+                                        size = 14, face = "bold"),
+                   title.position = "plot",
+                   subtitle = element_text(family = "Alegreya", 
+                                           size = 10),
+                   caption = element_text(family = "Alegreya", 
+                                          size = 6),
+                   caption.position = "plot")
+    
+}
+
+## Use available fonts in ggplot text geoms too!
+ggplot2::update_geom_defaults(geom = "text", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+ggplot2::update_geom_defaults(geom = "marquee", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "text_repel", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label_repel", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
+
+## tinytable options
+options("tinytable_tt_digits" = 2)
+options("tinytable_format_num_fmt" = "significant_cell")
+options(tinytable_html_mathjax = TRUE)
+
+
+## Set defaults for flextable
+flextable::set_flextable_defaults(font.family = "Roboto Condensed")
+
+```
+
+
+
+
+
+
+
+
+## {{< iconify ooui references-ltr >}} References
+
+
+1. Daniel Kaplan and Randall Pruim. *ggformula: Formula Interface for ggplot2 (full version)*. <https://www.mosaic-web.org/ggformula/articles/pkgdown/ggformula-long.html>
+1. Winston Chang (2024). *R Graphics Cookbook*. <https://r-graphics.org>
+
+
+::: {#refs style="font-size: 60%;"}
+
+{{< iconify lucide package-check >}} R Package Citations
+
+```{r}
+#| echo: false
+#scan_packages()
+cite_packages(
+  output = "table",
+  out.dir = ".",
+  out.format = "html",
+  pkgs = c("ggformula", "ggplot2", "mosaic", "ggcompare", "ggstatplots")
+) %>%
+  knitr::kable(format = "simple")
+
+```
+:::
+
+
+

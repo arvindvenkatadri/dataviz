@@ -1,0 +1,816 @@
+---
+title: "Permutation Tests"
+author: "Arvind V."
+date: 21/Nov/2022
+date-modified: "`r Sys.Date()`"
+abstract: A bunch of case studies with Permutation Tests
+code-summary: "Show the Code"
+df-print: paged
+execute: 
+  freeze: auto
+---
+
+```{r setup, include=FALSE}
+
+#knitr::opts_chunk$set(echo = TRUE, out.width="70%", out.height = "70%", fig.align = "center")
+library(ggformula)
+library(tidyverse)
+library(skimr)
+library(mosaic)
+library(resampledata3)
+library(openintro)
+
+```
+
+#### Plot Fonts and Theme
+
+```{r}
+#| label: plot-theme-ggplot4
+#| cache: false
+#| code-fold: true
+#| messages: false
+#| warning: false
+#| 
+library(systemfonts)
+library(showtext)
+library(ggrepel)
+library(marquee)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+showtext_auto(enable = TRUE) #enable showtext
+##
+theme_custom <- function(){ 
+
+    theme_bw(base_size = 10) + 
+    
+    theme_sub_axis(title = element_text(family = "Roboto Condensed", 
+                                       size = 8),
+                   text = element_text(family = "Roboto Condensed", 
+                                       size = 6)) + 
+    
+    theme_sub_legend(text = element_text(family = "Roboto Condensed", 
+                                         size = 6),
+                     title = element_text(family = "Alegreya", 
+                                          size = 8)) + 
+    
+    theme_sub_plot(title = element_text(family = "Alegreya", 
+                                        size = 14, face = "bold"),
+                   title.position = "plot",
+                   subtitle = element_text(family = "Alegreya", 
+                                           size = 10),
+                   caption = element_text(family = "Alegreya", 
+                                          size = 6),
+                   caption.position = "plot")
+    
+}
+
+## Use available fonts in ggplot text geoms too!
+ggplot2::update_geom_defaults(geom = "text", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+ggplot2::update_geom_defaults(geom = "marquee", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "text_repel", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label_repel", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
+
+## tinytable options
+options("tinytable_tt_digits" = 2)
+options("tinytable_format_num_fmt" = "significant_cell")
+options(tinytable_html_mathjax = TRUE)
+
+
+## Set defaults for flextable
+flextable::set_flextable_defaults(font.family = "Roboto Condensed")
+
+```
+
+
+
+## Introduction
+
+We saw from the diagram created by Allen Downey that *there is only one
+test*! We will now use this philosophy to develop a technique that
+allows us to mechanize several *Statistical Models* in that way, with
+nearly identical code.
+
+We will use two packages in R, `mosaic` and the relatively new `infer`
+package, to develop our intuition for what are called **permutation**
+based statistical tests.
+
+## Hypothesis Testing using Permutation
+
+From Reference #1:
+
+> Hypothesis testing can be thought of as a 4-step process:
+>
+> 1.  State the null and alternative hypotheses.
+>
+> 2.  Compute a test statistic.
+>
+> 3.  Determine the p-value.
+>
+> 4.  Draw a conclusion.
+>
+>     In a traditional introductory statistics course, once this general
+>     framework has been mastered, the main work is in **applying the
+>     correct formula** to compute the standard test statistics in step
+>     2 and using a table or computer to **determine the p-value** based
+>     on the known (usually approximate) **theoretical distribution of
+>     the test statistic** under the null hypothesis.
+>
+>     In a **simulation-based approach**, steps 2 and 3 change. In Step
+>     2, it is no longer required that the test statistic be normalized
+>     to conform with a known, named distribution. Instead, natural test
+>     statistics, like the difference between two sample means $y1 − y2$
+>     can be used.
+>
+>     In Step 3, we use **randomization to approximate the sampling
+>     distribution of the test statistic**. Our lady tasting tea example
+>     demonstrates how this can be done from first principles. More
+>     typically, we will use randomization **to create new simulated
+>     data sets** ( "*Parallel Worlds*") that are like our original data
+>     in some ways, but make the null hypothesis true. For each
+>     simulated data set, we calculate our test statistic, just as we
+>     did for the original sample. Together, this collection of test
+>     statistics computed from the simulated samples constitute our
+>     randomization distribution.
+>
+>     When creating a randomization distribution, we will attempt to
+>     satisfy 3 guiding principles.
+>
+> 5.  Be consistent with the null hypothesis. We need to **simulate a
+>     world** in which the null hypothesis is true. If we don't do this,
+>     we won't be testing our null hypothesis.
+>
+> 6.  Use the data in the **original sample**. The original data should
+>     shed light on some aspects of the distribution that are not
+>     determined by null hypothesis. For example, a null hypothesis
+>     about a mean doesn't tell us about the shape of the population
+>     distribution, but the data give us some indication.
+>
+> 7.  Reflect the way the original data were collected.
+
+From Chihara and Hesterberg:
+
+> This is the core idea of statistical significance or classical
+> hypothesis testing -- to calculate how often pure random chance would
+> give an effect as large as that observed in the data, in the absence
+> of any real effect. If that probability is small enough, we conclude
+> that the data provide convincing evidence of a real effect.
+
+
+## Permutations tests using mosaic::`shuffle()`
+
+The `mosaic` package provides the `shuffle()` function as a synonym for
+`sample()`. When used without additional arguments, this will permute
+its first argument.
+
+```{r, echo=TRUE}
+# library(mosaic)
+shuffle(1:10)
+
+```
+
+Applying `shuffle()` to an *explanatory variable* in a model allows us to
+test the null hypothesis that the explanatory variable has, in fact, no
+explanatory power. This idea can be used to test
+
+-   the equivalence of two or more means,
+-   the equivalence of two or more proportions,
+-   whether a regression parameter is 0. (Correlations between two
+    variables)
+
+Coupled with `mosaic::do()` we can repeat a `shuffle` many times,
+computing a desired statistic each time we shuffle. The distribution of
+this computed statistic is a NULL distribution, which can then be
+compared with the observed statistic to decide upon the Hypothesis Test
+and p-value.
+
+
+### Case Study-1: Hot Wings Orders vs Gender
+
+A student conducted a study of hot wings and beer consumption at a Bar.
+She asked patrons at the bar to record their consumption of hot wings
+and beer over the course of several hours. She wanted to know if people
+who ate more hot wings would then drink more beer. In addition, she
+investigated whether or not gender had an impact on hot wings or beer
+consumption.
+
+```{r}
+
+Beerwings <- resampledata3::Beerwings # From resampledata3 package
+skimr::skim(Beerwings)
+
+```
+
+Let us calculate the observed difference in `Hotwings` consumption
+between Males and Females ( `Gender`)
+
+```{r}
+
+mean(Hotwings ~ Gender, data = Beerwings)
+obs_diff_wings <- mosaic::diffmean(data = Beerwings, Hotwings ~ Gender)
+obs_diff_wings 
+
+```
+
+```{r}
+
+gf_boxplot(data = Beerwings, Hotwings ~ Gender, 
+           orientation = "x", fill = ~ Gender,
+           title = "Hotwings Consumption by Gender")
+
+```
+
+The observed difference in mean consumption of Hotwings between Males
+and Females is $5.2$. Could this have occurred by chance? Here is our
+formulation of the Hypotheses:
+
+$$
+NULL\ Hypothesis\ H_0:  \mu_F =  \mu_M\\
+\\
+\\
+Alternative\ Hypothesis\
+H_a: \mu_F \ne \mu_M\\
+$$
+
+So we perform a Permutation Test to check:
+
+```{r}
+
+null_dist_wings <- do(1000) * diffmean(Hotwings ~ shuffle(Gender), 
+                                       data = Beerwings)
+null_dist_wings %>% head()
+
+gf_histogram(data = null_dist_wings, ~ diffmean,
+             fill = ~ (diffmean >= obs_diff_wings)) %>% 
+  gf_vline(xintercept = obs_diff_wings, colour = "red") %>% 
+  gf_refine(scale_fill_manual(values = c("lightseagreen", "tomato")))
+
+prop1(~ diffmean >= obs_diff_wings, data = null_dist_wings)
+
+```
+
+The $\color{red}{red\ line}$ shows the actual measured mean difference
+in Hot Wings consumption. The probability that our Permutation
+distribution is able to equal or exceed that number is $0.001998002$ and
+we have to reject the Null Hypothesis that the means are identical.
+
+::: {.content-hidden}
+To test whether eating more hotwings would lead to increased beer
+consumption, we need a regression model, which we can again test with a
+permutation test.
+
+```{r}
+lm(Beer ~ Hotwings, data = Beerwings)
+```
+:::
+
+
+### Case Study-2: Verizon
+
+Verizon was an Incumbent Local Exchange Carrier (ILEC), responsible for maintaining land-line phone service in certain areas. Verizon also sold
+long-distance service, as did a number of competitors, termed
+Competitive Local Exchange Carriers (CLEC). When something went wrong,
+Verizon was responsible for repairs, and was supposed to make repairs as
+quickly for CLEC long-distance customers as for their own. 
+
+The New York Public Utilities Commission (PUC) monitored fairness by comparing repair times for Verizon and different CLECs, for different classes of repairs
+and time periods. In each case a hypothesis test was performed at the 1%
+significance level, to determine whether repairs for CLEC's customers
+were significantly slower than for Verizon's customers. There were
+hundreds of such tests. If substantially more than 1% of the tests were
+significant, then Verizon would pay large penalties. 
+
+These tests were performed using t tests; Verizon proposed using permutation tests
+instead.
+
+```{r}
+
+verizon <- resampledata3::Verizon # From resampledata3 package
+verizon
+skim(verizon)
+
+```
+
+Let us make a boxplot of the repair times for Verizon and CLEC:
+
+```{r}
+
+gf_boxplot(data = verizon, Group ~ Time, 
+           orientation = "y", fill = ~ Group,
+           title = "Repair Times by Operator")
+
+```
+
+```{r}
+
+mean(Time ~ Group, data = verizon)
+obs_diff_verizon <- diffmean(Time ~ Group, data = verizon)
+obs_diff_verizon
+
+```
+
+```{r}
+
+null_dist_verizon <- do(1000) * diffmean(Time ~ shuffle(Group), 
+                                         data = verizon)
+gf_histogram(data = null_dist_verizon, ~ diffmean,
+             fill = ~ (diffmean >= obs_diff_verizon)) %>% 
+  gf_vline(xintercept = obs_diff_verizon, colour = "red") %>% 
+  gf_refine(scale_fill_manual(values = c("lightseagreen", "tomato")))
+
+
+prop1(~ diffmean >= obs_diff_wings, data = null_dist_verizon)
+
+```
+
+It seems that the repair `Time` for CLEC is significantly higher than for the ILEC and there only about a $1.2\%$ chance that this could have occurred by chance. So we reject the Null Hypothesis that the mean repair `Time`-s are identical.
+
+
+### Case Story-3: Recidivism
+
+Do criminals released after a jail term commit crimes again?
+
+```{r}
+
+recidivism <- resampledata3::Recidivism # From resampledata3 package
+recidivism
+skim(recidivism)
+
+```
+
+There are some missing values in the variable <tt> `Age25`</tt>. The
+<tt> `complete.cases`</tt> command gives the row numbers where values
+are not missing. We create a new data frame omitting the rows where
+there is a missing value in the <tt> 'Age25' </tt> variable.
+
+```{r}
+
+recidivism_na <- recidivism %>% tidyr::drop_na(Age25)
+
+```
+
+Also, the variable `Recid`  is a factor variable coded "Yes" or
+"No". We convert it to a numeric variable of 1's and 0's.
+
+```{r}
+
+recidivism_na <- recidivism_na %>% 
+  mutate(Recid2 = ifelse(Recid=="Yes", 1, 0))
+
+obs_diff_recid <- diffmean( Recid2 ~ Age25, data = recidivism_na)
+obs_diff_recid
+
+null_dist_recid <- do(1000) * diffmean( Recid2 ~ shuffle(Age25), data = recidivism_na)
+
+gf_histogram( ~ diffmean, data = null_dist_recid) %>% 
+  gf_vline(xintercept = obs_diff_recid, colour = "red")
+
+```
+
+The probability that the difference in means of `Recid2` between the two age groups is as large as the observed value is about $0.15$, and hence we cannot reject the Null Hypothesis that the means are identical.
+
+
+### Case Study-4: Matched Pairs: Results from a diving championship.
+
+```{r}
+
+Diving2017 <- resampledata3::Diving2017 # From resampledata3 package
+head(Diving2017)
+skim(Diving2017)
+
+```
+
+The data is made up of **paired** observations per swimmer. So we need
+to take the difference between the two swim records for *each* swimmer
+and then shuffle the differences to either polarity. Another way to look
+at this is to shuffle the records between `Semifinal` and `Final` on a
+per Swimmer basis.
+
+```{r}
+
+obs_diff_swim <- mean(~ Final - Semifinal, data = Diving2017)
+obs_diff_swim
+
+```
+
+```{r}
+
+polarity <- c(rep(1, 6), rep(-1,6))
+polarity
+null_dist_swim <- do(100000) * mean(data = Diving2017, 
+                                    ~(Final - Semifinal) * resample(polarity,
+                                                    replace = TRUE))
+null_dist_swim %>% head()
+gf_histogram(data = null_dist_swim, ~mean) %>% 
+  gf_vline(xintercept = obs_diff_swim, colour = "red")
+
+```
+
+It appears that there no reason to accept the Alternate Hypothesis that the Diving scores are different across semi-final and final events. 
+
+
+
+
+### Case Study #5: Flight Delays
+
+LaGuardia Airport (LGA) is one of three major airports that serves the
+New York City metropolitan area. In 2008, over 23 million passengers and
+over 375 000 planes flew in or out of LGA. United Airlines and America
+Airlines are two major airlines that schedule services at LGA. The data
+set `FlightDelays` contains information on all 4029 departures of these
+two airlines from LGA during May and June 2009.
+
+```{r}
+
+flightDelays <- resampledata3::FlightDelays # From resampledata3 package
+skim(flightDelays)
+
+```
+
+The variables in the `flightDelays` dataset are:
+
+| Variable     | Description                                                 |
+|--------------|-------------------------------------------------------------|
+| Carrier      | UA=United Airlines, AA=American Airlines                    |
+| FlightNo     | Flight number                                               |
+| Destination  | Airport code                                                |
+| DepartTime   | Scheduled departure time in 4 h intervals                   |
+| Day          | Day of the Week                                             |
+| Month        | May or June                                                 |
+| Delay        | Minutes flight delayed (negative indicates early departure) |
+| Delayed30    | Departure delayed more than 30 min? Yes or No               |
+| FlightLength | Length of time of flight (minutes)                          |
+
+: flightDelay dataset variables
+
+a)  Let us compute the proportion of times that each carrier's flights
+    was delayed more than 20 min. We will conduct a two-sided test to
+    see if the difference in these proportions is statistically
+    significant.
+
+```{r flightDelays-a}
+
+prop(data = flightDelays, (Delay >= 20) ~ Carrier)
+obs_diff_delay <- diffprop(data = flightDelays, Delay >= 20 ~ Carrier)
+obs_diff_delay
+
+```
+
+We see carrier AA has a 17.13% chance of delays\>= 20, while UA has
+22.26% chance. The difference is 5.12%. Is this statistically
+significant? We take the Delays for both Carriers and perform a
+permutation test by `shuffle` on the `carrier` variable:
+
+```{r}
+
+null_dist_delay <- do(4999) * diffprop(data = flightDelays, Delay >= 20 ~ shuffle(Carrier))
+null_dist_delay %>% head()
+gf_histogram(data = null_dist_delay, ~ diffprop) %>% gf_vline(xintercept = obs_diff_delay, color = "red")
+
+```
+
+It appears that the difference in delay times is significant. We can
+compute the `p-value` based on this test:
+
+```{r}
+
+2 * mean(null_dist_delay >= obs_diff_delay)
+
+```
+
+which is very small. Hence we reject the null Hypothesis that there is
+no difference between `carrier`s on `delay times`.
+
+b)  Compute the variance in the flight delay lengths for each carrier.
+    Conduct a test to see if the variance for United Airlines differs
+    from that of American Airlines.
+
+```{r}
+
+var(data = flightDelays, Delay ~ Carrier)
+
+# There is no readymade function in mosaic called `diffvar`...so...we construct one
+obs_diff_var <- diff(var(data = flightDelays, Delay ~ Carrier))
+obs_diff_var
+
+```
+
+The difference in variances in `Delay` between the two `carrier`s is
+$-431.0677$. In our Permutation Test, we `shuffle` the `Carrier`
+variable:
+
+```{r}
+
+obs_diff_var <- diff(var(data = flightDelays, Delay ~ Carrier))
+null_dist_var <-
+  do(4999) * diff(var(data = flightDelays, Delay ~ shuffle(Carrier)))
+null_dist_var %>% head()
+
+# The null distribution variable is called `UA`
+gf_histogram(data = null_dist_var, ~ UA) %>% 
+  gf_vline(xintercept = obs_diff_delay, color = "red")
+2 * mean(null_dist_var >= obs_diff_var)
+
+```
+
+Clearly there is no case for a significant difference in variances!
+
+
+### Case Study #6: Walmart vs Target
+
+Is there a difference in the price of groceries sold by the two
+retailers Target and Walmart? The data set `Groceries` contains a sample
+of grocery items and their prices advertised on their respective web
+sites on one specific day.
+
+a)  Inspect the data set, then explain why this is an example of matched
+    pairs data.
+b)  Compute summary statistics of the prices for each store.
+c)  Conduct a permutation test to determine whether or not there is a
+    difference in the mean prices.
+d)  Create a ~~histogram~~ bar-chart of the difference in prices. What
+    is unusual about Quaker Oats Life cereal?
+e)  Redo the hypothesis test without this observation. Do you reach the
+    same conclusion?
+
+```{r}
+groceries <- resampledata3::Groceries %>% # From resampledata3 package
+  mutate(Product = stringr::str_squish(Product))
+groceries
+skim(groceries)
+
+```
+
+We see that the comparison is to be made between two prices for the
+*same* product, and hence this is one more example of `paired data`, as
+in Case Study #4. Let us plot the prices for the products:
+
+```{r}
+#| code-fold: true
+#| label: fig-walmart-vs-target
+#| fig-cap: "Figure: Walmart vs Target Prices"
+#| 
+gf_col(data = groceries,
+       Target ~ Product,
+       fill = "#0073C299",
+       width = 0.5 ) %>% 
+  gf_col(data = groceries,
+         -Walmart ~ Product,
+         fill = "#EFC00099",
+         ylab = "Prices",
+         width = 0.5
+       ) %>% 
+  gf_col(data = groceries %>% filter(Product == "Quaker Oats Life Cereal Original"), 
+         -Walmart ~ Product,
+         fill = "red", 
+         width = 0.5) %>% 
+  gf_theme(theme_classic()) %>%
+  gf_theme(ggplot2::theme(axis.text.x = element_text(
+    size = 8,
+    face = "bold",
+    vjust = 0,
+    hjust = 1
+  ))) %>% gf_theme(ggplot2::coord_flip())
+
+```
+
+We see that the price difference between Walmart and Target prices is
+highest for the `Product` named `Quaker Oats Life Cereal Original`. Let
+us check the mean difference in prices:
+
+```{r}
+
+diffmean(data = groceries, Walmart ~ Target, only.2 = FALSE)
+obs_diff_price = mean( ~ Walmart - Target, data = groceries)
+obs_diff_price
+
+```
+
+Let us perform the pair-wise permutation test on prices, by shuffling
+the two store names:
+
+```{r}
+
+polarity <- c(rep(1, 15), rep(-1,15))
+polarity
+null_dist_price <- do(100000) * mean(data = groceries, 
+                                    ~(Walmart-Target) * resample(polarity,
+                                                    replace = TRUE))
+null_dist_price %>% head()
+gf_histogram(data = null_dist_price, ~mean) %>% 
+  gf_vline(xintercept = obs_diff_price, colour = "red")
+
+2*(sum(null_dist_price >= obs_diff_price + 1)/(100000+1)) #P-value
+
+```
+
+Does not seem to be any significant difference in prices...
+
+Suppose we knock off the Quaker Cereal data item...
+
+```{r}
+
+which(groceries$Product == "Quaker Oats Life Cereal Original")
+groceries_less <- groceries[-2,]
+groceries_less
+
+
+obs_diff_price_less = mean( ~ Walmart - Target, data = groceries_less)
+obs_diff_price_less
+polarity_less <- c(rep(1, 15), rep(-1,14)) # Due to resampling this small bias makes no difference
+null_dist_price_less <- do(100000) * mean(data = groceries_less, 
+                                    ~(Walmart-Target) * resample(polarity_less,
+                                                    replace = TRUE))
+null_dist_price_less %>% head()
+gf_histogram(data = null_dist_price_less, ~mean) %>% 
+  gf_vline(xintercept = obs_diff_price_less, colour = "red")
+
+1- mean(null_dist_price_less >= obs_diff_price_less) #P-value
+
+```
+
+### Case Study 7: Proportions between Categorical Variables
+
+Let us try a dataset with Qualitative / Categorical data. This is a
+General Social Survey dataset, and we have people with different levels
+of `Education` stating their opinion on the `Death Penalty`. We want to
+know if these two Categorical variables have a correlation, i.e. can the
+opinions in favour of the Death Penalty be explained by the Education
+level?
+
+Since data is Categorical, we need to take `counts` in a table, and then
+implement a `chi-square test`. In the test, we will permute the
+`Education` variable to see if we can see how significant its *effect
+size* is.
+
+```{r}
+
+GSS2002 <- resampledata::GSS2002 # From resampledata package
+
+skim(GSS2002)
+
+```
+
+Note how *all* variables are Categorical !! `Education` has five
+`levels`:
+
+```{r}
+
+GSS2002 %>% count(Education)
+GSS2002 %>% count(DeathPenalty)
+
+```
+
+Let us drop NA entries in Education and Death Penalty. And set up a
+table for the chi-square test.
+
+```{r,warning=FALSE,message=FALSE}
+
+gss2002 <- GSS2002 %>% 
+  dplyr::select(Education, DeathPenalty) %>% 
+  tidyr::drop_na(., c(Education, DeathPenalty))
+dim(gss2002)
+
+gss_summary <- gss2002 %>%
+  mutate(
+    Education = factor(
+      Education,
+      levels = c("Bachelors", "Graduate", "Jr Col", "HS", "Left HS"),
+      labels = c("Bachelors", "Graduate", "Jr Col", "HS", "Left HS")
+    ),
+    DeathPenalty = as.factor(DeathPenalty)
+  ) %>%
+  group_by(Education, DeathPenalty) %>%
+  summarise(count = n()) %>% # This is good for a chisq test
+  
+  # Add two more columns to faciltate mosaic/Marrimekko Plot
+  # 
+  mutate(edu_count = sum(count), 
+         edu_prop = count / sum(count)) %>%
+  ungroup() 
+
+gss_summary
+
+# We can plot a heatmap-like `mosaic chart` for this table, using `ggplot`:
+# https://stackoverflow.com/questions/19233365/how-to-create-a-marimekko-mosaic-plot-in-ggplot2
+
+ggplot(data = gss_summary, aes( x = Education, y = edu_prop)) +
+  geom_bar(aes(width = edu_count, fill = DeathPenalty), stat = "identity", position = "fill", colour = "black") +
+  geom_text(aes(label = scales::percent(edu_prop)), position = position_stack(vjust = 0.5)) +
+
+
+# if labels are desired
+ facet_grid(~ Education, scales = "free_x", space = "free_x") + 
+  theme(scale_fill_brewer(palette = "RdYlGn")) + 
+  # theme(panel.spacing.x = unit(0, "npc")) + # if no spacing preferred between bars
+  theme_void() 
+
+```
+
+Let us now perform the base `chisq test`: We need a `table` and then the
+`chisq` test:
+
+```{r}
+
+gss_table <- tally(DeathPenalty ~ Education, data = gss2002)
+gss_table
+
+# Get the observed chi-square statistic
+observedChi2 <- mosaic::chisq(tally(DeathPenalty ~ Education, data = gss2002))
+observedChi2
+
+# Actual chi-square test
+stats::chisq.test(tally(DeathPenalty ~ Education, data = gss2002))
+
+```
+
+We should now repeat the test with permutations on `Education`:
+
+```{r}
+
+null_chisq <- do(4999) * chisq.test(tally(DeathPenalty ~ shuffle(Education), data = gss2002))
+
+head(null_chisq)
+
+gf_histogram( ~ X.squared, data = null_chisq) %>% 
+  gf_vline(xintercept = observedChi2, color = "red")
+
+```
+
+So we would conclude that `Education` has a significant effect on
+`DeathPenalty` opinion!
+
+
+## References
+
+1.  [Chapter 11, Hypothesis Testing with
+    Randomization](https://openintro-ims.netlify.app/foundations-randomization.html#chp11-review)
+    in [Introduction to Modern Statistics (1st
+    Ed)](https://openintro-ims.netlify.app/index.html) by Mine
+    Çetinkaya-Rundel and Johanna Hardin.
+
+
+::: {#refs style="font-size: 60%;"}
+
+{{< iconify lucide package-check >}} R Package Citations
+
+```{r}
+#| echo: false
+library(grateful)
+cite_packages(
+  output = "table",
+  out.dir = ".",
+  out.format = "html",
+  pkgs = c("ggformula", "skimr", "mosaic", "resampledata3")
+) %>%
+  knitr::kable(format = "simple")
+
+```
