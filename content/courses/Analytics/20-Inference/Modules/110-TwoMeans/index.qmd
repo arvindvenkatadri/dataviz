@@ -43,7 +43,8 @@ library(ggformula)
 library(infer) # An alternative package for inference using tidy data
 library(broom) # Clean test results in tibble form
 library(skimr) # data inspection
-library(tinytable)
+library(tinytable) # Pretty Tables
+library(kableExtra) # Pretty Tables
 library(ggprism) # Prism-like ggplot themes
 ##
 library(visStatistics) # All-in-one Stats test package
@@ -221,11 +222,9 @@ different components of mathematics.
 #| - "Quantitative Variables"
 #| results: hold
 data("MathAnxiety",package = "resampledata")
-MathAnxiety %>% head(10) %>% tt()
 glimpse(MathAnxiety)
-MathAnxiety_inspect <- inspect(MathAnxiety)
-MathAnxiety_inspect$categorical %>%  tt() 
-MathAnxiety_inspect$quantitative %>%  tt() 
+skimr::skim(MathAnxiety) %>% tt() %>% 
+  theme_striped(font) %>% style_tt(fontsize = 0.75)
 
 ```
 ### {{< iconify streamline dictionary-language-book-solid >}} Data Dictionary
@@ -327,13 +326,13 @@ MathAnxiety %>%
   gf_summary(geom = "point", size = 3, colour = "black") %>% 
   gf_refine(scale_x_discrete(
     breaks = c("Boy", "Girl"),
-    labels = c("Boy", "Girl"),
-    guide = "prism_bracket"
+    labels = c("Boys", "Girls"),
+    guide = guide_prism_bracket(width = 0.1,outside = FALSE)
   ))  %>% 
   gf_annotate(x = 0.65, y = 25, geom = "text", label = "Mean\n Boys' Anxiety Scores", family = "Roboto Condensed") %>%
     gf_annotate(x = 2.35, y = 25, geom = "text", label = "Mean\n Girls' Anxiety Scores",family = "Roboto Condensed") %>% 
     gf_annotate(x = 1.5, y = 30, geom = "label", label = "Mean Difference Line\nSlope indicates\n differences in mean", fill = "moccasin", family = "Roboto Condensed") %>%
-  gf_theme(theme(legend.position = "none"))
+  gf_theme(theme(legend.position = "none", axis.line.x = element_line(linewidth = 1)))
 
 ```
 
@@ -914,29 +913,36 @@ about the tests:
 
 mosaic::t_test(AMAS ~ Gender, 
                data = MathAnxiety) %>% 
-  broom::tidy() %>% tt() %>% 
-  style_tt(i = 1,j = 5,color = "black", bold = TRUE, background = "gold")
+  broom::tidy() %>% 
+  kableExtra::kbl() %>%
+  kableExtra::kable_paper(full_width = F, html_font = "Roboto Condensed") %>% 
+  kableExtra::column_spec(5, width = "20em", bold = T, background = "gold")
 
 
 wilcox.test(AMAS ~ Gender, 
                data = MathAnxiety) %>% 
   broom::tidy() %>% 
-  tt() %>% 
-  style_tt(i = 1,j = 2,color = "black", bold = TRUE, background = "gold")
+  kableExtra::kbl() %>%
+  kableExtra::kable_paper(full_width = F, html_font = "Roboto Condensed") %>% 
+  kableExtra::column_spec(2, width = "10em", bold = T, background = "gold")
 
 lm(AMAS ~ Gender, 
    data = MathAnxiety) %>% 
   broom::tidy(conf.int = TRUE,
-              conf.level = 0.95) %>% 
-  tt() %>% 
-  style_tt(i = 1:2, j = 5,color = "black", bold = TRUE, background = "gold")
+              conf.level = 0.95,) %>% 
+  kableExtra::kbl() %>%
+  kableExtra::kable_paper(full_width = F, html_font = "Roboto Condensed") %>% 
+  kableExtra::column_spec(1, bold = T, border_right = T) %>%
+  kableExtra::column_spec(5, width = "10em", bold = T, background = "gold")
 
 lm(rank(AMAS) ~ Gender, 
    data = MathAnxiety) %>% 
   broom::tidy(conf.int = TRUE,
               conf.level = 0.95) %>% 
-  tt() %>% 
-  style_tt(i = 1:2, j = 5,color = "black", bold = TRUE, background = "gold")
+  kableExtra::kbl() %>%
+  kableExtra::kable_paper(full_width = F, html_font = "Roboto Condensed") %>% 
+  kableExtra::column_spec(1, bold = T, border_right = T) %>%
+  kableExtra::column_spec(5, width = "10em", bold = T, background = "gold")
 
 
 ```
@@ -1120,16 +1126,22 @@ yrbss_select_gender %>%
   gf_summary(group = ~ 1, # See the reference link above. Damn!!!
              fun = "mean", geom = "line", colour = "lightblue", 
              lty = 1, linewidth = 2) %>% 
-  gf_summary(fun = "mean", colour = "firebrick", 
+  gf_summary(fun = "mean", colour = "black", 
              size = 4, geom ="point") %>% 
-  gf_refine(scale_x_discrete(breaks =  c("male", "female"), 
-                             labels = c("male", "female"), 
-                             guide = "prism_bracket")) %>% 
-  gf_refine(annotate(x = 0.75, y = 60, geom = "text", label = "Mean\n Girls Weights"),
-            annotate(x = 2.25, y = 60, geom = "text", label = "Mean\n Boys Weights"),
-            annotate(x = 1.5, y = 100, geom = "label", label = "Slope indicates\n differences in mean", fill = "moccasin")
-            ) %>% 
-  gf_refine(scale_colour_brewer(name = "Gender", palette = "Set1"))
+  gf_refine(scale_x_discrete(
+   breaks =  c("male", "female"), 
+            labels = c("male", "female"), 
+    guide = guide_prism_bracket(width = 0.1, outside = FALSE)
+  ))  %>% 
+  gf_annotate(x = 0.75, y = 60, geom = "text", 
+              label = "Mean\n Girls' Weights") %>% 
+  gf_annotate(x = 2.25, y = 60, geom = "text", 
+              label = "Mean\n Boys' Weights") %>% 
+  gf_annotate(x = 1.5, y = 100, geom = "label", 
+              label = "Slope indicates\n differences in mean", 
+              fill = "moccasin") %>% 
+  gf_refine(scale_colour_brewer(name = "Gender", palette = "Set1")) %>% 
+  gf_theme(theme(legend.position = "none", axis.line.x = element_line(linewidth = 1)))
 
 ```
 
@@ -1430,7 +1442,7 @@ wilcox.test(weight ~ gender, data = yrbss_select_gender,
             conf.int = TRUE, 
             conf.level = 0.95) %>% 
   broom::tidy() %>% tt() %>% 
-  style_tt(i = 1,j = 5,background = "gold",color = "black")
+  style_tt(i = 1,j = 3,background = "gold",color = "black")
 
 lm(rank(weight) ~ gender, 
    data = yrbss_select_gender) %>% 
@@ -1542,13 +1554,13 @@ yrbss_select_phy %>%
   gf_refine(scale_x_discrete(
     breaks = c("no", "yes"),
     labels = c("no", "yes"),
-    guide = "prism_bracket"
+    guide = guide_prism_bracket(width = 0.1, outside = FALSE)
   ))  %>%
   gf_refine(
     annotate(x = 0.65, y = 60, geom = "text", label = "Mean Weights\n No Exercise"),
     annotate(x = 2.35, y = 60, geom = "text", label = "Mean Weights\nWith Exercise"),
     annotate(x = 1.5, y = 100, geom = "label", label = "Slope indicates\n differences in mean", fill = "moccasin"),
-    scale_colour_viridis_d(name = "Days of Exercise >=3", option = "turbo"))
+    scale_colour_viridis_d(name = "Days of Exercise >=3", option = "turbo")) %>%  gf_theme(theme(legend.position = "none", axis.line.x = element_line(linewidth = 1)))
 
 ```
 

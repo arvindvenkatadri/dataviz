@@ -25,11 +25,13 @@ library(ggformula) # Formula based plots
 library(mosaic) # Data inspection and Statistical Inference 
 library(broom) # Tidy outputs from Statistical Analyses
 library(infer) # Statistical Inference, Permutation/Bootstrap
+library(supernova) # Beginner-Friendly ANOVA Tables 
+library(ggstatsplot) # Statistical Plots
+library(ggcompare) # Improved p.value brackets on graphs
+##
 library(patchwork) # Arranging Plots
 library(ggprism) # Interesting Categorical Axes
-library(supernova) # Beginner-Friendly ANOVA Tables 
 library(paletteer) # Color Palettes
-library(ggcompare) # Improved p.value brackets on graphs
 
 ```
 
@@ -89,7 +91,7 @@ showtext_auto(enable = TRUE) #enable showtext
 ##
 theme_custom <- function(){ 
 
-    theme_bw(base_size = 10) + 
+    theme_classic(base_size = 10) + 
     
     theme_sub_axis(title = element_text(family = "Roboto Condensed", 
                                        size = 8),
@@ -272,6 +274,7 @@ gf_jitter(Time ~ TempFac, color = ~ TempFac, width = 0.2,
   gf_labs(title = "Frog Spawn Hatching Time vs Temperature",
           x = "Temperature", y = "Hatching Time") %>%
   gf_hline(yintercept = ~ mean(Time), color = "grey") %>%
+  gf_annotate(geom = "text", label = "Overall Mean", x = 3, y = mean(frogs_long$Time) + 0.5, size = 4) %>%
   gf_refine(scale_color_paletteer_d("ggthemes::colorblind"),
             scale_x_discrete(guide = "prism_bracket"),
             guides(color = guide_legend(title = "Temperature level (°C)")))
@@ -305,6 +308,7 @@ gf_boxplot(data = frogs_long,
   gf_labs(title = "Frog Spawn Hatching Time vs Temperature",
           x = "Temperature", y = "Hatching Time", 
           caption = "Using ggprism") %>%
+  gf_annotate(geom = "text", label = "Overall Mean", x = 3, y = mean(frogs_long$Time) + 0.5, size = 4) %>%
   gf_refine(scale_fill_paletteer_d("ggthemes::colorblind"),
             scale_x_discrete(guide = "prism_bracket"),
             guides(fill = guide_legend(title = "Temperature level (°C)"))) 
@@ -333,11 +337,11 @@ ggplot2::theme_set(new = theme_custom())
 
 gf_histogram(~ Time, fill = ~ TempFac,
   data = frogs_long, alpha = 0.5) %>%
-  gf_vline(xintercept = ~ mean(Time)) %>%
+  gf_vline(xintercept = ~ mean(frogs_long$Time)) %>%
   gf_labs(title = "Frog Spawn Hatching Time vs Temperature",
           x = "Hatching Time", y = "Count") %>%
-  gf_text(7 ~ (mean(Time) + 2),
-          label = "Overall Mean") %>%
+  gf_annotate("text", y = 7, x = mean(frogs_long$Time) + 1.5,
+          label = "Overall Mean", size =4) %>%
   gf_refine(scale_fill_paletteer_d("ggthemes::colorblind"), 
             guides(fill = guide_legend(title = "Temperature level (°C)")))
 
