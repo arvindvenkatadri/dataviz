@@ -119,9 +119,9 @@ theme_custom <- function(){
     theme_bw(base_size = 10) + 
     
     theme_sub_axis(title = element_text(family = "Roboto Condensed", 
-                                       size = 8),
+                                       size = 14),
                    text = element_text(family = "Roboto Condensed", 
-                                       size = 6)) + 
+                                       size = 12)) + 
     
     theme_sub_legend(text = element_text(family = "Roboto Condensed", 
                                          size = 6),
@@ -366,7 +366,7 @@ movies_modified %>%
   DT::datatable(
     caption = htmltools::tags$caption(
       style = 'caption-side: top; text-align: left; color: black; font-size: 150%;',
-      'GSS Wages Dataset (Clean)'
+      'Movies Dataset (Clean)'
     ),
     options = list(pageLength = 10, autoWidth = TRUE)
   ) %>%
@@ -768,48 +768,75 @@ variable $x$. Recall from our discussion on [Quantities](../../Modules/22-Quanti
 ggplot2::theme_set(new = theme_custom())
 
 set.rseed(1971)
-demo_dat <- MKdescr::simCorVars(n = 100, r = 0.8, mu1 = 2, sd1 = 1, mu2 = 0, sd2 = 1,plot = FALSE)
-mean_var1 <- mean(demo_dat$Var1)
-mean_var2 <- mean(demo_dat$Var2)
+# demo_dat <- MKdescr::simCorVars(n = 100, r = 0.8, mu1 = 2, sd1 = 1, mu2 = 0, sd2 = 1,plot = FALSE)
+demo_dat <- MKdescr::simCorVars(n = 100, r = 0.8, mu1 = 20, sd1 = 1, mu2 = 2, sd2 = 1,plot = FALSE)
+mean_var1 <- mean(demo_dat$Var1) # 20
+mean_var2 <- mean(demo_dat$Var2) # 2
 demo_dat_sample <- slice_sample(demo_dat, n = 6)
+max_sample_var1 <- max(demo_dat_sample$Var1)
+max_sample_var2 <- max(demo_dat_sample$Var2)
+##
 demo_dat %>% 
-  gf_point(Var2 ~ Var1, size = 0.5) %>% 
-  gf_vline(xintercept = ~ mean(Var1)) %>% 
-  gf_hline(yintercept =  ~ mean(Var2)) %>% 
+  gf_point(Var2 ~ Var1, size = 1) %>% 
+  gf_vline(xintercept = ~ mean_var1) %>% 
+  gf_hline(yintercept =  ~ mean_var2) %>% 
   ## Segments
   gf_segment(data = demo_dat_sample, Var2 + Var2 ~ Var1 + mean_var1, color = "grey80") %>% 
   gf_segment(data = demo_dat_sample, mean_var2 + Var2 ~ Var1 + Var1,color = "grey80")  %>% 
-  ## Points
-  gf_point(Var2 ~ Var1, data = demo_dat_sample, colour = "grey80", 
-           size = 4, shape = "X") %>% 
-  
-  ## Emphasize point X1
+  ## Sampled Points
+  gf_point(Var2 ~ Var1, data = demo_dat_sample, colour = "grey40", 
+           size = 6, shape = "X") %>% 
+## Grey lines to sampled points
   gf_segment(data = demo_dat_sample, 
-        max(Var2) + max(Var2) ~ max(Var1) + mean_var1, 
-        color = "dodgerblue",
+        max_sample_var2 + max_sample_var2 ~ max_sample_var1 + mean_var1, 
+        color = "lightseagreen",
         arrow = arrow(angle = 30, length = unit(5, "mm"),
       ends = "first", type = "open")) %>% 
-  gf_segment(data = demo_dat_sample, mean_var2 + max(Var2) ~ max(Var1) + max(Var1),color = "firebrick",arrow = arrow(angle = 30, length = unit(5, "mm"),
-      ends = "last", type = "open"))  %>% 
-    gf_point(max(Var2) ~ max(Var1), data = demo_dat_sample, colour = "red", size = 4) %>% 
-  ##
+
+  gf_segment(data = demo_dat_sample, mean_var2 + max(Var2) ~ max(Var1) + max(Var1),color = "purple",arrow = arrow(angle = 30, 
+length = unit(5, "mm"), ends = "last", type = "open"))  %>% 
+
+## Emphasize point X1
+  gf_point(max_sample_var2 ~ max_sample_var1, data = demo_dat_sample, 
+             colour = "red", size = 4) %>% 
+  gf_annotate(geom="label", fill = "moccasin",
+              y = max_sample_var2 + 0.15, 
+              x = max_sample_var1 + 0.15,
+              label = TeX("$(x_1, y_1)$", output='character'), parse=TRUE) %>% 
+## x - mean(x) annotation
+  gf_annotate(geom = 'label', 
+              x = mean_var1/2 + max_sample_var1/2, 
+              y = max_sample_var2 + 0.2, 
+              label = TeX("$x_1 - \\mu_{X}$", output='character'), 
+              fill = "moccasin", parse = TRUE) %>% 
+
+## y - mean(y) annotation
+gf_annotate(geom = 'label', 
+            y = mean_var2/2 + max_sample_var2/2, 
+            x = max_sample_var1 + 0.2, 
+                     label = TeX("$y_1 - \\mu_{Y}$", output='character'),               fill = "moccasin", parse = TRUE) %>% 
+
+## mean(x)
+  gf_annotate(geom='label', x = mean_var1, y = 0, 
+                     label = TeX("$\\mu_{1}$", 
+                      output='character'), fill = "moccasin",
+              parse=TRUE) %>% 
+## mean(y)
+  gf_annotate(data = demo_dat, geom= "label", 
+              y = mean_var2, 
+              x = min(demo_dat$Var1), fill = "moccasin",
+              label = TeX("$\\mu_{Y}$", output='character'), parse=TRUE) %>% 
+
+ ##
   gf_labs(title = "Correlation Coeff Calculation",
-          x = "Variable X", y = "Variable Y") %>% 
-  gf_refine(annotate(geom='text', x = 3, y= 2.5, 
-                     label = TeX("$x_1 - \\mu_{X}$", output='character'), parse=TRUE),
-            annotate(geom='text', x = 2.2, y = -2, 
-                     label = TeX("$\\mu_{X}$", output='character'), parse=TRUE),
-            annotate(geom='text', x = -0.5, y= 0.2, 
-                     label = TeX("$\\mu_{Y}$", output='character'), parse=TRUE),
-            annotate(geom='text', x = 4.2, y= 1, 
-                     label = TeX("$y_1 - \\mu_{Y}$", output='character'), parse=TRUE),
-            annotate(geom='text', x = 4.25, y= 2.2, 
-                     label = TeX("$(x_1, y_1)$", output='character'), parse=TRUE))
+          x = "Variable X", y = "Variable Y") 
 
 ## Positive correlation
-x <- rnorm(25)
-y <- x + rnorm(25,3, .5)
-cor.rect.plot(x,y, xlab = "Variable X", ylab = "Variable Y", main = "Positive Correlation", col = c("#0000ff55","#ff000055"))
+# x <- rnorm(n = 50, mean = 2, sd = 0.2)
+# y <- 5.0*x + rnorm(n = 50, mean = 30, sd = 6)
+cor.rect.plot(demo_dat$Var1,y = demo_dat$Var2, xlab = "Variable X", ylab = "Variable Y", 
+              corr = TRUE,
+              col = c("#0000ff55","#ff000055"))
 
 ```
 
