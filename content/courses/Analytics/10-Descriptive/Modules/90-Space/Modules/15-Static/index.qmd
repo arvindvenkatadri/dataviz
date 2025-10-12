@@ -9,6 +9,8 @@ abstract: Making Static Maps in R
 editor: 
   markdown: 
     wrap: 72
+bibliography: 
+  - grateful-refs.bib
 ---
 
 ![Which Way to the Secret Garden, Sir?](../../../../../../../materials/images/1book14.jpg){height=250 fig-align="center"}
@@ -26,17 +28,18 @@ developed using code. Everything is text; code chunks are enclosed in
 
 ## Goals
 
-At the end of this Lab session, we should:\
+At the end of this Lab session, we should:
+
 - know the types and structures of `spatial data` and be able to work
 with them\
 - understand the basics of modern spatial packages in R\
 - be able to specify and download spatial data from the web, using R
 from sources such as `naturalearth` and `Open Streep Map`\
-- plot *static* and *interactive* maps using `ggplot`, `tmap` and
-`leaflet` packages\
+- plot *static* and *interactive* maps using `{ggplot2}`, `{tmap}` and
+`{leaflet}` packages\
 - add symbols and markers for places and regions of our own interest in
 these maps.\
-- plot maps on a globe using the `threejs` package
+- plot maps on a globe using the `{threejs}` package (Maybe...)
 
 ## Pedagogical Note
 
@@ -55,23 +58,8 @@ The method followed will be based on
 
 All jargon words will be capitalized and in **bold** font.
 
-## Set Up
-
-The `setup` code **chunk** below brings into our coding session **R
-packages** that provide specific computational abilities and also
-**datasets** which we can use.
-
-To reiterate: Packages and datasets are **not** the same thing !!
-Packages are (small) collections of programs. Datasets are
-just....information.
-
 ## Setup the Packages
 
--   Run this in your Console first:
-    `devtools::install_github("ropensci/rnaturalearthhires")`
-
--   Install all packages that are flagged by RStudio when you open this
-    RMarkdown file
 
 ```{r}
 #| label: setup
@@ -83,11 +71,13 @@ library(rnaturalearthdata)
 library(rnaturalearthhires)
 
 # Plotting Maps
-library(tidyverse) # Maps using ggplot + geom_sf
+library(tidyverse) # Maps using ggplot() + geom_sf()
+library(ggformula) # Maps using gf_sf()
 library(tmap) # Thematic Maps, static and interactive
 library(tmaptools)
 library(tmap.mapgl)
 library(osmdata) # Fetch map data from osmdata.org
+library(sfheaders) # Handcrafted Map data
 ## Interactive Maps
 library(leaflet) # interactive Maps
 library(leaflet)
@@ -97,6 +87,19 @@ library(threejs) # Globe maps in R. Part of the htmlwidgets family of packages
 
 # For Spatial Data Frame Processing
 library(sf)
+
+```
+
+
+```{r}
+#| label: Extra Pedagogical Packages
+#| echo: false
+#| message: false
+
+knitr::opts_chunk$set(tidy = TRUE)
+library(checkdown)
+library(epoxy)
+library(grateful)
 
 ```
 
@@ -220,20 +223,15 @@ map making packages in R.
 The steps we will use are:
 
 1.  Search for an area of interest
-2.  Learn how to access spatial/map data using `osmdata`
-3.  Plot and dress up our map using `ggplot` and `tmap`
-4.  Create interactive maps with `leaflet` using a variety of map data
-    providers. (Note: `tmap` can also do interactive maps which we will
-    explore also.)
+2.  Learn how to access spatial/map data using `{osmdata}`
+3.  Plot and dress up our map using `{ggplot2}` and `{tmap}`
+4.  Create interactive maps with `{leaflet}` using a variety of map data providers. (Note: `{tmap}` can also do interactive maps which we will explore also.)
 
 Bas. Onwards and Map-wards!!
 
-## Step1 - Specifying an area of interest
+### Step1 - Specifying an area of interest
 
-In R, we need to specify a "**BOUNDING BOX**" first, to declare our area
-of interest. God made me a BengaluR-kaR...I think..Let's see if we can
-declare an area of interest. Then we can order on Swiggy and...never
-mind.
+In R, we need to specify a "**BOUNDING BOX**" first, to declare our area of interest. God made me a BengaluR-kaR...I think..Let's see if we can declare an area of interest. Then we can order on Swiggy and...never mind.
 
 We can declare a **BOUNDING BOX** in several ways.
 
@@ -241,11 +239,10 @@ a)  Using a longitude latitude info from [Bounding Box
     Tool](https://boundingbox.klokantech.com) which gives bounding boxes
     in many different formats.
 
--   Locate the place of interest using the search box.
--   click on the "box with arrow" tool on the upper left. This will
+  -   Locate the place of interest using the search box.
+  -   Click on the "box with arrow" tool on the upper left. This will
     create a rectangular shape.\
--   Move/resize this box and then copy the bounding box from the menu at
-    the bottom. Ensure you copy in **CSV** format.
+  -   Move/resize this box and then copy the bounding box from the menu at the bottom. Ensure you copy in **CSV** format.
 
 ```{r}
 #| label:  I-am-going-home 1
@@ -264,7 +261,7 @@ bbox_1
 ```
 
 b)  Using a place name to look up a BOUNDING BOX with `osmdata::getbb`.
-    This may not always work if the place name is know well known.
+    This may not always work if the place name is not well known.
 
 ```{r I-am-going-home 2}
 # Using getbb command from the osmdata package
@@ -281,13 +278,13 @@ bbox_2
 
 ```
 
-Both look similar in size; `bbox_2` is slightly bigger.
 
+Both look similar in size; `bbox_2` looks slightly bigger, is it?
 We will use the `bbox_2` from the above, to ensure we have a decent
 collection of features. If the download becomes too hefty, we can fall
 back on the smaller bbox!
 
-## Step2 - Get Map data
+### Step2 - Get Map data
 
 > [OpenStreetMap (OSM)](https://www.openstreetmap.org/) provides maps of
 > the world mostly created by volunteers. They are completely free to
@@ -297,22 +294,17 @@ back on the smaller bbox!
 > and used for our own purposes. In this tutorial, we will obtain data
 > from OSM using a `query`. A query is a request for data from a
 > database. Simple queries can be performed more easily using the
-> `osmdata` library for R, which automatically constructs the query and
+> `{osmdata}` library for R, which automatically constructs the query and
 > imports the data in a convenient format.
 
 Open Street Map **features** have attributes in **key-value pairs**. We
-can use them to download the specific data we need. These features can
-easily be explored in the web browser, by using the 'Query features'
-button on [OpenStreetMap (OSM)](https://www.openstreetmap.org/):
+can use them to download the specific data we need. These **features** can easily be explored in the web browser, by using the 'Query features' button on [OpenStreetMap (OSM)](https://www.openstreetmap.org/):
 
 ![OSM
 Features](/content/materials/images/osm-online-features.gif){fig-align="center"}
 
-Head off to [OSM Street Map](https://www.openstreetmap.org/) to try this
-out and to get an intuitive understanding of what OSM **key-value
-pairs** are, for different types of map **features**. Look for places of
-interest to you (**features**) and see what **key-value** pairs attach
-to those features.
+Head off to [OSM Street Map](https://www.openstreetmap.org/) to try this out and to get an intuitive understanding of what OSM **key-value
+pairs** are, for different types of map **features**. Look for places of interest to you (**features**) and see what **key-value** pairs attach to those features.
 
 NOTE: **key-value pairs** are also referred to as **tags**.
 
@@ -334,12 +326,16 @@ for a nice visual description of popular **key-value pairs** that we can
 use. See what the `highway` tag looks like
 [tag:highway](https://taginfo.openstreetmap.org/keys/highway#values)
 
+### RapidEditor.org
+
 ::: callout-important
 ### RapidEditor.Org for OSM Maps
 For a user-friendly tutorial on how to **edit** and **add features** to the OSM map, head off to [Rapid Editor](https://rapideditor.org/). Here you will learn about OSM itself and about how you can add value to it by adding data from your own surroundings.
 :::
 
-The `osmdata` commands `available_features` and `available_tags` can
+### OSM Available Features and Tags
+
+The `{osmdata}` commands `available_features` and `available_tags` can
 help also us get the associated **key-value pairs** to retrieve data
 from OSM.
 
@@ -352,35 +348,36 @@ available_tags(feature = "natural") %>% reactable::reactable(data = ., filterabl
 
 ```
 
+### OSM Map Data Download
+
 We can use these **key-value** pairs to download different types of map
 data. Within our `bbox` for Jayanagar, Bangalore, we want to download
 diverse kinds of **FEATURE** data. Remember that a **FEATURE** is any
 object that can be "seen" on a map. This is done using the OPQ query in
-the `osmdata` package. The main parameters for this command are:
+the `{osmdata}` package. The main parameters for this command are:
 
 -   bbox
 -   **KEY / VALUE** pairs (**"TAGS"**) to specify the kind of feature
     you need
 
-The query returns a **list** data structure, with **all geometries** and
-features within the bounding box, and we can use any or all of them. Now
-we know the map features we are interested in. We also know what
-key-value pairs will be used to get this info from OSM.
+Now, we know the map features we are interested in. We also know what key-value pairs will be used to get this info from OSM. The query returns a **list** data structure, with **all geometries** and features within the bounding box, and we can use any or all of them. We need to `purrr::pluck()` out individually the GEOMetry which we want to plot with. 
+It is worthwhile spending some time expanding and exploring the **list** data itself, peasants. 
 
 ::: callout-warning
-### Data Downloads from OSM
+#### Data Downloads from OSM
 
 **Do not run these commands too many times**. **Re-run this ONLY if you
 have changed your BOUNDING BOX**. We will get our map data from OSM and
-then save it avoid repeated downloads. So, please copy/paste and run the
-following commands in your console.
+then save it avoid repeated downloads. So, please copy/paste and run the following commands in your console.
 :::
 
-```{r}
-#| eval: false
+
+
+```{{r}}
 # This code is for reference
 # Run these commands ONCE in your Console
 # Or run this chunk manually one time
+# Re-run ONLY if you change your bounding box
 
 # Get all restaurants, atms, colleges within my bbox
 locations <- 
@@ -423,51 +420,48 @@ dat_greenery <-
 ```
 
 Let us save this data, so we don't need to download all this again! We
-will store the downloaded data as `.gpkg` files on our local hard drives
-to use when we run this file again later. We will name our stored files
-as `buildings`, `roads`, and `greenery`, and `trees`, each with the
-`.gpkg` file extension, e.g. `trees.gpkg`.
+will store the downloaded data as [`.gpkg`](https://en.wikipedia.org/wiki/GeoPackage) files on our local hard drives to use when we run this file again later. We will name our stored files as `buildings`, `roads`, and `greenery`, and `trees`, each with the `.gpkg` file extension, e.g. `trees.gpkg`.
 
 Check your local project folder for a subfolder titles `/gpkg-data` for these files after executing these commands.
 
-```{r}
-#| eval: false
-# Eval is set to false here
+```{{r}}
 # This code is for reference
 # Run these commands ONCE in your Console
 # Or manually run this chunk once
 
-st_write(dat_roads, dsn = "./gpkg-data/roads.gpkg", 
+sf::st_write(dat_roads, dsn = "./gpkg-data/roads.gpkg", 
          append = FALSE, quiet = FALSE)
 
-st_write(dat_buildings, 
+sf::st_write(dat_buildings, 
          dsn = "./gpkg-data/buildings.gpkg", 
          append = FALSE, 
          quiet = FALSE)
 
-st_write(dat_greenery, dsn = "./gpkg-data/greenery.gpkg", 
+sf::st_write(dat_greenery, dsn = "./gpkg-data/greenery.gpkg", 
          append = FALSE,quiet = FALSE)
 
-st_write(dat_trees, dsn = "./gpkg-data/trees.gpkg", 
+sf::st_write(dat_trees, dsn = "./gpkg-data/trees.gpkg", 
          append = FALSE,quiet = FALSE)
 
 ```
 
 ::: callout-warning
-### Work from here when you resume!
+#### Work from here when you resume!
 **Always work from here to avoid repeated downloads from OSM. Start from
 the top ONLY if you intend to map new locations and need to modify your
 Bounding Box.**
 :::
 
+### Inspect the Data
+
 Let us now read back the saved Data:
 
 ```{r}
 #| label: resume-from-here
-buildings <- st_read("./gpkg-data/buildings.gpkg")
-greenery <- st_read("./gpkg-data/greenery.gpkg")
-trees <- st_read("./gpkg-data/trees.gpkg")
-roads <- st_read("./gpkg-data/roads.gpkg")
+buildings <- sf::st_read("./gpkg-data/buildings.gpkg")
+greenery <- sf::st_read("./gpkg-data/greenery.gpkg")
+trees <- sf::st_read("./gpkg-data/trees.gpkg")
+roads <- sf::st_read("./gpkg-data/roads.gpkg")
 
 ```
 
@@ -488,16 +482,46 @@ geometry is naturally a POLYGON type of geometry column.
 Do this check for all the other spatial data, in the code chunk below.
 What kind of `geom` column does each dataset have?
 
-## My first Map in R
 
-There are two ways of plotting maps that we will learn:
+[Did you see how much of map data from India is missing?? Why SMI does not have an `OSM Map Project` under the IAIDP Programme beats me.]{style="background-color:yellow;"}
+
+
+### My first Map in R
+
+There are three ways of plotting maps that we will learn:
 
 ::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
 
-### Using ggplot and geom_sf()
+#### Using ggformula
 
-First we will plot with `ggplot` and `geom_sf()` : recall that our data
-is stored in 5 files: `buildings`, `parks`, `roads`, `trees`, and
+```{r}
+
+# POLYGONS
+gf_sf(data = buildings, geometry = ~ geom, 
+      fill = "gold", color = "grey", 
+      linewidth = 0.025) %>% 
+  
+# LINES
+  gf_sf(data = roads, geometry = ~ geom, 
+        color = '#ff9999', linewidth = 0.5) %>%    
+
+# POLYGONS
+  gf_sf(data = greenery, geometry = ~geom, 
+        col = "darkseagreen",
+        fill = "lightgreen",
+        linewidth = 0.025) %>% 
+# POINTS
+  gf_sf(data = trees, , geometry = ~ geom,
+        col = "darkgreen", size = 0.5)
+
+```
+
+Note how `gf_sf` is capable of handling *any* geometry in the `sfc`
+column !! It does ***need to be told*** which the **GEOM**etry column is, by name. 
+
+#### Using ggplot
+
+First we will plot with `{ggplot2}` and `geom_sf()` : recall that our data is stored in 5 files: `buildings`, `parks`, `roads`, `trees`, and
 `greenery`.
 
 ```{r}
@@ -509,30 +533,30 @@ ggplot() +
   geom_sf(data = greenery, col = "darkseagreen",
           fill = "lightgreen",
           linewidth = 0.025) +  # POLYGONS
-  geom_sf(data = trees, col = "darkgreen", size = 0.5)  +       # POINTS
+  geom_sf(data = trees, col = "darkgreen", size = 0.5)         # POINTS
   
   # Set plot limits to exactly the bbox_2
   # coord_sf(xlim = c(bbox_2[1,1], bbox_2[1,2]),
   #          ylim = c(bbox_2[2,1], bbox_2[2,2]),
-  #          expand = FALSE) + 
-  theme_minimal()
+  #          expand = FALSE)
 
 ```
 
 Note how `geom_sf` is capable of handling *any* geometry in the `sfc`
 column !!
 
+::: callout-important
+#### The importance of `geom_sf / gf_sf`
 > `geom_sf()` is an unusual geom because it will draw different
 > geometric objects depending on what simple features are present in the
 > data: you can get points, lines, or polygons.
+:::
 
 So there, we have our first map!
 
-### Map using tmap package
+#### Using tmap
 
-We can also create a map using a package called `tmap`. Here we also
-have the option of making the map *interactive*. `tmap` plots are made
-with code in "groups": each group starts with a `tm_shape()` command.
+We can also create a map using a package called `tmap`. Here we alsohave the option of making the map *interactive*. `tmap` plots are made with code in "groups": each group starts with a `tm_shape()` command.
 
 
 ```{r}
@@ -563,7 +587,7 @@ tm_shape(trees) +
 :::
 
 
-## Adding data to the map
+## Adding External Data to our map
 
 We will naturally wish to add our own data to the map. For instance, we may wish to add places of interest as markers, routes and paths as lines and areas of interest as polygons. Hence the ability to add layers to our map, based on our own data, is very important.
 
@@ -576,7 +600,7 @@ We will first use data from existing packages such as `tmap` and `rnaturalearth`
 
 Like many other packages ( e.g. ggplot ) `tmap` also has a few built-in
 spatial datasets: `World` and `metro`, `rivers`, `land` and a few
-others. Check h elp on these. Let's plot a first map using datasets built
+others. Check help on these. Let's plot a first map using datasets built
 into `tmap`.
 
 ```{r World-Data-tmap}
@@ -622,11 +646,98 @@ tm_crs("auto")
 
 ```
 
+### Handcrafted Data with {sfheaders}
+
+We can create a `tibble` containing the coordinates of the POINTs that make up our desired GEOMETRY. Then we use `sfheaders::sf_***()` to convert the `tibble` to an `sf` data frame with the desired GEOMETRY. 
+
+Let us make up some dummy data: 
+
+```{r}
+#| label: hand-crafted-point-data
+#| layout-ncol: 3
+#| 
+data("World")
+india <- World %>% filter(iso_a3 == "IND")
+crs_india <- st_crs(india)
+set.seed(1963)
+
+df <- tibble(
+  id = c(1,1,1,1,2,2,2,2,3,3,3,3), # Grouping
+  lon = c(1, rnorm(2) + 1, 1, 2, -2 * rnorm(2) - 2, 2, 3, -3 * rnorm(2) + 3 , 3)+ 77, ## India! India!!
+  lat = c(1, rnorm(2) + 1, 1, 2, 2*rnorm(2) + 2, 2, 3, 3*rnorm(2) +3 , 3) + 23 ## Ditto!
+)
+df
+df_sf_point<- sf_point( df , x = "lon", y = "lat") %>% 
+  st_set_crs(value = crs_india) # Convert CRS to India
+df_sf_point
+## Quick Plot!!
+gf_sf(data = india, geometry = ~ geometry,
+      caption = "Territorial Boundaries of India are incorrect") %>% 
+  gf_sf(data = df_sf_point, geometry = ~ geometry,
+        colour = "red", size = 2)
+```
+
+::: callout-note
+#### `id` column
+It is interpreted as a third, or `z-coordinate`, which we obviously cannot plot. `{sf}` can use 3D coordinates. 
+:::
+
+Suppose we make MULTIPOINT, LINESTRING, and POLYGON dataframes? We need to use the `id` column to make groups. 
+
+```{r}
+#| label: hand-crafted-multipoint-data
+df_sf_multipoint <- sf_multipoint( df, multipoint_id = "id" ) %>%   st_set_crs(value = crs_india) # Convert CRS to India
+str(df_sf_multipoint)
+df_sf_linestring <- sf_linestring(df, linestring_id = "id" ) %>%   st_set_crs(value = crs_india) # Convert CRS to India
+str(df_sf_linestring)
+
+df_sf_polygon <- sf_polygon( df , polygon_id = "id") %>% st_set_crs(value = crs_india) # Convert CRS to India
+str(df_sf_polygon)
+
+```
+
+```{r}
+#| label: fig-quick-plots
+#| fig-cap: "Handcrafted Data Plots"
+#| fig-subcap: 
+#|   - Multipoint
+#|   - MultiLine
+#|   - Polygon
+#| layout-ncol: 3
+## Quick Plot!!
+gf_sf(data = india, linewidth = 0.5, 
+      caption = "Territorial Boundaries of India are incorrect") %>% 
+  gf_sf(data = df_sf_multipoint, geometry = ~ geometry, 
+        title = "MULTIPOINT",
+        colour = "red", size = 2)
+
+gf_sf(data = india, linewidth = 0.5, 
+      caption = "Territorial Boundaries of India are incorrect") %>% 
+  gf_sf(data = df_sf_linestring, 
+        geometry = ~ geometry, 
+        title = "LINESTRING",
+        colour = ~ id, size = 2)
+
+gf_sf(data = india, linewidth = 0.5, 
+      caption = "Territorial Boundaries of India are incorrect") %>% 
+  gf_sf(data = df_sf_polygon, 
+        geometry = ~ geometry, 
+        title = "POLYGON", fill = ~ id,
+        colour = ~ id, size = 2)
+
+```
+::: .callout-warning
+#### `{sfheaders}` makes no data checks
+It is a very lght package, compared to `{sf}` (which is heavy) and it makes no data checks. Some of the shapes generated may not be SIMPLE!! Be careful with your data!
+
+:::
+
+MULTIPOLYGON: Can someone try? 
+
 
 ### Using data from {rnaturalearth}
 
-The `rnaturalearth` package allows us to download shapes of countries.
-We can use it to get borders and also internal state/district
+The `{rnaturalearth}` package allows us to download shapes of countries. We can use it to get borders and also internal state/district
 boundaries.
 
 ```{r}
@@ -929,11 +1040,9 @@ globejs(
 
 ## Scope and Packages for Exploration!!
 
-### sfnetworks / tmap networks
-
-### mapsf
-
-### ggspatial
+- sfnetworks / tmap networks
+- mapsf
+- ggspatial
 
 ## Resources
 
@@ -941,22 +1050,27 @@ globejs(
 1. Martijn Tennekes and Jakub Nowosad (2025). *Elegant and informative maps with tmap*. <https://tmap.geocompx.org>
 1.  Emine Fidan, [Guide to Creating Interactive Maps in
     R](https://bookdown.org/eneminef/DRR_Bookdown/)
-2.  Nikita Voevodin,[R, Not the Best
+1.  Nikita Voevodin,[R, Not the Best
     Practices](https://bookdown.org/voevodin_nv/R_Not_the_Best_Practices/maps.html)
-
-3. [RapidEditor.Org](https://rapideditor.org/). Web-based editor for community-data addition to OSM Maps. Can be used to really add value to local mappers and for your own projects. 
+1. [RapidEditor.Org](https://rapideditor.org/). Web-based editor for community-data addition to OSM Maps. Can be used to really add value to local mappers and for your own projects. 
 
 ## Assignments
 
 1.  Draw a map of **your home-town** with your favourite restaurants
     shown. Pop-ups for each restaurant will win bonus points.
-
 2.  Download bird migration data from `movebank.org`. Import these into
     R and plot a migration map using `tmap`. Include the graticule,
     compass, legend, and credits.
-
+    -   Head off to
+    [movebank.org](https://www.movebank.org/cms/movebank-main). Look at
+    a few species of interest and choose one.
+    -   Download the data ( **ESRI Shapefile**). Note: You will get a .zip file with a good many files in it. Save **all** of them, but read
+    only the `.shp` file into R.
+    -   Import that into R using `sf_read()`
+    -   See how you can plot locations, tracks and colour by
+    species....based on the data you download.
+    -   For tutorial info: <https://movebankworkshopraleighnc.netlify.app/>
 3. Make a Map of Middle Earth. <https://www.andrewheiss.com/blog/2023/04/26/middle-earth-mapping-sf-r-gis/>
-
 4. Make a map of our campus, showing eateries, labs, trees, and specifically places for PDA. 
 
 ### Inspiration
@@ -964,7 +1078,25 @@ globejs(
 1.  Burkhart, Christian. n.d. "Streetmaps."
     [StreetMaps](https://ggplot2tutor.com/tutorials/streetmaps)
 
-![](../../../materials/images/Streetmaps.jpeg)
+![](../../../../../../../materials/images/Streetmaps.jpeg)
 
 2.  *Making Vector Maps*, Computing for the Social Sciences, [Univ. of
     Chicago](https://cfss.uchicago.edu/notes/vector-maps/)
+    
+::: {#refs style="font-size: 60%;"}
+###### {{< iconify lucide package-check >}} R Package Citations
+
+```{r}
+#| echo: false
+#scan_packages()
+cite_packages(
+  output = "table",
+  out.dir = ".",
+  out.format = "html",
+  pkgs = c("tmap", "sf", "sfheaders")) %>%
+  knitr::kable(format = "simple")
+
+```
+:::
+
+
