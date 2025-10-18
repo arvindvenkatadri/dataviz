@@ -24,6 +24,25 @@ citation: true
 #     wrap: 72
 webr:
    packages: ['readr', 'tidyr', 'dplyr','mosaic', 'skimr', 'ggformula','ggridges', 'palmerpenguins','janitor']
+format: 
+  html: default
+  revealjs: 
+    theme: default
+    output-file: distributions-reveal.html
+    smaller: true
+    center: false
+    scroll-view: true
+    scrollable: true
+    slide-level: 3
+    slide-number: true
+    chalkboard: true
+    df-print: paged
+    highlight-style: tango
+    menu: true
+    overview: true
+    preload-iframes: true
+    preview-links: true
+    touch: true
 
 ---
 
@@ -114,10 +133,18 @@ theme_custom <- function(){
 
     theme_bw(base_size = 10) + 
     
+    # theme(panel.widths = unit(11, "cm"), 
+    #       panel.heights = unit(6.79, "cm")) + # Golden Ratio
+    
+    theme(plot.margin = margin_auto(t = 1, r = 2, b = 1, l = 1, unit = "cm"),
+          plot.background = element_rect(fill = "bisque",
+                                         colour = "black",
+                                         linewidth = 1)) + 
+            
     theme_sub_axis(title = element_text(family = "Roboto Condensed", 
-                                       size = 8),
+                                       size = 10),
                    text = element_text(family = "Roboto Condensed", 
-                                       size = 6)) + 
+                                       size = 8)) + 
     
     theme_sub_legend(text = element_text(family = "Roboto Condensed", 
                                          size = 6),
@@ -131,7 +158,7 @@ theme_custom <- function(){
                                            size = 10),
                    caption = element_text(family = "Alegreya", 
                                           size = 6),
-                   caption.position = "plot")
+                   caption.position = "plot") 
     
 }
 
@@ -203,7 +230,10 @@ flextable::set_flextable_defaults(font.family = "Roboto Condensed")
 #| warning: false
 read_csv("../../../../../materials/Data/pronouns.csv") %>% 
   filter(No == "1") %>% 
-  tt(theme = "striped")
+  tt(theme = "striped") %>%  
+  style_tt(color = "black",fontsize = 0.75, line = "tblr",
+    line_width = 0.4,
+    line_color = "white")
   
 ```
 
@@ -521,9 +551,9 @@ penguins_clean %>%
 #| eval: false
 ggplot2::theme_set(new = theme_custom())
 
-penguins_clean <- penguins %>% drop_na()
+penguins_clean <- penguins_clean %>% drop_na()
 
-ggplot(data = penguins) + 
+ggplot(data = penguins_clean) + 
   geom_density(aes(x = body_mass_g)) + 
   labs(title = "Plot A: Penguin Masses",caption = "ggplot")
 

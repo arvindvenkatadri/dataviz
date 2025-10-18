@@ -778,10 +778,10 @@ window.Quarto = {
   <li><a href="#wait-but-why" id="toc-wait-but-why" class="nav-link" data-scroll-target="#wait-but-why"><span class="header-section-number">10</span> <iconify-icon inline="" icon="mingcute:thought-line" aria-label="Icon thought-line from mingcute Iconify.design set." title="Icon thought-line from mingcute Iconify.design set."></iconify-icon> Wait, But Why?</a></li>
   <li><a href="#your-turn" id="toc-your-turn" class="nav-link" data-scroll-target="#your-turn"><span class="header-section-number">11</span> <iconify-icon inline="" icon="bi:person-up" aria-label="Icon person-up from bi Iconify.design set." title="Icon person-up from bi Iconify.design set."></iconify-icon> Your Turn</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">12</span> <iconify-icon inline="" icon="ooui:references-rtl" aria-label="Icon references-rtl from ooui Iconify.design set." title="Icon references-rtl from ooui Iconify.design set."></iconify-icon> References</a></li>
-  </ul></nav>
+  </ul><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="counts-reveal.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content column-body" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/listing.html">Data Viz and Stats</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/20-Inference/listing.html">Inference</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/20-Inference/Modules/190-TwoProp/index.html">Inference Test for Two Proportions</a></li></ol></nav><div class="quarto-title">
+<main class="content page-columns page-full column-body" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/listing.html">Data Viz and Stats</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/20-Inference/listing.html">Inference</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/20-Inference/Modules/190-TwoProp/index.html">Inference Test for Two Proportions</a></li></ol></nav><div class="quarto-title">
 <h1 class="title">Inference Test for Two Proportions</h1>
   <div class="quarto-categories">
     <div class="quarto-category">Permutation</div>
@@ -813,7 +813,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">October 1, 2025</p>
+      <p class="date-modified">October 18, 2025</p>
     </div>
   </div>
     
@@ -842,8 +842,6 @@ window.Quarto = {
 <div class="cell" data-messages="false">
 <details class="code-fold"><summary>Show the Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-lib/systemfonts">systemfonts</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/yixuan/showtext">showtext</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggrepel.slowkow.com/">ggrepel</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://marquee.r-lib.org">marquee</a></span><span class="op">)</span></span>
 <span><span class="co">## Clean the slate</span></span>
 <span><span class="fu">systemfonts</span><span class="fu">::</span><span class="fu"><a href="https://systemfonts.r-lib.org/reference/add_fonts.html">clear_local_fonts</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">systemfonts</span><span class="fu">::</span><span class="fu"><a href="https://systemfonts.r-lib.org/reference/register_font.html">clear_registry</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -869,14 +867,26 @@ window.Quarto = {
 <span><span class="va">theme_custom</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">+</span></span>
 <span></span>
+<span>    <span class="co"># theme(panel.widths = unit(11, "cm"),</span></span>
+<span>    <span class="co">#       panel.heights = unit(6.79, "cm")) + # Golden Ratio</span></span>
+<span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span></span>
+<span>      plot.margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin_auto</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">1</span>, r <span class="op">=</span> <span class="fl">2</span>, b <span class="op">=</span> <span class="fl">1</span>, l <span class="op">=</span> <span class="fl">1</span>, unit <span class="op">=</span> <span class="st">"cm"</span><span class="op">)</span>,</span>
+<span>      plot.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span><span class="op">(</span></span>
+<span>        fill <span class="op">=</span> <span class="st">"bisque"</span>,</span>
+<span>        colour <span class="op">=</span> <span class="st">"black"</span>,</span>
+<span>        linewidth <span class="op">=</span> <span class="fl">1</span></span>
+<span>      <span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op">+</span></span>
+<span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/subtheme.html">theme_sub_axis</a></span><span class="op">(</span></span>
 <span>      title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span></span>
 <span>        family <span class="op">=</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span>        size <span class="op">=</span> <span class="fl">8</span></span>
+<span>        size <span class="op">=</span> <span class="fl">10</span></span>
 <span>      <span class="op">)</span>,</span>
 <span>      text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span></span>
 <span>        family <span class="op">=</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span>        size <span class="op">=</span> <span class="fl">6</span></span>
+<span>        size <span class="op">=</span> <span class="fl">8</span></span>
 <span>      <span class="op">)</span></span>
 <span>    <span class="op">)</span> <span class="op">+</span></span>
 <span></span>
@@ -1305,16 +1315,16 @@ Table&nbsp;2: visStatistics Tables output for Chi-Square Test
 <p>What would our Hypotheses be relating to the <em>proportions</em> of votes for or against the <code>DeathPenalty</code>?</p>
 <p><span class="math inline">\(H_0: \text{Education does not affect votes for Death Penalty}\\\)</span></p>
 <p><span class="math inline">\(H_a: \text{Education affects votes for Death Penalty}\\\)</span></p>
-</section><section id="inference-for-two-proportions" class="level2" data-number="6"><h2 data-number="6" class="anchored" data-anchor-id="inference-for-two-proportions">
+</section><section id="inference-for-two-proportions" class="level2 page-columns page-full" data-number="6"><h2 data-number="6" class="anchored" data-anchor-id="inference-for-two-proportions">
 <span class="header-section-number">6</span> Inference for Two Proportions</h2>
 <p>We are now ready to perform our statistical inference. We will use the standard <code>Pearson chi-square test</code>, and develop and intuition for it. We will then do a permutation test to have an alternative method to complete the same task.</p>
-<div class="tabset-margin-container"></div><div class="panel-tabset nav-pills" style="background: whitesmoke;">
+<div class="tabset-margin-container"></div><div class="panel-tabset nav-pills page-columns page-full" style="background: whitesmoke;">
 <ul class="nav nav-tabs" role="tablist">
 <li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Code</a></li>
 <li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Visual Explanation</a></li>
 <li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Numeric Explanation</a></li>
 </ul>
-<div class="tab-content nav-pills" style="background: whitesmoke;">
+<div class="tab-content nav-pills page-columns page-full" style="background: whitesmoke;">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <p>Let us now perform the base <code>chisq test</code>: We need a <code>contingency table</code> and then the <code>xchisq</code> test: We will calculate the <code>observed-chi-squared</code> value, and compare it with the <code>critical value</code>. ( The <code>xchisq</code> function is from the <code>mosaic</code> package, and is a wrapper around the base <code>chisq.test</code> function. It provides more verbose output, which is easier to work with. )</p>
 <div class="cell">
@@ -1421,8 +1431,8 @@ key:
 <span>    arrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/arrow.html">arrow</a></span><span class="op">(</span>length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="st">"cm"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">gf_refine</span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/expansion.html">expansion</a></span><span class="op">(</span>add <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.01</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/expansion.html">expansion</a></span><span class="op">(</span>add <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div id="fig-chi-square-critical-value" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -1437,7 +1447,7 @@ Figure&nbsp;3: Results of Chi-Square Test
 </div>
 <p>Let us now dig into that cryptic-looking table above!</p>
 </div>
-<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div id="tabset-2-2" class="tab-pane page-columns page-full" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <p>Let us once again look at the output of the <code><a href="https://www.mosaic-web.org/mosaic/reference/xchisq.test.html">xchisq.test()</a></code> function:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://www.mosaic-web.org/mosaic/reference/xchisq.test.html">xchisq.test</a></span><span class="op">(</span><span class="va">contingency_table</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1467,13 +1477,56 @@ key:
 </div>
 <p>As per the <code>key</code> below, this is <span style="background-color:yellow;"><strong>actually four 2-row tables interleaved together into one</strong></span>. The first row is the <code>Observed</code> counts, the second row is the <code>Expected</code> counts, if the two variables were independent. The third row is the <code>Pearson Residuals</code>, which we will explain shortly. The last row is the <code>Contribution</code> of each cell to the overall Chi-Square statistic.</p>
 <p>Let us plot these tables and develop first a visual intuition, and then a mathematical one. If we pull apart the four tables, here are the mosaic plots for the <em>actual</em> and <em>expected</em> Contingency Tables, along with the <em>association</em> plot showing the differences, as we did when plotting <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/40-CatData/index.html#coloured-tiles-actual-and-expected-contingency-tables">Proportions</a>:</p>
-<div id="fig-mosaic-actual-expected-differences" class="quarto-layout-panel">
-<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-mosaic-actual-expected-differences-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="quarto-layout-row">
+<div class="page-columns page-full">
+<details class="code-fold"><summary>Show the Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31" data-code-line-numbers=""><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">counts_table</span> <span class="op">&lt;-</span> <span class="fu">vcd</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/vcd/man/structable.html">structable</a></span><span class="op">(</span><span class="va">Education</span> <span class="op">~</span> <span class="va">DeathPenalty</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">GSS2002_modified</span></span>
+<span><span class="op">)</span> <span class="co"># No margins added</span></span>
+<span><span class="fu">vcd</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/vcd/man/mosaic.html">mosaic</a></span><span class="op">(</span><span class="va">counts_table</span>,</span>
+<span>  gp <span class="op">=</span> <span class="va">shading_max</span>, legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  labeling <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/vcd/man/labeling_border.html">labeling_border</a></span><span class="op">(</span></span>
+<span>    varnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"F"</span>, <span class="st">"F"</span><span class="op">)</span>, <span class="co"># Remove variable name labels</span></span>
+<span>    rot_labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">90</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="co"># t,r,b,l?</span></span>
+<span>    just_labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span></span>
+<span>      <span class="st">"left"</span>, <span class="co"># Top Side. How?</span></span>
+<span>      <span class="st">"left"</span>, <span class="co"># Right side</span></span>
+<span>      <span class="st">"left"</span>, <span class="co"># Bottom side</span></span>
+<span>      <span class="st">"right"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span> <span class="co"># Left side. How?</span></span>
+<span><span class="fu">vcd</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/vcd/man/mosaic.html">mosaic</a></span><span class="op">(</span><span class="va">counts_table</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"expected"</span>, gp <span class="op">=</span> <span class="va">shading_max</span>, legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  labeling <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/vcd/man/labeling_border.html">labeling_border</a></span><span class="op">(</span></span>
+<span>    varnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"F"</span>, <span class="st">"F"</span><span class="op">)</span>, <span class="co"># Remove variable name labels</span></span>
+<span>    rot_labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">90</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="co"># t,r,b,l?</span></span>
+<span>    just_labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span></span>
+<span>      <span class="st">"left"</span>, <span class="co"># Top Side. How?</span></span>
+<span>      <span class="st">"left"</span>, <span class="co"># Right side</span></span>
+<span>      <span class="st">"left"</span>, <span class="co"># Bottom side</span></span>
+<span>      <span class="st">"right"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span> <span class="co"># Left side. How?)</span></span>
+<span><span class="fu">vcd</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/vcd/man/assoc.html">assoc</a></span><span class="op">(</span><span class="va">counts_table</span>,</span>
+<span>  gp <span class="op">=</span> <span class="va">shading_max</span>, legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  labeling <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/vcd/man/labeling_border.html">labeling_border</a></span><span class="op">(</span></span>
+<span>    varnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"F"</span>, <span class="st">"F"</span><span class="op">)</span>, <span class="co"># Remove variable name labels</span></span>
+<span>    rot_labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">90</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="co"># t,r,b,l?</span></span>
+<span>    just_labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span></span>
+<span>      <span class="st">"left"</span>, <span class="co"># Top Side. How?</span></span>
+<span>      <span class="st">"left"</span>, <span class="co"># Right side</span></span>
+<span>      <span class="st">"left"</span>, <span class="co"># Bottom side</span></span>
+<span>      <span class="st">"right"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span> <span class="co"># Left side. How?)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div id="fig-mosaic-actual-expected-differences" class="quarto-layout-panel page-columns page-full">
+<figure class="quarto-float quarto-float-fig figure page-columns page-full"><div aria-describedby="fig-mosaic-actual-expected-differences-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca" class="page-columns page-full">
+<div class="quarto-layout-row column-page-inset-right">
 <div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-mosaic-actual-expected-differences" style="flex-basis: 33.3%;justify-content: flex-start;">
 <div id="fig-mosaic-actual-expected-differences-1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-mosaic-actual-expected-differences-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="index_files/figure-html/fig-mosaic-actual-expected-differences-1.png" class="lightbox" data-gallery="fig-mosaic-actual-expected-differences" title="Figure&nbsp;4&nbsp;(a): Actual"><img src="index_files/figure-html/fig-mosaic-actual-expected-differences-1.png" class="img-fluid figure-img" data-ref-parent="fig-mosaic-actual-expected-differences" width="2100"></a>
+<a href="index_files/figure-html/fig-mosaic-actual-expected-differences-1.png" class="lightbox" data-gallery="fig-mosaic-actual-expected-differences" title="Figure&nbsp;4&nbsp;(a): Actual"><img src="index_files/figure-html/fig-mosaic-actual-expected-differences-1.png" style="height:150.0%" data-ref-parent="fig-mosaic-actual-expected-differences" width="2100" class="figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-mosaic-actual-expected-differences-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a) Actual
@@ -1483,7 +1536,7 @@ key:
 <div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-mosaic-actual-expected-differences" style="flex-basis: 33.3%;justify-content: flex-start;">
 <div id="fig-mosaic-actual-expected-differences-2" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-mosaic-actual-expected-differences-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="index_files/figure-html/fig-mosaic-actual-expected-differences-2.png" class="lightbox" data-gallery="fig-mosaic-actual-expected-differences" title="Figure&nbsp;4&nbsp;(b): Expected"><img src="index_files/figure-html/fig-mosaic-actual-expected-differences-2.png" class="img-fluid figure-img" data-ref-parent="fig-mosaic-actual-expected-differences" width="2100"></a>
+<a href="index_files/figure-html/fig-mosaic-actual-expected-differences-2.png" class="lightbox" data-gallery="fig-mosaic-actual-expected-differences" title="Figure&nbsp;4&nbsp;(b): Expected"><img src="index_files/figure-html/fig-mosaic-actual-expected-differences-2.png" style="height:150.0%" data-ref-parent="fig-mosaic-actual-expected-differences" width="2100" class="figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-mosaic-actual-expected-differences-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (b) Expected
@@ -1493,7 +1546,7 @@ key:
 <div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-mosaic-actual-expected-differences" style="flex-basis: 33.3%;justify-content: flex-start;">
 <div id="fig-mosaic-actual-expected-differences-3" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-mosaic-actual-expected-differences-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="index_files/figure-html/fig-mosaic-actual-expected-differences-3.png" class="lightbox" data-gallery="fig-mosaic-actual-expected-differences" title="Figure&nbsp;4&nbsp;(c): Tile-Wise Differences Contribute to Chi-Square Statistic"><img src="index_files/figure-html/fig-mosaic-actual-expected-differences-3.png" class="img-fluid figure-img" data-ref-parent="fig-mosaic-actual-expected-differences" width="2100"></a>
+<a href="index_files/figure-html/fig-mosaic-actual-expected-differences-3.png" class="lightbox" data-gallery="fig-mosaic-actual-expected-differences" title="Figure&nbsp;4&nbsp;(c): Tile-Wise Differences Contribute to Chi-Square Statistic"><img src="index_files/figure-html/fig-mosaic-actual-expected-differences-3.png" style="height:150.0%" data-ref-parent="fig-mosaic-actual-expected-differences" width="2100" class="figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-mosaic-actual-expected-differences-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (c) Tile-Wise Differences Contribute to Chi-Square Statistic
@@ -1506,6 +1559,7 @@ key:
 Figure&nbsp;4: Mosaic Plots of Actual, Expected and Differences in Contingency Tables
 </figcaption></figure>
 </div>
+</div>
 <p>In <a href="#fig-mosaic-actual-expected-differences-1" class="quarto-xref">Figure&nbsp;4 (a)</a>, we have the <em>Observed Contingency Table</em> as a mosaic, with its imbalances. The horizontal slice-line provides the overall proportion <code>Favour::Oppose</code>. The vertical slice-lines tell us that this proportion is <em>not the same</em> across levels of <code>Education</code>.</p>
 <p>What if we straighten out the vertical slice-lines?</p>
 <p><a href="#fig-mosaic-actual-expected-differences-2" class="quarto-xref">Figure&nbsp;4 (b)</a> does exactly this: we have a <strong>fictitious</strong> mosaic plot of an <strong>Expected Contingency Table</strong>, with <strong><em>straight vertical divisions</em></strong>, as if <strong><em>Education had no effect on the Favour::Oppose proportion</em></strong>. (NULL hypothesis!!)</p>
@@ -1515,7 +1569,7 @@ Figure&nbsp;4: Mosaic Plots of Actual, Expected and Differences in Contingency T
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
 <p>Let us perform these computations manually, to see how this works. Here are all the four tables, side by side: (Are you tired of these yet?)</p>
 <div class="cell" data-tbl-subcap="[&quot;Observed&quot;,&quot;Expected&quot;,&quot;Pearson Residuals&quot;,&quot;Contribution to Chi-Square Statistic&quot;]">
-<details class="code-fold"><summary>Show the Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># xq_test_object &lt;- xchisq.test(contingency_table)</span></span>
+<details class="code-fold"><summary>Show the Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># xq_test_object &lt;- xchisq.test(contingency_table)</span></span>
 <span><span class="co"># Already computed</span></span>
 <span></span>
 <span><span class="va">xq_test_object</span><span class="op">$</span><span class="va">observed</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -1569,8 +1623,8 @@ Figure&nbsp;4: Mosaic Plots of Actual, Expected and Differences in Contingency T
     };
     </script><!-- tinytable mathjax end --><script>
 
-      function styleCell_6gpi0q0hyeedw4njfw77(i, j, css_id) {
-          var table = document.getElementById("tinytable_6gpi0q0hyeedw4njfw77");
+      function styleCell_6okva7mza6scx7bult4z(i, j, css_id) {
+          var table = document.getElementById("tinytable_6okva7mza6scx7bult4z");
           var cell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -1579,8 +1633,8 @@ Figure&nbsp;4: Mosaic Plots of Actual, Expected and Differences in Contingency T
               console.warn(`Cell at (${i}, ${j}) not found.`);
           }
       }
-      function spanCell_6gpi0q0hyeedw4njfw77(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_6gpi0q0hyeedw4njfw77");
+      function spanCell_6okva7mza6scx7bult4z(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_6okva7mza6scx7bult4z");
         const targetCell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
         if (!targetCell) {
           console.warn(`Cell at (${i}, ${j}) not found.`);
@@ -1611,32 +1665,32 @@ Figure&nbsp;4: Mosaic Plots of Actual, Expected and Differences in Contingency T
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '3', j: 6 },  ], css_id: 'tinytable_css_bt6syqys4fbw7nur9lan',}, 
-          { positions: [ { i: '1', j: 6 }, { i: '2', j: 6 },  ], css_id: 'tinytable_css_nkeitpw45ossny3nodi3',}, 
-          { positions: [ { i: '1', j: 1 }, { i: '2', j: 4 },  ], css_id: 'tinytable_css_qx3xi5l7338bmfmzgto7',}, 
-          { positions: [ { i: '3', j: 0 }, { i: '3', j: 1 }, { i: '3', j: 2 }, { i: '3', j: 3 }, { i: '3', j: 4 }, { i: '3', j: 5 },  ], css_id: 'tinytable_css_6128rpgfy11tvljphwl8',}, 
-          { positions: [ { i: '1', j: 0 }, { i: '2', j: 0 }, { i: '1', j: 2 }, { i: '2', j: 1 }, { i: '1', j: 3 }, { i: '2', j: 2 }, { i: '1', j: 4 }, { i: '2', j: 3 }, { i: '1', j: 5 }, { i: '2', j: 5 },  ], css_id: 'tinytable_css_i4ag8n87wjnfonx3rkes',}, 
-          { positions: [ { i: '0', j: 0 }, { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 },  ], css_id: 'tinytable_css_c68egr8gxs85sa4czjy4',}, 
+          { positions: [ { i: '3', j: 6 },  ], css_id: 'tinytable_css_1q2mkusyt9el0lywi0h1',}, 
+          { positions: [ { i: '1', j: 6 }, { i: '2', j: 6 },  ], css_id: 'tinytable_css_yy44oof37nicoocqpv7r',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '2', j: 4 },  ], css_id: 'tinytable_css_7e8wowgsn99voq6fywt4',}, 
+          { positions: [ { i: '3', j: 0 }, { i: '3', j: 1 }, { i: '3', j: 2 }, { i: '3', j: 3 }, { i: '3', j: 4 }, { i: '3', j: 5 },  ], css_id: 'tinytable_css_m37dwi5disyf8e7huwlr',}, 
+          { positions: [ { i: '1', j: 0 }, { i: '2', j: 0 }, { i: '1', j: 2 }, { i: '2', j: 1 }, { i: '1', j: 3 }, { i: '2', j: 2 }, { i: '1', j: 4 }, { i: '2', j: 3 }, { i: '1', j: 5 }, { i: '2', j: 5 },  ], css_id: 'tinytable_css_7l7n4ivi3fne26svxm6k',}, 
+          { positions: [ { i: '0', j: 0 }, { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 },  ], css_id: 'tinytable_css_g7yinuemjuilc8vjjj7r',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_6gpi0q0hyeedw4njfw77(cell.i, cell.j, group.css_id);
+                  styleCell_6okva7mza6scx7bult4z(cell.i, cell.j, group.css_id);
               });
           });
       });
     </script><style>
       /* tinytable css entries after */
-      .table td.tinytable_css_bt6syqys4fbw7nur9lan, .table th.tinytable_css_bt6syqys4fbw7nur9lan { color: #333333; font-weight: bold; color: black; background-color: #98FB98; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_nkeitpw45ossny3nodi3, .table th.tinytable_css_nkeitpw45ossny3nodi3 { color: #333333; font-weight: bold; color: black; background-color: #98FB98; }
-      .table td.tinytable_css_qx3xi5l7338bmfmzgto7, .table th.tinytable_css_qx3xi5l7338bmfmzgto7 { color: #333333; font-weight: bold; color: black; background-color: #FFFF00; }
-      .table td.tinytable_css_6128rpgfy11tvljphwl8, .table th.tinytable_css_6128rpgfy11tvljphwl8 { color: #333333; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_i4ag8n87wjnfonx3rkes, .table th.tinytable_css_i4ag8n87wjnfonx3rkes { color: #333333; }
-      .table td.tinytable_css_c68egr8gxs85sa4czjy4, .table th.tinytable_css_c68egr8gxs85sa4czjy4 { color: #333333; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_1q2mkusyt9el0lywi0h1, .table th.tinytable_css_1q2mkusyt9el0lywi0h1 { color: #333333; font-weight: bold; color: black; background-color: #98FB98; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_yy44oof37nicoocqpv7r, .table th.tinytable_css_yy44oof37nicoocqpv7r { color: #333333; font-weight: bold; color: black; background-color: #98FB98; }
+      .table td.tinytable_css_7e8wowgsn99voq6fywt4, .table th.tinytable_css_7e8wowgsn99voq6fywt4 { color: #333333; font-weight: bold; color: black; background-color: #FFFF00; }
+      .table td.tinytable_css_m37dwi5disyf8e7huwlr, .table th.tinytable_css_m37dwi5disyf8e7huwlr { color: #333333; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_7l7n4ivi3fne26svxm6k, .table th.tinytable_css_7l7n4ivi3fne26svxm6k { color: #333333; }
+      .table td.tinytable_css_g7yinuemjuilc8vjjj7r, .table th.tinytable_css_g7yinuemjuilc8vjjj7r { color: #333333; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
     </style>
 <div class="container">
-      <table class="table table-borderless" id="tinytable_6gpi0q0hyeedw4njfw77" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_6okva7mza6scx7bult4z" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
 <thead>
 </thead><caption>Observed</caption>
               <tbody><tr>
@@ -1697,8 +1751,8 @@ Figure&nbsp;4: Mosaic Plots of Actual, Expected and Differences in Contingency T
     };
     </script><!-- tinytable mathjax end --><script>
 
-      function styleCell_ngdji4a0tee29liqd2cb(i, j, css_id) {
-          var table = document.getElementById("tinytable_ngdji4a0tee29liqd2cb");
+      function styleCell_1woq8hivyohvc8wivrr6(i, j, css_id) {
+          var table = document.getElementById("tinytable_1woq8hivyohvc8wivrr6");
           var cell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -1707,8 +1761,8 @@ Figure&nbsp;4: Mosaic Plots of Actual, Expected and Differences in Contingency T
               console.warn(`Cell at (${i}, ${j}) not found.`);
           }
       }
-      function spanCell_ngdji4a0tee29liqd2cb(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_ngdji4a0tee29liqd2cb");
+      function spanCell_1woq8hivyohvc8wivrr6(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_1woq8hivyohvc8wivrr6");
         const targetCell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
         if (!targetCell) {
           console.warn(`Cell at (${i}, ${j}) not found.`);
@@ -1739,32 +1793,32 @@ Figure&nbsp;4: Mosaic Plots of Actual, Expected and Differences in Contingency T
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '3', j: 6 },  ], css_id: 'tinytable_css_ztknwipjo4a751avmiq1',}, 
-          { positions: [ { i: '1', j: 6 }, { i: '2', j: 6 },  ], css_id: 'tinytable_css_771q4s71g9juei93fein',}, 
-          { positions: [ { i: '1', j: 1 }, { i: '2', j: 4 },  ], css_id: 'tinytable_css_5em2ohqhopi9r0n441um',}, 
-          { positions: [ { i: '3', j: 0 }, { i: '3', j: 1 }, { i: '3', j: 2 }, { i: '3', j: 3 }, { i: '3', j: 4 }, { i: '3', j: 5 },  ], css_id: 'tinytable_css_sn9zbl74zx4u3gdq41tk',}, 
-          { positions: [ { i: '1', j: 0 }, { i: '2', j: 0 }, { i: '1', j: 2 }, { i: '2', j: 1 }, { i: '1', j: 3 }, { i: '2', j: 2 }, { i: '1', j: 4 }, { i: '2', j: 3 }, { i: '1', j: 5 }, { i: '2', j: 5 },  ], css_id: 'tinytable_css_z6momwwl0zzxivl4fc67',}, 
-          { positions: [ { i: '0', j: 0 }, { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 },  ], css_id: 'tinytable_css_nz9mgklpb2rx1hp9z5st',}, 
+          { positions: [ { i: '3', j: 6 },  ], css_id: 'tinytable_css_8n48ohi239gscn1b71bs',}, 
+          { positions: [ { i: '1', j: 6 }, { i: '2', j: 6 },  ], css_id: 'tinytable_css_xc55bkfn1vlj7c86z0fu',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '2', j: 4 },  ], css_id: 'tinytable_css_l46fxuwzbsr0e2hzul92',}, 
+          { positions: [ { i: '3', j: 0 }, { i: '3', j: 1 }, { i: '3', j: 2 }, { i: '3', j: 3 }, { i: '3', j: 4 }, { i: '3', j: 5 },  ], css_id: 'tinytable_css_6tl9bubu5t09of68p06t',}, 
+          { positions: [ { i: '1', j: 0 }, { i: '2', j: 0 }, { i: '1', j: 2 }, { i: '2', j: 1 }, { i: '1', j: 3 }, { i: '2', j: 2 }, { i: '1', j: 4 }, { i: '2', j: 3 }, { i: '1', j: 5 }, { i: '2', j: 5 },  ], css_id: 'tinytable_css_p9jsqx2naj6yg56xj9bk',}, 
+          { positions: [ { i: '0', j: 0 }, { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 },  ], css_id: 'tinytable_css_k2avly3bvf8h18h6podr',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_ngdji4a0tee29liqd2cb(cell.i, cell.j, group.css_id);
+                  styleCell_1woq8hivyohvc8wivrr6(cell.i, cell.j, group.css_id);
               });
           });
       });
     </script><style>
       /* tinytable css entries after */
-      .table td.tinytable_css_ztknwipjo4a751avmiq1, .table th.tinytable_css_ztknwipjo4a751avmiq1 { color: #333333; font-weight: bold; color: black; background-color: #98FB98; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_771q4s71g9juei93fein, .table th.tinytable_css_771q4s71g9juei93fein { color: #333333; font-weight: bold; color: black; background-color: #98FB98; }
-      .table td.tinytable_css_5em2ohqhopi9r0n441um, .table th.tinytable_css_5em2ohqhopi9r0n441um { color: #333333; font-weight: bold; color: black; background-color: #FFFF00; }
-      .table td.tinytable_css_sn9zbl74zx4u3gdq41tk, .table th.tinytable_css_sn9zbl74zx4u3gdq41tk { color: #333333; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_z6momwwl0zzxivl4fc67, .table th.tinytable_css_z6momwwl0zzxivl4fc67 { color: #333333; }
-      .table td.tinytable_css_nz9mgklpb2rx1hp9z5st, .table th.tinytable_css_nz9mgklpb2rx1hp9z5st { color: #333333; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_8n48ohi239gscn1b71bs, .table th.tinytable_css_8n48ohi239gscn1b71bs { color: #333333; font-weight: bold; color: black; background-color: #98FB98; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_xc55bkfn1vlj7c86z0fu, .table th.tinytable_css_xc55bkfn1vlj7c86z0fu { color: #333333; font-weight: bold; color: black; background-color: #98FB98; }
+      .table td.tinytable_css_l46fxuwzbsr0e2hzul92, .table th.tinytable_css_l46fxuwzbsr0e2hzul92 { color: #333333; font-weight: bold; color: black; background-color: #FFFF00; }
+      .table td.tinytable_css_6tl9bubu5t09of68p06t, .table th.tinytable_css_6tl9bubu5t09of68p06t { color: #333333; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_p9jsqx2naj6yg56xj9bk, .table th.tinytable_css_p9jsqx2naj6yg56xj9bk { color: #333333; }
+      .table td.tinytable_css_k2avly3bvf8h18h6podr, .table th.tinytable_css_k2avly3bvf8h18h6podr { color: #333333; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
     </style>
 <div class="container">
-      <table class="table table-borderless" id="tinytable_ngdji4a0tee29liqd2cb" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_1woq8hivyohvc8wivrr6" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
 <thead>
 </thead><caption>Expected</caption>
               <tbody><tr>
@@ -1825,8 +1879,8 @@ Figure&nbsp;4: Mosaic Plots of Actual, Expected and Differences in Contingency T
     };
     </script><!-- tinytable mathjax end --><script>
 
-      function styleCell_c79pp7acy17a8yxixm08(i, j, css_id) {
-          var table = document.getElementById("tinytable_c79pp7acy17a8yxixm08");
+      function styleCell_vqnbbnsmyc57stxk983n(i, j, css_id) {
+          var table = document.getElementById("tinytable_vqnbbnsmyc57stxk983n");
           var cell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -1835,8 +1889,8 @@ Figure&nbsp;4: Mosaic Plots of Actual, Expected and Differences in Contingency T
               console.warn(`Cell at (${i}, ${j}) not found.`);
           }
       }
-      function spanCell_c79pp7acy17a8yxixm08(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_c79pp7acy17a8yxixm08");
+      function spanCell_vqnbbnsmyc57stxk983n(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_vqnbbnsmyc57stxk983n");
         const targetCell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
         if (!targetCell) {
           console.warn(`Cell at (${i}, ${j}) not found.`);
@@ -1867,32 +1921,32 @@ Figure&nbsp;4: Mosaic Plots of Actual, Expected and Differences in Contingency T
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '3', j: 6 },  ], css_id: 'tinytable_css_wq4w4k1lbl02jdcya4pu',}, 
-          { positions: [ { i: '1', j: 6 }, { i: '2', j: 6 },  ], css_id: 'tinytable_css_oxtr6kh1gzcl8nh8gr7z',}, 
-          { positions: [ { i: '1', j: 1 }, { i: '2', j: 4 },  ], css_id: 'tinytable_css_sq00gl8tiyo7zmhdtx8l',}, 
-          { positions: [ { i: '3', j: 0 }, { i: '3', j: 1 }, { i: '3', j: 2 }, { i: '3', j: 3 }, { i: '3', j: 4 }, { i: '3', j: 5 },  ], css_id: 'tinytable_css_zetom1a9kkacibx3jqve',}, 
-          { positions: [ { i: '1', j: 0 }, { i: '2', j: 0 }, { i: '1', j: 2 }, { i: '2', j: 1 }, { i: '1', j: 3 }, { i: '2', j: 2 }, { i: '1', j: 4 }, { i: '2', j: 3 }, { i: '1', j: 5 }, { i: '2', j: 5 },  ], css_id: 'tinytable_css_syckmdrxt1ki6agtx2ud',}, 
-          { positions: [ { i: '0', j: 0 }, { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 },  ], css_id: 'tinytable_css_8mjjfdk18qkua74huqhk',}, 
+          { positions: [ { i: '3', j: 6 },  ], css_id: 'tinytable_css_9eavej30ukf1euez6b5y',}, 
+          { positions: [ { i: '1', j: 6 }, { i: '2', j: 6 },  ], css_id: 'tinytable_css_5c4uu4i1r6uwyww92d8s',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '2', j: 4 },  ], css_id: 'tinytable_css_m3bcvz2z4of7zxtgep1f',}, 
+          { positions: [ { i: '3', j: 0 }, { i: '3', j: 1 }, { i: '3', j: 2 }, { i: '3', j: 3 }, { i: '3', j: 4 }, { i: '3', j: 5 },  ], css_id: 'tinytable_css_jsthq9cy9a78s5u5zvjg',}, 
+          { positions: [ { i: '1', j: 0 }, { i: '2', j: 0 }, { i: '1', j: 2 }, { i: '2', j: 1 }, { i: '1', j: 3 }, { i: '2', j: 2 }, { i: '1', j: 4 }, { i: '2', j: 3 }, { i: '1', j: 5 }, { i: '2', j: 5 },  ], css_id: 'tinytable_css_nk0e13enn89xz3ma545y',}, 
+          { positions: [ { i: '0', j: 0 }, { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 },  ], css_id: 'tinytable_css_641bc37xnh3i4j4figsp',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_c79pp7acy17a8yxixm08(cell.i, cell.j, group.css_id);
+                  styleCell_vqnbbnsmyc57stxk983n(cell.i, cell.j, group.css_id);
               });
           });
       });
     </script><style>
       /* tinytable css entries after */
-      .table td.tinytable_css_wq4w4k1lbl02jdcya4pu, .table th.tinytable_css_wq4w4k1lbl02jdcya4pu { color: #333333; font-weight: bold; color: black; background-color: #98FB98; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_oxtr6kh1gzcl8nh8gr7z, .table th.tinytable_css_oxtr6kh1gzcl8nh8gr7z { color: #333333; font-weight: bold; color: black; background-color: #98FB98; }
-      .table td.tinytable_css_sq00gl8tiyo7zmhdtx8l, .table th.tinytable_css_sq00gl8tiyo7zmhdtx8l { color: #333333; font-weight: bold; color: black; background-color: #FFFF00; }
-      .table td.tinytable_css_zetom1a9kkacibx3jqve, .table th.tinytable_css_zetom1a9kkacibx3jqve { color: #333333; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_syckmdrxt1ki6agtx2ud, .table th.tinytable_css_syckmdrxt1ki6agtx2ud { color: #333333; }
-      .table td.tinytable_css_8mjjfdk18qkua74huqhk, .table th.tinytable_css_8mjjfdk18qkua74huqhk { color: #333333; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_9eavej30ukf1euez6b5y, .table th.tinytable_css_9eavej30ukf1euez6b5y { color: #333333; font-weight: bold; color: black; background-color: #98FB98; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_5c4uu4i1r6uwyww92d8s, .table th.tinytable_css_5c4uu4i1r6uwyww92d8s { color: #333333; font-weight: bold; color: black; background-color: #98FB98; }
+      .table td.tinytable_css_m3bcvz2z4of7zxtgep1f, .table th.tinytable_css_m3bcvz2z4of7zxtgep1f { color: #333333; font-weight: bold; color: black; background-color: #FFFF00; }
+      .table td.tinytable_css_jsthq9cy9a78s5u5zvjg, .table th.tinytable_css_jsthq9cy9a78s5u5zvjg { color: #333333; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_nk0e13enn89xz3ma545y, .table th.tinytable_css_nk0e13enn89xz3ma545y { color: #333333; }
+      .table td.tinytable_css_641bc37xnh3i4j4figsp, .table th.tinytable_css_641bc37xnh3i4j4figsp { color: #333333; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
     </style>
 <div class="container">
-      <table class="table table-borderless" id="tinytable_c79pp7acy17a8yxixm08" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_vqnbbnsmyc57stxk983n" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
 <thead>
 </thead><caption>Pearson Residuals</caption>
               <tbody><tr>
@@ -1953,8 +2007,8 @@ Figure&nbsp;4: Mosaic Plots of Actual, Expected and Differences in Contingency T
     };
     </script><!-- tinytable mathjax end --><script>
 
-      function styleCell_mh6v33ekzez3gfgj0rvy(i, j, css_id) {
-          var table = document.getElementById("tinytable_mh6v33ekzez3gfgj0rvy");
+      function styleCell_1okswl9nyuu3tjlf07yo(i, j, css_id) {
+          var table = document.getElementById("tinytable_1okswl9nyuu3tjlf07yo");
           var cell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -1963,8 +2017,8 @@ Figure&nbsp;4: Mosaic Plots of Actual, Expected and Differences in Contingency T
               console.warn(`Cell at (${i}, ${j}) not found.`);
           }
       }
-      function spanCell_mh6v33ekzez3gfgj0rvy(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_mh6v33ekzez3gfgj0rvy");
+      function spanCell_1okswl9nyuu3tjlf07yo(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_1okswl9nyuu3tjlf07yo");
         const targetCell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
         if (!targetCell) {
           console.warn(`Cell at (${i}, ${j}) not found.`);
@@ -1995,30 +2049,30 @@ Figure&nbsp;4: Mosaic Plots of Actual, Expected and Differences in Contingency T
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '2', j: 4 },  ], css_id: 'tinytable_css_w24695kip77p03enu0js',}, 
-          { positions: [ { i: '1', j: 1 },  ], css_id: 'tinytable_css_7qe81b7kgjm77f5tykex',}, 
-          { positions: [ { i: '2', j: 0 }, { i: '2', j: 2 }, { i: '2', j: 1 }, { i: '2', j: 3 }, { i: '2', j: 5 },  ], css_id: 'tinytable_css_nq5ha1l62w9cb7n85r6d',}, 
-          { positions: [ { i: '1', j: 0 }, { i: '1', j: 3 }, { i: '1', j: 5 }, { i: '1', j: 4 }, { i: '1', j: 2 },  ], css_id: 'tinytable_css_p26obmcg2qhqgvxh3nob',}, 
-          { positions: [ { i: '0', j: 0 }, { i: '0', j: 3 }, { i: '0', j: 2 }, { i: '0', j: 1 }, { i: '0', j: 4 }, { i: '0', j: 5 },  ], css_id: 'tinytable_css_4qcl7dak0zit74xt25qp',}, 
+          { positions: [ { i: '2', j: 4 },  ], css_id: 'tinytable_css_jxgfoq9duplx943djc5t',}, 
+          { positions: [ { i: '1', j: 1 },  ], css_id: 'tinytable_css_93je60qmtme8l07mt4dz',}, 
+          { positions: [ { i: '2', j: 0 }, { i: '2', j: 2 }, { i: '2', j: 1 }, { i: '2', j: 3 }, { i: '2', j: 5 },  ], css_id: 'tinytable_css_1tbzhhld44ri4egt3xjg',}, 
+          { positions: [ { i: '1', j: 0 }, { i: '1', j: 3 }, { i: '1', j: 5 }, { i: '1', j: 4 }, { i: '1', j: 2 },  ], css_id: 'tinytable_css_8962e0qqmcv9ujxu4mma',}, 
+          { positions: [ { i: '0', j: 0 }, { i: '0', j: 3 }, { i: '0', j: 2 }, { i: '0', j: 1 }, { i: '0', j: 4 }, { i: '0', j: 5 },  ], css_id: 'tinytable_css_m7mxtyewmhgf2nhztmw9',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_mh6v33ekzez3gfgj0rvy(cell.i, cell.j, group.css_id);
+                  styleCell_1okswl9nyuu3tjlf07yo(cell.i, cell.j, group.css_id);
               });
           });
       });
     </script><style>
       /* tinytable css entries after */
-      .table td.tinytable_css_w24695kip77p03enu0js, .table th.tinytable_css_w24695kip77p03enu0js { color: #333333; font-weight: bold; color: black; background-color: #FFFF00; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_7qe81b7kgjm77f5tykex, .table th.tinytable_css_7qe81b7kgjm77f5tykex { color: #333333; font-weight: bold; color: black; background-color: #FFFF00; }
-      .table td.tinytable_css_nq5ha1l62w9cb7n85r6d, .table th.tinytable_css_nq5ha1l62w9cb7n85r6d { color: #333333; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_p26obmcg2qhqgvxh3nob, .table th.tinytable_css_p26obmcg2qhqgvxh3nob { color: #333333; }
-      .table td.tinytable_css_4qcl7dak0zit74xt25qp, .table th.tinytable_css_4qcl7dak0zit74xt25qp { color: #333333; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_jxgfoq9duplx943djc5t, .table th.tinytable_css_jxgfoq9duplx943djc5t { color: #333333; font-weight: bold; color: black; background-color: #FFFF00; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_93je60qmtme8l07mt4dz, .table th.tinytable_css_93je60qmtme8l07mt4dz { color: #333333; font-weight: bold; color: black; background-color: #FFFF00; }
+      .table td.tinytable_css_1tbzhhld44ri4egt3xjg, .table th.tinytable_css_1tbzhhld44ri4egt3xjg { color: #333333; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_8962e0qqmcv9ujxu4mma, .table th.tinytable_css_8962e0qqmcv9ujxu4mma { color: #333333; }
+      .table td.tinytable_css_m7mxtyewmhgf2nhztmw9, .table th.tinytable_css_m7mxtyewmhgf2nhztmw9 { color: #333333; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
     </style>
 <div class="container">
-      <table class="table table-borderless" id="tinytable_mh6v33ekzez3gfgj0rvy" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_1okswl9nyuu3tjlf07yo" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
 <thead>
 </thead><caption>Contribution to Chi-Square Statistic</caption>
               <tbody><tr>
@@ -2194,7 +2248,7 @@ r_{i,j} = \frac{(Actual - Expected)}{\sqrt{\displaystyle Expected}}
 </div>
 <p>As can be seen, the ratio is different!</p>
 <p>We can now check out our Hypothesis that there is <em>no</em> bias. We can shuffle the data many many times, calculating the ratio each time, and plot the <em>distribution of the differences in selection ratio</em> and see how that artificially created distribution compares with the originally observed figure from Mother Nature.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33" data-code-line-numbers=""><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34" data-code-line-numbers=""><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">null_dist</span> <span class="op">&lt;-</span> <span class="fu">do</span><span class="op">(</span><span class="fl">4999</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/diff.html">diff</a></span><span class="op">(</span><span class="fu">mean</span><span class="op">(</span></span>
 <span>  <span class="va">candidate_selected</span> <span class="op">~</span> <span class="fu"><a href="https://www.mosaic-web.org/mosaic/reference/resample.html">shuffle</a></span><span class="op">(</span><span class="va">evaluator</span><span class="op">)</span>,</span>
@@ -2234,7 +2288,7 @@ r_{i,j} = \frac{(Actual - Expected)}{\sqrt{\displaystyle Expected}}
 <div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
 <p>We should now repeat the test with permutations on <code>Education</code>:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span><span class="va">null_chisq</span> <span class="op">&lt;-</span> <span class="fu">do</span><span class="op">(</span><span class="fl">4999</span><span class="op">)</span> <span class="op">*</span></span>
@@ -2250,7 +2304,7 @@ r_{i,j} = \frac{(Actual - Expected)}{\sqrt{\displaystyle Expected}}
   </script>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">gf_histogram</span><span class="op">(</span><span class="op">~</span><span class="va">X.squared</span>, data <span class="op">=</span> <span class="va">null_chisq</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">gf_histogram</span><span class="op">(</span><span class="op">~</span><span class="va">X.squared</span>, data <span class="op">=</span> <span class="va">null_chisq</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">gf_vline</span><span class="op">(</span></span>
 <span>    xintercept <span class="op">=</span> <span class="va">X_squared_observed</span>,</span>
 <span>    color <span class="op">=</span> <span class="st">"red"</span></span>
@@ -2277,7 +2331,7 @@ r_{i,j} = \frac{(Actual - Expected)}{\sqrt{\displaystyle Expected}}
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/mosaicCore/man/prop.html">prop1</a></span><span class="op">(</span><span class="op">~</span> <span class="va">X.squared</span> <span class="op">&gt;=</span> <span class="va">X_squared_observed</span>, data <span class="op">=</span> <span class="va">null_chisq</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/mosaicCore/man/prop.html">prop1</a></span><span class="op">(</span><span class="op">~</span> <span class="va">X.squared</span> <span class="op">&gt;=</span> <span class="va">X_squared_observed</span>, data <span class="op">=</span> <span class="va">null_chisq</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre data-code-line-numbers=""><code>prop_TRUE 
     2e-04 </code></pre>
@@ -2338,6 +2392,9 @@ r_{i,j} = \frac{(Actual - Expected)}{\sqrt{\displaystyle Expected}}
 <li>An Online <span class="math inline">\(\Xi^2\)</span>-test calculator. <a href="https://www.statology.org/chi-square-test-of-independence-calculator/" class="uri">https://www.statology.org/chi-square-test-of-independence-calculator/</a>
 </li>
 <li><a href="https://saylordotorg.github.io/text_introductory-statistics/s13-04-comparison-of-two-population-p.html" class="uri">https://saylordotorg.github.io/text_introductory-statistics/s13-04-comparison-of-two-population-p.html</a></li>
+<li>
+<code>vcd</code> Tutorial: <a href="http://euclid.psych.yorku.ca/datavis.ca/courses/VCD/vcd-tutorial.pdf" class="uri">http://euclid.psych.yorku.ca/datavis.ca/courses/VCD/vcd-tutorial.pdf</a>
+</li>
 </ol>
 <div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" data-entry-spacing="0" role="list">
 <section id="r-package-citations" class="level6"><h6 class="anchored" data-anchor-id="r-package-citations">

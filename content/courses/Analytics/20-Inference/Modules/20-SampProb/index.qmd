@@ -68,6 +68,8 @@ library(TeachingDemos)
 #library(smovie) # Stat Movies with code
 library(visualize) # Plot Densities, Histograms and Probabilities as areas under the curve
 #library(shinylive)
+library(ggrepel)
+library(marquee)
 
 ```
 
@@ -82,8 +84,6 @@ library(visualize) # Plot Densities, Histograms and Probabilities as areas under
 #| 
 library(systemfonts)
 library(showtext)
-library(ggrepel)
-library(marquee)
 ## Clean the slate
 systemfonts::clear_local_fonts()
 systemfonts::clear_registry()
@@ -106,10 +106,18 @@ theme_custom <- function(){
 
     theme_bw(base_size = 10) + 
     
+    theme(panel.widths = unit(11, "cm"), 
+          panel.heights = unit(6.79, "cm")) + # Golden Ratio
+    
+    theme(plot.margin = margin_auto(t = 1, r = 2, b = 1, l = 1, unit = "cm"),
+          plot.background = element_rect(fill = "bisque",
+                                         colour = "black",
+                                         linewidth = 1)) + 
+            
     theme_sub_axis(title = element_text(family = "Roboto Condensed", 
-                                       size = 8),
+                                       size = 10),
                    text = element_text(family = "Roboto Condensed", 
-                                       size = 6)) + 
+                                       size = 8)) + 
     
     theme_sub_legend(text = element_text(family = "Roboto Condensed", 
                                          size = 6),
@@ -123,7 +131,7 @@ theme_custom <- function(){
                                            size = 10),
                    caption = element_text(family = "Alegreya", 
                                           size = 6),
-                   caption.position = "plot")
+                   caption.position = "plot") 
     
 }
 
@@ -178,6 +186,7 @@ options(tinytable_html_mathjax = TRUE)
 flextable::set_flextable_defaults(font.family = "Roboto Condensed")
 
 ```
+
 
 
 ## {{< iconify clarity group-solid >}} What is a Population?
@@ -604,6 +613,7 @@ set.seed(12345)
 samples_08_1000 <- do(1000) * resample(NHANES_adult$Height, 
                                        size = 08) %>% mean()
 samples_08_1000
+
 ```
 Means of 1000 samples of size 8
 :::
@@ -681,6 +691,14 @@ cowplot::plot_grid(p1, p2, p3, p4)
 Let us plot their individual histograms to compare them:
 
 ```{r}
+#| label: fig-sampling-distributions
+#| fig-cap: Sampling Distributions
+#| fig-subcap: 
+#|   - Sample Size = 8
+#|   - Sample Size = 16
+#|   - Sample Size = 32
+#|   - Sample Size = 64
+#| fig-asp: 0.618
 #| warning: false
 #| layout-ncol: 2
 #| layout-nrow: 2
@@ -746,7 +764,10 @@ p8
 
 And if we overlay these histograms on top of one another:
 
-```{r, echo=FALSE}
+```{r}
+#| label: fig-overlaid-distributions
+#| fig-cap: All Sampling Mean Distributions Overlay
+#| code-fold: true
 #| message: false
 #| warning: false
 ggplot2::theme_set(new = theme_custom())
@@ -837,7 +858,8 @@ gf_annotate("curve",
             x = 175, y = 0.09, 
             xend = 172, yend = 0.08,
             curvature = 0, color = "dodgerblue", 
-            arrow = arrow(length = unit(0.25,"cm")))
+            arrow = arrow(length = unit(0.25,"cm"))) %>% 
+  gf_labs(title = "Overlaid Sample Mean Distributions")
 
 
 ```
@@ -1277,6 +1299,19 @@ settings, especially the *distribution in the population* to get a firm
 grasp on Sampling and the CLT.
 
 <https://gallery.shinyapps.io/CLT_mean/>
+
+
+## {{< iconify mingcute thought-line >}} Wait, But Why?
+
+- We want to take **one sample** from a population and use it to make inferences about population `parameters`
+- We compute a `statistic` from the sample, i.e. a `mean`
+- We want to be able to say how accurate it is, i.e. state its `mean` and `standard deviation`, and the `relative probability` of how probable the `statistic` could be
+- Relative probabilities, means, and standard deviations are only possible to calculate if we have ***many*** means, and therefore, ***many*** samples!!
+- So we, as [frequentist]{style="background-color:yellow;"} people, ***pretend*** we can take many samples and calculate the `mean of the means` and the `standard deviation of the means` (Now called `standard error`), and the `relative probability` of a the calculated `statistic`
+- These tell us how the `mean`s are distributed and how accurate the `mean-mean` can be
+- Since `standard error` uses the (unknown and unknowable) `population sd`, we approximate that by `sample sd`
+- So $$ \Large{\mu_{pop} \sim \mu_{sample} \pm 2.0 * \sigma_{sample}}$$
+
 
 ## {{< iconify ooui references-rtl >}} References
 

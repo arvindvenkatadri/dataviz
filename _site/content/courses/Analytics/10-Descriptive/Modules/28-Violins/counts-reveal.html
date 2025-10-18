@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<link href="../../../../../../content/materials/icon-park-twotone--concept-sharing.svg" rel="icon" type="image/svg+xml">
+<script src="../../../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../../../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../../../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-15ea27bac76f9890c21e80949f497921.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
+<script src="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.24">
+
+  <meta name="author" content="Arvind V.">
+  <meta name="dcterms.date" content="2022-11-15">
+  <title>The Mad Hatter's Guide to Data Viz and Stats in R –  Groups and Distributions</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/theme/quarto-180c62c9bcf69a0506044dd7f3253a18.css">
+  <link rel="stylesheet" href="../../../../../../css/slides/lexis.css">
+  <link rel="stylesheet" href="../../../../../../css/slides/lexis-fonts.css">
+  <link href="../../../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../../../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../../../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../../../../../../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="../../../../../../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="../../../../../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <link href="../../../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+  <script src="../../../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<meta property="og:title" content=" Groups and Distributions – The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta property="og:description" content="Quant and Qual Variable Graphs and their Siblings">
+<meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/28-Violins/preview.jpg">
+<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
+<meta property="og:image:alt" content="Image by rawpixel.com">
+<meta name="twitter:title" content=" Groups and Distributions – The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta name="twitter:description" content="Quant and Qual Variable Graphs and their Siblings">
+<meta name="twitter:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/28-Violins/preview.jpg">
+<meta name="twitter:image:alt" content="Image by rawpixel.com">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title"><iconify-icon icon="material-symbols:light-group-rounded" width="1.2em" height="1.2em"></iconify-icon> Groups and Distributions</h1>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Arvind V. 
+</div>
+</div>
+</div>
+
+  <p class="date">2022-11-15</p>
+</section>
+<section class="slide level3">
+
+<div class="pa4">
+<div class="athelas ml0 mt0 pl4 black-90 bl bw2 b--blue">
+<p><span class="f5 f4-m f3-l lh-copy measure mt0">“Keep away from people who try to belittle your ambitions. Small people always do that, but the really great make you feel that you, too, can become great.”</span></p>
+<p><span class="f6 ttu tracked fs-normal">— Mark Twain</span></p>
+</div>
+</div>
+</section>
+<section>
+<section id="setting-up-r-packages" class="title-slide slide level2 center">
+<h2><iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a></a><span class="fu">library</span>(mosaic)</span>
+<span id="cb1-3"><a></a><span class="fu">library</span>(ggformula)</span>
+<span id="cb1-4"><a></a><span class="fu">library</span>(skimr)</span>
+<span id="cb1-5"><a></a><span class="fu">library</span>(janitor) <span class="co"># Data cleaning and tidying package</span></span>
+<span id="cb1-6"><a></a><span class="fu">library</span>(visdat) <span class="co"># Visualize whole dataframes for missing data</span></span>
+<span id="cb1-7"><a></a><span class="fu">library</span>(naniar) <span class="co"># Clean missing data</span></span>
+<span id="cb1-8"><a></a><span class="fu">library</span>(DT) <span class="co"># Interactive Tables for our data</span></span>
+<span id="cb1-9"><a></a><span class="fu">library</span>(tinytable) <span class="co"># Elegant Tables for our data</span></span>
+<span id="cb1-10"><a></a><span class="fu">library</span>(ggrepel) <span class="co"># Repel overlapping text labels away from each other</span></span>
+<span id="cb1-11"><a></a><span class="fu">library</span>(marquee) <span class="co"># To create text marquees in ggplot2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<h4 id="plot-fonts-and-theme">Plot Fonts and Theme</h4>
+<div class="cell" data-messages="false">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">library</span>(systemfonts)</span>
+<span id="cb2-2"><a></a><span class="fu">library</span>(showtext)</span>
+<span id="cb2-3"><a></a><span class="do">## Clean the slate</span></span>
+<span id="cb2-4"><a></a>systemfonts<span class="sc">::</span><span class="fu">clear_local_fonts</span>()</span>
+<span id="cb2-5"><a></a>systemfonts<span class="sc">::</span><span class="fu">clear_registry</span>()</span>
+<span id="cb2-6"><a></a><span class="do">##</span></span>
+<span id="cb2-7"><a></a><span class="fu">showtext_opts</span>(<span class="at">dpi =</span> <span class="dv">96</span>) <span class="co"># set DPI for showtext</span></span>
+<span id="cb2-8"><a></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
+<span id="cb2-9"><a></a>  <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-10"><a></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/Alegreya-Regular.ttf"</span>,</span>
+<span id="cb2-11"><a></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/Alegreya-Bold.ttf"</span>,</span>
+<span id="cb2-12"><a></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/Alegreya-Italic.ttf"</span>,</span>
+<span id="cb2-13"><a></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/Alegreya-BoldItalic.ttf"</span></span>
+<span id="cb2-14"><a></a>)</span>
+<span id="cb2-15"><a></a></span>
+<span id="cb2-16"><a></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
+<span id="cb2-17"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-18"><a></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Regular.ttf"</span>,</span>
+<span id="cb2-19"><a></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Bold.ttf"</span>,</span>
+<span id="cb2-20"><a></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Italic.ttf"</span>,</span>
+<span id="cb2-21"><a></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-BoldItalic.ttf"</span></span>
+<span id="cb2-22"><a></a>)</span>
+<span id="cb2-23"><a></a><span class="fu">showtext_auto</span>(<span class="at">enable =</span> <span class="cn">TRUE</span>) <span class="co"># enable showtext</span></span>
+<span id="cb2-24"><a></a><span class="do">##</span></span>
+<span id="cb2-25"><a></a>theme_custom <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb2-26"><a></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">10</span>) <span class="sc">+</span></span>
+<span id="cb2-27"><a></a></span>
+<span id="cb2-28"><a></a>    <span class="co"># theme(panel.widths = unit(11, "cm"),</span></span>
+<span id="cb2-29"><a></a>    <span class="co">#       panel.heights = unit(6.79, "cm")) + # Golden Ratio</span></span>
+<span id="cb2-30"><a></a></span>
+<span id="cb2-31"><a></a>    <span class="fu">theme</span>(</span>
+<span id="cb2-32"><a></a>      <span class="at">plot.margin =</span> <span class="fu">margin_auto</span>(<span class="at">t =</span> <span class="dv">1</span>, <span class="at">r =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="dv">1</span>, <span class="at">l =</span> <span class="dv">1</span>, <span class="at">unit =</span> <span class="st">"cm"</span>),</span>
+<span id="cb2-33"><a></a>      <span class="at">plot.background =</span> <span class="fu">element_rect</span>(</span>
+<span id="cb2-34"><a></a>        <span class="at">fill =</span> <span class="st">"bisque"</span>,</span>
+<span id="cb2-35"><a></a>        <span class="at">colour =</span> <span class="st">"black"</span>,</span>
+<span id="cb2-36"><a></a>        <span class="at">linewidth =</span> <span class="dv">1</span></span>
+<span id="cb2-37"><a></a>      )</span>
+<span id="cb2-38"><a></a>    ) <span class="sc">+</span></span>
+<span id="cb2-39"><a></a></span>
+<span id="cb2-40"><a></a>    <span class="fu">theme_sub_axis</span>(</span>
+<span id="cb2-41"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-42"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-43"><a></a>        <span class="at">size =</span> <span class="dv">10</span></span>
+<span id="cb2-44"><a></a>      ),</span>
+<span id="cb2-45"><a></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-46"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-47"><a></a>        <span class="at">size =</span> <span class="dv">8</span></span>
+<span id="cb2-48"><a></a>      )</span>
+<span id="cb2-49"><a></a>    ) <span class="sc">+</span></span>
+<span id="cb2-50"><a></a></span>
+<span id="cb2-51"><a></a>    <span class="fu">theme_sub_legend</span>(</span>
+<span id="cb2-52"><a></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-53"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-54"><a></a>        <span class="at">size =</span> <span class="dv">6</span></span>
+<span id="cb2-55"><a></a>      ),</span>
+<span id="cb2-56"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-57"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-58"><a></a>        <span class="at">size =</span> <span class="dv">8</span></span>
+<span id="cb2-59"><a></a>      )</span>
+<span id="cb2-60"><a></a>    ) <span class="sc">+</span></span>
+<span id="cb2-61"><a></a></span>
+<span id="cb2-62"><a></a>    <span class="fu">theme_sub_plot</span>(</span>
+<span id="cb2-63"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-64"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-65"><a></a>        <span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span></span>
+<span id="cb2-66"><a></a>      ),</span>
+<span id="cb2-67"><a></a>      <span class="at">title.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb2-68"><a></a>      <span class="at">subtitle =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-69"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-70"><a></a>        <span class="at">size =</span> <span class="dv">10</span></span>
+<span id="cb2-71"><a></a>      ),</span>
+<span id="cb2-72"><a></a>      <span class="at">caption =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-73"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-74"><a></a>        <span class="at">size =</span> <span class="dv">6</span></span>
+<span id="cb2-75"><a></a>      ),</span>
+<span id="cb2-76"><a></a>      <span class="at">caption.position =</span> <span class="st">"plot"</span></span>
+<span id="cb2-77"><a></a>    )</span>
+<span id="cb2-78"><a></a>}</span>
+<span id="cb2-79"><a></a></span>
+<span id="cb2-80"><a></a><span class="do">## Use available fonts in ggplot text geoms too!</span></span>
+<span id="cb2-81"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-82"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-83"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-84"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-85"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-86"><a></a>))</span>
+<span id="cb2-87"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-88"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-89"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-90"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-91"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-92"><a></a>))</span>
+<span id="cb2-93"><a></a></span>
+<span id="cb2-94"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"marquee"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-95"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-96"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-97"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-98"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-99"><a></a>))</span>
+<span id="cb2-100"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-101"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-102"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-103"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-104"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-105"><a></a>))</span>
+<span id="cb2-106"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-107"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-108"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-109"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-110"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-111"><a></a>))</span>
+<span id="cb2-112"><a></a></span>
+<span id="cb2-113"><a></a><span class="do">## Set the theme</span></span>
+<span id="cb2-114"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb2-115"><a></a></span>
+<span id="cb2-116"><a></a><span class="do">## tinytable options</span></span>
+<span id="cb2-117"><a></a><span class="fu">options</span>(<span class="st">"tinytable_tt_digits"</span> <span class="ot">=</span> <span class="dv">2</span>)</span>
+<span id="cb2-118"><a></a><span class="fu">options</span>(<span class="st">"tinytable_format_num_fmt"</span> <span class="ot">=</span> <span class="st">"significant_cell"</span>)</span>
+<span id="cb2-119"><a></a><span class="fu">options</span>(<span class="at">tinytable_html_mathjax =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-120"><a></a></span>
+<span id="cb2-121"><a></a></span>
+<span id="cb2-122"><a></a><span class="do">## Set defaults for flextable</span></span>
+<span id="cb2-123"><a></a>flextable<span class="sc">::</span><span class="fu">set_flextable_defaults</span>(<span class="at">font.family =</span> <span class="st">"Roboto Condensed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div></section>
+<section id="what-graphs-will-we-see-today" class="title-slide slide level2 center">
+<h2><iconify-icon inline="" icon="fxemoji:japanesesymbolforbeginner" aria-label="Icon japanesesymbolforbeginner from fxemoji Iconify.design set." title="Icon japanesesymbolforbeginner from fxemoji Iconify.design set."></iconify-icon> What graphs will we see today?</h2>
+<table class="caption-top" style="width:100%;">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 19%">
+<col style="width: 24%">
+<col style="width: 27%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Variable #1</th>
+<th style="text-align: center;">Variable #2</th>
+<th style="text-align: center;">Chart Names</th>
+<th style="text-align: center;">Chart Shape</th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Quant</td>
+<td style="text-align: center;">(Qual)</td>
+<td style="text-align: center;">Violin Plot</td>
+<td style="text-align: center;"><p><iconify-icon inline="" icon="carbon:chart-violin-plot" style="font-size: 4em;" aria-label="Icon chart-violin-plot from carbon Iconify.design set." title="Icon chart-violin-plot from carbon Iconify.design set."></iconify-icon></p></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+<section id="what-kind-of-data-variables-will-we-choose" class="title-slide slide level2 center">
+<h2><iconify-icon inline="" icon="tabler:variable" aria-label="Icon variable from tabler Iconify.design set." title="Icon variable from tabler Iconify.design set."></iconify-icon> What kind of Data Variables will we choose?</h2>
+<div class="cell">
+<div class="cell-output-display">
+<!-- preamble start -->
+
+    <!-- tinytable mathjax start -->
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+    </script>
+    <!-- tinytable mathjax end -->
+
+    <script>
+
+      function styleCell_pqhzbr8rarafyw8ibfhv(i, j, css_id) {
+          var table = document.getElementById("tinytable_pqhzbr8rarafyw8ibfhv");
+          var cell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function spanCell_pqhzbr8rarafyw8ibfhv(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_pqhzbr8rarafyw8ibfhv");
+        const targetCell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+        if (!targetCell) {
+          console.warn(`Cell at (${i}, ${j}) not found.`);
+        }
+
+        // Get all cells that need to be removed
+        const cellsToRemove = [];
+        for (let r = 0; r < rowspan; r++) {
+          for (let c = 0; c < colspan; c++) {
+            if (r === 0 && c === 0) continue; // Skip the target cell
+            const cell = table.querySelector(`[data-row="${i + r}"][data-col="${j + c}"]`);
+            if (cell) {
+              cellsToRemove.push(cell);
+            }
+          }
+        }
+
+        // Remove all cells
+        cellsToRemove.forEach(cell => cell.remove());
+
+        // Set rowspan and colspan of the target cell if it exists
+        if (targetCell) {
+          targetCell.rowSpan = rowspan;
+          targetCell.colSpan = colspan;
+        }
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: '1', j: 0 }, { i: '1', j: 1 }, { i: '1', j: 2 }, { i: '1', j: 3 }, { i: '1', j: 4 }, { i: '1', j: 5 },  ], css_id: 'tinytable_css_zybid4vy7tzvu2gpdwfo',}, 
+          { positions: [ { i: '0', j: 0 }, { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 },  ], css_id: 'tinytable_css_6rdt5q77h67p23kgpgzc',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_pqhzbr8rarafyw8ibfhv(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+      /* tinytable css entries after */
+      .table td.tinytable_css_zybid4vy7tzvu2gpdwfo, .table th.tinytable_css_zybid4vy7tzvu2gpdwfo { background-color: #ededed; color: black; font-size: 0.75em; border: solid white 0.4em; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_6rdt5q77h67p23kgpgzc, .table th.tinytable_css_6rdt5q77h67p23kgpgzc { color: black; font-size: 0.75em; border: solid white 0.4em; border-bottom: solid #d3d8dc 0.1em; }
+    </style>
+    <div class="container">
+      <table class="table table-striped" id="tinytable_pqhzbr8rarafyw8ibfhv" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+        <thead>
+        
+              <tr>
+                <th scope="col" data-row="0" data-col="0">No</th>
+                <th scope="col" data-row="0" data-col="1">Pronoun</th>
+                <th scope="col" data-row="0" data-col="2">Answer</th>
+                <th scope="col" data-row="0" data-col="3">Variable/Scale</th>
+                <th scope="col" data-row="0" data-col="4">Example</th>
+                <th scope="col" data-row="0" data-col="5">What Operations?</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td data-row="1" data-col="0">1</td>
+                  <td data-row="1" data-col="1">How Many / Much / Heavy? Few? Seldom? Often? When?</td>
+                  <td data-row="1" data-col="2">Quantities, with Scale and a Zero Value.Differences and Ratios /Products are meaningful.</td>
+                  <td data-row="1" data-col="3">Quantitative/Ratio</td>
+                  <td data-row="1" data-col="4">Length,Height,Temperature in Kelvin,Activity,Dose Amount,Reaction Rate,Flow Rate,Concentration,Pulse,Survival Rate</td>
+                  <td data-row="1" data-col="5">Correlation</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+</div>
+</div>
+</section>
+
+<section id="inspiration" class="title-slide slide level2 center">
+<h2><iconify-icon inline="" icon="icons8:idea" aria-label="Icon idea from icons8 Iconify.design set." title="Icon idea from icons8 Iconify.design set."></iconify-icon> Inspiration</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-inspiration-violin-plot" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-inspiration-violin-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="index_files/figure-html/fig-inspiration-violin-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Violin Plot Inspirations"><img data-src="index_files/figure-html/fig-inspiration-violin-plot-1.png" width="2100"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-inspiration-violin-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Violin Plot Inspirations
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Which is the plots above is more evocative of the underlying data? The one which looks like a combo box-plot + density is probably giving us a greater sense of the spread of the data than the good old box plot.</p>
+</section>
+
+<section id="how-do-these-charts-work" class="title-slide slide level2 center">
+<h2><iconify-icon inline="" icon="mdi:food-processor-outline" aria-label="Icon food-processor-outline from mdi Iconify.design set." title="Icon food-processor-outline from mdi Iconify.design set."></iconify-icon> How do these Chart(s) Work?</h2>
+<p>Often one needs to view <strong>multiple densities</strong> at the same time. Ridge plots of course give us one option, where we get densities of a <em>Quant</em> variable split by a <em>Qual</em> variable. Another option is to generate a density plot facetted into <em>small multiples</em> using a <em>Qual</em> variable.</p>
+<p>Yet another plot that allows comparison of multiple densities side by side is a <strong>violin plot</strong>. The violin plot combines the aspects of a <em>boxplot</em>(ranking of values, median, quantiles…) with a superimposed <em>density</em> plot. This allows us to look at medians, means, densities, and quantiles of a <em>Quant</em> variable with respect to another <em>Qual</em> variable. Let us see what this looks like!</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-normal-violins" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-normal-violins-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="index_files/figure-html/fig-normal-violins-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Violin Plots for Normal Variables"><img data-src="index_files/figure-html/fig-normal-violins-1.png" width="2100"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-normal-violins-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Violin Plots for Normal Variables
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In <a href="#/fig-normal-violins" class="quarto-xref">Figure&nbsp;2</a>, the plots show (very artificial!) distributions of a <em>single Quant variable</em> across <em>levels</em> of another <strong>Qual variable</strong>. At each level of the Qual variable along the X-axis, we have a violin plot showing the density.</p>
+</section>
+
+<section id="case-study-1-diamonds-dataset" class="title-slide slide level2 center">
+<h2><iconify-icon inline="" icon="grommet-icons:test" aria-label="Icon test from grommet-icons Iconify.design set." title="Icon test from grommet-icons Iconify.design set."></iconify-icon> Case Study-1: <code>diamonds</code> dataset</h2>
+<p>The <code>diamonds</code> dataset is a classic dataset that contains information about the prices and attributes of over 50,000 diamonds. It includes variables such as <code>carat</code>, <code>cut</code>, <code>color</code>, <code>clarity</code>, and <code>price</code>. We can use this dataset to create violin plots to visualize the distribution of diamond prices across different cuts and clarity levels.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">data</span>(<span class="st">"diamonds"</span>, <span class="at">package =</span> <span class="st">"ggplot2"</span>)</span>
+<span id="cb3-2"><a></a><span class="fu">glimpse</span>(diamonds)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 53,940
+Columns: 10
+$ carat   &lt;dbl&gt; 0.23, 0.21, 0.23, 0.29, 0.31, 0.24, 0.24, 0.26, 0.22, 0.23, 0.…
+$ cut     &lt;ord&gt; Ideal, Premium, Good, Premium, Good, Very Good, Very Good, Ver…
+$ color   &lt;ord&gt; E, E, E, I, J, J, I, H, E, H, J, J, F, J, E, E, I, J, J, J, I,…
+$ clarity &lt;ord&gt; SI2, SI1, VS1, VS2, SI2, VVS2, VVS1, SI1, VS2, VS1, SI1, VS1, …
+$ depth   &lt;dbl&gt; 61.5, 59.8, 56.9, 62.4, 63.3, 62.8, 62.3, 61.9, 65.1, 59.4, 64…
+$ table   &lt;dbl&gt; 55, 61, 65, 58, 58, 57, 57, 55, 61, 61, 55, 56, 61, 54, 62, 58…
+$ price   &lt;int&gt; 326, 326, 327, 334, 335, 336, 336, 337, 337, 338, 339, 340, 34…
+$ x       &lt;dbl&gt; 3.95, 3.89, 4.05, 4.20, 4.34, 3.94, 3.95, 4.07, 3.87, 4.00, 4.…
+$ y       &lt;dbl&gt; 3.98, 3.84, 4.07, 4.23, 4.35, 3.96, 3.98, 4.11, 3.78, 4.05, 4.…
+$ z       &lt;dbl&gt; 2.43, 2.31, 2.31, 2.63, 2.75, 2.48, 2.47, 2.53, 2.49, 2.39, 2.…</code></pre>
+</div>
+</div>
+<p>There is no particular need to do any munging of this dataset, but for recall and retention purposes, we will do it anyway ;-D</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>diamonds_modified <span class="ot">&lt;-</span> diamonds <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>(<span class="at">case =</span> <span class="st">"snake"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a></a>  janitor<span class="sc">::</span><span class="fu">remove_empty</span>(<span class="at">which =</span> <span class="fu">c</span>(<span class="st">"rows"</span>, <span class="st">"cols"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb5-6"><a></a>    <span class="fu">across</span>(<span class="fu">where</span>(is.character), as.factor)</span>
+<span id="cb5-7"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb5-8"><a></a>  dplyr<span class="sc">::</span><span class="fu">relocate</span>(<span class="fu">where</span>(is.factor))</span>
+<span id="cb5-9"><a></a></span>
+<span id="cb5-10"><a></a>diamonds_modified <span class="sc">%&gt;%</span> <span class="fu">glimpse</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 53,940
+Columns: 10
+$ cut     &lt;ord&gt; Ideal, Premium, Good, Premium, Good, Very Good, Very Good, Ver…
+$ color   &lt;ord&gt; E, E, E, I, J, J, I, H, E, H, J, J, F, J, E, E, I, J, J, J, I,…
+$ clarity &lt;ord&gt; SI2, SI1, VS1, VS2, SI2, VVS2, VVS1, SI1, VS2, VS1, SI1, VS1, …
+$ carat   &lt;dbl&gt; 0.23, 0.21, 0.23, 0.29, 0.31, 0.24, 0.24, 0.26, 0.22, 0.23, 0.…
+$ depth   &lt;dbl&gt; 61.5, 59.8, 56.9, 62.4, 63.3, 62.8, 62.3, 61.9, 65.1, 59.4, 64…
+$ table   &lt;dbl&gt; 55, 61, 65, 58, 58, 57, 57, 55, 61, 61, 55, 56, 61, 54, 62, 58…
+$ price   &lt;int&gt; 326, 326, 327, 334, 335, 336, 336, 337, 337, 338, 339, 340, 34…
+$ x       &lt;dbl&gt; 3.95, 3.89, 4.05, 4.20, 4.34, 3.94, 3.95, 4.07, 3.87, 4.00, 4.…
+$ y       &lt;dbl&gt; 3.98, 3.84, 4.07, 4.23, 4.35, 3.96, 3.98, 4.11, 3.78, 4.05, 4.…
+$ z       &lt;dbl&gt; 2.43, 2.31, 2.31, 2.63, 2.75, 2.48, 2.47, 2.53, 2.49, 2.39, 2.…</code></pre>
+</div>
+</div>
+<div class="panel-tabset nav-pills" style="background: whitesmoke;">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Using ggformula</a></li><li><a href="#tabset-1-2">Using ggplot</a></li><li><a href="#tabset-1-3"><iconify-icon inline="" icon="noto-v1:spider-web" aria-label="Icon spider-web from noto-v1 Iconify.design set." title="Icon spider-web from noto-v1 Iconify.design set."></iconify-icon> web-r</a></li></ul>
+<div class="tab-content nav-pills" style="background: whitesmoke;">
+<div id="tabset-1-1">
+<div class="columns">
+<div class="column">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb7-2"><a></a></span>
+<span id="cb7-3"><a></a><span class="fu">gf_violin</span>(price <span class="sc">~</span> <span class="st">"All Diamonds"</span>,</span>
+<span id="cb7-4"><a></a>  <span class="at">data =</span> diamonds_modified,</span>
+<span id="cb7-5"><a></a>  <span class="at">draw_quantiles =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">25</span>, .<span class="dv">50</span>, .<span class="dv">75</span>)</span>
+<span id="cb7-6"><a></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-7"><a></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Plot A: Violin plot for Diamond Prices"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div><div class="column">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="index_files/figure-html/unnamed-chunk-2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img data-src="index_files/figure-html/unnamed-chunk-2-1.png" width="2100"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<div class="columns">
+<div class="column">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb8-2"><a></a></span>
+<span id="cb8-3"><a></a>diamonds_modified <span class="sc">%&gt;%</span></span>
+<span id="cb8-4"><a></a>  <span class="fu">gf_violin</span>(price <span class="sc">~</span> cut,</span>
+<span id="cb8-5"><a></a>    <span class="at">draw_quantiles =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">25</span>, .<span class="dv">50</span>, .<span class="dv">75</span>)</span>
+<span id="cb8-6"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb8-7"><a></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Plot B: Price by Cut"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div><div class="column">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="index_files/figure-html/unnamed-chunk-3-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img data-src="index_files/figure-html/unnamed-chunk-3-1.png" width="2100"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<div class="columns">
+<div class="column">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb9-2"><a></a></span>
+<span id="cb9-3"><a></a>diamonds_modified <span class="sc">%&gt;%</span></span>
+<span id="cb9-4"><a></a>  <span class="fu">gf_violin</span>(price <span class="sc">~</span> cut,</span>
+<span id="cb9-5"><a></a>    <span class="at">fill =</span> <span class="sc">~</span>cut,</span>
+<span id="cb9-6"><a></a>    <span class="at">color =</span> <span class="sc">~</span>cut,</span>
+<span id="cb9-7"><a></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
+<span id="cb9-8"><a></a>    <span class="at">draw_quantiles =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">25</span>, .<span class="dv">50</span>, .<span class="dv">75</span>)</span>
+<span id="cb9-9"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb9-10"><a></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Plot C: Price by Cut"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div><div class="column">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="index_files/figure-html/unnamed-chunk-4-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img data-src="index_files/figure-html/unnamed-chunk-4-1.png" width="2100"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<div class="columns">
+<div class="column">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb10-2"><a></a></span>
+<span id="cb10-3"><a></a>diamonds_modified <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a></a>  <span class="fu">gf_violin</span>(price <span class="sc">~</span> cut,</span>
+<span id="cb10-5"><a></a>    <span class="at">fill =</span> <span class="sc">~</span>cut,</span>
+<span id="cb10-6"><a></a>    <span class="at">colour =</span> <span class="sc">~</span>cut,</span>
+<span id="cb10-7"><a></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
+<span id="cb10-8"><a></a>    <span class="at">draw_quantiles =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">25</span>, .<span class="dv">50</span>, .<span class="dv">75</span>)</span>
+<span id="cb10-9"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb10-10"><a></a>  <span class="fu">gf_facet_wrap</span>(<span class="fu">vars</span>(clarity)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-11"><a></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Plot D: Price by Cut facetted by Clarity"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-12"><a></a>  <span class="fu">gf_theme</span>(<span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div><div class="column">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="index_files/figure-html/unnamed-chunk-5-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img data-src="index_files/figure-html/unnamed-chunk-5-1.png" width="2100"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</div>
+<div id="tabset-1-2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb11-2"><a></a></span>
+<span id="cb11-3"><a></a>diamonds_modified <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb11-4"><a></a>  <span class="fu">geom_violin</span>(<span class="fu">aes</span>(<span class="at">y =</span> price, <span class="at">x =</span> <span class="st">""</span>),</span>
+<span id="cb11-5"><a></a>    <span class="at">draw_quantiles =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">25</span>, .<span class="dv">50</span>, .<span class="dv">75</span>)</span>
+<span id="cb11-6"><a></a>  ) <span class="sc">+</span> <span class="co"># note: y, not x</span></span>
+<span id="cb11-7"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Plot A: violin for Diamond Prices"</span>)</span>
+<span id="cb11-8"><a></a><span class="do">###</span></span>
+<span id="cb11-9"><a></a>diamonds_modified <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb11-10"><a></a>  <span class="fu">geom_violin</span>(<span class="fu">aes</span>(cut, price),</span>
+<span id="cb11-11"><a></a>    <span class="at">draw_quantiles =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">25</span>, .<span class="dv">50</span>, .<span class="dv">75</span>)</span>
+<span id="cb11-12"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb11-13"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Plot B: Price by Cut"</span>)</span>
+<span id="cb11-14"><a></a><span class="do">###</span></span>
+<span id="cb11-15"><a></a>diamonds_modified <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb11-16"><a></a>  <span class="fu">geom_violin</span>(</span>
+<span id="cb11-17"><a></a>    <span class="fu">aes</span>(cut, price,</span>
+<span id="cb11-18"><a></a>      <span class="at">color =</span> cut, <span class="at">fill =</span> cut</span>
+<span id="cb11-19"><a></a>    ),</span>
+<span id="cb11-20"><a></a>    <span class="at">draw_quantiles =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">25</span>, .<span class="dv">50</span>, .<span class="dv">75</span>),</span>
+<span id="cb11-21"><a></a>    <span class="at">alpha =</span> <span class="fl">0.4</span></span>
+<span id="cb11-22"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb11-23"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Plot C: Price by Cut"</span>)</span>
+<span id="cb11-24"><a></a><span class="do">###</span></span>
+<span id="cb11-25"><a></a>diamonds_modified <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb11-26"><a></a>  <span class="fu">geom_violin</span>(</span>
+<span id="cb11-27"><a></a>    <span class="fu">aes</span>(cut,</span>
+<span id="cb11-28"><a></a>      price,</span>
+<span id="cb11-29"><a></a>      <span class="at">color =</span> cut, <span class="at">fill =</span> cut</span>
+<span id="cb11-30"><a></a>    ),</span>
+<span id="cb11-31"><a></a>    <span class="at">draw_quantiles =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">25</span>, .<span class="dv">50</span>, .<span class="dv">75</span>),</span>
+<span id="cb11-32"><a></a>    <span class="at">alpha =</span> <span class="fl">0.4</span></span>
+<span id="cb11-33"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb11-34"><a></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(clarity)) <span class="sc">+</span></span>
+<span id="cb11-35"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Plot D: Price by Cut facetted by Clarity"</span>) <span class="sc">+</span></span>
+<span id="cb11-36"><a></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><a href="index_files/figure-html/Violin plots with ggplot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img data-src="index_files/figure-html/Violin plots with ggplot-1.png" width="2100"></a></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><a href="index_files/figure-html/Violin plots with ggplot-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img data-src="index_files/figure-html/Violin plots with ggplot-2.png" width="2100"></a></p>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><a href="index_files/figure-html/Violin plots with ggplot-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img data-src="index_files/figure-html/Violin plots with ggplot-3.png" width="2100"></a></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><a href="index_files/figure-html/Violin plots with ggplot-4.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img data-src="index_files/figure-html/Violin plots with ggplot-4.png" width="2100"></a></p>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb12-1"><a></a>#| label: Violin plots with ggformula webr</span>
+<span id="cb12-2"><a></a>#| collapse: true</span>
+<span id="cb12-3"><a></a></span>
+<span id="cb12-4"><a></a>gf_violin(price ~ "", data = diamonds_modified, </span>
+<span id="cb12-5"><a></a>          draw_quantiles = c(0,.25,.50,.75)) %&gt;%</span>
+<span id="cb12-6"><a></a>  gf_labs(title = "Plot A: Violin plot for Diamond Prices")</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb13-1"><a></a></span>
+<span id="cb13-2"><a></a>gf_violin(price ~ cut, data = diamonds_modified,</span>
+<span id="cb13-3"><a></a>            draw_quantiles = c(0,.25,.50,.75)) %&gt;% </span>
+<span id="cb13-4"><a></a>  gf_labs(title = "Plot B: Price by Cut")</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb14-1"><a></a></span>
+<span id="cb14-2"><a></a>diamonds_modified %&gt;% </span>
+<span id="cb14-3"><a></a>  gf_violin(price ~ cut, </span>
+<span id="cb14-4"><a></a>             fill = ~ cut, </span>
+<span id="cb14-5"><a></a>             color = ~ cut,</span>
+<span id="cb14-6"><a></a>             alpha = 0.3,</span>
+<span id="cb14-7"><a></a>            draw_quantiles = c(0,.25,.50,.75)) %&gt;% </span>
+<span id="cb14-8"><a></a>  gf_labs(title = "Plot C: Price by Cut")</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb15-1"><a></a></span>
+<span id="cb15-2"><a></a>diamonds_modified %&gt;% </span>
+<span id="cb15-3"><a></a>  gf_violin(price ~ cut, </span>
+<span id="cb15-4"><a></a>             fill = ~ cut, </span>
+<span id="cb15-5"><a></a>             colour = ~ cut,             </span>
+<span id="cb15-6"><a></a>             alpha = 0.3,draw_quantiles = c(0,.25,.50,.75)) %&gt;% </span>
+<span id="cb15-7"><a></a>  gf_facet_wrap(vars(clarity)) %&gt;%</span>
+<span id="cb15-8"><a></a>  gf_labs(title = "Plot D: Price by Cut facetted by Clarity") %&gt;%</span>
+<span id="cb15-9"><a></a>  gf_theme(theme(axis.text.x = element_text(angle = 45,hjust = 1)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb16-1"><a></a>#| label: Violin plots with ggplot webr</span>
+<span id="cb16-2"><a></a>#| layout-ncol: 2</span>
+<span id="cb16-3"><a></a>#| collapse: true</span>
+<span id="cb16-4"><a></a></span>
+<span id="cb16-5"><a></a>diamonds_modified %&gt;% ggplot() + </span>
+<span id="cb16-6"><a></a>  geom_violin(aes(y = price, x = ""),</span>
+<span id="cb16-7"><a></a>              draw_quantiles = c(0,.25,.50,.75)) + # note: y, not x</span>
+<span id="cb16-8"><a></a>  labs(title = "Plot A: violin for Diamond Prices")</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb17-1"><a></a></span>
+<span id="cb17-2"><a></a>diamonds_modified %&gt;% ggplot() + </span>
+<span id="cb17-3"><a></a>  geom_violin(aes(cut, price),</span>
+<span id="cb17-4"><a></a>              draw_quantiles = c(0,.25,.50,.75)) + </span>
+<span id="cb17-5"><a></a>  labs(title = "Plot B: Price by Cut")</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb18-1"><a></a></span>
+<span id="cb18-2"><a></a>diamonds_modified %&gt;% ggplot() + </span>
+<span id="cb18-3"><a></a>  geom_violin(aes(cut, price, </span>
+<span id="cb18-4"><a></a>                  color = cut, fill = cut),</span>
+<span id="cb18-5"><a></a>              draw_quantiles = c(0,.25,.50,.75),</span>
+<span id="cb18-6"><a></a>              alpha = 0.4) +</span>
+<span id="cb18-7"><a></a>  labs(title = "Plot C: Price by Cut")</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb19-1"><a></a></span>
+<span id="cb19-2"><a></a>diamonds_modified %&gt;% ggplot() + </span>
+<span id="cb19-3"><a></a>  geom_violin(aes(cut, </span>
+<span id="cb19-4"><a></a>                   price, </span>
+<span id="cb19-5"><a></a>                   color = cut, fill = cut), </span>
+<span id="cb19-6"><a></a>              draw_quantiles = c(0,.25,.50,.75),</span>
+<span id="cb19-7"><a></a>              alpha = 0.4)  +  </span>
+<span id="cb19-8"><a></a>  facet_wrap(vars(clarity)) +</span>
+<span id="cb19-9"><a></a>  labs(title = "Plot D: Price by Cut facetted by Clarity") +</span>
+<span id="cb19-10"><a></a>  theme(axis.text.x = element_text(angle = 45,hjust = 1))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Business Insights from <code>diamond</code> Violin Plots</strong></p>
+</div>
+<div class="callout-content">
+<p>The distribution for price is clearly <em>long-tailed</em> (skewed). The distributions also vary considerably based on both <code>cut</code> and <code>clarity</code>. These <em>Qual</em> variables clearly have a large effect on the prices of individual diamonds.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section id="wait-but-why" class="title-slide slide level2 center">
+<h2><iconify-icon inline="" icon="mingcute:thought-line" aria-label="Icon thought-line from mingcute Iconify.design set." title="Icon thought-line from mingcute Iconify.design set."></iconify-icon> Wait, But Why?</h2>
+<ul>
+<li>Box plots give us an idea of <code>medians</code>, <code>IQR</code> ranges, and <code>outliers</code>. The shape of the density is not apparent from the box.</li>
+<li>Densities give us shapes of distributions, but do not provide visual indication of other metrics like <code>means</code> or <code>medians</code> ( at least not without some effort)</li>
+<li>Violins help us do both!</li>
+<li>Violins can also be cut in half (since they are symmetric, like <a href="https://youtu.be/vjlBZuwyX7U">Buddhist Prayer Wheels</a>), then placed horizontally, and combined with both a <code>boxplot</code> and a <code>dot-plot</code> to give us <code>raincloud plots</code> that look like <a href="https://www.cedricscherer.com/2021/06/06/visualizing-distributions-with-raincloud-plots-and-how-to-create-them-with-ggplot2/">this</a>. (Yes, there is code over there, which you can reuse.)</li>
+</ul>
+<p><a href="../../../../../materials/images/polished-penguins-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11"><img data-src="../../../../../materials/images/polished-penguins-1.png"></a></p>
+</section>
+
+<section id="conclusion" class="title-slide slide level2 center">
+<h2><iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusion</h2>
+<ul>
+<li>Histograms, Frequency Distributions, and Box Plots are used for Quantitative data variables</li>
+<li>Histograms “dwell upon” <strong>counts</strong>, <strong>ranges</strong>, <strong>means</strong> and <strong>standard deviations</strong></li>
+<li>Frequency Density plots “dwell upon” <strong>probabilities</strong> and <strong>densities</strong></li>
+<li>Box Plots “dwell upon” <strong>medians</strong> and <strong>Quartiles</strong></li>
+<li>Qualitative data variables can be plotted as <strong>counts</strong>, using Bar Charts, or using Heat Maps</li>
+<li>Violin Plots help us to visualize multiple distributions at the same time, as when we split a <em>Quant</em> variable wrt to the <em>levels</em> of a <em>Qual</em> variable.</li>
+<li>Ridge Plots are <strong>density plots</strong> used for describing one Quant and one Qual variable (by inherent splitting)</li>
+<li>We can split all these plots on the basis of another Qualitative variable.(Ridge Plots are already split)</li>
+<li>Long tailed distributions need care in visualization and in inference making!</li>
+</ul>
+</section>
+
+<section id="your-turn" class="title-slide slide level2 center scrollable">
+<h2><iconify-icon inline="" icon="openmoji:person" aria-label="Icon person from openmoji Iconify.design set." title="Icon person from openmoji Iconify.design set."></iconify-icon> Your Turn</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Datasets</strong></p>
+</div>
+<div class="callout-content">
+<p><a href="../../../../../materials/Data/qdd-data.zip"> <i class="fa-solid fa-database"></i> Datasets</a></p>
+<ol type="1">
+<li>Click on the Dataset Icon above, and unzip that archive. Try to make distribution plots with each of the three tools.</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>CalmCode</strong></p>
+</div>
+<div class="callout-content">
+<ol start="2" type="1">
+<li>A dataset from calmcode.io <a href="https://calmcode.io/datasets.html" class="uri">https://calmcode.io/datasets.html</a></li>
+</ol>
+</div>
+</div>
+</div>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>From <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/24-Groups/index.html#your-turn">Groups</a></strong></p>
+</div>
+<div class="callout-content">
+<ol start="3" type="1">
+<li>Datasets from the earlier module on <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/24-Groups/index.html#your-turn">Groups</a>.</li>
+</ol>
+</div>
+</div>
+</div>
+<p><code>inspect</code> the dataset in each case and develop a set of Questions, that can be answered by appropriate stat measures, or by using a chart to show the distribution.</p>
+</section>
+
+<section>
+<section id="references" class="title-slide slide level2 center scrollable">
+<h2><iconify-icon inline="" icon="ooui:references-rtl" aria-label="Icon references-rtl from ooui Iconify.design set." title="Icon references-rtl from ooui Iconify.design set."></iconify-icon> References</h2>
+<ol type="1">
+<li>Winston Chang (2024). <em>R Graphics Cookbook</em>. <a href="https://r-graphics.org" class="uri">https://r-graphics.org</a></li>
+<li>See the scrolly animation for a histogram at this website: <em>Exploring Histograms, an essay by Aran Lunzer and Amelia McNamara</em> <a href="https://tinlizzie.org/histograms/?s=09" class="uri">https://tinlizzie.org/histograms/?s=09</a><br>
+</li>
+<li>Minimal R using <code>mosaic</code>.<a href="https://cran.r-project.org/web/packages/mosaic/vignettes/MinimalRgg.pdf" class="uri">https://cran.r-project.org/web/packages/mosaic/vignettes/MinimalRgg.pdf</a><br>
+</li>
+<li>Sebastian Sauer, <em>Plotting multiple plots using purrr::map and ggplot</em> <a href="https://data-se.netlify.app/2021/02/06/plotting-multiple-plots-using-purrr-map-and-ggplot/"></a><br>
+</li>
+</ol>
+</section>
+<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" data-entry-spacing="0" role="list">
+<h6 id="r-package-citations"><iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Package</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Citation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">ggnormalviolin</td>
+<td style="text-align: left;">0.2.1</td>
+<td style="text-align: left;"><span class="citation" data-cites="ggnormalviolin">Schneider (<a href="" role="doc-biblioref" onclick="return false;">2025</a>)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ggridges</td>
+<td style="text-align: left;">0.5.7</td>
+<td style="text-align: left;"><span class="citation" data-cites="ggridges">Wilke (<a href="" role="doc-biblioref" onclick="return false;">2025</a>)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NHANES</td>
+<td style="text-align: left;">2.1.0</td>
+<td style="text-align: left;"><span class="citation" data-cites="NHANES">Pruim (<a href="" role="doc-biblioref" onclick="return false;">2015</a>)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TeachHist</td>
+<td style="text-align: left;">0.2.1</td>
+<td style="text-align: left;"><span class="citation" data-cites="TeachHist">Lange (<a href="" role="doc-biblioref" onclick="return false;">2023</a>)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">TeachingDemos</td>
+<td style="text-align: left;">2.13</td>
+<td style="text-align: left;"><span class="citation" data-cites="TeachingDemos">Snow (<a href="" role="doc-biblioref" onclick="return false;">2024</a>)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tinytable</td>
+<td style="text-align: left;">0.13.0</td>
+<td style="text-align: left;"><span class="citation" data-cites="tinytable">Arel-Bundock (<a href="" role="doc-biblioref" onclick="return false;">2025</a>)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">visualize</td>
+<td style="text-align: left;">4.5.0</td>
+<td style="text-align: left;"><span class="citation" data-cites="visualize">Balamuta (<a href="" role="doc-biblioref" onclick="return false;">2023</a>)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="ref-tinytable" class="csl-entry" role="listitem">
+Arel-Bundock, Vincent. 2025. <em><span class="nocase">tinytable</span>: Simple and Configurable Tables in <span>“<span>HTML</span>,”</span> <span>“<span>LaTeX</span>,”</span> <span>“<span>Markdown</span>,”</span> <span>“<span>Word</span>,”</span> <span>“<span>PNG</span>,”</span> <span>“<span>PDF</span>,”</span> and <span>“<span>Typst</span>”</span> Formats</em>. <a href="https://doi.org/10.32614/CRAN.package.tinytable">https://doi.org/10.32614/CRAN.package.tinytable</a>.
+</div>
+<div id="ref-visualize" class="csl-entry" role="listitem">
+Balamuta, James. 2023. <em><span class="nocase">visualize</span>: Graph Probability Distributions with User Supplied Parameters and Statistics</em>. <a href="https://doi.org/10.32614/CRAN.package.visualize">https://doi.org/10.32614/CRAN.package.visualize</a>.
+</div>
+<div id="ref-TeachHist" class="csl-entry" role="listitem">
+Lange, Carsten. 2023. <em><span>TeachHist</span>: A Collection of Amended Histograms Designed for Teaching Statistics</em>. <a href="https://doi.org/10.32614/CRAN.package.TeachHist">https://doi.org/10.32614/CRAN.package.TeachHist</a>.
+</div>
+<div id="ref-NHANES" class="csl-entry" role="listitem">
+Pruim, Randall. 2015. <em><span>NHANES</span>: Data from the US National Health and Nutrition Examination Study</em>. <a href="https://doi.org/10.32614/CRAN.package.NHANES">https://doi.org/10.32614/CRAN.package.NHANES</a>.
+</div>
+<div id="ref-ggnormalviolin" class="csl-entry" role="listitem">
+Schneider, W. Joel. 2025. <em><span class="nocase">ggnormalviolin</span>: A <span>“<span class="nocase">ggplot2</span>”</span> Extension to Make Normal Violin Plots</em>. <a href="https://doi.org/10.32614/CRAN.package.ggnormalviolin">https://doi.org/10.32614/CRAN.package.ggnormalviolin</a>.
+</div>
+<div id="ref-TeachingDemos" class="csl-entry" role="listitem">
+Snow, Greg. 2024. <em><span>TeachingDemos</span>: Demonstrations for Teaching and Learning</em>. <a href="https://doi.org/10.32614/CRAN.package.TeachingDemos">https://doi.org/10.32614/CRAN.package.TeachingDemos</a>.
+</div>
+<div id="ref-ggridges" class="csl-entry" role="listitem">
+Wilke, Claus O. 2025. <em><span class="nocase">ggridges</span>: Ridgeline Plots in <span>“<span class="nocase">ggplot2</span>”</span></em>. <a href="https://doi.org/10.32614/CRAN.package.ggridges">https://doi.org/10.32614/CRAN.package.ggridges</a>.
+</div>
+</div>
+
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../../../../../../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../../../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../../../../../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../../../../../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../../../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../../../../../../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="../../../../../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../../../../../../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../../../../../../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../../../../../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../../../../../../site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'view': "scroll",
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': true,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: true,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: true,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp("https:\/\/madhatterguide\.netlify\.app");
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    <script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"right","loop":false,"openEffect":"zoom","selector":".lightbox"});
+    (function() {
+      let previousOnload = window.onload;
+      window.onload = () => {
+        if (previousOnload) {
+          previousOnload();
+        }
+        lightboxQuarto.on('slide_before_load', (data) => {
+          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+          const href = trigger.getAttribute('href');
+          if (href !== null) {
+            const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+            if (imgEl !== null) {
+              const srcAttr = imgEl.getAttribute("src");
+              if (srcAttr && srcAttr.startsWith("data:")) {
+                slideConfig.href = srcAttr;
+              }
+            }
+          } 
+        });
+      
+        lightboxQuarto.on('slide_after_load', (data) => {
+          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(slideNode);
+          }
+        });
+      
+      };
+      
+    })();
+              </script>
+    
+
+</body></html>

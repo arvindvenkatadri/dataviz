@@ -22,6 +22,27 @@ editor:
     wrap: 72
 webr:
   packages: ['readr', 'tidyr', 'dplyr','mosaic', 'skimr', 'ggformula','ggridges', 'palmerpenguins']
+  
+format: 
+  html: default
+  revealjs: 
+    theme: default
+    output-file: counts-reveal.html
+    smaller: true
+    center: false
+    scroll-view: true
+    scrollable: true
+    slide-level: 3
+    slide-number: true
+    chalkboard: true
+    df-print: paged
+    highlight-style: tango
+    menu: true
+    overview: true
+    preload-iframes: true
+    preview-links: true
+    touch: true
+
 ---
 
 ## {{< fa folder-open >}} Slides and Tutorials{#sec-linreg}
@@ -63,9 +84,11 @@ library(equatiomatic)
 library(geomtextpath)
 library(mlbench)
 library(reghelper)
-library(ggplot2)
+library(ggrepel)
+library(marquee)
 
 ```
+
 
 #### Plot Fonts and Theme
 
@@ -78,8 +101,6 @@ library(ggplot2)
 #| 
 library(systemfonts)
 library(showtext)
-library(ggrepel)
-library(marquee)
 ## Clean the slate
 systemfonts::clear_local_fonts()
 systemfonts::clear_registry()
@@ -102,10 +123,18 @@ theme_custom <- function(){
 
     theme_bw(base_size = 10) + 
     
+    # theme(panel.widths = unit(11, "cm"), 
+    #       panel.heights = unit(6.79, "cm")) + # Golden Ratio
+    
+    theme(plot.margin = margin_auto(t = 1, r = 2, b = 1, l = 1, unit = "cm"),
+          plot.background = element_rect(fill = "bisque",
+                                         colour = "black",
+                                         linewidth = 1)) + 
+            
     theme_sub_axis(title = element_text(family = "Roboto Condensed", 
-                                       size = 8),
+                                       size = 10),
                    text = element_text(family = "Roboto Condensed", 
-                                       size = 6)) + 
+                                       size = 8)) + 
     
     theme_sub_legend(text = element_text(family = "Roboto Condensed", 
                                          size = 6),
@@ -119,7 +148,7 @@ theme_custom <- function(){
                                            size = 10),
                    caption = element_text(family = "Alegreya", 
                                           size = 6),
-                   caption.position = "plot")
+                   caption.position = "plot") 
     
 }
 
@@ -1105,7 +1134,7 @@ mosaic::xpf(q = F_crit,
        return = c("plot"), verbose = F, alpha = 0.5, colour = "black",
         system = "gg") %>% 
   gf_vline(xintercept = F_crit, color = "red") %>% 
-  gf_annotate(geom = "label", x = 3, y = 1.6, size = 6,
+  gf_annotate(geom = "label", x = 3, y = 1.6, size = 4,
             label = "F Critical Value = 3.86", colour = "purple") %>% gf_annotate("curve", 
             x = 3, y = 1.5, 
             xend = F_crit - 0.025, yend = 1,curvature = 0.5,

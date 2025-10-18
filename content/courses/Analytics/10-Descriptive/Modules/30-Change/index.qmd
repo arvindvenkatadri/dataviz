@@ -21,7 +21,29 @@ editor:
     wrap: 72
 webr:
   packages: ['readr', 'tidyr', 'dplyr','mosaic', 'skimr', 'ggformula','correlation','GGally','Lock5withR', 'janitor']
-  
+format: 
+  html: default
+  revealjs: 
+    theme: default
+    css:
+      - "../../../../../../css/slides/lexis.css"
+      - "../../../../../../css/slides/lexis-fonts.css"
+    output-file: counts-reveal.html
+    smaller: true
+    center: false
+    scroll-view: true
+    scrollable: true
+    slide-level: 3
+    slide-number: true
+    chalkboard: true
+    df-print: paged
+    highlight-style: tango
+    menu: true
+    overview: true
+    preload-iframes: true
+    preview-links: true
+    touch: true
+
 ---
 
 :::: {.pa4}
@@ -118,10 +140,18 @@ theme_custom <- function(){
 
     theme_bw(base_size = 10) + 
     
+    # theme(panel.widths = unit(11, "cm"), 
+    #       panel.heights = unit(6.79, "cm")) + # Golden Ratio
+    
+    theme(plot.margin = margin_auto(t = 1, r = 2, b = 1, l = 1, unit = "cm"),
+          plot.background = element_rect(fill = "bisque",
+                                         colour = "black",
+                                         linewidth = 1)) + 
+            
     theme_sub_axis(title = element_text(family = "Roboto Condensed", 
-                                       size = 14),
+                                       size = 10),
                    text = element_text(family = "Roboto Condensed", 
-                                       size = 12)) + 
+                                       size = 8)) + 
     
     theme_sub_legend(text = element_text(family = "Roboto Condensed", 
                                          size = 6),
@@ -135,7 +165,7 @@ theme_custom <- function(){
                                            size = 10),
                    caption = element_text(family = "Alegreya", 
                                           size = 6),
-                   caption.position = "plot")
+                   caption.position = "plot") 
     
 }
 
@@ -192,6 +222,7 @@ flextable::set_flextable_defaults(font.family = "Roboto Condensed")
 ```
 
 
+
 ## {{< iconify material-symbols add-chart-outline >}} What graphs will we see today?
 
 | Variable #1 | Variable #2 | Chart Names | Chart Shape |
@@ -220,7 +251,10 @@ Some of the very basic and commonly used plots for data are:
 
 read_csv("../../../../../materials/Data/pronouns.csv") %>% 
   filter(No == "1") %>% 
-  tt(theme = "striped")
+  tt(theme = "striped") %>%  
+  style_tt(color = "black",fontsize = 0.75, line = "tblr",
+    line_width = 0.4,
+    line_color = "white")
   
 ```
 
@@ -861,13 +895,13 @@ By default, [`GGally::ggpairs()`](https://ggobi.github.io/ggally/reference/ggpai
     the axis values and variable labels.\
 
 :::: {.columns}
-:::{.column}
+:::{.column width="48%"}
 ```{r}
 #| label: pairs-chart-1
 #| eval: false
 #| message: false
 #| warn: false
-ggplot2::theme_set(new = theme_custom())
+ggplot2::theme_set(new = theme_bw(base_family = "Roboto Condensed",  base_size = 14))
 
 GGally::ggpairs(
   movies_modified %>% drop_na(),
@@ -895,7 +929,10 @@ GGally::ggpairs(
 ```
 :::
 
-:::{.column}
+:::{.column width="4%"}
+:::
+
+:::{.column width="48%"}
 ```{r}
 #| ref.label: pairs-chart-1
 #| echo: false
@@ -978,11 +1015,13 @@ We see correlation between **all pairs** of variables. We need to choose just th
 :::: {.columns}
 
 :::{.column}
+
 ```{r}
 #| label:  error-bar-plot
 #| eval: false
 #| warning: false
 #| message: false
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 cor %>% 

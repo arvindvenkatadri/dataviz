@@ -11,6 +11,26 @@ bibliography:
   - grateful-refs.bib
 citation: true
 #suppress-bibliography: true
+format: 
+  html: default
+  revealjs: 
+    theme: default
+    output-file: counts-reveal.html
+    smaller: true
+    center: false
+    scroll-view: true
+    scrollable: true
+    slide-level: 3
+    slide-number: true
+    chalkboard: true
+    df-print: paged
+    highlight-style: tango
+    menu: true
+    overview: true
+    preload-iframes: true
+    preview-links: true
+    touch: true
+
 ---
 
 ## {{< iconify noto-v1 package >}} Setting up R Packages
@@ -50,6 +70,7 @@ library(tinytable) # Easy-to-make tables for data
 ##
 library(latex2exp)
 library(equatiomatic)
+library(ggrepel)
 library(marquee) # Marquee Text in HTML
 ##
 library(ellmer) # Access LLMs from R
@@ -69,8 +90,6 @@ library(statlingua) # LLM-driven plain English statistical explanations
 #| 
 library(systemfonts)
 library(showtext)
-library(ggrepel)
-library(marquee)
 ## Clean the slate
 systemfonts::clear_local_fonts()
 systemfonts::clear_registry()
@@ -91,12 +110,20 @@ showtext_auto(enable = TRUE) #enable showtext
 ##
 theme_custom <- function(){ 
 
-    theme_classic(base_size = 10) + 
+    theme_bw(base_size = 10) + 
     
+    # theme(panel.widths = unit(11, "cm"), 
+    #       panel.heights = unit(6.79, "cm")) + # Golden Ratio
+    
+    theme(plot.margin = margin_auto(t = 1, r = 2, b = 1, l = 1, unit = "cm"),
+          plot.background = element_rect(fill = "bisque",
+                                         colour = "black",
+                                         linewidth = 1)) + 
+            
     theme_sub_axis(title = element_text(family = "Roboto Condensed", 
-                                       size = 8),
+                                       size = 10),
                    text = element_text(family = "Roboto Condensed", 
-                                       size = 6)) + 
+                                       size = 8)) + 
     
     theme_sub_legend(text = element_text(family = "Roboto Condensed", 
                                          size = 6),
@@ -110,7 +137,7 @@ theme_custom <- function(){
                                            size = 10),
                    caption = element_text(family = "Alegreya", 
                                           size = 6),
-                   caption.position = "plot")
+                   caption.position = "plot") 
     
 }
 
@@ -165,6 +192,7 @@ options(tinytable_html_mathjax = TRUE)
 flextable::set_flextable_defaults(font.family = "Roboto Condensed")
 
 ```
+
 
 
 ## {{< iconify openmoji japanese-symbol-for-beginner >}} Introduction

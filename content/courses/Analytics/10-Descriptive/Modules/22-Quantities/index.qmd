@@ -15,6 +15,25 @@ bibliography:
   - grateful-refs.bib
 webr:
   packages: ['crosstable','readr', 'tidyr', 'dplyr','mosaic', 'skimr', 'ggformula','ggridges', 'palmerpenguins', 'janitor']
+format: 
+  html: default
+  revealjs: 
+    theme: default
+    output-file: quantities-reveal.html
+    smaller: true
+    center: false
+    scroll-view: true
+    scrollable: true
+    slide-level: 3
+    slide-number: true
+    chalkboard: true
+    df-print: paged
+    highlight-style: tango
+    menu: true
+    overview: true
+    preload-iframes: true
+    preview-links: true
+    touch: true
 
 ---
 
@@ -110,10 +129,18 @@ theme_custom <- function(){
 
     theme_bw(base_size = 10) + 
     
+    # theme(panel.widths = unit(11, "cm"), 
+    #       panel.heights = unit(6.79, "cm")) + # Golden Ratio
+    
+    theme(plot.margin = margin_auto(t = 1, r = 2, b = 1, l = 1, unit = "cm"),
+          plot.background = element_rect(fill = "bisque",
+                                         colour = "black",
+                                         linewidth = 1)) + 
+            
     theme_sub_axis(title = element_text(family = "Roboto Condensed", 
-                                       size = 8),
+                                       size = 10),
                    text = element_text(family = "Roboto Condensed", 
-                                       size = 6)) + 
+                                       size = 8)) + 
     
     theme_sub_legend(text = element_text(family = "Roboto Condensed", 
                                          size = 6),
@@ -127,7 +154,7 @@ theme_custom <- function(){
                                            size = 10),
                    caption = element_text(family = "Alegreya", 
                                           size = 6),
-                   caption.position = "plot")
+                   caption.position = "plot") 
     
 }
 
@@ -184,10 +211,6 @@ flextable::set_flextable_defaults(font.family = "Roboto Condensed")
 ```
 
 
-
-
-
-
 ## {{< iconify fxemoji japanesesymbolforbeginner >}} What graphs will we see today?
 
 | Variable #1 | Variable #2 | Chart Names |                    Chart Shape    | 
@@ -238,7 +261,9 @@ Project](https://www.gapminder.org), which aims at telling stories of
 the world with data, to remove systemic biases about poverty, income and
 gender related issues.
 
-{{< video https://vimeo.com/127511255  width="600" height="400" >}}
+
+{{< video https://vimeo.com/127511255 >}}
+
 
 ## {{< iconify mdi food-processor-outline >}} How do Histograms Work?
 
@@ -1488,7 +1513,7 @@ Since very large observations are indeed possible, if not highly probable, [one 
 
 ### {{< iconify openmoji peacock >}} {{< iconify fluent-emoji-high-contrast swan >}} Pareto, Power Laws, and Fat-Tailed Distributions
 
-{{< video https://youtu.be/Wcqt49dXtm8  width="680" height="500" >}}
+{{< video https://youtu.be/Wcqt49dXtm8  >}}
 
 ### {{< iconify ph chart-bar-horizontal-fill >}} Types of Distribution Shapes
 
@@ -1518,13 +1543,8 @@ data %>%
   ggplot( aes(x=value)) +
     geom_histogram(fill="#69b3a2", color="#e9ecef", alpha=0.9) +
     facet_wrap(~type, scale="free_x") +
-    theme_ipsum() +
-    theme(
-      panel.spacing = unit(0.1, "lines"),
-      axis.title.x=element_blank(),
-      axis.text.x=element_blank(),
-      axis.ticks.x=element_blank()
-    )
+    theme_custom()
+
 ```
 
 What insights could you develop based on these distribution shapes?\
@@ -1556,32 +1576,42 @@ Look at the 4 graphs below:
 #| code-fold: true
 #| layout-nrow: 2
 #| layout-ncol: 2
-#| out-height: 40%
-#| out-width: 70%
 
 TeachHistDens(Mean = 60, Sd = 5, VLine1 = 70, AxisFontSize = 14)
 
 TeachHistDens(Mean = 60, Sd = 15, VLine1 = 70, AxisFontSize = 14)
 
-xpnorm(mean = 60, sd = 5, q = 70, return = "plot", alpha = 0.5,
-      method = "gg") %>% 
+xpnorm(
+  mean = 60, sd = 5, q = 70, return = "plot", alpha = 0.5,
+  method = "gg"
+) %>%
   gf_vline(xintercept = 60, colour = "red", linewidth = 1) %>%
   gf_annotate("label", x = 75, y = 0.05, label = "area = probability = 0.02275") %>%
-  gf_annotate("curve", x = 76, y = 0.045, xend = 72.5, yend = 0.005,
-              curvature = -0.3, arrow = arrow(length = unit(0.2, "cm"))) %>%
-  gf_labs(title = "Z-score = 2", subtitle = "mean = 60, sd = 5") %>% 
-  gf_refine(scale_x_continuous(limits = c(35, 85), breaks = seq(35, 85, by = 5)), scale_y_continuous(expand = c(0,0)))
+  gf_annotate("curve",
+    x = 76, y = 0.045, xend = 72.5, yend = 0.005,
+    curvature = -0.3, arrow = arrow(length = unit(0.2, "cm"))
+  ) %>%
+  gf_labs(title = "Z-score = 2", subtitle = "mean = 60, sd = 5") %>%
+  gf_refine(
+    scale_x_continuous(
+      limits = c(35, 85),
+      breaks = seq(35, 85, by = 5), 
+      expand = c(0,0)))
 
-xpnorm(mean = 60, sd = 15, q = 70, return = "plot", alpha = 0.5,
-      method = "gg") %>% 
+xpnorm(
+  mean = 60, sd = 15, q = 70, return = "plot", alpha = 0.5,
+  method = "gg"
+) %>%
   gf_vline(xintercept = 60, colour = "red", linewidth = 1) %>%
   gf_annotate("label", x = 100, y = 0.02, label = "area = probability = 0.2525") %>%
-  gf_annotate("curve", x = 100, y = 0.018, xend = 75, yend = 0.005,
-              curvature = -0.3, arrow = arrow(length = unit(0.2, "cm"))) %>%
-  gf_labs(title = "Z-score = 0.6667", subtitle = "mean = 60, sd = 15") %>% 
-  gf_refine(scale_x_continuous(limits = c(-15, 135), 
-breaks = seq(-15, 135, by = 15)), scale_y_continuous(expand = c(0,0)))
-
+  gf_annotate("curve",
+    x = 100, y = 0.018, xend = 75, yend = 0.005,
+    curvature = -0.3, arrow = arrow(length = unit(0.2, "cm"))
+  ) %>%
+  gf_labs(title = "Z-score = 0.6667", subtitle = "mean = 60, sd = 15") %>%
+  gf_refine(scale_x_continuous(
+    limits = c(-15, 135),
+    breaks = seq(-15, 135, by = 15), expand = c(0,0)))
 
 ```
 Z-scores and Probabilities

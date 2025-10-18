@@ -19,6 +19,26 @@ draft: true
 editor: 
   markdown: 
     wrap: 72
+format: 
+  html: default
+  revealjs: 
+    theme: default
+    output-file: counts-reveal.html
+    smaller: true
+    center: false
+    scroll-view: true
+    scrollable: true
+    slide-level: 3
+    slide-number: true
+    chalkboard: true
+    df-print: paged
+    highlight-style: tango
+    menu: true
+    overview: true
+    preload-iframes: true
+    preview-links: true
+    touch: true
+
 ---
 
 :::: pa4
@@ -67,6 +87,8 @@ library(TeachHist)
 library(TeachingDemos)
 #library(smovie) # Stat Movies with code
 library(visualize) # Plot Densities, Histograms and Probabilities as areas under the curve
+library(ggrepel)
+library(marquee)
 
 ```
 
@@ -81,8 +103,6 @@ library(visualize) # Plot Densities, Histograms and Probabilities as areas under
 #| 
 library(systemfonts)
 library(showtext)
-library(ggrepel)
-library(marquee)
 ## Clean the slate
 systemfonts::clear_local_fonts()
 systemfonts::clear_registry()
@@ -105,10 +125,18 @@ theme_custom <- function(){
 
     theme_bw(base_size = 10) + 
     
+    # theme(panel.widths = unit(11, "cm"), 
+    #       panel.heights = unit(6.79, "cm")) + # Golden Ratio
+    
+    theme(plot.margin = margin_auto(t = 1, r = 2, b = 1, l = 1, unit = "cm"),
+          plot.background = element_rect(fill = "bisque",
+                                         colour = "black",
+                                         linewidth = 1)) + 
+            
     theme_sub_axis(title = element_text(family = "Roboto Condensed", 
-                                       size = 8),
+                                       size = 10),
                    text = element_text(family = "Roboto Condensed", 
-                                       size = 6)) + 
+                                       size = 8)) + 
     
     theme_sub_legend(text = element_text(family = "Roboto Condensed", 
                                          size = 6),
@@ -122,7 +150,7 @@ theme_custom <- function(){
                                            size = 10),
                    caption = element_text(family = "Alegreya", 
                                           size = 6),
-                   caption.position = "plot")
+                   caption.position = "plot") 
     
 }
 
@@ -177,6 +205,7 @@ options(tinytable_html_mathjax = TRUE)
 flextable::set_flextable_defaults(font.family = "Roboto Condensed")
 
 ```
+
 
 
 ## {{< iconify clarity group-solid >}} Bayes Rule: Do Exclamation Marks in Headlines help define fake news?

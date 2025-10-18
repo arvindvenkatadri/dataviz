@@ -20,6 +20,26 @@ citation: true
 editor: 
   markdown: 
     wrap: 72
+format: 
+  html: default
+  revealjs: 
+    theme: default
+    output-file: counts-reveal.html
+    smaller: true
+    center: false
+    scroll-view: true
+    scrollable: true
+    slide-level: 3
+    slide-number: true
+    chalkboard: true
+    df-print: paged
+    highlight-style: tango
+    menu: true
+    overview: true
+    preload-iframes: true
+    preview-links: true
+    touch: true
+
 ---
 
 ## {{< iconify noto-v1 package >}} Setting up R packages
@@ -52,7 +72,8 @@ library(epoxy)
 library(TeachHist)
 library(TeachingDemos)
 library(grateful)
-library(ggplot2)
+library(ggrepel)
+library(marquee)
 
 ```
 
@@ -67,8 +88,6 @@ library(ggplot2)
 #| 
 library(systemfonts)
 library(showtext)
-library(ggrepel)
-library(marquee)
 ## Clean the slate
 systemfonts::clear_local_fonts()
 systemfonts::clear_registry()
@@ -91,10 +110,18 @@ theme_custom <- function(){
 
     theme_bw(base_size = 10) + 
     
+    # theme(panel.widths = unit(11, "cm"), 
+    #       panel.heights = unit(6.79, "cm")) + # Golden Ratio
+    
+    theme(plot.margin = margin_auto(t = 1, r = 2, b = 1, l = 1, unit = "cm"),
+          plot.background = element_rect(fill = "bisque",
+                                         colour = "black",
+                                         linewidth = 1)) + 
+            
     theme_sub_axis(title = element_text(family = "Roboto Condensed", 
-                                       size = 8),
+                                       size = 10),
                    text = element_text(family = "Roboto Condensed", 
-                                       size = 6)) + 
+                                       size = 8)) + 
     
     theme_sub_legend(text = element_text(family = "Roboto Condensed", 
                                          size = 6),
@@ -108,7 +135,7 @@ theme_custom <- function(){
                                            size = 10),
                    caption = element_text(family = "Alegreya", 
                                           size = 6),
-                   caption.position = "plot")
+                   caption.position = "plot") 
     
 }
 
@@ -417,7 +444,10 @@ ggplot(data = gss2002) +
 As seen before, it needs a little more work, to convert the Contingency
 Table into a tibble:
 
-```{r warning=FALSE,message=FALSE}
+```{r}
+#| eval: false
+#| warning: false
+#| message: false
 ggplot2::theme_set(new = theme_custom())
 
 # https://stackoverflow.com/questions/19233365/how-to-create-a-marimekko-mosaic-plot-in-ggplot2
@@ -568,8 +598,8 @@ mosaic::xqchisq(p = 0.95, df = 4,
              xend = X_squared_critical + 0.5,
              linewidth = 0.5, curvature = - 0.3,
              arrow = arrow(length = unit(0.25, 'cm'))) %>% 
-  gf_refine(scale_y_continuous(expand = c(0,0)),
-            scale_x_continuous(expand = c(0,0)))
+  gf_refine(scale_y_continuous(expand = expansion(add = c(0,0.01))),
+            scale_x_continuous(expand = expansion(add = c(0,1))))
 
 ```
 
@@ -580,17 +610,20 @@ Let us now dig into that cryptic-looking table above!
 Let us once again look at the output of the `xchisq.test()` function:
 
 ```{r}
+
 xchisq.test(contingency_table)
+
 ```
 
 As per the `key` below, this is [**actually four 2-row tables interleaved together into one**]{style="background-color:yellow;"}. The first row is the `Observed` counts, the second row is the `Expected` counts, if the two variables were independent. The third row is the `Pearson Residuals`, which we will explain shortly. The last row is the `Contribution` of each cell to the overall Chi-Square statistic.
 
 Let us plot these tables and develop first a visual intuition, and then a mathematical one. If we pull apart the four tables, here are the mosaic plots for the *actual* and *expected* Contingency Tables, along with the *association* plot showing the differences, as we did when plotting [Proportions](../../../10-Descriptive/Modules/40-CatData/index.qmd#coloured-tiles-actual-and-expected-contingency-tables):
 
+::: {.column-page-inset-right}
 
 ```{r}
-#| echo: false
 #| layout-ncol: 3
+#| out-height: "150%"
 #| label: fig-mosaic-actual-expected-differences
 #| fig-cap: Mosaic Plots of Actual, Expected and Differences in Contingency Tables
 #| fig-subcap: 
@@ -639,6 +672,9 @@ vcd::assoc(counts_table,gp = shading_max, legend = TRUE,
   ) # Left side. How?)
 
 ```
+
+:::
+
 In @fig-mosaic-actual-expected-differences-1, we have the *Observed Contingency Table* as a mosaic, with its imbalances. The horizontal slice-line provides the overall proportion `Favour::Oppose`. The vertical slice-lines tell us that this proportion is *not the same* across levels of `Education`. 
 
 What if we straighten out the vertical slice-lines?
@@ -1163,6 +1199,7 @@ When performing research for a design project, peasants, you are likely to have 
 1.  An Online $\Xi^2$-test calculator.
     <https://www.statology.org/chi-square-test-of-independence-calculator/>
 1.  <https://saylordotorg.github.io/text_introductory-statistics/s13-04-comparison-of-two-population-p.html>
+1. `vcd` Tutorial: <http://euclid.psych.yorku.ca/datavis.ca/courses/VCD/vcd-tutorial.pdf>
 
 ::: {#refs style="font-size: 60%;"}
 ###### {{< iconify lucide package-check >}} R Package Citations

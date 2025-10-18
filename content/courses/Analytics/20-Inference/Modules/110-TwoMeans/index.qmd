@@ -15,6 +15,26 @@ tags:
 editor: 
   markdown: 
     wrap: 72
+format: 
+  html: default
+  revealjs: 
+    theme: default
+    output-file: twomeans-reveal.html
+    smaller: true
+    center: false
+    scroll-view: true
+    scrollable: true
+    slide-level: 3
+    slide-number: true
+    chalkboard: true
+    df-print: paged
+    highlight-style: tango
+    menu: true
+    overview: true
+    preload-iframes: true
+    preview-links: true
+    touch: true
+
 ---
 
 :::: pa4
@@ -71,6 +91,8 @@ knitr::opts_chunk$set(tidy = 'styler')
 library(statlingua) # For Statistics explained in simple English using AI
 library(ellmer)
 library(latex2exp)
+library(ggrepel)
+library(marquee)
 
 ```
 
@@ -85,8 +107,6 @@ library(latex2exp)
 #| 
 library(systemfonts)
 library(showtext)
-library(ggrepel)
-library(marquee)
 ## Clean the slate
 systemfonts::clear_local_fonts()
 systemfonts::clear_registry()
@@ -109,10 +129,18 @@ theme_custom <- function(){
 
     theme_bw(base_size = 10) + 
     
+    # theme(panel.widths = unit(11, "cm"), 
+    #       panel.heights = unit(6.79, "cm")) + # Golden Ratio
+    
+    theme(plot.margin = margin_auto(t = 1, r = 2, b = 1, l = 1, unit = "cm"),
+          plot.background = element_rect(fill = "bisque",
+                                         colour = "black",
+                                         linewidth = 1)) + 
+            
     theme_sub_axis(title = element_text(family = "Roboto Condensed", 
-                                       size = 8),
+                                       size = 10),
                    text = element_text(family = "Roboto Condensed", 
-                                       size = 6)) + 
+                                       size = 8)) + 
     
     theme_sub_legend(text = element_text(family = "Roboto Condensed", 
                                          size = 6),
@@ -126,7 +154,7 @@ theme_custom <- function(){
                                            size = 10),
                    caption = element_text(family = "Alegreya", 
                                           size = 6),
-                   caption.position = "plot")
+                   caption.position = "plot") 
     
 }
 
@@ -770,7 +798,7 @@ Here too, as with the [Test for a Single Mean](../100-OneMean/index.qmd), the in
    $$
    \text{Confidence Interval} = \bar{x} - \bar{y} \pm 1.96 \times SE
    $$
-5. Therefore if the actual difference and bis far beyond the confidence interval, hmm...we cannot think our belief is correct and we change our opinion that the two means $\bar{x}$ and $\bar{y}$ are the same.
+5. Therefore if the actual difference is far beyond the confidence interval, hmm...we cannot think our belief is correct and we change our opinion that the two means $\bar{x}$ and $\bar{y}$ are the same.
 
 Let us translate that mouthful into calculations!
 

@@ -786,7 +786,7 @@ window.Quarto = {
 <li><a href="#an-ai-generated-explanation-of-the-statistical-model" id="toc-an-ai-generated-explanation-of-the-statistical-model" class="nav-link" data-scroll-target="#an-ai-generated-explanation-of-the-statistical-model"><span class="header-section-number">14.1</span> An AI Generated Explanation of the Statistical Model</a></li>
   </ul>
 </li>
-  </ul></nav>
+  </ul><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="counts-reveal.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content column-body" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/listing.html">Data Viz and Stats</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/20-Inference/listing.html">Inference</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/20-Inference/Modules/130-ThreeMeansOrMore/index.html">Comparing Multiple Means with ANOVA</a></li></ol></nav><div class="quarto-title">
@@ -814,7 +814,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">October 2, 2025</p>
+      <p class="date-modified">October 18, 2025</p>
     </div>
   </div>
     
@@ -848,8 +848,6 @@ window.Quarto = {
 <div class="cell" data-messages="false">
 <details class="code-fold"><summary>Show the Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-lib/systemfonts">systemfonts</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/yixuan/showtext">showtext</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggrepel.slowkow.com/">ggrepel</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://marquee.r-lib.org">marquee</a></span><span class="op">)</span></span>
 <span><span class="co">## Clean the slate</span></span>
 <span><span class="fu">systemfonts</span><span class="fu">::</span><span class="fu"><a href="https://systemfonts.r-lib.org/reference/add_fonts.html">clear_local_fonts</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">systemfonts</span><span class="fu">::</span><span class="fu"><a href="https://systemfonts.r-lib.org/reference/register_font.html">clear_registry</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -873,16 +871,28 @@ window.Quarto = {
 <span><span class="fu"><a href="https://rdrr.io/pkg/showtext/man/showtext_auto.html">showtext_auto</a></span><span class="op">(</span>enable <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># enable showtext</span></span>
 <span><span class="co">##</span></span>
 <span><span class="va">theme_custom</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_classic</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">+</span></span>
+<span></span>
+<span>    <span class="co"># theme(panel.widths = unit(11, "cm"),</span></span>
+<span>    <span class="co">#       panel.heights = unit(6.79, "cm")) + # Golden Ratio</span></span>
+<span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span></span>
+<span>      plot.margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin_auto</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">1</span>, r <span class="op">=</span> <span class="fl">2</span>, b <span class="op">=</span> <span class="fl">1</span>, l <span class="op">=</span> <span class="fl">1</span>, unit <span class="op">=</span> <span class="st">"cm"</span><span class="op">)</span>,</span>
+<span>      plot.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span><span class="op">(</span></span>
+<span>        fill <span class="op">=</span> <span class="st">"bisque"</span>,</span>
+<span>        colour <span class="op">=</span> <span class="st">"black"</span>,</span>
+<span>        linewidth <span class="op">=</span> <span class="fl">1</span></span>
+<span>      <span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op">+</span></span>
 <span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/subtheme.html">theme_sub_axis</a></span><span class="op">(</span></span>
 <span>      title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span></span>
 <span>        family <span class="op">=</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span>        size <span class="op">=</span> <span class="fl">8</span></span>
+<span>        size <span class="op">=</span> <span class="fl">10</span></span>
 <span>      <span class="op">)</span>,</span>
 <span>      text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span></span>
 <span>        family <span class="op">=</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span>        size <span class="op">=</span> <span class="fl">6</span></span>
+<span>        size <span class="op">=</span> <span class="fl">8</span></span>
 <span>      <span class="op">)</span></span>
 <span>    <span class="op">)</span> <span class="op">+</span></span>
 <span></span>
@@ -984,7 +994,7 @@ window.Quarto = {
 </section><section id="workflow-read-the-data" class="level2" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="workflow-read-the-data">
 <span class="header-section-number">3</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Read the Data</h2>
 <p>Download the data by clicking the button below.</p>
-<p><a href="#dnldts61574" onclick="fetch('data:text/csv;base64,RnJvZ3NwYXduIHNhbXBsZSBpZCxUZW1wZXJhdHVyZTEzLFRlbXBlcmF0dXJlMTgsVGVtcGVyYXR1cmUyNQoxLDI0LCwKMiwsMjEsCjMsLCwxOAo0LDI2LCwKNSwsMjIsCjYsLCwxNAo3LDI3LCwKOCwsMjIsCjksLCwxNQoxMCwyNywsCjExLCwyMSwKMTIsLCwxNQoxMywyNiwsCjE0LCwyMCwKMTUsLCwxNgoxNiwyNywsCjE3LCwyMCwKMTgsLCwxNgoxOSwyNywsCjIwLCwxOSwKMjEsLCwxNwoyMiwyNSwsCjIzLCwyMSwKMjQsLCwxNwoyNSwyNiwsCjI2LCwyMywKMjcsLCwxNwoyOCwyOCwsCjI5LCwyMSwKMzAsLCwxNwozMSwyNCwsCjMyLCwyMSwKMzMsLCwxOAozNCwyNiwsCjM1LCwyMiwKMzYsLCwxNAozNywyNywsCjM4LCwyMiwKMzksLCwxNQo0MCwyNywsCjQxLCwyMSwKNDIsLCwxNQo0MywyNiwsCjQ0LCwyMCwKNDUsLCwxNgo0NiwyNywsCjQ3LCwyMCwKNDgsLCwxNgo0OSwyNywsCjUwLCwxOSwKNTEsLCwxNwo1MiwyNSwsCjUzLCwyMSwKNTQsLCwxNwo1NSwyNiwsCjU2LCwyMywKNTcsLCwxNwo1OCwyOCwsCjU5LCwyMSwKNjAsLCwxNwo=').then(res => res.blob()).then(blob => {
+<p><a href="#dnldts38902" onclick="fetch('data:text/csv;base64,RnJvZ3NwYXduIHNhbXBsZSBpZCxUZW1wZXJhdHVyZTEzLFRlbXBlcmF0dXJlMTgsVGVtcGVyYXR1cmUyNQoxLDI0LCwKMiwsMjEsCjMsLCwxOAo0LDI2LCwKNSwsMjIsCjYsLCwxNAo3LDI3LCwKOCwsMjIsCjksLCwxNQoxMCwyNywsCjExLCwyMSwKMTIsLCwxNQoxMywyNiwsCjE0LCwyMCwKMTUsLCwxNgoxNiwyNywsCjE3LCwyMCwKMTgsLCwxNgoxOSwyNywsCjIwLCwxOSwKMjEsLCwxNwoyMiwyNSwsCjIzLCwyMSwKMjQsLCwxNwoyNSwyNiwsCjI2LCwyMywKMjcsLCwxNwoyOCwyOCwsCjI5LCwyMSwKMzAsLCwxNwozMSwyNCwsCjMyLCwyMSwKMzMsLCwxOAozNCwyNiwsCjM1LCwyMiwKMzYsLCwxNAozNywyNywsCjM4LCwyMiwKMzksLCwxNQo0MCwyNywsCjQxLCwyMSwKNDIsLCwxNQo0MywyNiwsCjQ0LCwyMCwKNDUsLCwxNgo0NiwyNywsCjQ3LCwyMCwKNDgsLCwxNgo0OSwyNywsCjUwLCwxOSwKNTEsLCwxNwo1MiwyNSwsCjUzLCwyMSwKNTQsLCwxNwo1NSwyNiwsCjU2LCwyMywKNTcsLCwxNwo1OCwyOCwsCjU5LCwyMSwKNjAsLCwxNwo=').then(res => res.blob()).then(blob => {
       const downloadURL = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       document.body.appendChild(a);
@@ -992,7 +1002,7 @@ window.Quarto = {
       a.download = 'frogs.csv'; a.click();
       window.URL.revokeObjectURL(downloadURL);
       document.body.removeChild(a);
-        });"><button class="btn btn-info downloadthis  " id="dnldts61574"><i class="bi bi-database-fill-down"></i> Download the frogs data </button></a></p>
+        });"><button class="btn btn-info downloadthis  " id="dnldts38902"><i class="bi bi-database-fill-down"></i> Download the frogs data </button></a></p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1042,12 +1052,12 @@ window.Quarto = {
 <span>    cols_remove <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># Convert Temp into TempFac, a 3-level factor</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>TempFac <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>TempFac <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="va">TempFac</span>,</span>
 <span>    levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">13</span>, <span class="fl">18</span>, <span class="fl">25</span><span class="op">)</span>,</span>
 <span>    labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"13"</span>, <span class="st">"18"</span>, <span class="st">"25"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span><span class="st">"Id"</span> <span class="op">=</span> <span class="va">`Frogspawn sample id`</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">frogs_long</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/rename.html">rename</a></span><span class="op">(</span><span class="st">"Id"</span> <span class="op">=</span> <span class="va">`Frogspawn sample id`</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">frogs_long</span></span>
 <span><span class="va">frogs_long</span></span>
 <span><span class="co">##</span></span>
 <span><span class="va">frogs_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/mosaicCore/man/prop.html">count</a></span><span class="op">(</span><span class="va">TempFac</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1376,15 +1386,15 @@ SSA = SST - SSE
 <details class="code-fold"><summary>Show the Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16" data-code-line-numbers=""><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">frogs_plot</span> <span class="op">&lt;-</span> <span class="va">frogs_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">TempFac</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/arrange.html">arrange</a></span><span class="op">(</span><span class="va">TempFac</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">rowid_to_column</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"index"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">frogs_mean</span> <span class="op">&lt;-</span> <span class="va">frogs_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>overall_mean <span class="op">=</span> <span class="fu">mean</span><span class="op">(</span><span class="va">Time</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/summarise.html">summarise</a></span><span class="op">(</span>overall_mean <span class="op">=</span> <span class="fu">mean</span><span class="op">(</span><span class="va">Time</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">frogs_grouped_means</span> <span class="op">&lt;-</span> <span class="va">frogs_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">TempFac</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>grouped_means <span class="op">=</span> <span class="fu">mean</span><span class="op">(</span><span class="va">Time</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html">group_by</a></span><span class="op">(</span><span class="va">TempFac</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/summarise.html">summarise</a></span><span class="op">(</span>grouped_means <span class="op">=</span> <span class="fu">mean</span><span class="op">(</span><span class="va">Time</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_point.html">gf_point</a></span><span class="op">(</span><span class="va">Time</span> <span class="op">~</span> <span class="va">index</span>,</span>
 <span>  color <span class="op">=</span> <span class="op">~</span><span class="va">TempFac</span>,</span>
@@ -1405,15 +1415,15 @@ SSA = SST - SSE
 <span>  <span class="op">)</span></span>
 <span><span class="co">##</span></span>
 <span><span class="va">frogs_plot</span> <span class="op">&lt;-</span> <span class="va">frogs_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">TempFac</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/arrange.html">arrange</a></span><span class="op">(</span><span class="va">TempFac</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">rowid_to_column</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"index"</span><span class="op">)</span></span>
 <span><span class="co">##</span></span>
 <span><span class="va">frogs_mean</span> <span class="op">&lt;-</span> <span class="va">frogs_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>overall_mean <span class="op">=</span> <span class="fu">mean</span><span class="op">(</span><span class="va">Time</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/summarise.html">summarise</a></span><span class="op">(</span>overall_mean <span class="op">=</span> <span class="fu">mean</span><span class="op">(</span><span class="va">Time</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">##</span></span>
 <span><span class="va">frogs_grouped_means</span> <span class="op">&lt;-</span> <span class="va">frogs_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">TempFac</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>grouped_means <span class="op">=</span> <span class="fu">mean</span><span class="op">(</span><span class="va">Time</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html">group_by</a></span><span class="op">(</span><span class="va">TempFac</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/summarise.html">summarise</a></span><span class="op">(</span>grouped_means <span class="op">=</span> <span class="fu">mean</span><span class="op">(</span><span class="va">Time</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">##</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_point.html">gf_point</a></span><span class="op">(</span><span class="va">Time</span> <span class="op">~</span> <span class="va">index</span>,</span>
 <span>  group <span class="op">=</span> <span class="op">~</span><span class="va">TempFac</span>,</span>
@@ -1430,15 +1440,15 @@ SSA = SST - SSE
 <span>    data <span class="op">=</span> <span class="va">frogs_grouped_means</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_segment.html">gf_segment</a></span><span class="op">(</span></span>
-<span>    data <span class="op">=</span> <span class="va">frogs_plot</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">TempFac</span> <span class="op">==</span> <span class="fl">13</span><span class="op">)</span>,</span>
+<span>    data <span class="op">=</span> <span class="va">frogs_plot</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html">filter</a></span><span class="op">(</span><span class="va">TempFac</span> <span class="op">==</span> <span class="fl">13</span><span class="op">)</span>,</span>
 <span>    <span class="va">frogs_grouped_means</span><span class="op">$</span><span class="va">grouped_means</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">+</span> <span class="va">Time</span> <span class="op">~</span> <span class="va">index</span> <span class="op">+</span> <span class="va">index</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_segment.html">gf_segment</a></span><span class="op">(</span></span>
-<span>    data <span class="op">=</span> <span class="va">frogs_plot</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">TempFac</span> <span class="op">==</span> <span class="fl">18</span><span class="op">)</span>,</span>
+<span>    data <span class="op">=</span> <span class="va">frogs_plot</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html">filter</a></span><span class="op">(</span><span class="va">TempFac</span> <span class="op">==</span> <span class="fl">18</span><span class="op">)</span>,</span>
 <span>    <span class="va">frogs_grouped_means</span><span class="op">$</span><span class="va">grouped_means</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">+</span> <span class="va">Time</span> <span class="op">~</span> <span class="va">index</span> <span class="op">+</span> <span class="va">index</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_segment.html">gf_segment</a></span><span class="op">(</span></span>
-<span>    data <span class="op">=</span> <span class="va">frogs_plot</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">TempFac</span> <span class="op">==</span> <span class="fl">25</span><span class="op">)</span>,</span>
+<span>    data <span class="op">=</span> <span class="va">frogs_plot</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html">filter</a></span><span class="op">(</span><span class="va">TempFac</span> <span class="op">==</span> <span class="fl">25</span><span class="op">)</span>,</span>
 <span>    <span class="va">frogs_grouped_means</span><span class="op">$</span><span class="va">grouped_means</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span> <span class="op">+</span> <span class="va">Time</span> <span class="op">~</span> <span class="va">index</span> <span class="op">+</span> <span class="va">index</span></span>
 <span>  <span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell quarto-layout-panel" data-layout-ncol="2">
@@ -1476,13 +1486,13 @@ SSA = SST - SSE
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Calculate overall sum squares SST</span></span>
 <span><span class="va">frogs_overall</span> <span class="op">&lt;-</span> <span class="va">frogs_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/summarise.html">summarise</a></span><span class="op">(</span></span>
 <span>    overall_mean_time <span class="op">=</span> <span class="fu">mean</span><span class="op">(</span><span class="va">Time</span><span class="op">)</span>,</span>
 <span>    <span class="co"># Overall mean across all readings</span></span>
 <span>    <span class="co"># The Black Line</span></span>
 <span></span>
 <span>    SST <span class="op">=</span> <span class="fu"><a href="https://www.mosaic-web.org/mosaic/reference/aggregating.html">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">Time</span> <span class="op">-</span> <span class="va">overall_mean_time</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>,</span>
-<span>    n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>    n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/context.html">n</a></span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="co"># Always do this with `summarise`</span></span>
 <span></span>
 <span><span class="va">frogs_overall</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1504,17 +1514,17 @@ SSA = SST - SSE
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Calculate sums of square errors *within* each group</span></span>
 <span><span class="co"># with respect to individual group means</span></span>
 <span><span class="va">frogs_within_groups</span> <span class="op">&lt;-</span> <span class="va">frogs_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">TempFac</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html">group_by</a></span><span class="op">(</span><span class="va">TempFac</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/summarise.html">summarise</a></span><span class="op">(</span></span>
 <span>    grouped_mean_time <span class="op">=</span> <span class="fu">mean</span><span class="op">(</span><span class="va">Time</span><span class="op">)</span>, <span class="co"># The Coloured Lines</span></span>
 <span>    grouped_variance_time <span class="op">=</span> <span class="fu"><a href="https://www.mosaic-web.org/mosaic/reference/aggregating.html">var</a></span><span class="op">(</span><span class="va">Time</span><span class="op">)</span>,</span>
 <span>    group_error_squares <span class="op">=</span> <span class="fu"><a href="https://www.mosaic-web.org/mosaic/reference/aggregating.html">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">Time</span> <span class="op">-</span> <span class="va">grouped_mean_time</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>,</span>
-<span>    n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>    n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/context.html">n</a></span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="va">frogs_within_groups</span></span>
 <span><span class="co">##</span></span>
 <span><span class="va">frogs_SSE</span> <span class="op">&lt;-</span> <span class="va">frogs_within_groups</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>SSE <span class="op">=</span> <span class="fu"><a href="https://www.mosaic-web.org/mosaic/reference/aggregating.html">sum</a></span><span class="op">(</span><span class="va">group_error_squares</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/summarise.html">summarise</a></span><span class="op">(</span>SSE <span class="op">=</span> <span class="fu"><a href="https://www.mosaic-web.org/mosaic/reference/aggregating.html">sum</a></span><span class="op">(</span><span class="va">group_error_squares</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">##</span></span>
 <span><span class="va">SSE</span> <span class="op">&lt;-</span> <span class="va">frogs_SSE</span><span class="op">$</span><span class="va">SSE</span></span>
 <span><span class="va">SSE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1556,15 +1566,15 @@ F_{stat} = \frac{SSA / df_{SSA}}{SSE / df_{SSE}}
 <span><span class="va">df_SSE</span> <span class="op">&lt;-</span> <span class="va">frogs_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># Takes into account "unbalanced" situations</span></span>
 <span>  <span class="co"># Where groups are not equal in size</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">TempFac</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>per_group_df_SSE <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>df_SSE <span class="op">=</span> <span class="fu"><a href="https://www.mosaic-web.org/mosaic/reference/aggregating.html">sum</a></span><span class="op">(</span><span class="va">per_group_df_SSE</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html">group_by</a></span><span class="op">(</span><span class="va">TempFac</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/summarise.html">summarise</a></span><span class="op">(</span>per_group_df_SSE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/context.html">n</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/summarise.html">summarise</a></span><span class="op">(</span>df_SSE <span class="op">=</span> <span class="fu"><a href="https://www.mosaic-web.org/mosaic/reference/aggregating.html">sum</a></span><span class="op">(</span><span class="va">per_group_df_SSE</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span></span>
 <span><span class="co">## Overall Sum of Squares SST</span></span>
 <span><span class="va">df_SST</span> <span class="op">&lt;-</span> <span class="va">frogs_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>df_SST <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/summarise.html">summarise</a></span><span class="op">(</span>df_SST <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/context.html">n</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span></span>
@@ -1593,7 +1603,7 @@ F_{stat} = \frac{SSA / df_{SSA}}{SSE / df_{SSE}}
 <span><span class="co"># Which are of course equal here ;-D</span></span>
 <span></span>
 <span><span class="va">MSE</span> <span class="op">&lt;-</span> <span class="va">frogs_within_groups</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>mean_square_error <span class="op">=</span> <span class="fu"><a href="https://www.mosaic-web.org/mosaic/reference/aggregating.html">sum</a></span><span class="op">(</span><span class="va">group_error_squares</span> <span class="op">/</span> <span class="va">df_SSE</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/summarise.html">summarise</a></span><span class="op">(</span>mean_square_error <span class="op">=</span> <span class="fu"><a href="https://www.mosaic-web.org/mosaic/reference/aggregating.html">sum</a></span><span class="op">(</span><span class="va">group_error_squares</span> <span class="op">/</span> <span class="va">df_SSE</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">MSE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -1678,7 +1688,7 @@ Time = 26.3 + -5.3*TempFac18 + -10.1*TempFac25 + e</code></pre>
 <span></span>
 <span><span class="co">## Plot the Equation over the Scatterplot</span></span>
 <span><span class="va">frogs_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>fitted <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html">fitted</a></span><span class="op">(</span><span class="va">frogs_anova</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>fitted <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html">fitted</a></span><span class="op">(</span><span class="va">frogs_anova</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggformula/man/gf_jitter.html">gf_jitter</a></span><span class="op">(</span><span class="va">Time</span> <span class="op">~</span> <span class="va">TempFac</span>,</span>
 <span>    width <span class="op">=</span> <span class="fl">0.2</span>, alpha <span class="op">=</span> <span class="fl">0.6</span>,</span>
 <span>    color <span class="op">=</span> <span class="op">~</span><span class="va">TempFac</span>,</span>
@@ -1764,14 +1774,14 @@ W = 0.92752, p-value = 0.001561</code></pre>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>We will use an advanced <code>dplyr</code> technique to do this. We will first group the data by <code>TempFac</code>, then use <code><a href="https://dplyr.tidyverse.org/reference/group_map.html">dplyr::group_modify()</a></code> to apply the <code><a href="https://rdrr.io/r/stats/shapiro.test.html">shapiro.test()</a></code> function to each of these groups. Finally we will use <code><a href="https://generics.r-lib.org/reference/tidy.html">broom::tidy()</a></code> to convert the output of <code><a href="https://rdrr.io/r/stats/shapiro.test.html">shapiro.test()</a></code> into a tidy dataframe. See the code below.</p>
+<p>We will use an advanced <code>dplyr</code> technique to do this. We will first group the data by <code>TempFac</code>, then use <code><a href="https://rdrr.io/pkg/dplyr/man/group_map.html">dplyr::group_modify()</a></code> to apply the <code><a href="https://rdrr.io/r/stats/shapiro.test.html">shapiro.test()</a></code> function to each of these groups. Finally we will use <code><a href="https://generics.r-lib.org/reference/tidy.html">broom::tidy()</a></code> to convert the output of <code><a href="https://rdrr.io/r/stats/shapiro.test.html">shapiro.test()</a></code> into a tidy dataframe. See the code below.</p>
 </div>
 </div>
 <div class="cell">
 <details class="code-fold"><summary>Show the Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">frogs_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">TempFac</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_map.html">group_modify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">.x</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Time</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html">group_by</a></span><span class="op">(</span><span class="va">TempFac</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_map.html">group_modify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">.x</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">Time</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://purrr.tidyverse.org/reference/as_vector.html">as_vector</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/stats/shapiro.test.html">shapiro.test</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>    <span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1841,8 +1851,8 @@ W = 0.94814, p-value = 0.01275</code></pre>
 <div class="column">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">frogs_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">TempFac</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>variance <span class="op">=</span> <span class="fu"><a href="https://www.mosaic-web.org/mosaic/reference/aggregating.html">var</a></span><span class="op">(</span><span class="va">Time</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html">group_by</a></span><span class="op">(</span><span class="va">TempFac</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/summarise.html">summarise</a></span><span class="op">(</span>variance <span class="op">=</span> <span class="fu"><a href="https://www.mosaic-web.org/mosaic/reference/aggregating.html">var</a></span><span class="op">(</span><span class="va">Time</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -1952,7 +1962,7 @@ Fligner-Killeen:med chi-squared = 0.53898, df = 2, p-value = 0.7638</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb54" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">tidy_anova</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span></span>
 <span>    hi <span class="op">=</span> <span class="va">estimate</span> <span class="op">+</span> <span class="va">std.error</span>,</span>
 <span>    lo <span class="op">=</span> <span class="va">estimate</span> <span class="op">-</span> <span class="va">std.error</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -1996,10 +2006,10 @@ Fligner-Killeen:med chi-squared = 0.53898, df = 2, p-value = 0.7638</code></pre>
 <span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">frogs_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">TempFac</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fu">mean</span><span class="op">(</span><span class="va">Time</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html">group_by</a></span><span class="op">(</span><span class="va">TempFac</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/summarise.html">summarise</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fu">mean</span><span class="op">(</span><span class="va">Time</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span>std.error <span class="op">=</span> <span class="va">tidy_anova</span><span class="op">$</span><span class="va">std.error</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span></span>
 <span>    hi <span class="op">=</span> <span class="va">mean</span> <span class="op">+</span> <span class="va">std.error</span>,</span>
 <span>    lo <span class="op">=</span> <span class="va">mean</span> <span class="op">-</span> <span class="va">std.error</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -2244,7 +2254,7 @@ It <em>is</em> possible to incorporate these beliefs into the ANOVA model, using
 </tr>
 <tr class="even">
 <td style="text-align: left;">ggstatsplot</td>
-<td style="text-align: left;">0.13.2</td>
+<td style="text-align: left;">0.13.3</td>
 <td style="text-align: left;"><span class="citation" data-cites="ggstatsplot">Patil (<a href="#ref-ggstatsplot" role="doc-biblioref">2021</a>)</span></td>
 </tr>
 <tr class="odd">

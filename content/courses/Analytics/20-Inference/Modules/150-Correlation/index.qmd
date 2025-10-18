@@ -13,6 +13,26 @@ citation: true
 editor: 
   markdown: 
     wrap: 72
+format: 
+  html: default
+  revealjs: 
+    theme: default
+    output-file: counts-reveal.html
+    smaller: true
+    center: false
+    scroll-view: true
+    scrollable: true
+    slide-level: 3
+    slide-number: true
+    chalkboard: true
+    df-print: paged
+    highlight-style: tango
+    menu: true
+    overview: true
+    preload-iframes: true
+    preview-links: true
+    touch: true
+
 ---
 
 ## {{< iconify noto-v1 package >}} Setting up R packages
@@ -25,7 +45,6 @@ editor:
 
 library(tidyverse) # Sine Qua Non
 library(mosaic) # Our bag of tricks
-library(ggformula) # Our graphics package
 library(broom) # Tidying model outputs
 library(crosstable) # tabulated summary stats
 library(openintro) # datasets and methods
@@ -51,7 +70,9 @@ library(epoxy)
 library(TeachHist)
 library(TeachingDemos)
 library(grateful)
-library(ggplot2)
+library(ggrepel)
+library(marquee)
+
 ```
 
 
@@ -66,8 +87,6 @@ library(ggplot2)
 #| 
 library(systemfonts)
 library(showtext)
-library(ggrepel)
-library(marquee)
 ## Clean the slate
 systemfonts::clear_local_fonts()
 systemfonts::clear_registry()
@@ -90,10 +109,18 @@ theme_custom <- function(){
 
     theme_bw(base_size = 10) + 
     
+    # theme(panel.widths = unit(11, "cm"), 
+    #       panel.heights = unit(6.79, "cm")) + # Golden Ratio
+    
+    theme(plot.margin = margin_auto(t = 1, r = 2, b = 1, l = 1, unit = "cm"),
+          plot.background = element_rect(fill = "bisque",
+                                         colour = "black",
+                                         linewidth = 1)) + 
+            
     theme_sub_axis(title = element_text(family = "Roboto Condensed", 
-                                       size = 8),
+                                       size = 10),
                    text = element_text(family = "Roboto Condensed", 
-                                       size = 6)) + 
+                                       size = 8)) + 
     
     theme_sub_legend(text = element_text(family = "Roboto Condensed", 
                                          size = 6),
@@ -107,7 +134,7 @@ theme_custom <- function(){
                                            size = 10),
                    caption = element_text(family = "Alegreya", 
                                           size = 6),
-                   caption.position = "plot")
+                   caption.position = "plot") 
     
 }
 
@@ -727,7 +754,7 @@ $$F = \frac{r^2 (n - 2)}{1 - r^2}$$
 $$t = \sqrt{F} = \sqrt{\frac{r^2 (n - 2)}{1 - r^2}} = \frac{r \sqrt{n - 2}}{\sqrt{1 - r^2}}$$
 This matches our derived t-statistic, confirming that the ratio of explained to unexplained variance underpins the test.
 
-Final Answer
+###### Summary
 
 The t-value for testing the significance of the Pearson correlation coefficient $r$, derived from the perspective of variances in a regression framework, is:
 
@@ -841,9 +868,9 @@ mosaic::xqt(p = c(0.025, 0.975), df = 463,
   gf_vline(xintercept = t_statistic, color = "red") %>%
   gf_vline(xintercept = t_critical, color = "blue") %>%
   gf_annotate(geom = "label", x = t_statistic, y = 0.3, 
-            label = "t-statistic", colour = "purple", size = 8) %>% 
+            label = "t-statistic", colour = "purple", size = 4) %>% 
   gf_annotate(geom = "label", x = t_critical, y = 0.3,
-            label = "t-critical", colour = "purple", size = 8) %>% 
+            label = "t-critical", colour = "purple", size = 4) %>% 
   gf_labs(title = "t-distribution with df = 463",
           subtitle = "Sons' Heights vs Fathers' Heights",
           x = "t-value", y = "Density") %>% 
@@ -864,7 +891,7 @@ gf_fun(dt(x = (x - mean_value) / sqrt(df_corr / (df_corr - 2)),
           x = "Correlation Estimate", y = "Density") %>% 
   gf_vline(xintercept = mean_value, color = "red") %>%
   gf_annotate(geom = "label", x = mean_value, y = 0.3,
-            label = "Corr Estimate", colour = "purple", size = 8) %>% 
+            label = "Corr Estimate", colour = "purple", size = 4) %>% 
   gf_vline(xintercept = cor_son_pearson$conf.low, color = "blue", linetype = "dashed") %>%
   gf_vline(xintercept = cor_son_pearson$conf.high, color = "blue", linetype = "dashed") %>%
   gf_annotate("segment", x = cor_son_pearson$conf.low, 

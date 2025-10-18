@@ -23,7 +23,26 @@ citation: true
 #     wrap: 72
 webr:
   packages: ['janitor','readr', 'tidyr', 'dplyr','mosaic', 'skimr', 'ggformula','ggridges', 'palmerpenguins', 'tidyplots', 'systemfonts', 'showtext']
-    
+format: 
+  html: default
+  revealjs: 
+    theme: default
+    output-file: counts-reveal.html
+    smaller: true
+    center: false
+    scroll-view: true
+    scrollable: true
+    slide-level: 3
+    slide-number: true
+    chalkboard: true
+    df-print: paged
+    highlight-style: tango
+    menu: true
+    overview: true
+    preload-iframes: true
+    preview-links: true
+    touch: true
+
 ---
 
 ![You're Nothing but a Pack of Cards!!](../../../../../materials/images/1book41.jpg){height=250 fig-align="center"}
@@ -110,10 +129,18 @@ theme_custom <- function(){
 
     theme_bw(base_size = 10) + 
     
+    # theme(panel.widths = unit(11, "cm"), 
+    #       panel.heights = unit(6.79, "cm")) + # Golden Ratio
+    
+    theme(plot.margin = margin_auto(t = 1, r = 2, b = 1, l = 1, unit = "cm"),
+          plot.background = element_rect(fill = "bisque",
+                                         colour = "black",
+                                         linewidth = 1)) + 
+            
     theme_sub_axis(title = element_text(family = "Roboto Condensed", 
-                                       size = 8),
+                                       size = 10),
                    text = element_text(family = "Roboto Condensed", 
-                                       size = 6)) + 
+                                       size = 8)) + 
     
     theme_sub_legend(text = element_text(family = "Roboto Condensed", 
                                          size = 6),
@@ -127,7 +154,7 @@ theme_custom <- function(){
                                            size = 10),
                    caption = element_text(family = "Alegreya", 
                                           size = 6),
-                   caption.position = "plot")
+                   caption.position = "plot") 
     
 }
 
@@ -184,13 +211,13 @@ flextable::set_flextable_defaults(font.family = "Roboto Condensed")
 ```
 
 
-## {{< iconify fxemoji japanesesymbolforbeginner >}} What graphs will we see today?
+### {{< iconify fxemoji japanesesymbolforbeginner >}} What graphs will we see today?
 
 | Variable #1 | Variable #2 | Chart Names |                    Chart Shape    | 
 |:-------------:|:--------------:|:------------------:|:--------------------:|:------:|
 |    Qual   |    None     |  Bar Chart  | {{< iconify ion bar-chart size=4x >}}|
 
-## {{< iconify tabler variable >}} What kind of Data Variables will we choose?
+### {{< iconify tabler variable >}} What kind of Data Variables will we choose?
 
 ::: column-page-inset-right
 
@@ -200,7 +227,10 @@ flextable::set_flextable_defaults(font.family = "Roboto Condensed")
 #| warning: false
 read_csv("../../../../../materials/Data/pronouns.csv") %>% 
   filter(No == "3") %>% 
-  tt(theme = "striped")
+  tt(theme = "striped") %>%  
+  style_tt(color = "black",fontsize = 0.75, line = "tblr",
+    line_width = 0.4,
+    line_color = "white")
   
 ```
 :::
@@ -315,7 +345,7 @@ methods we have seen.
 
 ::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
 
-### {{< iconify la r-project >}} dplyr
+#### {{< iconify la r-project >}} dplyr
 
 ```{r}
 #| label: glimpse-taxi
@@ -324,23 +354,27 @@ dplyr::glimpse(taxi)
 ```
 
 
-### {{< iconify la r-project >}} skimr
+#### {{< iconify la r-project >}} skimr
 
 ```{r}
 #| label: skim-taxi
-skimr::skim(taxi_modified)
+skimr::skim(taxi_modified) %>% as_tibble()
 
 ```
 
-### {{< iconify la r-project >}} mosaic
+#### {{< iconify la r-project >}} mosaic
 
 ```{r}
 #| label: inspect-taxi
-mosaic::inspect(taxi_modified)
+taxi_inspect <- mosaic::inspect(taxi_modified)
+taxi_inspect$categorical
+taxi_inspect$quantitative
 
 ```
 
-### {{< iconify noto-v1 spider-web >}} web-r
+::: {.content-hidden when-format="revealjs"}
+
+#### {{< iconify noto-v1 spider-web >}} web-r
 
 ```{webr-r}
 #| label: glimpse-taxi-webr
@@ -360,18 +394,18 @@ inspect(taxi_modified)
 
 ```
 :::
-
+:::
 
 ### {{< iconify streamline dictionary-language-book-solid >}} Data Dictionary
 
 ::: callout-note
-### Quantitative Data
+#### Quantitative Data
 -   `distance`:  Continuous Quant variable, the distance of the trip in miles.
 
 :::
 
 ::: callout-note
-### Qualitative Data
+#### Qualitative Data
 - `tip`:  Yes/No type Qual variable, whether a tip was given or not.
 - `company`: 7 levels, the cab company that was used for the ride.
 - `local`: 2 levels, whether the trip was local or not.
@@ -464,15 +498,16 @@ Looks clean and good.
 
 Try and think of more Questions!
 
+
 ## {{< iconify ic baseline-bar-chart >}} Plotting Barcharts
 
 Let's plot some bar graphs: recall that for bar charts, we need to
 choose **Qual** variables to count with! In each case, we will state a Hypothesis/Question and try to answer it with a chart. 
 
 
-### {{< iconify el question-sign >}} Question-1: Do more people `tip` than not?
 
-::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
+## {{< iconify el question-sign >}} Question-1: Do more people `tip` than not?
+
 ### ggformula-1
 
 ```{r}
@@ -481,7 +516,7 @@ choose **Qual** variables to count with! In each case, we will state a Hypothesi
 #| 
 ggplot2::theme_set(new = theme_custom())
 
-gf_bar(~ tip, data = taxi_modified) %>%
+gf_bar(~ tip, data = taxi_modified) %>% #<<
   gf_labs(title = "Plot 1A: Counts of Tips")
 
 ```
@@ -501,7 +536,9 @@ ggplot(taxi_modified)  +
 
 ```
 
-### {{< iconify noto-v1 spider-web >}} web-r-1
+::: {.content-hidden when-format="revealjs"}
+
+### {{< iconify noto-v1 spider-web >}} Playground-1
 
 ```{webr-r}
 #| label: bar-charts-ggformula-webr
@@ -516,20 +553,21 @@ ggplot(taxi_modified)  +
 
 ```
 
+:::
+
 
 ### Business Insights-1
 - Far more people do `tip` than not. Which is nice. 
 - (Future) The counts of `tip` are very imbalanced and if we are to setup a model for that ([logistic regression](../../../30-Modelling/Modules/30-LogReg/index.qmd)) we would need to  very carefully subset the data for `training` and `testing` our model. 
 
-:::
 
+## {{< iconify el question-sign >}} Question-2: Does the `tip` depend upon whether the trip is `local` or not?
 
-
-### {{< iconify el question-sign >}} Question-2: Does the `tip` depend upon whether the trip is `local` or not?
+### ggformula-2
 
 ::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
 
-### ggformula-2
+#### Chart1
 :::: {.columns}
 ::: {.column}
 ```{r}
@@ -555,6 +593,7 @@ taxi_modified %>%
 :::
 ::::
 
+#### Chart2
 :::: {.columns}
 ::: {.column}
 ```{r}
@@ -582,6 +621,7 @@ taxi_modified %>%
 :::
 ::::
 
+#### Chart3
 :::: {.columns}
 ::: {.column}
 ```{r}
@@ -611,6 +651,8 @@ taxi_modified %>%
 :::
 ::::
 
+
+#### Chart4
 :::: {.columns}
 ::: {.column}
 ```{r}
@@ -641,9 +683,18 @@ taxi_modified %>%
 
 ::::
 
+:::
+
+
+
 ### ggplot-2
+
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
+#### Chart1
 ```{r}
 #| layout-ncol: 2
+#| code-fold: true
 
 ggplot2::theme_set(new = theme_custom())
 
@@ -678,10 +729,11 @@ taxi_modified %>%
   scale_fill_brewer(palette = "Set1")
 
 ```
+:::
 
+::: {.content-hidden when-format="revealjs"}
 
-
-### {{< iconify noto-v1 spider-web >}} web-r-2
+### {{< iconify noto-v1 spider-web >}} Playground-2
 
 ```{webr-r}
 
@@ -708,7 +760,7 @@ taxi_modified %>%
 
 ```
 
-
+:::
 
 
 ### Business Insights-2
@@ -718,13 +770,14 @@ taxi_modified %>%
 - With `{{ggformula}}`, we tried bar charts with `position = stack`, but finally it is the `position = fill` that works best.
 - We see that the percentage of tippers is somewhat higher with people who make non-local trips. Not surprising. 
 
-:::
 
-### {{< iconify el question-sign >}} Question-3: Do some cab `company`-ies get more `tips` than others?
+## {{< iconify el question-sign >}} Question-3: Do some cab `company`-ies get more `tips` than others?
 
-::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
 
 ### ggformula-3
+::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
+
+#### Chart1
 :::: {.columns}
 ::: {.column}
 ```{r}
@@ -750,6 +803,8 @@ taxi_modified %>%
 :::
 ::::
 
+
+#### Chart2
 :::: {.columns}
 ::: {.column}
 ```{r}
@@ -775,6 +830,7 @@ taxi_modified %>%
 :::
 ::::
 
+#### Chart3
 :::: {.columns}
 ::: {.column}
 ```{r}
@@ -801,6 +857,7 @@ taxi_modified %>%
 :::
 ::::
 
+#### Chart4
 :::: {.columns}
 ::: {.column}
 ```{r}
@@ -827,12 +884,17 @@ taxi_modified %>%
 
 :::
 ::::
+:::
+
 
 
 ### ggplot-3
+::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
+
+#### Chart1
 ```{r}
 #| layout-ncol: 2
-
+#| code-fold: true
 ggplot2::theme_set(new = theme_custom())
 
 taxi_modified %>% 
@@ -866,10 +928,11 @@ taxi_modified %>%
 
 ```
 
+:::
 
+::: {.content-hidden when-format="revealjs"}
 
-
-### {{< iconify noto-v1 spider-web >}} web-r-3
+### {{< iconify noto-v1 spider-web >}} Playground-3
 
 ```{webr-r}
 
@@ -898,7 +961,7 @@ taxi_modified %>%
   gf_theme(theme(axis.text.x = element_text(size = 6, angle = 45, hjust = 1))) %>% gf_refine(scale_fill_brewer(palette = "Set1"))
 
 ```
-
+:::
 
 ### Business Insights-3
 
@@ -907,15 +970,16 @@ taxi_modified %>%
 - Most cab `company`-ies have similar usage, if you neglect the `other` category of `company`;
 - Does seem that of all the `company`-ies, `tips` are not so good for the `Flash Cab` company. A driver issue? Or are the cars too old? Or don't they offer service everywhere?
 
-:::
 
 
-### {{< iconify el question-sign >}} Question-4: Does a `tip` depend upon the `distance`, `hour` of day, and `dow` and `month`? 
-
-::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
+## {{< iconify el question-sign >}} Question-4: Does a `tip` depend upon the `distance`, `hour` of day, and `dow` and `month`? 
 
 
 ### ggformula-4
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
+
+#### Chart1
 :::: {.columns}
 ::: {.column}
 ```{r}
@@ -940,7 +1004,7 @@ gf_bar(~ hour, fill = ~ tip, data = taxi_modified) %>%
 :::
 ::::
 
-
+#### Chart2
 :::: {.columns}
 ::: {.column}
 ```{r}
@@ -966,7 +1030,7 @@ gf_bar(~ dow, fill = ~ tip, data = taxi_modified) %>%
 ::::
 
 
-
+#### Chart3
 :::: {.columns}
 ::: {.column}
 ```{r}
@@ -992,7 +1056,7 @@ gf_bar(~ month, fill = ~ tip, data = taxi_modified) %>%
 
 
 
-
+#### Chart4
 :::: {.columns}
 ::: {.column}
 ```{r}
@@ -1018,7 +1082,7 @@ gf_bar(~ month | dow, fill = ~ tip, data = taxi_modified) %>%
 
 
 
-
+#### Chart5
 :::: {.columns}
 ::: {.column}
 ```{r}
@@ -1046,7 +1110,7 @@ gf_bar(~ dow | hour, fill = ~ tip, data = taxi_modified) %>%
 
 
 
-
+#### Chart6
 :::: {.columns}
 ::: {.column}
 ```{r}
@@ -1072,12 +1136,19 @@ gf_bar(~ hour | dow, fill = ~ tip, data = taxi_modified) %>%
 :::
 ::::
 
+:::
 
 ### ggplot-4
+
+::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
+
+#### Chart1
+
 ```{r}
 #| label: bar-tip-others-ggplot
 #| layout-ncol: 2
 #| layout-nrow: 2
+#| code-fold: true
 
 ggplot2::theme_set(new = theme_custom())
 
@@ -1109,9 +1180,12 @@ ggplot(taxi_modified) +
   labs(title = "Plot 4F: Counts of Tips by Hour and Day of Week",
        subtitle = "Swapped the Facets") + scale_fill_brewer(palette = "Set1")
 ```
+:::
 
 
-### {{< iconify noto-v1 spider-web >}} web-r-4
+::: {.content-hidden when-format="revealjs"}
+
+### {{< iconify noto-v1 spider-web >}} Playground-4
 
 ```{webr-r}
 
@@ -1144,7 +1218,7 @@ gf_bar(~ hour | dow, fill = ~ tip, data = taxi) %>%
   gf_refine(scale_fill_brewer(palette = "Set1"))
 
 ```
-
+:::
 
 ### Business Insights-4
 
@@ -1154,7 +1228,6 @@ gf_bar(~ hour | dow, fill = ~ tip, data = taxi) %>%
 - `tips` vs `month`: We have data for 4 months only. Again, the `tip` count patterns (Yes/No) look similar across all months. Perhaps slightly fewer **trips** in Jan, when it is cold in Chicago and people may not go out much.
 - `tips` vs `dow` vs `month`: Very similar counts for `tips`(Yes/No) across day-of-week and month. 
 
-:::
 
 
 ## {{< iconify mdi size-extra-large size=2x >}} Bar Plot Extras
@@ -1171,7 +1244,7 @@ gf_bar(~ hour | dow, fill = ~ tip, data = taxi) %>%
 
 ::: {.panel-tabset .nav-pills style="background: whitesmoke; "}
 
-### Chart #1
+#### Chart #1
 :::: {.columns}
 ::: {.column}
 
@@ -1200,7 +1273,7 @@ gf_props(~ substance,
 :::
 ::::
 
-### Chart #2
+#### Chart #2
 :::: {.columns}
 ::: {.column}
 
@@ -1232,7 +1305,7 @@ gf_props(~ substance,
 ::::
 
 
-### Chart #3
+#### Chart #3
 :::: {.columns}
 ::: {.column}
 ```{r}
@@ -1324,6 +1397,8 @@ show the distribution.
 
 ![Zipf's Law](../../../../../materials/images/zipf.png){#fig-zipfs-law height=280 width=480}
 
+
+#### Zipf's Law
 
 - Since the X-axis in bar charts is *Qualitative* (the bars don't touch, remember!) it is possible to sort the bars at will, based on the levels within the Qualitative variables. 
 See the approx [Zipf's Law distribution](https://www.wikiwand.com/en/Zipf%27s_law) for the English alphabet above
