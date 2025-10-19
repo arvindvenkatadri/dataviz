@@ -225,18 +225,22 @@ We will then use a real-world dataset to make inferences on the means of Quant v
 
 ## {{< iconify mdi:thought-bubble-outline >}} Statistical Inference is almost an Attitude!
 
-As we will notice, the process of Statistical Inference is an attitude: [**ain't nothing happenin'!**]{.bg-yellow .athelas .black} We look at data that we might have received or collected ourselves, and look at it with this attitude, seemingly, of some disbelief. We *state* either that:
+As we will notice, the process of Statistical Inference is an attitude: [**ain't nothing happenin'!**]{.bg-yellow .athelas .black} We look at data that we might have received or collected ourselves, and look at it with this attitude, seemingly, of some disbelief. Here is how we proceed:
 
-a) there is really nothing happening with our research question, and that anything we see in the data is the outcome of random chance. 
-b) the value/statistic indicated by the data is off the mark and ought to be something else.
+1. We *state* our belief that:
 
-We then calculate how slim the chances are of [the given data sample showing up like that]{style="background-color: yellow;"}, **given our belief**. It is a distance measurement of sorts. If those chances are too low, then that might alter our belief. This is the attitude that lies at the heart of *Hypothesis Testing*.
+    - there is really nothing happening with our Research Question, and there is no reason to believe in it; 
+    - the `sample` is just one of many, and the `value/statistic` indicated by the sample is the outcome of random chance (NULL Belief / Hypothesis).
+
+1. We then calculate how slim the chances (Relative Probability! Remember we are Frequentists!) are of [the given `data sample / statistic` showing up like that]{style="background-color: yellow;"}, **given our NULL belief**. It is a distance measurement of sorts, literally embodying the idea of *far-fetched-ness*!! 
+1. If the chances of the sample are too low, then that might alter our belief. This is the attitude that lies at the heart of [**Null Hypothesis Significance Testing (NHST)**]{style="background-color: yellow;"}.
 
 ::: callout-important
-The *calculation of chances* is both a logical, and a possible procedure since we are dealing with **samples** from a *population*. If many other samples give us quite different estimates, then we would discredit the one we derive from it. 
+The *calculation of chances* is both a logical, and a possible procedure since we are dealing with **samples** from a *population*, and imagining a **distribution of sample statistics**. If many other samples give us quite different `statistic`s, then we would discredit the one we derive from it. 
 :::
 
 Each test we perform will mechanize this attitude in different ways, based on assumptions and conveniences. (And history)
+
 
 ## {{< iconify pajamas issue-type-test-case >}} Case Study #1: Toy data
 
@@ -263,6 +267,7 @@ mydata
 :::
 
 ::: {.column width="40%"}
+
 ```{r}
 #| label: toy-data-table
 #| echo: false
@@ -282,9 +287,12 @@ mydata
 
 ::::: columns
 ::: {.column width="60%"}
+
 ```{r}
 #| label: fig-charting-data-1
 #| eval: false
+
+## Set Plot theme
 ggplot2::theme_set(new = theme_custom())
 
 mydata %>% 
@@ -296,6 +304,7 @@ mydata %>%
 :::
 
 ::: {.column width="40%"}
+
 ```{r}
 #| label: fig-toy-data
 #| fig-cap: "Toy Data Distribution"
@@ -429,7 +438,6 @@ xqnorm(p = c(0.025, 0.975),  mean = sample_mean, sd = sample_se,
 
   gf_labs(title = "Confidence Interval Estimation",
         subtitle = "Sample-Mean-Distribution is plotted as theoretical Gaussian Bell Curve") %>% 
-  gf_refine(scale_y_continuous(expand = c(0,0))) %>% 
   gf_theme(theme_custom())
  
 ```
@@ -554,8 +562,8 @@ gf_histogram(
   gf_labs(x = "Calculated Random Means",
           y = "How Often do these occur?") %>% 
   gf_vline(xintercept = obs_diff_mosaic, colour = "red") %>% 
-  gf_refine(scale_y_continuous(expand = c(0,0)),
-            scale_x_continuous(expand = c(0,0)))
+  gf_refine(scale_y_continuous(expand = expansion(add = c(0,20))),
+            scale_x_continuous(expand = expansion(add = c(0.25,0.25))))
 
 # p-value
 # Null distributions are always centered around zero. Why?
@@ -590,8 +598,8 @@ gf_histogram(
   gf_labs(x = "Calculated Random Means",
           y = "How Often do these occur?") %>% 
   gf_vline(xintercept = ~ belief1, colour = "red") %>% 
-  gf_refine(scale_y_continuous(expand = c(0,0)),
-            scale_x_continuous(expand = c(0,0)))
+  gf_refine(scale_y_continuous(expand = expansion(add = c(0,20))),
+            scale_x_continuous(expand = expansion(add = c(1,1))))
 
 prop(~ mean >= belief1, 
      data = null_toy_bs) +
@@ -919,7 +927,7 @@ gf_histogram(
                 breaks = c(-10, -5, - obs_grade_diff, 0, obs_grade_diff, 5, 10),
                 labels = scales::number_format(accuracy = 0.01,
                                  decimal.mark = "."))) %>% 
-  gf_refine(scale_y_continuous(expand = c(0,0)))
+  gf_refine(scale_y_continuous(expand = expansion(add = c(0,40))))
 
 
 
@@ -963,10 +971,10 @@ gf_histogram(
   gf_refine(scale_fill_manual(values = c("skyblue", "grey"),
             name = "Observed Mean Difference",
             labels = c("Not Exceeding", "Exceeding")),
-            scale_x_continuous(limits = c(60,100),
-                breaks = c(60, 65,70, 75, 80, 85, 90, 95, 100,belief),
+            scale_x_continuous(limits = c(60,85),
+                breaks = c(60, 65,70, 75, 80, 85, belief),
                 labels = scales::number_format(accuracy = 0.01,
-                                 decimal.mark = "."))) %>%  gf_refine(scale_y_continuous(expand = c(0,0)))
+                                 decimal.mark = "."))) %>%  gf_refine(scale_y_continuous(expand = expansion(add = c(0,40))))
 
 prop(~ mean >= belief, 
      data = null_grade_bs) +
@@ -1089,7 +1097,7 @@ gf_dhistogram(~ course_grade, data = exam_grades, inherit = F) %>%
           subtitle = "Sample-Mean-Distribution is plotted as theoretical Gaussian Bell Curve", 
           x = "Sample Values and Means", y = "Density") %>%
 
-  gf_refine(scale_y_continuous(limits = c(0, 0.7), expand = c(0,0)),
+  gf_refine(scale_y_continuous(limits = c(0, 0.7), expand = expansion(add = c(0,0))),
             scale_x_continuous(limits = c(60, 85)))
 
 ```

@@ -985,11 +985,13 @@ As we can see, the *standard deviations* of the **sampling-mean-distributions** 
 Now we have enough to state the **Central Limit Theorem (CLT)**
 
 -   the [sample-means are normally distributed around the *population
-    mean*]{style="background-color: yellow;"}. So any mean of a **single sample** is a good, **unbiased estimate** for the `pop_mean`. 
-    $pop.mean \sim \bar{x}$
+    mean*]{style="background-color: yellow;"}. So any mean of a **single sample** is a good, **unbiased estimate** for the `pop_mean`.
+    
+      - $\Large{\bar{x} \sim pop.mean }$
 
 -   the **sample-mean distributions** are centered around the `pop_mean` and have a *standard deviation* that is [inversely proportional to the square root of the sample size.]{style="background-color: yellow;"}. 
-    $sd \sim \frac{pop.sd}{sqrt(n)}$
+
+    - $\Large{s \sim \frac{pop.sd}{sqrt(n)} }$
 
 -   This is [regardless of the distribution of the *population*]{style="background-color: yellow;"} itself.[^1]
 :::
@@ -1026,6 +1028,8 @@ $$
 $${#eq-standard-error}
 
 [However, we don't normally know the `pop_sd`!! So now what?? So is this chicken and egg??]{style="background-color: yellow;"}
+
+## {{< iconify game-icons card-pickup >}} Back to One Sample!!
 
 Let us take **SINGLE SAMPLES** of each size, as we normally would:
 
@@ -1093,19 +1097,33 @@ Why are we concerned with Standard Errors(SE)? Because they are the **uncertaint
 When we work with samples, we want to be able to speak with a certain
 degree of confidence about the **population mean**, based on the
 evaluation of **one** sample mean, not a large number of them. Given
-that sample-means are *normally distributed* around the `pop_mean`, we can say that $68\%$ of *all possible sample-mean* lie within
-$\pm SE$ of the *population mean*; and further that $95 \%$ of *all
-possible sample-mean* lie within $\pm 2*SE$ of the *population mean*. These two constants $\pm 1$ and $\pm 2$ are the `z-scores` from the *z-distribution* we saw earlier:
+that sample-means are *normally distributed* around the `pop_mean`, we can say that:
+
+- $68\%$ of *all possible sample-mean* lie within
+$\pm 1* SE$ of the *population mean*; 
+- $95 \%$ of *all possible sample-mean* lie within $\pm 2 * SE$ of the *population mean*. 
+- These two multiplier-constants $\pm 1$ and $\pm 2$ are the `z-scores` from the *z-distribution* we saw earlier:
 
 ```{r}
 #| label: fig-confidence-intervals-examples
+#| layout-ncol: 3
 #| fig-cap: Confidence Intervals Examples
-#| echo: false
+#| fig-subcap: 
+#|   - 68% Confidence Intervals
+#|   - 95% Confidence Intervals
+#|   - 95% CI from Multiple Samples
+#| code-fold: true
+#| 
 set.seed(42)
+mosaic::xqnorm(p = c((1-0.68)/2, 1 - (1-0.68)/2),return = c("plot"), verbose = F)
+mosaic::xqnorm(p = c((1-0.95)/2, 1 - (1-0.95)/2), return = c("plot"), verbose = F)
 TeachingDemos::ci.examp(mean.sim = 100, sd = 2,n = 50, reps = 50)
 
 ```
-In @fig-confidence-intervals-examples, we see that $95\%$ confidence intervals straddle the population mean shown in black, almost always. One sample in 50 has missed it and is shown in pink. For a particular sample with $\bar{x} = 100$, the vertical red lines show the confidence interval derived from *that* sample. 
+In @fig-confidence-intervals-examples-3, we see that $95\%$ confidence intervals straddle the population mean shown in black, almost always. One sample in 50 has missed it and is shown in pink. For a particular sample with $\bar{x} = 100$, the vertical red lines show the confidence interval derived from *that* sample. 
+
+
+## CI and Sample Size
 
 How do these vary with sample size $n$?
 
@@ -1171,7 +1189,7 @@ xqnorm(p = c(0.025, 0.975),
         sd = se_sample_16, digits = 3,
         return = c("plot"), verbose = F, alpha = 0.5, colour = "black") %>% 
 
-gf_refine(scale_y_continuous(expand = c(0,0.02))) %>%
+gf_refine(scale_y_continuous(expand = expansion(add = c(0,0.02)))) %>%
 gf_vline(xintercept = ~ pop_mean, colour = "red", linewidth = 1) %>% 
 gf_vline(xintercept = mean(~ Height, data = sample_16), 
          colour = "purple", linewidth = 1) %>% 
@@ -1182,14 +1200,15 @@ gf_annotate(geom = "label", x = pop_mean - 4, y = 0.15,
             label = "Population Mean") %>% 
 gf_annotate(geom = "label", x = mean_sample_16 + 5, y = 0.15, 
             label = "Sample Mean", colour = "purple") %>% 
-gf_annotate("curve", 
+
+gf_annotate("curve", # Sample Mean
             x = mean_sample_16 + 5, y = 0.14, 
-            xend = mean_sample_16  + 0.5, yend = 0.125,
+            xend = mean_sample_16  + 0.25, yend = 0.125,
             curvature = -0.25, color = "purple", 
             arrow = arrow(length = unit(0.25,"cm"))) %>% 
 gf_annotate("curve", 
             x = pop_mean - 4, y = 0.14, 
-            xend = pop_mean - 0.5, yend = 0.125,
+            xend = pop_mean - 0.25, yend = 0.125,
             curvature = 0.25, color = "black", 
             arrow = arrow(length = unit(0.25,"cm"))) %>% 
 gf_annotate("segment", 
@@ -1214,8 +1233,17 @@ gf_annotate("curve", # CI
             x = xq[2], y = 0.09, 
             xend = xq[2] - 2, yend = 0.016,
             curvature = - 0.25, color = "purple", 
-            arrow = arrow(length = unit(0.25,"cm")))
+            arrow = arrow(length = unit(0.25,"cm"))) %>% 
 
+gf_annotate(geom = "label", x = 163.55, y = 0.06, 
+            label = "Distribution of\nSample Means", 
+            colour = "black") %>% 
+
+gf_annotate("curve", # CI
+            x = 165.5, y = 0.075, 
+            xend = 167.5, yend = 0.065,
+            curvature = - 0.25, color = "black", 
+            arrow = arrow(length = unit(0.25,"cm")))
 
 ```
 

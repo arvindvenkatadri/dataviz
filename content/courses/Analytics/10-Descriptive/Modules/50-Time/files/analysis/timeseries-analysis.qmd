@@ -39,23 +39,22 @@ library(epoxy)
 library(TeachHist)
 library(TeachingDemos)
 library(grateful)
+library(ggrepel)
+library(marquee)
 
 ```
 
 #### Plot Fonts and Theme
 
 ```{r}
-#| label: plot-theme
-#| echo: true
+#| label: plot-theme-ggplot4
 #| cache: false
 #| code-fold: true
 #| messages: false
 #| warning: false
-
+#| 
 library(systemfonts)
 library(showtext)
-library(marquee)
-library(ggrepel)
 ## Clean the slate
 systemfonts::clear_local_fonts()
 systemfonts::clear_registry()
@@ -78,10 +77,18 @@ theme_custom <- function(){
 
     theme_bw(base_size = 10) + 
     
+    # theme(panel.widths = unit(11, "cm"), 
+    #       panel.heights = unit(6.79, "cm")) + # Golden Ratio
+    
+    theme(plot.margin = margin_auto(t = 1, r = 2, b = 1, l = 1, unit = "cm"),
+          plot.background = element_rect(fill = "bisque",
+                                         colour = "black",
+                                         linewidth = 1)) + 
+            
     theme_sub_axis(title = element_text(family = "Roboto Condensed", 
-                                       size = 8),
+                                       size = 10),
                    text = element_text(family = "Roboto Condensed", 
-                                       size = 6)) + 
+                                       size = 8)) + 
     
     theme_sub_legend(text = element_text(family = "Roboto Condensed", 
                                          size = 6),
@@ -95,7 +102,7 @@ theme_custom <- function(){
                                            size = 10),
                    caption = element_text(family = "Alegreya", 
                                           size = 6),
-                   caption.position = "plot")
+                   caption.position = "plot") 
     
 }
 
@@ -152,7 +159,6 @@ flextable::set_flextable_defaults(font.family = "Roboto Condensed")
 ```
 
 
-
 ## {{< iconify fxemoji japanesesymbolforbeginner >}} Introduction
 
 We have seen how to plot different formats of time series, and how to create summary plots using packages like `tsibble` and `timetk`. 
@@ -183,9 +189,8 @@ Let us choose the Walmart Sales dataset. See here for more details:
 ```{r}
 #| label: examine-walmart_data
 #| layout-ncol: 2
-walmart_sales_weekly
+
 glimpse(walmart_sales_weekly)
-inspect(walmart_sales_weekly)
 
 # Try this in your Console
 # help("walmart_sales_weekly")
@@ -216,7 +221,7 @@ The data is described as:
 > -   `CPI` Numeric. The consumer price index.
 > -   `Unemployment` Numeric. The unemployment rate in the region.
 
-Very cool to know that `mosaic::inspect()` identifies `date` variables
+Very cool to know that `dplyr::glimpse()` identifies `date` variables
 separately!
 
 ::: callout-note

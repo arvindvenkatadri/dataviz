@@ -25,9 +25,30 @@ categories:
 #| warning: false
 #| message: false
 
-library(mosaic)
-library(mosaicData)
 library(tidyverse)
+library(mosaic)
+
+```
+
+
+```{r}
+#| label: Extra-Pedagogical-Packages
+#| echo: false
+#| message: false
+
+library(checkdown)
+library(epoxy)
+library(TeachHist)
+library(TeachingDemos)
+library(visualize) # Plot Densities, Histograms and Probabilities as areas under the curve
+library(grateful)
+library(MKdescr)
+library(downloadthis)
+#devtools::install_github("mccarthy-m-g/embedr")
+library(embedr) # Embed multimedia in HTML files
+library(ggrepel)
+library(marquee)
+
 ```
 
 #### Plot Fonts and Theme
@@ -41,8 +62,6 @@ library(tidyverse)
 #| 
 library(systemfonts)
 library(showtext)
-library(ggrepel)
-library(marquee)
 ## Clean the slate
 systemfonts::clear_local_fonts()
 systemfonts::clear_registry()
@@ -65,10 +84,18 @@ theme_custom <- function(){
 
     theme_bw(base_size = 10) + 
     
+    # theme(panel.widths = unit(11, "cm"), 
+    #       panel.heights = unit(6.79, "cm")) + # Golden Ratio
+    
+    theme(plot.margin = margin_auto(t = 1, r = 2, b = 1, l = 1, unit = "cm"),
+          plot.background = element_rect(fill = "bisque",
+                                         colour = "black",
+                                         linewidth = 1)) + 
+            
     theme_sub_axis(title = element_text(family = "Roboto Condensed", 
-                                       size = 8),
+                                       size = 10),
                    text = element_text(family = "Roboto Condensed", 
-                                       size = 6)) + 
+                                       size = 8)) + 
     
     theme_sub_legend(text = element_text(family = "Roboto Condensed", 
                                          size = 6),
@@ -82,7 +109,7 @@ theme_custom <- function(){
                                            size = 10),
                    caption = element_text(family = "Alegreya", 
                                           size = 6),
-                   caption.position = "plot")
+                   caption.position = "plot") 
     
 }
 
@@ -214,13 +241,13 @@ Back to the Lady who drank Tea !!
 ```{r}
 #| label: fig-all-10-heads
 #| fig-cap: "Modelling Cups of Tea with Coin Flips"
-#| echo: false
-
-theme_set(new = theme_custom())
+#| code-fold: true
 
 set.seed(1234)
-random_ladies <- do(10000) * rflip(10)
-tally(~ heads, data = random_ladies)
+random_ladies <- mosaic::do(10000) * mosaic::rflip(10)
+mosaic::tally(~ heads, data = random_ladies)
+
+theme_set(new = theme_custom())
 gf_histogram(~ heads, data = random_ladies,
              binwidth = 1, origin = -0.5, # centering the bars
              fill = ~ heads>=10, 
@@ -268,7 +295,7 @@ an underlying pattern (and Lady's ability is beyond **Question** !)
 This is the essence of the **Simulation Method** in statistical
 modelling. Take one more look at the picture from [Allen Downey's blog](https://allendowney.blogspot.com/2016/06/there-is-still-only-one-test.html), below:
 
-![](images/One-Test.png)
+![Simulation Test Schematic](images/One-Test.png){#fig-simulation-test}
 
 From Reference #1:
 
@@ -328,6 +355,33 @@ From Chihara and Hesterberg:
 > give an effect as large as that observed in the data, in the absence
 > of any real effect. If that probability is small enough, we conclude
 > that the data provide convincing evidence of a real effect.
+
+## An Idea to Encourage You: Stats Lessons from `Sholay`!!
+
+
+{{< youtube chi9hsfYcDE >}}
+
+<br>
+Gabbar: "Kitne Aadmi thay?\
+Stats Teacher: How many observations do you have? n < 30 is a joke.\
+
+Gabbar: Kya Samajh kar aaye thay? Gabbar khus hoga? Sabaasi dega kya?\
+Stats Teacher: What are the levels in your Factors? Are they binary? Don't do ANOVA just yet!\
+
+Gabbar: (Fires off three rounds ) Haan, ab theek hai!\
+Stats Teacher: Yes, now the dataset is balanced wrt the factor (Treatment and Control).\
+
+Gabbar: Is pistol mein teen zindagi aur teen maut bandh hai. Dekhte hain kisko kya milega.\
+Stats Teacher: This is our Research Question, for which we will Design an Experiment. \
+
+Gabbar: (Twirls the chambers of his revolver)  "Hume kuchh nahi pataa!"\
+Stats Teacher: Let us perform a non-parametric Permutation Test for this Factor!\
+
+Gabbar:  "Kamaal ho gaya!"\
+Stats Teacher: Fantastic! Our p-value is so small that we can reject the NULL Hypothesis!!\
+
+Go and like this post at: <https://www.linkedin.com/pulse/stat-lessons-from-sholay-arvind-venkatadri-wgtrf/?trackingId=c0b4UCTLRea6U%2Bj%2Bm4TCtw%3D%3D>
+
 
 ## References
 
