@@ -5,7 +5,7 @@ author: Arvind V.
 date: 22 April 2021
 order: 520
 date-modified: "`r Sys.Date()`"
-abstract: Making Static Maps in R
+abstract: Making Static Vector Maps in R
 editor: 
   markdown: 
     wrap: 72
@@ -15,7 +15,14 @@ bibliography:
 
 ![Which Way to the Secret Garden, Sir?](../../../../../../../materials/images/1book14.jpg){height=250 fig-align="center"}
 
-## Introduction
+
+## Inspiration
+
+![Burkhart, Christian. n.d. "Streetmaps."
+    [StreetMaps](https://ggplot2tutor.com/tutorials/streetmaps)](../../../../../../../materials/images/Streetmaps.jpeg){#fig-streetmaps}
+
+
+## {{< iconify openmoji japanese-symbol-for-beginner >}} Introduction
 
 This RMarkdown document is part of my Workshop Course in R. The intent
 is to build Skill in coding in R, and also appreciate R as a way to
@@ -58,42 +65,39 @@ The method followed will be based on
 
 All jargon words will be capitalized and in **bold** font.
 
-## Setup the Packages
+## {{< iconify noto-v1 package >}} Setting up R Packages
 
 
 ```{r}
 #| label: setup
-library(rnaturalearth)
-library(rnaturalearthdata)
-
-# Run this in your console first
-# devtools::install_github("ropensci/rnaturalearthhires")
-library(rnaturalearthhires)
-
-# Plotting Maps
+#| message: false
 library(tidyverse) # Maps using ggplot() + geom_sf()
 library(ggformula) # Maps using gf_sf()
-library(tmap) # Thematic Maps, static and interactive
-library(tmaptools)
-library(tmap.mapgl)
-library(osmdata) # Fetch map data from osmdata.org
+# For Spatial Data Frame Processing
+library(sf)
 library(sfheaders) # Handcrafted Map data
-## Interactive Maps
+## Plotting
+library(tmapverse) # Thematic Maps, static and interactive
 library(leaflet) # interactive Maps
 library(leaflet)
 library(leaflet.providers)
 library(leaflet.extras)
 library(threejs) # Globe maps in R. Part of the htmlwidgets family of packages
-
-# For Spatial Data Frame Processing
-library(sf)
+## Spatial Data
+library(osmdata) # Fetch map data from osmdata.org
+library(rnaturalearth)
+library(rnaturalearthdata)
+# Run this in your console first
+# devtools::install_github("ropensci/rnaturalearthhires")
+library(rnaturalearthhires)
 
 ```
 
+#### {{< iconify streamline global-learning >}} Extra Pedagogical Packages
 
 ```{r}
 #| label: Extra Pedagogical Packages
-#| echo: false
+#| code-fold: true
 #| message: false
 
 knitr::opts_chunk$set(tidy = TRUE)
@@ -103,7 +107,8 @@ library(grateful)
 
 ```
 
-#### Plot Fonts and Theme
+#### {{< iconify vscode-icons folder-type-theme>}} Plot Fonts and Theme
+
 
 ```{r}
 #| label: plot-theme
@@ -140,13 +145,20 @@ theme_custom <- function(){
 
     theme_bw(base_size = 10) + 
     
-    theme_sub_axis(title = element_text(family = "Roboto Condensed", 
-                                       size = 8),
-                   text = element_text(family = "Roboto Condensed", 
-                                       size = 6)) + 
+        theme(plot.margin = margin_auto(t = 1, r = 2, b = 1, l = 1, unit = "cm"),
+          plot.background = element_rect(fill = "bisque",
+                                         colour = "black",
+                                         linewidth = 1)) + 
+    
+    theme_sub_axis(text = element_text(family = "Roboto Condensed", 
+                                       size = 6),
+                   ##
+                   title = element_text(family = "Roboto Condensed", 
+                                       size = 8)) + 
     
     theme_sub_legend(text = element_text(family = "Roboto Condensed", 
                                          size = 6),
+                     ##
                      title = element_text(family = "Alegreya", 
                                           size = 8)) + 
     
@@ -510,6 +522,7 @@ gf_sf(data = buildings, geometry = ~ geom,
         col = "darkseagreen",
         fill = "lightgreen",
         linewidth = 0.025) %>% 
+  
 # POINTS
   gf_sf(data = trees, , geometry = ~ geom,
         col = "darkgreen", size = 0.5)
@@ -529,10 +542,13 @@ First we will plot with `{ggplot2}` and `geom_sf()` : recall that our data is st
 ggplot() +
   geom_sf(data = buildings, fill = "gold", color = "grey", 
           linewidth = 0.025) +    # POLYGONS
+  
   geom_sf(data = roads, color = '#ff9999', linewidth = 0.5) +        # LINES
+  
   geom_sf(data = greenery, col = "darkseagreen",
           fill = "lightgreen",
           linewidth = 0.025) +  # POLYGONS
+  
   geom_sf(data = trees, col = "darkgreen", size = 0.5)         # POINTS
   
   # Set plot limits to exactly the bbox_2
@@ -568,9 +584,11 @@ We can also create a map using a package called `tmap`. Here we alsohave the opt
 tm_shape(buildings) +
   tm_polygons(fill = "firebrick", col = "firebrick") +
 
+
 #Group-2
 tm_shape(roads) +
-  tm_lines(col = "black",lwd = 0.5) +
+  tm_lines(col = "yellow",lwd = 0.5) +
+
 
 #Group-3  
 tm_shape(greenery) +
@@ -1044,7 +1062,7 @@ globejs(
 - mapsf
 - ggspatial
 
-## Resources
+## {{< iconify ooui references-rtl >}} References {#sec-references}
 
 1. Free Map Tile services. <https://alexurquhart.github.io/free-tiles/>
 1. Martijn Tennekes and Jakub Nowosad (2025). *Elegant and informative maps with tmap*. <https://tmap.geocompx.org>
@@ -1073,12 +1091,6 @@ globejs(
 3. Make a Map of Middle Earth. <https://www.andrewheiss.com/blog/2023/04/26/middle-earth-mapping-sf-r-gis/>
 4. Make a map of our campus, showing eateries, labs, trees, and specifically places for PDA. 
 
-### Inspiration
-
-1.  Burkhart, Christian. n.d. "Streetmaps."
-    [StreetMaps](https://ggplot2tutor.com/tutorials/streetmaps)
-
-![](../../../../../../../materials/images/Streetmaps.jpeg)
 
 2.  *Making Vector Maps*, Computing for the Social Sciences, [Univ. of
     Chicago](https://cfss.uchicago.edu/notes/vector-maps/)

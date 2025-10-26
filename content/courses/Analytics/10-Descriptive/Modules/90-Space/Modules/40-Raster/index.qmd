@@ -1,0 +1,243 @@
+---
+title: <iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> Maps with Raster Data
+subtitle: "Where is the Secret Garden?"
+date: 22 October 2025
+order: 40
+date-modified: "`r Sys.Date()`"
+abstract: Making Maps with Raster Data in R
+draft: true
+editor: 
+  markdown: 
+    wrap: 72
+bibliography: 
+  - grateful-refs.bib
+---
+
+![Which Way to the Secret Garden, Sir?](../../../../../../../materials/images/1book14.jpg){height=250 fig-align="center"}
+
+## {{< iconify openmoji japanese-symbol-for-beginner >}} Introduction
+
+
+
+
+## Goals
+
+At the end of this Lab session, we should:
+
+- know the types and structures of spatial data in `raster` form and be able to work with them\
+- understand the basics of modern spatial packages in R\
+- be able to specify and download spatial data from the web, using R from sources such as `naturalearth` and `Open Streep Map`\
+- plot *static* and *interactive* maps using `{ggplot2}`, `{tmap}` and `{leaflet}` packages\
+- add symbols and markers for places and regions of our own interest in these maps.\
+
+## Pedagogical Note
+
+The method followed will be based on
+[PRIMM](https://blogs.kcl.ac.uk/cser/2017/09/01/primm-a-structured-approach-to-teaching-programming/):
+
+-   **PREDICT** Inspect the code and guess at what the code might do,
+    **write predictions**
+-   **RUN** the code provided and check what happens
+-   **INFER** what the `parameters` of the code do and **write comments
+    to explain**. What bells and whistles can you see?
+-   **MODIFY** the `parameters` code provided to understand the
+    `options` available. **Write comments** to show what you have aimed
+    for and achieved.
+-   **MAKE** : take an idea/concept of your own, and graph it.
+
+All jargon words will be capitalized and in **bold** font.
+
+## {{< iconify noto-v1 package >}} Setting up R Packages
+
+
+```{r}
+#| label: setup
+
+# Plotting Maps
+library(tidyverse) # Maps using ggplot() + geom_sf()
+library(ggformula) # Maps using gf_sf()
+# For Spatial Data Frame Processing
+library(sf)
+library(sfheaders) # Handcrafted Map data
+# library(terra)
+library(tidyterra) # tidy syntax for terra operations + plotting
+library(stars)
+# Plotting
+library(tmap) # Thematic Maps, static and interactive
+library(tmaptools)
+library(tmap.mapgl)
+## Interactive Maps
+library(leaflet) # interactive Maps
+library(leaflet)
+library(leaflet.providers)
+library(leaflet.extras)
+# Spatial Data
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(osmdata) # Fetch map data from osmdata.org
+# Run this in your console first
+# devtools::install_github("ropensci/rnaturalearthhires")
+library(rnaturalearthhires)
+
+
+```
+
+#### {{< iconify streamline global-learning >}} Extra Pedagogical Packages
+```{r}
+#| label: Extra Pedagogical Packages
+#| code-fold: true
+#| message: false
+
+knitr::opts_chunk$set(tidy = TRUE)
+library(checkdown)
+library(epoxy)
+library(grateful)
+
+```
+
+#### {{< iconify vscode-icons folder-type-theme>}} Plot Fonts and Theme
+
+
+```{r}
+#| label: plot-theme
+#| code-fold: true
+#| messages: false
+#| warning: false
+
+library(systemfonts)
+library(showtext)
+library(ggrepel)
+library(marquee)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../../../fonts/Alegreya-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+
+showtext_auto(enable = TRUE) #enable showtext
+##
+theme_custom <- function(){ 
+
+    theme_bw(base_size = 10, base_family = "Alegreya") + 
+    
+        theme(plot.margin = margin_auto(t = 1, r = 2, b = 1, l = 1, unit = "cm"),
+          plot.background = element_rect(fill = "bisque",
+                                         colour = "black",
+                                         linewidth = 1)) + 
+    
+    theme_sub_axis(title = element_text(family = "Roboto Condensed", 
+                                       size = 8)) + 
+                   
+    theme_sub_axis(text = element_text(family = "Roboto Condensed", 
+                                       size = 6)) + 
+    
+    theme_sub_legend(text = element_text(family = "Roboto Condensed", 
+                                         size = 6),
+                     title = element_text(family = "Alegreya", 
+                                          size = 8)) + 
+    
+    theme_sub_plot(title = element_text(family = "Alegreya", 
+                                        size = 14, face = "bold"),
+                   title.position = "plot",
+                   subtitle = element_text(family = "Alegreya", 
+                                           size = 10),
+                   caption = element_text(family = "Alegreya", 
+                                          size = 6),
+                   caption.position = "plot")
+    
+}
+
+## Use available fonts in ggplot text geoms too!
+ggplot2::update_geom_defaults(geom = "text", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+ggplot2::update_geom_defaults(geom = "marquee", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "text_repel", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label_repel", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
+
+## tinytable options
+options("tinytable_tt_digits" = 2)
+options("tinytable_format_num_fmt" = "significant_cell")
+options(tinytable_html_mathjax = TRUE)
+
+
+## Set defaults for flextable
+flextable::set_flextable_defaults(font.family = "Roboto Condensed")
+
+```
+
+
+
+
+
+
+
+
+## {{< iconify ooui references-rtl >}} References {#sec-references}
+
+1. Data Sources @ GISGeography. <https://gisgeography.com/best-free-gis-data-sources-raster-vector/> 
+
+1. Raster Data in R. <https://www.neonscience.org/resources/learning-hub/tutorials/dc-raster-data-r>
+
+
+::: {#refs style="font-size: 60%;"}
+###### {{< iconify lucide package-check >}} R Package Citations
+
+```{r}
+#| echo: false
+#scan_packages()
+cite_packages(
+  output = "table",
+  out.dir = ".",
+  out.format = "html",
+  pkgs = c("tmap", "sf", "sfheaders", "tidyterra")) %>%
+  knitr::kable(format = "simple")
+
+```
+:::
+
+
