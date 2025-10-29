@@ -480,7 +480,7 @@ $ Postlife      &lt;fct&gt; Yes, Yes, NA, NA, NA, Yes, NA, NA, Yes, NA, NA, NA, 
 </div>
 </div>
 <p><br></p>
-<p>Note how <em>all</em> variables are Categorical !! <code>Education</code> has five <code>levels</code>, and of course <code>DeathPenalty</code> has three:</p>
+<p>Note how <em>all</em> variables are Categorical !! <code>Education</code> has five <code>levels</code>, and of course <code>DeathPenalty</code> has two:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>GSS2002 <span class="sc">%&gt;%</span> <span class="fu">count</span>(Education)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
@@ -537,16 +537,15 @@ $ DeathPenalty &lt;fct&gt; Favor, Favor, Favor, Favor, Favor, Favor, Favor, Favo
 Table&nbsp;1: Contingency Table of Education vs Death Penalty
 </figcaption>
 <div aria-describedby="tbl-vcd-contingency-table-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>gss_vcd_table <span class="ot">&lt;-</span> vcd<span class="sc">::</span><span class="fu">structable</span>(Education <span class="sc">~</span> DeathPenalty, <span class="co"># cols ~ rows</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>contingency_table <span class="ot">&lt;-</span> vcd<span class="sc">::</span><span class="fu">structable</span>(Education <span class="sc">~</span> DeathPenalty,</span>
 <span id="cb10-2"><a></a>  <span class="at">data =</span> GSS2002_modified</span>
 <span id="cb10-3"><a></a>)</span>
-<span id="cb10-4"><a></a>gss_vcd_table <span class="sc">%&gt;%</span> <span class="fu">addmargins</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb10-4"><a></a>contingency_table</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>            Education
-DeathPenalty Left HS  HS Jr Col Bachelors Graduate  Sum
-      Favor      117 511     71       135       64  898
-      Oppose      72 200     16        71       50  409
-      Sum        189 711     87       206      114 1307</code></pre>
+<pre><code>             Education Left HS  HS Jr Col Bachelors Graduate
+DeathPenalty                                                
+Favor                      117 511     71       135       64
+Oppose                      72 200     16        71       50</code></pre>
 </div>
 </div>
 </figure>
@@ -562,26 +561,25 @@ DeathPenalty Left HS  HS Jr Col Bachelors Graduate  Sum
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="co"># Already computed</span></span>
-<span id="cb12-2"><a></a><span class="co"># gss_vcd_table &lt;- vcd::structable(Education ~ DeathPenalty, # cols ~ rows</span></span>
-<span id="cb12-3"><a></a><span class="co">#                              data = GSS2002_modified)</span></span>
-<span id="cb12-4"><a></a></span>
-<span id="cb12-5"><a></a>gss_vcd_table <span class="sc">%&gt;%</span></span>
-<span id="cb12-6"><a></a>  vcd<span class="sc">::</span><span class="fu">mosaic</span>(</span>
-<span id="cb12-7"><a></a>    <span class="at">gp =</span> shading_hsv, <span class="at">direction =</span> <span class="st">"h"</span>,</span>
-<span id="cb12-8"><a></a>    <span class="at">main =</span> <span class="st">"GSS2002 Education vs Death Penalty Mosaic Chart"</span>,</span>
-<span id="cb12-9"><a></a>    <span class="at">legend =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb12-10"><a></a>    <span class="at">labeling =</span> <span class="fu">labeling_border</span>(</span>
-<span id="cb12-11"><a></a>      <span class="at">varnames =</span> <span class="fu">c</span>(<span class="st">"F"</span>, <span class="st">"F"</span>), <span class="co"># Remove variable name labels</span></span>
-<span id="cb12-12"><a></a>      <span class="at">rot_labels =</span> <span class="fu">c</span>(<span class="dv">90</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="co"># t,r,b,l?</span></span>
-<span id="cb12-13"><a></a>      <span class="at">just_labels =</span> <span class="fu">c</span>(</span>
-<span id="cb12-14"><a></a>        <span class="st">"left"</span>, <span class="co"># Top Side. How?</span></span>
-<span id="cb12-15"><a></a>        <span class="st">"left"</span>, <span class="co"># Right side</span></span>
-<span id="cb12-16"><a></a>        <span class="st">"left"</span>, <span class="co"># Bottom side</span></span>
-<span id="cb12-17"><a></a>        <span class="st">"right"</span></span>
-<span id="cb12-18"><a></a>      )</span>
-<span id="cb12-19"><a></a>    )</span>
-<span id="cb12-20"><a></a>  ) <span class="co"># Left side. How?</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="co"># Computing the Contingency Table with rows and columns swapped</span></span>
+<span id="cb12-2"><a></a><span class="co"># For plotting purposes</span></span>
+<span id="cb12-3"><a></a>gss_vcd_table <span class="ot">&lt;-</span> vcd<span class="sc">::</span><span class="fu">structable</span>(DeathPenalty <span class="sc">~</span> Education, <span class="at">data =</span> GSS2002_modified)</span>
+<span id="cb12-4"><a></a>gss_vcd_table <span class="sc">%&gt;%</span></span>
+<span id="cb12-5"><a></a>  vcd<span class="sc">::</span><span class="fu">mosaic</span>(</span>
+<span id="cb12-6"><a></a>    <span class="at">gp =</span> shading_hsv, <span class="at">direction =</span> <span class="st">"v"</span>,</span>
+<span id="cb12-7"><a></a>    <span class="at">main =</span> <span class="st">"GSS2002 Education vs Death Penalty Mosaic Chart"</span>,</span>
+<span id="cb12-8"><a></a>    <span class="at">legend =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb12-9"><a></a>    <span class="at">labeling =</span> <span class="fu">labeling_border</span>(</span>
+<span id="cb12-10"><a></a>      <span class="at">varnames =</span> <span class="fu">c</span>(<span class="st">"F"</span>, <span class="st">"F"</span>), <span class="co"># Remove variable name labels</span></span>
+<span id="cb12-11"><a></a>      <span class="at">rot_labels =</span> <span class="fu">c</span>(<span class="dv">90</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="co"># t,r,b,l?</span></span>
+<span id="cb12-12"><a></a>      <span class="at">just_labels =</span> <span class="fu">c</span>(</span>
+<span id="cb12-13"><a></a>        <span class="st">"left"</span>, <span class="co"># Top Side. How?</span></span>
+<span id="cb12-14"><a></a>        <span class="st">"left"</span>, <span class="co"># Right side</span></span>
+<span id="cb12-15"><a></a>        <span class="st">"left"</span>, <span class="co"># Bottom side</span></span>
+<span id="cb12-16"><a></a>        <span class="st">"right"</span></span>
+<span id="cb12-17"><a></a>      )</span>
+<span id="cb12-18"><a></a>    )</span>
+<span id="cb12-19"><a></a>  ) <span class="co"># Left side. How?</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -612,12 +610,14 @@ DeathPenalty Left HS  HS Jr Col Bachelors Graduate  Sum
 <div id="tabset-1-2">
 <p>As discussed in the Descriptive Analysis on <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/40-CatData/index.html#using-visStatistics">Proportions</a>, <code>visStatistics</code> is a recent package that allows a very wide variety of statistical charts to be created <strong>auto-magically</strong> based on the variables chosen. Let us plot a mosaic chart directly with this package: with one function <code>visstats()</code>, we obtain mosaic and bar charts, as well as a statistical analysis of the data. We will discuss this analysis shortly.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>chisq_visstat <span class="ot">&lt;-</span> <span class="fu">visstat</span>(</span>
-<span id="cb13-2"><a></a>  <span class="at">x =</span> GSS2002_modified<span class="sc">$</span>DeathPenalty,</span>
-<span id="cb13-3"><a></a>  <span class="at">y =</span> GSS2002_modified<span class="sc">$</span>Education</span>
-<span id="cb13-4"><a></a>)</span>
-<span id="cb13-5"><a></a></span>
-<span id="cb13-6"><a></a>chisq_visstat <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="co"># Somewhat strange notation with visstat</span></span>
+<span id="cb13-2"><a></a>chisq_visstat <span class="ot">&lt;-</span> <span class="fu">visstat</span>(</span>
+<span id="cb13-3"><a></a>  <span class="at">x =</span> GSS2002_modified, <span class="co"># dataframe</span></span>
+<span id="cb13-4"><a></a>  <span class="at">y =</span> <span class="st">"Education"</span>, <span class="co"># y variable</span></span>
+<span id="cb13-5"><a></a>  <span class="st">"DeathPenalty"</span></span>
+<span id="cb13-6"><a></a>) <span class="co"># x variables</span></span>
+<span id="cb13-7"><a></a></span>
+<span id="cb13-8"><a></a>chisq_visstat <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Summary of visstat object
 
@@ -746,7 +746,7 @@ groups          HS Bachelors   Left HS  Graduate    Jr Col
 <ul>
 <li>The original Contingency Table</li>
 <li>the Expected Contingency Table ( if the two variables were independent )</li>
-<li>the contribution each cell makes to the overall Chi-Square statistic i.e.&nbsp;each cell’s Pearson Residual</li>
+<li>the z-scores/residuals from each cell that contributes to the overall Chi-Square statistic</li>
 <li>the test statistic, degrees of freedom and p-value</li>
 <li>a mosaic plot</li>
 <li>a dodged bar plot</li>
@@ -761,7 +761,7 @@ groups          HS Bachelors   Left HS  Graduate    Jr Col
 <p><strong>Ordering of levels between <code>vcd</code> and <code>visstat</code></strong></p>
 </div>
 <div class="callout-content">
-<p>The ordering of the levels (<code>Left HS</code>, <code>HS</code>, <code>Jr Col</code>, <code>Bachelors</code>, <code>Graduate</code>) is different between the two packages. This is because <code>vcd</code> orders the levels in the order they appear in the data, while <code>visStatistics</code> orders them in <del>alphabetical</del> strange order. If we attempt to munge the data into <strong><em>ordinal</em></strong> factors ( <code>ordered = TRUE</code>), <code>visStatistics</code> does not accept it at all, and wants plain <code>factors</code>.</p>
+<p>The ordering of the levels (<code>Left HS</code>, <code>HS</code>, <code>Jr Col</code>, <code>Bachelors</code>, <code>Graduate</code>) is different between the two packages. This is because <code>vcd</code> orders the levels in the order they appear in the (munged) data, while <code>visStatistics</code> orders them in <del>alphabetical</del> <strong>strange order</strong>. If we attempt to munge the data into <strong><em>ordinal</em></strong> factors ( <code>ordered = TRUE</code>), <code>visStatistics</code> does not accept it at all, and wants plain <code>factors</code>. Aargh!</p>
 <p>We will therefore continue to use the outputs from <code>vcd</code>.</p>
 </div>
 </div>
@@ -788,17 +788,11 @@ groups          HS Bachelors   Left HS  Graduate    Jr Col
 <div id="tabset-2-1">
 <p>Let us now perform the base <code>chisq test</code>: We need a <code>contingency table</code> and then the <code>xchisq</code> test: We will calculate the <code>observed-chi-squared</code> value, and compare it with the <code>critical value</code>. ( The <code>xchisq</code> function is from the <code>mosaic</code> package, and is a wrapper around the base <code>chisq.test</code> function. It provides more verbose output, which is easier to work with. )</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a>contingency_table <span class="ot">&lt;-</span> vcd<span class="sc">::</span><span class="fu">structable</span>(Education <span class="sc">~</span> DeathPenalty,</span>
-<span id="cb21-2"><a></a>  <span class="at">data =</span> GSS2002_modified</span>
-<span id="cb21-3"><a></a>)</span>
-<span id="cb21-4"><a></a>contingency_table</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>             Education Left HS  HS Jr Col Bachelors Graduate
-DeathPenalty                                                
-Favor                      117 511     71       135       64
-Oppose                      72 200     16        71       50</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>xq_test_object <span class="ot">&lt;-</span> <span class="fu">xchisq.test</span>(contingency_table)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a><span class="co"># Already computed</span></span>
+<span id="cb21-2"><a></a><span class="co"># contingency_table &lt;- vcd::structable(Education ~ DeathPenalty,</span></span>
+<span id="cb21-3"><a></a><span class="co">#   data = GSS2002_modified)</span></span>
+<span id="cb21-4"><a></a></span>
+<span id="cb21-5"><a></a>xq_test_object <span class="ot">&lt;-</span> <span class="fu">xchisq.test</span>(contingency_table)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Pearson's Chi-squared test
@@ -822,80 +816,80 @@ key:
     [contribution to X-squared]
     &lt;Pearson residual&gt;</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>xq_test_object <span class="sc">%&gt;%</span></span>
-<span id="cb25-2"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb25-3"><a></a>  <span class="fu">select</span>(statistic) <span class="sc">%&gt;%</span></span>
-<span id="cb25-4"><a></a>  <span class="fu">as.numeric</span>() <span class="ot">-&gt;</span> X_squared_observed</span>
-<span id="cb25-5"><a></a>X_squared_observed</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>xq_test_object <span class="sc">%&gt;%</span></span>
+<span id="cb23-2"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb23-3"><a></a>  <span class="fu">select</span>(statistic) <span class="sc">%&gt;%</span></span>
+<span id="cb23-4"><a></a>  <span class="fu">as.numeric</span>() <span class="ot">-&gt;</span> X_squared_observed</span>
+<span id="cb23-5"><a></a>X_squared_observed</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 23.45093</code></pre>
 </div>
 </div>
-<p>We have the CT and the quite verbose test results, which we will examine shortly.</p>
+<p>We have the Chi-Square Test and the quite verbose test results, which we will examine shortly.</p>
 <p>Let us also evaluate the <code>critical value</code> for the Chi-Square distribution, with <code>alpha = 0.05</code> and <code>df = (nrows-1)*(ncols-1) = (5-1)*(2-1) = 4</code>:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a><span class="co"># Determine the Chi-Square critical value</span></span>
-<span id="cb27-2"><a></a>X_squared_critical <span class="ot">&lt;-</span> <span class="fu">qchisq</span>(</span>
-<span id="cb27-3"><a></a>  <span class="at">p =</span> .<span class="dv">05</span>,</span>
-<span id="cb27-4"><a></a>  <span class="at">df =</span> (<span class="dv">5</span> <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> (<span class="dv">2</span> <span class="sc">-</span> <span class="dv">1</span>), <span class="co"># (nrows-1) * (ncols-1)</span></span>
-<span id="cb27-5"><a></a>  <span class="at">lower.tail =</span> <span class="cn">FALSE</span></span>
-<span id="cb27-6"><a></a>)</span>
-<span id="cb27-7"><a></a>X_squared_critical</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a><span class="co"># Determine the Chi-Square critical value</span></span>
+<span id="cb25-2"><a></a>X_squared_critical <span class="ot">&lt;-</span> <span class="fu">qchisq</span>(</span>
+<span id="cb25-3"><a></a>  <span class="at">p =</span> .<span class="dv">05</span>,</span>
+<span id="cb25-4"><a></a>  <span class="at">df =</span> (<span class="dv">5</span> <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> (<span class="dv">2</span> <span class="sc">-</span> <span class="dv">1</span>), <span class="co"># (nrows-1) * (ncols-1)</span></span>
+<span id="cb25-5"><a></a>  <span class="at">lower.tail =</span> <span class="cn">FALSE</span></span>
+<span id="cb25-6"><a></a>)</span>
+<span id="cb25-7"><a></a>X_squared_critical</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 9.487729</code></pre>
 </div>
 </div>
-<p>We see that our observed <span class="math inline">\(X^2_{obs} = 23.45\)</span>; the critical value <span class="math inline">\(X^2_{crit} = 9.48\)</span>, which is much smaller! The <code>p-value</code> is <span class="math inline">\(0.0001029\)</span>, very low as we would expect, indicating that the NULL Hypothesis should be rejected in favour of the alternate hypothesis, that proportions of <code>DeathPenalty</code> are affected by <code>Education</code>.</p>
+<p>We see that our observed <span class="math inline">\(X^2_{obs} = 23.45\)</span>; the critical value <span class="math inline">\(X^2_{crit} = 9.48\)</span>, which is much smaller! The <code>p-value</code> is <span class="math inline">\(0.0001029\)</span>, very low as we would expect, indicating that the NULL Hypothesis should be rejected in favour of the alternate hypothesis, that proportions of <code>DeathPenalty</code> (opinion) are affected by <code>Education</code>.</p>
 <p>As always, <em>we analyze our plots, and plot our analysis</em>. Here is a plot for this test:</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb29-2"><a></a></span>
-<span id="cb29-3"><a></a>mosaic<span class="sc">::</span><span class="fu">xqchisq</span>(</span>
-<span id="cb29-4"><a></a>  <span class="at">p =</span> <span class="fl">0.95</span>, <span class="at">df =</span> <span class="dv">4</span>,</span>
-<span id="cb29-5"><a></a>  <span class="at">return =</span> <span class="fu">c</span>(<span class="st">"plot"</span>), <span class="at">verbose =</span> F,</span>
-<span id="cb29-6"><a></a>  <span class="at">system =</span> <span class="st">"gg"</span></span>
-<span id="cb29-7"><a></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb29-8"><a></a>  <span class="fu">gf_labs</span>(</span>
-<span id="cb29-9"><a></a>    <span class="at">x =</span> <span class="st">"F value"</span>, <span class="at">title =</span> <span class="st">"Critical and Observed Chi-Square Values"</span>,</span>
-<span id="cb29-10"><a></a>    <span class="at">x =</span> <span class="st">""</span></span>
-<span id="cb29-11"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb29-12"><a></a>  <span class="fu">gf_vline</span>(</span>
-<span id="cb29-13"><a></a>    <span class="at">xintercept =</span> X_squared_observed,</span>
-<span id="cb29-14"><a></a>    <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linewidth =</span> <span class="dv">1</span></span>
-<span id="cb29-15"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb29-16"><a></a>  <span class="fu">gf_vline</span>(</span>
-<span id="cb29-17"><a></a>    <span class="at">xintercept =</span> X_squared_critical,</span>
-<span id="cb29-18"><a></a>    <span class="at">color =</span> <span class="st">"dodgerblue"</span>,</span>
-<span id="cb29-19"><a></a>    <span class="at">linewidth =</span> <span class="dv">1</span></span>
-<span id="cb29-20"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb29-21"><a></a>  <span class="fu">gf_annotate</span>(</span>
-<span id="cb29-22"><a></a>    <span class="at">x =</span> X_squared_observed <span class="sc">-</span> <span class="fl">2.5</span>, <span class="at">y =</span> <span class="fl">0.15</span>,</span>
-<span id="cb29-23"><a></a>    <span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">label =</span> <span class="st">"Observed</span><span class="sc">\n</span><span class="st"> Chi-Square"</span>,</span>
-<span id="cb29-24"><a></a>    <span class="at">fill =</span> <span class="st">"red"</span>, <span class="at">alpha =</span> <span class="fl">0.3</span></span>
-<span id="cb29-25"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb29-26"><a></a>  <span class="fu">gf_annotate</span>(<span class="st">"curve"</span>, X_squared_observed <span class="sc">-</span> <span class="fl">2.5</span>,</span>
-<span id="cb29-27"><a></a>    <span class="at">y =</span> <span class="fl">0.135</span>, <span class="at">yend =</span> <span class="fl">0.10</span>,</span>
-<span id="cb29-28"><a></a>    <span class="at">xend =</span> X_squared_observed <span class="sc">-</span> <span class="fl">0.5</span>,</span>
-<span id="cb29-29"><a></a>    <span class="at">linewidth =</span> <span class="fl">0.5</span>, <span class="at">curvature =</span> <span class="fl">0.3</span>,</span>
-<span id="cb29-30"><a></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">"cm"</span>))</span>
-<span id="cb29-31"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb29-32"><a></a>  <span class="fu">gf_annotate</span>(</span>
-<span id="cb29-33"><a></a>    <span class="at">x =</span> X_squared_critical <span class="sc">+</span> <span class="fl">2.5</span>, <span class="at">y =</span> <span class="fl">0.15</span>,</span>
-<span id="cb29-34"><a></a>    <span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">label =</span> <span class="st">"Critical</span><span class="sc">\n</span><span class="st"> Chi-Square"</span>,</span>
-<span id="cb29-35"><a></a>    <span class="at">fill =</span> <span class="st">"lightblue"</span></span>
-<span id="cb29-36"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb29-37"><a></a>  <span class="fu">gf_annotate</span>(<span class="st">"curve"</span>, X_squared_critical <span class="sc">+</span> <span class="fl">2.5</span>,</span>
-<span id="cb29-38"><a></a>    <span class="at">y =</span> <span class="fl">0.135</span>, <span class="at">yend =</span> <span class="fl">0.10</span>,</span>
-<span id="cb29-39"><a></a>    <span class="at">xend =</span> X_squared_critical <span class="sc">+</span> <span class="fl">0.5</span>,</span>
-<span id="cb29-40"><a></a>    <span class="at">linewidth =</span> <span class="fl">0.5</span>, <span class="at">curvature =</span> <span class="sc">-</span><span class="fl">0.3</span>,</span>
-<span id="cb29-41"><a></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">"cm"</span>))</span>
-<span id="cb29-42"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb29-43"><a></a>  <span class="fu">gf_refine</span>(</span>
-<span id="cb29-44"><a></a>    <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">add =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.01</span>))),</span>
-<span id="cb29-45"><a></a>    <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">add =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)))</span>
-<span id="cb29-46"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb27-2"><a></a></span>
+<span id="cb27-3"><a></a>mosaic<span class="sc">::</span><span class="fu">xqchisq</span>(</span>
+<span id="cb27-4"><a></a>  <span class="at">p =</span> <span class="fl">0.95</span>, <span class="at">df =</span> <span class="dv">4</span>,</span>
+<span id="cb27-5"><a></a>  <span class="at">return =</span> <span class="fu">c</span>(<span class="st">"plot"</span>), <span class="at">verbose =</span> F,</span>
+<span id="cb27-6"><a></a>  <span class="at">system =</span> <span class="st">"gg"</span></span>
+<span id="cb27-7"><a></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb27-8"><a></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb27-9"><a></a>    <span class="at">x =</span> <span class="st">"F value"</span>, <span class="at">title =</span> <span class="st">"Critical and Observed Chi-Square Values"</span>,</span>
+<span id="cb27-10"><a></a>    <span class="at">x =</span> <span class="st">""</span></span>
+<span id="cb27-11"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb27-12"><a></a>  <span class="fu">gf_vline</span>(</span>
+<span id="cb27-13"><a></a>    <span class="at">xintercept =</span> X_squared_observed,</span>
+<span id="cb27-14"><a></a>    <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linewidth =</span> <span class="dv">1</span></span>
+<span id="cb27-15"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb27-16"><a></a>  <span class="fu">gf_vline</span>(</span>
+<span id="cb27-17"><a></a>    <span class="at">xintercept =</span> X_squared_critical,</span>
+<span id="cb27-18"><a></a>    <span class="at">color =</span> <span class="st">"dodgerblue"</span>,</span>
+<span id="cb27-19"><a></a>    <span class="at">linewidth =</span> <span class="dv">1</span></span>
+<span id="cb27-20"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb27-21"><a></a>  <span class="fu">gf_annotate</span>(</span>
+<span id="cb27-22"><a></a>    <span class="at">x =</span> X_squared_observed <span class="sc">-</span> <span class="fl">2.5</span>, <span class="at">y =</span> <span class="fl">0.15</span>,</span>
+<span id="cb27-23"><a></a>    <span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">label =</span> <span class="st">"Observed</span><span class="sc">\n</span><span class="st"> Chi-Square"</span>,</span>
+<span id="cb27-24"><a></a>    <span class="at">fill =</span> <span class="st">"red"</span>, <span class="at">alpha =</span> <span class="fl">0.3</span></span>
+<span id="cb27-25"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb27-26"><a></a>  <span class="fu">gf_annotate</span>(<span class="st">"curve"</span>, X_squared_observed <span class="sc">-</span> <span class="fl">2.5</span>,</span>
+<span id="cb27-27"><a></a>    <span class="at">y =</span> <span class="fl">0.135</span>, <span class="at">yend =</span> <span class="fl">0.10</span>,</span>
+<span id="cb27-28"><a></a>    <span class="at">xend =</span> X_squared_observed <span class="sc">-</span> <span class="fl">0.5</span>,</span>
+<span id="cb27-29"><a></a>    <span class="at">linewidth =</span> <span class="fl">0.5</span>, <span class="at">curvature =</span> <span class="fl">0.3</span>,</span>
+<span id="cb27-30"><a></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">"cm"</span>))</span>
+<span id="cb27-31"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb27-32"><a></a>  <span class="fu">gf_annotate</span>(</span>
+<span id="cb27-33"><a></a>    <span class="at">x =</span> X_squared_critical <span class="sc">+</span> <span class="fl">2.5</span>, <span class="at">y =</span> <span class="fl">0.15</span>,</span>
+<span id="cb27-34"><a></a>    <span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">label =</span> <span class="st">"Critical</span><span class="sc">\n</span><span class="st"> Chi-Square"</span>,</span>
+<span id="cb27-35"><a></a>    <span class="at">fill =</span> <span class="st">"lightblue"</span></span>
+<span id="cb27-36"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb27-37"><a></a>  <span class="fu">gf_annotate</span>(<span class="st">"curve"</span>, X_squared_critical <span class="sc">+</span> <span class="fl">2.5</span>,</span>
+<span id="cb27-38"><a></a>    <span class="at">y =</span> <span class="fl">0.135</span>, <span class="at">yend =</span> <span class="fl">0.10</span>,</span>
+<span id="cb27-39"><a></a>    <span class="at">xend =</span> X_squared_critical <span class="sc">+</span> <span class="fl">0.5</span>,</span>
+<span id="cb27-40"><a></a>    <span class="at">linewidth =</span> <span class="fl">0.5</span>, <span class="at">curvature =</span> <span class="sc">-</span><span class="fl">0.3</span>,</span>
+<span id="cb27-41"><a></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">"cm"</span>))</span>
+<span id="cb27-42"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb27-43"><a></a>  <span class="fu">gf_refine</span>(</span>
+<span id="cb27-44"><a></a>    <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">add =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.01</span>))),</span>
+<span id="cb27-45"><a></a>    <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">add =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)))</span>
+<span id="cb27-46"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-chi-square-critical-value" class="quarto-float quarto-figure quarto-figure-center">
@@ -915,7 +909,7 @@ Figure&nbsp;3: Results of Chi-Square Test
 <div id="tabset-2-2">
 <p>Let us once again look at the output of the <code>xchisq.test()</code> function:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a><span class="fu">xchisq.test</span>(contingency_table)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a>xq_test_object <span class="ot">&lt;-</span> <span class="fu">xchisq.test</span>(contingency_table)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Pearson's Chi-squared test
@@ -940,59 +934,60 @@ key:
     &lt;Pearson residual&gt;</code></pre>
 </div>
 </div>
-<p>As per the <code>key</code> below, this is <span style="background-color:yellow;"><strong>actually four 2-row tables interleaved together into one</strong></span>. The first row is the <code>Observed</code> counts, the second row is the <code>Expected</code> counts, if the two variables were independent. The third row is the <code>Pearson Residuals</code>, which we will explain shortly. The last row is the <code>Contribution</code> of each cell to the overall Chi-Square statistic.</p>
+<p>As per the <code>key</code> above, this is actually <span style="background-color:yellow;"><strong>four 2-row tables interleaved together into one</strong></span>. The <em>first</em> row is the <code>Observed</code> counts, the <em>second</em> row is the <code>Expected</code> counts, if the two variables were independent. The <em>last</em> row is the <code>Pearson Residuals</code> or <code>z-score</code> per cell, which we will explain shortly. The <em>third</em> row is the <code>Contribution</code> of each cell to the overall Chi-Square statistic, given by <span class="math inline">\(z.score^2\)</span>.</p>
 <p>Let us plot these tables and develop first a visual intuition, and then a mathematical one. If we pull apart the four tables, here are the mosaic plots for the <em>actual</em> and <em>expected</em> Contingency Tables, along with the <em>association</em> plot showing the differences, as we did when plotting <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/40-CatData/index.html#coloured-tiles-actual-and-expected-contingency-tables">Proportions</a>:</p>
-<div class="column-page-inset-right">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a>counts_table <span class="ot">&lt;-</span> vcd<span class="sc">::</span><span class="fu">structable</span>(Education <span class="sc">~</span> DeathPenalty,</span>
-<span id="cb32-2"><a></a>  <span class="at">data =</span> GSS2002_modified</span>
-<span id="cb32-3"><a></a>) <span class="co"># No margins added</span></span>
-<span id="cb32-4"><a></a>vcd<span class="sc">::</span><span class="fu">mosaic</span>(counts_table,</span>
-<span id="cb32-5"><a></a>  <span class="at">gp =</span> shading_max, <span class="at">legend =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb32-6"><a></a>  <span class="at">labeling =</span> <span class="fu">labeling_border</span>(</span>
-<span id="cb32-7"><a></a>    <span class="at">varnames =</span> <span class="fu">c</span>(<span class="st">"F"</span>, <span class="st">"F"</span>), <span class="co"># Remove variable name labels</span></span>
-<span id="cb32-8"><a></a>    <span class="at">rot_labels =</span> <span class="fu">c</span>(<span class="dv">90</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="co"># t,r,b,l?</span></span>
-<span id="cb32-9"><a></a>    <span class="at">just_labels =</span> <span class="fu">c</span>(</span>
-<span id="cb32-10"><a></a>      <span class="st">"left"</span>, <span class="co"># Top Side. How?</span></span>
-<span id="cb32-11"><a></a>      <span class="st">"left"</span>, <span class="co"># Right side</span></span>
-<span id="cb32-12"><a></a>      <span class="st">"left"</span>, <span class="co"># Bottom side</span></span>
-<span id="cb32-13"><a></a>      <span class="st">"right"</span></span>
-<span id="cb32-14"><a></a>    )</span>
-<span id="cb32-15"><a></a>  )</span>
-<span id="cb32-16"><a></a>) <span class="co"># Left side. How?</span></span>
-<span id="cb32-17"><a></a>vcd<span class="sc">::</span><span class="fu">mosaic</span>(counts_table,</span>
-<span id="cb32-18"><a></a>  <span class="at">type =</span> <span class="st">"expected"</span>, <span class="at">gp =</span> shading_max, <span class="at">legend =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb32-19"><a></a>  <span class="at">labeling =</span> <span class="fu">labeling_border</span>(</span>
-<span id="cb32-20"><a></a>    <span class="at">varnames =</span> <span class="fu">c</span>(<span class="st">"F"</span>, <span class="st">"F"</span>), <span class="co"># Remove variable name labels</span></span>
-<span id="cb32-21"><a></a>    <span class="at">rot_labels =</span> <span class="fu">c</span>(<span class="dv">90</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="co"># t,r,b,l?</span></span>
-<span id="cb32-22"><a></a>    <span class="at">just_labels =</span> <span class="fu">c</span>(</span>
-<span id="cb32-23"><a></a>      <span class="st">"left"</span>, <span class="co"># Top Side. How?</span></span>
-<span id="cb32-24"><a></a>      <span class="st">"left"</span>, <span class="co"># Right side</span></span>
-<span id="cb32-25"><a></a>      <span class="st">"left"</span>, <span class="co"># Bottom side</span></span>
-<span id="cb32-26"><a></a>      <span class="st">"right"</span></span>
-<span id="cb32-27"><a></a>    )</span>
-<span id="cb32-28"><a></a>  )</span>
-<span id="cb32-29"><a></a>) <span class="co"># Left side. How?)</span></span>
-<span id="cb32-30"><a></a>vcd<span class="sc">::</span><span class="fu">assoc</span>(counts_table,</span>
-<span id="cb32-31"><a></a>  <span class="at">gp =</span> shading_max, <span class="at">legend =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb32-32"><a></a>  <span class="at">labeling =</span> <span class="fu">labeling_border</span>(</span>
-<span id="cb32-33"><a></a>    <span class="at">varnames =</span> <span class="fu">c</span>(<span class="st">"F"</span>, <span class="st">"F"</span>), <span class="co"># Remove variable name labels</span></span>
-<span id="cb32-34"><a></a>    <span class="at">rot_labels =</span> <span class="fu">c</span>(<span class="dv">90</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="co"># t,r,b,l?</span></span>
-<span id="cb32-35"><a></a>    <span class="at">just_labels =</span> <span class="fu">c</span>(</span>
-<span id="cb32-36"><a></a>      <span class="st">"left"</span>, <span class="co"># Top Side. How?</span></span>
-<span id="cb32-37"><a></a>      <span class="st">"left"</span>, <span class="co"># Right side</span></span>
-<span id="cb32-38"><a></a>      <span class="st">"left"</span>, <span class="co"># Bottom side</span></span>
-<span id="cb32-39"><a></a>      <span class="st">"right"</span></span>
-<span id="cb32-40"><a></a>    )</span>
-<span id="cb32-41"><a></a>  )</span>
-<span id="cb32-42"><a></a>) <span class="co"># Left side. How?)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a><span class="co"># Flipping the Contingency Table for Exposition</span></span>
+<span id="cb30-2"><a></a>gss_vcd_table <span class="ot">&lt;-</span> vcd<span class="sc">::</span><span class="fu">structable</span>(DeathPenalty <span class="sc">~</span> Education, <span class="co"># cols ~ rows</span></span>
+<span id="cb30-3"><a></a>  <span class="at">data =</span> GSS2002_modified</span>
+<span id="cb30-4"><a></a>)</span>
+<span id="cb30-5"><a></a></span>
+<span id="cb30-6"><a></a>vcd<span class="sc">::</span><span class="fu">mosaic</span>(gss_vcd_table,</span>
+<span id="cb30-7"><a></a>  <span class="at">gp =</span> shading_max, <span class="at">legend =</span> <span class="cn">TRUE</span>, <span class="at">direction =</span> <span class="st">"v"</span>,</span>
+<span id="cb30-8"><a></a>  <span class="at">labeling =</span> <span class="fu">labeling_border</span>(</span>
+<span id="cb30-9"><a></a>    <span class="at">varnames =</span> <span class="fu">c</span>(<span class="st">"F"</span>, <span class="st">"F"</span>), <span class="co"># Remove variable name labels</span></span>
+<span id="cb30-10"><a></a>    <span class="at">rot_labels =</span> <span class="fu">c</span>(<span class="dv">90</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="co"># t,r,b,l?</span></span>
+<span id="cb30-11"><a></a>    <span class="at">just_labels =</span> <span class="fu">c</span>(</span>
+<span id="cb30-12"><a></a>      <span class="st">"left"</span>, <span class="co"># Top Side. How?</span></span>
+<span id="cb30-13"><a></a>      <span class="st">"left"</span>, <span class="co"># Right side</span></span>
+<span id="cb30-14"><a></a>      <span class="st">"left"</span>, <span class="co"># Bottom side</span></span>
+<span id="cb30-15"><a></a>      <span class="st">"right"</span></span>
+<span id="cb30-16"><a></a>    )</span>
+<span id="cb30-17"><a></a>  )</span>
+<span id="cb30-18"><a></a>) <span class="co"># Left side. How?</span></span>
+<span id="cb30-19"><a></a>vcd<span class="sc">::</span><span class="fu">mosaic</span>(gss_vcd_table,</span>
+<span id="cb30-20"><a></a>  <span class="at">type =</span> <span class="st">"expected"</span>, <span class="at">gp =</span> shading_max, <span class="at">legend =</span> <span class="cn">TRUE</span>, <span class="at">direction =</span> <span class="st">"v"</span>,</span>
+<span id="cb30-21"><a></a>  <span class="at">labeling =</span> <span class="fu">labeling_border</span>(</span>
+<span id="cb30-22"><a></a>    <span class="at">varnames =</span> <span class="fu">c</span>(<span class="st">"F"</span>, <span class="st">"F"</span>), <span class="co"># Remove variable name labels</span></span>
+<span id="cb30-23"><a></a>    <span class="at">rot_labels =</span> <span class="fu">c</span>(<span class="dv">90</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="co"># t,r,b,l?</span></span>
+<span id="cb30-24"><a></a>    <span class="at">just_labels =</span> <span class="fu">c</span>(</span>
+<span id="cb30-25"><a></a>      <span class="st">"left"</span>, <span class="co"># Top Side. How?</span></span>
+<span id="cb30-26"><a></a>      <span class="st">"left"</span>, <span class="co"># Right side</span></span>
+<span id="cb30-27"><a></a>      <span class="st">"left"</span>, <span class="co"># Bottom side</span></span>
+<span id="cb30-28"><a></a>      <span class="st">"right"</span></span>
+<span id="cb30-29"><a></a>    )</span>
+<span id="cb30-30"><a></a>  )</span>
+<span id="cb30-31"><a></a>) <span class="co"># Left side. How?)</span></span>
+<span id="cb30-32"><a></a>vcd<span class="sc">::</span><span class="fu">assoc</span>(contingency_table,</span>
+<span id="cb30-33"><a></a>  <span class="at">gp =</span> shading_max, <span class="at">legend =</span> <span class="cn">TRUE</span>, <span class="at">direction =</span> <span class="st">"v"</span>,</span>
+<span id="cb30-34"><a></a>  <span class="at">labeling =</span> <span class="fu">labeling_border</span>(</span>
+<span id="cb30-35"><a></a>    <span class="at">varnames =</span> <span class="fu">c</span>(<span class="st">"F"</span>, <span class="st">"F"</span>), <span class="co"># Remove variable name labels</span></span>
+<span id="cb30-36"><a></a>    <span class="at">rot_labels =</span> <span class="fu">c</span>(<span class="dv">90</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="co"># t,r,b,l?</span></span>
+<span id="cb30-37"><a></a>    <span class="at">just_labels =</span> <span class="fu">c</span>(</span>
+<span id="cb30-38"><a></a>      <span class="st">"left"</span>, <span class="co"># Top Side. How?</span></span>
+<span id="cb30-39"><a></a>      <span class="st">"left"</span>, <span class="co"># Right side</span></span>
+<span id="cb30-40"><a></a>      <span class="st">"left"</span>, <span class="co"># Bottom side</span></span>
+<span id="cb30-41"><a></a>      <span class="st">"right"</span></span>
+<span id="cb30-42"><a></a>    )</span>
+<span id="cb30-43"><a></a>  )</span>
+<span id="cb30-44"><a></a>) <span class="co"># Left side. How?)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div id="fig-mosaic-actual-expected-differences" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig">
 <div aria-describedby="fig-mosaic-actual-expected-differences-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="quarto-layout-row">
-<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-mosaic-actual-expected-differences" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-mosaic-actual-expected-differences" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div id="fig-mosaic-actual-expected-differences-1" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-subfloat-fig">
 <div aria-describedby="fig-mosaic-actual-expected-differences-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -1004,7 +999,7 @@ key:
 </figure>
 </div>
 </div>
-<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-mosaic-actual-expected-differences" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-mosaic-actual-expected-differences" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div id="fig-mosaic-actual-expected-differences-2" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-subfloat-fig">
 <div aria-describedby="fig-mosaic-actual-expected-differences-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -1016,7 +1011,9 @@ key:
 </figure>
 </div>
 </div>
-<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-mosaic-actual-expected-differences" style="flex-basis: 33.3%;justify-content: flex-start;">
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-mosaic-actual-expected-differences" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div id="fig-mosaic-actual-expected-differences-3" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-subfloat-fig">
 <div aria-describedby="fig-mosaic-actual-expected-differences-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -1035,7 +1032,6 @@ Figure&nbsp;4: Mosaic Plots of Actual, Expected and Differences in Contingency T
 </figcaption>
 </figure>
 </div>
-</div>
 <p>In <a href="#/fig-mosaic-actual-expected-differences-1" class="quarto-xref">Figure&nbsp;4 (a)</a>, we have the <em>Observed Contingency Table</em> as a mosaic, with its imbalances. The horizontal slice-line provides the overall proportion <code>Favour::Oppose</code>. The vertical slice-lines tell us that this proportion is <em>not the same</em> across levels of <code>Education</code>.</p>
 <p>What if we straighten out the vertical slice-lines?</p>
 <p><a href="#/fig-mosaic-actual-expected-differences-2" class="quarto-xref">Figure&nbsp;4 (b)</a> does exactly this: we have a <strong>fictitious</strong> mosaic plot of an <strong>Expected Contingency Table</strong>, with <strong><em>straight vertical divisions</em></strong>, as if <strong><em>Education had no effect on the Favour::Oppose proportion</em></strong>. (NULL hypothesis!!)</p>
@@ -1043,49 +1039,60 @@ Figure&nbsp;4: Mosaic Plots of Actual, Expected and Differences in Contingency T
 <p>When we scale these differences by the standard deviation of each cell, we get the <code>Pearson Residuals</code>, which we will explain next.</p>
 </div>
 <div id="tabset-2-3">
-<p>Let us perform these computations manually, to see how this works. Here are all the four tables, side by side: (Are you tired of these yet?)</p>
-<div class="cell" data-tbl-subcap="[&quot;Observed&quot;,&quot;Expected&quot;,&quot;Pearson Residuals&quot;,&quot;Contribution to Chi-Square Statistic&quot;]">
+<p>Let us perform these computations manually, to see how this works. Let us look at the fairly complex R-object the <code>xq_test_object</code> is:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a><span class="co"># Already computed</span></span>
+<span id="cb31-2"><a></a><span class="co"># xq_test_object &lt;- xchisq.test(contingency_table)</span></span>
+<span id="cb31-3"><a></a>xq_test_object <span class="sc">%&gt;%</span> <span class="fu">names</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "statistic"    "parameter"    "p.value"      "method"       "data.name"   
+ [6] "observed"     "expected"     "residuals"    "stdres"       "contribution"</code></pre>
+</div>
+</div>
+<p>It should be fairly clear (oh yeah?) that <code>observed</code>, <code>expected</code>, <code>residuals</code> and <code>contribution</code>, and <code>stdres</code> are contingency-table like structures; the rest are simple scalars / text. Use <code>xq_test_object %&gt;% str()</code> in your Console to find check!!</p>
+<p>Here are all the first four of the above tables, side by side: (Are you tired of these yet?)</p>
+<div class="cell" data-tbl-subcap="[&quot;Observed&quot;,&quot;Expected&quot;,&quot;Pearson Residuals&quot;,&quot;Squared Residual Contribution to Chi-Square Statistic&quot;]">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a><span class="co"># xq_test_object &lt;- xchisq.test(contingency_table)</span></span>
-<span id="cb33-2"><a></a><span class="co"># Already computed</span></span>
-<span id="cb33-3"><a></a></span>
-<span id="cb33-4"><a></a>xq_test_object<span class="sc">$</span>observed <span class="sc">%&gt;%</span></span>
-<span id="cb33-5"><a></a>  <span class="fu">addmargins</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb33-6"><a></a>  <span class="fu">as_tibble</span>(<span class="at">rownames =</span> <span class="st">"DeathPenalty"</span>) <span class="sc">%&gt;%</span> <span class="co"># Convert to tibble; ensure row names!</span></span>
-<span id="cb33-7"><a></a>  <span class="fu">tt</span>(<span class="at">caption =</span> <span class="st">"Observed"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb33-8"><a></a>  <span class="fu">style_tt</span>(<span class="at">color =</span> <span class="st">"grey20"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb33-9"><a></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="dv">1</span>, <span class="at">j =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"yellow"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb33-10"><a></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="dv">2</span>, <span class="at">j =</span> <span class="dv">5</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"yellow"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb33-11"><a></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="dv">3</span>, <span class="at">j =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"palegreen"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb33-12"><a></a>  <span class="fu">style_tt</span>(<span class="at">j =</span> <span class="dv">7</span>, <span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"palegreen"</span>)</span>
-<span id="cb33-13"><a></a>xq_test_object<span class="sc">$</span>expected <span class="sc">%&gt;%</span></span>
-<span id="cb33-14"><a></a>  <span class="fu">addmargins</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb33-15"><a></a>  <span class="fu">as_tibble</span>(<span class="at">rownames =</span> <span class="st">"DeathPenalty"</span>) <span class="sc">%&gt;%</span> <span class="co"># Convert to tibble; ensure row names!</span></span>
-<span id="cb33-16"><a></a>  <span class="fu">tt</span>(<span class="at">digits =</span> <span class="dv">2</span>, <span class="at">caption =</span> <span class="st">"Expected"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb33-17"><a></a>  <span class="fu">style_tt</span>(<span class="at">color =</span> <span class="st">"grey20"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb33-18"><a></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="dv">1</span>, <span class="at">j =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"yellow"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb33-19"><a></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="dv">2</span>, <span class="at">j =</span> <span class="dv">5</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"yellow"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb33-20"><a></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="dv">3</span>, <span class="at">j =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"palegreen"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb33-21"><a></a>  <span class="fu">style_tt</span>(<span class="at">j =</span> <span class="dv">7</span>, <span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"palegreen"</span>)</span>
-<span id="cb33-22"><a></a>xq_test_object<span class="sc">$</span>residuals <span class="sc">%&gt;%</span></span>
-<span id="cb33-23"><a></a>  <span class="fu">addmargins</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb33-24"><a></a>  <span class="fu">as_tibble</span>(<span class="at">rownames =</span> <span class="st">"DeathPenalty"</span>) <span class="sc">%&gt;%</span> <span class="co"># Convert to tibble; ensure row names!</span></span>
-<span id="cb33-25"><a></a>  <span class="fu">tt</span>(<span class="at">digits =</span> <span class="dv">2</span>, <span class="at">caption =</span> <span class="st">"Pearson Residuals"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb33-26"><a></a>  <span class="fu">style_tt</span>(<span class="at">color =</span> <span class="st">"grey20"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb33-27"><a></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="dv">1</span>, <span class="at">j =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"yellow"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb33-28"><a></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="dv">2</span>, <span class="at">j =</span> <span class="dv">5</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"yellow"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb33-29"><a></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="dv">3</span>, <span class="at">j =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"palegreen"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb33-30"><a></a>  <span class="fu">style_tt</span>(<span class="at">j =</span> <span class="dv">7</span>, <span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"palegreen"</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a>xq_test_object<span class="sc">$</span>observed <span class="sc">%&gt;%</span></span>
+<span id="cb33-2"><a></a>  <span class="fu">addmargins</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb33-3"><a></a>  <span class="fu">as_tibble</span>(<span class="at">rownames =</span> <span class="st">"DeathPenalty"</span>) <span class="sc">%&gt;%</span> <span class="co"># Convert to tibble; ensure row names!</span></span>
+<span id="cb33-4"><a></a>  <span class="fu">tt</span>(<span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Observed"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-5"><a></a>  <span class="fu">style_tt</span>(<span class="at">color =</span> <span class="st">"grey20"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-6"><a></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="dv">1</span>, <span class="at">j =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"yellow"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-7"><a></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="dv">2</span>, <span class="at">j =</span> <span class="dv">5</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"yellow"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-8"><a></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="dv">3</span>, <span class="at">j =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"palegreen"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-9"><a></a>  <span class="fu">style_tt</span>(<span class="at">j =</span> <span class="dv">7</span>, <span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"palegreen"</span>)</span>
+<span id="cb33-10"><a></a><span class="do">##</span></span>
+<span id="cb33-11"><a></a>xq_test_object<span class="sc">$</span>expected <span class="sc">%&gt;%</span></span>
+<span id="cb33-12"><a></a>  <span class="fu">addmargins</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb33-13"><a></a>  <span class="fu">as_tibble</span>(<span class="at">rownames =</span> <span class="st">"DeathPenalty"</span>) <span class="sc">%&gt;%</span> <span class="co"># Convert to tibble; ensure row names!</span></span>
+<span id="cb33-14"><a></a>  <span class="fu">tt</span>(<span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Expected"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-15"><a></a>  <span class="fu">style_tt</span>(<span class="at">color =</span> <span class="st">"grey20"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-16"><a></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="dv">1</span>, <span class="at">j =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"yellow"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-17"><a></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="dv">2</span>, <span class="at">j =</span> <span class="dv">5</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"yellow"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-18"><a></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="dv">3</span>, <span class="at">j =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"palegreen"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-19"><a></a>  <span class="fu">style_tt</span>(<span class="at">j =</span> <span class="dv">7</span>, <span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"palegreen"</span>)</span>
+<span id="cb33-20"><a></a><span class="do">##</span></span>
+<span id="cb33-21"><a></a>xq_test_object<span class="sc">$</span>residuals <span class="sc">%&gt;%</span></span>
+<span id="cb33-22"><a></a>  <span class="fu">addmargins</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb33-23"><a></a>  <span class="fu">as_tibble</span>(<span class="at">rownames =</span> <span class="st">"DeathPenalty"</span>) <span class="sc">%&gt;%</span> <span class="co"># Convert to tibble; ensure row names!</span></span>
+<span id="cb33-24"><a></a>  <span class="fu">tt</span>(<span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Pearson Residuals"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-25"><a></a>  <span class="fu">style_tt</span>(<span class="at">color =</span> <span class="st">"grey20"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-26"><a></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="dv">1</span>, <span class="at">j =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"yellow"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-27"><a></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="dv">2</span>, <span class="at">j =</span> <span class="dv">5</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"yellow"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-28"><a></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="dv">3</span>, <span class="at">j =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"palegreen"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-29"><a></a>  <span class="fu">style_tt</span>(<span class="at">j =</span> <span class="dv">7</span>, <span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"palegreen"</span>)</span>
+<span id="cb33-30"><a></a><span class="do">##</span></span>
 <span id="cb33-31"><a></a>xq_test_object<span class="sc">$</span>contribution <span class="sc">%&gt;%</span></span>
 <span id="cb33-32"><a></a>  <span class="fu">as.matrix</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb33-33"><a></a>  <span class="fu">as_tibble</span>(<span class="at">rownames =</span> <span class="st">"DeathPenalty"</span>) <span class="sc">%&gt;%</span> <span class="co"># Convert to tibble; ensure row names!</span></span>
-<span id="cb33-34"><a></a>  <span class="fu">tt</span>(<span class="at">digits =</span> <span class="dv">2</span>, <span class="at">caption =</span> <span class="st">"Contribution to Chi-Square Statistic"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-34"><a></a>  <span class="fu">tt</span>(<span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Contribution to Chi-Square Statistic"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb33-35"><a></a>  <span class="fu">style_tt</span>(<span class="at">color =</span> <span class="st">"grey20"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb33-36"><a></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="dv">1</span>, <span class="at">j =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"yellow"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb33-37"><a></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="dv">2</span>, <span class="at">j =</span> <span class="dv">5</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>, <span class="at">background =</span> <span class="st">"yellow"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div id="tbl-all-tables" class="cell quarto-float quarto-figure quarto-figure-center" data-tbl-subcap="[&quot;Observed&quot;,&quot;Expected&quot;,&quot;Pearson Residuals&quot;,&quot;Contribution to Chi-Square Statistic&quot;]">
+<div id="tbl-all-tables" class="cell quarto-float quarto-figure quarto-figure-center" data-tbl-subcap="[&quot;Observed&quot;,&quot;Expected&quot;,&quot;Pearson Residuals&quot;,&quot;Squared Residual Contribution to Chi-Square Statistic&quot;]">
 <figure class="quarto-float quarto-float-tbl">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-all-tables-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;3: All Contingency Tables
@@ -1110,8 +1117,8 @@ Table&nbsp;3: All Contingency Tables
 
     <script>
 
-      function styleCell_kgcmro04fedevu1bmg4r(i, j, css_id) {
-          var table = document.getElementById("tinytable_kgcmro04fedevu1bmg4r");
+      function styleCell_mtk14y9c8x7dmelr31a5(i, j, css_id) {
+          var table = document.getElementById("tinytable_mtk14y9c8x7dmelr31a5");
           var cell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -1120,8 +1127,8 @@ Table&nbsp;3: All Contingency Tables
               console.warn(`Cell at (${i}, ${j}) not found.`);
           }
       }
-      function spanCell_kgcmro04fedevu1bmg4r(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_kgcmro04fedevu1bmg4r");
+      function spanCell_mtk14y9c8x7dmelr31a5(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_mtk14y9c8x7dmelr31a5");
         const targetCell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
         if (!targetCell) {
           console.warn(`Cell at (${i}, ${j}) not found.`);
@@ -1152,18 +1159,18 @@ Table&nbsp;3: All Contingency Tables
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '3', j: 6 },  ], css_id: 'tinytable_css_4euwdpj839zzrvnw8bt9',}, 
-          { positions: [ { i: '1', j: 6 }, { i: '2', j: 6 },  ], css_id: 'tinytable_css_87pl6n1vrhlvej7wvfu8',}, 
-          { positions: [ { i: '1', j: 1 }, { i: '2', j: 4 },  ], css_id: 'tinytable_css_uxmwabovfjfgzpsqo8a6',}, 
-          { positions: [ { i: '3', j: 0 }, { i: '3', j: 1 }, { i: '3', j: 2 }, { i: '3', j: 3 }, { i: '3', j: 4 }, { i: '3', j: 5 },  ], css_id: 'tinytable_css_t82wo6d30v3bjf1km5bc',}, 
-          { positions: [ { i: '1', j: 0 }, { i: '2', j: 0 }, { i: '1', j: 2 }, { i: '2', j: 1 }, { i: '1', j: 3 }, { i: '2', j: 2 }, { i: '1', j: 4 }, { i: '2', j: 3 }, { i: '1', j: 5 }, { i: '2', j: 5 },  ], css_id: 'tinytable_css_mwnaa1dn7xa5462s4you',}, 
-          { positions: [ { i: '0', j: 0 }, { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 },  ], css_id: 'tinytable_css_r90hp5uclcdbvcjiwtn7',}, 
+          { positions: [ { i: '3', j: 6 },  ], css_id: 'tinytable_css_jz2d3v3xulo0k65pwty8',}, 
+          { positions: [ { i: '1', j: 6 }, { i: '2', j: 6 },  ], css_id: 'tinytable_css_0j3gfotpdb27qthnhs3x',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '2', j: 4 },  ], css_id: 'tinytable_css_zuv6soylzgy3fvtx9729',}, 
+          { positions: [ { i: '3', j: 0 }, { i: '3', j: 1 }, { i: '3', j: 2 }, { i: '3', j: 3 }, { i: '3', j: 4 }, { i: '3', j: 5 },  ], css_id: 'tinytable_css_r2fluxbq3ctwzlxj73d1',}, 
+          { positions: [ { i: '1', j: 0 }, { i: '2', j: 0 }, { i: '1', j: 2 }, { i: '2', j: 1 }, { i: '1', j: 3 }, { i: '2', j: 2 }, { i: '1', j: 4 }, { i: '2', j: 3 }, { i: '1', j: 5 }, { i: '2', j: 5 },  ], css_id: 'tinytable_css_2vavijj70off8dsj7w7s',}, 
+          { positions: [ { i: '0', j: 0 }, { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 },  ], css_id: 'tinytable_css_it8an2zzx1ygixlgcqwe',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_kgcmro04fedevu1bmg4r(cell.i, cell.j, group.css_id);
+                  styleCell_mtk14y9c8x7dmelr31a5(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -1171,15 +1178,15 @@ Table&nbsp;3: All Contingency Tables
 
     <style>
       /* tinytable css entries after */
-      .table td.tinytable_css_4euwdpj839zzrvnw8bt9, .table th.tinytable_css_4euwdpj839zzrvnw8bt9 { color: #333333; font-weight: bold; color: black; background-color: #98FB98; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_87pl6n1vrhlvej7wvfu8, .table th.tinytable_css_87pl6n1vrhlvej7wvfu8 { color: #333333; font-weight: bold; color: black; background-color: #98FB98; }
-      .table td.tinytable_css_uxmwabovfjfgzpsqo8a6, .table th.tinytable_css_uxmwabovfjfgzpsqo8a6 { color: #333333; font-weight: bold; color: black; background-color: #FFFF00; }
-      .table td.tinytable_css_t82wo6d30v3bjf1km5bc, .table th.tinytable_css_t82wo6d30v3bjf1km5bc { color: #333333; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_mwnaa1dn7xa5462s4you, .table th.tinytable_css_mwnaa1dn7xa5462s4you { color: #333333; }
-      .table td.tinytable_css_r90hp5uclcdbvcjiwtn7, .table th.tinytable_css_r90hp5uclcdbvcjiwtn7 { color: #333333; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_jz2d3v3xulo0k65pwty8, .table th.tinytable_css_jz2d3v3xulo0k65pwty8 { color: #333333; font-weight: bold; color: black; background-color: #98FB98; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_0j3gfotpdb27qthnhs3x, .table th.tinytable_css_0j3gfotpdb27qthnhs3x { color: #333333; font-weight: bold; color: black; background-color: #98FB98; }
+      .table td.tinytable_css_zuv6soylzgy3fvtx9729, .table th.tinytable_css_zuv6soylzgy3fvtx9729 { color: #333333; font-weight: bold; color: black; background-color: #FFFF00; }
+      .table td.tinytable_css_r2fluxbq3ctwzlxj73d1, .table th.tinytable_css_r2fluxbq3ctwzlxj73d1 { color: #333333; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_2vavijj70off8dsj7w7s, .table th.tinytable_css_2vavijj70off8dsj7w7s { color: #333333; }
+      .table td.tinytable_css_it8an2zzx1ygixlgcqwe, .table th.tinytable_css_it8an2zzx1ygixlgcqwe { color: #333333; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
     </style>
     <div class="container">
-      <table class="table table-borderless" id="tinytable_kgcmro04fedevu1bmg4r" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_mtk14y9c8x7dmelr31a5" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         </thead><caption>Observed</caption>
               <tbody><tr>
@@ -1245,8 +1252,8 @@ Table&nbsp;3: All Contingency Tables
 
     <script>
 
-      function styleCell_mbt8i750lyybrdppiqvl(i, j, css_id) {
-          var table = document.getElementById("tinytable_mbt8i750lyybrdppiqvl");
+      function styleCell_h3m5796xi79gu6te9srn(i, j, css_id) {
+          var table = document.getElementById("tinytable_h3m5796xi79gu6te9srn");
           var cell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -1255,8 +1262,8 @@ Table&nbsp;3: All Contingency Tables
               console.warn(`Cell at (${i}, ${j}) not found.`);
           }
       }
-      function spanCell_mbt8i750lyybrdppiqvl(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_mbt8i750lyybrdppiqvl");
+      function spanCell_h3m5796xi79gu6te9srn(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_h3m5796xi79gu6te9srn");
         const targetCell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
         if (!targetCell) {
           console.warn(`Cell at (${i}, ${j}) not found.`);
@@ -1287,18 +1294,18 @@ Table&nbsp;3: All Contingency Tables
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '3', j: 6 },  ], css_id: 'tinytable_css_3hlw7vvfxuyqzuek67a5',}, 
-          { positions: [ { i: '1', j: 6 }, { i: '2', j: 6 },  ], css_id: 'tinytable_css_kvfe3e5awzfypwgzug1d',}, 
-          { positions: [ { i: '1', j: 1 }, { i: '2', j: 4 },  ], css_id: 'tinytable_css_ymstbklzt4ca81d94ot8',}, 
-          { positions: [ { i: '3', j: 0 }, { i: '3', j: 1 }, { i: '3', j: 2 }, { i: '3', j: 3 }, { i: '3', j: 4 }, { i: '3', j: 5 },  ], css_id: 'tinytable_css_4ef4yfuc5vg0m9hls5z8',}, 
-          { positions: [ { i: '1', j: 0 }, { i: '2', j: 0 }, { i: '1', j: 2 }, { i: '2', j: 1 }, { i: '1', j: 3 }, { i: '2', j: 2 }, { i: '1', j: 4 }, { i: '2', j: 3 }, { i: '1', j: 5 }, { i: '2', j: 5 },  ], css_id: 'tinytable_css_2ff3r7uyau59a4bicppw',}, 
-          { positions: [ { i: '0', j: 0 }, { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 },  ], css_id: 'tinytable_css_f6yjb5ryg9q2jz83aj28',}, 
+          { positions: [ { i: '3', j: 6 },  ], css_id: 'tinytable_css_tq6ss5zz0x3sonyxhd2h',}, 
+          { positions: [ { i: '1', j: 6 }, { i: '2', j: 6 },  ], css_id: 'tinytable_css_qd7yjixl7iuobudp656p',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '2', j: 4 },  ], css_id: 'tinytable_css_l8jcwzuyjhf96j6u5uft',}, 
+          { positions: [ { i: '3', j: 0 }, { i: '3', j: 1 }, { i: '3', j: 2 }, { i: '3', j: 3 }, { i: '3', j: 4 }, { i: '3', j: 5 },  ], css_id: 'tinytable_css_wo8d2w8901xtyk3e4qg7',}, 
+          { positions: [ { i: '1', j: 0 }, { i: '2', j: 0 }, { i: '1', j: 2 }, { i: '2', j: 1 }, { i: '1', j: 3 }, { i: '2', j: 2 }, { i: '1', j: 4 }, { i: '2', j: 3 }, { i: '1', j: 5 }, { i: '2', j: 5 },  ], css_id: 'tinytable_css_86tq515v0vzm4ns7cvt3',}, 
+          { positions: [ { i: '0', j: 0 }, { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 },  ], css_id: 'tinytable_css_9hemp233qmup1ristzff',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_mbt8i750lyybrdppiqvl(cell.i, cell.j, group.css_id);
+                  styleCell_h3m5796xi79gu6te9srn(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -1306,15 +1313,15 @@ Table&nbsp;3: All Contingency Tables
 
     <style>
       /* tinytable css entries after */
-      .table td.tinytable_css_3hlw7vvfxuyqzuek67a5, .table th.tinytable_css_3hlw7vvfxuyqzuek67a5 { color: #333333; font-weight: bold; color: black; background-color: #98FB98; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_kvfe3e5awzfypwgzug1d, .table th.tinytable_css_kvfe3e5awzfypwgzug1d { color: #333333; font-weight: bold; color: black; background-color: #98FB98; }
-      .table td.tinytable_css_ymstbklzt4ca81d94ot8, .table th.tinytable_css_ymstbklzt4ca81d94ot8 { color: #333333; font-weight: bold; color: black; background-color: #FFFF00; }
-      .table td.tinytable_css_4ef4yfuc5vg0m9hls5z8, .table th.tinytable_css_4ef4yfuc5vg0m9hls5z8 { color: #333333; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_2ff3r7uyau59a4bicppw, .table th.tinytable_css_2ff3r7uyau59a4bicppw { color: #333333; }
-      .table td.tinytable_css_f6yjb5ryg9q2jz83aj28, .table th.tinytable_css_f6yjb5ryg9q2jz83aj28 { color: #333333; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_tq6ss5zz0x3sonyxhd2h, .table th.tinytable_css_tq6ss5zz0x3sonyxhd2h { color: #333333; font-weight: bold; color: black; background-color: #98FB98; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_qd7yjixl7iuobudp656p, .table th.tinytable_css_qd7yjixl7iuobudp656p { color: #333333; font-weight: bold; color: black; background-color: #98FB98; }
+      .table td.tinytable_css_l8jcwzuyjhf96j6u5uft, .table th.tinytable_css_l8jcwzuyjhf96j6u5uft { color: #333333; font-weight: bold; color: black; background-color: #FFFF00; }
+      .table td.tinytable_css_wo8d2w8901xtyk3e4qg7, .table th.tinytable_css_wo8d2w8901xtyk3e4qg7 { color: #333333; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_86tq515v0vzm4ns7cvt3, .table th.tinytable_css_86tq515v0vzm4ns7cvt3 { color: #333333; }
+      .table td.tinytable_css_9hemp233qmup1ristzff, .table th.tinytable_css_9hemp233qmup1ristzff { color: #333333; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
     </style>
     <div class="container">
-      <table class="table table-borderless" id="tinytable_mbt8i750lyybrdppiqvl" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_h3m5796xi79gu6te9srn" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         </thead><caption>Expected</caption>
               <tbody><tr>
@@ -1333,18 +1340,18 @@ Table&nbsp;3: All Contingency Tables
                   <td data-row="1" data-col="0">Favor</td>
                   <td data-row="1" data-col="1">130</td>
                   <td data-row="1" data-col="2">489</td>
-                  <td data-row="1" data-col="3">60</td>
+                  <td data-row="1" data-col="3">59.8</td>
                   <td data-row="1" data-col="4">142</td>
-                  <td data-row="1" data-col="5">78</td>
+                  <td data-row="1" data-col="5">78.3</td>
                   <td data-row="1" data-col="6">898</td>
                 </tr>
                 <tr>
                   <td data-row="2" data-col="0">Oppose</td>
-                  <td data-row="2" data-col="1">59</td>
+                  <td data-row="2" data-col="1">59.1</td>
                   <td data-row="2" data-col="2">222</td>
-                  <td data-row="2" data-col="3">27</td>
-                  <td data-row="2" data-col="4">64</td>
-                  <td data-row="2" data-col="5">36</td>
+                  <td data-row="2" data-col="3">27.2</td>
+                  <td data-row="2" data-col="4">64.5</td>
+                  <td data-row="2" data-col="5">35.7</td>
                   <td data-row="2" data-col="6">409</td>
                 </tr>
                 <tr>
@@ -1380,8 +1387,8 @@ Table&nbsp;3: All Contingency Tables
 
     <script>
 
-      function styleCell_04996q4lf0ebdawr3fsp(i, j, css_id) {
-          var table = document.getElementById("tinytable_04996q4lf0ebdawr3fsp");
+      function styleCell_0swy53b65ufrp6lfbwj2(i, j, css_id) {
+          var table = document.getElementById("tinytable_0swy53b65ufrp6lfbwj2");
           var cell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -1390,8 +1397,8 @@ Table&nbsp;3: All Contingency Tables
               console.warn(`Cell at (${i}, ${j}) not found.`);
           }
       }
-      function spanCell_04996q4lf0ebdawr3fsp(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_04996q4lf0ebdawr3fsp");
+      function spanCell_0swy53b65ufrp6lfbwj2(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_0swy53b65ufrp6lfbwj2");
         const targetCell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
         if (!targetCell) {
           console.warn(`Cell at (${i}, ${j}) not found.`);
@@ -1422,18 +1429,18 @@ Table&nbsp;3: All Contingency Tables
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '3', j: 6 },  ], css_id: 'tinytable_css_5cceeo2p1sv5pcesr6oi',}, 
-          { positions: [ { i: '1', j: 6 }, { i: '2', j: 6 },  ], css_id: 'tinytable_css_oi5vuy7z368ly7fiqkvh',}, 
-          { positions: [ { i: '1', j: 1 }, { i: '2', j: 4 },  ], css_id: 'tinytable_css_jnutcybibjimqbro61ni',}, 
-          { positions: [ { i: '3', j: 0 }, { i: '3', j: 1 }, { i: '3', j: 2 }, { i: '3', j: 3 }, { i: '3', j: 4 }, { i: '3', j: 5 },  ], css_id: 'tinytable_css_a3timt2zl1v3r6rfgc1p',}, 
-          { positions: [ { i: '1', j: 0 }, { i: '2', j: 0 }, { i: '1', j: 2 }, { i: '2', j: 1 }, { i: '1', j: 3 }, { i: '2', j: 2 }, { i: '1', j: 4 }, { i: '2', j: 3 }, { i: '1', j: 5 }, { i: '2', j: 5 },  ], css_id: 'tinytable_css_z4q66rv704zam03b6dw5',}, 
-          { positions: [ { i: '0', j: 0 }, { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 },  ], css_id: 'tinytable_css_erff5yh7ks5p5ydte15n',}, 
+          { positions: [ { i: '3', j: 6 },  ], css_id: 'tinytable_css_way08tdm0zys72xm8n5q',}, 
+          { positions: [ { i: '1', j: 6 }, { i: '2', j: 6 },  ], css_id: 'tinytable_css_gnurj2rep0ssoivk70vz',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '2', j: 4 },  ], css_id: 'tinytable_css_nkbn1p0d205ry3wuq63b',}, 
+          { positions: [ { i: '3', j: 0 }, { i: '3', j: 1 }, { i: '3', j: 2 }, { i: '3', j: 3 }, { i: '3', j: 4 }, { i: '3', j: 5 },  ], css_id: 'tinytable_css_rorxnyd8xj6nfl6w9yk1',}, 
+          { positions: [ { i: '1', j: 0 }, { i: '2', j: 0 }, { i: '1', j: 2 }, { i: '2', j: 1 }, { i: '1', j: 3 }, { i: '2', j: 2 }, { i: '1', j: 4 }, { i: '2', j: 3 }, { i: '1', j: 5 }, { i: '2', j: 5 },  ], css_id: 'tinytable_css_6z55c1mgjvr9ttjvvmyc',}, 
+          { positions: [ { i: '0', j: 0 }, { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 },  ], css_id: 'tinytable_css_q1hnxhu97t1v9u3u0x4r',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_04996q4lf0ebdawr3fsp(cell.i, cell.j, group.css_id);
+                  styleCell_0swy53b65ufrp6lfbwj2(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -1441,15 +1448,15 @@ Table&nbsp;3: All Contingency Tables
 
     <style>
       /* tinytable css entries after */
-      .table td.tinytable_css_5cceeo2p1sv5pcesr6oi, .table th.tinytable_css_5cceeo2p1sv5pcesr6oi { color: #333333; font-weight: bold; color: black; background-color: #98FB98; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_oi5vuy7z368ly7fiqkvh, .table th.tinytable_css_oi5vuy7z368ly7fiqkvh { color: #333333; font-weight: bold; color: black; background-color: #98FB98; }
-      .table td.tinytable_css_jnutcybibjimqbro61ni, .table th.tinytable_css_jnutcybibjimqbro61ni { color: #333333; font-weight: bold; color: black; background-color: #FFFF00; }
-      .table td.tinytable_css_a3timt2zl1v3r6rfgc1p, .table th.tinytable_css_a3timt2zl1v3r6rfgc1p { color: #333333; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_z4q66rv704zam03b6dw5, .table th.tinytable_css_z4q66rv704zam03b6dw5 { color: #333333; }
-      .table td.tinytable_css_erff5yh7ks5p5ydte15n, .table th.tinytable_css_erff5yh7ks5p5ydte15n { color: #333333; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_way08tdm0zys72xm8n5q, .table th.tinytable_css_way08tdm0zys72xm8n5q { color: #333333; font-weight: bold; color: black; background-color: #98FB98; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_gnurj2rep0ssoivk70vz, .table th.tinytable_css_gnurj2rep0ssoivk70vz { color: #333333; font-weight: bold; color: black; background-color: #98FB98; }
+      .table td.tinytable_css_nkbn1p0d205ry3wuq63b, .table th.tinytable_css_nkbn1p0d205ry3wuq63b { color: #333333; font-weight: bold; color: black; background-color: #FFFF00; }
+      .table td.tinytable_css_rorxnyd8xj6nfl6w9yk1, .table th.tinytable_css_rorxnyd8xj6nfl6w9yk1 { color: #333333; font-weight: bold; color: black; background-color: #98FB98; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_6z55c1mgjvr9ttjvvmyc, .table th.tinytable_css_6z55c1mgjvr9ttjvvmyc { color: #333333; }
+      .table td.tinytable_css_q1hnxhu97t1v9u3u0x4r, .table th.tinytable_css_q1hnxhu97t1v9u3u0x4r { color: #333333; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
     </style>
     <div class="container">
-      <table class="table table-borderless" id="tinytable_04996q4lf0ebdawr3fsp" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_0swy53b65ufrp6lfbwj2" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         </thead><caption>Pearson Residuals</caption>
               <tbody><tr>
@@ -1466,30 +1473,30 @@ Table&nbsp;3: All Contingency Tables
         </tbody><tbody>
                 <tr>
                   <td data-row="1" data-col="0">Favor</td>
-                  <td data-row="1" data-col="1">-1.1</td>
-                  <td data-row="1" data-col="2">1</td>
-                  <td data-row="1" data-col="3">1.5</td>
-                  <td data-row="1" data-col="4">-0.55</td>
-                  <td data-row="1" data-col="5">-1.6</td>
-                  <td data-row="1" data-col="6">-0.83</td>
+                  <td data-row="1" data-col="1">-1.13</td>
+                  <td data-row="1" data-col="2">1.02</td>
+                  <td data-row="1" data-col="3">1.45</td>
+                  <td data-row="1" data-col="4">-0.549</td>
+                  <td data-row="1" data-col="5">-1.62</td>
+                  <td data-row="1" data-col="6">-0.827</td>
                 </tr>
                 <tr>
                   <td data-row="2" data-col="0">Oppose</td>
-                  <td data-row="2" data-col="1">1.7</td>
-                  <td data-row="2" data-col="2">-1.5</td>
-                  <td data-row="2" data-col="3">-2.2</td>
-                  <td data-row="2" data-col="4">0.81</td>
+                  <td data-row="2" data-col="1">1.67</td>
+                  <td data-row="2" data-col="2">-1.51</td>
+                  <td data-row="2" data-col="3">-2.15</td>
+                  <td data-row="2" data-col="4">0.814</td>
                   <td data-row="2" data-col="5">2.4</td>
-                  <td data-row="2" data-col="6">1.2</td>
+                  <td data-row="2" data-col="6">1.23</td>
                 </tr>
                 <tr>
                   <td data-row="3" data-col="0">Sum</td>
-                  <td data-row="3" data-col="1">0.54</td>
+                  <td data-row="3" data-col="1">0.544</td>
                   <td data-row="3" data-col="2">-0.49</td>
-                  <td data-row="3" data-col="3">-0.7</td>
-                  <td data-row="3" data-col="4">0.26</td>
+                  <td data-row="3" data-col="3">-0.699</td>
+                  <td data-row="3" data-col="4">0.265</td>
                   <td data-row="3" data-col="5">0.78</td>
-                  <td data-row="3" data-col="6">0.4</td>
+                  <td data-row="3" data-col="6">0.398</td>
                 </tr>
         </tbody>
       </table>
@@ -1515,8 +1522,8 @@ Table&nbsp;3: All Contingency Tables
 
     <script>
 
-      function styleCell_2szavxjk5da0zp5952xq(i, j, css_id) {
-          var table = document.getElementById("tinytable_2szavxjk5da0zp5952xq");
+      function styleCell_5prf8z8y42h2y68768dh(i, j, css_id) {
+          var table = document.getElementById("tinytable_5prf8z8y42h2y68768dh");
           var cell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -1525,8 +1532,8 @@ Table&nbsp;3: All Contingency Tables
               console.warn(`Cell at (${i}, ${j}) not found.`);
           }
       }
-      function spanCell_2szavxjk5da0zp5952xq(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_2szavxjk5da0zp5952xq");
+      function spanCell_5prf8z8y42h2y68768dh(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_5prf8z8y42h2y68768dh");
         const targetCell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
         if (!targetCell) {
           console.warn(`Cell at (${i}, ${j}) not found.`);
@@ -1557,17 +1564,17 @@ Table&nbsp;3: All Contingency Tables
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '2', j: 4 },  ], css_id: 'tinytable_css_1f6rkmts7y1bqe572oty',}, 
-          { positions: [ { i: '1', j: 1 },  ], css_id: 'tinytable_css_7digcwxpk8mbzj3nrq6h',}, 
-          { positions: [ { i: '2', j: 0 }, { i: '2', j: 2 }, { i: '2', j: 1 }, { i: '2', j: 3 }, { i: '2', j: 5 },  ], css_id: 'tinytable_css_0gxxn38jkq26218ofzmk',}, 
-          { positions: [ { i: '1', j: 0 }, { i: '1', j: 3 }, { i: '1', j: 5 }, { i: '1', j: 4 }, { i: '1', j: 2 },  ], css_id: 'tinytable_css_u4hvwnrhdosg3sn5s4bv',}, 
-          { positions: [ { i: '0', j: 0 }, { i: '0', j: 3 }, { i: '0', j: 2 }, { i: '0', j: 1 }, { i: '0', j: 4 }, { i: '0', j: 5 },  ], css_id: 'tinytable_css_bszdjnwezvxm84e4ae8t',}, 
+          { positions: [ { i: '2', j: 4 },  ], css_id: 'tinytable_css_61ekx3se9y9dcsux0s07',}, 
+          { positions: [ { i: '1', j: 1 },  ], css_id: 'tinytable_css_rtqt538kjxkza8eq1nv4',}, 
+          { positions: [ { i: '2', j: 0 }, { i: '2', j: 2 }, { i: '2', j: 1 }, { i: '2', j: 3 }, { i: '2', j: 5 },  ], css_id: 'tinytable_css_52a2d422ant9axexo6zh',}, 
+          { positions: [ { i: '1', j: 0 }, { i: '1', j: 3 }, { i: '1', j: 5 }, { i: '1', j: 4 }, { i: '1', j: 2 },  ], css_id: 'tinytable_css_ga263492gk4161mfrmkg',}, 
+          { positions: [ { i: '0', j: 0 }, { i: '0', j: 3 }, { i: '0', j: 2 }, { i: '0', j: 1 }, { i: '0', j: 4 }, { i: '0', j: 5 },  ], css_id: 'tinytable_css_9vfk6hi1z1v9dvmun9kj',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_2szavxjk5da0zp5952xq(cell.i, cell.j, group.css_id);
+                  styleCell_5prf8z8y42h2y68768dh(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -1575,14 +1582,14 @@ Table&nbsp;3: All Contingency Tables
 
     <style>
       /* tinytable css entries after */
-      .table td.tinytable_css_1f6rkmts7y1bqe572oty, .table th.tinytable_css_1f6rkmts7y1bqe572oty { color: #333333; font-weight: bold; color: black; background-color: #FFFF00; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_7digcwxpk8mbzj3nrq6h, .table th.tinytable_css_7digcwxpk8mbzj3nrq6h { color: #333333; font-weight: bold; color: black; background-color: #FFFF00; }
-      .table td.tinytable_css_0gxxn38jkq26218ofzmk, .table th.tinytable_css_0gxxn38jkq26218ofzmk { color: #333333; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_u4hvwnrhdosg3sn5s4bv, .table th.tinytable_css_u4hvwnrhdosg3sn5s4bv { color: #333333; }
-      .table td.tinytable_css_bszdjnwezvxm84e4ae8t, .table th.tinytable_css_bszdjnwezvxm84e4ae8t { color: #333333; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_61ekx3se9y9dcsux0s07, .table th.tinytable_css_61ekx3se9y9dcsux0s07 { color: #333333; font-weight: bold; color: black; background-color: #FFFF00; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_rtqt538kjxkza8eq1nv4, .table th.tinytable_css_rtqt538kjxkza8eq1nv4 { color: #333333; font-weight: bold; color: black; background-color: #FFFF00; }
+      .table td.tinytable_css_52a2d422ant9axexo6zh, .table th.tinytable_css_52a2d422ant9axexo6zh { color: #333333; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_ga263492gk4161mfrmkg, .table th.tinytable_css_ga263492gk4161mfrmkg { color: #333333; }
+      .table td.tinytable_css_9vfk6hi1z1v9dvmun9kj, .table th.tinytable_css_9vfk6hi1z1v9dvmun9kj { color: #333333; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
     </style>
     <div class="container">
-      <table class="table table-borderless" id="tinytable_2szavxjk5da0zp5952xq" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_5prf8z8y42h2y68768dh" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         </thead><caption>Contribution to Chi-Square Statistic</caption>
               <tbody><tr>
@@ -1598,19 +1605,19 @@ Table&nbsp;3: All Contingency Tables
         </tbody><tbody>
                 <tr>
                   <td data-row="1" data-col="0">Favor</td>
-                  <td data-row="1" data-col="1">1.3</td>
-                  <td data-row="1" data-col="2">1</td>
-                  <td data-row="1" data-col="3">2.1</td>
-                  <td data-row="1" data-col="4">0.3</td>
-                  <td data-row="1" data-col="5">2.6</td>
+                  <td data-row="1" data-col="1">1.27</td>
+                  <td data-row="1" data-col="2">1.04</td>
+                  <td data-row="1" data-col="3">2.11</td>
+                  <td data-row="1" data-col="4">0.302</td>
+                  <td data-row="1" data-col="5">2.62</td>
                 </tr>
                 <tr>
                   <td data-row="2" data-col="0">Oppose</td>
-                  <td data-row="2" data-col="1">2.8</td>
-                  <td data-row="2" data-col="2">2.3</td>
-                  <td data-row="2" data-col="3">4.6</td>
-                  <td data-row="2" data-col="4">0.66</td>
-                  <td data-row="2" data-col="5">5.8</td>
+                  <td data-row="2" data-col="1">2.79</td>
+                  <td data-row="2" data-col="2">2.27</td>
+                  <td data-row="2" data-col="3">4.63</td>
+                  <td data-row="2" data-col="4">0.663</td>
+                  <td data-row="2" data-col="5">5.75</td>
                 </tr>
         </tbody>
       </table>
@@ -1674,10 +1681,10 @@ r_{i,j} = \frac{(Actual - Expected)}{\sqrt{\displaystyle Expected}}
 </div>
 </div>
 </div>
+<p>Hence, after all this calculation, we have the <span class="math inline">\(X^2\)</span> statistic, which we can compare with the critical value, and make our inference.</p>
 </div>
 </div>
-</div>
-<p>Hence, after all this calculation, we have the <span class="math inline">\(X^2\)</span> statistic, which we can compare with the critical value, and make our inference.</p></section>
+</div></section>
 <section id="permutation-test-for-education" class="title-slide slide level2 center">
 <h2>Permutation Test for <code>Education</code></h2>
 <p>We will now perform the permutation test for the difference between proportions. We will first get an intuitive idea of the permutation, and then perform it using both <code>mosaic</code> and <code>infer</code>.</p>
@@ -1689,6 +1696,51 @@ r_{i,j} = \frac{(Actual - Expected)}{\sqrt{\displaystyle Expected}}
 <blockquote>
 <p>A set of identical resumes was sent to male and female evaluators. The candidates in the resumes were of both genders. We wish to see if there was difference in the way resumes were evaluated, by male and female evaluators. (We use just <em>one</em> male and <em>one</em> female evaluator here, to keep things simple!)</p>
 </blockquote>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a></a><span class="fu">set.seed</span>(<span class="dv">123456</span>)</span>
+<span id="cb34-2"><a></a>data1 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb34-3"><a></a>  <span class="at">evaluator =</span> <span class="fu">rep</span>(<span class="at">x =</span> <span class="st">"F"</span>, <span class="at">times =</span> <span class="dv">24</span>),</span>
+<span id="cb34-4"><a></a>  <span class="at">candidate_selected =</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb34-5"><a></a>    <span class="at">size =</span> <span class="dv">24</span>,</span>
+<span id="cb34-6"><a></a>    <span class="at">replace =</span> T,</span>
+<span id="cb34-7"><a></a>    <span class="at">prob =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.9</span>)</span>
+<span id="cb34-8"><a></a>  )</span>
+<span id="cb34-9"><a></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb34-10"><a></a>  <span class="fu">mutate</span>(<span class="at">evaluator =</span> <span class="fu">as_factor</span>(evaluator))</span>
+<span id="cb34-11"><a></a></span>
+<span id="cb34-12"><a></a>data2 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb34-13"><a></a>  <span class="at">evaluator =</span> <span class="fu">rep</span>(<span class="at">x =</span> <span class="st">"M"</span>, <span class="at">times =</span> <span class="dv">24</span>),</span>
+<span id="cb34-14"><a></a>  <span class="at">candidate_selected =</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb34-15"><a></a>    <span class="at">size =</span> <span class="dv">24</span>,</span>
+<span id="cb34-16"><a></a>    <span class="at">replace =</span> T,</span>
+<span id="cb34-17"><a></a>    <span class="at">prob =</span> <span class="fu">c</span>(<span class="fl">0.6</span>, <span class="fl">0.4</span>)</span>
+<span id="cb34-18"><a></a>  )</span>
+<span id="cb34-19"><a></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb34-20"><a></a>  <span class="fu">mutate</span>(<span class="at">evaluator =</span> <span class="fu">as_factor</span>(evaluator))</span>
+<span id="cb34-21"><a></a></span>
+<span id="cb34-22"><a></a><span class="co"># data1</span></span>
+<span id="cb34-23"><a></a><span class="co"># data2</span></span>
+<span id="cb34-24"><a></a></span>
+<span id="cb34-25"><a></a>data <span class="ot">&lt;-</span> <span class="fu">rbind</span>(data1, data2) <span class="sc">%&gt;%</span></span>
+<span id="cb34-26"><a></a>  <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb34-27"><a></a>  <span class="co"># Create a 4*12 matrix of integer coordinates</span></span>
+<span id="cb34-28"><a></a>  <span class="fu">cbind</span>(<span class="fu">expand.grid</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">y =</span> <span class="fu">seq</span>(<span class="dv">4</span>, <span class="dv">48</span>, <span class="dv">4</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb34-29"><a></a>  <span class="fu">mutate</span>(<span class="at">evaluator =</span> <span class="fu">as_factor</span>(evaluator))</span>
+<span id="cb34-30"><a></a></span>
+<span id="cb34-31"><a></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb34-32"><a></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(evaluator, candidate_selected) <span class="sc">%&gt;%</span></span>
+<span id="cb34-33"><a></a>  <span class="fu">as_tibble</span>()</span>
+<span id="cb34-34"><a></a>data</span>
+<span id="cb34-35"><a></a>summary <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb34-36"><a></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(evaluator) <span class="sc">%&gt;%</span></span>
+<span id="cb34-37"><a></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(</span>
+<span id="cb34-38"><a></a>    <span class="at">selection_ratio =</span> <span class="fu">mean</span>(candidate_selected <span class="sc">==</span> <span class="dv">0</span>),</span>
+<span id="cb34-39"><a></a>    <span class="at">count =</span> <span class="fu">sum</span>(candidate_selected <span class="sc">==</span> <span class="dv">0</span>),</span>
+<span id="cb34-40"><a></a>    <span class="at">n =</span> dplyr<span class="sc">::</span><span class="fu">n</span>()</span>
+<span id="cb34-41"><a></a>  )</span>
+<span id="cb34-42"><a></a>summary</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
@@ -1707,6 +1759,61 @@ r_{i,j} = \frac{(Actual - Expected)}{\sqrt{\displaystyle Expected}}
 </div>
 </div>
 </div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb35-2"><a></a></span>
+<span id="cb35-3"><a></a>obs_difference <span class="ot">&lt;-</span></span>
+<span id="cb35-4"><a></a>  <span class="fu">diff</span>(<span class="fu">mean</span>(candidate_selected <span class="sc">~</span> evaluator, <span class="at">data =</span> data))</span>
+<span id="cb35-5"><a></a>obs_difference</span>
+<span id="cb35-6"><a></a><span class="do">###</span></span>
+<span id="cb35-7"><a></a>p0 <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb35-8"><a></a>  <span class="co"># knock off the coordinates prior to shuffle</span></span>
+<span id="cb35-9"><a></a>  <span class="fu">select</span>(evaluator, candidate_selected) <span class="sc">%&gt;%</span></span>
+<span id="cb35-10"><a></a>  <span class="co"># mutate(candidate_selected = shuffle(candidate_selected, replace = FALSE)) %&gt;%</span></span>
+<span id="cb35-11"><a></a>  <span class="fu">arrange</span>(evaluator, candidate_selected) <span class="sc">%&gt;%</span></span>
+<span id="cb35-12"><a></a>  <span class="co"># reassign coordinates</span></span>
+<span id="cb35-13"><a></a>  <span class="fu">cbind</span>(., <span class="fu">expand.grid</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">y =</span> <span class="fu">seq</span>(<span class="dv">4</span>, <span class="dv">24</span>, <span class="dv">4</span>))) <span class="sc">%&gt;%</span> <span class="co"># Not 48!!</span></span>
+<span id="cb35-14"><a></a></span>
+<span id="cb35-15"><a></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> ., <span class="fu">aes</span>(</span>
+<span id="cb35-16"><a></a>    <span class="at">x =</span> x,</span>
+<span id="cb35-17"><a></a>    <span class="at">y =</span> y,</span>
+<span id="cb35-18"><a></a>    <span class="at">group =</span> evaluator,</span>
+<span id="cb35-19"><a></a>    <span class="at">fill =</span> <span class="fu">as_factor</span>(candidate_selected)</span>
+<span id="cb35-20"><a></a>  )) <span class="sc">+</span></span>
+<span id="cb35-21"><a></a>  <span class="fu">geom_point</span>(<span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="dv">8</span>) <span class="sc">+</span></span>
+<span id="cb35-22"><a></a>  <span class="fu">scale_fill_manual</span>(</span>
+<span id="cb35-23"><a></a>    <span class="at">name =</span> <span class="cn">NULL</span>,</span>
+<span id="cb35-24"><a></a>    <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"orangered"</span>, <span class="st">"dodgerblue"</span>),</span>
+<span id="cb35-25"><a></a>    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Rejected"</span>, <span class="st">"Selected"</span>)</span>
+<span id="cb35-26"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb35-27"><a></a></span>
+<span id="cb35-28"><a></a>  <span class="co"># Very important to have scales = "free" !!</span></span>
+<span id="cb35-29"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>evaluator, <span class="at">ncol =</span> <span class="dv">1</span>, <span class="at">scales =</span> <span class="st">"free"</span>) <span class="sc">+</span></span>
+<span id="cb35-30"><a></a>  ggplot2<span class="sc">::</span><span class="fu">theme_void</span>(<span class="at">base_family =</span> <span class="st">"Alegreya"</span>, <span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span></span>
+<span id="cb35-31"><a></a>  <span class="fu">theme</span>(</span>
+<span id="cb35-32"><a></a>    <span class="at">legend.position =</span> <span class="st">"top"</span>,</span>
+<span id="cb35-33"><a></a>    <span class="at">strip.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb35-34"><a></a>    <span class="at">strip.text.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb35-35"><a></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
+<span id="cb35-36"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb35-37"><a></a>  <span class="fu">expand_limits</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">28</span>)) <span class="sc">+</span></span>
+<span id="cb35-38"><a></a></span>
+<span id="cb35-39"><a></a>  <span class="co"># Need to give stat_brace two pairs x values and y values</span></span>
+<span id="cb35-40"><a></a>  <span class="co"># as there are two facets</span></span>
+<span id="cb35-41"><a></a>  ggbrace<span class="sc">::</span><span class="fu">stat_brace</span>(</span>
+<span id="cb35-42"><a></a>    <span class="fu">aes</span>( <span class="co"># x = c(4.5, 5.5, 4.5, 5.5),</span></span>
+<span id="cb35-43"><a></a>      <span class="co"># What a hack this is!!</span></span>
+<span id="cb35-44"><a></a>      <span class="co"># y = c(4, 24, 5, 24),</span></span>
+<span id="cb35-45"><a></a>      <span class="at">label =</span> evaluator</span>
+<span id="cb35-46"><a></a>    ),</span>
+<span id="cb35-47"><a></a>    <span class="at">rotate =</span> <span class="dv">90</span>,</span>
+<span id="cb35-48"><a></a>    <span class="at">labelrotate =</span> <span class="dv">0</span>,</span>
+<span id="cb35-49"><a></a>    <span class="at">labelsize =</span> <span class="dv">4</span>,</span>
+<span id="cb35-50"><a></a>    <span class="at">inherit.aes =</span> <span class="cn">TRUE</span></span>
+<span id="cb35-51"><a></a>  )</span>
+<span id="cb35-52"><a></a>p0</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell quarto-layout-panel" data-layout="[20,80]">
 <div class="quarto-layout-row">
 <div class="cell-output cell-output-stdout quarto-layout-cell" style="flex-basis: 20.0%;justify-content: flex-start;">
@@ -1727,6 +1834,25 @@ r_{i,j} = \frac{(Actual - Expected)}{\sqrt{\displaystyle Expected}}
 </ul>
 <p>How would that pooled shuffled set of evaluations look like?</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a></a>data_shuffled <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb37-2"><a></a>  <span class="co"># knock off the coordinates prior to shuffle</span></span>
+<span id="cb37-3"><a></a>  <span class="fu">select</span>(evaluator, candidate_selected) <span class="sc">%&gt;%</span></span>
+<span id="cb37-4"><a></a>  <span class="co"># mutate(candidate_selected = shuffle(candidate_selected, replace = FALSE)) %&gt;%</span></span>
+<span id="cb37-5"><a></a>  <span class="fu">arrange</span>(evaluator, candidate_selected) <span class="sc">%&gt;%</span></span>
+<span id="cb37-6"><a></a>  <span class="co"># reassign coordinates</span></span>
+<span id="cb37-7"><a></a>  <span class="fu">cbind</span>(., <span class="fu">expand.grid</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">y =</span> <span class="fu">seq</span>(<span class="dv">4</span>, <span class="dv">24</span>, <span class="dv">4</span>))) <span class="sc">%&gt;%</span> <span class="co"># Not 48!!</span></span>
+<span id="cb37-8"><a></a>  <span class="fu">mutate</span>(<span class="at">evaluator =</span> <span class="fu">shuffle</span>(evaluator))</span>
+<span id="cb37-9"><a></a><span class="co"># data_shuffled %&gt;% select(evaluator, candidate)</span></span>
+<span id="cb37-10"><a></a>data_shuffled <span class="sc">%&gt;%</span></span>
+<span id="cb37-11"><a></a>  <span class="fu">group_by</span>(evaluator) <span class="sc">%&gt;%</span></span>
+<span id="cb37-12"><a></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(</span>
+<span id="cb37-13"><a></a>    <span class="at">selection_ratio =</span> <span class="fu">mean</span>(candidate_selected <span class="sc">==</span> <span class="st">"0"</span>),</span>
+<span id="cb37-14"><a></a>    <span class="at">count =</span> <span class="fu">sum</span>(candidate_selected <span class="sc">==</span> <span class="st">"0"</span>),</span>
+<span id="cb37-15"><a></a>    <span class="at">n =</span> dplyr<span class="sc">::</span><span class="fu">n</span>()</span>
+<span id="cb37-16"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -1735,6 +1861,77 @@ r_{i,j} = \frac{(Actual - Expected)}{\sqrt{\displaystyle Expected}}
 </div>
 </div>
 </div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb38-2"><a></a></span>
+<span id="cb38-3"><a></a>data_shuffled <span class="sc">%&gt;%</span></span>
+<span id="cb38-4"><a></a>  <span class="fu">group_by</span>(evaluator, candidate_selected) <span class="sc">%&gt;%</span></span>
+<span id="cb38-5"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
+<span id="cb38-6"><a></a>    <span class="at">x =</span> x, <span class="at">y =</span> y,</span>
+<span id="cb38-7"><a></a>    <span class="at">group =</span> evaluator,</span>
+<span id="cb38-8"><a></a>    <span class="at">fill =</span> <span class="fu">as_factor</span>(candidate_selected)</span>
+<span id="cb38-9"><a></a>  )) <span class="sc">+</span></span>
+<span id="cb38-10"><a></a>  <span class="fu">geom_point</span>(<span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="dv">8</span>) <span class="sc">+</span></span>
+<span id="cb38-11"><a></a>  <span class="fu">scale_fill_manual</span>(</span>
+<span id="cb38-12"><a></a>    <span class="at">name =</span> <span class="cn">NULL</span>,</span>
+<span id="cb38-13"><a></a>    <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"orangered"</span>, <span class="st">"dodgerblue"</span>),</span>
+<span id="cb38-14"><a></a>    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Rejected"</span>, <span class="st">"Selected"</span>)</span>
+<span id="cb38-15"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb38-16"><a></a>  ggplot2<span class="sc">::</span><span class="fu">theme_void</span>(<span class="at">base_family =</span> <span class="st">"Alegreya"</span>, <span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span></span>
+<span id="cb38-17"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>evaluator, <span class="at">ncol =</span> <span class="dv">1</span>, <span class="at">scales =</span> <span class="st">"free"</span>) <span class="sc">+</span></span>
+<span id="cb38-18"><a></a>  <span class="fu">expand_limits</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">28</span>)) <span class="sc">+</span></span>
+<span id="cb38-19"><a></a>  ggbrace<span class="sc">::</span><span class="fu">stat_brace</span>(<span class="fu">aes</span>(<span class="at">label =</span> evaluator),</span>
+<span id="cb38-20"><a></a>    <span class="at">rotate =</span> <span class="dv">90</span>,</span>
+<span id="cb38-21"><a></a>    <span class="at">labelrotate =</span> <span class="dv">0</span>,</span>
+<span id="cb38-22"><a></a>    <span class="at">labelsize =</span> <span class="dv">4</span>,</span>
+<span id="cb38-23"><a></a>    <span class="at">inherit.aes =</span> <span class="cn">TRUE</span></span>
+<span id="cb38-24"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb38-25"><a></a>  <span class="fu">theme</span>(</span>
+<span id="cb38-26"><a></a>    <span class="at">legend.position =</span> <span class="st">"top"</span>,</span>
+<span id="cb38-27"><a></a>    <span class="at">strip.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb38-28"><a></a>    <span class="at">strip.text.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb38-29"><a></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
+<span id="cb38-30"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb38-31"><a></a>  <span class="fu">ggtitle</span>(<span class="at">label =</span> <span class="st">"Pooled Evaluations, Permuted"</span>)</span>
+<span id="cb38-32"><a></a>data_shuffled <span class="sc">%&gt;%</span></span>
+<span id="cb38-33"><a></a>  <span class="co"># knock off the coordinates</span></span>
+<span id="cb38-34"><a></a>  <span class="co"># Do not use "group_by"!! Why not?</span></span>
+<span id="cb38-35"><a></a>  <span class="fu">select</span>(evaluator, candidate_selected) <span class="sc">%&gt;%</span></span>
+<span id="cb38-36"><a></a>  <span class="fu">arrange</span>(evaluator, candidate_selected) <span class="sc">%&gt;%</span></span>
+<span id="cb38-37"><a></a>  <span class="co"># reassign coordinates</span></span>
+<span id="cb38-38"><a></a>  <span class="fu">cbind</span>(., <span class="fu">expand.grid</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">y =</span> <span class="fu">seq</span>(<span class="dv">4</span>, <span class="dv">24</span>, <span class="dv">4</span>))) <span class="sc">%&gt;%</span> <span class="co"># Not 48!!</span></span>
+<span id="cb38-39"><a></a></span>
+<span id="cb38-40"><a></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> ., <span class="fu">aes</span>(</span>
+<span id="cb38-41"><a></a>    <span class="at">x =</span> x, <span class="at">y =</span> y,</span>
+<span id="cb38-42"><a></a>    <span class="at">group =</span> evaluator,</span>
+<span id="cb38-43"><a></a>    <span class="at">fill =</span> <span class="fu">as_factor</span>(candidate_selected)</span>
+<span id="cb38-44"><a></a>  )) <span class="sc">+</span></span>
+<span id="cb38-45"><a></a>  <span class="fu">geom_point</span>(<span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="dv">8</span>) <span class="sc">+</span> <span class="co"># plot circles with borders</span></span>
+<span id="cb38-46"><a></a>  <span class="fu">scale_fill_manual</span>(</span>
+<span id="cb38-47"><a></a>    <span class="at">name =</span> <span class="cn">NULL</span>,</span>
+<span id="cb38-48"><a></a>    <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"orangered"</span>, <span class="st">"dodgerblue"</span>),</span>
+<span id="cb38-49"><a></a>    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Rejected"</span>, <span class="st">"Selected"</span>)</span>
+<span id="cb38-50"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb38-51"><a></a></span>
+<span id="cb38-52"><a></a>  <span class="co"># Very important to have scales = "free" !!</span></span>
+<span id="cb38-53"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>evaluator, <span class="at">ncol =</span> <span class="dv">1</span>, <span class="at">scales =</span> <span class="st">"free"</span>) <span class="sc">+</span></span>
+<span id="cb38-54"><a></a>  <span class="fu">expand_limits</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">28</span>)) <span class="sc">+</span></span>
+<span id="cb38-55"><a></a>  ggbrace<span class="sc">::</span><span class="fu">stat_brace</span>(<span class="fu">aes</span>(<span class="at">label =</span> evaluator),</span>
+<span id="cb38-56"><a></a>    <span class="at">rotate =</span> <span class="dv">90</span>,</span>
+<span id="cb38-57"><a></a>    <span class="at">labelrotate =</span> <span class="dv">0</span>,</span>
+<span id="cb38-58"><a></a>    <span class="at">labelsize =</span> <span class="dv">4</span>,</span>
+<span id="cb38-59"><a></a>    <span class="at">inherit.aes =</span> <span class="cn">TRUE</span></span>
+<span id="cb38-60"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb38-61"><a></a>  ggplot2<span class="sc">::</span><span class="fu">theme_void</span>(<span class="at">base_family =</span> <span class="st">"Alegreya"</span>, <span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span></span>
+<span id="cb38-62"><a></a>  <span class="fu">theme</span>(</span>
+<span id="cb38-63"><a></a>    <span class="at">legend.position =</span> <span class="st">"top"</span>,</span>
+<span id="cb38-64"><a></a>    <span class="at">strip.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb38-65"><a></a>    <span class="at">strip.text.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb38-66"><a></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
+<span id="cb38-67"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb38-68"><a></a>  <span class="fu">ggtitle</span>(<span class="at">label =</span> <span class="st">"Permuted Evaluations, Grouped"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell quarto-layout-panel" data-layout="[[45,-10,45]]">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 45.0%;justify-content: center;">
@@ -1750,28 +1947,31 @@ r_{i,j} = \frac{(Actual - Expected)}{\sqrt{\displaystyle Expected}}
 </div>
 <p>As can be seen, the ratio is different!</p>
 <p>We can now check out our Hypothesis that there is <em>no</em> bias. We can shuffle the data many many times, calculating the ratio each time, and plot the <em>distribution of the differences in selection ratio</em> and see how that artificially created distribution compares with the originally observed figure from Mother Nature.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb35-2"><a></a></span>
-<span id="cb35-3"><a></a>null_dist <span class="ot">&lt;-</span> <span class="fu">do</span>(<span class="dv">4999</span>) <span class="sc">*</span> <span class="fu">diff</span>(<span class="fu">mean</span>(</span>
-<span id="cb35-4"><a></a>  candidate_selected <span class="sc">~</span> <span class="fu">shuffle</span>(evaluator),</span>
-<span id="cb35-5"><a></a>  <span class="at">data =</span> data</span>
-<span id="cb35-6"><a></a>))</span>
-<span id="cb35-7"><a></a><span class="co"># null_dist %&gt;% names()</span></span>
-<span id="cb35-8"><a></a>null_dist <span class="sc">%&gt;%</span></span>
-<span id="cb35-9"><a></a>  <span class="fu">gf_histogram</span>(<span class="sc">~</span>M,</span>
-<span id="cb35-10"><a></a>    <span class="at">fill =</span> <span class="sc">~</span> (M <span class="sc">&lt;=</span> obs_difference),</span>
-<span id="cb35-11"><a></a>    <span class="at">bins =</span> <span class="dv">25</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb35-12"><a></a>    <span class="at">xlab =</span> <span class="st">"Bias Proportion"</span>,</span>
-<span id="cb35-13"><a></a>    <span class="at">ylab =</span> <span class="st">"How Often?"</span>,</span>
-<span id="cb35-14"><a></a>    <span class="at">title =</span> <span class="st">"Permutation Test on Difference between Groups"</span>,</span>
-<span id="cb35-15"><a></a>    <span class="at">subtitle =</span> <span class="st">""</span></span>
-<span id="cb35-16"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb35-17"><a></a>  <span class="fu">gf_vline</span>(<span class="at">xintercept =</span> <span class="sc">~</span>obs_difference, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb35-18"><a></a>  <span class="fu">gf_label</span>(<span class="dv">500</span> <span class="sc">~</span> obs_difference,</span>
-<span id="cb35-19"><a></a>    <span class="at">label =</span> <span class="st">"Observed</span><span class="sc">\n</span><span class="st"> Bias"</span>,</span>
-<span id="cb35-20"><a></a>    <span class="at">show.legend =</span> <span class="cn">FALSE</span></span>
-<span id="cb35-21"><a></a>  )</span>
-<span id="cb35-22"><a></a><span class="fu">mean</span>(<span class="sc">~</span> M <span class="sc">&lt;=</span> obs_difference, <span class="at">data =</span> null_dist)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb39-2"><a></a></span>
+<span id="cb39-3"><a></a>null_dist <span class="ot">&lt;-</span> <span class="fu">do</span>(<span class="dv">4999</span>) <span class="sc">*</span> <span class="fu">diff</span>(<span class="fu">mean</span>(</span>
+<span id="cb39-4"><a></a>  candidate_selected <span class="sc">~</span> <span class="fu">shuffle</span>(evaluator),</span>
+<span id="cb39-5"><a></a>  <span class="at">data =</span> data</span>
+<span id="cb39-6"><a></a>))</span>
+<span id="cb39-7"><a></a><span class="co"># null_dist %&gt;% names()</span></span>
+<span id="cb39-8"><a></a>null_dist <span class="sc">%&gt;%</span></span>
+<span id="cb39-9"><a></a>  <span class="fu">gf_histogram</span>(<span class="sc">~</span>M,</span>
+<span id="cb39-10"><a></a>    <span class="at">fill =</span> <span class="sc">~</span> (M <span class="sc">&lt;=</span> obs_difference),</span>
+<span id="cb39-11"><a></a>    <span class="at">bins =</span> <span class="dv">25</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb39-12"><a></a>    <span class="at">xlab =</span> <span class="st">"Bias Proportion"</span>,</span>
+<span id="cb39-13"><a></a>    <span class="at">ylab =</span> <span class="st">"How Often?"</span>,</span>
+<span id="cb39-14"><a></a>    <span class="at">title =</span> <span class="st">"Permutation Test on Difference between Groups"</span>,</span>
+<span id="cb39-15"><a></a>    <span class="at">subtitle =</span> <span class="st">""</span></span>
+<span id="cb39-16"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb39-17"><a></a>  <span class="fu">gf_vline</span>(<span class="at">xintercept =</span> <span class="sc">~</span>obs_difference, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb39-18"><a></a>  <span class="fu">gf_label</span>(<span class="dv">500</span> <span class="sc">~</span> obs_difference,</span>
+<span id="cb39-19"><a></a>    <span class="at">label =</span> <span class="st">"Observed</span><span class="sc">\n</span><span class="st"> Bias"</span>,</span>
+<span id="cb39-20"><a></a>    <span class="at">show.legend =</span> <span class="cn">FALSE</span></span>
+<span id="cb39-21"><a></a>  )</span>
+<span id="cb39-22"><a></a><span class="fu">mean</span>(<span class="sc">~</span> M <span class="sc">&lt;=</span> obs_difference, <span class="at">data =</span> null_dist)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell quarto-layout-panel" data-layout="[[60,-10,30]]">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: center;">
@@ -1790,15 +1990,18 @@ r_{i,j} = \frac{(Actual - Expected)}{\sqrt{\displaystyle Expected}}
 <div id="tabset-3-2">
 <p>We should now repeat the test with permutations on <code>Education</code>:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb37-2"><a></a></span>
-<span id="cb37-3"><a></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb37-4"><a></a>null_chisq <span class="ot">&lt;-</span> <span class="fu">do</span>(<span class="dv">4999</span>) <span class="sc">*</span></span>
-<span id="cb37-5"><a></a>  <span class="fu">chisq.test</span>(mosaic<span class="sc">::</span><span class="fu">tally</span>(DeathPenalty <span class="sc">~</span> <span class="fu">shuffle</span>(Education),</span>
-<span id="cb37-6"><a></a>    <span class="at">data =</span> GSS2002_modified</span>
-<span id="cb37-7"><a></a>  ))</span>
-<span id="cb37-8"><a></a></span>
-<span id="cb37-9"><a></a><span class="fu">head</span>(null_chisq)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb41-2"><a></a></span>
+<span id="cb41-3"><a></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb41-4"><a></a>null_chisq <span class="ot">&lt;-</span> <span class="fu">do</span>(<span class="dv">4999</span>) <span class="sc">*</span></span>
+<span id="cb41-5"><a></a>  <span class="fu">chisq.test</span>(mosaic<span class="sc">::</span><span class="fu">tally</span>(DeathPenalty <span class="sc">~</span> <span class="fu">shuffle</span>(Education),</span>
+<span id="cb41-6"><a></a>    <span class="at">data =</span> GSS2002_modified</span>
+<span id="cb41-7"><a></a>  ))</span>
+<span id="cb41-8"><a></a></span>
+<span id="cb41-9"><a></a><span class="fu">head</span>(null_chisq)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -1806,27 +2009,30 @@ r_{i,j} = \frac{(Actual - Expected)}{\sqrt{\displaystyle Expected}}
   </script>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a><span class="fu">gf_histogram</span>(<span class="sc">~</span>X.squared, <span class="at">data =</span> null_chisq) <span class="sc">%&gt;%</span></span>
-<span id="cb38-2"><a></a>  <span class="fu">gf_vline</span>(</span>
-<span id="cb38-3"><a></a>    <span class="at">xintercept =</span> X_squared_observed,</span>
-<span id="cb38-4"><a></a>    <span class="at">color =</span> <span class="st">"red"</span></span>
-<span id="cb38-5"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb38-6"><a></a>  <span class="fu">gf_labs</span>(</span>
-<span id="cb38-7"><a></a>    <span class="at">title =</span> <span class="st">"Permutation Test on Chi-Square Statistic"</span>,</span>
-<span id="cb38-8"><a></a>    <span class="at">x =</span> <span class="st">"Chi-Square Statistic"</span>,</span>
-<span id="cb38-9"><a></a>    <span class="at">y =</span> <span class="st">"How Often?"</span></span>
-<span id="cb38-10"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb38-11"><a></a>  <span class="fu">gf_annotate</span>(</span>
-<span id="cb38-12"><a></a>    <span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">y =</span> <span class="dv">500</span>, <span class="at">x =</span> X_squared_observed,</span>
-<span id="cb38-13"><a></a>    <span class="at">label =</span> <span class="st">"Observed</span><span class="sc">\n</span><span class="st"> Chi-Square"</span>, <span class="at">fill =</span> <span class="st">"moccasin"</span></span>
-<span id="cb38-14"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb38-15"><a></a>  <span class="fu">gf_refine</span>(</span>
-<span id="cb38-16"><a></a>    <span class="fu">scale_x_continuous</span>(</span>
-<span id="cb38-17"><a></a>      <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">15</span>, <span class="dv">20</span>, <span class="fu">round</span>(X_squared_observed, <span class="dv">2</span>)),</span>
-<span id="cb38-18"><a></a>      <span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">1</span>))</span>
-<span id="cb38-19"><a></a>    ),</span>
-<span id="cb38-20"><a></a>    <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>))</span>
-<span id="cb38-21"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a></a><span class="fu">gf_histogram</span>(<span class="sc">~</span>X.squared, <span class="at">data =</span> null_chisq) <span class="sc">%&gt;%</span></span>
+<span id="cb42-2"><a></a>  <span class="fu">gf_vline</span>(</span>
+<span id="cb42-3"><a></a>    <span class="at">xintercept =</span> X_squared_observed,</span>
+<span id="cb42-4"><a></a>    <span class="at">color =</span> <span class="st">"red"</span></span>
+<span id="cb42-5"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb42-6"><a></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb42-7"><a></a>    <span class="at">title =</span> <span class="st">"Permutation Test on Chi-Square Statistic"</span>,</span>
+<span id="cb42-8"><a></a>    <span class="at">x =</span> <span class="st">"Chi-Square Statistic"</span>,</span>
+<span id="cb42-9"><a></a>    <span class="at">y =</span> <span class="st">"How Often?"</span></span>
+<span id="cb42-10"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb42-11"><a></a>  <span class="fu">gf_annotate</span>(</span>
+<span id="cb42-12"><a></a>    <span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">y =</span> <span class="dv">500</span>, <span class="at">x =</span> X_squared_observed,</span>
+<span id="cb42-13"><a></a>    <span class="at">label =</span> <span class="st">"Observed</span><span class="sc">\n</span><span class="st"> Chi-Square"</span>, <span class="at">fill =</span> <span class="st">"moccasin"</span></span>
+<span id="cb42-14"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb42-15"><a></a>  <span class="fu">gf_refine</span>(</span>
+<span id="cb42-16"><a></a>    <span class="fu">scale_x_continuous</span>(</span>
+<span id="cb42-17"><a></a>      <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">15</span>, <span class="dv">20</span>, <span class="fu">round</span>(X_squared_observed, <span class="dv">2</span>)),</span>
+<span id="cb42-18"><a></a>      <span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">1</span>))</span>
+<span id="cb42-19"><a></a>    ),</span>
+<span id="cb42-20"><a></a>    <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>))</span>
+<span id="cb42-21"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -1834,7 +2040,10 @@ r_{i,j} = \frac{(Actual - Expected)}{\sqrt{\displaystyle Expected}}
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a><span class="fu">prop1</span>(<span class="sc">~</span> X.squared <span class="sc">&gt;=</span> X_squared_observed, <span class="at">data =</span> null_chisq)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a></a><span class="fu">prop1</span>(<span class="sc">~</span> X.squared <span class="sc">&gt;=</span> X_squared_observed, <span class="at">data =</span> null_chisq)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>prop_TRUE 
     2e-04 </code></pre>
