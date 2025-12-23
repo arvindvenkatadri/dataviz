@@ -1,0 +1,241 @@
+---
+title: <iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> Contour Maps
+subtitle: ""
+date: 31 October 2025
+order: 50
+date-modified: "`r Sys.Date()`"
+abstract: Contour and Relief Maps using the tanaka package
+draft: true
+editor: 
+  markdown: 
+    wrap: 72
+bibliography: 
+  - grateful-refs.bib
+---
+
+![Which Way to the Secret Garden, Sir?](../../../../../../../materials/images/1book14.jpg){height=250 fig-align="center"}
+
+## {{< iconify openmoji japanese-symbol-for-beginner >}} Introduction
+
+
+## Goals
+
+At the end of this Lab session, we should:
+
+- Understand the concept of a  *contour map*
+- Use`raster` form data to construct contour maps with them
+- Use the `tanaka` package and appreciate the [Tanaka Method](https://landscapearchaeology.org/2018/tanaka-contour-lines/)
+- And of course, add our own data to the contour maps made with `tanaka`
+
+
+## {{< iconify noto-v1 package >}} Setting up R Packages
+
+
+```{r}
+#| label: setup
+
+# Plotting Maps
+library(tidyverse) # Maps using ggplot() + geom_sf()
+library(ggformula) # Maps using gf_sf()
+# For Spatial Data Frame Processing
+library(sf)
+library(sfheaders) # Handcrafted Map data
+# library(terra)
+library(tidyterra) # tidy syntax for terra operations + plotting
+library(stars)
+## Plotting
+library(tanaka)
+# Spatial Data
+library(geodata)
+library(rnaturalearth)
+library(rnaturalearthdata)
+# Run this in your console first
+# devtools::install_github("ropensci/rnaturalearthhires")
+library(rnaturalearthhires)
+library(elevatr) # Get Elevation data
+
+
+```
+
+```{r}
+#| cache: true
+#| 
+ras <- get_elev_raster(
+  locations = data.frame(
+    x = c(6.7, 7), y = c(45.8,46)
+  ),
+  z = 10, prj = "+init=epsg:4326", 
+  clip = "locations"
+)
+plot(ras)
+# create the isopleth layer
+iso <- tanaka_contour(
+  x = ras, 
+  breaks = seq(500,4800,250)
+)
+# display the isopleth layer
+plot(st_geometry(iso))
+```
+
+
+#### {{< iconify streamline global-learning >}} Extra Pedagogical Packages
+```{r}
+#| label: Extra Pedagogical Packages
+#| code-fold: true
+#| message: false
+
+knitr::opts_chunk$set(tidy = TRUE)
+library(checkdown)
+library(epoxy)
+library(grateful)
+
+```
+
+#### {{< iconify vscode-icons folder-type-theme>}} Plot Fonts and Theme
+
+
+```{r}
+#| label: plot-theme
+#| code-fold: true
+#| messages: false
+#| warning: false
+
+library(systemfonts)
+library(showtext)
+library(ggrepel)
+library(marquee)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../../../fonts/Alegreya-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+
+showtext_auto(enable = TRUE) #enable showtext
+##
+theme_custom <- function(){ 
+
+    theme_bw(base_size = 10, base_family = "Alegreya") + 
+    
+        theme(plot.margin = margin_auto(t = 1, r = 2, b = 1, l = 1, unit = "cm"),
+          plot.background = element_rect(fill = "bisque",
+                                         colour = "black",
+                                         linewidth = 1)) + 
+    
+    theme_sub_axis(title = element_text(family = "Roboto Condensed", 
+                                       size = 8)) + 
+                   
+    theme_sub_axis(text = element_text(family = "Roboto Condensed", 
+                                       size = 6)) + 
+    
+    theme_sub_legend(text = element_text(family = "Roboto Condensed", 
+                                         size = 6),
+                     title = element_text(family = "Alegreya", 
+                                          size = 8)) + 
+    
+    theme_sub_plot(title = element_text(family = "Alegreya", 
+                                        size = 14, face = "bold"),
+                   title.position = "plot",
+                   subtitle = element_text(family = "Alegreya", 
+                                           size = 10),
+                   caption = element_text(family = "Alegreya", 
+                                          size = 6),
+                   caption.position = "plot")
+    
+}
+
+## Use available fonts in ggplot text geoms too!
+ggplot2::update_geom_defaults(geom = "text", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+ggplot2::update_geom_defaults(geom = "marquee", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "text_repel", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label_repel", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
+
+## tinytable options
+options("tinytable_tt_digits" = 2)
+options("tinytable_format_num_fmt" = "significant_cell")
+options(tinytable_html_mathjax = TRUE)
+
+
+## Set defaults for flextable
+flextable::set_flextable_defaults(font.family = "Roboto Condensed")
+
+```
+
+
+
+
+
+
+
+
+## {{< iconify ooui references-rtl >}} References {#sec-references}
+
+1. Grokipedia. *Contour Lines*. <https://grokipedia.com/page/Contour_line>
+1. Tanaka Method or How to make Shaded Contour Lines.<https://landscapearchaeology.org/2018/tanaka-contour-lines/>
+1. Timothée Giraud.(12/03/2019). *The `tanaka` package*. <https://rgeomatic.hypotheses.org/1758>
+1. Data Sources @ GISGeography. <https://gisgeography.com/best-free-gis-data-sources-raster-vector/> 
+1. Raster Data in R. <https://www.neonscience.org/resources/learning-hub/tutorials/dc-raster-data-r>
+1. Migrating from `raster` to `terra`. <https://d-rug.github.io/raster_to_terra/>
+
+::: {#refs style="font-size: 60%;"}
+###### {{< iconify lucide package-check >}} R Package Citations
+
+```{r}
+#| echo: false
+#scan_packages()
+cite_packages(
+  output = "table",
+  out.dir = ".",
+  out.format = "html",
+  pkgs = c("tanaka", "sf", "sfheaders", "tidyterra")) %>%
+  knitr::kable(format = "simple")
+
+```
+:::
+
+

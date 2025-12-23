@@ -16,7 +16,8 @@ bibliography:
 #| warning: false
 #| 
 library(tidyverse)   ## data science package collection (incl. the ggplot2 package)
-library(systemfonts) ## use custom fonts (need to be installed on your OS)  
+library(sysfonts)    ## use custom fonts (need to be installed on your OS)  
+library(systemfonts) # Thomas Pederson's recent font management package
 library(showtext)    ## add google fonts to plots
 library(scico)       ## Colour palette
 library(ggtext)      ## add improved text rendering to ggplot2
@@ -47,7 +48,7 @@ There is also a more recent, and comprehensive package called `systemfonts` We w
 
 ::: callout-important
 ### GDPR Compliance
-Using fonts that are already installed on your computer is [**GDPR compliant**](https://gdpr-info.eu/). Using fonts *directly* from Google may not be, as it may involve sending data to Google servers every time your website is loaded.
+Using fonts that are already installed on your computer, or hosted on your webserver, is [**GDPR compliant**](https://gdpr-info.eu/). Using fonts *directly* from Google may not be, as it may involve sending data to Google servers every time your website is loaded by a visitor.
 :::
 
 
@@ -102,6 +103,21 @@ Now, you need to import these fonts into ***each Quarto document*** individually
 
 Let's assume we have gone off to [Google Fonts](https://fonts.google.com/) and downloaded the following fonts to our `fonts` folder: `Alegreya`,`Anton`, `Roboto Condensed`, `Schoolbell`, `Tangerine`, and `Ibarra Real Nova`.
 
+My directory tree structure is:
+
+- Project root
+  - fonts
+    - Alegreya-Regular.ttf ( for example)
+    
+- content
+  - courses
+    - Analytics
+      - 50-Arts
+        - Modules
+          - 20-Fonts
+            - index.qmd ( This file )
+        
+Now, we can add these fonts to our R session as follows:
 ```{r}
 #| label: add-local-fonts
 #| echo: true
@@ -164,8 +180,8 @@ For more info, type `?theme` in your console.
 ```{r}
 #| label: fig-ggplot-theme-elements
 #| echo: FALSE
-#| fig.alt: "Rosana Ferrero (@RosanaFerrero) on Twitter Sept 11, 2022"
-#| fig.cap: "ggplot2 Theme Elements. Source: Rosana Ferrero (@RosanaFerrero) on Twitter Sept 11, 2022"
+#| fig.alt: "ggplot2 Theme Elements. Source: Rosana Ferrero on Twitter, Sept 11, 2022"
+#| fig.cap: "ggplot2 Theme Elements. Source: Rosana Ferrero, on Twitter Sept 11, 2022"
 #| 
 knitr::include_graphics("../../../../../materials/images/ggplot_theme_elements.jfif")
 
@@ -173,7 +189,9 @@ knitr::include_graphics("../../../../../materials/images/ggplot_theme_elements.j
 
 So now that we understand the elements of the themes, let us set our ggplot theme: 
 
+### Setting fonts for ggplot themes
 
+First we set the fonts for the ***non-graphical*** elements in ggplot, such as `title`, `subtitle`, `axis title`, and `legend title` for example:
 
 ```{r}
 #| label: set-ggplot2-theme
@@ -207,19 +225,11 @@ theme_custom <- function(){
 ## Set the theme
 ggplot2::theme_set(new = theme_custom())
 
-## tinytable options
-options("tinytable_tt_digits" = 2)
-options("tinytable_format_num_fmt" = "significant_cell")
-options(tinytable_html_mathjax = TRUE)
-
-
-## Set defaults for flextable
-flextable::set_flextable_defaults(font.family = "Roboto Condensed")
-
-## Set the theme
-ggplot2::theme_set(new = theme_custom())
-
 ```
+
+### Setting fonts for ggplot elements
+
+We now need to enable to use of these fonts ***inside*** the chart area of ggplot, say in `annotations`, `text` geoms, `label` geoms, and `marquee` geoms.
 
 ::: callout-note
 ### Fonts in ggplot
@@ -270,8 +280,17 @@ ggplot2::update_geom_defaults(geom = "label_repel", new = list(
 )
 )
 
-# repeat for any new text-using geom etc.
-# 
+# Repeat for any new text-using geom etc.
+# These may use package-specific commands, as with `flextable` and `tinytable`
+
+## Set defaults for flextable
+flextable::set_flextable_defaults(font.family = "Roboto Condensed")
+
+## tinytable options
+options("tinytable_tt_digits" = 2)
+options("tinytable_format_num_fmt" = "significant_cell")
+options(tinytable_html_mathjax = TRUE)
+
 ```
 
 
@@ -434,7 +453,7 @@ In this module, we have learned how to use custom fonts in our ggplot2 plots usi
 
 ## References
 
-1. Thomas Lin Perdersen. <https://www.tidyverse.org/blog/2025/05/fonts-in-r/>
+1. Thomas Lin Pedersen. <https://www.tidyverse.org/blog/2025/05/fonts-in-r/>
 1. Winston Chang. *R Cookbook* (2nd Edition). O'Reilly Media, 2019. <http://www.cookbook-r.com/Graphs/Fonts/>
 
 ::: {#refs style="font-size: 60%;"}

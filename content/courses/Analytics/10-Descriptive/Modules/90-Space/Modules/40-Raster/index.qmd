@@ -26,26 +26,8 @@ At the end of this Lab session, we should:
 
 - know the types and structures of spatial data in `raster` form and be able to work with them\
 - understand the basics of modern spatial packages in R\
-- be able to specify and download spatial data from the web, using R from sources such as `naturalearth` and `Open Streep Map`\
-- plot *static* and *interactive* maps using `{ggplot2}`, `{tmap}` and `{leaflet}` packages\
-- add symbols and markers for places and regions of our own interest in these maps.\
 
-## Pedagogical Note
 
-The method followed will be based on
-[PRIMM](https://blogs.kcl.ac.uk/cser/2017/09/01/primm-a-structured-approach-to-teaching-programming/):
-
--   **PREDICT** Inspect the code and guess at what the code might do,
-    **write predictions**
--   **RUN** the code provided and check what happens
--   **INFER** what the `parameters` of the code do and **write comments
-    to explain**. What bells and whistles can you see?
--   **MODIFY** the `parameters` code provided to understand the
-    `options` available. **Write comments** to show what you have aimed
-    for and achieved.
--   **MAKE** : take an idea/concept of your own, and graph it.
-
-All jargon words will be capitalized and in **bold** font.
 
 ## {{< iconify noto-v1 package >}} Setting up R Packages
 
@@ -62,27 +44,14 @@ library(sfheaders) # Handcrafted Map data
 # library(terra)
 library(tidyterra) # tidy syntax for terra operations + plotting
 library(stars)
-# Plotting
-library(tmap) # Thematic Maps, static and interactive
-library(tmaptools)
-library(tmap.mapgl)
-## Interactive Maps
-library(leaflet) # interactive Maps
-library(leaflet)
-library(leaflet.providers)
-library(leaflet.extras)
-# Spatial Data
-library(rnaturalearth)
-library(rnaturalearthdata)
-library(osmdata) # Fetch map data from osmdata.org
-# Run this in your console first
-# devtools::install_github("ropensci/rnaturalearthhires")
-library(rnaturalearthhires)
+# Downloading Raster Data
+library(neonUtilities)
 
 
 ```
 
 #### {{< iconify streamline global-learning >}} Extra Pedagogical Packages
+
 ```{r}
 #| label: Extra Pedagogical Packages
 #| code-fold: true
@@ -127,20 +96,23 @@ sysfonts::font_add(family = "Roboto Condensed",
 
 showtext_auto(enable = TRUE) #enable showtext
 ##
+
 theme_custom <- function(){ 
 
-    theme_bw(base_size = 10, base_family = "Alegreya") + 
+    theme_bw(base_size = 10) + 
     
-        theme(plot.margin = margin_auto(t = 1, r = 2, b = 1, l = 1, unit = "cm"),
+    # theme(panel.widths = unit(11, "cm"), 
+    #       panel.heights = unit(6.79, "cm")) + # Golden Ratio
+    
+    theme(plot.margin = margin_auto(t = 1, r = 2, b = 1, l = 1, unit = "cm"),
           plot.background = element_rect(fill = "bisque",
                                          colour = "black",
                                          linewidth = 1)) + 
-    
+            
     theme_sub_axis(title = element_text(family = "Roboto Condensed", 
+                                       size = 10),
+                   text = element_text(family = "Roboto Condensed", 
                                        size = 8)) + 
-                   
-    theme_sub_axis(text = element_text(family = "Roboto Condensed", 
-                                       size = 6)) + 
     
     theme_sub_legend(text = element_text(family = "Roboto Condensed", 
                                          size = 6),
@@ -154,7 +126,7 @@ theme_custom <- function(){
                                            size = 10),
                    caption = element_text(family = "Alegreya", 
                                           size = 6),
-                   caption.position = "plot")
+                   caption.position = "plot") 
     
 }
 
@@ -208,20 +180,131 @@ options(tinytable_html_mathjax = TRUE)
 ## Set defaults for flextable
 flextable::set_flextable_defaults(font.family = "Roboto Condensed")
 
+
 ```
 
+## {{< iconify openmoji japanese-symbol-for-beginner >}} Introduction
+
+We will get used to the idea of `raster` data, which is the second important data format in Geospatial Information Systems(GIS).
+
+## What is Raster Data?
+
+Raster Data is should remind you of the TV screen, where a light beam scans lines across the screen from L to R, progressively going downward with each line. At each pixel location on the screen, the beam either intensifies or de-intensifies, or adds a shade of colour, and so on.
+
+So imagine a grid of values where each cell contains a number. Raster or "gridded" data are data that are saved in pixels. In the spatial world, each pixel represents an area on the Earth's surface. For example in the raster below, each pixel represents a particular land cover class that would be found in that location in the real world.
+
+![Raster Data from National Ecological Science Network(NEON), <https://neonscience.org>](https://raw.githubusercontent.com/NEONScience/NEON-Data-Skills/main/graphics/raster-general/raster_concept.png){#fig-raster-data}
+
+
+Raster data has three principal attributes:
+
+- `extent`: think of the `boundingbox` we used with vector data
+- `resolution`: a measure of the area covered by each cell in the data
+- `CRS`: the projection of the data
+
+## What does Raster Data look like in R?
 
 
 
+## Raster Data Processing Packages
+
+The most important and modern package is `{{terra}}`. However, `{{terra}}` does not support the `tidyverse` idiom, so we will use `{{tidyterra}}` which combines the features of `{{terra}}` and also adds a few useful functions".
+
+- `{{tidyterra}}` can manipulate the following classes of terra objects:
+    - `SpatVector` objects, which represent vector data such as points, lines, or polygon geometries.
+    - `SpatRaster` objects, which represent raster data in the form of a grid consisting of equally sized rectangles. Each rectangle can contain one or more values.
+    - Furthermore, `{{tidyterra}}` extends the functionality of the ggplot2 package (Wickham 2016) by providing additional geoms and stats like `geom_spatraster()` and `geom_spatvector()`, as well as carefully chosen *scales and color palettes* specifically designed for map production.
+
+We will also use the package `{{neonUtilities}}` to download raster data from the web, in much the same was as we used `{{osmplotr}}` with vector data. 
+
+## Our First Raster Map in R
 
 
+Let us download some vegetation data from the [Neon Data website](https://neonscience.org/data):
 
+```{{r}}
+#| label: download-raster
+#| message: false
+#| cache: true
+
+# Downloading a Land Cover Raster from NEON
+# https://www.neonscience.org/data-products/DP1.00016.001
+# This is a Land Cover Classification product
+# Download the data
+neonUtilities::byTileAOP(dpID='DP3.30024.001', # lidar elevation
+          site='HARV',
+          year='2022',
+          easting=732000,
+          northing=4713500,
+          check.size=FALSE, # set to TRUE or remove if you want to check the size before downloading
+          savepath = "data/neon-raster/", progress = FALSE)
+
+```
+
+We will run the chunck above in our Console, **one time**, so as not to flood the NEON server with queries. Now we can read the raster data into R using `terra::rast()` function:
+
+```{r}
+#| label: read-raster
+#| code-fold: true
+
+# Read the raster data
+harv <- terra::rast("data/neon-raster/DP3.30024.001/neon-aop-products/2022/FullSite/D01/2022_HARV_7/L3/DiscreteLidar/DSMGtif/NEON_D01_HARV_DP3_732000_4713000_DSM.tif")
+
+str(harv)
+tidyterra::glimpse(harv)
+
+```
+
+We have one `layer` in our data. It has a million cells, and rhe resolution is `1 meter X 1 meter`. Let us plot this using the `{{ggplot}}` geometry functions *within* `{{tidyterra}}`:
+
+```{r}
+#| label: fig-raster-plot
+#| code-fold: true
+
+ggplot() + tidyterra::geom_spatraster(data = harv)  +  scale_fill_whitebox_c(
+    palette = "muted",
+    n.breaks = 12,
+    guide = guide_legend(reverse = TRUE)
+  ) +
+  labs(
+    fill = "",
+    title = "Vegetation at the Harvard Forest Site",
+    subtitle = ""
+  ) + 
+  theme_custom()
+
+```
+
+Let us try one more map, this time with contour lines. Here we use an internal file that is part of the `{{tidyterra}}`package:
+
+```{r}
+# Contour lines for a specific layer
+
+f_volcano <- system.file("extdata/volcano2.tif", package = "tidyterra")
+volcano2 <- rast(f_volcano)
+
+ggplot() +
+  geom_spatraster(data = volcano2) +
+  geom_spatraster_contour(data = volcano2, breaks = seq(80, 200, 5)) +
+  scale_fill_whitebox_c() +
+  coord_sf(expand = FALSE) +
+  labs(fill = "elevation")
+
+```
+
+Both these maps should give us a flavour of what is possible with the `{{tidyterra}}`package.
+
+## A Combo Map
+
+Let us now plot a map that has both `SpatVector` and `SpatRaster`components. We will download data from the web, and also superimpose data that is of interest to us. 
 
 ## {{< iconify ooui references-rtl >}} References {#sec-references}
 
-1. Data Sources @ GISGeography. <https://gisgeography.com/best-free-gis-data-sources-raster-vector/> 
-
 1. Raster Data in R. <https://www.neonscience.org/resources/learning-hub/tutorials/dc-raster-data-r>
+1. R-Spatial. *Spatial Data with `terra`. <https://rspatial.org/spatial/1-introduction.html>
+1. Data Sources @ GISGeography. <https://gisgeography.com/best-free-gis-data-sources-raster-vector/> 
+1. Diego Hernangómez.(2023-07-18).*Using the tidyverse with terra objects: the tidyterra package*. <https://dieghernan.github.io/tidyterra/articles/tidyterra.html>
+1. Commonly Used Map Projections. <https://proj.org/en/stable/operations/projections/index.html>
 
 
 ::: {#refs style="font-size: 60%;"}
