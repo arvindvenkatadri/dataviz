@@ -22,7 +22,7 @@ citation: true
 #   markdown: 
 #     wrap: 72
 webr:
-  packages: ['janitor','readr', 'tidyr', 'dplyr','mosaic', 'skimr', 'ggformula','ggridges', 'palmerpenguins', 'tidyplots', 'systemfonts', 'showtext']
+  packages: ['janitor','readr', 'tidyr', 'dplyr','mosaic', 'skimr','naniar', 'ggformula','ggridges', 'palmerpenguins', 'tidyplots', 'systemfonts', 'showtext']
 format: 
   html: default
   revealjs: 
@@ -337,6 +337,16 @@ taxi_modified
 
 The data has automatically been read into the `webr` session, so you can continue on to the next code chunk!
 
+```{webr-r}
+#| context: setup
+taxi <- read.csv("https://vincentarelbundock.github.io/Rdatasets/csv/modeldata/taxi.csv") 
+
+taxi_modified <- taxi %>% 
+  naniar::replace_with_na_all(condition = ~.x %in% common_na_strings) %>%
+  naniar::replace_with_na_all(condition = ~.x %in% common_na_numbers) %>%
+  janitor::clean_names(case = "snake") %>% 
+  janitor::remove_empty()
+```
 
 ### {{< iconify file-icons influxdata >}} Examine the Data
 
@@ -516,7 +526,7 @@ choose **Qual** variables to count with! In each case, we will state a Hypothesi
 #| 
 ggplot2::theme_set(new = theme_custom())
 
-gf_bar(~ tip, data = taxi_modified) %>% #<<
+gf_bar(~ tip, data = taxi_modified) %>%
   gf_labs(title = "Plot 1A: Counts of Tips")
 
 ```

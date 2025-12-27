@@ -5,7 +5,7 @@ date: 31 October 2025
 order: 50
 date-modified: "`r Sys.Date()`"
 abstract: Contour and Relief Maps using the tanaka package
-draft: true
+draft: false
 editor: 
   markdown: 
     wrap: 72
@@ -56,27 +56,6 @@ library(elevatr) # Get Elevation data
 
 
 ```
-
-```{r}
-#| cache: true
-#| 
-ras <- get_elev_raster(
-  locations = data.frame(
-    x = c(6.7, 7), y = c(45.8,46)
-  ),
-  z = 10, prj = "+init=epsg:4326", 
-  clip = "locations"
-)
-plot(ras)
-# create the isopleth layer
-iso <- tanaka_contour(
-  x = ras, 
-  breaks = seq(500,4800,250)
-)
-# display the isopleth layer
-plot(st_geometry(iso))
-```
-
 
 #### {{< iconify streamline global-learning >}} Extra Pedagogical Packages
 ```{r}
@@ -207,11 +186,28 @@ flextable::set_flextable_defaults(font.family = "Roboto Condensed")
 ```
 
 
+## {{< iconify ooui contour-map >}} Contour Maps
 
-
-
-
-
+Let us plot a basic contour map, with the `{{tanaka}}` package. 
+```{r}
+#| cache: true
+#| 
+ras <- get_elev_raster(
+  locations = data.frame(
+    x = c(6.7, 7), y = c(45.8,46)
+  ),
+  z = 10, prj = "+init=epsg:4326", 
+  clip = "locations"
+) %>% as.raster()
+plot(ras)
+# create the isopleth layer
+iso <- tanaka_contour(
+  x = ras, 
+  breaks = seq(500,4800,250)
+)
+# display the isopleth layer
+plot(st_geometry(iso))
+```
 
 ## {{< iconify ooui references-rtl >}} References {#sec-references}
 
