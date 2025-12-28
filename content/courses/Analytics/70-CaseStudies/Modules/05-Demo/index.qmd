@@ -243,8 +243,8 @@ We will write our Data Dictionary based on this understanding, and then convert 
 ::: callout-note
 ### Observations
 
-Small dataset of 17 rows.
-Several time values have been measured across the same set of subjects, resulting is what is called a "repeat measures" experiment. 
+Small dataset of 17 rows. [Only SMI peasants will interview 17 elders from their own family and call that `primary research`.]{.black .bg-pink}
+Several time values have been measured across the same set of subjects, resulting is what is called a *"repeat measures"* experiment. 
 Subjects seem to be in two groups, and with or without hand-pain.
 Are these the two groups?
 What is the difference between `hand_pain` and `hand_illness`?
@@ -258,7 +258,7 @@ We can also perform counts based on `hand_pain` and `hand_illness` to decide how
 And we will not modify the original data !!
 
 ```{r}
-#| label: data-modified-and-saved
+#| label: data-modified-and-saved-1
 #| echo: true
 
 opening_modified <- opening %>% 
@@ -272,7 +272,38 @@ opening_modified <- opening %>%
   mutate(hand_pain = as_factor(hand_pain),
          hand_illness = as_factor(hand_illness),
          group = as_factor(group),
-         sex = as_factor(sex))
+         sex = as_factor(sex)) %>% 
+
+ # arrange the Qual variables first, Quant next
+  dplyr::relocate(where(is.factor)) # default relocation is at left
+
+opening_modified
+glimpse(opening_modified)   
+
+```
+The levels `[0,1]`, while good for computers, don't quite give a human feel to the data. Let us `recode` the binary factors above into `Yes/No` `Female/Male`, or `Pain/NoPain` etc:
+
+```{r}
+#| label: data-modified-and-saved-2
+#| echo: true
+
+opening_modified <- opening %>% 
+  # correct spelling mistake
+  rename("time_sauce" = time_suace) %>% 
+  
+  # If you want to do this fast!
+  mutate(across(contains("time"), as.numeric)) %>% 
+# Two "NA" entries exist
+
+  mutate(hand_pain = factor(hand_pain, levels = c(0,1),
+                            labels = c("No Pain","Yes Pain")),
+         hand_illness = factor(hand_illness, levels = c(0,1),
+                               labels = c("No Illness","Yes Illness")),
+         group = as_factor(group),
+         sex = factor(sex, levels = c(0,1),labels = c("Female", "Male"))) %>% 
+
+ # arrange the Qual variables first, Quant next
+  dplyr::relocate(where(is.factor)) # default relocation is at left
 
 opening_modified
 glimpse(opening_modified)   
@@ -384,11 +415,10 @@ opening_modified %>%
 
 Ok!
 Not bad!
-We now want to label to do two things:
+We now want to label to:
 
--   label facets `0` and `1` as "Pain" and "No Pain".
 -   Reorder the `groceries` so that they are in decreasing order of me(di)an(times).
--   In two steps!!
+
 
 ```{r}
 #| label: plot-2
@@ -405,10 +435,10 @@ opening_modified %>%
   
 # Re-label the factor hand_pain
 # Use base::factor() as this command is more clear to me
-  mutate(hand_pain = 
-           base::factor(hand_pain, 
-              levels = c(0,1),
-              labels = c("No Hand Pain", "Hand Pain"))) %>% 
+  # mutate(hand_pain = 
+  #          base::factor(hand_pain, 
+  #             levels = c(0,1),
+  #             labels = c("No Hand Pain", "Hand Pain"))) %>% 
 ## First Plot
   gf_density_ridges(grocery ~ times,
                     fill = "grey70",scale = 0.75) %>% 
@@ -435,12 +465,6 @@ opening_modified %>%
                               delim = "time_",
                               names = c(NA,"grocery")) %>% 
   
-# Re-label the factor hand_pain
-# Use base::factor() as this command is more clear to me
-  mutate(hand_pain = 
-           base::factor(hand_pain, 
-              levels = c(0,1),
-              labels = c("No Hand Pain", "Hand Pain"))) %>% 
 ## First Plot modified
 
 gf_density_ridges(reorder(
@@ -472,13 +496,6 @@ opening_modified %>%
                               delim = "time_",
                               names = c(NA,"grocery")) %>% 
   
-# Re-label the factor hand_pain
-# Use base::factor() as this command is more clear to me
-  mutate(hand_pain = 
-           base::factor(hand_pain, 
-              levels = c(0,1),
-              labels = c("No Hand Pain", "Hand Pain"))) %>% 
-  
   group_by(grocery, hand_pain) %>% 
 ## First Plot modified
   gf_density_ridges(reorder(
@@ -495,12 +512,11 @@ opening_modified %>%
   gf_facet_grid(hand_pain ~ .) %>% 
   ## Add titles and labels
   gf_labs(
-    title = "Times take by Older People to Open Food Packages",
+    title = "Opening Food Packages",
+    subtitle = "Times take by Older People",
     x = "Time in seconds", 
     y = "Type of Product",
     caption = "Juliá-Nehme, Begoña (2023). Usability of Food Packaging in Older Adults.\n figshare Dataset.\n https://doi.org/10.6084/m9.figshare.22637656.v1")  
-
-# %>% gf_theme(theme_custom())
 
 ```
 
@@ -557,8 +573,6 @@ closing %>%
            x = "Time in seconds", y = "Type of Product",
           caption = "Juliá-Nehme, Begoña (2023). Usability of Food Packaging in Older Adults.\n figshare Dataset.\n https://doi.org/10.6084/m9.figshare.22637656.v1") 
 
-# %>% 
-#   gf_theme(theme_custom())
 
 ```
 
