@@ -2,7 +2,6 @@
 title: <iconify-icon icon="grommet-icons:inspect" width="1.2em" height="1.2em"></iconify-icon> Inspect Data
 subtitle:  "Looking at your Data"
 abstract: "Getting used to what your Data tastes like"
-author: Arvind V. 
 date: 22/Aug/2025
 date-modified: "`r Sys.Date()`"
 order: 06
@@ -243,7 +242,7 @@ And Munging:
 
 - Clean the variable names: `janitor::clean_names()`
 - Clean up missing data: `naniar::replace_with_na_all()`
-- Make factors and rearrange factors to the left of our table using `dplyr::mutate()`, `dplyr::as.factor()`, followed by `dplyr::relocate()`
+- Make factors and rearrange factors to the left of our table using `dplyr::mutate()`, `base::factor()` or `forcats::as_factor()`, followed by `dplyr::relocate()`
 - Make a cool table for our cleaned data with `tinytable::tt()` (static) or `DT::datatable()` (interactive)
 
 
@@ -348,7 +347,7 @@ Let us use the `{{visdat}}` package to visualize this:
 #| fig-subcap: 
 #| - "vis_miss()"
 #| - "vis_dat()"
-
+ggplot2::set_theme(new = theme_void())
 visdat::vis_miss(fastfood)
 visdat::vis_dat(fastfood, sort_type = TRUE, palette = "cb_safe")
 
@@ -368,9 +367,14 @@ B. **Impute missing values**:
 
 For our work here, to learn, we will use method A, and simply drop the cells containing `NA`, whenever we have to. 
 
-### The `naniar` package
+### The `{{naniar}}` package
 
-The `{{naniar}}` package has two built-in lists for common missing value codes: `naniar::common_na_numbers` for Quant variables, and `naniar::common_na_strings`. We can use these to replace these values with `NA`.
+Missing or `NA` values can also, sadly, be encoded by humans using sets of `characters` or even `default numbers`! The `{{naniar}}` package has two built-in lists for common missing value codes:
+
+- `naniar::common_na_numbers` for Quant variables, and 
+- `naniar::common_na_strings`. 
+
+We can use these to replace these values with `NA`.
 
 ```{r}
 #| label: naniar-built-in-lists
