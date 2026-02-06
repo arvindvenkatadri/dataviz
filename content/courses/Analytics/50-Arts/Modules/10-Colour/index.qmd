@@ -428,7 +428,7 @@ palettes_c_names %>% reactable::reactable(data = ., filterable = TRUE, minRows =
 
 ::: callout-note
 ### Dynamic Palettes from `paletteer`
-Dynamic palettes are those that can change based on the data they are applied to, where the colors of the palette depend on the number of colors you need, like the `green.pal` palette from the `{{cartography}}` package. They are useful for creating plots that adapt to the data being visualized. 
+[Dynamic palettes]{style="background-color:yellow;"} are those that can change based on the data they are applied to, where the colors of the palette depend on the number of colors you need, like the `green.pal` palette from the `{{cartography}}` package. They are useful for creating [plots that adapt to the data being visualized]{style="background-color:yellow;"}. 
 
 Dynamic palettes are available for both discrete and continuous variables in `paletteer`.
 :::
@@ -625,6 +625,55 @@ p1 +
        caption = "Colours: afc4b8, f1a4b2, 1fb1e1") # Change this caption based on palette choice
 
 ```
+
+
+## Using multiple `color` or `fill`?
+
+With some complex charts, such as an [alluvial chart](../../../10-Descriptive/Modules/70-EvolutionFlow/index.qmd) for example, we may need to use the `fill` aesthetic in more than once. 
+
+```{r}
+library(vcdExtra)
+library(ggalluvial)
+options(rgl.useNULL = TRUE)
+rgl::rgl.useNULL()
+Titanicp %>% 
+  ggplot(aes(axis1 = pclass, axis3 = survived, axis2 = sex)) + 
+  geom_alluvium(aes(fill = survived), alpha = 0.5) + # first fill
+  geom_stratum(aes(fill = after_stat(stratum))) +  # second fill
+  geom_label(stat = "stratum", aes(label = after_stat(stratum))) + 
+  scale_x_discrete(limits = c("Class", "Sex", "Survived?")) +
+  labs(title = "My Titanic Plot", subtitle = "Rose is Evil", caption = "Made with ggalluvial")
+
+```
+
+There are *two* legends here, and the `fill` colours can certainly be improved! We want to (usually) set separate palettes for each of the fills, and also perhaps *not have* a legend for one of the fills, in this case, the `stratum`. So how we do this? 
+
+We use a package called `ggnewscale` to "reset" the `fill` aesthetic after its first use, and then set separate palettes for the two `fill`s. We can also blank out the legend for either of the two `fill`s:
+
+```{r}
+library(ggnewscale)
+
+Titanicp %>% 
+  ggplot(aes(axis1 = pclass, axis3 = survived, axis2 = sex)) + 
+  geom_alluvium(aes(fill = survived), alpha = 0.8) + # first fill
+  
+  scale_fill_manual(name = "Survived?", 
+                    values = c("survived" = "#1b9e77", 
+                               "died" = "firebrick")) +
+
+  new_scale_fill() +  # reset fill scale
+  
+  geom_stratum(aes(fill = after_stat(stratum)), 
+               show.legend = FALSE) +  # second fill, no legend
+  scale_fill_brewer(palette = "Spectral") +
+  
+  geom_label(stat = "stratum", aes(label = after_stat(stratum))) + 
+  scale_x_discrete(limits = c("Class", "Sex", "Survived?")) +
+  labs(title = "My Improved Titanic Plot", subtitle = "Rose is Evil", caption = "Made with ggalluvial") 
+
+```
+Here we have reset the `fill` scale midway, added a new palette for each `fill`, and disabled the `legend` for the second fill ( stratum).
+
 
 ## {{< iconify mingcute thought-line >}} Wait, But Why?
 

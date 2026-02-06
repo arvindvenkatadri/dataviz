@@ -42,6 +42,8 @@ editor:
 library(tidyverse)
 library(mosaic) # Our trusted friend
 library(skimr)
+options(rgl.useNULL = TRUE) # reset graphics device for vcdExtra
+rgl::rgl.useNULL()
 library(vcd) # Michael Friendly's package, Visualizing Categorical 
 library(vcdExtra) # Categorical Data Sets
 library(resampledata) # More datasets
@@ -495,15 +497,11 @@ HairEyeColor %>%
 
 ## {{< iconify carbon chart-3d >}} Simple Plots for Categorical Data
 
-{{< video https://www.youtube.com/embed/7NhNeADL8fA >}}
-
-We have already examined [Bar Charts](../20-Counts/index.qmd).
-
-Pie Charts are discussed [here.](../60-PartWhole/index.qmd)
-
-These are both good for *single Qual variables*. Bars are more suited
+We have already examined [Bar Charts](../20-Counts/index.qmd). Pie Charts are discussed [here.](../60-PartWhole/index.qmd). These are both good for *single Qual variables*. Bars are more suited
 when there are many *levels* and/or when there is more than one Qual
 variable, as discussed earlier.
+
+How do we deal with **multiple Qual variables**?
 
 ## {{< iconify icon-park-outline nested-arrows >}} Plotting Nested Proportions
 
@@ -513,14 +511,16 @@ Wilke](https://clauswilke.com/dataviz/nested-proportions.html) calls
 *nested proportions*: groups within groups. Making counts with
 combinations of levels for two Qual variables gives us a data structure
 called a
-[*Contingency*](https://www.pagebypagebooks.com/P_G_Wodehouse/Right_Ho_Jeeves/Chapter_13_p2.html)
-*Table*, which we will use to build our plot for nested proportions. The
+[[*Contingency*](https://www.pagebypagebooks.com/P_G_Wodehouse/Right_Ho_Jeeves/Chapter_13_p2.html)
+*Table*]{style="background-color: yellow;"} , which we will use to build our plot for nested proportions. The
 Statistical tests for Proportions ( the $\chi^2$ test ) also needs
 Contingency Tables. The *Frequency Table* we encountered earlier is very
 close to being a full-fledged Contingency Table; one only needs to add
 the margin counts! So what is a Contingency Table?
 
-### {{< iconify mdi rain-chance >}} {{< iconify grommet-icons table-add >}} Creating Contingency Tables {#sec-creating-contingency-tables}
+We can think of it as an ***a new intermediate tabular structure*** that will help us create a new kind of chart for our Qual data. 
+ 
+{{< video https://www.youtube.com/embed/7NhNeADL8fA >}}
 
 From [Wolfram
 Alpha](https://www.wolframalpha.com/input/?i=contingency+table):
@@ -533,11 +533,10 @@ Alpha](https://www.wolframalpha.com/input/?i=contingency+table):
 > arranged into $r$ rows and $c$ columns. The intersection of a row and
 > a column of a contingency table is called a cell.
 
-In this section we understand how to make Contingency Tables(CT) from each
-of the three forms. We will use `base-R` and the `{{vcd}}` package for our 
-purposes. Then we will see how they can be visualized. In most cases, 
-we will also see how we can create the Contingency Table as a `tibble` 
-or `data frame` for further analysis.
+
+### {{< iconify mdi rain-chance >}} {{< iconify grommet-icons table-add >}} Creating Contingency Tables {#sec-creating-contingency-tables}
+
+In this section we understand how to make Contingency Tables(CT) from each of the three forms. We will use `base-R` and the `{{vcd}}` package for our purposes. Then we will see how they can be visualized. In most cases, we will also see how we can create the Contingency Table as a `tibble`or `data frame` for further analysis.
 
 ::: {.panel-tabset .nav-pills style="background: whitesmoke;"}
 
