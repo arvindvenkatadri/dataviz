@@ -48,6 +48,8 @@ library(vcd) # Michael Friendly's package, Visualizing Categorical
 library(vcdExtra) # Categorical Data Sets
 library(resampledata) # More datasets
 library(visStatistics) # Comprehensive all-in-one stats viz/test package
+# install.packages("devtools")
+# devtools::install_github("haleyjeppson/ggmosaic") # removed from CRAN
 library(ggmosaic) # Tidy Mosaic Plots
 library(ggpubr) # Colours, Themes and new geometries in ggplot
 ##
@@ -85,6 +87,7 @@ library(embedr) # Embed multimedia in HTML files
 ```
 
 #### Plot Fonts and Theme
+Since we will not use the ggplot system, we do not need this code chunk. 
 
 ```{r}
 #| label: plot-theme-ggplot4
@@ -92,6 +95,8 @@ library(embedr) # Embed multimedia in HTML files
 #| code-fold: true
 #| messages: false
 #| warning: false
+#| eval: false
+#| include: false
 #| 
 library(systemfonts)
 library(showtext)
@@ -197,9 +202,6 @@ options(tinytable_html_mathjax = TRUE)
 flextable::set_flextable_defaults(font.family = "Roboto Condensed")
 
 ```
-
-
-
 
 
 ## {{< iconify fe beginner >}} What graphs will we see today?
@@ -519,8 +521,12 @@ close to being a full-fledged Contingency Table; one only needs to add
 the margin counts! So what is a Contingency Table?
 
 We can think of it as an ***a new intermediate tabular structure*** that will help us create a new kind of chart for our Qual data. 
- 
-{{< video https://www.youtube.com/embed/7NhNeADL8fA >}}
+
+::: {}
+<center>
+{{< video https://youtu.be/7NhNeADL8fA width="560" height="400" align="center" title="">}}
+</center>
+:::
 
 From [Wolfram
 Alpha](https://www.wolframalpha.com/input/?i=contingency+table):
@@ -863,6 +869,65 @@ labeling = labeling_border(
 
 Based on this mosaic chart, we can say that `White` people have had more `College` education than `Black` or `Hispanic` people, and that `Black` people have had more `High School` education than `Hispanic` people. The `Hispanic` group has the lowest count for `College` education. So we can hypothesize that the Qual variables `Race1` and `Education` are related. 
 
+#### Using {visStatistics}
+
+`{{visStatistics}}` is a recent package that allows a very wide variety of statistical charts to be created **automagically** based on the variables chosen. Let us plot a mosaic chart directly with this package:
+
+```{r}
+#| label: fig-visstat-1
+#| fig-cap: "Mosaic and Bar Chart with visStatistics"
+#| fig-subcap:
+#|  - "Bar Chart"
+#|  - "Mosaic Chart"
+#| layout-ncol: 2
+
+# Plots the Bar Chart and Mosaic Chart
+# visstat cannot take "ordinal" variables ;-O
+Arthritis <- Arthritis %>% 
+  mutate("Improved" = base::factor(Improved, ordered = FALSE))
+Arthritis
+visstat(Arthritis$Improved, Arthritis$Treatment)
+
+```
+
+```{r}
+#| label: fig-visstat-2
+#| fig-cap: "Mosaic and Bar Chart with visStatistics"
+#| fig-subcap:
+#|  - "Bar Chart"
+#|  - "Mosaic Chart"
+#| layout-ncol: 2
+
+# Plots the Bar Chart and Mosaic Chart
+visstat(GSS2002$DeathPenalty, GSS2002$Education)
+
+```
+
+
+```{r}
+#| label: fig-visstat-3
+#| fig-cap: "Mosaic and Bar Chart with visStatistics"
+#| fig-subcap:
+#|  - "Bar Chart"
+#|  - "Mosaic Chart"
+#| layout-ncol: 2
+
+# Plots the Bar Chart and Mosaic Chart
+visstat(NHANES$Race1, NHANES$Education)
+
+```
+
+The `{{visStatistics}}` package is a very powerful package that can be used to create a wide variety of statistical charts, including Mosaic Charts, with very little code. This "universal" command `visstat()` computes a good many statistics and plots, all in one. NOTE: `visstat()` does need both its variables to be `integers/numbers/factors`: cannot handle `ordinal` (factor) variables.
+
+::: callout-important
+
+Note how one `visstat()` command gave us TWO plots! The output of `visstat()` is very interesting!
+So, for the fearless: Try doing an `str()` after this command to see what (else) it has computed. There is a wealth of information in the output object, including the Contingency Table, the Chi-Squared test results, and more. Type `visstat(GSS2002$DeathPenalty, GSS2002$Education) %>% str()` in the Console or your Quarto chunk to see this.
+
+:::
+
+:::
+
 ::: {.content-hidden}
 #### Using ggmosaic
 
@@ -991,35 +1056,9 @@ gf_col(edu_prop ~ Education, data = gss_summary,
 :::
 
 
-#### Using {visStatistics}
-
-`{{visStatistics}}` is a recent package that allows a very wide variety of statistical charts to be created **automagically** based on the variables chosen. Let us plot a mosaic chart directly with this package:
-
-```{r}
-#| label: fig-visstat-1
-#| fig-cap: "Mosaic and Bar Chart with visStatistics"
-#| fig-subcap:
-#|  - "Bar Chart"
-#|  - "Mosaic Chart"
-#| layout-ncol: 2
-
-# Plots the Bar Chart and Mosaic Chart
-visstat(GSS2002$DeathPenalty, GSS2002$Education)
-
-```
-The `{{visStatistics}}` package is a very powerful package that can be used to create a wide variety of statistical charts, including Mosaic Charts, with very little code. This "universal" command `visstat()` computes a good many statistics and plots, all in one. 
-
-::: callout-warning
-
-For the fearless: Try doing an `str()` after this command to see what (else) it has computed. There is a wealth of information in the output object, including the Contingency Table, the Chi-Squared test results, and more. Type `visstat(GSS2002$DeathPenalty, GSS2002$Education) %>% str()` in the console or your Quarto chunk to see this.
-
-:::
-
-:::
-
 ### Coloured Tiles: **Actual** and **Expected** Contingency Tables
 
-We notice that the mosaic plots has coloured some tiles blue and some red. Why was this done? Consider the set of mosaic plots below:
+We notice that the mosaic plots have coloured some tiles blue and some red. Why was this done? Consider the set of mosaic plots below:
 
 
 ::: column-body-outset-right
@@ -1052,15 +1091,13 @@ they *not related*.
 
 The graph on the left @fig-contingency-expected-actual-diff-1 shows the mosaic plot of the **actual** Contingency Table. 
 
-The graph in the middle @fig-contingency-expected-actual-diff-2 shows a similar but fictitious plot but with the cuts neatly horizontal or vertical. This mosaic would be what we would **expect**, if `Education` and the opinion on `Death Penalty` were independent!!
+The graph in the middle @fig-contingency-expected-actual-diff-2 shows a similar but fictitious plot but with the cuts neatly horizontal or vertical. [This mosaic is what we would **expect**, if `Education` and the opinion on `Death Penalty` were independent!!]{style="background-color:yellow;"}
 
 The graph on the right @fig-contingency-expected-actual-diff-3 shows the **differences** between the two plots, tile by tile.
 
 Clearly, there are differences in area of the corresponding tiles in the two mosaics, *actual* and *expected*, as shown in the graph on the right. Some differences are positive, and some negative. In the *actual mosaic*, @fig-contingency-expected-actual-diff-1, tiles with large positive differences are coloured blue, and those with large negative differences are coloured red. These are called the ***Pearson Residuals***, and they indicate the *extent* to which the actual counts differ from the expected counts, if the two Qual variables were independent. The higher the absolute values of these differences, the greater the effect of one Qual on the other. 
 
-More when we get into [Inference for Two Proportions.](../../../20-Inference/Modules/190-TwoProp/index.qmd)
-
-
+We will explore these ideas (*what does "expected" mean here?*) when we get into [Inference for Two Proportions.](../../../20-Inference/Modules/190-TwoProp/index.qmd)
 
 
 ::: {.content-hidden when-format="html"}
@@ -1400,12 +1437,12 @@ represent categories and counts respectively.
 ## {{< iconify mingcute thought-line >}} Wait, But Why?
 
 -   We can detect *correlation* between Quant variables using the
-    [scatter plots and regression lines](../30-Change/index.qmd)
+    [scatter plots and regression lines.](../30-Change/index.qmd)
 -   And we can detect *association* between Qual variables using
     mosaics, sieves (which we did not see here, but is possible in R),
     and with balloon plots.
--   Your project primary research data may be pure Qualitative too, as
-    with a Questionnaire / Survey instrument.
+-   [Your project primary research data may be ***pure Qualitative*** too, as
+    with a Questionnaire / Survey instrument]{style="background-color:yellow;"}
 -   One such Qual variable therein will be your [target
     variable](https://orangedatamining.com/blog/machine-learning-jargon/)
 -   You will need to justify whether the target variable is dependent

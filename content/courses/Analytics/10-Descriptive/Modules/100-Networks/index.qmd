@@ -2,10 +2,10 @@
 title: <iconify-icon icon="bx:network-chart" width="1.2em" height="1.2em"></iconify-icon> Networks 
 subtitle: "Can you introduce me to Phoebe?"
 date: 21/June/2022
-date-modified: "`r Sys.Date()`"
+date-modified: today
 order: 100
-abstract: "How one thing connects to another"
 code-fold: true
+abstract: "How one thing connects to another"
 bibliography: 
   - grateful-refs.bib
 citation: true
@@ -13,7 +13,7 @@ citation: true
 
 ---
 
-![An Invitation from the Queen, to play Cooquet](../../../../../materials/images/1book19.jpg){height=250 fig-align="center"}
+![An Invitation from the Queen, to play Croquet](../../../../../materials/images/1book19.jpg){height=250 fig-align="center"}
 
 :::: {.pa4}
 ::: {.athelas .ml0 .mt0 .pl4 .black-90 .bl .bw2 .b--blue}
@@ -28,6 +28,7 @@ citation: true
 
 ```{r}
 #| label: setup
+#| code-fold: false
 #| include: true
 #| warning: false
 #| message: false
@@ -49,9 +50,11 @@ set.seed(12345)
 ```
 
 ```{r}
-#| label: Extra Pedagogical Packages
+#| label: Extra-Pedagogical-Packages
 #| echo: false
 #| message: false
+#| code-fold: true
+#| 
 library(ggrepel)
 library(checkdown)
 library(epoxy)
@@ -186,7 +189,12 @@ will examine R packages that render both kinds of plots.
 There is a another kind of structure: one that combines *spatial* and
 *network* data in one. We will defer that for a future module !
 
-{{< video https://youtu.be/DrhhdekP1ZQ >}}
+::: {}
+<center>
+{{< video https://youtu.be/DrhhdekP1ZQ width="560" height="400" align="center" title="" >}}
+</center>
+Network Concepts
+:::
 
 ## What kind Network graphs will we make?
 
@@ -202,9 +210,13 @@ dataset](https://en.wikipedia.org/wiki/Zachary%27s_karate_club)
 visualized as a network
 
 ```{r}
+#| label: fig-karate-club
+#| fig-cap: "Karate Club Network Chart"
 #| echo: false
 #| warning: false
-set_graph_style(family = "Roboto Condensed", size = 16)
+#| out-width: "75%"
+#| 
+set_graph_style(family = "Roboto Condensed", size = 12)
 
 data(karate)
 karate <- karate %>% 
@@ -408,7 +420,7 @@ Download these two datasets into your current project-\> data folder.
 {{< downloadthis "files/data/grey_edges.csv" dname="grey_edges" label="Grey’s Anatomy Edges" icon="database-fill-down" type="info" >}}
 
 ```{r}
-#| label:  1.Read-greys-anatomy-data
+#| label:  1-Read-greys-anatomy-data
 #| message: false
 #| column: body-outset-right
 #| layout-nrow: 2
@@ -439,7 +451,7 @@ Key function:
     section.
 
 ```{r}
-#| label:  2.Create-greys-anatomy-graph-object
+#| label:  2-Create-greys-anatomy-graph-object
 
 ga <- tbl_graph(nodes = grey_nodes, 
                 edges = grey_edges, 
@@ -462,8 +474,11 @@ imported properly and to decide upon going on to a more elaborate
 plotting.
 
 ```{r}
-#| label:  3a.Auto-graph-grey-anatomy
-set_graph_style(family = "Roboto Condensed", size = 16)
+#| label:  3a-Auto-graph-grey-anatomy
+#| out-width: "75%"
+#| fig-align: "center"
+#| 
+set_graph_style(family = "Roboto Condensed", size = 12)
 
 autograph(ga)
 
@@ -502,8 +517,13 @@ Two kinds of `geom`: one set for nodes, and another for edges
     work with `ggplot`.
 
 ```{r}
-#| label:  3b.Ggraph-greys-anatomy
-set_graph_style(family = "Roboto Condensed", size = 16)
+#| label:  3b-Ggraph-greys-anatomy
+#| echo: false
+#| warning: false
+#| out-width: "75%"
+#| fig-align: "center"
+set_graph_style(family = "Roboto Condensed", size = 12)
+
 # Write Comments next to each line 
 # About what that line does for the overall graph
 
@@ -533,9 +553,13 @@ Let us **Play** with this graph and see if we can make some small
 changes. Colour? Fill? Width? Size? Stroke? Labs? Of course!
 
 ```{r}
-#| label:  3c.Modify-Greys-Anatomy-ggraph
+#| label:  3c-Modify-Greys-Anatomy-ggraph
+#| echo: false
+#| warning: false
+#| out-width: "75%"
+#| fig-align: "center"
+set_graph_style(family = "Roboto Condensed", size = 12)
 
-set_graph_style(family = "Roboto Condensed", size = 16)
 # Change the parameters in each of the commands here to new ones
 # Use fixed values for colours or sizes...etc. 
 
@@ -591,8 +615,12 @@ Type `?geom_node_point` and `?geom-edge_link` in your Console for more
 information.
 
 ```{r}
-#| label:  3d.aesthetics-using-ggraph-Modify
-set_graph_style(family = "Roboto Condensed", size = 16)
+#| label:  3d-aesthetics-using-ggraph-Modify
+#| echo: false
+#| warning: false
+#| out-width: "75%"
+#| fig-align: "center"
+set_graph_style(family = "Roboto Condensed", size = 12)
 
 ggraph(graph = ga, layout = "fr") +
   geom_edge_link0(aes(width = weight)) + # change variable here
@@ -619,7 +647,12 @@ work with either of the two?
 
 ```{r}
 #| label:  arc-diagram
-set_graph_style(family = "Roboto Condensed", size = 16)
+#| echo: false
+#| warning: false
+#| out-width: "75%"
+#| fig-align: "center"
+set_graph_style(family = "Roboto Condensed", size = 12)
+
 # Arc diagram
 
 ggraph(ga, layout = "linear") +
@@ -640,7 +673,12 @@ difference in the relationships between people here? Why?
 
 ```{r}
 #| label:  Coord-Diagram-circular
-set_graph_style(family = "Roboto Condensed", size = 16)
+#| echo: false
+#| warning: false
+#| out-width: "75%"
+#| fig-align: "center"
+set_graph_style(family = "Roboto Condensed", size = 12)
+
 
 # Coord diagram, circular
 ggraph(ga, layout = "linear", circular = TRUE) + # Note the layout!
@@ -814,6 +852,10 @@ centrality measures:
 
 ```{r}
 #| label:  network-analysis-1
+#| warning: false
+#| out-width: "75%"
+#| fig-align: "center"
+set_graph_style(family = "Roboto Condensed", size = 12)
 
 ga %>% 
   activate(nodes) %>% 
@@ -831,9 +873,14 @@ ga %>%
 Packages `tidygraph` and `ggraph` can be pipe-lined to perform analysis
 and visualization tasks in one go.
 
-```{r Using-Centrality}
-##
-set_graph_style(family = "Roboto Condensed", size = 16)
+```{r}
+#| label:  Using-Centrality
+#| warning: false
+#| out-width: "75%"
+#| fig-align: "center"
+#| 
+set_graph_style(family = "Roboto Condensed", size = 12)
+
 ##
 ggraph(ga,layout = "nicely") +
     geom_edge_link0(aes(width = centrality_edge_betweenness())) + 
@@ -870,9 +917,12 @@ representation.
 Who is close to whom? Which are the groups you can see?
 
 ```{r}
-#| label: communities in networks
-##
-set_graph_style(family = "Roboto Condensed", size = 16)
+#| label: communities-in-networks
+#| warning: false
+#| out-width: "75%"
+#| fig-align: "center"
+set_graph_style(family = "Roboto Condensed", size = 12)
+
 ##
 # visualize communities of nodes
 ga %>% 

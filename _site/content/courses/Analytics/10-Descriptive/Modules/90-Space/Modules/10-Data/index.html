@@ -2,14 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.3">
+<meta name="generator" content="quarto-1.8.27">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="dcterms.date" content="2022-08-15">
 <title> What is Vector Data? – The Mad Hatter's Guide to Data Viz and Stats in R</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -54,14 +51,15 @@ div.csl-indent {
 <link href="../../../../../../../../content/materials/icon-park-twotone--concept-sharing.svg" rel="icon" type="image/svg+xml">
 <script src="../../../../../../../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../../../../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../../../../../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../../../../../../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../../../../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-6940a74685447e775670a5f17abc1189.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-795e9e8eca1e12b12abcb09a27409631.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../../../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../../../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../../../../../../site_libs/bootstrap/bootstrap-fcc7b2a3b14c77575dee92098a957997.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../../../../../site_libs/bootstrap/bootstrap-f98024d38ba10b6a495c0c63f82dd59d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="../../../../../../../../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.css" rel="stylesheet">
 <script src="../../../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <link href="../../../../../../../../site_libs/quarto-contrib/tachyons-4.12.0/tachyons.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
@@ -106,7 +104,7 @@ div.csl-indent {
 <meta property="og:title" content=" What is Vector Data? – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:description" content="Geospatial Data and how to use it with intent">
 <meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/10-Data/preview.jpg">
-<meta property="og:site_name" content="The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
 <meta property="og:image:alt" content="Photo by at infinity on Unsplash">
 <meta name="twitter:title" content=" What is Vector Data? – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta name="twitter:description" content="Geospatial Data and how to use it with intent">
@@ -287,7 +285,7 @@ div.csl-indent {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../../../../../content/courses/Analytics/10-Descriptive/Modules/60-PartWhole/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><iconify-icon icon="ic:round-pie-chart-outline"></iconify-icon> Parts of a Whole</span></a>
+ <span class="menu-text"><iconify-icon icon="ic:round-pie-chart-outline"></iconify-icon> Hierarchy</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -345,12 +343,6 @@ div.csl-indent {
   <div class="sidebar-item-container"> 
   <a href="../../../../../../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/20-Leaflet/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> Interactive Maps with leaflet</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../../../../../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/30-Mapview/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> Interactive Maps With Mapview</span></a>
   </div>
 </li>
       </ul>
@@ -721,7 +713,7 @@ div.csl-indent {
    
   <ul>
 <li><a href="#intro-to-vector-geospatial-data" id="toc-intro-to-vector-geospatial-data" class="nav-link active" data-scroll-target="#intro-to-vector-geospatial-data"><span class="header-section-number">1</span> Intro to Vector Geospatial Data</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d6c7472203e7d7d-references" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d6c7472203e7d7d-references" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d6c7472203e7d7d-references"><span class="header-section-number">2</span> <iconify-icon inline="" icon="ooui:references-ltr" aria-label="Icon references-ltr from ooui Iconify.design set." title="Icon references-ltr from ooui Iconify.design set."></iconify-icon> References</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">2</span> <iconify-icon inline="" icon="ooui:references-ltr" aria-label="Icon references-ltr from ooui Iconify.design set." title="Icon references-ltr from ooui Iconify.design set."></iconify-icon> References</a></li>
   </ul></nav>
     </div>
 <!-- main -->
@@ -755,7 +747,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">January 14, 2026</p>
+      <p class="date-modified">May 8, 2026</p>
     </div>
   </div>
     
@@ -777,7 +769,7 @@ div.csl-indent {
       <iframe class="slide-deck" src="https://arvindvenkatadri.com/slides/R-for-Artists/06-spatial/06-Spatial-Data-in-R.html" height="475px"></iframe>
     </div>
   
-</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d6c7472203e7d7d-references" class="level2" data-number="2"><h2 data-number="2" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d6c7472203e7d7d-references">
+</section><section id="references" class="level2" data-number="2"><h2 data-number="2" class="anchored" data-anchor-id="references">
 <span class="header-section-number">2</span> <iconify-icon inline="" icon="ooui:references-ltr" aria-label="Icon references-ltr from ooui Iconify.design set." title="Icon references-ltr from ooui Iconify.design set."></iconify-icon> References</h2>
 <ol type="1">
 <li>Hadley Wickham, Danielle Navarro and Thomas Lin Pedersen. <em>ggplot2: Elegant Graphics for Data Analysis</em>, <a href="https://ggplot2-book.org/maps.html" class="uri">https://ggplot2-book.org/maps.html</a>
@@ -800,7 +792,7 @@ div.csl-indent {
 </li>
 </ol>
 <div id="refs" style="font-size: 60%;" role="list">
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c7563696465207061636b6167652d636865636b203e7d7d-r-package-citations" class="level6"><h6 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c7563696465207061636b6167652d636865636b203e7d7d-r-package-citations">
+<section id="r-package-citations" class="level6"><h6 class="anchored" data-anchor-id="r-package-citations">
 <iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
 <div class="cell">
 <div class="cell-output cell-output-error">
@@ -828,7 +820,7 @@ div.csl-indent {
 <span>“&lt;Iconify-Icon Icon=<span>‘gis:proj-Geo’</span>
 Width=<span>‘1.2em’</span>
 Height=<span>‘1.2em’</span>&gt;&lt;/Iconify-Icon&gt; What Is Vector
-Data?”</span> 2022. August 15. <a href="https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/10-Data/">https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/10-Data/</a>.
+Data?”</span> 2022. August 15, 2022. <a href="https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/10-Data/">https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/10-Data/</a>.
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

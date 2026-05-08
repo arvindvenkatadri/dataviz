@@ -1,0 +1,2125 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<link href="../../../../../../content/materials/icon-park-twotone--concept-sharing.svg" rel="icon" type="image/svg+xml">
+<script src="../../../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../../../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../../../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-795e9e8eca1e12b12abcb09a27409631.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../../../site_libs/quarto-contrib/tachyons-4.12.0/tachyons.css" rel="stylesheet">
+<script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
+<script src="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.27">
+
+  <meta name="dcterms.date" content="2022-11-10">
+  <title>The Mad Hatter's Guide to Data Viz and Stats in R – Inference for a Single Mean</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/theme/quarto-180c62c9bcf69a0506044dd7f3253a18.css">
+  <link href="../../../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../../../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../../../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../../../../../../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="../../../../../../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="../../../../../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <script src="../../../../../../site_libs/quarto-diagram/mermaid.min.js"></script>
+  <script src="../../../../../../site_libs/quarto-diagram/mermaid-init.js"></script>
+  <link href="../../../../../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+  <link href="../../../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+  <script src="../../../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<meta property="og:title" content="Inference for a Single Mean – The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta property="og:description" content="Inference Tests for a Single population Mean">
+<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
+<meta name="twitter:title" content="Inference for a Single Mean – The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta name="twitter:description" content="Inference Tests for a Single population Mean">
+<meta name="twitter:card" content="summary">
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Inference for a Single Mean</h1>
+  <p class="subtitle">“The more I love humanity in general, the less I love man in particular. ― Fyodor Dostoyevsky, The Brothers Karamazov</p>
+
+<div class="quarto-title-authors">
+</div>
+
+  <p class="date">2022-11-10</p>
+</section>
+<section class="slide level3">
+
+<div class="pa4">
+<div class="athelas ml0 mt0 pl4 black-90 bl bw2 b--blue">
+<p><span class="f5 f4-m f3-l lh-copy measure mt0">…neither let us despair over how small our successes are. For however much our successes fall short of our desire, our efforts aren’t in vain when we are farther along today than yesterday.</span></p>
+<p><span class="f6 ttu tracked fs-normal">— John Calvin</span></p>
+</div>
+</div>
+</section>
+<section>
+<section id="setting-up-r-packages" class="title-slide slide level2 center">
+<h2><iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R packages</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a></a><span class="fu">library</span>(mosaic)</span>
+<span id="cb1-3"><a></a><span class="fu">library</span>(ggformula)</span>
+<span id="cb1-4"><a></a><span class="fu">library</span>(infer)</span>
+<span id="cb1-5"><a></a><span class="fu">library</span>(broom) <span class="co"># Clean test results in tibble form</span></span>
+<span id="cb1-6"><a></a><span class="fu">library</span>(resampledata) <span class="co"># Datasets from Chihara and Hesterberg's book</span></span>
+<span id="cb1-7"><a></a><span class="fu">library</span>(openintro) <span class="co"># More datasets</span></span>
+<span id="cb1-8"><a></a><span class="fu">library</span>(visStatistics) <span class="co"># One package to rule them all</span></span>
+<span id="cb1-9"><a></a><span class="fu">library</span>(ggstatsplot)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<h4 id="plot-fonts-and-theme">Plot Fonts and Theme</h4>
+<div class="cell" data-messages="false">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">library</span>(systemfonts)</span>
+<span id="cb2-2"><a></a><span class="fu">library</span>(showtext)</span>
+<span id="cb2-3"><a></a><span class="do">## Clean the slate</span></span>
+<span id="cb2-4"><a></a>systemfonts<span class="sc">::</span><span class="fu">clear_local_fonts</span>()</span>
+<span id="cb2-5"><a></a>systemfonts<span class="sc">::</span><span class="fu">clear_registry</span>()</span>
+<span id="cb2-6"><a></a><span class="do">##</span></span>
+<span id="cb2-7"><a></a><span class="fu">showtext_opts</span>(<span class="at">dpi =</span> <span class="dv">96</span>) <span class="co"># set DPI for showtext</span></span>
+<span id="cb2-8"><a></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
+<span id="cb2-9"><a></a>  <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-10"><a></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/Alegreya-Regular.ttf"</span>,</span>
+<span id="cb2-11"><a></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/Alegreya-Bold.ttf"</span>,</span>
+<span id="cb2-12"><a></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/Alegreya-Italic.ttf"</span>,</span>
+<span id="cb2-13"><a></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/Alegreya-BoldItalic.ttf"</span></span>
+<span id="cb2-14"><a></a>)</span>
+<span id="cb2-15"><a></a></span>
+<span id="cb2-16"><a></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
+<span id="cb2-17"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-18"><a></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Regular.ttf"</span>,</span>
+<span id="cb2-19"><a></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Bold.ttf"</span>,</span>
+<span id="cb2-20"><a></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Italic.ttf"</span>,</span>
+<span id="cb2-21"><a></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-BoldItalic.ttf"</span></span>
+<span id="cb2-22"><a></a>)</span>
+<span id="cb2-23"><a></a><span class="fu">showtext_auto</span>(<span class="at">enable =</span> <span class="cn">TRUE</span>) <span class="co"># enable showtext</span></span>
+<span id="cb2-24"><a></a><span class="do">##</span></span>
+<span id="cb2-25"><a></a>theme_custom <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb2-26"><a></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">10</span>) <span class="sc">+</span></span>
+<span id="cb2-27"><a></a></span>
+<span id="cb2-28"><a></a>    <span class="co"># theme(panel.widths = unit(11, "cm"),</span></span>
+<span id="cb2-29"><a></a>    <span class="co">#       panel.heights = unit(6.79, "cm")) + # Golden Ratio</span></span>
+<span id="cb2-30"><a></a></span>
+<span id="cb2-31"><a></a>    <span class="fu">theme</span>(</span>
+<span id="cb2-32"><a></a>      <span class="at">plot.margin =</span> <span class="fu">margin_auto</span>(<span class="at">t =</span> <span class="dv">1</span>, <span class="at">r =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="dv">1</span>, <span class="at">l =</span> <span class="dv">1</span>, <span class="at">unit =</span> <span class="st">"cm"</span>),</span>
+<span id="cb2-33"><a></a>      <span class="at">plot.background =</span> <span class="fu">element_rect</span>(</span>
+<span id="cb2-34"><a></a>        <span class="at">fill =</span> <span class="st">"bisque"</span>,</span>
+<span id="cb2-35"><a></a>        <span class="at">colour =</span> <span class="st">"black"</span>,</span>
+<span id="cb2-36"><a></a>        <span class="at">linewidth =</span> <span class="dv">1</span></span>
+<span id="cb2-37"><a></a>      )</span>
+<span id="cb2-38"><a></a>    ) <span class="sc">+</span></span>
+<span id="cb2-39"><a></a></span>
+<span id="cb2-40"><a></a>    <span class="fu">theme_sub_axis</span>(</span>
+<span id="cb2-41"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-42"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-43"><a></a>        <span class="at">size =</span> <span class="dv">10</span></span>
+<span id="cb2-44"><a></a>      ),</span>
+<span id="cb2-45"><a></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-46"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-47"><a></a>        <span class="at">size =</span> <span class="dv">8</span></span>
+<span id="cb2-48"><a></a>      )</span>
+<span id="cb2-49"><a></a>    ) <span class="sc">+</span></span>
+<span id="cb2-50"><a></a></span>
+<span id="cb2-51"><a></a>    <span class="fu">theme_sub_legend</span>(</span>
+<span id="cb2-52"><a></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-53"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-54"><a></a>        <span class="at">size =</span> <span class="dv">6</span></span>
+<span id="cb2-55"><a></a>      ),</span>
+<span id="cb2-56"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-57"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-58"><a></a>        <span class="at">size =</span> <span class="dv">8</span></span>
+<span id="cb2-59"><a></a>      )</span>
+<span id="cb2-60"><a></a>    ) <span class="sc">+</span></span>
+<span id="cb2-61"><a></a></span>
+<span id="cb2-62"><a></a>    <span class="fu">theme_sub_plot</span>(</span>
+<span id="cb2-63"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-64"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-65"><a></a>        <span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span></span>
+<span id="cb2-66"><a></a>      ),</span>
+<span id="cb2-67"><a></a>      <span class="at">title.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb2-68"><a></a>      <span class="at">subtitle =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-69"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-70"><a></a>        <span class="at">size =</span> <span class="dv">10</span></span>
+<span id="cb2-71"><a></a>      ),</span>
+<span id="cb2-72"><a></a>      <span class="at">caption =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-73"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-74"><a></a>        <span class="at">size =</span> <span class="dv">6</span></span>
+<span id="cb2-75"><a></a>      ),</span>
+<span id="cb2-76"><a></a>      <span class="at">caption.position =</span> <span class="st">"plot"</span></span>
+<span id="cb2-77"><a></a>    )</span>
+<span id="cb2-78"><a></a>}</span>
+<span id="cb2-79"><a></a></span>
+<span id="cb2-80"><a></a><span class="do">## Use available fonts in ggplot text geoms too!</span></span>
+<span id="cb2-81"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-82"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-83"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-84"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-85"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-86"><a></a>))</span>
+<span id="cb2-87"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-88"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-89"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-90"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-91"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-92"><a></a>))</span>
+<span id="cb2-93"><a></a></span>
+<span id="cb2-94"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"marquee"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-95"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-96"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-97"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-98"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-99"><a></a>))</span>
+<span id="cb2-100"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-101"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-102"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-103"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-104"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-105"><a></a>))</span>
+<span id="cb2-106"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-107"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-108"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-109"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-110"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-111"><a></a>))</span>
+<span id="cb2-112"><a></a></span>
+<span id="cb2-113"><a></a><span class="do">## Set the theme</span></span>
+<span id="cb2-114"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb2-115"><a></a></span>
+<span id="cb2-116"><a></a><span class="do">## tinytable options</span></span>
+<span id="cb2-117"><a></a><span class="fu">options</span>(<span class="st">"tinytable_tt_digits"</span> <span class="ot">=</span> <span class="dv">2</span>)</span>
+<span id="cb2-118"><a></a><span class="fu">options</span>(<span class="st">"tinytable_format_num_fmt"</span> <span class="ot">=</span> <span class="st">"significant_cell"</span>)</span>
+<span id="cb2-119"><a></a><span class="fu">options</span>(<span class="at">tinytable_html_mathjax =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-120"><a></a></span>
+<span id="cb2-121"><a></a></span>
+<span id="cb2-122"><a></a><span class="do">## Set defaults for flextable</span></span>
+<span id="cb2-123"><a></a>flextable<span class="sc">::</span><span class="fu">set_flextable_defaults</span>(<span class="at">font.family =</span> <span class="st">"Roboto Condensed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div></section>
+<section id="introduction" class="title-slide slide level2 center">
+<h2><iconify-icon inline="" icon="fxemoji:japanesesymbolforbeginner" aria-label="Icon japanesesymbolforbeginner from fxemoji Iconify.design set." title="Icon japanesesymbolforbeginner from fxemoji Iconify.design set."></iconify-icon> Introduction</h2>
+<p>In this module, we will answer a basic Question: What is the mean <span class="math inline">\(\mu\)</span> of the population?</p>
+<p>Recall that the <code>mean</code> is the first of our <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/10-FavStats/index.html">Summary Statistics</a>. We wish to know more about the mean of the population from which we have drawn our data sample.</p>
+<p>We will do this is in several ways, based on the assumptions we are willing to adopt about our data. First we will use a toy dataset with one “imaginary” sample, normally distributed and made up of 50 observations. Since we <span class="bg-yellow black">“know the answer”</span> we will be able to build up some belief in the tests and procedures, which we will dig into to form our intuitions.</p>
+<p>We will then use a real-world dataset to make inferences on the means of Quant variables therein, and decide what that could tell us.</p>
+</section>
+
+<section id="statistical-inference-is-almost-an-attitude" class="title-slide slide level2 center scrollable">
+<h2><iconify-icon inline="" icon="mdi:thought-bubble-outline" aria-label="Icon thought-bubble-outline from mdi Iconify.design set." title="Icon thought-bubble-outline from mdi Iconify.design set."></iconify-icon> Statistical Inference is almost an Attitude!</h2>
+<p>As we will notice, the process of Statistical Inference is an attitude: <span class="bg-yellow athelas black"><strong>ain’t nothing happenin’!</strong></span> We look at data that we might have received or collected ourselves, and look at it with this attitude, seemingly, of some disbelief. Here is how we proceed:</p>
+<ol type="1">
+<li><p>We <em>state</em> our belief that:</p>
+<ul>
+<li>there is really nothing happening with our Research Question, and there is no reason to believe in it;</li>
+<li>the <code>sample</code> is just one of many, and the <code>value/statistic</code> indicated by the sample is the outcome of random chance (NULL Belief / Hypothesis).</li>
+</ul></li>
+<li><p>We then calculate how slim the chances (Relative Probability! Remember we are Frequentists!) are of <span style="background-color: yellow;">the given <code>data sample / statistic</code> showing up like that</span>, <strong>given our NULL belief</strong>. It is a distance measurement of sorts, literally embodying the idea of <em>far-fetched-ness</em>!!</p></li>
+<li><p>If the chances of the sample are too low, then that might alter our belief. This is the attitude that lies at the heart of <span style="background-color: yellow;"><strong>Null Hypothesis Significance Testing (NHST)</strong></span>.</p></li>
+</ol>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Important</strong></p>
+</div>
+<div class="callout-content">
+<p>The <em>calculation of chances</em> is both a logical, and a possible procedure since we are dealing with <strong>samples</strong> from a <em>population</em>, and imagining a <strong>distribution of sample statistics</strong>. If many other samples give us quite different <code>statistic</code>s, then we would discredit the one we derive from it.</p>
+</div>
+</div>
+</div>
+<p>Each test we perform will mechanize this attitude in different ways, based on assumptions and conveniences. (And history)</p>
+</section>
+
+<section id="case-study-1-toy-data" class="title-slide slide level2 center">
+<h2><iconify-icon inline="" icon="pajamas:issue-type-test-case" aria-label="Icon issue-type-test-case from pajamas Iconify.design set." title="Icon issue-type-test-case from pajamas Iconify.design set."></iconify-icon> Case Study #1: Toy data</h2>
+<p>Since the CLT <strong>assumes</strong> the <span style="background-color: yellow;">sample is normally-distributed</span>, let us generate a sample that is just so:</p>
+<div class="columns">
+<div class="column" style="width:60%;">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">set.seed</span>(<span class="dv">42</span>) <span class="co"># for replication</span></span>
+<span id="cb3-2"><a></a><span class="co">#</span></span>
+<span id="cb3-3"><a></a><span class="co"># Data as individual vectors</span></span>
+<span id="cb3-4"><a></a><span class="co"># ( for t.tests etc)</span></span>
+<span id="cb3-5"><a></a><span class="co"># Generate normally distributed data with mean = 2, sd = 2, length = 50</span></span>
+<span id="cb3-6"><a></a>y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">50</span>, <span class="at">mean =</span> <span class="dv">2</span>, <span class="at">sd =</span> <span class="dv">2</span>)</span>
+<span id="cb3-7"><a></a></span>
+<span id="cb3-8"><a></a><span class="co"># And as tibble too</span></span>
+<span id="cb3-9"><a></a>mydata <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">y =</span> y)</span>
+<span id="cb3-10"><a></a>mydata</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div><div class="column" style="width:40%;">
+<div class="cell">
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["y"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"4.7419169"},{"1":"0.8706037"},{"1":"2.7262568"},{"1":"3.2657252"},{"1":"2.8085366"},{"1":"1.7877510"},{"1":"5.0230440"},{"1":"1.8106819"},{"1":"6.0368474"},{"1":"1.8745718"},{"1":"4.6097393"},{"1":"6.5732908"},{"1":"-0.7777214"},{"1":"1.4424225"},{"1":"1.7333573"},{"1":"3.2719008"},{"1":"1.4314942"},{"1":"-3.3129108"},{"1":"-2.8809339"},{"1":"4.6402267"},{"1":"1.3867228"},{"1":"-1.5626169"},{"1":"1.6561653"},{"1":"4.4293494"},{"1":"5.7903869"},{"1":"1.1390617"},{"1":"1.4854612"},{"1":"-1.5263262"},{"1":"2.9201947"},{"1":"0.7200102"},{"1":"2.9109002"},{"1":"3.4096747"},{"1":"4.0702070"},{"1":"0.7821472"},{"1":"3.0099102"},{"1":"-1.4340174"},{"1":"0.4310820"},{"1":"0.2981848"},{"1":"-2.8284153"},{"1":"2.0722452"},{"1":"2.4119972"},{"1":"1.2778854"},{"1":"3.5163265"},{"1":"0.5465903"},{"1":"-0.7365621"},{"1":"2.8656361"},{"1":"0.3772136"},{"1":"4.8882025"},{"1":"1.1371076"},{"1":"3.3112958"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+
+<section>
+<section id="inspecting-and-charting-data" class="title-slide slide level2 center">
+<h2><iconify-icon inline="" icon="carbon:chart-3d" aria-label="Icon chart-3d from carbon Iconify.design set." title="Icon chart-3d from carbon Iconify.design set."></iconify-icon> Inspecting and Charting Data</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="do">## Set Plot theme</span></span>
+<span id="cb4-2"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb4-3"><a></a></span>
+<span id="cb4-4"><a></a>mydata <span class="sc">%&gt;%</span></span>
+<span id="cb4-5"><a></a>  <span class="fu">gf_density</span>(<span class="sc">~</span>y) <span class="sc">%&gt;%</span></span>
+<span id="cb4-6"><a></a>  <span class="fu">gf_fitdistr</span>(<span class="at">dist =</span> <span class="st">"dnorm"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-7"><a></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb4-8"><a></a>    <span class="at">title =</span> <span class="st">"Densities of Original Data Variables"</span>,</span>
+<span id="cb4-9"><a></a>    <span class="at">subtitle =</span> <span class="st">"Compared with Normal Density"</span></span>
+<span id="cb4-10"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div><div class="column" style="width:40%;">
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-toy-data" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-toy-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="index_files/figure-html/fig-toy-data-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Toy Data Distribution"><img data-src="index_files/figure-html/fig-toy-data-1.png" width="2100"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-toy-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Toy Data Distribution
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Observations from Density Plots</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>The variable <span class="math inline">\(y\)</span> appear to be centred around</li>
+<li>It does not seem to be normally distributed…</li>
+<li>So assumptions are not always valid…</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="research-question" class="slide level3">
+<h3>Research Question</h3>
+<p>Research Questions are always about the population! Here goes:</p>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Research Question</strong></p>
+</div>
+<div class="callout-content">
+<p>Could the mean of the population <span class="math inline">\(\mu\)</span>, from which the sample <code>y</code> has been drawn, be <span class="math inline">\(0\)</span>?</p>
+</div>
+</div>
+</div>
+</section>
+<section id="assumptions" class="slide level3">
+<h3>Assumptions</h3>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Testing for Normality</strong></p>
+</div>
+<div class="callout-content">
+<p>The y-variable does not appear to be normally distributed. This would affect the test we can use to make inferences about the population mean.<br>
+There are formal tests for normality too. We will do them in the next case study. For now, let us proceed naively.</p>
+</div>
+</div>
+</div>
+</section></section>
+<section class="scrollable">
+<section id="inference" class="title-slide slide level2 center">
+<h2>Inference</h2>
+
+</section>
+<div class="panel-tabset nav-pills" style="background: whitesmoke;">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">The t-test</a></li><li><a href="#tabset-1-2">Wilcoxon’s Signed-Rank Test</a></li><li><a href="#tabset-1-3">Using Permutation and Bootstrap</a></li><li><a href="#tabset-1-4">Visual and by Hand t-test</a></li></ul>
+<div class="tab-content nav-pills" style="background: whitesmoke;">
+<div id="tabset-1-1">
+<p>A. Model</p>
+<p>We have <span class="math inline">\(mean(y) = \bar{y}.\)</span> We formulate “our disbelief” of <span class="math inline">\(\bar{y}\)</span> with a <em>NULL Hypothesis</em>, <span class="bg-yellow athelas black"><strong>about the population</strong></span> as follows:</p>
+<p><span class="math display">\[
+\ H_0: \mu = 0
+\]</span> And the alternative hypothesis, again <span class="bg-yellow athelas black"><strong>about the population</strong></span> as</p>
+<p><span class="math display">\[
+H_a:\mu \ne 0
+\]</span></p>
+<p>B. Code</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="co"># t-test</span></span>
+<span id="cb5-2"><a></a>t1 <span class="ot">&lt;-</span> mosaic<span class="sc">::</span><span class="fu">t_test</span>(</span>
+<span id="cb5-3"><a></a>  y, <span class="co"># Name of variable</span></span>
+<span id="cb5-4"><a></a>  <span class="at">mu =</span> <span class="dv">0</span>, <span class="co"># belief of population mean</span></span>
+<span id="cb5-5"><a></a>  <span class="at">alternative =</span> <span class="st">"two.sided"</span></span>
+<span id="cb5-6"><a></a>) <span class="sc">%&gt;%</span> <span class="co"># Check both sides</span></span>
+<span id="cb5-7"><a></a></span>
+<span id="cb5-8"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="co"># Make results presentable, and plottable!!</span></span>
+<span id="cb5-9"><a></a>t1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["estimate"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["parameter"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["method"],"name":[7],"type":["chr"],"align":["left"]},{"label":["alternative"],"name":[8],"type":["chr"],"align":["left"]}],"data":[{"1":"1.928656","2":"5.921815","3":"3.087791e-07","4":"49","5":"1.274165","6":"2.583148","7":"One Sample t-test","8":"two.sided"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>So <span class="math inline">\(\bar{y}\)</span> i.e.&nbsp;the <code>estimate</code> is <span class="math inline">\(2.045689\)</span>. The confidence intervals do not straddle zero. The <em>chances</em> that this particular value of mean (<span class="math inline">\(2.045689\)</span>) would randomly occur <span style="background-color: yellow;"><strong>under the assumption that <span class="math inline">\(\mu\)</span> is zero</strong></span>, are exceedingly slim, <span class="math inline">\(p.value = 1.425 * 10^{-8}\)</span>. Hence we can reject the NULL hypothesis that the true population, of which y is a sample, could have mean <span class="math inline">\(\mu = 0\)</span>.</p>
+</div>
+<div id="tabset-1-2">
+<section id="signed-rank-values-a-small-digression" class="Callout-note scrollable">
+<h4>“Signed Rank” Values: A Small Digression</h4>
+<p>When the Quant variable we want to test for is <em>not normally</em> distributed, we need to think of other ways to perform our inference. Our assumption about <em>normality</em> has been invalidated.<br>
+Most statistical tests use the <strong>actual values</strong> of the data variables. However, in these cases where assumptions are invalidated, the data are used in <strong>rank-transformed</strong> sense/order. In some cases the <strong>signed-rank</strong> of the data values is used instead of the data itself. The signed ranks are then tested to see if there are more of one polarity than the other, roughly speaking, and how probable this could be.</p>
+<p>Signed Rank is calculated as follows:</p>
+<ol type="1">
+<li>Take the absolute value of each observation in a sample<br>
+</li>
+<li>Place the <u><em>ranks</em></u> in order of (absolute magnitude). The smallest number has <em>rank = 1</em> and so on.<br>
+</li>
+<li>Give each of the ranks the sign of the original observation ( + or -)</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>signed_rank <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb6-2"><a></a>  <span class="fu">sign</span>(x) <span class="sc">*</span> <span class="fu">rank</span>(<span class="fu">abs</span>(x))</span>
+<span id="cb6-3"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<p>Since we are dealing with the <strong>mean</strong>, the <em>sign</em> of the rank becomes important to use.</p>
+<p>A. Model</p>
+<p><span class="math display">\[
+mean(signed\_rank(y)) = \beta_0
+\]</span></p>
+<p><span class="math display">\[
+H_0: \beta_0 = 0
+\]</span> <span class="math display">\[
+H_a: \beta_0 \ne 0
+\]</span></p>
+<p>B. Code</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="co"># Standard Wilcoxon Signed_Rank Test</span></span>
+<span id="cb7-2"><a></a>t2 <span class="ot">&lt;-</span> <span class="fu">wilcox.test</span>(y, <span class="co"># variable name</span></span>
+<span id="cb7-3"><a></a>  <span class="at">mu =</span> <span class="dv">0</span>, <span class="co"># belief</span></span>
+<span id="cb7-4"><a></a>  <span class="at">alternative =</span> <span class="st">"two.sided"</span>,</span>
+<span id="cb7-5"><a></a>  <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb7-6"><a></a>  <span class="at">conf.level =</span> <span class="fl">0.95</span></span>
+<span id="cb7-7"><a></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-8"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span>
+<span id="cb7-9"><a></a>t2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["estimate"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["method"],"name":[6],"type":["chr"],"align":["left"]},{"label":["alternative"],"name":[7],"type":["chr"],"align":["left"]}],"data":[{"1":"1.973833","2":"1112","3":"4.747344e-06","4":"1.297342","5":"2.638787","6":"Wilcoxon signed rank test with continuity correction","7":"two.sided"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="co"># Can also do this equivalently</span></span>
+<span id="cb8-2"><a></a><span class="co"># t-test with signed_rank data</span></span>
+<span id="cb8-3"><a></a>t3 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(<span class="fu">signed_rank</span>(y),</span>
+<span id="cb8-4"><a></a>  <span class="at">mu =</span> <span class="dv">0</span>,</span>
+<span id="cb8-5"><a></a>  <span class="at">alternative =</span> <span class="st">"two.sided"</span>,</span>
+<span id="cb8-6"><a></a>  <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb8-7"><a></a>  <span class="at">conf.level =</span> <span class="fl">0.95</span></span>
+<span id="cb8-8"><a></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-9"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span>
+<span id="cb8-10"><a></a>t3</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["estimate"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["parameter"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["method"],"name":[7],"type":["chr"],"align":["left"]},{"label":["alternative"],"name":[8],"type":["chr"],"align":["left"]}],"data":[{"1":"18.98","2":"5.952048","3":"2.774156e-07","4":"49","5":"12.57183","6":"25.38817","7":"One Sample t-test","8":"two.sided"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>Again, the <code>confidence intervals</code> do not straddle <span class="math inline">\(0\)</span>, and we need to reject the belief that the mean is close to zero.</p>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>Note how the Wilcoxon Test reports results about <span class="math inline">\(y\)</span>, even though it computes with <span class="math inline">\(signed-rank(y)\)</span>. The “equivalent t-test” used with signed-rank data cannot do this, since it uses “rank” data as-is.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-3">
+<p>We saw from the diagram created by Allen Downey that <em>there is only one test</em> <a href="#/fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>! We will now use this philosophy to develop a technique that allows us to mechanize several <em>Statistical Models</em> in that way, with nearly identical code.</p>
+<p>We can use two packages in R, <code>mosaic</code> to develop our intuition for what are called <strong>permutation</strong> based statistical tests; and a more recent package called <code>infer</code> in R which can do pretty much all of this, including visualization.</p>
+<p>We will stick with <code>mosaic</code> for now. We will do a permutation test first, and then a bootstrap test. In subsequent modules, we will use <code>infer</code> also.</p>
+<p>For the Permutation test, we mechanize our belief that <span class="math inline">\(\mu = 0\)</span> by <em>shuffling the polarities of the y observations</em> randomly 4999 times to generate other samples from the population <span class="math inline">\(y\)</span> could have come from<a href="#/fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. If these samples can frequently achieve <span class="math inline">\(\bar{y_i} \leq 0\)</span>, then we might believe that the population mean may be 0!</p>
+<p>We see that the means here that <strong>chances</strong> that the randomly generated means can exceed our real-world mean are about <span class="math inline">\(0\)</span>! So the mean is definitely different from <span class="math inline">\(0\)</span>.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb9-2"><a></a></span>
+<span id="cb9-3"><a></a><span class="co"># Calculate exact mean</span></span>
+<span id="cb9-4"><a></a>obs_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="sc">~</span>y, <span class="at">data =</span> mydata)</span>
+<span id="cb9-5"><a></a>belief1 <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># What we think the mean is</span></span>
+<span id="cb9-6"><a></a>obs_diff_mosaic <span class="ot">&lt;-</span> obs_mean <span class="sc">-</span> belief1</span>
+<span id="cb9-7"><a></a>obs_diff_mosaic</span>
+<span id="cb9-8"><a></a><span class="do">## Steps in Permutation Test</span></span>
+<span id="cb9-9"><a></a><span class="do">## Repeatedly Shuffle polarities of data observations</span></span>
+<span id="cb9-10"><a></a><span class="do">## Take means</span></span>
+<span id="cb9-11"><a></a><span class="do">## Compare all means with the real-world observed one</span></span>
+<span id="cb9-12"><a></a>null_dist_mosaic <span class="ot">&lt;-</span></span>
+<span id="cb9-13"><a></a>  mosaic<span class="sc">::</span><span class="fu">do</span>(<span class="dv">9999</span>) <span class="sc">*</span> <span class="fu">mean</span>(</span>
+<span id="cb9-14"><a></a>    <span class="sc">~</span> <span class="fu">abs</span>(y) <span class="sc">*</span></span>
+<span id="cb9-15"><a></a>      <span class="fu">sample</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="co"># +/- 1s multiply y</span></span>
+<span id="cb9-16"><a></a>        <span class="fu">length</span>(y), <span class="co"># How many +/- 1s?</span></span>
+<span id="cb9-17"><a></a>        <span class="at">replace =</span> T</span>
+<span id="cb9-18"><a></a>      ), <span class="co"># select with replacement</span></span>
+<span id="cb9-19"><a></a>    <span class="at">data =</span> mydata</span>
+<span id="cb9-20"><a></a>  )</span>
+<span id="cb9-21"><a></a><span class="do">##</span></span>
+<span id="cb9-22"><a></a><span class="fu">range</span>(null_dist_mosaic<span class="sc">$</span>mean)</span>
+<span id="cb9-23"><a></a><span class="do">##</span></span>
+<span id="cb9-24"><a></a><span class="do">## Plot this NULL distribution</span></span>
+<span id="cb9-25"><a></a><span class="fu">gf_histogram</span>(</span>
+<span id="cb9-26"><a></a>  <span class="sc">~</span>mean,</span>
+<span id="cb9-27"><a></a>  <span class="at">data =</span> null_dist_mosaic,</span>
+<span id="cb9-28"><a></a>  <span class="at">fill =</span> <span class="sc">~</span> (mean <span class="sc">&gt;=</span> obs_diff_mosaic),</span>
+<span id="cb9-29"><a></a>  <span class="at">bins =</span> <span class="dv">50</span>, <span class="at">title =</span> <span class="st">"Distribution of Permutation Means under Null Hypothesis"</span>,</span>
+<span id="cb9-30"><a></a>  <span class="at">subtitle =</span> <span class="st">"Why is the mean of the means zero??"</span></span>
+<span id="cb9-31"><a></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-32"><a></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb9-33"><a></a>    <span class="at">x =</span> <span class="st">"Calculated Random Means"</span>,</span>
+<span id="cb9-34"><a></a>    <span class="at">y =</span> <span class="st">"How Often do these occur?"</span></span>
+<span id="cb9-35"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb9-36"><a></a>  <span class="fu">gf_vline</span>(<span class="at">xintercept =</span> obs_diff_mosaic, <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-37"><a></a>  <span class="fu">gf_refine</span>(</span>
+<span id="cb9-38"><a></a>    <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">add =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">20</span>))),</span>
+<span id="cb9-39"><a></a>    <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">add =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.25</span>)))</span>
+<span id="cb9-40"><a></a>  )</span>
+<span id="cb9-41"><a></a></span>
+<span id="cb9-42"><a></a><span class="co"># p-value</span></span>
+<span id="cb9-43"><a></a><span class="co"># Null distributions are always centered around zero. Why?</span></span>
+<span id="cb9-44"><a></a><span class="fu">prop</span>(<span class="sc">~</span> mean <span class="sc">&gt;=</span> obs_diff_mosaic,</span>
+<span id="cb9-45"><a></a>  <span class="at">data =</span> null_dist_mosaic</span>
+<span id="cb9-46"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.928656
+[1] -1.454320  1.516059
+prop_TRUE 
+        0 </code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-permutation-test-1" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-permutation-test-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="index_files/figure-html/fig-permutation-test-1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Permutation Test for One Mean"><img data-src="index_files/figure-html/fig-permutation-test-1-1.png" width="2100"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-permutation-test-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Permutation Test for One Mean
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Let us try the bootstrap test now: Here we <em>simulate samples, similar to the one at hand</em>, using repeated sampling the sample itself, with replacement, a process known as <strong>bootstrapping</strong>, or <em>bootstrap sampling</em>.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb11-2"><a></a></span>
+<span id="cb11-3"><a></a><span class="do">## Resample with replacement from the one sample of 50</span></span>
+<span id="cb11-4"><a></a><span class="do">## Calculate the mean each time</span></span>
+<span id="cb11-5"><a></a>null_toy_bs <span class="ot">&lt;-</span> mosaic<span class="sc">::</span><span class="fu">do</span>(<span class="dv">4999</span>) <span class="sc">*</span></span>
+<span id="cb11-6"><a></a>  <span class="fu">mean</span>(</span>
+<span id="cb11-7"><a></a>    <span class="sc">~</span> <span class="fu">sample</span>(y,</span>
+<span id="cb11-8"><a></a>      <span class="at">replace =</span> T</span>
+<span id="cb11-9"><a></a>    ), <span class="co"># select with replacement</span></span>
+<span id="cb11-10"><a></a>    <span class="at">data =</span> mydata</span>
+<span id="cb11-11"><a></a>  )</span>
+<span id="cb11-12"><a></a></span>
+<span id="cb11-13"><a></a><span class="do">## Plot this NULL distribution</span></span>
+<span id="cb11-14"><a></a><span class="fu">gf_histogram</span>(</span>
+<span id="cb11-15"><a></a>  <span class="sc">~</span>mean,</span>
+<span id="cb11-16"><a></a>  <span class="at">data =</span> null_toy_bs,</span>
+<span id="cb11-17"><a></a>  <span class="at">bins =</span> <span class="dv">50</span>,</span>
+<span id="cb11-18"><a></a>  <span class="at">title =</span> <span class="st">"Distribution of Bootstrap Means"</span></span>
+<span id="cb11-19"><a></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-20"><a></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb11-21"><a></a>    <span class="at">x =</span> <span class="st">"Calculated Random Means"</span>,</span>
+<span id="cb11-22"><a></a>    <span class="at">y =</span> <span class="st">"How Often do these occur?"</span></span>
+<span id="cb11-23"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-24"><a></a>  <span class="fu">gf_vline</span>(<span class="at">xintercept =</span> <span class="sc">~</span>belief1, <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-25"><a></a>  <span class="fu">gf_refine</span>(</span>
+<span id="cb11-26"><a></a>    <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">add =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">20</span>))),</span>
+<span id="cb11-27"><a></a>    <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">add =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>)))</span>
+<span id="cb11-28"><a></a>  )</span>
+<span id="cb11-29"><a></a></span>
+<span id="cb11-30"><a></a><span class="fu">prop</span>(<span class="sc">~</span> mean <span class="sc">&gt;=</span> belief1,</span>
+<span id="cb11-31"><a></a>  <span class="at">data =</span> null_toy_bs</span>
+<span id="cb11-32"><a></a>) <span class="sc">+</span></span>
+<span id="cb11-33"><a></a>  <span class="fu">prop</span>(<span class="sc">~</span> mean <span class="sc">&lt;=</span> <span class="sc">-</span>belief1,</span>
+<span id="cb11-34"><a></a>    <span class="at">data =</span> null_toy_bs</span>
+<span id="cb11-35"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>prop_TRUE 
+        1 </code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-bootstrap-test-1" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-bootstrap-test-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="index_files/figure-html/fig-bootstrap-test-1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;3: Bootstrap Test for One Mean"><img data-src="index_files/figure-html/fig-bootstrap-test-1-1.png" width="2100"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-bootstrap-test-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Bootstrap Test for One Mean
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Permutation vs Bootstrap</strong></p>
+</div>
+<div class="callout-content">
+<p>There is a difference between the two. The <em>bootstrap test</em> uses the sample at hand to generate many similar samples <em>without access to the population</em>, and calculates the statistic needed (i.e.&nbsp;mean). No Hypothesis is stated. The distribution of bootstrap samples looks “similar” to that we might obtain by repeatedly sampling the population itself. (centred around a population parameter, i.e.&nbsp;<span class="math inline">\(\mu\)</span>)</p>
+<p>The <em>permutation test</em> generates many permutations of the data and generates appropriates measures/statistics <em>under the NULL hypothesis</em>. Which is why the permutation test has a NULL distribution centered at <span class="math inline">\(0\)</span> in this case, our NULL hypothesis.</p>
+<p>As student <a href="https://in.linkedin.com/in/sneha-manu-jacob-781a62379">Sneha Manu Jacob</a> remarked in class, <em>Permutation flips the signs of the data values in our sample; Bootstrap flips the number of times each data value is (re)used</em>. Good Insight!!</p>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-4">
+<p>Yes, the t-test works, but what is really happening under the hood of the t-test? The inner mechanism of the t-test can be stated in the following steps:</p>
+<ol type="1">
+<li>Calculate the <code>mean</code> of the sample <span class="math inline">\(\bar{y}\)</span>.</li>
+<li>Calculate the <code>sd</code> of the sample, and, assuming the sample is normally distributed, calculate the <code>standard error</code> (i.e.&nbsp;<span class="math inline">\(\frac{sd}{\sqrt{n}}\)</span>)</li>
+<li>Take the difference between the sample mean <span class="math inline">\(\bar{y}\)</span> and our expected/believed population mean <span class="math inline">\(\mu\)</span>.</li>
+<li>Scale the difference by the <code>standard error</code> to get a <code>test statistic</code> <span class="math inline">\(t\)</span>.</li>
+<li>If the <code>test statistic</code> is more than <span class="math inline">\(\pm 1.96\)</span>, we can say that it is beyond the the <code>confidence interval</code> of the sample mean <span class="math inline">\(\bar{y}\)</span>.</li>
+<li>Therefore if the difference between actual and believed is far beyond the confidence interval, hmm…we cannot think our belief is correct and we change our opinion.</li>
+</ol>
+<p>Let us translate that mouthful into calculations!</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>(mean_belief_pop <span class="ot">&lt;-</span> <span class="fl">0.0</span>) <span class="co"># Assert our belief</span></span>
+<span id="cb13-2"><a></a>(std_error <span class="ot">&lt;-</span> <span class="fu">sd</span>(y) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">length</span>(y)))</span>
+<span id="cb13-3"><a></a>(mean_y <span class="ot">&lt;-</span> <span class="fu">mean</span>(y))</span>
+<span id="cb13-4"><a></a>(conf_int <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">ci_low =</span> mean_y <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> std_error, <span class="at">ci_high =</span> mean_y <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> std_error))</span>
+<span id="cb13-5"><a></a>(t <span class="ot">&lt;-</span> (mean_y <span class="sc">-</span> mean_belief_pop) <span class="sc">/</span> std_error)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="quarto-layout-panel" data-layout="[15,15,15,40,15]">
+<div class="quarto-layout-row">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 15.0%;justify-content: flex-start;">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+<p>Null Hypothesis / Belief</p>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 15.0%;justify-content: flex-start;">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.3256867</code></pre>
+</div>
+</div>
+<p>Standard Error</p>
+</div>
+<div id="third-column" class="quarto-layout-cell" style="flex-basis: 15.0%;justify-content: flex-start;">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.928656</code></pre>
+</div>
+</div>
+<p>Sample Mean</p>
+</div>
+<div id="fourth-column" class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: flex-start;">
+<div class="cell">
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["ci_low"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["ci_high"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"1.290311","2":"2.567002"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>Confidence Intervals</p>
+</div>
+<div id="fifth-column" class="quarto-layout-cell" style="flex-basis: 15.0%;justify-content: flex-start;">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5.921815</code></pre>
+</div>
+</div>
+<p>Test Statistic</p>
+</div>
+</div>
+</div>
+<p>How can we visualize this?</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb18-2"><a></a></span>
+<span id="cb18-3"><a></a>mosaic<span class="sc">::</span><span class="fu">xqnorm</span>(</span>
+<span id="cb18-4"><a></a>  <span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), <span class="at">mean =</span> sample_mean, <span class="at">sd =</span> sample_se,</span>
+<span id="cb18-5"><a></a>  <span class="at">return =</span> <span class="fu">c</span>(<span class="st">"value"</span>), <span class="at">verbose =</span> T, <span class="at">plot =</span> F</span>
+<span id="cb18-6"><a></a>) <span class="ot">-&gt;</span> xq</span>
+<span id="cb18-7"><a></a></span>
+<span id="cb18-8"><a></a><span class="do">## Sample-Mean Distribution</span></span>
+<span id="cb18-9"><a></a><span class="fu">xqnorm</span>(</span>
+<span id="cb18-10"><a></a>  <span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), <span class="at">mean =</span> sample_mean, <span class="at">sd =</span> sample_se,</span>
+<span id="cb18-11"><a></a>  <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">plot =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb18-12"><a></a>  <span class="at">return =</span> <span class="fu">c</span>(<span class="st">"plot"</span>), <span class="at">verbose =</span> F, <span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">colour =</span> <span class="st">"black"</span>,</span>
+<span id="cb18-13"><a></a>  <span class="at">system =</span> <span class="st">"gg"</span></span>
+<span id="cb18-14"><a></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-15"><a></a>  <span class="fu">gf_dhistogram</span>(<span class="sc">~</span>y, <span class="at">data =</span> mydata, <span class="at">inherit =</span> F) <span class="sc">%&gt;%</span></span>
+<span id="cb18-16"><a></a>  <span class="fu">gf_fitdistr</span>(<span class="sc">~</span>y, <span class="at">data =</span> mydata) <span class="sc">%&gt;%</span></span>
+<span id="cb18-17"><a></a>  <span class="fu">gf_vline</span>(<span class="at">xintercept =</span> <span class="sc">~</span>mean_belief_pop, <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-18"><a></a>  <span class="fu">gf_vline</span>(<span class="at">xintercept =</span> sample_mean, <span class="at">colour =</span> <span class="st">"purple"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-19"><a></a>  <span class="do">## Sample Distribution</span></span>
+<span id="cb18-20"><a></a>  <span class="fu">gf_annotate</span>(</span>
+<span id="cb18-21"><a></a>    <span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">x =</span> <span class="dv">5</span>, <span class="at">y =</span> <span class="fl">0.25</span>,</span>
+<span id="cb18-22"><a></a>    <span class="at">label =</span> <span class="st">"Sample Histogram and Density"</span>,</span>
+<span id="cb18-23"><a></a>    <span class="at">colour =</span> <span class="st">"black"</span></span>
+<span id="cb18-24"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-25"><a></a>  <span class="do">## Null Hypothesis</span></span>
+<span id="cb18-26"><a></a>  <span class="fu">gf_annotate</span>(</span>
+<span id="cb18-27"><a></a>    <span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">x =</span> mean_belief_pop, <span class="at">y =</span> <span class="fl">1.4</span>,</span>
+<span id="cb18-28"><a></a>    <span class="at">label =</span> <span class="st">"Null Hypothesis (Belief)"</span></span>
+<span id="cb18-29"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-30"><a></a>  <span class="do">## Sampling Mean Distribution</span></span>
+<span id="cb18-31"><a></a>  <span class="fu">gf_annotate</span>(</span>
+<span id="cb18-32"><a></a>    <span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">x =</span> sample_mean <span class="sc">-</span> <span class="dv">3</span>, <span class="at">y =</span> <span class="fl">1.0</span>,</span>
+<span id="cb18-33"><a></a>    <span class="at">label =</span> <span class="st">"Sample-Mean Distribution"</span>, <span class="at">colour =</span> <span class="st">"purple"</span></span>
+<span id="cb18-34"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-35"><a></a>  <span class="fu">gf_annotate</span>(<span class="st">"curve"</span>,</span>
+<span id="cb18-36"><a></a>    <span class="at">x =</span> sample_mean <span class="sc">-</span> <span class="dv">3</span>, <span class="at">y =</span> <span class="fl">1.05</span>,</span>
+<span id="cb18-37"><a></a>    <span class="at">xend =</span> sample_mean <span class="sc">-</span> <span class="fl">0.25</span>, <span class="at">yend =</span> <span class="fl">1.0</span>,</span>
+<span id="cb18-38"><a></a>    <span class="at">curvature =</span> <span class="sc">-</span><span class="fl">0.25</span>, <span class="at">color =</span> <span class="st">"purple"</span>,</span>
+<span id="cb18-39"><a></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">"cm"</span>))</span>
+<span id="cb18-40"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-41"><a></a>  <span class="do">## Observed Mean</span></span>
+<span id="cb18-42"><a></a>  <span class="fu">gf_annotate</span>(</span>
+<span id="cb18-43"><a></a>    <span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">x =</span> sample_mean, <span class="at">y =</span> <span class="fl">1.5</span>,</span>
+<span id="cb18-44"><a></a>    <span class="at">label =</span> <span class="st">"Sample Mean"</span>, <span class="at">colour =</span> <span class="st">"purple"</span></span>
+<span id="cb18-45"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-46"><a></a>  <span class="do">## Confidence Intervals</span></span>
+<span id="cb18-47"><a></a>  <span class="fu">gf_annotate</span>(</span>
+<span id="cb18-48"><a></a>    <span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">x =</span> sample_mean, <span class="at">y =</span> <span class="fl">0.6</span>,</span>
+<span id="cb18-49"><a></a>    <span class="at">label =</span> <span class="st">"95% Confidence Interval"</span>,</span>
+<span id="cb18-50"><a></a>    <span class="at">colour =</span> <span class="st">"purple"</span></span>
+<span id="cb18-51"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-52"><a></a>  <span class="fu">gf_annotate</span>(<span class="st">"segment"</span>,</span>
+<span id="cb18-53"><a></a>    <span class="at">x =</span> xq[<span class="dv">1</span>], <span class="at">y =</span> <span class="fl">0.0</span>,</span>
+<span id="cb18-54"><a></a>    <span class="at">xend =</span> xq[<span class="dv">1</span>], <span class="at">yend =</span> <span class="fl">0.5</span>,</span>
+<span id="cb18-55"><a></a>    <span class="at">color =</span> <span class="st">"purple"</span>, <span class="at">linewidth =</span> <span class="fl">0.5</span></span>
+<span id="cb18-56"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-57"><a></a>  <span class="fu">gf_annotate</span>(<span class="st">"segment"</span>,</span>
+<span id="cb18-58"><a></a>    <span class="at">x =</span> xq[<span class="dv">2</span>], <span class="at">y =</span> <span class="fl">0.0</span>,</span>
+<span id="cb18-59"><a></a>    <span class="at">xend =</span> xq[<span class="dv">2</span>], <span class="at">yend =</span> <span class="fl">0.5</span>,</span>
+<span id="cb18-60"><a></a>    <span class="at">color =</span> <span class="st">"purple"</span>, <span class="at">linewidth =</span> <span class="fl">0.5</span></span>
+<span id="cb18-61"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-62"><a></a>  <span class="fu">gf_annotate</span>(<span class="st">"segment"</span>,</span>
+<span id="cb18-63"><a></a>    <span class="at">x =</span> xq[<span class="dv">1</span>], <span class="at">y =</span> <span class="fl">0.35</span>,</span>
+<span id="cb18-64"><a></a>    <span class="at">xend =</span> xq[<span class="dv">2</span>], <span class="at">yend =</span> <span class="fl">0.35</span>,</span>
+<span id="cb18-65"><a></a>    <span class="at">color =</span> <span class="st">"purple"</span>, <span class="at">linewidth =</span> <span class="fl">0.5</span>,</span>
+<span id="cb18-66"><a></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">"cm"</span>), <span class="at">ends =</span> <span class="st">"both"</span>)</span>
+<span id="cb18-67"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-68"><a></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb18-69"><a></a>    <span class="at">title =</span> <span class="st">"Visualizing the t-test for Toy Data"</span>,</span>
+<span id="cb18-70"><a></a>    <span class="at">subtitle =</span> <span class="st">"Sample-Mean-Distribution is plotted as theoretical Gaussian Bell Curve"</span>,</span>
+<span id="cb18-71"><a></a>    <span class="at">x =</span> <span class="st">"Sample Values and Means"</span>, <span class="at">y =</span> <span class="st">"Density"</span></span>
+<span id="cb18-72"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-73"><a></a>  <span class="fu">gf_refine</span>(</span>
+<span id="cb18-74"><a></a>    <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.6</span>), <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)),</span>
+<span id="cb18-75"><a></a>    <span class="fu">scale_x_continuous</span>(</span>
+<span id="cb18-76"><a></a>      <span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">2.5</span>, <span class="fl">7.5</span>),</span>
+<span id="cb18-77"><a></a>      <span class="at">breaks =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">2.5</span>, <span class="dv">0</span>, <span class="fl">2.5</span>, <span class="dv">5</span>, <span class="fl">7.5</span>, sample_mean),</span>
+<span id="cb18-78"><a></a>      <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">number_format</span>(</span>
+<span id="cb18-79"><a></a>        <span class="at">accuracy =</span> <span class="fl">0.01</span>,</span>
+<span id="cb18-80"><a></a>        <span class="at">decimal.mark =</span> <span class="st">"."</span></span>
+<span id="cb18-81"><a></a>      )</span>
+<span id="cb18-82"><a></a>    )</span>
+<span id="cb18-83"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-84"><a></a>  <span class="fu">gf_theme</span>(<span class="fu">theme_custom</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-visualizing-t-test" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-visualizing-t-test-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="index_files/figure-html/fig-visualizing-t-test-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;4: Visualizing the t-test for Toy Data"><img data-src="index_files/figure-html/fig-visualizing-t-test-1.png" width="2100"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-visualizing-t-test-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Visualizing the t-test for Toy Data
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>We see that the difference between means is 5.9218152 times the std_error! At a distance of <span class="math inline">\(1.96\)</span> (either way) the probability of this data happening by chance already drops to <span class="math inline">\(2.5 \%\)</span> !! At this distance of 5.9218152, we would have negligible probability of this data occurring by chance!</p>
+</div>
+</div>
+</div></section>
+<section>
+<section id="case-study-2-exam-data" class="title-slide slide level2 center">
+<h2><iconify-icon inline="" icon="pajamas:issue-type-test-case" aria-label="Icon issue-type-test-case from pajamas Iconify.design set." title="Icon issue-type-test-case from pajamas Iconify.design set."></iconify-icon> Case Study #2: Exam data</h2>
+<p>Let us now choose a dataset from the <code>openintro</code> package:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a><span class="fu">data</span>(<span class="st">"exam_grades"</span>, <span class="at">package =</span> <span class="st">"openintro"</span>)</span>
+<span id="cb19-2"><a></a>exam_grades</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["semester"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[2],"type":["chr"],"align":["left"]},{"label":["exam1"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["exam2"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["exam3"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["course_grade"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"2000-1","2":"Man","3":"84.5000","4":"69.5","5":"86.5000","6":"76.2564"},{"1":"2000-1","2":"Man","3":"80.0000","4":"74.0","5":"67.0000","6":"75.3882"},{"1":"2000-1","2":"Man","3":"56.0000","4":"70.0","5":"71.5000","6":"67.0564"},{"1":"2000-1","2":"Man","3":"64.0000","4":"61.0","5":"67.5000","6":"63.4538"},{"1":"2000-1","2":"Man","3":"90.5000","4":"72.5","5":"75.0000","6":"72.3949"},{"1":"2000-1","2":"Man","3":"74.0000","4":"78.5","5":"84.5000","6":"71.4128"},{"1":"2000-1","2":"Man","3":"60.5000","4":"44.0","5":"58.0000","6":"56.0949"},{"1":"2000-1","2":"Man","3":"89.0000","4":"82.0","5":"88.0000","6":"78.0103"},{"1":"2000-1","2":"Woman","3":"87.5000","4":"86.5","5":"95.0000","6":"82.9026"},{"1":"2000-1","2":"Man","3":"91.0000","4":"98.0","5":"88.0000","6":"89.0846"},{"1":"2000-1","2":"Man","3":"79.5000","4":"88.0","5":"56.0000","6":"72.9769"},{"1":"2000-1","2":"Man","3":"96.0000","4":"91.5","5":"78.0000","6":"82.5282"},{"1":"2000-1","2":"Man","3":"55.0000","4":"79.5","5":"72.0000","6":"69.9872"},{"1":"2000-1","2":"Man","3":"80.0000","4":"83.5","5":"70.0000","6":"67.7256"},{"1":"2000-1","2":"Woman","3":"64.5000","4":"83.5","5":"77.0000","6":"80.3051"},{"1":"2000-1","2":"Man","3":"73.0000","4":"90.0","5":"96.0000","6":"74.8744"},{"1":"2000-1","2":"Man","3":"83.0000","4":"79.0","5":"65.0000","6":"71.1615"},{"1":"2000-1","2":"Man","3":"72.0000","4":"91.0","5":"90.0000","6":"76.5615"},{"1":"2000-1","2":"Woman","3":"57.9000","4":"53.0","5":"47.0000","6":"56.9903"},{"1":"2000-1","2":"Man","3":"89.0000","4":"83.5","5":"78.5000","6":"80.8026"},{"1":"2000-1","2":"Woman","3":"69.0000","4":"57.0","5":"88.0000","6":"69.4308"},{"1":"2000-1","2":"Woman","3":"91.0000","4":"91.0","5":"95.5000","6":"92.0051"},{"1":"2000-1","2":"Man","3":"68.0000","4":"84.5","5":"64.0000","6":"67.9051"},{"1":"2000-1","2":"Man","3":"83.0000","4":"89.5","5":"93.0000","6":"79.7872"},{"1":"2000-1","2":"Man","3":"72.0000","4":"77.5","5":"67.0000","6":"67.1256"},{"1":"2000-1","2":"Woman","3":"56.0000","4":"45.0","5":"61.0000","6":"58.6308"},{"1":"2000-1","2":"Man","3":"55.0000","4":"71.0","5":"72.0000","6":"67.8308"},{"1":"2000-1","2":"Woman","3":"68.5000","4":"64.0","5":"93.0000","6":"77.6903"},{"1":"2000-1","2":"Man","3":"68.5000","4":"79.5","5":"50.5000","6":"69.9308"},{"1":"2000-1","2":"Man","3":"70.0000","4":"71.0","5":"76.0000","6":"69.6769"},{"1":"2000-1","2":"Man","3":"75.0000","4":"81.0","5":"81.5000","6":"68.0923"},{"1":"2000-1","2":"Man","3":"68.5000","4":"66.0","5":"58.0000","6":"60.3128"},{"1":"2000-1","2":"Man","3":"54.0000","4":"84.0","5":"88.0000","6":"72.3821"},{"1":"2000-1","2":"Man","3":"79.6000","4":"67.0","5":"72.0000","6":"67.4787"},{"1":"2000-1","2":"Man","3":"85.0000","4":"61.0","5":"44.5000","6":"66.2364"},{"1":"2000-1","2":"Man","3":"82.0000","4":"86.5","5":"92.5000","6":"83.3231"},{"1":"2000-1","2":"Woman","3":"65.0000","4":"83.5","5":"87.0000","6":"77.6436"},{"1":"2000-1","2":"Woman","3":"76.0000","4":"50.0","5":"91.5000","6":"70.9462"},{"1":"2000-1","2":"Man","3":"94.5000","4":"67.0","5":"96.0000","6":"86.0133"},{"1":"2000-1","2":"Man","3":"72.0000","4":"67.0","5":"90.0000","6":"72.0269"},{"1":"2000-1","2":"Man","3":"65.5000","4":"82.5","5":"79.0000","6":"77.0282"},{"1":"2000-1","2":"Man","3":"61.5000","4":"80.5","5":"81.5000","6":"68.2821"},{"1":"2000-1","2":"Man","3":"65.0000","4":"50.0","5":"43.5000","6":"43.2733"},{"1":"2000-1","2":"Man","3":"63.0000","4":"82.0","5":"88.0000","6":"70.1031"},{"1":"2000-1","2":"Man","3":"75.0000","4":"66.5","5":"76.0000","6":"65.0846"},{"1":"2000-1","2":"Man","3":"69.5000","4":"70.5","5":"76.0000","6":"68.6538"},{"1":"2000-1","2":"Woman","3":"60.0000","4":"95.0","5":"91.0000","6":"83.0508"},{"1":"2000-1","2":"Man","3":"84.0000","4":"88.0","5":"67.0000","6":"75.0856"},{"1":"2000-1","2":"Man","3":"90.0000","4":"99.5","5":"87.5000","6":"74.4718"},{"1":"2000-1","2":"Woman","3":"62.5000","4":"85.5","5":"85.5000","6":"74.4821"},{"1":"2000-1","2":"Man","3":"88.5000","4":"86.5","5":"70.0000","6":"77.9526"},{"1":"2000-2","2":"Man","3":"74.5000","4":"83.0","5":"62.4000","6":"78.7554"},{"1":"2000-2","2":"Man","3":"73.5000","4":"69.5","5":"74.5000","6":"69.0228"},{"1":"2000-2","2":"Man","3":"75.0000","4":"60.5","5":"80.9000","6":"68.6502"},{"1":"2000-2","2":"Man","3":"76.5000","4":"76.0","5":"61.0000","6":"73.6702"},{"1":"2000-2","2":"Woman","3":"90.5000","4":"68.0","5":"59.0000","6":"69.7842"},{"1":"2000-2","2":"Man","3":"88.0000","4":"77.5","5":"90.5000","6":"84.1474"},{"1":"2000-2","2":"Man","3":"87.2727","4":"58.0","5":"28.0000","6":"49.1931"},{"1":"2000-2","2":"Man","3":"81.9000","4":"86.0","5":"62.0000","6":"73.9116"},{"1":"2000-2","2":"Man","3":"65.5000","4":"90.0","5":"61.8000","6":"68.5425"},{"1":"2000-2","2":"Woman","3":"84.5000","4":"80.5","5":"72.5000","6":"81.2088"},{"1":"2000-2","2":"Man","3":"88.9000","4":"67.0","5":"76.0000","6":"80.5554"},{"1":"2000-2","2":"Man","3":"70.0000","4":"56.0","5":"81.5000","6":"68.7839"},{"1":"2000-2","2":"Man","3":"73.0000","4":"48.0","5":"55.0000","6":"65.3088"},{"1":"2000-2","2":"Man","3":"86.0000","4":"77.0","5":"82.0000","6":"79.6035"},{"1":"2000-2","2":"Man","3":"68.0000","4":"60.0","5":"59.0000","6":"58.4316"},{"1":"2000-2","2":"Woman","3":"82.0000","4":"74.0","5":"81.5000","6":"76.6842"},{"1":"2000-2","2":"Man","3":"86.4000","4":"72.0","5":"69.5000","6":"67.5625"},{"1":"2000-2","2":"Man","3":"74.0000","4":"83.0","5":"79.9000","6":"74.5730"},{"1":"2000-2","2":"Man","3":"92.3000","4":"76.0","5":"97.0000","6":"87.0288"},{"1":"2000-2","2":"Man","3":"57.0000","4":"70.0","5":"56.0000","6":"65.3947"},{"1":"2000-2","2":"Man","3":"62.5000","4":"41.0","5":"77.8000","6":"59.8863"},{"1":"2000-2","2":"Man","3":"75.5000","4":"62.5","5":"79.7000","6":"73.5435"},{"1":"2000-2","2":"Man","3":"67.0000","4":"58.0","5":"45.8000","6":"58.3828"},{"1":"2000-2","2":"Man","3":"73.0000","4":"78.0","5":"77.3000","6":"79.2354"},{"1":"2000-2","2":"Man","3":"93.0000","4":"75.0","5":"96.0000","6":"71.3228"},{"1":"2000-2","2":"Man","3":"81.5000","4":"73.0","5":"69.5000","6":"65.5295"},{"1":"2000-2","2":"Man","3":"82.5000","4":"83.5","5":"82.5000","6":"81.4474"},{"1":"2000-2","2":"Woman","3":"46.5000","4":"77.0","5":"47.0000","6":"62.8842"},{"1":"2000-2","2":"Man","3":"62.0000","4":"71.0","5":"64.0000","6":"69.4702"},{"1":"2000-2","2":"Woman","3":"68.5000","4":"55.5","5":"52.0000","6":"61.8263"},{"1":"2000-2","2":"Man","3":"80.0000","4":"84.0","5":"48.5000","6":"70.0947"},{"1":"2000-2","2":"Man","3":"77.0000","4":"77.0","5":"44.0000","6":"68.0404"},{"1":"2000-2","2":"Woman","3":"55.0000","4":"94.0","5":"96.0000","6":"83.5193"},{"1":"2000-2","2":"Man","3":"69.0000","4":"74.5","5":"41.5000","6":"59.0386"},{"1":"2000-2","2":"Woman","3":"74.0000","4":"56.0","5":"69.9000","6":"65.0204"},{"1":"2001-1","2":"Man","3":"93.0000","4":"76.0","5":"95.5000","6":"85.5000"},{"1":"2001-1","2":"Man","3":"81.0000","4":"78.0","5":"79.5000","6":"75.7333"},{"1":"2001-1","2":"Man","3":"98.0000","4":"87.0","5":"85.5000","6":"86.5833"},{"1":"2001-1","2":"Man","3":"92.5000","4":"81.0","5":"74.5000","6":"77.2833"},{"1":"2001-1","2":"Man","3":"83.5000","4":"60.5","5":"78.0000","6":"73.6333"},{"1":"2001-1","2":"Man","3":"98.0000","4":"92.0","5":"90.5000","6":"91.8585"},{"1":"2001-1","2":"Man","3":"80.5000","4":"53.5","5":"67.5000","6":"62.9555"},{"1":"2001-1","2":"Man","3":"80.9000","4":"68.0","5":"67.0000","6":"72.7600"},{"1":"2001-1","2":"Man","3":"84.5000","4":"46.0","5":"65.5000","6":"60.6167"},{"1":"2001-1","2":"Man","3":"93.8000","4":"59.5","5":"73.3000","6":"70.0067"},{"1":"2001-1","2":"Man","3":"98.0000","4":"96.5","5":"98.5000","6":"97.5667"},{"1":"2001-1","2":"Man","3":"92.0000","4":"78.5","5":"72.0000","6":"73.2833"},{"1":"2001-1","2":"Man","3":"91.0000","4":"72.0","5":"81.0000","6":"75.1167"},{"1":"2001-1","2":"Man","3":"80.0000","4":"72.0","5":"59.5000","6":"69.7000"},{"1":"2001-1","2":"Man","3":"94.0000","4":"84.0","5":"98.5000","6":"88.8667"},{"1":"2001-1","2":"Man","3":"90.0000","4":"73.0","5":"63.5000","6":"72.9000"},{"1":"2001-1","2":"Man","3":"94.0000","4":"82.0","5":"86.4000","6":"80.3267"},{"1":"2001-1","2":"Man","3":"86.5000","4":"76.0","5":"85.5000","6":"76.2000"},{"1":"2001-1","2":"Man","3":"87.0000","4":"76.0","5":"72.5000","6":"70.7442"},{"1":"2001-1","2":"Man","3":"80.3000","4":"88.5","5":"83.5000","6":"85.9700"},{"1":"2001-1","2":"Man","3":"89.5000","4":"66.5","5":"78.9000","6":"72.5267"},{"1":"2001-1","2":"Man","3":"70.5000","4":"70.5","5":"58.0000","6":"57.0000"},{"1":"2001-1","2":"Man","3":"89.4000","4":"84.5","5":"82.5000","6":"83.8685"},{"1":"2001-1","2":"Woman","3":"79.5000","4":"56.0","5":"81.0000","6":"68.2500"},{"1":"2001-1","2":"Man","3":"93.9000","4":"88.0","5":"71.0000","6":"80.0600"},{"1":"2001-1","2":"Man","3":"73.5000","4":"78.5","5":"72.0000","6":"77.0333"},{"1":"2001-1","2":"Man","3":"94.8000","4":"84.5","5":"77.5000","6":"84.1700"},{"1":"2001-1","2":"Woman","3":"66.0000","4":"62.0","5":"80.5000","6":"70.9333"},{"1":"2001-1","2":"Man","3":"96.3000","4":"82.0","5":"76.0000","6":"79.9867"},{"1":"2001-1","2":"Man","3":"93.3000","4":"93.0","5":"92.5000","6":"89.8033"},{"1":"2001-1","2":"Man","3":"87.3000","4":"81.0","5":"78.5000","6":"85.7367"},{"1":"2001-1","2":"Man","3":"79.0000","4":"81.0","5":"91.0000","6":"78.1222"},{"1":"2001-1","2":"Man","3":"84.0000","4":"81.0","5":"91.0000","6":"75.0333"},{"1":"2001-1","2":"Woman","3":"81.0000","4":"81.5","5":"70.0000","6":"74.2167"},{"1":"2001-1","2":"Woman","3":"84.5000","4":"71.5","5":"76.0000","6":"73.9833"},{"1":"2001-1","2":"Woman","3":"90.6250","4":"61.5","5":"59.5000","6":"66.6958"},{"1":"2001-1","2":"Woman","3":"91.5000","4":"58.0","5":"79.5000","6":"74.9888"},{"1":"2001-1","2":"Man","3":"84.0000","4":"72.5","5":"76.0000","6":"75.7000"},{"1":"2001-2","2":"Man","3":"73.2000","4":"44.0","5":"50.9000","6":"47.9000"},{"1":"2001-2","2":"Man","3":"70.5000","4":"42.8","5":"36.4000","6":"48.0500"},{"1":"2001-2","2":"Woman","3":"92.9000","4":"88.5","5":"79.0000","6":"86.6500"},{"1":"2001-2","2":"Man","3":"68.8000","4":"52.1","5":"65.4000","6":"55.9500"},{"1":"2001-2","2":"Man","3":"91.3000","4":"71.0","5":"79.5000","6":"77.8250"},{"1":"2001-2","2":"Man","3":"78.3000","4":"46.5","5":"63.9000","6":"56.7250"},{"1":"2001-2","2":"Man","3":"71.3000","4":"43.0","5":"67.4000","6":"58.3750"},{"1":"2001-2","2":"Man","3":"74.9000","4":"65.4","5":"51.5000","6":"56.0750"},{"1":"2001-2","2":"Man","3":"90.5000","4":"71.5","5":"69.5000","6":"78.5000"},{"1":"2001-2","2":"Man","3":"80.3000","4":"63.0","5":"64.0000","6":"64.7000"},{"1":"2001-2","2":"Woman","3":"79.0000","4":"74.5","5":"72.5000","6":"68.3250"},{"1":"2001-2","2":"Man","3":"82.5000","4":"62.5","5":"77.5000","6":"73.5000"},{"1":"2001-2","2":"Man","3":"79.7000","4":"84.4","5":"77.3000","6":"75.5500"},{"1":"2001-2","2":"Man","3":"79.5000","4":"77.9","5":"62.0000","6":"68.3500"},{"1":"2001-2","2":"Man","3":"79.5000","4":"68.7","5":"87.0000","6":"81.7500"},{"1":"2001-2","2":"Man","3":"93.0000","4":"70.9","5":"67.5000","6":"70.4250"},{"1":"2001-2","2":"Man","3":"88.5000","4":"79.5","5":"82.0000","6":"80.5000"},{"1":"2001-2","2":"Woman","3":"86.0000","4":"73.0","5":"47.0000","6":"66.0000"},{"1":"2001-2","2":"Man","3":"93.8000","4":"68.5","5":"66.4000","6":"74.8750"},{"1":"2001-2","2":"Woman","3":"93.9000","4":"84.0","5":"83.5000","6":"88.2250"},{"1":"2001-2","2":"Man","3":"83.3000","4":"83.0","5":"78.0000","6":"82.5750"},{"1":"2001-2","2":"Man","3":"75.1000","4":"70.0","5":"61.0000","6":"64.0250"},{"1":"2001-2","2":"Man","3":"92.9000","4":"83.0","5":"84.5000","6":"84.1500"},{"1":"2001-2","2":"Man","3":"76.5000","4":"41.5","5":"48.0000","6":"53.0750"},{"1":"2001-2","2":"Woman","3":"84.1000","4":"88.8","5":"75.5000","6":"81.5500"},{"1":"2001-2","2":"Man","3":"87.9000","4":"58.2","5":"67.0000","6":"63.5250"},{"1":"2001-2","2":"Woman","3":"79.5000","4":"66.0","5":"67.5000","6":"69.1250"},{"1":"2001-2","2":"Man","3":"82.0000","4":"53.5","5":"52.0000","6":"54.5000"},{"1":"2001-2","2":"Woman","3":"91.4000","4":"77.0","5":"76.0000","6":"76.1000"},{"1":"2001-2","2":"Man","3":"84.9000","4":"69.5","5":"37.3000","6":"60.3000"},{"1":"2001-2","2":"Man","3":"58.0000","4":"61.0","5":"47.4000","6":"57.6000"},{"1":"2001-2","2":"Man","3":"81.5000","4":"57.5","5":"65.8000","6":"60.3250"},{"1":"2001-2","2":"Man","3":"95.0000","4":"68.0","5":"82.5000","6":"76.7500"},{"1":"2001-2","2":"Man","3":"95.5000","4":"80.5","5":"84.3000","6":"75.7750"},{"1":"2001-2","2":"Man","3":"77.5000","4":"80.9","5":"75.0000","6":"76.4250"},{"1":"2001-2","2":"Man","3":"82.0000","4":"46.0","5":"54.0000","6":"53.0000"},{"1":"2001-2","2":"Man","3":"93.8000","4":"82.5","5":"80.5000","6":"84.6500"},{"1":"2002-1","2":"Man","3":"89.0000","4":"83.5","5":"92.0000","6":"77.1197"},{"1":"2002-1","2":"Man","3":"82.0000","4":"78.5","5":"82.0000","6":"61.7972"},{"1":"2002-1","2":"Man","3":"73.5000","4":"80.0","5":"82.0000","6":"73.5563"},{"1":"2002-1","2":"Man","3":"73.5000","4":"82.8","5":"79.5000","6":"69.9459"},{"1":"2002-1","2":"Woman","3":"79.0000","4":"86.5","5":"97.0000","6":"80.5324"},{"1":"2002-1","2":"Man","3":"71.5000","4":"71.0","5":"58.0000","6":"62.4331"},{"1":"2002-1","2":"Man","3":"92.5000","4":"92.0","5":"93.5000","6":"82.2000"},{"1":"2002-1","2":"Woman","3":"85.5000","4":"90.5","5":"85.0000","6":"86.7901"},{"1":"2002-1","2":"Man","3":"93.0000","4":"47.0","5":"70.0000","6":"59.8218"},{"1":"2002-1","2":"Man","3":"75.5000","4":"66.0","5":"94.0000","6":"69.0648"},{"1":"2002-1","2":"Man","3":"88.5000","4":"74.0","5":"87.0000","6":"78.2085"},{"1":"2002-1","2":"Man","3":"87.0000","4":"96.0","5":"98.5000","6":"84.0577"},{"1":"2002-1","2":"Woman","3":"89.5000","4":"77.5","5":"88.9000","6":"69.2110"},{"1":"2002-1","2":"Man","3":"97.5000","4":"94.5","5":"76.0000","6":"78.9310"},{"1":"2002-1","2":"Woman","3":"59.0000","4":"73.0","5":"85.5000","6":"58.2606"},{"1":"2002-1","2":"Man","3":"81.0000","4":"87.0","5":"86.5000","6":"72.1352"},{"1":"2002-1","2":"Man","3":"73.5000","4":"57.5","5":"83.0000","6":"61.7713"},{"1":"2002-1","2":"Man","3":"90.5000","4":"53.0","5":"78.5000","6":"60.7915"},{"1":"2002-1","2":"Man","3":"70.0000","4":"62.5","5":"85.0000","6":"64.5225"},{"1":"2002-1","2":"Man","3":"98.5000","4":"98.0","5":"90.0000","6":"80.3761"},{"1":"2002-1","2":"Man","3":"85.5000","4":"67.0","5":"86.0000","6":"67.6535"},{"1":"2002-1","2":"Man","3":"78.0000","4":"58.0","5":"92.5000","6":"65.1831"},{"1":"2002-1","2":"Man","3":"86.5000","4":"85.0","5":"85.0000","6":"73.5972"},{"1":"2002-1","2":"Woman","3":"99.3000","4":"96.0","5":"89.0000","6":"91.4868"},{"1":"2002-1","2":"Man","3":"90.5000","4":"78.5","5":"79.5000","6":"73.0634"},{"1":"2002-1","2":"Man","3":"86.5000","4":"67.5","5":"85.5000","6":"70.0746"},{"1":"2002-1","2":"Man","3":"80.0000","4":"94.0","5":"90.5000","6":"88.4310"},{"1":"2002-1","2":"Man","3":"72.0000","4":"95.0","5":"78.0000","6":"77.3507"},{"1":"2002-1","2":"Man","3":"72.5000","4":"69.5","5":"92.0000","6":"73.5648"},{"1":"2002-1","2":"Man","3":"77.5000","4":"74.0","5":"82.0000","6":"73.1493"},{"1":"2002-1","2":"Man","3":"74.0000","4":"49.5","5":"82.0000","6":"64.6690"},{"1":"2002-1","2":"Man","3":"79.0000","4":"80.5","5":"80.5000","6":"71.9845"},{"1":"2002-1","2":"Man","3":"80.0000","4":"82.0","5":"77.0000","6":"67.7986"},{"1":"2002-1","2":"Man","3":"97.4000","4":"66.9","5":"83.0000","6":"74.9276"},{"1":"2002-1","2":"Man","3":"61.5000","4":"64.5","5":"86.0000","6":"63.7651"},{"1":"2002-1","2":"Man","3":"86.0000","4":"67.0","5":"96.8000","6":"73.7346"},{"1":"2003-1","2":"Woman","3":"75.7143","4":"62.6","5":"45.5556","6":"59.5549"},{"1":"2003-1","2":"Woman","3":"80.7143","4":"38.0","5":"78.3333","6":"65.2202"},{"1":"2003-1","2":"Woman","3":"88.2143","4":"75.1","5":"70.0000","6":"72.3670"},{"1":"2003-1","2":"Man","3":"81.7857","4":"76.0","5":"68.3333","6":"74.1120"},{"1":"2003-1","2":"Man","3":"96.0714","4":"68.1","5":"74.4444","6":"70.4423"},{"1":"2003-1","2":"Man","3":"NA","4":"58.0","5":"78.3333","6":"46.7231"},{"1":"2003-1","2":"Man","3":"73.5714","4":"62.1","5":"97.7778","6":"69.1030"},{"1":"2003-1","2":"Man","3":"71.0714","4":"41.5","5":"55.5556","6":"53.9348"},{"1":"2003-1","2":"Man","3":"66.4286","4":"59.1","5":"85.5556","6":"68.5149"},{"1":"2003-1","2":"Man","3":"85.7143","4":"77.1","5":"83.3333","6":"79.8810"},{"1":"2003-1","2":"Woman","3":"88.9286","4":"72.0","5":"93.3333","6":"82.3626"},{"1":"2003-1","2":"Man","3":"65.7143","4":"60.5","5":"30.0000","6":"48.5152"},{"1":"2003-1","2":"Man","3":"92.5000","4":"63.5","5":"92.7778","6":"80.3655"},{"1":"2003-1","2":"Woman","3":"86.0714","4":"77.5","5":"96.6667","6":"80.3527"},{"1":"2003-1","2":"Man","3":"75.0000","4":"71.9","5":"88.3333","6":"70.3606"},{"1":"2003-1","2":"Man","3":"95.7143","4":"90.1","5":"98.8889","6":"93.3003"},{"1":"2003-1","2":"Man","3":"88.9286","4":"52.5","5":"62.5000","6":"61.1081"},{"1":"2003-1","2":"Man","3":"94.6429","4":"90.0","5":"90.0000","6":"87.6431"},{"1":"2003-1","2":"Man","3":"92.5000","4":"80.0","5":"96.1111","6":"87.9477"},{"1":"2003-1","2":"Woman","3":"91.0714","4":"39.5","5":"78.8889","6":"67.9143"},{"1":"2003-1","2":"Man","3":"92.8571","4":"73.5","5":"92.1111","6":"86.2788"},{"1":"2003-1","2":"Woman","3":"86.0714","4":"45.5","5":"55.5556","6":"59.8701"},{"1":"2003-1","2":"Man","3":"87.1429","4":"81.6","5":"73.8889","6":"76.4304"},{"1":"2003-1","2":"Man","3":"74.2857","4":"52.6","5":"47.2222","6":"56.3211"},{"1":"2003-1","2":"Man","3":"95.7143","4":"78.0","5":"84.4444","6":"83.2086"},{"1":"2003-1","2":"Man","3":"83.2143","4":"64.6","5":"58.8889","6":"68.0731"},{"1":"2003-1","2":"Man","3":"85.0000","4":"78.1","5":"82.2222","6":"70.5416"},{"1":"2003-1","2":"Man","3":"85.7143","4":"68.1","5":"72.0000","6":"66.1202"},{"1":"2003-1","2":"Woman","3":"94.6429","4":"94.5","5":"96.1111","6":"90.7190"},{"1":"2003-1","2":"Man","3":"90.7143","4":"77.5","5":"78.2222","6":"77.5340"},{"1":"2003-1","2":"Man","3":"86.4286","4":"70.1","5":"88.3333","6":"74.5553"},{"1":"2003-1","2":"Man","3":"98.2143","4":"89.1","5":"71.1111","6":"85.5208"},{"1":"2003-1","2":"Woman","3":"95.0000","4":"86.0","5":"78.3333","6":"83.6959"},{"1":"2003-1","2":"Man","3":"97.1429","4":"53.5","5":"67.2222","6":"72.1189"},{"1":"2003-1","2":"Man","3":"85.0000","4":"63.0","5":"75.0000","6":"67.1996"},{"1":"2003-1","2":"Man","3":"72.8571","4":"48.5","5":"90.5556","6":"66.4035"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+<section id="research-question-2" class="slide level3">
+<h3>Research Question</h3>
+<p>There are quite a few Quant variables in the data. Let us choose <code>course_grade</code> as our variable of interest. What might we wish to find out?</p>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Research Question</strong></p>
+</div>
+<div class="callout-content">
+<p>In <em>general</em>, the Teacher in this class is overly generous with grades <span class="bg-washed-red"><a href="https://www.linkedin.com/in/arvindvenkatadri">unlike others we know</a></span>, and so the average <code>course-grade</code> is equal to 80% !!</p>
+</div>
+</div>
+</div>
+</section>
+<section id="inspecting-and-charting-data-1" class="slide level3">
+<h3><iconify-icon inline="" icon="carbon:chart-3d" aria-label="Icon chart-3d from carbon Iconify.design set." title="Icon chart-3d from carbon Iconify.design set."></iconify-icon> Inspecting and Charting Data</h3>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb20-2"><a></a></span>
+<span id="cb20-3"><a></a>exam_grades <span class="sc">%&gt;%</span></span>
+<span id="cb20-4"><a></a>  <span class="fu">gf_density</span>(<span class="sc">~</span>course_grade) <span class="sc">%&gt;%</span></span>
+<span id="cb20-5"><a></a>  <span class="fu">gf_fitdistr</span>(<span class="at">dist =</span> <span class="st">"dnorm"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-6"><a></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb20-7"><a></a>    <span class="at">title =</span> <span class="st">"Density of Course Grade"</span>,</span>
+<span id="cb20-8"><a></a>    <span class="at">subtitle =</span> <span class="st">"Compared with Normal Density"</span></span>
+<span id="cb20-9"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-exam-grades" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-exam-grades-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="index_files/figure-html/fig-exam-grades-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;5: Exam Grades Distribution"><img data-src="index_files/figure-html/fig-exam-grades-1.png" width="2100"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-exam-grades-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Exam Grades Distribution
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<p>Hmm…data looks normally distributed. But this time we will not merely trust our eyes, but do a test for it.</p>
+</section>
+<section id="testing-assumptions-in-the-data" class="slide level3 scrollable">
+<h3>Testing Assumptions in the Data</h3>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Is the data normally distributed?</strong></p>
+</div>
+<div class="callout-content">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a>stats<span class="sc">::</span><span class="fu">shapiro.test</span>(<span class="at">x =</span> exam_grades<span class="sc">$</span>course_grade) <span class="sc">%&gt;%</span></span>
+<span id="cb21-2"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["statistic"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["method"],"name":[3],"type":["chr"],"align":["left"]}],"data":[{"1":"0.9939453","2":"0.470688","3":"Shapiro-Wilk normality test"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>The Shapiro-Wilks Test tests whether a data variable is normally distributed or not. Without digging into the maths of it, let us say it makes the assumption that the variable <strong>is</strong> so distributed and then computes the probability of how likely this is. So a <strong>high</strong> <code>p-value</code> (<span class="math inline">\(0.47\)</span>) is a good thing here.</p>
+<p>When we have <em>large</em> Quant variables ( i.e.&nbsp;with length &gt;= 5000), the <strong><em>function</em></strong> <code>shapiro.test</code> does not work, and we use an Anderson-Darling<sup>1</sup> test to confirm normality:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a><span class="fu">library</span>(nortest)</span>
+<span id="cb22-2"><a></a><span class="co"># Especially when we have &gt;= 5000 observations</span></span>
+<span id="cb22-3"><a></a>nortest<span class="sc">::</span><span class="fu">ad.test</span>(<span class="at">x =</span> exam_grades<span class="sc">$</span>course_grade) <span class="sc">%&gt;%</span></span>
+<span id="cb22-4"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["statistic"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["method"],"name":[3],"type":["chr"],"align":["left"]}],"data":[{"1":"0.3306555","2":"0.5118521","3":"Anderson-Darling normality test"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>So <code>course_grade</code> is a normally-distributed variable. <span class="bg-pink black">There are <em>no</em> exceptional students! Hmph! Peasants.</span></p>
+</div>
+</div>
+</div>
+<aside><ol class="aside-footnotes"><li id="fn3"><p><a href="https://www.r-bloggers.com/2021/11/anderson-darling-test-in-r-quick-normality-check/" class="uri">https://www.r-bloggers.com/2021/11/anderson-darling-test-in-r-quick-normality-check/</a></p></li></ol></aside></section></section>
+<section id="inference-1" class="title-slide slide level2 center">
+<h2>Inference</h2>
+<div class="panel-tabset nav-pills" style="background: whitesmoke;">
+<ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">t.test</a></li><li><a href="#tabset-2-2">Wilcoxon test</a></li><li><a href="#tabset-2-3">Using Permutation and Bootstrap</a></li><li><a href="#tabset-2-4">Visual and by Hand t-test</a></li></ul>
+<div class="tab-content nav-pills" style="background: whitesmoke;">
+<div id="tabset-2-1">
+<p>A. Model</p>
+<p>We have that <span class="math inline">\(mean(course\_grade) = \beta_0\)</span>. As before, we formulate “our (dis)belief” in this sample mean with a <em>NULL Hypothesis</em> about the <strong>population</strong>, as follows:</p>
+<p><span class="math display">\[
+\ H_0: \mu= 80
+\]</span></p>
+<p><span class="math display">\[
+H_a: \mu \ne 80
+\]</span></p>
+<p>B. Code</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a><span class="co"># t-test</span></span>
+<span id="cb23-2"><a></a>t4 <span class="ot">&lt;-</span> mosaic<span class="sc">::</span><span class="fu">t_test</span>(</span>
+<span id="cb23-3"><a></a>  exam_grades<span class="sc">$</span>course_grade, <span class="co"># Name of variable</span></span>
+<span id="cb23-4"><a></a>  <span class="at">mu =</span> <span class="dv">80</span>, <span class="co"># belief</span></span>
+<span id="cb23-5"><a></a>  <span class="at">alternative =</span> <span class="st">"two.sided"</span></span>
+<span id="cb23-6"><a></a>) <span class="sc">%&gt;%</span> <span class="co"># Check both sides</span></span>
+<span id="cb23-7"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span>
+<span id="cb23-8"><a></a>t4</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["estimate"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["parameter"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["method"],"name":[7],"type":["chr"],"align":["left"]},{"label":["alternative"],"name":[8],"type":["chr"],"align":["left"]}],"data":[{"1":"72.23883","2":"-12.07999","3":"2.187064e-26","4":"232","5":"70.97299","6":"73.50467","7":"One Sample t-test","8":"two.sided"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>So, we can reject the NULL Hypothesis that the average grade in the population of students who have taken this class is 80, since there is a minuscule chance that we would see an <em>observed sample mean</em> of 72.238, if the population mean <span class="math inline">\(\mu\)</span> had really been <span class="math inline">\(80\)</span>.</p>
+</div>
+<div id="tabset-2-2">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a><span class="co"># t-test</span></span>
+<span id="cb24-2"><a></a>t5 <span class="ot">&lt;-</span> <span class="fu">wilcox.test</span>(</span>
+<span id="cb24-3"><a></a>  exam_grades<span class="sc">$</span>course_grade, <span class="co"># Name of variable</span></span>
+<span id="cb24-4"><a></a>  <span class="at">mu =</span> <span class="dv">90</span>, <span class="co"># belief</span></span>
+<span id="cb24-5"><a></a>  <span class="at">alternative =</span> <span class="st">"two.sided"</span>,</span>
+<span id="cb24-6"><a></a>  <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb24-7"><a></a>  <span class="at">conf.level =</span> <span class="fl">0.95</span></span>
+<span id="cb24-8"><a></a>) <span class="sc">%&gt;%</span> <span class="co"># Check both sides</span></span>
+<span id="cb24-9"><a></a></span>
+<span id="cb24-10"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="co"># Make results presentable, and plottable!!</span></span>
+<span id="cb24-11"><a></a>t5</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["estimate"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["method"],"name":[6],"type":["chr"],"align":["left"]},{"label":["alternative"],"name":[7],"type":["chr"],"align":["left"]}],"data":[{"1":"72.42511","2":"75","3":"1.487917e-39","4":"71.15002","5":"73.71426","6":"Wilcoxon signed rank test with continuity correction","7":"two.sided"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>This test too suggests that the average course grade is different from 80.</p>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Why compare on both sides?</strong></p>
+</div>
+<div class="callout-content">
+<p>Note that we have computed whether the average <code>course_grade</code> is generally <strong>different</strong> from 80 for this Teacher. We could have computed whether it is greater, or lesser than 80 ( or any other number too). Read <a href="https://stats.oarc.ucla.edu/other/mult-pkg/faq/general/faq-what-are-the-differences-between-one-tailed-and-two-tailed-tests/">this article</a> for why it is better to do a “two.sided” test in most cases.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-3">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb25-2"><a></a></span>
+<span id="cb25-3"><a></a><span class="co"># Calculate exact mean</span></span>
+<span id="cb25-4"><a></a>obs_mean_grade <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="sc">~</span>course_grade, <span class="at">data =</span> exam_grades)</span>
+<span id="cb25-5"><a></a>belief <span class="ot">&lt;-</span> <span class="dv">80</span></span>
+<span id="cb25-6"><a></a>obs_grade_diff <span class="ot">&lt;-</span> belief <span class="sc">-</span> obs_mean_grade</span>
+<span id="cb25-7"><a></a><span class="do">## Steps in a Permutation Test</span></span>
+<span id="cb25-8"><a></a><span class="do">## Repeatedly Shuffle polarities of data observations</span></span>
+<span id="cb25-9"><a></a><span class="do">## Take means</span></span>
+<span id="cb25-10"><a></a><span class="do">## Compare all means with the real-world observed one</span></span>
+<span id="cb25-11"><a></a>null_dist_grade <span class="ot">&lt;-</span></span>
+<span id="cb25-12"><a></a>  mosaic<span class="sc">::</span><span class="fu">do</span>(<span class="dv">4999</span>) <span class="sc">*</span></span>
+<span id="cb25-13"><a></a>    <span class="fu">mean</span>(</span>
+<span id="cb25-14"><a></a>      <span class="sc">~</span> (course_grade <span class="sc">-</span> belief) <span class="sc">*</span></span>
+<span id="cb25-15"><a></a>        <span class="fu">sample</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="co"># +/- 1s multiply y</span></span>
+<span id="cb25-16"><a></a>          <span class="fu">length</span>(course_grade), <span class="co"># How many +/- 1s?</span></span>
+<span id="cb25-17"><a></a>          <span class="at">replace =</span> T</span>
+<span id="cb25-18"><a></a>        ), <span class="co"># select with replacement</span></span>
+<span id="cb25-19"><a></a>      <span class="at">data =</span> exam_grades</span>
+<span id="cb25-20"><a></a>    )</span>
+<span id="cb25-21"><a></a></span>
+<span id="cb25-22"><a></a><span class="do">## Plot this NULL distribution</span></span>
+<span id="cb25-23"><a></a><span class="fu">gf_histogram</span>(</span>
+<span id="cb25-24"><a></a>  <span class="sc">~</span>mean,</span>
+<span id="cb25-25"><a></a>  <span class="at">data =</span> null_dist_grade,</span>
+<span id="cb25-26"><a></a>  <span class="at">fill =</span> <span class="sc">~</span> (mean <span class="sc">&gt;=</span> obs_grade_diff),</span>
+<span id="cb25-27"><a></a>  <span class="at">bins =</span> <span class="dv">50</span>,</span>
+<span id="cb25-28"><a></a>  <span class="at">title =</span> <span class="st">"Distribution of Permutated Difference-Means Under Null Hypothesis"</span>,</span>
+<span id="cb25-29"><a></a>  <span class="at">subtitle =</span> <span class="st">"Why is the mean of the means zero?"</span></span>
+<span id="cb25-30"><a></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb25-31"><a></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb25-32"><a></a>    <span class="at">x =</span> <span class="st">"Random Means Calculated by Permutation"</span>,</span>
+<span id="cb25-33"><a></a>    <span class="at">y =</span> <span class="st">"How Often do these occur?"</span></span>
+<span id="cb25-34"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb25-35"><a></a>  <span class="fu">gf_vline</span>(<span class="at">xintercept =</span> obs_grade_diff, <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb25-36"><a></a>  <span class="fu">gf_vline</span>(<span class="at">xintercept =</span> <span class="sc">-</span>obs_grade_diff, <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb25-37"><a></a>  <span class="fu">gf_annotate</span>(</span>
+<span id="cb25-38"><a></a>    <span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">x =</span> obs_grade_diff, <span class="at">y =</span> <span class="dv">400</span>,</span>
+<span id="cb25-39"><a></a>    <span class="at">label =</span> <span class="st">"Belief ( + 80)"</span>,</span>
+<span id="cb25-40"><a></a>    <span class="at">colour =</span> <span class="st">"red"</span></span>
+<span id="cb25-41"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb25-42"><a></a>  <span class="fu">gf_annotate</span>(</span>
+<span id="cb25-43"><a></a>    <span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">x =</span> <span class="sc">-</span>obs_grade_diff, <span class="at">y =</span> <span class="dv">400</span>,</span>
+<span id="cb25-44"><a></a>    <span class="at">label =</span> <span class="st">"Belief ( - 80)"</span>,</span>
+<span id="cb25-45"><a></a>    <span class="at">colour =</span> <span class="st">"red"</span></span>
+<span id="cb25-46"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb25-47"><a></a>  <span class="fu">gf_refine</span>(</span>
+<span id="cb25-48"><a></a>    <span class="fu">scale_fill_manual</span>(</span>
+<span id="cb25-49"><a></a>      <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"skyblue"</span>, <span class="st">"grey"</span>),</span>
+<span id="cb25-50"><a></a>      <span class="at">name =</span> <span class="st">"Observed Mean Difference"</span>,</span>
+<span id="cb25-51"><a></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Not Exceeding"</span>, <span class="st">"Exceeding"</span>)</span>
+<span id="cb25-52"><a></a>    ),</span>
+<span id="cb25-53"><a></a>    <span class="fu">scale_x_continuous</span>(</span>
+<span id="cb25-54"><a></a>      <span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>, <span class="dv">10</span>),</span>
+<span id="cb25-55"><a></a>      <span class="at">breaks =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>, <span class="sc">-</span><span class="dv">5</span>, <span class="sc">-</span>obs_grade_diff, <span class="dv">0</span>, obs_grade_diff, <span class="dv">5</span>, <span class="dv">10</span>),</span>
+<span id="cb25-56"><a></a>      <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">number_format</span>(</span>
+<span id="cb25-57"><a></a>        <span class="at">accuracy =</span> <span class="fl">0.01</span>,</span>
+<span id="cb25-58"><a></a>        <span class="at">decimal.mark =</span> <span class="st">"."</span></span>
+<span id="cb25-59"><a></a>      )</span>
+<span id="cb25-60"><a></a>    )</span>
+<span id="cb25-61"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb25-62"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">add =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">40</span>))))</span>
+<span id="cb25-63"><a></a></span>
+<span id="cb25-64"><a></a></span>
+<span id="cb25-65"><a></a><span class="co"># p-value</span></span>
+<span id="cb25-66"><a></a><span class="co"># Permutation distributions are always centered around zero. Why?</span></span>
+<span id="cb25-67"><a></a><span class="fu">prop</span>(<span class="sc">~</span> mean <span class="sc">&gt;=</span> obs_grade_diff,</span>
+<span id="cb25-68"><a></a>  <span class="at">data =</span> null_dist_grade</span>
+<span id="cb25-69"><a></a>) <span class="sc">+</span></span>
+<span id="cb25-70"><a></a>  <span class="fu">prop</span>(<span class="sc">~</span> mean <span class="sc">&lt;=</span> <span class="sc">-</span>obs_grade_diff,</span>
+<span id="cb25-71"><a></a>    <span class="at">data =</span> null_dist_grade</span>
+<span id="cb25-72"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>prop_TRUE 
+        0 </code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-permutation-test-2" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-permutation-test-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="index_files/figure-html/fig-permutation-test-2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;6: Permutation Test for One Mean"><img data-src="index_files/figure-html/fig-permutation-test-2-1.png" width="2100"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-permutation-test-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Permutation Test for One Mean
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>And let us now do the bootstrap test:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb27-2"><a></a></span>
+<span id="cb27-3"><a></a>null_grade_bs <span class="ot">&lt;-</span> mosaic<span class="sc">::</span><span class="fu">do</span>(<span class="dv">4999</span>) <span class="sc">*</span></span>
+<span id="cb27-4"><a></a>  <span class="fu">mean</span>(</span>
+<span id="cb27-5"><a></a>    <span class="sc">~</span> <span class="fu">sample</span>(course_grade,</span>
+<span id="cb27-6"><a></a>      <span class="at">replace =</span> T</span>
+<span id="cb27-7"><a></a>    ), <span class="co"># select with replacement</span></span>
+<span id="cb27-8"><a></a>    <span class="at">data =</span> exam_grades</span>
+<span id="cb27-9"><a></a>  )</span>
+<span id="cb27-10"><a></a></span>
+<span id="cb27-11"><a></a><span class="do">## Plot this NULL distribution</span></span>
+<span id="cb27-12"><a></a><span class="fu">gf_histogram</span>(</span>
+<span id="cb27-13"><a></a>  <span class="sc">~</span>mean,</span>
+<span id="cb27-14"><a></a>  <span class="at">data =</span> null_grade_bs,</span>
+<span id="cb27-15"><a></a>  <span class="at">fill =</span> <span class="sc">~</span> (mean <span class="sc">&gt;=</span> obs_grade_diff),</span>
+<span id="cb27-16"><a></a>  <span class="at">bins =</span> <span class="dv">50</span>,</span>
+<span id="cb27-17"><a></a>  <span class="at">title =</span> <span class="st">"Distribution of Bootstrap Means"</span></span>
+<span id="cb27-18"><a></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb27-19"><a></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb27-20"><a></a>    <span class="at">x =</span> <span class="st">"Calculated Random Means"</span>,</span>
+<span id="cb27-21"><a></a>    <span class="at">y =</span> <span class="st">"How Often do these occur?"</span></span>
+<span id="cb27-22"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb27-23"><a></a>  <span class="fu">gf_vline</span>(<span class="at">xintercept =</span> <span class="sc">~</span>belief, <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb27-24"><a></a>  <span class="fu">gf_annotate</span>(</span>
+<span id="cb27-25"><a></a>    <span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">x =</span> belief, <span class="at">y =</span> <span class="dv">400</span>,</span>
+<span id="cb27-26"><a></a>    <span class="at">label =</span> <span class="st">"Belief ( + 80)"</span>,</span>
+<span id="cb27-27"><a></a>    <span class="at">colour =</span> <span class="st">"red"</span></span>
+<span id="cb27-28"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb27-29"><a></a>  <span class="fu">gf_refine</span>(</span>
+<span id="cb27-30"><a></a>    <span class="fu">scale_fill_manual</span>(</span>
+<span id="cb27-31"><a></a>      <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"skyblue"</span>, <span class="st">"grey"</span>),</span>
+<span id="cb27-32"><a></a>      <span class="at">name =</span> <span class="st">"Observed Mean Difference"</span>,</span>
+<span id="cb27-33"><a></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Not Exceeding"</span>, <span class="st">"Exceeding"</span>)</span>
+<span id="cb27-34"><a></a>    ),</span>
+<span id="cb27-35"><a></a>    <span class="fu">scale_x_continuous</span>(</span>
+<span id="cb27-36"><a></a>      <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">60</span>, <span class="dv">85</span>),</span>
+<span id="cb27-37"><a></a>      <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">60</span>, <span class="dv">65</span>, <span class="dv">70</span>, <span class="dv">75</span>, <span class="dv">80</span>, <span class="dv">85</span>, belief),</span>
+<span id="cb27-38"><a></a>      <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">number_format</span>(</span>
+<span id="cb27-39"><a></a>        <span class="at">accuracy =</span> <span class="fl">0.01</span>,</span>
+<span id="cb27-40"><a></a>        <span class="at">decimal.mark =</span> <span class="st">"."</span></span>
+<span id="cb27-41"><a></a>      )</span>
+<span id="cb27-42"><a></a>    )</span>
+<span id="cb27-43"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb27-44"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">add =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">40</span>))))</span>
+<span id="cb27-45"><a></a></span>
+<span id="cb27-46"><a></a><span class="fu">prop</span>(<span class="sc">~</span> mean <span class="sc">&gt;=</span> belief,</span>
+<span id="cb27-47"><a></a>  <span class="at">data =</span> null_grade_bs</span>
+<span id="cb27-48"><a></a>) <span class="sc">+</span></span>
+<span id="cb27-49"><a></a>  <span class="fu">prop</span>(<span class="sc">~</span> mean <span class="sc">&lt;=</span> <span class="sc">-</span>belief,</span>
+<span id="cb27-50"><a></a>    <span class="at">data =</span> null_grade_bs</span>
+<span id="cb27-51"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>prop_TRUE 
+        0 </code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-bootstrap-test-2" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-bootstrap-test-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="index_files/figure-html/fig-bootstrap-test-2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Figure&nbsp;7: Bootstrap Test for One Mean"><img data-src="index_files/figure-html/fig-bootstrap-test-2-1.png" width="2100"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-bootstrap-test-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Bootstrap Test for One Mean
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The permutation test shows that we are not able to “generate” the <em>believed</em> mean-difference with any of the permutations. Likewise with the bootstrap, we are not able to hit the believed mean with any of the bootstrap samples.</p>
+<p>Hence there is no reason to believe that the belief (80) might be a reasonable one and we reject our NULL Hypothesis that the mean is equal to 80.</p>
+</div>
+<div id="tabset-2-4">
+<p>Let us plot the sample distribution, the theoretical distribution of the sample mean, and the confidence intervals, as we did before for the toy data.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a>(obs_mean_2 <span class="ot">&lt;-</span> <span class="fu">mean</span>(exam_grades<span class="sc">$</span>course_grade))</span>
+<span id="cb29-2"><a></a>(mean_belief_pop_2 <span class="ot">&lt;-</span> <span class="fl">80.0</span>) <span class="co"># Assert our belief)</span></span>
+<span id="cb29-3"><a></a>(sample_sd_2 <span class="ot">&lt;-</span> <span class="fu">sd</span>(exam_grades<span class="sc">$</span>course_grade))</span>
+<span id="cb29-4"><a></a>(sample_se_2 <span class="ot">&lt;-</span> sample_sd_2 <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">length</span>(exam_grades<span class="sc">$</span>course_grade)))</span>
+<span id="cb29-5"><a></a>(t_statistic_2 <span class="ot">&lt;-</span> (obs_mean_2 <span class="sc">-</span> mean_belief_pop_2) <span class="sc">/</span> sample_se_2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="quarto-layout-panel" data-layout="[20,20,20,20,20]">
+<div class="quarto-layout-row">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 20.0%;justify-content: flex-start;">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 72.23883</code></pre>
+</div>
+</div>
+<p>Sample Mean</p>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 20.0%;justify-content: flex-start;">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 80</code></pre>
+</div>
+</div>
+<p>Null Hypothesis / Belief</p>
+</div>
+<div id="third-column" class="quarto-layout-cell" style="flex-basis: 20.0%;justify-content: flex-start;">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 9.807053</code></pre>
+</div>
+</div>
+<p>Sample Standard Deviation</p>
+</div>
+<div id="fourth-column" class="quarto-layout-cell" style="flex-basis: 20.0%;justify-content: flex-start;">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.6424814</code></pre>
+</div>
+</div>
+<p>Sample Standard Error</p>
+</div>
+<div id="fifth-column" class="quarto-layout-cell" style="flex-basis: 20.0%;justify-content: flex-start;">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -12.07999</code></pre>
+</div>
+</div>
+<p>Test Statistic</p>
+</div>
+</div>
+</div>
+<p>Now let us plot the figure with all these calculations:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a><span class="do">## Let's plot this</span></span>
+<span id="cb35-2"><a></a><span class="do">## Sample Data</span></span>
+<span id="cb35-3"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb35-4"><a></a></span>
+<span id="cb35-5"><a></a>mosaic<span class="sc">::</span><span class="fu">xqnorm</span>(</span>
+<span id="cb35-6"><a></a>  <span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), <span class="at">mean =</span> obs_mean_2, <span class="at">sd =</span> sample_se_2,</span>
+<span id="cb35-7"><a></a>  <span class="at">return =</span> <span class="fu">c</span>(<span class="st">"value"</span>), <span class="at">verbose =</span> T, <span class="at">plot =</span> F</span>
+<span id="cb35-8"><a></a>) <span class="ot">-&gt;</span> xq2</span>
+<span id="cb35-9"><a></a></span>
+<span id="cb35-10"><a></a><span class="do">## Sample-Mean Distribution</span></span>
+<span id="cb35-11"><a></a><span class="fu">xqnorm</span>(</span>
+<span id="cb35-12"><a></a>  <span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), <span class="at">mean =</span> obs_mean_2, <span class="at">sd =</span> sample_se_2,</span>
+<span id="cb35-13"><a></a>  <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">plot =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb35-14"><a></a>  <span class="at">return =</span> <span class="fu">c</span>(<span class="st">"plot"</span>), <span class="at">verbose =</span> F, <span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">colour =</span> <span class="st">"black"</span>,</span>
+<span id="cb35-15"><a></a>  <span class="at">system =</span> <span class="st">"gg"</span></span>
+<span id="cb35-16"><a></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb35-17"><a></a>  <span class="fu">gf_dhistogram</span>(<span class="sc">~</span>course_grade, <span class="at">data =</span> exam_grades, <span class="at">inherit =</span> F) <span class="sc">%&gt;%</span></span>
+<span id="cb35-18"><a></a>  <span class="fu">gf_fitdistr</span>(<span class="sc">~</span>course_grade, <span class="at">data =</span> exam_grades, <span class="at">inherit =</span> F) <span class="sc">%&gt;%</span></span>
+<span id="cb35-19"><a></a>  <span class="fu">gf_vline</span>(<span class="at">xintercept =</span> obs_mean_2, <span class="at">colour =</span> <span class="st">"purple"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb35-20"><a></a>  <span class="fu">gf_annotate</span>(</span>
+<span id="cb35-21"><a></a>    <span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">x =</span> <span class="dv">65</span>, <span class="at">y =</span> <span class="fl">0.1</span>,</span>
+<span id="cb35-22"><a></a>    <span class="at">label =</span> <span class="st">"Sample Histogram and Density"</span>,</span>
+<span id="cb35-23"><a></a>    <span class="at">colour =</span> <span class="st">"black"</span></span>
+<span id="cb35-24"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb35-25"><a></a>  <span class="do">## Null</span></span>
+<span id="cb35-26"><a></a>  <span class="fu">gf_vline</span>(<span class="at">xintercept =</span> <span class="sc">~</span>mean_belief_pop_2, <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb35-27"><a></a>  <span class="fu">gf_annotate</span>(</span>
+<span id="cb35-28"><a></a>    <span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">x =</span> mean_belief_pop_2, <span class="at">y =</span> <span class="fl">0.6</span>,</span>
+<span id="cb35-29"><a></a>    <span class="at">label =</span> <span class="st">"Null Hypothesis (Belief)"</span></span>
+<span id="cb35-30"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb35-31"><a></a>  <span class="do">## Sample Mean and Distribution</span></span>
+<span id="cb35-32"><a></a>  <span class="fu">gf_annotate</span>(</span>
+<span id="cb35-33"><a></a>    <span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">x =</span> obs_mean_2, <span class="at">y =</span> <span class="fl">0.65</span>,</span>
+<span id="cb35-34"><a></a>    <span class="at">label =</span> <span class="st">"Sample Mean"</span>, <span class="at">colour =</span> <span class="st">"purple"</span></span>
+<span id="cb35-35"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb35-36"><a></a>  <span class="fu">gf_annotate</span>(</span>
+<span id="cb35-37"><a></a>    <span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">x =</span> obs_mean_2 <span class="sc">-</span> <span class="dv">7</span>, <span class="at">y =</span> <span class="fl">0.45</span>,</span>
+<span id="cb35-38"><a></a>    <span class="at">label =</span> <span class="st">"Sample-Mean Distribution"</span>, <span class="at">colour =</span> <span class="st">"purple"</span></span>
+<span id="cb35-39"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb35-40"><a></a>  <span class="fu">gf_annotate</span>(<span class="st">"curve"</span>,</span>
+<span id="cb35-41"><a></a>    <span class="at">x =</span> obs_mean_2 <span class="sc">-</span> <span class="dv">7</span>, <span class="at">y =</span> <span class="fl">0.475</span>,</span>
+<span id="cb35-42"><a></a>    <span class="at">xend =</span> obs_mean_2 <span class="sc">-</span> <span class="fl">0.5</span>, <span class="at">yend =</span> <span class="fl">0.55</span>,</span>
+<span id="cb35-43"><a></a>    <span class="at">curvature =</span> <span class="sc">-</span><span class="fl">0.25</span>, <span class="at">color =</span> <span class="st">"purple"</span>,</span>
+<span id="cb35-44"><a></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">"cm"</span>))</span>
+<span id="cb35-45"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb35-46"><a></a>  <span class="do">## Z-limits for p = 0.95</span></span>
+<span id="cb35-47"><a></a>  <span class="fu">gf_annotate</span>(<span class="st">"segment"</span>,</span>
+<span id="cb35-48"><a></a>    <span class="at">x =</span> obs_mean_2 <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> sample_se_2, <span class="at">y =</span> <span class="fl">0.0</span>,</span>
+<span id="cb35-49"><a></a>    <span class="at">xend =</span> obs_mean_2 <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> sample_se_2, <span class="at">yend =</span> <span class="fl">0.25</span></span>
+<span id="cb35-50"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb35-51"><a></a>  <span class="fu">gf_annotate</span>(<span class="st">"segment"</span>,</span>
+<span id="cb35-52"><a></a>    <span class="at">x =</span> obs_mean_2 <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> sample_se_2, <span class="at">y =</span> <span class="fl">0.0</span>,</span>
+<span id="cb35-53"><a></a>    <span class="at">xend =</span> obs_mean_2 <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> sample_se_2, <span class="at">yend =</span> <span class="fl">0.25</span></span>
+<span id="cb35-54"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb35-55"><a></a>  <span class="do">## Confidence Intervals</span></span>
+<span id="cb35-56"><a></a>  <span class="fu">gf_annotate</span>(<span class="st">"segment"</span>,</span>
+<span id="cb35-57"><a></a>    <span class="at">x =</span> obs_mean_2 <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> sample_se_2, <span class="at">y =</span> <span class="fl">0.2</span>,</span>
+<span id="cb35-58"><a></a>    <span class="at">xend =</span> obs_mean_2 <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> sample_se_2, <span class="at">yend =</span> <span class="fl">0.2</span>,</span>
+<span id="cb35-59"><a></a>    <span class="at">color =</span> <span class="st">"purple"</span>, <span class="at">linewidth =</span> <span class="fl">0.5</span>,</span>
+<span id="cb35-60"><a></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">"cm"</span>), <span class="at">ends =</span> <span class="st">"both"</span>)</span>
+<span id="cb35-61"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb35-62"><a></a>  <span class="fu">gf_annotate</span>(</span>
+<span id="cb35-63"><a></a>    <span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">x =</span> obs_mean_2 <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> sample_se_2 <span class="sc">+</span> <span class="dv">1</span>, <span class="at">y =</span> <span class="fl">0.25</span>,</span>
+<span id="cb35-64"><a></a>    <span class="at">label =</span> <span class="st">"95% Confidence Interval"</span>,</span>
+<span id="cb35-65"><a></a>    <span class="at">colour =</span> <span class="st">"purple"</span></span>
+<span id="cb35-66"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb35-67"><a></a>  <span class="fu">gf_annotate</span>(<span class="st">"curve"</span>, <span class="co"># CI</span></span>
+<span id="cb35-68"><a></a>    <span class="at">x =</span> xq[<span class="dv">2</span>] <span class="sc">+</span> <span class="fl">0.05</span>, <span class="at">y =</span> <span class="fl">0.7</span>,</span>
+<span id="cb35-69"><a></a>    <span class="at">xend =</span> xq[<span class="dv">2</span>] <span class="sc">-</span> <span class="fl">0.4</span>, <span class="at">yend =</span> <span class="fl">0.37</span>,</span>
+<span id="cb35-70"><a></a>    <span class="at">curvature =</span> <span class="fl">0.25</span>, <span class="at">color =</span> <span class="st">"purple"</span>,</span>
+<span id="cb35-71"><a></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">"cm"</span>))</span>
+<span id="cb35-72"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb35-73"><a></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb35-74"><a></a>    <span class="at">title =</span> <span class="st">"Visualizing the t-test for Exam Grades"</span>,</span>
+<span id="cb35-75"><a></a>    <span class="at">subtitle =</span> <span class="st">"Sample-Mean-Distribution is plotted as theoretical Gaussian Bell Curve"</span>,</span>
+<span id="cb35-76"><a></a>    <span class="at">x =</span> <span class="st">"Sample Values and Means"</span>, <span class="at">y =</span> <span class="st">"Density"</span></span>
+<span id="cb35-77"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb35-78"><a></a>  <span class="fu">gf_refine</span>(</span>
+<span id="cb35-79"><a></a>    <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.7</span>), <span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">add =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>))),</span>
+<span id="cb35-80"><a></a>    <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">60</span>, <span class="dv">85</span>))</span>
+<span id="cb35-81"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-visual-t-test-2" class="quarto-float quarto-figure quarto-figure-center" alt="Visualizing the t-test for Exam Grades">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-visual-t-test-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="index_files/figure-html/fig-visual-t-test-2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Figure&nbsp;8: Sample Distribution, Sample Mean Distribution, and Confidence Intervals"><img data-src="index_files/figure-html/fig-visual-t-test-2-1.png" alt="Visualizing the t-test for Exam Grades" width="2100"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-visual-t-test-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Sample Distribution, Sample Mean Distribution, and Confidence Intervals
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Please see the <a href="#/sec-ai-explanations" class="quarto-xref">Section&nbsp;14</a> for an Explanation of of this model generated using AI + R.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section id="workflow-for-inference-for-a-single-mean" class="title-slide slide level2 center">
+<h2><iconify-icon inline="" icon="openmoji:flat-color-icons" aria-label="Icon flat-color-icons from openmoji Iconify.design set." title="Icon flat-color-icons from openmoji Iconify.design set."></iconify-icon> Workflow for Inference for a Single Mean</h2>
+<p>A series of tests deal with one mean value of a sample. The idea is to evaluate whether that mean is representative of the mean of the underlying population. Depending upon the nature of the (single) variable, the test that can be used are as follows:</p>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    A[Inference for Single Mean] --&gt;|Check Assumptions| B[Normality: Shapiro-Wilk Test shapiro.test\n or\n Anderson-Darling Test]
+    B --&gt; C{OK?}
+    C --&gt;|Yes\n Parametric| D[t.test]
+    C --&gt;|No\n Non-Parametric| E[wilcox.test]
+    E &lt;--&gt; G[t.test\n with\n Signed-Ranks of Data]
+    C --&gt;|No\n Non-Parametric| P[Bootstrap]
+    C --&gt;|No\n Non-Parametric| Q[Permutation]
+ 
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+
+<section id="wait-but-why" class="title-slide slide level2 center">
+<h2><iconify-icon inline="" icon="mingcute:thought-line" aria-label="Icon thought-line from mingcute Iconify.design set." title="Icon thought-line from mingcute Iconify.design set."></iconify-icon> Wait, But Why?</h2>
+<ul>
+<li>We can only sample from a population, and calculate sample statistics</li>
+<li>But we still want to know about <em>population parameters</em></li>
+<li>All our tests and measures of uncertainty with samples are aimed at obtaining a confident measure of a population parameter.</li>
+<li>Means are the first on the list!</li>
+</ul>
+</section>
+
+<section id="conclusion" class="title-slide slide level2 center">
+<h2><iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusion</h2>
+<ul>
+<li>If samples are normally distributed, we use a t.test.</li>
+<li>Else we try <em>non-parametric</em> tests such as the Wilcoxon test.</li>
+<li>Since we now have compute power at our fingertips, we can leave off considerations of normality and simply proceed with either a permutation or a boostrap test.</li>
+</ul>
+</section>
+
+<section id="sec-references" class="title-slide slide level2 center scrollable">
+<h2><iconify-icon inline="" icon="ooui:references-rtl" aria-label="Icon references-rtl from ooui Iconify.design set." title="Icon references-rtl from ooui Iconify.design set."></iconify-icon> References</h2>
+<ol type="1">
+<li>OpenIntro Modern Statistics, <a href="https://openintro-ims.netlify.app/inference-one-prop.html">Chapter #17</a></li>
+<li>Bootstrap based Inference using the <code>infer</code> package: <a href="https://infer.netlify.app/articles/t_test" class="uri">https://infer.netlify.app/articles/t_test</a></li>
+<li>Michael Clark &amp; Seth Berry. <em>Models Demystified: A Practical Guide from t-tests to Deep Learning</em>. <a href="https://m-clark.github.io/book-of-models/" class="uri">https://m-clark.github.io/book-of-models/</a></li>
+<li>University of Warwickshire. <em>SAMPLING: Searching for the Approximation Method use to Perform rational inference by Individuals and Groups</em>. <a href="https://sampling.warwick.ac.uk/#Overview" class="uri">https://sampling.warwick.ac.uk/#Overview</a></li>
+</ol>
+</section>
+
+<section>
+<section id="additional-readings" class="title-slide slide level2 center scrollable">
+<h2><iconify-icon inline="" icon="streamline:book-reading" aria-label="Icon book-reading from streamline Iconify.design set." title="Icon book-reading from streamline Iconify.design set."></iconify-icon> Additional Readings</h2>
+<ol type="1">
+<li><a href="https://mine-cetinkaya-rundel.github.io/quarto-tip-a-day/posts/21-diagrams/" class="uri">https://mine-cetinkaya-rundel.github.io/quarto-tip-a-day/posts/21-diagrams/</a></li>
+</ol>
+</section>
+<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" data-entry-spacing="0" role="list">
+<h6 id="r-package-citations"><iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Package</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Citation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">ellmer</td>
+<td style="text-align: left;">0.4.0</td>
+<td style="text-align: left;"><span class="citation" data-cites="ellmer">Wickham et al. (<a href="" role="doc-biblioref" onclick="return false;">2025</a>)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">infer</td>
+<td style="text-align: left;">1.1.0</td>
+<td style="text-align: left;"><span class="citation" data-cites="infer">Couch et al. (<a href="" role="doc-biblioref" onclick="return false;">2021</a>)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">openintro</td>
+<td style="text-align: left;">2.5.0</td>
+<td style="text-align: left;"><span class="citation" data-cites="openintro">Çetinkaya-Rundel et al. (<a href="" role="doc-biblioref" onclick="return false;">2024</a>)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">resampledata</td>
+<td style="text-align: left;">0.3.2</td>
+<td style="text-align: left;"><span class="citation" data-cites="resampledata">Chihara and Hesterberg (<a href="" role="doc-biblioref" onclick="return false;">2018</a>)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">statlingua</td>
+<td style="text-align: left;">0.1.0</td>
+<td style="text-align: left;"><span class="citation" data-cites="statlingua">Greenwell (<a href="" role="doc-biblioref" onclick="return false;">2025</a>)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TeachHist</td>
+<td style="text-align: left;">0.2.1</td>
+<td style="text-align: left;"><span class="citation" data-cites="TeachHist">Lange (<a href="" role="doc-biblioref" onclick="return false;">2023</a>)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">TeachingDemos</td>
+<td style="text-align: left;">2.13</td>
+<td style="text-align: left;"><span class="citation" data-cites="TeachingDemos">Snow (<a href="" role="doc-biblioref" onclick="return false;">2024</a>)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="ref-openintro" class="csl-entry" role="listitem">
+Çetinkaya-Rundel, Mine, David Diez, Andrew Bray, Albert Y. Kim, Ben Baumer, Chester Ismay, Nick Paterno, and Christopher Barr. 2024. <em><span class="nocase">openintro</span>: Datasets and Supplemental Functions from <span>“<span>OpenIntro</span>”</span> Textbooks and Labs</em>. <a href="https://doi.org/10.32614/CRAN.package.openintro">https://doi.org/10.32614/CRAN.package.openintro</a>.
+</div>
+<div id="ref-resampledata" class="csl-entry" role="listitem">
+Chihara, Laura M., and Tim C. Hesterberg. 2018. <em>Mathematical Statistics with Resampling and r</em>. John Wiley &amp; Sons Hoboken NJ. <a href="https://github.com/lchihara/MathStatsResamplingR?tab=readme-ov-file">https://github.com/lchihara/MathStatsResamplingR?tab=readme-ov-file</a>.
+</div>
+<div id="ref-infer" class="csl-entry" role="listitem">
+Couch, Simon P., Andrew P. Bray, Chester Ismay, Evgeni Chasnovski, Benjamin S. Baumer, and Mine Çetinkaya-Rundel. 2021. <span>“<span class="nocase">infer</span>: An <span>R</span> Package for Tidyverse-Friendly Statistical Inference.”</span> <em>Journal of Open Source Software</em> 6 (65): 3661. <a href="https://doi.org/10.21105/joss.03661">https://doi.org/10.21105/joss.03661</a>.
+</div>
+<div id="ref-statlingua" class="csl-entry" role="listitem">
+Greenwell, Brandon M. 2025. <em><span class="nocase">statlingua</span>: Explain Statistical Output with Large Language Models</em>. <a href="https://doi.org/10.32614/CRAN.package.statlingua">https://doi.org/10.32614/CRAN.package.statlingua</a>.
+</div>
+<div id="ref-TeachHist" class="csl-entry" role="listitem">
+Lange, Carsten. 2023. <em><span>TeachHist</span>: A Collection of Amended Histograms Designed for Teaching Statistics</em>. <a href="https://doi.org/10.32614/CRAN.package.TeachHist">https://doi.org/10.32614/CRAN.package.TeachHist</a>.
+</div>
+<div id="ref-TeachingDemos" class="csl-entry" role="listitem">
+Snow, Greg. 2024. <em><span>TeachingDemos</span>: Demonstrations for Teaching and Learning</em>. <a href="https://doi.org/10.32614/CRAN.package.TeachingDemos">https://doi.org/10.32614/CRAN.package.TeachingDemos</a>.
+</div>
+<div id="ref-ellmer" class="csl-entry" role="listitem">
+Wickham, Hadley, Joe Cheng, Aaron Jacobs, Garrick Aden-Buie, and Barret Schloerke. 2025. <em><span class="nocase">ellmer</span>: Chat with Large Language Models</em>. <a href="https://doi.org/10.32614/CRAN.package.ellmer">https://doi.org/10.32614/CRAN.package.ellmer</a>.
+</div>
+</div></section>
+<section>
+<section id="sec-ai-explanations" class="title-slide slide level2 center">
+<h2>An AI Generated Explanation of the Statistical Models</h2>
+<p>We have used the <code>statlingua</code> package to generate an AI explanation of the statistical model <code>t4</code> we have used in this module. <code>statlingua</code> interfaces to the <code>ellmer</code> package, which in turn interfaces to the <code>ollama</code> API for AI explanations. The AI model used is <code>llama3.1</code>, and the explanation is tailored for a novice audience with moderate verbosity.</p>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>AI Generated Explanation</strong></p>
+</div>
+<div class="callout-content">
+<p>The command was run in the Console and the results pasted into this Quarto document. I have not edited this at all. Do look for complex verbiage and outright hallucinatory responses!!</p>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a><span class="fu">library</span>(ellmer)</span>
+<span id="cb36-2"><a></a><span class="fu">library</span>(statlingua)</span>
+<span id="cb36-3"><a></a><span class="fu">library</span>(chores)</span>
+<span id="cb36-4"><a></a>client <span class="ot">&lt;-</span> ellmer<span class="sc">::</span><span class="fu">chat_ollama</span>(<span class="at">model =</span> <span class="st">"llama3.1"</span>, <span class="at">echo =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb36-5"><a></a><span class="do">###</span></span>
+<span id="cb36-6"><a></a></span>
+<span id="cb36-7"><a></a>exam_context <span class="ot">&lt;-</span> <span class="st">"</span></span>
+<span id="cb36-8"><a></a><span class="st">The model uses a data set on child exam grades from the openintro package in R.</span></span>
+<span id="cb36-9"><a></a><span class="st">The hypothesis is that the average course grade is 80%. The model includes a t-test and a Wilcoxon signed-rank test to assess whether the mean of the course grades significantly differs from this value.</span></span>
+<span id="cb36-10"><a></a><span class="st">The variables are:</span></span>
+<span id="cb36-11"><a></a><span class="st">- `course_grade`: The final grade in the course, which is a numeric variable.</span></span>
+<span id="cb36-12"><a></a><span class="st">- `semester`: The semester in which the course was taken, which is a factor variable.</span></span>
+<span id="cb36-13"><a></a><span class="st">- `sex`: Sex of the student ( Man / Woman )</span></span>
+<span id="cb36-14"><a></a><span class="st">- ` exam1`, `exam2`, `exam3`: Scores on three exams, which are numeric variables.</span></span>
+<span id="cb36-15"><a></a><span class="st">The model also includes a permutation test and a bootstrap test to further assess the hypothesis."</span></span>
+<span id="cb36-16"><a></a></span>
+<span id="cb36-17"><a></a>explanation4 <span class="ot">&lt;-</span> statlingua<span class="sc">::</span><span class="fu">explain</span>(t4,</span>
+<span id="cb36-18"><a></a>  <span class="at">client =</span> client,</span>
+<span id="cb36-19"><a></a>  <span class="at">context =</span> exam_context,</span>
+<span id="cb36-20"><a></a>  <span class="at">audience =</span> <span class="st">"novice"</span>, <span class="at">verbosity =</span> <span class="st">"moderate"</span></span>
+<span id="cb36-21"><a></a>) <span class="co"># moderate / detailed</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="one-sample-t-test-output-interpretation" class="slide level3">
+<h3>One-Sample t-test Output Interpretation</h3>
+<p>This is a <strong>One-sample t-test</strong> output summary from R, comparing the mean course grade (<code>course_grade</code>) against 80%. Key elements are outlined below:</p>
+<h4 id="estimate-statistic-p-value-and-na-parameter">Estimate, Statistic, p-value, and N/A Parameter</h4>
+<ul>
+<li><strong>estimate (72.2):</strong>
+<ul>
+<li>Indicates the estimated sample mean of <code>course_grade</code>, in this case approximately 72.2.</li>
+<li>This suggests that on average, across all examined children, their final grades are below 80%.</li>
+</ul></li>
+<li><strong>statistic (-12.1):</strong>
+<ul>
+<li>The large negative value indicates how many standard deviations away from the hypothesized mean (<span class="math inline">\(80\)</span>) our observed estimate is; this can help us grasp just how ‘unexpected’ our outcome really is.</li>
+<li>This large difference would usually correspond to a very small p-value under <span class="math inline">\(H_0\)</span>, which supports rejecting it.</li>
+</ul></li>
+<li><strong>p-value (2.19e-26):</strong>
+<ul>
+<li>Extremely low p-values (usually below 0.05 or even .001) indicate that the observed effect or deviation from the expected value is statistically significant.</li>
+<li>In this context, the hypothesis of 80% being the true mean can be strongly rejected since achieving such a grade as often as observed purely by chance for our sample size is incredibly unlikely.</li>
+</ul></li>
+<li><strong>parameter (232):</strong>
+<ul>
+<li>The parameter usually refers to the degrees of freedom used in the calculation of test statistics.</li>
+<li>However, since we’re looking at one sample t-test results here it likely indicates that there are 231 data points or more as ‘available’. A large such number is expected given that often this statistic simply becomes irrelevant to further inferences about such hypotheses (especially those based on a normal distribution assumption), because for larger n approaching population size all t-statistics should effectively be treated identically and become useless for exact confidence intervals etc..</li>
+</ul></li>
+</ul>
+<h4 id="confidence-intervals">Confidence Intervals</h4>
+<ul>
+<li><strong>conf.low</strong> and <strong>conf.high</strong>: These provide bounds within which the true mean can be estimated not to lie with 95% probability, given our understanding of the test’s results so far.</li>
+</ul>
+<h4 id="additional-details">Additional Details</h4>
+<ul>
+<li><em>method</em>: Often ‘One Sample’, as seen in this example. One-sample tests are used when comparing an individual sample or a group of samples against a known population parameter.</li>
+<li><em>alternative</em>: This denotes the directionality assumption during hypothesis testing; by default it is set to two-sided for most statistical tests, which means we want to determine whether our result (if any) contradicts H0 in either direction (above or below, greater or smaller). There are one-tailed tests too though which look at differences only above (&gt; or &lt;), not both sides.</li>
+</ul>
+<p><strong>Remember</strong>, given the small p-value (.0022e+26 being effectively zero), you can reject H0 very safely and conclude that observed exam grade averages definitely differ significantly from what we’d expect if things were as described in our model according to a normal probability distribution. The large t-statistic (-12, indicating substantial deviation) confirms this.</p>
+
+
+</section></section>
+
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../../../../../../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../../../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../../../../../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../../../../../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../../../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../../../../../../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="../../../../../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../../../../../../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../../../../../../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../../../../../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../../../../../../site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'view': "scroll",
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': true,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: true,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: true,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp("https:\/\/madhatterguide\.netlify\.app");
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    <script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"right","loop":false,"openEffect":"zoom","selector":".lightbox"});
+    (function() {
+      let previousOnload = window.onload;
+      window.onload = () => {
+        if (previousOnload) {
+          previousOnload();
+        }
+        lightboxQuarto.on('slide_before_load', (data) => {
+          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+          const href = trigger.getAttribute('href');
+          if (href !== null) {
+            const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+            if (imgEl !== null) {
+              const srcAttr = imgEl.getAttribute("src");
+              if (srcAttr && srcAttr.startsWith("data:")) {
+                slideConfig.href = srcAttr;
+              }
+            }
+          } 
+        });
+      
+        lightboxQuarto.on('slide_after_load', (data) => {
+          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(slideNode);
+          }
+        });
+      
+      };
+      
+    })();
+              </script>
+    
+
+</body></html>

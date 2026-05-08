@@ -1,6 +1,7 @@
 ---
 title: <iconify-icon icon="fa-brands:r-project"></iconify-icon> Introduction to R and RStudio
 date: 14/Nov/2022
+date-modified: today
 abstract: How to use R and RStudio
 order: 10
 image: preview.png
@@ -92,8 +93,17 @@ development environment*. RStudio includes:
 Launch RStudio.{{< iconify devicon rstudio size=4x >}}You should get a window similar to the screenshot you
 see here:
 
-![RStudio Default Window](../../../../materials/images/rstudio-panes-labeled.jpeg){fig-align="center"}
+```{r}
+#| label: fig-rstudio
+#| echo: false
+#| fig-align: center
+#| out-height: "50%"
+#| out-width: "50%"
+#| fig-cap: "RStudio Default Window"
 
+knitr::include_graphics("../../../../materials/images/rstudio-panes-labeled.jpeg")
+
+```
 
 but yours will be empty. Look at the bottom left pane: this is the same console window you saw when you opened R in step @sec-check-in-R.
 
@@ -118,7 +128,7 @@ Place your cursor in the CONSOLE again (where you last typed `x` and `[4]` print
 
 Type these commands [in your CONSOLE:]{.bg-yellow .black} 
 
-```{r}
+````{r}
 #| eval: false
 #| echo: true
 install.packages("knitr")
@@ -126,7 +136,7 @@ install.packages("tidyverse")
 install.packages("ggformula")
 install.packages("babynames")
 
-```
+````
 
 ::: callout-important
 ### Installation and Usage of R Packages!
@@ -147,18 +157,26 @@ We will get acquainted with the Quarto Document format, which allows us to *mix 
 
 Something that can:
 
--   provide a visualization
--   provide insight
--   tell a story
--   is reproducible
--   be a call to action or a recommendation\
+-   provide a visualization, provide insight, tell a story
+-   is [reproducible]{.bg-yellow .black} 
+-   be a call to action or a recommendation towards a decision
 -   impress colleagues, bosses, and faculty
 
 ### {{< iconify ep set-up >}} Setting up Quarto
 
 Quarto is already installed along with RStudio!! We can check if all is in order by running a check in the `Terminal` in RStudio.
 
-![](../../../../materials/images/quarto-check.png)
+```{r}
+#| label: fig-quarto-check
+#| echo: false
+#| fig-align: center
+#| out-height: "50%"
+#| out-width: "50%"
+#| fig-cap: "Quarto Check"
+
+knitr::include_graphics("../../../../materials/images/quarto-check.png")
+
+```
 
 
 The commands are:
@@ -180,7 +198,18 @@ Let us now create a brand new Quarto document, create some graphs in R and add s
 3.  Change the author name to your own! Keep HTML as your output format
 4.  Switch to `Visual` mode, if it is not already there. Use the visual mode tool bar.
 
-![](../../../../materials/images/visual-toolbar.png)
+```{r}
+#| label: fig-visual-source
+#| echo: false
+#| fig-align: center
+#| out-height: "100%"
+#| out-width: "100%"
+#| fig-cap: "Switching to Visual Mode"
+
+knitr::include_graphics("../../../../materials/images/visual-toolbar.png")
+
+```
+
 
 5.  Click on the various buttons to see what happens. Try to create `Sections`, `code chunks`, `embedding images` and `tables`.
     
@@ -244,24 +273,23 @@ glimpse(my_name_data)
 10. Again, if you have sane-looking output here, move along to plotting the data!
 
 ```{r}
-#| label:  plot-name-data
+#| label:  fig-plot-name-data
+#| fig-cap: "My Name over the Years"
+#| out-width: "75%"
+#| fig-align: "center"
 #| echo: fenced
 
-plot <- gf_line(prop ~ year, 
-                color = ~ name, 
+# Save our Chart as "my_plot"
+my_plot <- gf_line(prop ~ year, 
+        color = ~ name, 
         data = my_name_data)
 
-```
-
-Now if you did this right, you will **not see** your plot!
-
-11. Because we saved the `ggplot` with a name (`plot`), R just saved the object for you. But check out the top right pane in RStudio again: under the `Environment` pane you should see `plot`, so it is there, you just have to ask for it. Here's how:
-
-```{r}
-#| echo: fenced
-plot 
+# Call for the plot
+my_plot
 
 ```
+
+Now if you did this right, you will **see** your plot! And get a nice caption and figure number below! 
 
 11. Now hit the `Render` button on your Visual toolbar and see what happens!! Try to use the drop down menu next to it and see if there are more output file options!!
 
@@ -272,17 +300,18 @@ plot
 
 13. Write narratives comments wherever suitable in your Quarto document. Make sure you don't type inside your code chunks. See if you can write your comments in sections which you can create with your visual tool bar, or by using the "add anything" shortcut.
 
-14. Save your work ( your Quarto document itself) so you can share your favorite plot.
+14. Save your work (your Quarto document itself) so you can share your favorite plot.
 
-15. Share your Plot: You will not like the looks of your plot if you mouse over to `Export` and save it. Instead, use `ggplot2`'s command for saving a plot with sensible defaults.
+15. Share your Plot separately if you want: You will not like the looks of your plot if you mouse over to `Export` and save it. And you may need to paste it into Word documents for instance. 
 
-Type `help(ggsave)` in your Console.
+Instead, use `ggplot2`'s `ggsave` command for saving a plot with sensible defaults. Type `help(ggsave)` in your Console to learn more about this useful command. And here is your final code chunk:
 
-```{r}
-#| label: Saving
-#| echo: fenced
+```{{r}}
+#| label: saving-my-plot
 
-ggsave("file_name_here.pdf", plot) # please make the filename unique!
+# Saving "my_plot" to a PDF 
+# please make the filename unique!
+ggsave("path/to/my/file_name_here.pdf", my_plot) 
 
 ```
 
@@ -325,7 +354,13 @@ embedr::embed_audio("../../../../materials/audio/Intro to R.wav")
 1.  <https://quarto.org/docs/authoring/markdown-basics.html> How to do more with Quarto HTML format.
 1. <https://apps.machlis.com/shiny/quartotips/>
 
-{{< youtube _f3latmOhew >}}
+::: {}
+<center>
+{{< video https://youtu.be/_f3latmOhew  width="560" height="400" align="center" title="" >}}
+</center>
+
+Getting Started with Quarto
+:::
 
 
 ## {{< iconify fa-solid tasks >}} Assignment(s)

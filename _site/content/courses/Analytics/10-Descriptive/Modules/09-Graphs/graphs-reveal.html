@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<link href="../../../../../../content/materials/icon-park-twotone--concept-sharing.svg" rel="icon" type="image/svg+xml">
+<script src="../../../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../../../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../../../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-795e9e8eca1e12b12abcb09a27409631.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
+<script src="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.27">
+
+  <meta name="dcterms.date" content="2021-11-01">
+  <title>The Mad Hatter's Guide to Data Viz and Stats in R –  Graphs</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/theme/quarto-180c62c9bcf69a0506044dd7f3253a18.css">
+  <link href="../../../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../../../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../../../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../../../../../../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="../../../../../../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="../../../../../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <link href="../../../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+  <script src="../../../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<meta property="og:title" content=" Graphs – The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta property="og:description" content="Charts and How they are generated from Data">
+<meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/09-Graphs/preview.png">
+<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
+<meta property="og:image:alt" content="By Rudityas on Glazestock.com">
+<meta name="twitter:title" content=" Graphs – The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta name="twitter:description" content="Charts and How they are generated from Data">
+<meta name="twitter:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/09-Graphs/preview.png">
+<meta name="twitter:image:alt" content="By Rudityas on Glazestock.com">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title"><iconify-icon icon="carbon:chart-3d" width="1.2em" height="1.2em"></iconify-icon> Graphs</h1>
+  <p class="subtitle">Charts and How they are generated from Data</p>
+
+<div class="quarto-title-authors">
+</div>
+
+  <p class="date">2021-11-01</p>
+</section>
+<section class="slide level3">
+
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="../../../../../materials/images/2book11.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="../../../../../materials/images/2book11.jpg" class="quarto-figure quarto-figure-center" height="250"></a></p>
+</figure>
+</div>
+<div class="pa4">
+<div class="athelas ml0 mt0 pl4 black-90 bl bw2 b--blue">
+<p><span class="f5 f4-m f3-l lh-copy measure mt0">““He is one of those who don’t want millions, but an answer to their questions.”</span></p>
+<p><span class="f6 ttu tracked fs-normal">— Alyosha, in The Brothers Karamazov</span></p>
+</div>
+</div>
+</section>
+<section>
+<section id="setting-up-r-packages" class="title-slide slide level2 center">
+<h2><iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a></a><span class="fu">library</span>(mosaic) <span class="co"># Our all-in-one package</span></span>
+<span id="cb1-3"><a></a><span class="fu">library</span>(skimr) <span class="co"># Looking at data</span></span>
+<span id="cb1-4"><a></a><span class="fu">library</span>(ggformula) <span class="co"># Our plotting package</span></span>
+<span id="cb1-5"><a></a><span class="fu">library</span>(visdat) <span class="co"># Mapping missing data</span></span>
+<span id="cb1-6"><a></a><span class="fu">library</span>(naniar) <span class="co"># Missing data visualization and munging</span></span>
+<span id="cb1-7"><a></a><span class="fu">library</span>(janitor) <span class="co"># Clean the data</span></span>
+<span id="cb1-8"><a></a><span class="fu">library</span>(tinytable) <span class="co"># Printing Tables for our data</span></span>
+<span id="cb1-9"><a></a><span class="fu">library</span>(DT) <span class="co"># Interactive Tables for our data</span></span>
+<span id="cb1-10"><a></a><span class="do">##</span></span>
+<span id="cb1-11"><a></a><span class="co"># devtools::install_github("rpruim/Lock5withR")</span></span>
+<span id="cb1-12"><a></a><span class="fu">library</span>(Lock5withR)</span>
+<span id="cb1-13"><a></a><span class="fu">library</span>(Lock5Data) <span class="co"># Some neat little datasets from a lovely textbook</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<h4 id="plot-fonts-and-theme">Plot Fonts and Theme</h4>
+<div class="cell" data-messages="false">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">library</span>(systemfonts)</span>
+<span id="cb2-2"><a></a><span class="fu">library</span>(showtext)</span>
+<span id="cb2-3"><a></a><span class="do">## Clean the slate</span></span>
+<span id="cb2-4"><a></a>systemfonts<span class="sc">::</span><span class="fu">clear_local_fonts</span>()</span>
+<span id="cb2-5"><a></a>systemfonts<span class="sc">::</span><span class="fu">clear_registry</span>()</span>
+<span id="cb2-6"><a></a><span class="do">##</span></span>
+<span id="cb2-7"><a></a><span class="fu">showtext_opts</span>(<span class="at">dpi =</span> <span class="dv">96</span>) <span class="co"># set DPI for showtext</span></span>
+<span id="cb2-8"><a></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
+<span id="cb2-9"><a></a>  <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-10"><a></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/Alegreya-Regular.ttf"</span>,</span>
+<span id="cb2-11"><a></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/Alegreya-Bold.ttf"</span>,</span>
+<span id="cb2-12"><a></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/Alegreya-Italic.ttf"</span>,</span>
+<span id="cb2-13"><a></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/Alegreya-BoldItalic.ttf"</span></span>
+<span id="cb2-14"><a></a>)</span>
+<span id="cb2-15"><a></a></span>
+<span id="cb2-16"><a></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
+<span id="cb2-17"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-18"><a></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Regular.ttf"</span>,</span>
+<span id="cb2-19"><a></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Bold.ttf"</span>,</span>
+<span id="cb2-20"><a></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Italic.ttf"</span>,</span>
+<span id="cb2-21"><a></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-BoldItalic.ttf"</span></span>
+<span id="cb2-22"><a></a>)</span>
+<span id="cb2-23"><a></a><span class="fu">showtext_auto</span>(<span class="at">enable =</span> <span class="cn">TRUE</span>) <span class="co"># enable showtext</span></span>
+<span id="cb2-24"><a></a><span class="do">##</span></span>
+<span id="cb2-25"><a></a>theme_custom <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb2-26"><a></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">10</span>) <span class="sc">+</span></span>
+<span id="cb2-27"><a></a>    <span class="co">#</span></span>
+<span id="cb2-28"><a></a>    <span class="co"># theme(panel.widths = unit(11, "cm"),</span></span>
+<span id="cb2-29"><a></a>    <span class="co">#       panel.heights = unit(6.79, "cm")) + # Golden Ratio</span></span>
+<span id="cb2-30"><a></a>    <span class="co">#</span></span>
+<span id="cb2-31"><a></a>    <span class="fu">theme</span>(</span>
+<span id="cb2-32"><a></a>      <span class="at">plot.margin =</span> <span class="fu">margin_auto</span>(<span class="at">t =</span> <span class="dv">1</span>, <span class="at">r =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="dv">1</span>, <span class="at">l =</span> <span class="dv">1</span>, <span class="at">unit =</span> <span class="st">"cm"</span>),</span>
+<span id="cb2-33"><a></a>      <span class="at">plot.background =</span> <span class="fu">element_rect</span>(</span>
+<span id="cb2-34"><a></a>        <span class="at">fill =</span> <span class="st">"bisque"</span>,</span>
+<span id="cb2-35"><a></a>        <span class="at">colour =</span> <span class="st">"black"</span>,</span>
+<span id="cb2-36"><a></a>        <span class="at">linewidth =</span> <span class="dv">1</span></span>
+<span id="cb2-37"><a></a>      )</span>
+<span id="cb2-38"><a></a>    ) <span class="sc">+</span></span>
+<span id="cb2-39"><a></a></span>
+<span id="cb2-40"><a></a>    <span class="fu">theme_sub_axis</span>(</span>
+<span id="cb2-41"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-42"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-43"><a></a>        <span class="at">size =</span> <span class="dv">10</span></span>
+<span id="cb2-44"><a></a>      ),</span>
+<span id="cb2-45"><a></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-46"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-47"><a></a>        <span class="at">size =</span> <span class="dv">8</span></span>
+<span id="cb2-48"><a></a>      )</span>
+<span id="cb2-49"><a></a>    ) <span class="sc">+</span></span>
+<span id="cb2-50"><a></a></span>
+<span id="cb2-51"><a></a>    <span class="fu">theme_sub_legend</span>(</span>
+<span id="cb2-52"><a></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-53"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-54"><a></a>        <span class="at">size =</span> <span class="dv">6</span></span>
+<span id="cb2-55"><a></a>      ),</span>
+<span id="cb2-56"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-57"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-58"><a></a>        <span class="at">size =</span> <span class="dv">8</span></span>
+<span id="cb2-59"><a></a>      )</span>
+<span id="cb2-60"><a></a>    ) <span class="sc">+</span></span>
+<span id="cb2-61"><a></a></span>
+<span id="cb2-62"><a></a>    <span class="fu">theme_sub_plot</span>(</span>
+<span id="cb2-63"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-64"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-65"><a></a>        <span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span></span>
+<span id="cb2-66"><a></a>      ),</span>
+<span id="cb2-67"><a></a>      <span class="at">title.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb2-68"><a></a>      <span class="at">subtitle =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-69"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-70"><a></a>        <span class="at">size =</span> <span class="dv">10</span></span>
+<span id="cb2-71"><a></a>      ),</span>
+<span id="cb2-72"><a></a>      <span class="at">caption =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-73"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-74"><a></a>        <span class="at">size =</span> <span class="dv">6</span></span>
+<span id="cb2-75"><a></a>      ),</span>
+<span id="cb2-76"><a></a>      <span class="at">caption.position =</span> <span class="st">"plot"</span></span>
+<span id="cb2-77"><a></a>    )</span>
+<span id="cb2-78"><a></a>}</span>
+<span id="cb2-79"><a></a></span>
+<span id="cb2-80"><a></a><span class="do">## Use available fonts in ggplot text geoms too!</span></span>
+<span id="cb2-81"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-82"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-83"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-84"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-85"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-86"><a></a>))</span>
+<span id="cb2-87"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-88"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-89"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-90"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-91"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-92"><a></a>))</span>
+<span id="cb2-93"><a></a></span>
+<span id="cb2-94"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"marquee"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-95"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-96"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-97"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-98"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-99"><a></a>))</span>
+<span id="cb2-100"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-101"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-102"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-103"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-104"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-105"><a></a>))</span>
+<span id="cb2-106"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-107"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-108"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-109"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-110"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-111"><a></a>))</span>
+<span id="cb2-112"><a></a></span>
+<span id="cb2-113"><a></a><span class="do">## Set the theme</span></span>
+<span id="cb2-114"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb2-115"><a></a></span>
+<span id="cb2-116"><a></a><span class="do">## tinytable options</span></span>
+<span id="cb2-117"><a></a><span class="fu">options</span>(<span class="st">"tinytable_tt_digits"</span> <span class="ot">=</span> <span class="dv">2</span>)</span>
+<span id="cb2-118"><a></a><span class="fu">options</span>(<span class="st">"tinytable_format_num_fmt"</span> <span class="ot">=</span> <span class="st">"significant_cell"</span>)</span>
+<span id="cb2-119"><a></a><span class="fu">options</span>(<span class="at">tinytable_html_mathjax =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-120"><a></a></span>
+<span id="cb2-121"><a></a></span>
+<span id="cb2-122"><a></a><span class="do">## Set defaults for flextable</span></span>
+<span id="cb2-123"><a></a>flextable<span class="sc">::</span><span class="fu">set_flextable_defaults</span>(<span class="at">font.family =</span> <span class="st">"Roboto Condensed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div></section>
+<section>
+<section id="why-visualize" class="title-slide slide level2 center">
+<h2><iconify-icon inline="" icon="carbon:chart-3d" aria-label="Icon chart-3d from carbon Iconify.design set." title="Icon chart-3d from carbon Iconify.design set."></iconify-icon> Why Visualize?</h2>
+
+</section>
+<section id="an-iconic-presentation" class="slide level3">
+<h3>An Iconic Presentation</h3>
+<div>
+<center>
+<iframe data-external="1" src="https://www.youtube.com/embed/hVimVzgtD6w" width="560" height="400" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+</center>
+<p>Hans Roslings Iconic Presentation</p>
+</div>
+</section>
+<section id="some-reasons" class="slide level3 scrollable">
+<h3>Some Reasons</h3>
+<ul>
+<li>We can digest information more easily when it is pictorial</li>
+<li>Our <a href="https://www.understood.org/en/articles/working-memory-what-it-is-and-how-it-works">Working Memories</a> are both <em>short-term</em> and <em>limited</em> in capacity. So a picture abstracts the details and presents us with <span style="background-color: yellow;">an overall summary</span>, an insight, or a story that is both easy to recall and easy on retention.</li>
+<li>Data Viz includes <span style="background-color: yellow;"><em>shapes</em> that carry strong cultural memories</span>; and impressions for us. These cultural memories help us to use data viz in a <em>universal way</em> to appeal to a wide variety of audiences. <span style="background-color: yellow;">(Do humans have a gene for geometry?</span><sup>1</sup><span style="background-color: yellow;">)</span>;</li>
+</ul>
+<aside><ol class="aside-footnotes"><li id="fn1"><p><a href="https://www.xcode.in/genes-and-personality/how-genes-influence-your-math-ability/" class="uri">https://www.xcode.in/genes-and-personality/how-genes-influence-your-math-ability/</a></p></li></ol></aside></section>
+<section id="some-pictures" class="slide level3">
+<h3>Some Pictures</h3>
+<ul>
+<li>It helps sift facts from mere statements: for example:</li>
+</ul>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-rape-capital" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-rape-capital-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../../../../../materials/images/rape-capital.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;1: Rape Capital"><img data-src="../../../../../materials/images/rape-capital.png"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rape-capital-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Rape Capital
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-data_reveals-crime" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-data_reveals-crime-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../../../../../materials/images/data-reveals-crime.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;2: Data Reveals Crime"><img data-src="../../../../../materials/images/data-reveals-crime.png"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data_reveals-crime-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Data Reveals Crime
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<ul>
+<li>Visuals are a good starting point <span style="background-color: yellow;">to make <strong>hypotheses</strong></span> of what may be happening in the situation represented by the data</li>
+</ul>
+</section></section>
+<section>
+<section id="why-analyze" class="title-slide slide level2 center">
+<h2><iconify-icon inline="" icon="bx:analyse" aria-label="Icon analyse from bx Iconify.design set." title="Icon analyse from bx Iconify.design set."></iconify-icon> Why Analyze?</h2>
+
+</section>
+<section id="analysis" class="slide level3">
+<h3>Analysis</h3>
+<ul>
+<li>Visualizations may not tell us the true magnitude or <span style="background-color: yellow;"><strong><em>significance</em></strong> of things</span>.</li>
+<li>We need <strong><em>analytic methods or statistics</em></strong> to assure ourselves that something is happening</li>
+<li>These methods remove human bias and ensure that we are speaking with the assurance that our problem deserves.</li>
+<li>Analysis uses <span style="background-color: yellow;"><strong><em>numbers, or metrics</em></strong></span>, that allow us to crystallize our ambiguous words/guesses.</li>
+<li>These metrics are calculable from our data, of course, but <strong><em>are not directly visible</em></strong>, despite often being intuitive.</li>
+<li>Using these metrics, we need to become, paradoxically enough, <span style="background-color: yellow;">sure of our uncertainty</span></li>
+</ul>
+<p>So we need both visuals and analytics. And as we will see, we will not be content with that: <strong><em>we will visualize our analytics, and analyze our visualizations</em></strong>!</p>
+</section>
+<section id="recap-what-is-tidy-data" class="slide level3">
+<h3>Recap: What is Tidy Data?</h3>
+<p>Let us recall first what we meant by <strong><em>tidy data</em></strong>:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-tidy-data" class="quarto-float quarto-figure quarto-figure-center" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-tidy-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../../../../../materials/images/tidydata.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;3: Tidy Data"><img data-src="../../../../../materials/images/tidydata.jpg" class="quarto-figure quarto-figure-center" width="680" height="400"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tidy-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Tidy Data
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="tidy-data-principles" class="slide level3">
+<h3>Tidy Data Principles</h3>
+<ul>
+<li>Each <strong>variable</strong> is a column;</li>
+<li>Each column contains <em>one kind</em> of data.</li>
+<li>Each <strong>observation</strong> or <strong>case</strong> is a row.</li>
+<li>Each <strong>observations</strong> contains <em>one value</em> for each variable.</li>
+</ul>
+</section></section>
+<section>
+<section id="what-is-a-data-visualization" class="title-slide slide level2 center">
+<h2><iconify-icon inline="" icon="material-symbols:auto-graph" aria-label="Icon auto-graph from material-symbols Iconify.design set." title="Icon auto-graph from material-symbols Iconify.design set."></iconify-icon> What is a Data Visualization?</h2>
+
+</section>
+<section id="data-viz-data-geometry" class="slide level3">
+<h3><iconify-icon inline="" icon="carbon:chart-network" aria-label="Icon chart-network from carbon Iconify.design set." title="Icon chart-network from carbon Iconify.design set."></iconify-icon> Data Viz = Data + Geometry</h3>
+<ul>
+<li>How many <em>geometric things</em> do we know?</li>
+<li>Shapes? Lines? Axes? Curves? Angles? Patterns? Textures? Colours? Sizes? Positions? Lengths? Heights? Breadths? Radii? Textures?</li>
+<li>All these are <strong>geometric aspects</strong> or <strong>aesthetics</strong>, each with <strong><em>a unique property</em></strong>.</li>
+<li>Some “geometric things” which we might consider are shown in the figure below.</li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-mapping-data" class="quarto-float quarto-figure quarto-figure-center" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-mapping-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../../../../../materials/images/common-aesthetics-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;4: Common Geometric Aesthetics in Charts"><img data-src="../../../../../materials/images/common-aesthetics-1.png" class="quarto-figure quarto-figure-center" width="680" height="280"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mapping-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Common Geometric Aesthetics in Charts
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="mapping" class="slide level3">
+<h3><iconify-icon inline="" icon="material-symbols:function" aria-label="Icon function from material-symbols Iconify.design set." title="Icon function from material-symbols Iconify.design set."></iconify-icon> Mapping</h3>
+<ul>
+<li>How can we <strong><em>manipulate</em></strong> these geometric aesthetics, perhaps like <a href="https://www.wassilykandinsky.net">Wassily Kandinsky</a>?</li>
+<li>The aesthetic has a property, an attribute, which we can manipulate in accordance with a data variable!</li>
+</ul>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>What is Data Visualization?</strong></p>
+</div>
+<div class="callout-content">
+<p><span style="background: yellow;">This act of “mapping” a <strong>variable</strong> to a <strong>geometric thing</strong> and modifying its essential properties/attributes is called Data Visualization.</span></p>
+</div>
+</div>
+</div>
+</section>
+<section id="mapping-examples" class="slide level3">
+<h3>Mapping Examples</h3>
+<ul>
+<li><code>length</code> or <code>height</code> of a <code>bar</code> can be made proportional to the<code>age</code> or <code>income</code> of a person</li>
+<li><code>Colour</code> of points can be mapped to <code>gender</code>, with a unique <code>colour</code> for each <code>gender</code>.</li>
+<li><code>Position</code> along an X-axis can vary in accordance with a <code>height</code> variable, and</li>
+<li><code>Position</code> along the Y-axis can vary with a <code>bodyWeight</code> variable.</li>
+</ul>
+</section>
+<section id="using-multiple-geometries" class="slide level3">
+<h3>Using Multiple Geometries</h3>
+<ul>
+<li>A chart may use more than one aesthetic: <code>position</code>, <code>shape</code>, <code>colour</code>,<code>height</code> and <code>angle</code>, <code>pattern</code> or <code>texture</code> to name several.</li>
+<li>Usually, each aesthetic is mapped to <strong>just one</strong> variable to ensure there is no cognitive error.</li>
+<li>There is of course a choice and you should be able to <strong>map</strong> any kind of variable to any geometric aspect/aesthetic that may be available.</li>
+</ul>
+</section>
+<section id="a-natural-mapping" class="slide level3">
+<h3>A Natural Mapping</h3>
+<ul>
+<li>Note that here is also a “natural” mapping between aesthetic and <strong>kind of variable</strong> Quantitative or Qualitative as seen in <a href="#/fig-tidy-data" class="quarto-xref">Figure&nbsp;3</a> .</li>
+<li>For instance, <code>shape</code> is rarely mapped to a Quantitative variable;</li>
+<li>the nature of variation between the Quantitative variable and the <code>shape</code> aesthetic is not similar (i.e.&nbsp;not continuous).</li>
+<li>Bad choices may lead to bad, or worse, misleading charts!</li>
+</ul>
+</section>
+<section id="a-data-visualization-example" class="slide level3">
+<h3>A Data Visualization Example</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">set.seed</span>(<span class="dv">1947</span>)</span>
+<span id="cb3-2"><a></a>diamonds <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a></a>  <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">150</span>, <span class="at">weight_by =</span> cut) <span class="sc">%&gt;%</span></span>
+<span id="cb3-4"><a></a>  <span class="fu">gf_point</span>(price <span class="sc">~</span> carat,</span>
+<span id="cb3-5"><a></a>    <span class="at">colour =</span> <span class="sc">~</span>cut,</span>
+<span id="cb3-6"><a></a>    <span class="at">shape =</span> <span class="sc">~</span>cut,</span>
+<span id="cb3-7"><a></a>    <span class="at">size =</span> <span class="dv">2</span>, <span class="at">data =</span> .</span>
+<span id="cb3-8"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-9"><a></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb3-10"><a></a>    <span class="at">title =</span> <span class="st">"Plot Title = DIAMONDS ARE FOREVER"</span>,</span>
+<span id="cb3-11"><a></a>    <span class="at">subtitle =</span> <span class="st">"Plot Subtitle = AND A GIRL'S BEST FRIEND"</span>,</span>
+<span id="cb3-12"><a></a>    <span class="at">caption =</span> <span class="st">"Plot Caption = From the diamonds dataset"</span>,</span>
+<span id="cb3-13"><a></a>    <span class="at">x =</span> <span class="st">"x-Axis Title = CARAT"</span>,</span>
+<span id="cb3-14"><a></a>    <span class="at">y =</span> <span class="st">"y-Axis Title = PRICE"</span></span>
+<span id="cb3-15"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-16"><a></a>  <span class="co"># Use same name for scales to merge legends</span></span>
+<span id="cb3-17"><a></a>  <span class="fu">gf_refine</span>(</span>
+<span id="cb3-18"><a></a>    <span class="fu">scale_color_brewer</span>(</span>
+<span id="cb3-19"><a></a>      <span class="at">name =</span> <span class="st">"Legend = DIAMOND QUALITY"</span>,</span>
+<span id="cb3-20"><a></a>      <span class="at">palette =</span> <span class="st">"Set1"</span></span>
+<span id="cb3-21"><a></a>    ),</span>
+<span id="cb3-22"><a></a>    <span class="fu">scale_shape_manual</span>(</span>
+<span id="cb3-23"><a></a>      <span class="at">name =</span> <span class="st">"Legend = DIAMOND QUALITY"</span>,</span>
+<span id="cb3-24"><a></a>      <span class="at">values =</span> <span class="fu">c</span>(<span class="dv">15</span><span class="sc">:</span><span class="dv">21</span>)</span>
+<span id="cb3-25"><a></a>    )</span>
+<span id="cb3-26"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-27"><a></a>  <span class="fu">gf_annotate</span>(<span class="st">"text"</span>,</span>
+<span id="cb3-28"><a></a>    <span class="at">x =</span> <span class="fl">1.0</span>, <span class="at">y =</span> <span class="dv">16000</span>,</span>
+<span id="cb3-29"><a></a>    <span class="at">label =</span> <span class="st">"These DIAMONDS are</span><span class="sc">\n</span><span class="st"> Super Affordable!!"</span>,</span>
+<span id="cb3-30"><a></a>    <span class="at">fontface =</span> <span class="st">"bold"</span>,</span>
+<span id="cb3-31"><a></a>    <span class="at">size =</span> <span class="dv">2</span></span>
+<span id="cb3-32"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-33"><a></a>  <span class="fu">gf_annotate</span>(<span class="st">"curve"</span>,</span>
+<span id="cb3-34"><a></a>    <span class="at">x =</span> <span class="fl">0.9</span>,</span>
+<span id="cb3-35"><a></a>    <span class="at">y =</span> <span class="dv">14500</span>,</span>
+<span id="cb3-36"><a></a>    <span class="at">yend =</span> <span class="dv">8000</span>,</span>
+<span id="cb3-37"><a></a>    <span class="at">xend =</span> <span class="fl">0.95</span>,</span>
+<span id="cb3-38"><a></a>    <span class="at">linewidth =</span> <span class="fl">0.5</span>,</span>
+<span id="cb3-39"><a></a>    <span class="at">curvature =</span> <span class="fl">0.5</span>,</span>
+<span id="cb3-40"><a></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">"cm"</span>))</span>
+<span id="cb3-41"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-42"><a></a>  <span class="fu">gf_annotate</span>(</span>
+<span id="cb3-43"><a></a>    <span class="st">"rect"</span>,</span>
+<span id="cb3-44"><a></a>    <span class="at">xmin =</span> <span class="dv">1</span>,</span>
+<span id="cb3-45"><a></a>    <span class="at">xmax =</span> <span class="fl">1.25</span>,</span>
+<span id="cb3-46"><a></a>    <span class="at">ymin =</span> <span class="dv">2250</span>,</span>
+<span id="cb3-47"><a></a>    <span class="at">ymax =</span> <span class="dv">10000</span>,</span>
+<span id="cb3-48"><a></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
+<span id="cb3-49"><a></a>    <span class="at">fill =</span> <span class="st">"grey80"</span>,</span>
+<span id="cb3-50"><a></a>    <span class="at">col =</span> <span class="st">"black"</span></span>
+<span id="cb3-51"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-data-vis-r" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-data-vis-r-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="index_files/figure-html/fig-data-vis-r-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;5: Data Vis Components and Features"><img data-src="index_files/figure-html/fig-data-vis-r-1.png" style="width:75.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-vis-r-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Data Vis Components and Features
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="what-were-the-components" class="slide level3">
+<h3>What were the Components?</h3>
+<ul>
+<li>In the above chart, it is pretty clear what kind of variable is plotted on the <code>x-axis</code> and the <code>y-axis</code>.</li>
+<li>The dominant geometry is a <code>point</code>, whose <code>position</code> is determined by the <code>x</code> and <code>y</code> variables.</li>
+<li>The <code>shape</code> of the <code>point</code> is determined by the <code>cut</code> variable</li>
+<li>What about <code>colour</code>? Could this be considered as <strong>another axis</strong> in the chart? <code>colour</code> is also mapped to <code>cut</code>.</li>
+<li>There are also other aspects that you can choose (not explicitly shown here) such as the <code>plot theme</code>(colours, fonts, backgrounds etc)</li>
+<li>which may <strong>not be mapped</strong> to data, but are nonetheless choices to be made.</li>
+<li>We will get acquainted with this aspect as we build charts.</li>
+</ul>
+</section>
+<section id="transformations" class="slide level3">
+<h3>Transformations</h3>
+<ul>
+<li>As we will see, Data Variables may be <strong><em>transformed</em></strong> before being mapped to some geometric aesthetic</li>
+<li>e.g.&nbsp;we may perform <strong><em>counts</em></strong> with a Qual variable that contains <strong><em>only</em></strong> the entries <code>{S, M, L, XL}</code>.</li>
+<li>We may also transform the <code>axes</code> (make them <em>logarithmic</em>, or even <em>polar</em> ) to create precisely the shape-meaning we wish.</li>
+<li>This allows us considerable flexibility in making charts!!</li>
+</ul>
+</section>
+<section id="facets" class="slide level3">
+<h3>Facets</h3>
+<ul>
+<li>Finally, if the graph is too busy, with lots of colours and shapes, then we can split the graph into many <span style="background-color:yellow;"><strong>small multiples</strong> or <strong>facets</strong></span>, each showing a subset of the data.</li>
+<li>This is called <strong>faceting</strong> and is a powerful way to reduce cognitive load on the viewer.</li>
+</ul>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">set.seed</span>(<span class="dv">1947</span>)</span>
+<span id="cb4-2"><a></a>diamonds <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a></a>  <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">150</span>, <span class="at">weight_by =</span> cut) <span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a></a>  <span class="fu">gf_point</span>(price <span class="sc">~</span> carat <span class="sc">|</span> clarity,</span>
+<span id="cb4-5"><a></a>    <span class="at">colour =</span> <span class="sc">~</span>cut,</span>
+<span id="cb4-6"><a></a>    <span class="at">shape =</span> <span class="sc">~</span>cut,</span>
+<span id="cb4-7"><a></a>    <span class="at">size =</span> <span class="dv">2</span>, <span class="at">data =</span> .</span>
+<span id="cb4-8"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-9"><a></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb4-10"><a></a>    <span class="at">title =</span> <span class="st">"Plot Title = DIAMONDS ARE FOREVER"</span>,</span>
+<span id="cb4-11"><a></a>    <span class="at">subtitle =</span> <span class="st">"Plot Subtitle = AND A GIRL'S BEST FRIEND"</span>,</span>
+<span id="cb4-12"><a></a>    <span class="at">caption =</span> <span class="st">"Plot Caption = From the diamonds dataset"</span>,</span>
+<span id="cb4-13"><a></a>    <span class="at">x =</span> <span class="st">"x-Axis Title = CARAT"</span>,</span>
+<span id="cb4-14"><a></a>    <span class="at">y =</span> <span class="st">"y-Axis Title = PRICE"</span></span>
+<span id="cb4-15"><a></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-16"><a></a>  <span class="co"># Use same name for scales to merge legends</span></span>
+<span id="cb4-17"><a></a>  <span class="fu">gf_refine</span>(</span>
+<span id="cb4-18"><a></a>    <span class="fu">scale_color_brewer</span>(</span>
+<span id="cb4-19"><a></a>      <span class="at">name =</span> <span class="st">"Legend = DIAMOND QUALITY"</span>,</span>
+<span id="cb4-20"><a></a>      <span class="at">palette =</span> <span class="st">"Set1"</span></span>
+<span id="cb4-21"><a></a>    ),</span>
+<span id="cb4-22"><a></a>    <span class="fu">scale_shape_manual</span>(</span>
+<span id="cb4-23"><a></a>      <span class="at">name =</span> <span class="st">"Legend = DIAMOND QUALITY"</span>,</span>
+<span id="cb4-24"><a></a>      <span class="at">values =</span> <span class="fu">c</span>(<span class="dv">15</span><span class="sc">:</span><span class="dv">21</span>)</span>
+<span id="cb4-25"><a></a>    )</span>
+<span id="cb4-26"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-data-facet" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-data-facet-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="index_files/figure-html/fig-data-facet-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Figure&nbsp;6: Data Vis Facets"><img data-src="index_files/figure-html/fig-data-facet-1.png" style="width:75.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-facet-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Data Vis Facets
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="sec-data-viz" class="title-slide slide level2 center">
+<h2><iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Basic Types of Charts</h2>
+
+</section>
+<section id="mapping-variables-to-aesthetics" class="slide level3">
+<h3>Mapping Variables to Aesthetics</h3>
+<ul>
+<li>We can therefore think of simple visualizations as <span style="background: yellow;">combinations of aesthetics, mapped to combinations of variables</span>.</li>
+<li>It should be possible to use the many shapes we know, or can conceive of, and <em>marry them to data</em> to create a brand new visualization method that advances both understanding and retention! You should try!!</li>
+</ul>
+</section>
+<section id="mappings-and-charts-a-catalogue" class="slide level3">
+<h3>Mappings and Charts: A Catalogue</h3>
+<table class="caption-top" style="width:100%;">
+<caption>Geometries , Combinations, and Graphs</caption>
+<colgroup>
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 43%">
+<col style="width: 31%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable #1</th>
+<th>Variable #2</th>
+<th>Chart Names</th>
+<th>Chart Shape</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Quant</td>
+<td>None</td>
+<td>Histogram and Density</td>
+<td><iconify-icon inline="" icon="mdi-light:chart-histogram" style="font-size: 2em;" aria-label="Icon chart-histogram from mdi-light Iconify.design set." title="Icon chart-histogram from mdi-light Iconify.design set."></iconify-icon> <iconify-icon inline="" icon="mdi:chart-bell-curve" style="font-size: 2em;" aria-label="Icon chart-bell-curve from mdi Iconify.design set." title="Icon chart-bell-curve from mdi Iconify.design set."></iconify-icon> <iconify-icon inline="" icon="carbon:box-plot" style="font-size: 2em;" aria-label="Icon box-plot from carbon Iconify.design set." title="Icon box-plot from carbon Iconify.design set."></iconify-icon></td>
+</tr>
+<tr class="even">
+<td>Qual</td>
+<td>None</td>
+<td>Bar Chart</td>
+<td><p><iconify-icon inline="" icon="ion:bar-chart" style="font-size: 2em;" aria-label="Icon bar-chart from ion Iconify.design set." title="Icon bar-chart from ion Iconify.design set."></iconify-icon></p></td>
+</tr>
+<tr class="odd">
+<td>Quant</td>
+<td>Quant</td>
+<td>Scatter Plot, Line Chart, Bubble Plot, Area Chart</td>
+<td><iconify-icon inline="" icon="ph:chart-scatter-bold" style="font-size: 2em;" aria-label="Icon chart-scatter-bold from ph Iconify.design set." title="Icon chart-scatter-bold from ph Iconify.design set."></iconify-icon> <iconify-icon inline="" icon="healthicons:chart-line" style="font-size: 2em;" aria-label="Icon chart-line from healthicons Iconify.design set." title="Icon chart-line from healthicons Iconify.design set."></iconify-icon> <iconify-icon inline="" icon="carbon:chart-bubble" style="font-size: 2em;" aria-label="Icon chart-bubble from carbon Iconify.design set." title="Icon chart-bubble from carbon Iconify.design set."></iconify-icon> <iconify-icon inline="" icon="ic:twotone-area-chart" style="font-size: 2em;" aria-label="Icon twotone-area-chart from ic Iconify.design set." title="Icon twotone-area-chart from ic Iconify.design set."></iconify-icon></td>
+</tr>
+<tr class="even">
+<td>Quant</td>
+<td>Qual</td>
+<td>Pie Chart, Donut Chart, Column Chart, Box-Whisker Plot, Bump Chart, Radar Chart,Tree Diagram</td>
+<td><iconify-icon inline="" icon="teenyicons:pie-chart-solid" style="font-size: 2em;" aria-label="Icon pie-chart-solid from teenyicons Iconify.design set." title="Icon pie-chart-solid from teenyicons Iconify.design set."></iconify-icon> <iconify-icon inline="" icon="teenyicons:donut-chart-outline" style="font-size: 2em;" aria-label="Icon donut-chart-outline from teenyicons Iconify.design set." title="Icon donut-chart-outline from teenyicons Iconify.design set."></iconify-icon> <iconify-icon inline="" icon="fa6-solid:chart-column" style="font-size: 2em;" aria-label="Icon chart-column from fa6-solid Iconify.design set." title="Icon chart-column from fa6-solid Iconify.design set."></iconify-icon> <iconify-icon inline="" icon="fluent:data-whisker-20-regular" style="font-size: 2em;" aria-label="Icon data-whisker-20-regular from fluent Iconify.design set." title="Icon data-whisker-20-regular from fluent Iconify.design set."></iconify-icon> <iconify-icon inline="" icon="solar:dumbbell-bold" style="font-size: 2em;" aria-label="Icon dumbbell-bold from solar Iconify.design set." title="Icon dumbbell-bold from solar Iconify.design set."></iconify-icon> <iconify-icon inline="" icon="carbon:chart-radar" style="font-size: 2em;" aria-label="Icon chart-radar from carbon Iconify.design set." title="Icon chart-radar from carbon Iconify.design set."></iconify-icon> <iconify-icon inline="" icon="mdi:family-tree" style="font-size: 2em;" aria-label="Icon family-tree from mdi Iconify.design set." title="Icon family-tree from mdi Iconify.design set."></iconify-icon></td>
+</tr>
+<tr class="odd">
+<td>Qual</td>
+<td>Qual</td>
+<td>Stacked Bar Chart, Mosaic Chart, Sankey, Chord Diagram, Network Diagram</td>
+<td><iconify-icon inline="" icon="iwwa:chart-style4" style="font-size: 2em;" aria-label="Icon chart-style4 from iwwa Iconify.design set." title="Icon chart-style4 from iwwa Iconify.design set."></iconify-icon> <iconify-icon inline="" icon="carbon:chart-marimekko" style="font-size: 2em;" aria-label="Icon chart-marimekko from carbon Iconify.design set." title="Icon chart-marimekko from carbon Iconify.design set."></iconify-icon> <iconify-icon inline="" icon="carbon:sankey-diagram-alt" style="font-size: 2em;" aria-label="Icon sankey-diagram-alt from carbon Iconify.design set." title="Icon sankey-diagram-alt from carbon Iconify.design set."></iconify-icon> <iconify-icon inline="" icon="carbon:network-4" style="font-size: 2em;" aria-label="Icon network-4 from carbon Iconify.design set." title="Icon network-4 from carbon Iconify.design set."></iconify-icon></td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section></section>
+<section>
+<section id="conclusion" class="title-slide slide level2 center">
+<h2><iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusion</h2>
+
+</section>
+<section id="data-science-workflow" class="slide level3">
+<h3>Data Science Workflow</h3>
+<div id="fig-datascience-workflow" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-datascience-workflow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../../../../../materials/images/workflow.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Figure&nbsp;7: Data Science Workflow"><img data-src="../../../../../materials/images/workflow.svg" height="240"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-datascience-workflow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Data Science Workflow
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="workflow-description" class="slide level3">
+<h3>Workflow Description</h3>
+<p>So there we have it:</p>
+<ul>
+<li><strong><em>Data</em></strong>: We generate data by experiment, or obtain readily available data. We import and clean the data</li>
+<li><strong><em>Variables</em></strong>: Questions lead us to identify Types of Variables (Quant and Qual)</li>
+<li><strong><em>Transform</em></strong>: Sometimes we may need to transform the data (long to wide, summarize, create new variables…)</li>
+<li><strong><em>Explore</em></strong>: Further <strong><em>Questions</em></strong> lead us to infer <em>relationships</em> between variables, the relative size of things, which we describe using Data Visualizations</li>
+<li><strong><em>Report</em></strong>: This may be of interest, or best of all, outright surprising! Which is finally Communicated with charts and descriptions in a research report.</li>
+</ul>
+</section>
+<section id="grammar-of-data-visualization" class="slide level3">
+<h3>Grammar of Data Visualization</h3>
+<p>You might think of all these Questions, Answers, Mapping as being <span style="background-color:yellow;">equivalent to a grammar, as a language in itself</span>.</p>
+<p>And indeed, in R we use a philosophy called the <strong>Grammar of Graphics</strong>! We will use this grammar in the R graphics packages that we will encounter when we make Graphs next.</p>
+<p>Other parts of the Workflow (Transformation, Facetting, Analysis and Modelling) also fall within the grammar, as we shall see.</p>
+</section></section>
+<section>
+<section id="ai-generated-summary-and-podcast" class="title-slide slide level2 center">
+<h2><iconify-icon inline="" icon="eos-icons:ai" aria-label="Icon ai from eos-icons Iconify.design set." title="Icon ai from eos-icons Iconify.design set."></iconify-icon> AI Generated Summary and Podcast</h2>
+
+</section>
+<section id="summary" class="slide level3">
+<h3>Summary</h3>
+<p>This is a tutorial on data visualization using the R programming language. It introduces concepts such as data types, variables, and visualization techniques. The tutorial utilizes metaphors to explain these concepts, emphasizing the use of geometric aesthetics to represent data. It also highlights the importance of both visual and analytic approaches in understanding data. The tutorial then demonstrates basic chart types, including histograms, scatterplots, and bar charts, and discusses the “Grammar of Graphics” philosophy that guides data visualization in R. The text concludes with a workflow diagram for data science, emphasizing the iterative process of data import, cleaning, transformation, visualization, hypothesis generation, analysis, and communication.</p>
+<center>
+<div class="cell">
+<div class="cell-output-display">
+<audio controls=""> <source src="../../../../../materials/audio/NatureOfData.wav" type="audio/mpeg"> Your browser does not support the audio tag;  for browser support, please see:  https://www.w3schools.com/tags/tag_audio.asp </audio>
+</div>
+</div>
+</center>
+</section></section>
+<section id="references" class="title-slide slide level2 smaller scrollable">
+<h2><iconify-icon inline="" icon="ooui:references-ltr" aria-label="Icon references-ltr from ooui Iconify.design set." title="Icon references-ltr from ooui Iconify.design set."></iconify-icon> References</h2>
+<ol type="1">
+<li>Claus Wilke. <em>Fundamentals of Data Visualization</em>. <a href="https://clauswilke.com/dataviz/" class="uri">https://clauswilke.com/dataviz/</a></li>
+<li>Kieran Healy. <em>Data Visualization: A Practical Introduction</em>. <a href="https://socviz.co/" class="uri">https://socviz.co/</a></li>
+<li>Winston Chang. <em>R Graphics Cookbook</em>. <a href="https://r-graphics.org/" class="uri">https://r-graphics.org/</a></li>
+<li>Hadley Wickham and Garrett Grolemund. <em>R for Data Science</em>. <a href="https://r4ds.had.co.nz/" class="uri">https://r4ds.had.co.nz/</a></li>
+<li>Jack Dougherty and Ilya Ilyankou. <em>Hands-On Data Visualization</em>. <a href="https://handsondataviz.org/" class="uri">https://handsondataviz.org/</a></li>
+<li>Albert Rapp. <em>Adding images to ggplot</em>. <a href="https://albert-rapp.de/posts/ggplot2-tips/27_images/27_images" class="uri">https://albert-rapp.de/posts/ggplot2-tips/27_images/27_images</a></li>
+</ol>
+<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" data-entry-spacing="0" role="list">
+<p><iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Package</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Citation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">ggformula</td>
+<td style="text-align: left;">1.0.1</td>
+<td style="text-align: left;"><span class="citation" data-cites="ggformula">Kaplan and Pruim (<a href="#/references" role="doc-biblioref" onclick="">2026</a>)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lock5Data</td>
+<td style="text-align: left;">4.0.1</td>
+<td style="text-align: left;"><span class="citation" data-cites="Lock5Data">Lock (<a href="#/references" role="doc-biblioref" onclick="">2026</a>)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mosaic</td>
+<td style="text-align: left;">1.9.2</td>
+<td style="text-align: left;"><span class="citation" data-cites="mosaic">Pruim, Kaplan, and Horton (<a href="#/references" role="doc-biblioref" onclick="">2017</a>)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TeachingDemos</td>
+<td style="text-align: left;">2.13</td>
+<td style="text-align: left;"><span class="citation" data-cites="TeachingDemos">Snow (<a href="#/references" role="doc-biblioref" onclick="">2024</a>)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="ref-ggformula" class="csl-entry" role="listitem">
+Kaplan, Daniel, and Randall Pruim. 2026. <em><span class="nocase">ggformula</span>: Formula Interface to the Grammar of Graphics</em>. <a href="https://doi.org/10.32614/CRAN.package.ggformula">https://doi.org/10.32614/CRAN.package.ggformula</a>.
+</div>
+<div id="ref-Lock5Data" class="csl-entry" role="listitem">
+Lock, Robin. 2026. <em>Lock5Data: Datasets for <span>“<span class="nocase">Statistics: UnLocking the Power of Data</span>”</span></em>. <a href="https://doi.org/10.32614/CRAN.package.Lock5Data">https://doi.org/10.32614/CRAN.package.Lock5Data</a>.
+</div>
+<div id="ref-mosaic" class="csl-entry" role="listitem">
+Pruim, Randall, Daniel T Kaplan, and Nicholas J Horton. 2017. <span>“The Mosaic Package: Helping Students to <span>‘<span class="nocase">Think with Data</span>’</span> Using r.”</span> <em>The R Journal</em> 9 (1): 77–102. <a href="https://journal.r-project.org/archive/2017/RJ-2017-024/index.html">https://journal.r-project.org/archive/2017/RJ-2017-024/index.html</a>.
+</div>
+<div id="ref-TeachingDemos" class="csl-entry" role="listitem">
+Snow, Greg. 2024. <em><span>TeachingDemos</span>: Demonstrations for Teaching and Learning</em>. <a href="https://doi.org/10.32614/CRAN.package.TeachingDemos">https://doi.org/10.32614/CRAN.package.TeachingDemos</a>.
+</div>
+</div>
+
+
+</section>
+
+
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../../../../../../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../../../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../../../../../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../../../../../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../../../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../../../../../../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="../../../../../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../../../../../../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../../../../../../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../../../../../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../../../../../../site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'view': "scroll",
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': true,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: true,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: true,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp("https:\/\/madhatterguide\.netlify\.app");
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    <script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"right","loop":false,"openEffect":"zoom","selector":".lightbox"});
+    (function() {
+      let previousOnload = window.onload;
+      window.onload = () => {
+        if (previousOnload) {
+          previousOnload();
+        }
+        lightboxQuarto.on('slide_before_load', (data) => {
+          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+          const href = trigger.getAttribute('href');
+          if (href !== null) {
+            const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+            if (imgEl !== null) {
+              const srcAttr = imgEl.getAttribute("src");
+              if (srcAttr && srcAttr.startsWith("data:")) {
+                slideConfig.href = srcAttr;
+              }
+            }
+          } 
+        });
+      
+        lightboxQuarto.on('slide_after_load', (data) => {
+          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(slideNode);
+          }
+        });
+      
+      };
+      
+    })();
+              </script>
+    
+
+</body></html>

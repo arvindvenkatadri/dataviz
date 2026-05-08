@@ -2,14 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.3">
+<meta name="generator" content="quarto-1.8.27">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="dcterms.date" content="2025-10-31">
 <title> Contour Maps – The Mad Hatter's Guide to Data Viz and Stats in R</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -60,6 +57,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -87,14 +85,15 @@ div.csl-indent {
 <link href="../../../../../../../../content/materials/icon-park-twotone--concept-sharing.svg" rel="icon" type="image/svg+xml">
 <script src="../../../../../../../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../../../../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../../../../../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../../../../../../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../../../../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-6940a74685447e775670a5f17abc1189.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-795e9e8eca1e12b12abcb09a27409631.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../../../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../../../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../../../../../../site_libs/bootstrap/bootstrap-fcc7b2a3b14c77575dee92098a957997.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../../../../../site_libs/bootstrap/bootstrap-f98024d38ba10b6a495c0c63f82dd59d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="../../../../../../../../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.css" rel="stylesheet">
 <script src="../../../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script src="../../../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
@@ -136,7 +135,7 @@ div.csl-indent {
 <meta property="og:title" content=" Contour Maps – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:description" content="Contour and Relief Maps using the tanaka package">
 <meta property="og:image" content="https://madhatterguide.netlify.app/content/materials/images/1book14.jpg">
-<meta property="og:site_name" content="The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
 <meta property="og:image:alt" content="Which Way to the Secret Garden, Sir?">
 <meta name="twitter:title" content=" Contour Maps – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta name="twitter:description" content="Contour and Relief Maps using the tanaka package">
@@ -318,7 +317,7 @@ div.csl-indent {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../../../../../content/courses/Analytics/10-Descriptive/Modules/60-PartWhole/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><iconify-icon icon="ic:round-pie-chart-outline"></iconify-icon> Parts of a Whole</span></a>
+ <span class="menu-text"><iconify-icon icon="ic:round-pie-chart-outline"></iconify-icon> Hierarchy</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -376,12 +375,6 @@ div.csl-indent {
   <div class="sidebar-item-container"> 
   <a href="../../../../../../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/20-Leaflet/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> Interactive Maps with leaflet</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../../../../../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/30-Mapview/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> Interactive Maps With Mapview</span></a>
   </div>
 </li>
       </ul>
@@ -751,10 +744,10 @@ div.csl-indent {
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction" class="nav-link active" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction"><span class="header-section-number">1</span> <iconify-icon inline="" icon="openmoji:japanese-symbol-for-beginner" aria-label="Icon japanese-symbol-for-beginner from openmoji Iconify.design set." title="Icon japanese-symbol-for-beginner from openmoji Iconify.design set."></iconify-icon> Introduction</a></li>
+<li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> <iconify-icon inline="" icon="openmoji:japanese-symbol-for-beginner" aria-label="Icon japanese-symbol-for-beginner from openmoji Iconify.design set." title="Icon japanese-symbol-for-beginner from openmoji Iconify.design set."></iconify-icon> Introduction</a></li>
   <li><a href="#goals" id="toc-goals" class="nav-link" data-scroll-target="#goals"><span class="header-section-number">2</span> Goals</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages"><span class="header-section-number">3</span> <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f756920636f6e746f75722d6d6170203e7d7d-contour-maps" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f756920636f6e746f75722d6d6170203e7d7d-contour-maps" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f756920636f6e746f75722d6d6170203e7d7d-contour-maps"><span class="header-section-number">4</span> <iconify-icon inline="" icon="ooui:contour-map" aria-label="Icon contour-map from ooui Iconify.design set." title="Icon contour-map from ooui Iconify.design set."></iconify-icon> Contour Maps</a></li>
+  <li><a href="#setting-up-r-packages" id="toc-setting-up-r-packages" class="nav-link" data-scroll-target="#setting-up-r-packages"><span class="header-section-number">3</span> <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</a></li>
+  <li><a href="#contour-maps" id="toc-contour-maps" class="nav-link" data-scroll-target="#contour-maps"><span class="header-section-number">4</span> <iconify-icon inline="" icon="ooui:contour-map" aria-label="Icon contour-map from ooui Iconify.design set." title="Icon contour-map from ooui Iconify.design set."></iconify-icon> Contour Maps</a></li>
   <li><a href="#sec-references" id="toc-sec-references" class="nav-link" data-scroll-target="#sec-references"><span class="header-section-number">5</span> <iconify-icon inline="" icon="ooui:references-rtl" aria-label="Icon references-rtl from ooui Iconify.design set." title="Icon references-rtl from ooui Iconify.design set."></iconify-icon> References</a></li>
   </ul></nav>
     </div>
@@ -800,7 +793,7 @@ div.csl-indent {
 </div>
 <figcaption>Which Way to the Secret Garden, Sir?</figcaption></figure>
 </div>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction">
+<section id="introduction" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="introduction">
 <span class="header-section-number">1</span> <iconify-icon inline="" icon="openmoji:japanese-symbol-for-beginner" aria-label="Icon japanese-symbol-for-beginner from openmoji Iconify.design set." title="Icon japanese-symbol-for-beginner from openmoji Iconify.design set."></iconify-icon> Introduction</h2>
 </section><section id="goals" class="level2" data-number="2"><h2 data-number="2" class="anchored" data-anchor-id="goals">
 <span class="header-section-number">2</span> Goals</h2>
@@ -813,7 +806,7 @@ div.csl-indent {
 </li>
 <li>And of course, add our own data to the contour maps made with <code>tanaka</code>
 </li>
-</ul></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="level2" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages">
+</ul></section><section id="setting-up-r-packages" class="level2" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="setting-up-r-packages">
 <span class="header-section-number">3</span> <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Plotting Maps</span></span>
@@ -836,7 +829,7 @@ div.csl-indent {
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/rnaturalearthhires">rnaturalearthhires</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/usepa/elevatr/">elevatr</a></span><span class="op">)</span> <span class="co"># Get Elevation data</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e6520676c6f62616c2d6c6561726e696e67203e7d7d-extra-pedagogical-packages" class="level4"><h4 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e6520676c6f62616c2d6c6561726e696e67203e7d7d-extra-pedagogical-packages">
+<section id="extra-pedagogical-packages" class="level4"><h4 class="anchored" data-anchor-id="extra-pedagogical-packages">
 <iconify-icon inline="" icon="streamline:global-learning" aria-label="Icon global-learning from streamline Iconify.design set." title="Icon global-learning from streamline Iconify.design set."></iconify-icon> Extra Pedagogical Packages</h4>
 <div class="cell">
 <details class="code-fold"><summary>Show the Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/knitr/man/opts_chunk.html">opts_chunk</a></span><span class="op">$</span><span class="fu">set</span><span class="op">(</span>tidy <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -845,7 +838,7 @@ div.csl-indent {
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://pakillo.github.io/grateful/">grateful</a></span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679207673636f64652d69636f6e7320666f6c6465722d747970652d7468656d653e7d7d-plot-fonts-and-theme" class="level4"><h4 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679207673636f64652d69636f6e7320666f6c6465722d747970652d7468656d653e7d7d-plot-fonts-and-theme">
+</section><section id="plot-fonts-and-theme" class="level4"><h4 class="anchored" data-anchor-id="plot-fonts-and-theme">
 <iconify-icon inline="" icon="vscode-icons:folder-type-theme" aria-label="Icon folder-type-theme from vscode-icons Iconify.design set." title="Icon folder-type-theme from vscode-icons Iconify.design set."></iconify-icon> Plot Fonts and Theme</h4>
 <div class="cell" data-messages="false">
 <details class="code-fold"><summary>Show the Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(systemfonts)</span>
@@ -921,7 +914,7 @@ div.csl-indent {
                                                                  ^</code></pre>
 </div>
 </div>
-</section></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f756920636f6e746f75722d6d6170203e7d7d-contour-maps" class="level2" data-number="4"><h2 data-number="4" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f756920636f6e746f75722d6d6170203e7d7d-contour-maps">
+</section></section><section id="contour-maps" class="level2" data-number="4"><h2 data-number="4" class="anchored" data-anchor-id="contour-maps">
 <span class="header-section-number">4</span> <iconify-icon inline="" icon="ooui:contour-map" aria-label="Icon contour-map from ooui Iconify.design set." title="Icon contour-map from ooui Iconify.design set."></iconify-icon> Contour Maps</h2>
 <p>Let us plot a basic contour map, with the <a href="https://github.com/riatelab/tanaka/">tanaka</a> package.</p>
 <div class="cell">
@@ -964,8 +957,8 @@ div.csl-indent {
 <li>Migrating from <code>raster</code> to <code>terra</code>. <a href="https://d-rug.github.io/raster_to_terra/" class="uri">https://d-rug.github.io/raster_to_terra/</a>
 </li>
 </ol>
-<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" role="list">
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c7563696465207061636b6167652d636865636b203e7d7d-r-package-citations" class="level6"><h6 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c7563696465207061636b6167652d636865636b203e7d7d-r-package-citations">
+<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" data-entry-spacing="0" role="list">
+<section id="r-package-citations" class="level6"><h6 class="anchored" data-anchor-id="r-package-citations">
 <iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
 <div class="cell">
 <div class="cell-output-display">

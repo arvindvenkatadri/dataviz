@@ -2,14 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.3">
+<meta name="generator" content="quarto-1.8.27">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="dcterms.date" content="2025-08-22">
 <title> Inspect Data – The Mad Hatter's Guide to Data Viz and Stats in R</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -60,6 +57,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -89,14 +87,15 @@ div.csl-indent {
 <link href="../../../../../../content/materials/icon-park-twotone--concept-sharing.svg" rel="icon" type="image/svg+xml">
 <script src="../../../../../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../../../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../../../../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-6940a74685447e775670a5f17abc1189.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-795e9e8eca1e12b12abcb09a27409631.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../../../../site_libs/bootstrap/bootstrap-fcc7b2a3b14c77575dee92098a957997.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../../../site_libs/bootstrap/bootstrap-f98024d38ba10b6a495c0c63f82dd59d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="../../../../../../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.css" rel="stylesheet">
 <script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script src="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
@@ -143,7 +142,7 @@ div.csl-indent {
 <meta property="og:title" content=" Inspect Data – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:description" content="Getting used to what your Data tastes like">
 <meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/06-Inspect/preview.png">
-<meta property="og:site_name" content="The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
 <meta property="og:image:alt" content="Image by rawpixel.com">
 <meta name="twitter:title" content=" Inspect Data – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta name="twitter:description" content="Getting used to what your Data tastes like">
@@ -324,7 +323,7 @@ div.csl-indent {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/60-PartWhole/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><iconify-icon icon="ic:round-pie-chart-outline"></iconify-icon> Parts of a Whole</span></a>
+ <span class="menu-text"><iconify-icon icon="ic:round-pie-chart-outline"></iconify-icon> Hierarchy</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -382,12 +381,6 @@ div.csl-indent {
   <div class="sidebar-item-container"> 
   <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/20-Leaflet/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> Interactive Maps with leaflet</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/30-Mapview/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> Interactive Maps With Mapview</span></a>
   </div>
 </li>
       </ul>
@@ -757,56 +750,56 @@ div.csl-indent {
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="nav-link active" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages"><span class="header-section-number">1</span> <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</a></li>
+<li><a href="#setting-up-r-packages" id="toc-setting-up-r-packages" class="nav-link active" data-scroll-target="#setting-up-r-packages"><span class="header-section-number">1</span> <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</a></li>
   <li>
-<a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206678656d6f6a69206a6170616e65736573796d626f6c666f72626567696e6e6572203e7d7d-how-do-we-eat-data" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206678656d6f6a69206a6170616e65736573796d626f6c666f72626567696e6e6572203e7d7d-how-do-we-eat-data" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206678656d6f6a69206a6170616e65736573796d626f6c666f72626567696e6e6572203e7d7d-how-do-we-eat-data"><span class="header-section-number">2</span> <iconify-icon inline="" icon="fxemoji:japanesesymbolforbeginner" aria-label="Icon japanesesymbolforbeginner from fxemoji Iconify.design set." title="Icon japanesesymbolforbeginner from fxemoji Iconify.design set."></iconify-icon> How do we eat Data?</a>
+<a href="#how-do-we-eat-data" id="toc-how-do-we-eat-data" class="nav-link" data-scroll-target="#how-do-we-eat-data"><span class="header-section-number">2</span> <iconify-icon inline="" icon="fxemoji:japanesesymbolforbeginner" aria-label="Icon japanesesymbolforbeginner from fxemoji Iconify.design set." title="Icon japanesesymbolforbeginner from fxemoji Iconify.design set."></iconify-icon> How do we eat Data?</a>
   <ul class="collapse">
 <li><a href="#what-do-we-look-for" id="toc-what-do-we-look-for" class="nav-link" data-scroll-target="#what-do-we-look-for"><span class="header-section-number">2.1</span> What do we look for?</a></li>
   </ul>
 </li>
   <li>
-<a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d646920666f6f642d70726f636573736f722d6f75746c696e65203e7d7d-how-do-these-inspections-work" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d646920666f6f642d70726f636573736f722d6f75746c696e65203e7d7d-how-do-these-inspections-work" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d646920666f6f642d70726f636573736f722d6f75746c696e65203e7d7d-how-do-these-inspections-work"><span class="header-section-number">3</span> <iconify-icon inline="" icon="mdi:food-processor-outline" aria-label="Icon food-processor-outline from mdi Iconify.design set." title="Icon food-processor-outline from mdi Iconify.design set."></iconify-icon> How do these Inspections Work?</a>
+<a href="#how-do-these-inspections-work" id="toc-how-do-these-inspections-work" class="nav-link" data-scroll-target="#how-do-these-inspections-work"><span class="header-section-number">3</span> <iconify-icon inline="" icon="mdi:food-processor-outline" aria-label="Icon food-processor-outline from mdi Iconify.design set." title="Icon food-processor-outline from mdi Iconify.design set."></iconify-icon> How do these Inspections Work?</a>
   <ul class="collapse">
 <li><a href="#steps-in-data-inspection-and-cleaning" id="toc-steps-in-data-inspection-and-cleaning" class="nav-link" data-scroll-target="#steps-in-data-inspection-and-cleaning"><span class="header-section-number">3.1</span> Steps in Data Inspection and Cleaning</a></li>
   </ul>
 </li>
   <li>
-<a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792067726f6d6d65742d69636f6e732074657374203e7d7d-case-study-fast-food" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792067726f6d6d65742d69636f6e732074657374203e7d7d-case-study-fast-food" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792067726f6d6d65742d69636f6e732074657374203e7d7d-case-study-fast-food"><span class="header-section-number">4</span> <iconify-icon inline="" icon="grommet-icons:test" aria-label="Icon test from grommet-icons Iconify.design set." title="Icon test from grommet-icons Iconify.design set."></iconify-icon> Case Study: Fast Food</a>
+<a href="#case-study-fast-food" id="toc-case-study-fast-food" class="nav-link" data-scroll-target="#case-study-fast-food"><span class="header-section-number">4</span> <iconify-icon inline="" icon="grommet-icons:test" aria-label="Icon test from grommet-icons Iconify.design set." title="Icon test from grommet-icons Iconify.design set."></iconify-icon> Case Study: Fast Food</a>
   <ul class="collapse">
-<li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d64692064617461626173652d696d706f72742d6f75746c696e65203e7d7d-read-the-data" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d64692064617461626173652d696d706f72742d6f75746c696e65203e7d7d-read-the-data" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d64692064617461626173652d696d706f72742d6f75746c696e65203e7d7d-read-the-data"><span class="header-section-number">4.1</span> <iconify-icon inline="" icon="mdi:database-import-outline" aria-label="Icon database-import-outline from mdi Iconify.design set." title="Icon database-import-outline from mdi Iconify.design set."></iconify-icon> Read the Data</a></li>
+<li><a href="#read-the-data" id="toc-read-the-data" class="nav-link" data-scroll-target="#read-the-data"><span class="header-section-number">4.1</span> <iconify-icon inline="" icon="mdi:database-import-outline" aria-label="Icon database-import-outline from mdi Iconify.design set." title="Icon database-import-outline from mdi Iconify.design set."></iconify-icon> Read the Data</a></li>
   </ul>
 </li>
   <li>
 <a href="#data-inspection" id="toc-data-inspection" class="nav-link" data-scroll-target="#data-inspection"><span class="header-section-number">5</span> Data Inspection</a>
   <ul class="collapse">
-<li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920726920637573746f6d2d73697a65203e7d7d-the-size-of-our-dataset" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920726920637573746f6d2d73697a65203e7d7d-the-size-of-our-dataset" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920726920637573746f6d2d73697a65203e7d7d-the-size-of-our-dataset"><span class="header-section-number">5.1</span> <iconify-icon inline="" icon="ri:custom-size" aria-label="Icon custom-size from ri Iconify.design set." title="Icon custom-size from ri Iconify.design set."></iconify-icon> The Size of our Dataset</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e20737472756374757265203e7d7d-variables-names" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e20737472756374757265203e7d7d-variables-names" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e20737472756374757265203e7d7d-variables-names"><span class="header-section-number">5.2</span> <iconify-icon inline="" icon="carbon:structure" aria-label="Icon structure from carbon Iconify.design set." title="Icon structure from carbon Iconify.design set."></iconify-icon> Variables Names</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e20737472756374757265203e7d7d-variable-types" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e20737472756374757265203e7d7d-variable-types" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e20737472756374757265203e7d7d-variable-types"><span class="header-section-number">5.3</span> <iconify-icon inline="" icon="carbon:structure" aria-label="Icon structure from carbon Iconify.design set." title="Icon structure from carbon Iconify.design set."></iconify-icon> Variable Types</a></li>
+<li><a href="#the-size-of-our-dataset" id="toc-the-size-of-our-dataset" class="nav-link" data-scroll-target="#the-size-of-our-dataset"><span class="header-section-number">5.1</span> <iconify-icon inline="" icon="ri:custom-size" aria-label="Icon custom-size from ri Iconify.design set." title="Icon custom-size from ri Iconify.design set."></iconify-icon> The Size of our Dataset</a></li>
+  <li><a href="#variables-names" id="toc-variables-names" class="nav-link" data-scroll-target="#variables-names"><span class="header-section-number">5.2</span> <iconify-icon inline="" icon="carbon:structure" aria-label="Icon structure from carbon Iconify.design set." title="Icon structure from carbon Iconify.design set."></iconify-icon> Variables Names</a></li>
+  <li><a href="#variable-types" id="toc-variable-types" class="nav-link" data-scroll-target="#variable-types"><span class="header-section-number">5.3</span> <iconify-icon inline="" icon="carbon:structure" aria-label="Icon structure from carbon Iconify.design set." title="Icon structure from carbon Iconify.design set."></iconify-icon> Variable Types</a></li>
   </ul>
 </li>
   <li>
 <a href="#data-munging" id="toc-data-munging" class="nav-link" data-scroll-target="#data-munging"><span class="header-section-number">6</span> Data Munging</a>
   <ul class="collapse">
-<li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e20636c65616e203e7d7d-variable-name-options" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e20636c65616e203e7d7d-variable-name-options" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e20636c65616e203e7d7d-variable-name-options"><span class="header-section-number">6.1</span> <iconify-icon inline="" icon="carbon:clean" aria-label="Icon clean from carbon Iconify.design set." title="Icon clean from carbon Iconify.design set."></iconify-icon> Variable Name Options</a></li>
+<li><a href="#variable-name-options" id="toc-variable-name-options" class="nav-link" data-scroll-target="#variable-name-options"><span class="header-section-number">6.1</span> <iconify-icon inline="" icon="carbon:clean" aria-label="Icon clean from carbon Iconify.design set." title="Icon clean from carbon Iconify.design set."></iconify-icon> Variable Name Options</a></li>
   <li><a href="#name-cleaning" id="toc-name-cleaning" class="nav-link" data-scroll-target="#name-cleaning"><span class="header-section-number">6.2</span> Name Cleaning</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792066696c652d69636f6e7320696e666c757864617461203e7d7d-check-for-missing-data" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792066696c652d69636f6e7320696e666c757864617461203e7d7d-check-for-missing-data" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792066696c652d69636f6e7320696e666c757864617461203e7d7d-check-for-missing-data"><span class="header-section-number">6.3</span> <iconify-icon inline="" icon="file-icons:influxdata" aria-label="Icon influxdata from file-icons Iconify.design set." title="Icon influxdata from file-icons Iconify.design set."></iconify-icon> Check for Missing Data</a></li>
+  <li><a href="#check-for-missing-data" id="toc-check-for-missing-data" class="nav-link" data-scroll-target="#check-for-missing-data"><span class="header-section-number">6.3</span> <iconify-icon inline="" icon="file-icons:influxdata" aria-label="Icon influxdata from file-icons Iconify.design set." title="Icon influxdata from file-icons Iconify.design set."></iconify-icon> Check for Missing Data</a></li>
   <li><a href="#what-to-do-with-missing-data" id="toc-what-to-do-with-missing-data" class="nav-link" data-scroll-target="#what-to-do-with-missing-data"><span class="header-section-number">6.4</span> What to Do with Missing Data</a></li>
   <li><a href="#the-naniar-package" id="toc-the-naniar-package" class="nav-link" data-scroll-target="#the-naniar-package"><span class="header-section-number">6.5</span> The <code>{naniar}</code> package</a></li>
   <li><a href="#replace-missing-values-with-na" id="toc-replace-missing-values-with-na" class="nav-link" data-scroll-target="#replace-missing-values-with-na"><span class="header-section-number">6.6</span> Replace Missing Values with <code>NA</code></a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e652064696374696f6e6172792d6c616e67756167652d626f6f6b2d736f6c6964203e7d7d-data-munging" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e652064696374696f6e6172792d6c616e67756167652d626f6f6b2d736f6c6964203e7d7d-data-munging" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e652064696374696f6e6172792d6c616e67756167652d626f6f6b2d736f6c6964203e7d7d-data-munging"><span class="header-section-number">6.7</span> <iconify-icon inline="" icon="streamline:dictionary-language-book-solid" aria-label="Icon dictionary-language-book-solid from streamline Iconify.design set." title="Icon dictionary-language-book-solid from streamline Iconify.design set."></iconify-icon> Data Munging</a></li>
+  <li><a href="#data-munging-1" id="toc-data-munging-1" class="nav-link" data-scroll-target="#data-munging-1"><span class="header-section-number">6.7</span> <iconify-icon inline="" icon="streamline:dictionary-language-book-solid" aria-label="Icon dictionary-language-book-solid from streamline Iconify.design set." title="Icon dictionary-language-book-solid from streamline Iconify.design set."></iconify-icon> Data Munging</a></li>
   <li><a href="#data-dictionary" id="toc-data-dictionary" class="nav-link" data-scroll-target="#data-dictionary"><span class="header-section-number">6.8</span> Data Dictionary</a></li>
   </ul>
 </li>
   <li>
-<a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d6469207461626c652d73746172203e7d7d-data-table-for-reporting" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d6469207461626c652d73746172203e7d7d-data-table-for-reporting" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d6469207461626c652d73746172203e7d7d-data-table-for-reporting"><span class="header-section-number">7</span> <iconify-icon inline="" icon="mdi:table-star" aria-label="Icon table-star from mdi Iconify.design set." title="Icon table-star from mdi Iconify.design set."></iconify-icon> Data Table for Reporting</a>
+<a href="#data-table-for-reporting" id="toc-data-table-for-reporting" class="nav-link" data-scroll-target="#data-table-for-reporting"><span class="header-section-number">7</span> <iconify-icon inline="" icon="mdi:table-star" aria-label="Icon table-star from mdi Iconify.design set." title="Icon table-star from mdi Iconify.design set."></iconify-icon> Data Table for Reporting</a>
   <ul class="collapse">
 <li><a href="#static-table-reporting" id="toc-static-table-reporting" class="nav-link" data-scroll-target="#static-table-reporting"><span class="header-section-number">7.1</span> Static Table Reporting</a></li>
   <li><a href="#interactive-table-reporting" id="toc-interactive-table-reporting" class="nav-link" data-scroll-target="#interactive-table-reporting"><span class="header-section-number">7.2</span> Interactive Table Reporting</a></li>
   </ul>
 </li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why"><span class="header-section-number">8</span> <iconify-icon inline="" icon="mingcute:thought-line" aria-label="Icon thought-line from mingcute Iconify.design set." title="Icon thought-line from mingcute Iconify.design set."></iconify-icon> Wait, But Why?</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion"><span class="header-section-number">9</span> <iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusion</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d72746c203e7d7d-references" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d72746c203e7d7d-references" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d72746c203e7d7d-references"><span class="header-section-number">10</span> <iconify-icon inline="" icon="ooui:references-rtl" aria-label="Icon references-rtl from ooui Iconify.design set." title="Icon references-rtl from ooui Iconify.design set."></iconify-icon> References</a></li>
+  <li><a href="#wait-but-why" id="toc-wait-but-why" class="nav-link" data-scroll-target="#wait-but-why"><span class="header-section-number">8</span> <iconify-icon inline="" icon="mingcute:thought-line" aria-label="Icon thought-line from mingcute Iconify.design set." title="Icon thought-line from mingcute Iconify.design set."></iconify-icon> Wait, But Why?</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">9</span> <iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusion</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">10</span> <iconify-icon inline="" icon="ooui:references-rtl" aria-label="Icon references-rtl from ooui Iconify.design set." title="Icon references-rtl from ooui Iconify.design set."></iconify-icon> References</a></li>
   </ul><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="inspect-reveal.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></nav>
     </div>
 <!-- main -->
@@ -863,7 +856,7 @@ div.csl-indent {
 <p><span class="f6 ttu tracked fs-normal">— Michel de Montaigne, Writer and philosopher</span></p>
 </div>
 </div>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages">
+<section id="setting-up-r-packages" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="setting-up-r-packages">
 <span class="header-section-number">1</span> <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
@@ -1001,7 +994,7 @@ div.csl-indent {
 <span><span class="fu">flextable</span><span class="fu">::</span><span class="fu"><a href="https://davidgohel.github.io/flextable/reference/set_flextable_defaults.html">set_flextable_defaults</a></span><span class="op">(</span>font.family <span class="op">=</span> <span class="st">"Roboto Condensed"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-</section></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206678656d6f6a69206a6170616e65736573796d626f6c666f72626567696e6e6572203e7d7d-how-do-we-eat-data" class="level2" data-number="2"><h2 data-number="2" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206678656d6f6a69206a6170616e65736573796d626f6c666f72626567696e6e6572203e7d7d-how-do-we-eat-data">
+</section></section><section id="how-do-we-eat-data" class="level2" data-number="2"><h2 data-number="2" class="anchored" data-anchor-id="how-do-we-eat-data">
 <span class="header-section-number">2</span> <iconify-icon inline="" icon="fxemoji:japanesesymbolforbeginner" aria-label="Icon japanesesymbolforbeginner from fxemoji Iconify.design set." title="Icon japanesesymbolforbeginner from fxemoji Iconify.design set."></iconify-icon> How do we eat Data?</h2>
 <p>We spoke of Experiments and Data Gathering in the first module <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/05-NatureData/index.html#sec-where-data">Nature of Data</a>. This helped us to <strong>obtain</strong> data.</p>
 <p>Our first task is to get acquainted with our data, to check the variables, the size of the dataset, how it is formatted, to eat it, as it were.</p>
@@ -1019,7 +1012,7 @@ div.csl-indent {
 <ul>
 <li><strong><em>Data Cleaning, or Munging</em></strong></li>
 <li>A clean dataset, whose variables we understand the meaning of, and which we will explore all the charts at our disposal.</li>
-</ul></section></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d646920666f6f642d70726f636573736f722d6f75746c696e65203e7d7d-how-do-these-inspections-work" class="level2" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d646920666f6f642d70726f636573736f722d6f75746c696e65203e7d7d-how-do-these-inspections-work">
+</ul></section></section><section id="how-do-these-inspections-work" class="level2" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="how-do-these-inspections-work">
 <span class="header-section-number">3</span> <iconify-icon inline="" icon="mdi:food-processor-outline" aria-label="Icon food-processor-outline from mdi Iconify.design set." title="Icon food-processor-outline from mdi Iconify.design set."></iconify-icon> How do these Inspections Work?</h2>
 <section id="steps-in-data-inspection-and-cleaning" class="level3" data-number="3.1"><h3 data-number="3.1" class="anchored" data-anchor-id="steps-in-data-inspection-and-cleaning">
 <span class="header-section-number">3.1</span> Steps in Data Inspection and Cleaning</h3>
@@ -1043,10 +1036,10 @@ div.csl-indent {
 <li>Make factors and rearrange factors to the left of our table using <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">dplyr::mutate()</a></code>, <code><a href="https://rdrr.io/r/base/factor.html">base::factor()</a></code> or <code><a href="https://forcats.tidyverse.org/reference/as_factor.html">forcats::as_factor()</a></code>, followed by <code><a href="https://dplyr.tidyverse.org/reference/relocate.html">dplyr::relocate()</a></code>
 </li>
 <li>Make a cool table for our cleaned data with <code><a href="https://vincentarelbundock.github.io/tinytable/man/tt.html">tinytable::tt()</a></code> (static) or <code><a href="https://rdrr.io/pkg/DT/man/datatable.html">DT::datatable()</a></code> (interactive)</li>
-</ul></section></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792067726f6d6d65742d69636f6e732074657374203e7d7d-case-study-fast-food" class="level2" data-number="4"><h2 data-number="4" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792067726f6d6d65742d69636f6e732074657374203e7d7d-case-study-fast-food">
+</ul></section></section><section id="case-study-fast-food" class="level2" data-number="4"><h2 data-number="4" class="anchored" data-anchor-id="case-study-fast-food">
 <span class="header-section-number">4</span> <iconify-icon inline="" icon="grommet-icons:test" aria-label="Icon test from grommet-icons Iconify.design set." title="Icon test from grommet-icons Iconify.design set."></iconify-icon> Case Study: Fast Food</h2>
 <p>Since we are about to eat our data, we may begin with the dataset <code>fastfood</code> from the <a href="https://github.com/rfordatascience/tidytuesday">TidyTuesday Project</a> for September 4, 2018.</p>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d64692064617461626173652d696d706f72742d6f75746c696e65203e7d7d-read-the-data" class="level3" data-number="4.1"><h3 data-number="4.1" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d64692064617461626173652d696d706f72742d6f75746c696e65203e7d7d-read-the-data">
+<section id="read-the-data" class="level3" data-number="4.1"><h3 data-number="4.1" class="anchored" data-anchor-id="read-the-data">
 <span class="header-section-number">4.1</span> <iconify-icon inline="" icon="mdi:database-import-outline" aria-label="Icon database-import-outline from mdi Iconify.design set." title="Icon database-import-outline from mdi Iconify.design set."></iconify-icon> Read the Data</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fastfood</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span><span class="op">(</span><span class="st">"https://vincentarelbundock.github.io/Rdatasets/csv/openintro/fastfood.csv"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1064,7 +1057,7 @@ dbl (15): rownames, calories, cal_fat, total_fat, sat_fat, trans_fat, choles...
 <p>The output from <code><a href="https://readr.tidyverse.org/reference/read_delim.html">readr::read_csv()</a></code> tells us that the data frame contains 515 rows and 18 columns. At this point we can’t tell if there are missing values anywhere, or even if there are badly formatted data values anywhere.</p>
 </section></section><section id="data-inspection" class="level2" data-number="5"><h2 data-number="5" class="anchored" data-anchor-id="data-inspection">
 <span class="header-section-number">5</span> Data Inspection</h2>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920726920637573746f6d2d73697a65203e7d7d-the-size-of-our-dataset" class="level3" data-number="5.1"><h3 data-number="5.1" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920726920637573746f6d2d73697a65203e7d7d-the-size-of-our-dataset">
+<section id="the-size-of-our-dataset" class="level3" data-number="5.1"><h3 data-number="5.1" class="anchored" data-anchor-id="the-size-of-our-dataset">
 <span class="header-section-number">5.1</span> <iconify-icon inline="" icon="ri:custom-size" aria-label="Icon custom-size from ri Iconify.design set." title="Icon custom-size from ri Iconify.design set."></iconify-icon> The Size of our Dataset</h3>
 <p>We already discover from the <code><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv()</a></code> output that the dataset has 515 rows and 18 columns. We can also use <code><a href="https://rdrr.io/r/base/dim.html">dim()</a></code> to get this information:</p>
 <div class="cell">
@@ -1074,7 +1067,7 @@ dbl (15): rownames, calories, cal_fat, total_fat, sat_fat, trans_fat, choles...
 </div>
 </div>
 <p>This tells us that the dataset has 515 rows and 18 columns.</p>
-</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e20737472756374757265203e7d7d-variables-names" class="level3" data-number="5.2"><h3 data-number="5.2" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e20737472756374757265203e7d7d-variables-names">
+</section><section id="variables-names" class="level3" data-number="5.2"><h3 data-number="5.2" class="anchored" data-anchor-id="variables-names">
 <span class="header-section-number">5.2</span> <iconify-icon inline="" icon="carbon:structure" aria-label="Icon structure from carbon Iconify.design set." title="Icon structure from carbon Iconify.design set."></iconify-icon> Variables Names</h3>
 <p>Again, <code><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv()</a></code> tells us that some columns are <code>character</code>, some are <code>double</code> and some are <code>integer</code>. We can use <code><a href="https://rdrr.io/r/base/names.html">names()</a></code> and <code><a href="https://pillar.r-lib.org/reference/glimpse.html">dplyr::glimpse()</a></code> to get more information about the variables in the dataset.</p>
 <div class="cell">
@@ -1086,7 +1079,7 @@ dbl (15): rownames, calories, cal_fat, total_fat, sat_fat, trans_fat, choles...
 [16] "vit_c"       "calcium"     "salad"      </code></pre>
 </div>
 </div>
-</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e20737472756374757265203e7d7d-variable-types" class="level3" data-number="5.3"><h3 data-number="5.3" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e20737472756374757265203e7d7d-variable-types">
+</section><section id="variable-types" class="level3" data-number="5.3"><h3 data-number="5.3" class="anchored" data-anchor-id="variable-types">
 <span class="header-section-number">5.3</span> <iconify-icon inline="" icon="carbon:structure" aria-label="Icon structure from carbon Iconify.design set." title="Icon structure from carbon Iconify.design set."></iconify-icon> Variable Types</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">fastfood</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1123,7 +1116,7 @@ $ salad       &lt;chr&gt; "Other", "Other", "Other", "Other", "Other", "Other", 
 <li>Dealing with Missing Data</li>
 <li>Locating Variables for Attention!</li>
 </ul>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e20636c65616e203e7d7d-variable-name-options" class="level3" data-number="6.1"><h3 data-number="6.1" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e20636c65616e203e7d7d-variable-name-options">
+<section id="variable-name-options" class="level3" data-number="6.1"><h3 data-number="6.1" class="anchored" data-anchor-id="variable-name-options">
 <span class="header-section-number">6.1</span> <iconify-icon inline="" icon="carbon:clean" aria-label="Icon clean from carbon Iconify.design set." title="Icon clean from carbon Iconify.design set."></iconify-icon> Variable Name Options</h3>
 <p>As a part of the process, we should make sure that the <strong>variable names</strong> (not entries!!) are formatted in a “clean” way: there are a few options here, such as <code>camelCase</code>, <code>snake_case</code>, <code>kebab-case</code>, or <code>dot.case</code>. We will use the <a href="https://github.com/sfirke/janitor">janitor</a> package to do this, and also to make sure that the variable names are unique. AND, we will stick with <code>snake_case</code> for the rest of this course.</p>
 <p>In this specific case, the variables names look evocative and meaningful enough, without being verbose; they seem just right. But as names in data become complex, with special characters ( <code>%$#@!*_|?</code> etc.), this becomes very useful.</p>
@@ -1144,7 +1137,7 @@ $ salad       &lt;chr&gt; "Other", "Other", "Other", "Other", "Other", "Other", 
 </div>
 </div>
 <p>This cleaning up was not needed here, since the original names were already good. But it is a good practice to do this, as it will save you a lot of headaches later on.</p>
-</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792066696c652d69636f6e7320696e666c757864617461203e7d7d-check-for-missing-data" class="level3" data-number="6.3"><h3 data-number="6.3" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792066696c652d69636f6e7320696e666c757864617461203e7d7d-check-for-missing-data">
+</section><section id="check-for-missing-data" class="level3" data-number="6.3"><h3 data-number="6.3" class="anchored" data-anchor-id="check-for-missing-data">
 <span class="header-section-number">6.3</span> <iconify-icon inline="" icon="file-icons:influxdata" aria-label="Icon influxdata from file-icons Iconify.design set." title="Icon influxdata from file-icons Iconify.design set."></iconify-icon> Check for Missing Data</h3>
 <p>Let us use the <a href="https://docs.ropensci.org/visdat/">visdat</a> package to visualize this:</p>
 <details class="code-fold"><summary>Show the Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12" data-code-line-numbers=""><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html">set_theme</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_void</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
@@ -1241,7 +1234,7 @@ $ salad       &lt;chr&gt; "Other", "Other", "Other", "Other", "Other", "Other", 
 </div>
 </div>
 <p>Note that with large datasets, this replacement of strings and numbers with <code><a href="https://naniar.njtierney.com/reference/replace_with_na_all.html">naniar::replace_with_na_all()</a></code> takes a lot of time to execute.</p>
-</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e652064696374696f6e6172792d6c616e67756167652d626f6f6b2d736f6c6964203e7d7d-data-munging" class="level3" data-number="6.7"><h3 data-number="6.7" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e652064696374696f6e6172792d6c616e67756167652d626f6f6b2d736f6c6964203e7d7d-data-munging">
+</section><section id="data-munging-1" class="level3" data-number="6.7"><h3 data-number="6.7" class="anchored" data-anchor-id="data-munging-1">
 <span class="header-section-number">6.7</span> <iconify-icon inline="" icon="streamline:dictionary-language-book-solid" aria-label="Icon dictionary-language-book-solid from streamline Iconify.design set." title="Icon dictionary-language-book-solid from streamline Iconify.design set."></iconify-icon> Data Munging</h3>
 <p>We see that there are certain variables that must be converted to <strong>factors</strong> for analytics purposes, since they are unmistakably <strong>Qualitative</strong> in nature. Let us do that now, for use later:</p>
 <div class="cell">
@@ -1356,7 +1349,7 @@ $ calcium     &lt;dbl&gt; 20, 20, 50, 20, 20, 15, 10, 2, 15, 20, 15, 35, 35, 35,
 </div>
 </div>
 </div>
-</section></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d6469207461626c652d73746172203e7d7d-data-table-for-reporting" class="level2" data-number="7"><h2 data-number="7" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d6469207461626c652d73746172203e7d7d-data-table-for-reporting">
+</section></section><section id="data-table-for-reporting" class="level2" data-number="7"><h2 data-number="7" class="anchored" data-anchor-id="data-table-for-reporting">
 <span class="header-section-number">7</span> <iconify-icon inline="" icon="mdi:table-star" aria-label="Icon table-star from mdi Iconify.design set." title="Icon table-star from mdi Iconify.design set."></iconify-icon> Data Table for Reporting</h2>
 <p>It is usually a good idea to make crisp business-like tables to show your data. There are many methods to do this.</p>
 <section id="static-table-reporting" class="level3" data-number="7.1"><h3 data-number="7.1" class="anchored" data-anchor-id="static-table-reporting">
@@ -1674,7 +1667,7 @@ Table&nbsp;2: Fastfood Clean Dynamic Data Table
 </figcaption></figure>
 </div>
 </div>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920626920706572736f6e2d7570203e7d7d-your-turn" class="level4"><h4 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920626920706572736f6e2d7570203e7d7d-your-turn">
+<section id="your-turn" class="level4"><h4 class="anchored" data-anchor-id="your-turn">
 <iconify-icon inline="" icon="bi:person-up" aria-label="Icon person-up from bi Iconify.design set." title="Icon person-up from bi Iconify.design set."></iconify-icon> Your Turn</h4>
 <ol type="1">
 <li>See if you can do this for this messy dataset which you can download by clicking on the button below the table:</li>
@@ -1788,7 +1781,7 @@ Table&nbsp;2: Fastfood Clean Dynamic Data Table
 <p>Save it inside your <code>data</code> folder, and call it <code>penguins_messy.csv</code>. Then read the data in your Quarto document using <code>readr::read_csv("data/penguins-messy.csv)</code> and proceed.</p>
 <ol start="2" type="1">
 <li>Install the package <code>{tastyR}</code>. It contains two datasets, <code>allrecipes</code> and <code>cuisines</code>. Do a similar inspection and if needed, cleaning/munging of these datasets.</li>
-</ol></section></section></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why" class="level2" data-number="8"><h2 data-number="8" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why">
+</ol></section></section></section><section id="wait-but-why" class="level2" data-number="8"><h2 data-number="8" class="anchored" data-anchor-id="wait-but-why">
 <span class="header-section-number">8</span> <iconify-icon inline="" icon="mingcute:thought-line" aria-label="Icon thought-line from mingcute Iconify.design set." title="Icon thought-line from mingcute Iconify.design set."></iconify-icon> Wait, But Why?</h2>
 <ul>
 <li>Data Inspection is an essential step in getting to know your data.</li>
@@ -1796,7 +1789,7 @@ Table&nbsp;2: Fastfood Clean Dynamic Data Table
 <li>Data Cleaning is an essential step in the data analysis process.</li>
 <li>These steps get much of the headache out of the way, and allow you to focus on the real work of Data Exploration, Data Analysis, and Modelling.</li>
 <li>And Data Presentation!!</li>
-</ul></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion" class="level2" data-number="9"><h2 data-number="9" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion">
+</ul></section><section id="conclusion" class="level2" data-number="9"><h2 data-number="9" class="anchored" data-anchor-id="conclusion">
 <span class="header-section-number">9</span> <iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusion</h2>
 <ul>
 <li>The first step in data analysis is to get to know your data.</li>
@@ -1808,7 +1801,7 @@ Table&nbsp;2: Fastfood Clean Dynamic Data Table
 <li>Use <code><a href="https://vincentarelbundock.github.io/tinytable/man/tt.html">tinytable::tt()</a></code> or <code><a href="https://rdrr.io/pkg/DT/man/datatable.html">DT::datatable()</a></code> to create tables for your data.</li>
 </ul>
 <p>Make these part of your <em>Workflow</em>.</p>
-</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d72746c203e7d7d-references" class="level2" data-number="10"><h2 data-number="10" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d72746c203e7d7d-references">
+</section><section id="references" class="level2" data-number="10"><h2 data-number="10" class="anchored" data-anchor-id="references">
 <span class="header-section-number">10</span> <iconify-icon inline="" icon="ooui:references-rtl" aria-label="Icon references-rtl from ooui Iconify.design set." title="Icon references-rtl from ooui Iconify.design set."></iconify-icon> References</h2>
 <ol type="1">
 <li>Nicholas Tierney. (2024-03-05). <em>Getting Started with naniar</em>. <a href="https://cran.r-project.org/web/packages/naniar/vignettes/getting-started-w-naniar.html" class="uri">https://cran.r-project.org/web/packages/naniar/vignettes/getting-started-w-naniar.html</a>
@@ -1816,8 +1809,8 @@ Table&nbsp;2: Fastfood Clean Dynamic Data Table
 <li>Vincent Arel-Bundock. <em>tinytable</em>. <a href="https://vincentarelbundock.github.io/tinytable/" class="uri">https://vincentarelbundock.github.io/tinytable/</a>.</li>
 <li>Vincent Arel-Bundock. <em>RDatasets</em>. <a href="https://vincentarelbundock.github.io/Rdatasets/" class="uri">https://vincentarelbundock.github.io/Rdatasets/</a>.</li>
 </ol>
-<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" role="list">
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c7563696465207061636b6167652d636865636b203e7d7d-r-package-citations" class="level6"><h6 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c7563696465207061636b6167652d636865636b203e7d7d-r-package-citations">
+<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" data-entry-spacing="0" role="list">
+<section id="r-package-citations" class="level6"><h6 class="anchored" data-anchor-id="r-package-citations">
 <iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
 <div class="cell">
 <div class="cell-output-display">
@@ -1851,7 +1844,7 @@ Table&nbsp;2: Fastfood Clean Dynamic Data Table
 <tr class="odd">
 <td style="text-align: left;">tinytable</td>
 <td style="text-align: left;">0.15.2</td>
-<td style="text-align: left;"><span class="citation" data-cites="tinytable">Arel-Bundock (<a href="#ref-tinytable" role="doc-biblioref">2025</a>)</span></td>
+<td style="text-align: left;"><span class="citation" data-cites="tinytable">Arel-Bundock (<a href="#ref-tinytable" role="doc-biblioref">2026</a>)</span></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">visdat</td>
@@ -1863,7 +1856,7 @@ Table&nbsp;2: Fastfood Clean Dynamic Data Table
 </div>
 </div>
 <div id="ref-tinytable" class="csl-entry" role="listitem">
-Arel-Bundock, Vincent. 2025. <em><span class="nocase">tinytable</span>: Simple and Configurable Tables in <span>“<span>HTML</span>,”</span> <span>“<span>LaTeX</span>,”</span> <span>“<span>Markdown</span>,”</span> <span>“<span>Word</span>,”</span> <span>“<span>PNG</span>,”</span> <span>“<span>PDF</span>,”</span> and <span>“<span>Typst</span>”</span> Formats</em>. <a href="https://doi.org/10.32614/CRAN.package.tinytable">https://doi.org/10.32614/CRAN.package.tinytable</a>.
+Arel-Bundock, Vincent. 2026. <em><span class="nocase">tinytable</span>: Simple and Configurable Tables in <span>“<span>HTML</span>,”</span> <span>“<span>LaTeX</span>,”</span> <span>“<span>Markdown</span>,”</span> <span>“<span>Word</span>,”</span> <span>“<span>PNG</span>,”</span> <span>“<span>PDF</span>,”</span> and <span>“<span>Typst</span>”</span> Formats</em>. <a href="https://doi.org/10.32614/CRAN.package.tinytable">https://doi.org/10.32614/CRAN.package.tinytable</a>.
 </div>
 <div id="ref-janitor" class="csl-entry" role="listitem">
 Firke, Sam. 2024. <em><span class="nocase">janitor</span>: Simple Tools for Examining and Cleaning Dirty Data</em>. <a href="https://doi.org/10.32614/CRAN.package.janitor">https://doi.org/10.32614/CRAN.package.janitor</a>.
@@ -1899,7 +1892,7 @@ Xie, Yihui, Joe Cheng, Xianying Tan, and Garrick Aden-Buie. 2025. <em><span>DT</
 <span>“&lt;Iconify-Icon Icon=<span>‘grommet-Icons:inspect’</span>
 Width=<span>‘1.2em’</span>
 Height=<span>‘1.2em’</span>&gt;&lt;/Iconify-Icon&gt; Inspect
-Data.”</span> 2025. August 22. <a href="https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/06-Inspect/">https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/06-Inspect/</a>.
+Data.”</span> 2025. August 22, 2025. <a href="https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/06-Inspect/">https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/06-Inspect/</a>.
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

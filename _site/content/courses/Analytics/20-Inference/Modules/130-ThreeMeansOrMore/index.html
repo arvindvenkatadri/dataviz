@@ -2,14 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.3">
+<meta name="generator" content="quarto-1.8.27">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="dcterms.date" content="2023-03-28">
 <title>Comparing Multiple Means with ANOVA – The Mad Hatter’s Guide to Data Viz and Stats in R</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -60,6 +57,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -89,14 +87,15 @@ div.csl-indent {
 <link href="../../../../../../content/materials/icon-park-twotone--concept-sharing.svg" rel="icon" type="image/svg+xml">
 <script src="../../../../../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../../../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../../../../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-6940a74685447e775670a5f17abc1189.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-795e9e8eca1e12b12abcb09a27409631.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../../../../site_libs/bootstrap/bootstrap-fcc7b2a3b14c77575dee92098a957997.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../../../site_libs/bootstrap/bootstrap-f98024d38ba10b6a495c0c63f82dd59d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="../../../../../../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.css" rel="stylesheet">
 <script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <link href="../../../../../../site_libs/quarto-contrib/downloadthis-1.9.1/downloadthis.css" rel="stylesheet">
@@ -131,7 +130,7 @@ div.csl-indent {
   }
 }</script><style>html{ scroll-behavior: smooth; }</style>
 <link href="../../../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="../../../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+<script src="../../../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -164,7 +163,7 @@ window.Quarto = {
 <meta property="og:title" content="Comparing Multiple Means with ANOVA – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:description" content="ANOVA to investigate how frogspawn hatching time varies with temperature.">
 <meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/20-Inference/Modules/130-ThreeMeansOrMore/preview.jpg">
-<meta property="og:site_name" content="The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
 <meta name="twitter:title" content="Comparing Multiple Means with ANOVA – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta name="twitter:description" content="ANOVA to investigate how frogspawn hatching time varies with temperature.">
 <meta name="twitter:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/20-Inference/Modules/130-ThreeMeansOrMore/preview.jpg">
@@ -343,7 +342,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/60-PartWhole/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><iconify-icon icon="ic:round-pie-chart-outline"></iconify-icon> Parts of a Whole</span></a>
+ <span class="menu-text"><iconify-icon icon="ic:round-pie-chart-outline"></iconify-icon> Hierarchy</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -401,12 +400,6 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/20-Leaflet/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> Interactive Maps with leaflet</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/30-Mapview/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> Interactive Maps With Mapview</span></a>
   </div>
 </li>
       </ul>
@@ -776,31 +769,31 @@ window.Quarto = {
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="nav-link active" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages"><span class="header-section-number">1</span> <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction"><span class="header-section-number">2</span> <iconify-icon inline="" icon="openmoji:japanese-symbol-for-beginner" aria-label="Icon japanese-symbol-for-beginner from openmoji Iconify.design set." title="Icon japanese-symbol-for-beginner from openmoji Iconify.design set."></iconify-icon> Introduction</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-read-the-data" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-read-the-data" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-read-the-data"><span class="header-section-number">3</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Read the Data</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d6174657269616c2d73796d626f6c73207069766f742d7461626c652d6368617274203e7d7d-workflow-clean-the-data" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d6174657269616c2d73796d626f6c73207069766f742d7461626c652d6368617274203e7d7d-workflow-clean-the-data" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d6174657269616c2d73796d626f6c73207069766f742d7461626c652d6368617274203e7d7d-workflow-clean-the-data"><span class="header-section-number">4</span> <iconify-icon inline="" icon="material-symbols:pivot-table-chart" aria-label="Icon pivot-table-chart from material-symbols Iconify.design set." title="Icon pivot-table-chart from material-symbols Iconify.design set."></iconify-icon> Workflow: Clean the Data</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-eda" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-eda" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-eda"><span class="header-section-number">5</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: EDA</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-anova" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-anova" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-anova"><span class="header-section-number">6</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: ANOVA</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e206d6f64656c203e7d7d-stating-the-model" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e206d6f64656c203e7d7d-stating-the-model" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e206d6f64656c203e7d7d-stating-the-model"><span class="header-section-number">7</span> <iconify-icon inline="" icon="carbon:model" aria-label="Icon model from carbon Iconify.design set." title="Icon model from carbon Iconify.design set."></iconify-icon> Stating the Model</a></li>
+<li><a href="#setting-up-r-packages" id="toc-setting-up-r-packages" class="nav-link active" data-scroll-target="#setting-up-r-packages"><span class="header-section-number">1</span> <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction"><span class="header-section-number">2</span> <iconify-icon inline="" icon="openmoji:japanese-symbol-for-beginner" aria-label="Icon japanese-symbol-for-beginner from openmoji Iconify.design set." title="Icon japanese-symbol-for-beginner from openmoji Iconify.design set."></iconify-icon> Introduction</a></li>
+  <li><a href="#workflow-read-the-data" id="toc-workflow-read-the-data" class="nav-link" data-scroll-target="#workflow-read-the-data"><span class="header-section-number">3</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Read the Data</a></li>
+  <li><a href="#workflow-clean-the-data" id="toc-workflow-clean-the-data" class="nav-link" data-scroll-target="#workflow-clean-the-data"><span class="header-section-number">4</span> <iconify-icon inline="" icon="material-symbols:pivot-table-chart" aria-label="Icon pivot-table-chart from material-symbols Iconify.design set." title="Icon pivot-table-chart from material-symbols Iconify.design set."></iconify-icon> Workflow: Clean the Data</a></li>
+  <li><a href="#workflow-eda" id="toc-workflow-eda" class="nav-link" data-scroll-target="#workflow-eda"><span class="header-section-number">5</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: EDA</a></li>
+  <li><a href="#workflow-anova" id="toc-workflow-anova" class="nav-link" data-scroll-target="#workflow-anova"><span class="header-section-number">6</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: ANOVA</a></li>
+  <li><a href="#stating-the-model" id="toc-stating-the-model" class="nav-link" data-scroll-target="#stating-the-model"><span class="header-section-number">7</span> <iconify-icon inline="" icon="carbon:model" aria-label="Icon model from carbon Iconify.design set." title="Icon model from carbon Iconify.design set."></iconify-icon> Stating the Model</a></li>
   <li>
-<a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-checking-anova-assumptions" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-checking-anova-assumptions" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-checking-anova-assumptions"><span class="header-section-number">8</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Checking ANOVA Assumptions</a>
+<a href="#workflow-checking-anova-assumptions" id="toc-workflow-checking-anova-assumptions" class="nav-link" data-scroll-target="#workflow-checking-anova-assumptions"><span class="header-section-number">8</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Checking ANOVA Assumptions</a>
   <ul class="collapse">
-<li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069632074776f746f6e652d72756c65203e7d7d-checks-for-normality" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069632074776f746f6e652d72756c65203e7d7d-checks-for-normality" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069632074776f746f6e652d72756c65203e7d7d-checks-for-normality"><span class="header-section-number">8.1</span> <iconify-icon inline="" icon="ic:twotone-rule" aria-label="Icon twotone-rule from ic Iconify.design set." title="Icon twotone-rule from ic Iconify.design set."></iconify-icon> Checks for Normality</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069632074776f746f6e652d72756c65203e7d7d-check-for-similar-variance" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069632074776f746f6e652d72756c65203e7d7d-check-for-similar-variance" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069632074776f746f6e652d72756c65203e7d7d-check-for-similar-variance"><span class="header-section-number">8.2</span> <iconify-icon inline="" icon="ic:twotone-rule" aria-label="Icon twotone-rule from ic Iconify.design set." title="Icon twotone-rule from ic Iconify.design set."></iconify-icon> Check for Similar Variance</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069632074776f746f6e652d72756c65203e7d7d-independent-observations" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069632074776f746f6e652d72756c65203e7d7d-independent-observations" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069632074776f746f6e652d72756c65203e7d7d-independent-observations"><span class="header-section-number">8.3</span> <iconify-icon inline="" icon="ic:twotone-rule" aria-label="Icon twotone-rule from ic Iconify.design set." title="Icon twotone-rule from ic Iconify.design set."></iconify-icon> Independent Observations</a></li>
+<li><a href="#checks-for-normality" id="toc-checks-for-normality" class="nav-link" data-scroll-target="#checks-for-normality"><span class="header-section-number">8.1</span> <iconify-icon inline="" icon="ic:twotone-rule" aria-label="Icon twotone-rule from ic Iconify.design set." title="Icon twotone-rule from ic Iconify.design set."></iconify-icon> Checks for Normality</a></li>
+  <li><a href="#check-for-similar-variance" id="toc-check-for-similar-variance" class="nav-link" data-scroll-target="#check-for-similar-variance"><span class="header-section-number">8.2</span> <iconify-icon inline="" icon="ic:twotone-rule" aria-label="Icon twotone-rule from ic Iconify.design set." title="Icon twotone-rule from ic Iconify.design set."></iconify-icon> Check for Similar Variance</a></li>
+  <li><a href="#independent-observations" id="toc-independent-observations" class="nav-link" data-scroll-target="#independent-observations"><span class="header-section-number">8.3</span> <iconify-icon inline="" icon="ic:twotone-rule" aria-label="Icon twotone-rule from ic Iconify.design set." title="Icon twotone-rule from ic Iconify.design set."></iconify-icon> Independent Observations</a></li>
   </ul>
 </li>
   <li>
-<a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-effect-size" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-effect-size" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-effect-size"><span class="header-section-number">9</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Effect Size</a>
+<a href="#workflow-effect-size" id="toc-workflow-effect-size" class="nav-link" data-scroll-target="#workflow-effect-size"><span class="header-section-number">9</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Effect Size</a>
   <ul class="collapse">
 <li><a href="#using-other-packages-ggstatsplot" id="toc-using-other-packages-ggstatsplot" class="nav-link" data-scroll-target="#using-other-packages-ggstatsplot"><span class="header-section-number">9.1</span> Using other packages : ggstatsplot</a></li>
   </ul>
 </li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-anova-using-permutation-tests" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-anova-using-permutation-tests" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-anova-using-permutation-tests"><span class="header-section-number">10</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: ANOVA using Permutation Tests</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why"><span class="header-section-number">11</span> <iconify-icon inline="" icon="mingcute:thought-line" aria-label="Icon thought-line from mingcute Iconify.design set." title="Icon thought-line from mingcute Iconify.design set."></iconify-icon> Wait, But Why?</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusions" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusions" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusions"><span class="header-section-number">12</span> <iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusions</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920626920706572736f6e2d7570203e7d7d-your-turn" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920626920706572736f6e2d7570203e7d7d-your-turn" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920626920706572736f6e2d7570203e7d7d-your-turn"><span class="header-section-number">13</span> <iconify-icon inline="" icon="bi:person-up" aria-label="Icon person-up from bi Iconify.design set." title="Icon person-up from bi Iconify.design set."></iconify-icon> Your Turn</a></li>
+  <li><a href="#workflow-anova-using-permutation-tests" id="toc-workflow-anova-using-permutation-tests" class="nav-link" data-scroll-target="#workflow-anova-using-permutation-tests"><span class="header-section-number">10</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: ANOVA using Permutation Tests</a></li>
+  <li><a href="#wait-but-why" id="toc-wait-but-why" class="nav-link" data-scroll-target="#wait-but-why"><span class="header-section-number">11</span> <iconify-icon inline="" icon="mingcute:thought-line" aria-label="Icon thought-line from mingcute Iconify.design set." title="Icon thought-line from mingcute Iconify.design set."></iconify-icon> Wait, But Why?</a></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions"><span class="header-section-number">12</span> <iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusions</a></li>
+  <li><a href="#your-turn" id="toc-your-turn" class="nav-link" data-scroll-target="#your-turn"><span class="header-section-number">13</span> <iconify-icon inline="" icon="bi:person-up" aria-label="Icon person-up from bi Iconify.design set." title="Icon person-up from bi Iconify.design set."></iconify-icon> Your Turn</a></li>
   <li>
 <a href="#sec-references" id="toc-sec-references" class="nav-link" data-scroll-target="#sec-references"><span class="header-section-number">14</span> <iconify-icon inline="" icon="ooui:references-rtl" aria-label="Icon references-rtl from ooui Iconify.design set." title="Icon references-rtl from ooui Iconify.design set."></iconify-icon> References</a>
   <ul class="collapse">
@@ -843,7 +836,7 @@ window.Quarto = {
 </div>
 
 
-</header><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages">
+</header><section id="setting-up-r-packages" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="setting-up-r-packages">
 <span class="header-section-number">1</span> <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span> <span class="co"># Tidy data processing</span></span>
@@ -859,7 +852,7 @@ window.Quarto = {
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://csdaw.github.io/ggprism/">ggprism</a></span><span class="op">)</span> <span class="co"># Interesting Categorical Axes</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://emilhvitfeldt.github.io/paletteer/">paletteer</a></span><span class="op">)</span> <span class="co"># Color Palettes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e6520676c6f62616c2d6c6561726e696e67203e7d7d-extra-pedagogical-packages" class="level4"><h4 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e6520676c6f62616c2d6c6561726e696e67203e7d7d-extra-pedagogical-packages">
+<section id="extra-pedagogical-packages" class="level4"><h4 class="anchored" data-anchor-id="extra-pedagogical-packages">
 <iconify-icon inline="" icon="streamline:global-learning" aria-label="Icon global-learning from streamline Iconify.design set." title="Icon global-learning from streamline Iconify.design set."></iconify-icon> Extra Pedagogical Packages</h4>
 <div class="cell">
 <details class="code-fold"><summary>Show the Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://agricolamz.github.io/checkdown/">checkdown</a></span><span class="op">)</span></span>
@@ -879,7 +872,7 @@ window.Quarto = {
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bgreenwell/statlingua">statlingua</a></span><span class="op">)</span> <span class="co"># LLM-driven plain English statistical explanations</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679207673636f64652d69636f6e7320666f6c6465722d747970652d7468656d653e7d7d-plot-fonts-and-theme" class="level4"><h4 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679207673636f64652d69636f6e7320666f6c6465722d747970652d7468656d653e7d7d-plot-fonts-and-theme">
+</section><section id="plot-fonts-and-theme" class="level4"><h4 class="anchored" data-anchor-id="plot-fonts-and-theme">
 <iconify-icon inline="" icon="vscode-icons:folder-type-theme" aria-label="Icon folder-type-theme from vscode-icons Iconify.design set." title="Icon folder-type-theme from vscode-icons Iconify.design set."></iconify-icon> Plot Fonts and Theme</h4>
 <div class="cell" data-messages="false">
 <details class="code-fold"><summary>Show the Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-lib/systemfonts">systemfonts</a></span><span class="op">)</span></span>
@@ -1007,7 +1000,7 @@ window.Quarto = {
 <span><span class="fu">flextable</span><span class="fu">::</span><span class="fu"><a href="https://davidgohel.github.io/flextable/reference/set_flextable_defaults.html">set_flextable_defaults</a></span><span class="op">(</span>font.family <span class="op">=</span> <span class="st">"Roboto Condensed"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-</section></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction" class="level2" data-number="2"><h2 data-number="2" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction">
+</section></section><section id="introduction" class="level2" data-number="2"><h2 data-number="2" class="anchored" data-anchor-id="introduction">
 <span class="header-section-number">2</span> <iconify-icon inline="" icon="openmoji:japanese-symbol-for-beginner" aria-label="Icon japanese-symbol-for-beginner from openmoji Iconify.design set." title="Icon japanese-symbol-for-beginner from openmoji Iconify.design set."></iconify-icon> Introduction</h2>
 <p>Suppose we have three sales strategies on our website, to sell a certain product, say men’s shirts. We have observations of customer website interactions over several months. How do we know which strategy makes people buy the fastest ?</p>
 <p>If there is a University course that is offered in parallel in three different classrooms, is there a difference between the average marks obtained by students in each of the classrooms?</p>
@@ -1027,10 +1020,10 @@ window.Quarto = {
 <p>Based on the sample dataset at hand, how does frogspawn hatching time vary with different temperature settings?</p>
 </div>
 </div>
-</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-read-the-data" class="level2" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-read-the-data">
+</section><section id="workflow-read-the-data" class="level2" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="workflow-read-the-data">
 <span class="header-section-number">3</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Read the Data</h2>
 <p>Download the data by clicking the button below.</p>
-<p><a href="#dnldts5775" onclick="fetch('data:text/csv;base64,RnJvZ3NwYXduIHNhbXBsZSBpZCxUZW1wZXJhdHVyZTEzLFRlbXBlcmF0dXJlMTgsVGVtcGVyYXR1cmUyNQoxLDI0LCwKMiwsMjEsCjMsLCwxOAo0LDI2LCwKNSwsMjIsCjYsLCwxNAo3LDI3LCwKOCwsMjIsCjksLCwxNQoxMCwyNywsCjExLCwyMSwKMTIsLCwxNQoxMywyNiwsCjE0LCwyMCwKMTUsLCwxNgoxNiwyNywsCjE3LCwyMCwKMTgsLCwxNgoxOSwyNywsCjIwLCwxOSwKMjEsLCwxNwoyMiwyNSwsCjIzLCwyMSwKMjQsLCwxNwoyNSwyNiwsCjI2LCwyMywKMjcsLCwxNwoyOCwyOCwsCjI5LCwyMSwKMzAsLCwxNwozMSwyNCwsCjMyLCwyMSwKMzMsLCwxOAozNCwyNiwsCjM1LCwyMiwKMzYsLCwxNAozNywyNywsCjM4LCwyMiwKMzksLCwxNQo0MCwyNywsCjQxLCwyMSwKNDIsLCwxNQo0MywyNiwsCjQ0LCwyMCwKNDUsLCwxNgo0NiwyNywsCjQ3LCwyMCwKNDgsLCwxNgo0OSwyNywsCjUwLCwxOSwKNTEsLCwxNwo1MiwyNSwsCjUzLCwyMSwKNTQsLCwxNwo1NSwyNiwsCjU2LCwyMywKNTcsLCwxNwo1OCwyOCwsCjU5LCwyMSwKNjAsLCwxNwo=').then(res => res.blob()).then(blob => {
+<p><a href="#dnldts21719" onclick="fetch('data:text/csv;base64,RnJvZ3NwYXduIHNhbXBsZSBpZCxUZW1wZXJhdHVyZTEzLFRlbXBlcmF0dXJlMTgsVGVtcGVyYXR1cmUyNQoxLDI0LCwKMiwsMjEsCjMsLCwxOAo0LDI2LCwKNSwsMjIsCjYsLCwxNAo3LDI3LCwKOCwsMjIsCjksLCwxNQoxMCwyNywsCjExLCwyMSwKMTIsLCwxNQoxMywyNiwsCjE0LCwyMCwKMTUsLCwxNgoxNiwyNywsCjE3LCwyMCwKMTgsLCwxNgoxOSwyNywsCjIwLCwxOSwKMjEsLCwxNwoyMiwyNSwsCjIzLCwyMSwKMjQsLCwxNwoyNSwyNiwsCjI2LCwyMywKMjcsLCwxNwoyOCwyOCwsCjI5LCwyMSwKMzAsLCwxNwozMSwyNCwsCjMyLCwyMSwKMzMsLCwxOAozNCwyNiwsCjM1LCwyMiwKMzYsLCwxNAozNywyNywsCjM4LCwyMiwKMzksLCwxNQo0MCwyNywsCjQxLCwyMSwKNDIsLCwxNQo0MywyNiwsCjQ0LCwyMCwKNDUsLCwxNgo0NiwyNywsCjQ3LCwyMCwKNDgsLCwxNgo0OSwyNywsCjUwLCwxOSwKNTEsLCwxNwo1MiwyNSwsCjUzLCwyMSwKNTQsLCwxNwo1NSwyNiwsCjU2LCwyMywKNTcsLCwxNwo1OCwyOCwsCjU5LCwyMSwKNjAsLCwxNwo=').then(res => res.blob()).then(blob => {
       const downloadURL = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       document.body.appendChild(a);
@@ -1038,7 +1031,7 @@ window.Quarto = {
       a.download = 'frogs.csv'; a.click();
       window.URL.revokeObjectURL(downloadURL);
       document.body.removeChild(a);
-        });"><button class="btn btn-info downloadthis  " id="dnldts5775"><i class="bi bi-database-fill-down"></i> Download the frogs data </button></a></p>
+        });"><button class="btn btn-info downloadthis  " id="dnldts21719"><i class="bi bi-database-fill-down"></i> Download the frogs data </button></a></p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1064,7 +1057,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Our response variable is the hatching <code>Time</code>. Our explanatory variable is a <em>factor</em>, <code>Temperature</code>, with 3 levels: 13°C, 18°C and 25°C. Different samples of spawn were subject to each of these temperatures respectively.</p>
-</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d6174657269616c2d73796d626f6c73207069766f742d7461626c652d6368617274203e7d7d-workflow-clean-the-data" class="level2" data-number="4"><h2 data-number="4" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d6174657269616c2d73796d626f6c73207069766f742d7461626c652d6368617274203e7d7d-workflow-clean-the-data">
+</section><section id="workflow-clean-the-data" class="level2" data-number="4"><h2 data-number="4" class="anchored" data-anchor-id="workflow-clean-the-data">
 <span class="header-section-number">4</span> <iconify-icon inline="" icon="material-symbols:pivot-table-chart" aria-label="Icon pivot-table-chart from material-symbols Iconify.design set." title="Icon pivot-table-chart from material-symbols Iconify.design set."></iconify-icon> Workflow: Clean the Data</h2>
 <p>The data is in wide-format, with a separate column for each Temperature, and a common column for Sample ID. This is good for humans, but poor for a computer: there are NA entries since not all samples of spawn can be subject to all temperatures. (E.g. Sample ID #1 was maintained at 13°C, and there are obvious NAs in the other two columns, which we don’t need).</p>
 <p>We will first stack up the <code>Temperature</code> columns into a single column, separate that into pieces and then retain just the number part (13, 18, 25), getting rid of the <em>word</em> <code>Temperature</code> from the column titles. Then the remaining <strong>numerical</strong> column with temperatures (13, 18, 25) will be converted into a factor.</p>
@@ -1139,7 +1132,7 @@ Table&nbsp;1: Frogspawn data
 </figcaption></figure>
 </div>
 <p>So we have cleaned up our data and have <code>20</code> samples for Hatching <code>Time</code> per <code>TempFac</code> setting.</p>
-</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-eda" class="level2" data-number="5"><h2 data-number="5" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-eda">
+</section><section id="workflow-eda" class="level2" data-number="5"><h2 data-number="5" class="anchored" data-anchor-id="workflow-eda">
 <span class="header-section-number">5</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: EDA</h2>
 <p>Let us plot jitter-plots, boxplots, and histograms of Hatching Time:</p>
 <div class="columns">
@@ -1246,7 +1239,7 @@ Table&nbsp;1: Frogspawn data
 <p>The histograms look well separated and the box plots also show very little overlap. So we can reasonably hypothesize that Temperature has a significant effect on Hatching Time.</p>
 <p>The scatter plot seems to show that there are only a few fixed values of observed readings of Hatching Time for each setting of <code>TempFac</code>, which is a little unusual. But we will proceed nonetheless.</p>
 <p>Let’s go ahead with our ANOVA test.</p>
-</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-anova" class="level2" data-number="6"><h2 data-number="6" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-anova">
+</section><section id="workflow-anova" class="level2" data-number="6"><h2 data-number="6" class="anchored" data-anchor-id="workflow-anova">
 <span class="header-section-number">6</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: ANOVA</h2>
 <p>We will first execute the ANOVA test with code and evaluate the results. Then we will do an <em>intuitive walkthrough</em> of the process and finally, <em>hand-calculate</em> entire analysis for clear understanding. For now, a little faith!</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset nav-pills" style="background: whitesmoke;">
@@ -1711,7 +1704,7 @@ F_{stat} = \frac{SSA / df_{SSA}}{SSE / df_{SSE}}
 </div>
 </div>
 </div>
-</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e206d6f64656c203e7d7d-stating-the-model" class="level2" data-number="7"><h2 data-number="7" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e206d6f64656c203e7d7d-stating-the-model">
+</section><section id="stating-the-model" class="level2" data-number="7"><h2 data-number="7" class="anchored" data-anchor-id="stating-the-model">
 <span class="header-section-number">7</span> <iconify-icon inline="" icon="carbon:model" aria-label="Icon model from carbon Iconify.design set." title="Icon model from carbon Iconify.design set."></iconify-icon> Stating the Model</h2>
 <p>And <code>supernova</code> gives us a nice linear equation relating <code>Hatching_Time</code> to <code>TempFac</code>:</p>
 <div class="cell">
@@ -1773,7 +1766,7 @@ Time = 26.3 + -5.3*TempFac18 + -10.1*TempFac25 + e</code></pre>
 </div>
 </div>
 </div>
-</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-checking-anova-assumptions" class="level2" data-number="8"><h2 data-number="8" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-checking-anova-assumptions">
+</section><section id="workflow-checking-anova-assumptions" class="level2" data-number="8"><h2 data-number="8" class="anchored" data-anchor-id="workflow-checking-anova-assumptions">
 <span class="header-section-number">8</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Checking ANOVA Assumptions</h2>
 <p>ANOVA makes 3 fundamental assumptions:</p>
 <ol type="a">
@@ -1782,7 +1775,7 @@ Time = 26.3 + -5.3*TempFac18 + -10.1*TempFac25 + e</code></pre>
 <li>Observations are independent.</li>
 </ol>
 <p>We can check these using checks and graphs.</p>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069632074776f746f6e652d72756c65203e7d7d-checks-for-normality" class="level3" data-number="8.1"><h3 data-number="8.1" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069632074776f746f6e652d72756c65203e7d7d-checks-for-normality">
+<section id="checks-for-normality" class="level3" data-number="8.1"><h3 data-number="8.1" class="anchored" data-anchor-id="checks-for-normality">
 <span class="header-section-number">8.1</span> <iconify-icon inline="" icon="ic:twotone-rule" aria-label="Icon twotone-rule from ic Iconify.design set." title="Icon twotone-rule from ic Iconify.design set."></iconify-icon> Checks for Normality</h3>
 <p>The <code>shapiro.wilk</code> test tests if a vector of numeric data is normally distributed and rejects the hypothesis of normality when the <a href="https://variation.com/wp-content/distribution_analyzer_help/hs132.htm">p-value</a> is less than or equal to 0.05.</p>
 <div class="columns">
@@ -1882,7 +1875,7 @@ W = 0.94814, p-value = 0.01275</code></pre>
 </div>
 </div>
 <p>Unsurprisingly, the residuals are also not normally distributed either. We really need more samples / observations!! But the differences in means are so large that we can still be confident of the results.</p>
-</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069632074776f746f6e652d72756c65203e7d7d-check-for-similar-variance" class="level3" data-number="8.2"><h3 data-number="8.2" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069632074776f746f6e652d72756c65203e7d7d-check-for-similar-variance">
+</section><section id="check-for-similar-variance" class="level3" data-number="8.2"><h3 data-number="8.2" class="anchored" data-anchor-id="check-for-similar-variance">
 <span class="header-section-number">8.2</span> <iconify-icon inline="" icon="ic:twotone-rule" aria-label="Icon twotone-rule from ic Iconify.design set." title="Icon twotone-rule from ic Iconify.design set."></iconify-icon> Check for Similar Variance</h3>
 <p>Response data with different variances at different levels of an <em>explanatory</em> variable are said to exhibit <strong>heteroscedasticity</strong>. This violates one of the assumptions of ANOVA.</p>
 <p>To check if the <code>Time</code> readings are similar in <code>variance</code> across levels of <code>TempFac</code>, we can use the <span style="background-color: yellow;">Levene Test</span>, or since our per-group observations are not normally distributed, a non-parametric rank-based <span style="background-color: yellow;">Fligner-Killeen Test</span>. The NULL hypothesis is that the data <strong>are</strong> with similar variances. The tests assess how probable this is with the given data assuming this NULL hypothesis:</p>
@@ -1925,10 +1918,10 @@ Fligner-Killeen:med chi-squared = 0.53898, df = 2, p-value = 0.7638</code></pre>
 </div>
 </div>
 <p>It seems that there is no cause for concern here; the data do not have significantly different variances at different levels of <code>TempFac</code>.</p>
-</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069632074776f746f6e652d72756c65203e7d7d-independent-observations" class="level3" data-number="8.3"><h3 data-number="8.3" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069632074776f746f6e652d72756c65203e7d7d-independent-observations">
+</section><section id="independent-observations" class="level3" data-number="8.3"><h3 data-number="8.3" class="anchored" data-anchor-id="independent-observations">
 <span class="header-section-number">8.3</span> <iconify-icon inline="" icon="ic:twotone-rule" aria-label="Icon twotone-rule from ic Iconify.design set." title="Icon twotone-rule from ic Iconify.design set."></iconify-icon> Independent Observations</h3>
 <p>This is an experiment <em>design</em> concern; the way the data is gathered must be specified such that data for each level of the factors ( factor combinations if there are more than one) should be independent.</p>
-</section></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-effect-size" class="level2" data-number="9"><h2 data-number="9" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-effect-size">
+</section></section><section id="workflow-effect-size" class="level2" data-number="9"><h2 data-number="9" class="anchored" data-anchor-id="workflow-effect-size">
 <span class="header-section-number">9</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Effect Size</h2>
 <p>The simplest way to find the actual <code>effect sizes</code> detected by an ANOVA test is something we have already done, with the <code>supernova</code> package: Here is the table and plot again:</p>
 <div class="columns">
@@ -2140,7 +2133,7 @@ Figure&nbsp;1: ggstatsplot ANOVA
 </div>
 <p>This plot also shows the <span class="math inline">\(p.value = 0\)</span> for each pairwise comparison, attesting to its significance.</p>
 <p>The <code>ggstatsplot</code> package is very useful for quick visualizations of statistical tests.</p>
-</section></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-anova-using-permutation-tests" class="level2" data-number="10"><h2 data-number="10" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-anova-using-permutation-tests">
+</section></section><section id="workflow-anova-using-permutation-tests" class="level2" data-number="10"><h2 data-number="10" class="anchored" data-anchor-id="workflow-anova-using-permutation-tests">
 <span class="header-section-number">10</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: ANOVA using Permutation Tests</h2>
 <p>We wish to establish the significance of the effect size due to each of the levels in <code>TempFac</code>. From the normality tests conducted earlier we see that except at one level of <code>TempFac</code>, the times are are not normally distributed. Hence we opt for a Permutation Test to check for significance of effect.</p>
 <p>As remarked in Ernst<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>, the non-parametric permutation test can be both <em>exact</em> and also <strong>intuitively easier</strong> for students to grasp.</p>
@@ -2193,13 +2186,13 @@ Figure&nbsp;1: ggstatsplot ANOVA
 </div>
 </div>
 <p>As seen, the <code>infer</code> based permutation test also shows that the permutationally generated F-statistics are nowhere near that which was observed. The effect of <code>TempFac</code> is very strong.</p>
-</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why" class="level2" data-number="11"><h2 data-number="11" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why">
+</section><section id="wait-but-why" class="level2" data-number="11"><h2 data-number="11" class="anchored" data-anchor-id="wait-but-why">
 <span class="header-section-number">11</span> <iconify-icon inline="" icon="mingcute:thought-line" aria-label="Icon thought-line from mingcute Iconify.design set." title="Icon thought-line from mingcute Iconify.design set."></iconify-icon> Wait, But Why?</h2>
 <ul>
 <li>In marketing, design, or business research, similar quantities may be measured across different locations, or stores, or categories of people, for instance.</li>
 <li>ANOVA is the tool to decide if the Quant variable has differences across the Qual categories.</li>
 <li>This approach can be extended to more than one Qual variable, and also if there is another Quant variable in the mix.</li>
-</ul></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusions" class="level2" data-number="12"><h2 data-number="12" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusions">
+</ul></section><section id="conclusions" class="level2" data-number="12"><h2 data-number="12" class="anchored" data-anchor-id="conclusions">
 <span class="header-section-number">12</span> <iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusions</h2>
 <p>We have discussed ANOVA as a means of modelling the effects of a Categorical variable on a Continuous (Quant) variable. ANOVA can be carried out using the standard formula <code>aov</code> when assumptions on distributions, variances, and independence are met. Permutation ANOVA tests can be carried out when these assumptions do not quite hold.</p>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -2230,7 +2223,7 @@ Figure&nbsp;1: ggstatsplot ANOVA
 It <em>is</em> possible to incorporate these beliefs into the ANOVA model, using what is called as <strong>informative hypothesis testing</strong>, which have certain advantages compared to unconstrained models. The R package called <code>restriktor</code> has the capability to develop such models with beliefs.</p>
 </div>
 </div>
-</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920626920706572736f6e2d7570203e7d7d-your-turn" class="level2" data-number="13"><h2 data-number="13" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920626920706572736f6e2d7570203e7d7d-your-turn">
+</section><section id="your-turn" class="level2" data-number="13"><h2 data-number="13" class="anchored" data-anchor-id="your-turn">
 <span class="header-section-number">13</span> <iconify-icon inline="" icon="bi:person-up" aria-label="Icon person-up from bi Iconify.design set." title="Icon person-up from bi Iconify.design set."></iconify-icon> Your Turn</h2>
 <ol type="1">
 <li><p>Try the simple datasets at <a href="https://www.performingmusicresearch.com/datasets/" class="uri">https://www.performingmusicresearch.com/datasets/</a></p></li>
@@ -2263,8 +2256,8 @@ It <em>is</em> possible to incorporate these beliefs into the ANOVA model, using
 <li>Bidyut Ghosh (Aug 28, 2017). One-way ANOVA in R. <a href="https://datascienceplus.com/one-way-anova-in-r/" class="uri">https://datascienceplus.com/one-way-anova-in-r/</a>
 </li>
 </ol>
-<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" role="list">
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c7563696465207061636b6167652d636865636b203e7d7d-r-package-citations" class="level6"><h6 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c7563696465207061636b6167652d636865636b203e7d7d-r-package-citations">
+<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" data-entry-spacing="0" role="list">
+<section id="r-package-citations" class="level6"><h6 class="anchored" data-anchor-id="r-package-citations">
 <iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
 <div class="cell">
 <div class="cell-output-display">
@@ -2324,7 +2317,7 @@ Dawson, Charlotte. 2025. <em><span class="nocase">ggprism</span>: A <span>“<sp
 Langsrud, Øyvind. 2003. <em>Statistics and Computing</em> 13 (2): 163–67. <a href="https://doi.org/10.1023/a:1023260610025">https://doi.org/10.1023/a:1023260610025</a>.
 </div>
 <div id="ref-ggstatsplot" class="csl-entry" role="listitem">
-Patil, Indrajeet. 2021. <span>“<span class="nocase">Visualizations with statistical details: The <span><span>‘<span class="nocase">ggstatsplot</span>’</span></span> approach</span>.”</span> <em><span class="nocase">Journal of Open Source Software</span></em> 6 (61): 3167. <a href="https://doi.org/10.21105/joss.03167">https://doi.org/10.21105/joss.03167</a>.
+Patil, Indrajeet. 2021. <span>“<span class="nocase">Visualizations with statistical details: The <span><span>‘<span class="nocase">ggstatsplot</span>’</span></span> approach</span>.”</span> <em><span>Journal of Open Source Software</span></em> 6 (61): 3167. <a href="https://doi.org/10.21105/joss.03167">https://doi.org/10.21105/joss.03167</a>.
 </div>
 <div id="ref-DescTools" class="csl-entry" role="listitem">
 Signorell, Andri. 2025. <em><span>DescTools</span>: Tools for Descriptive Statistics</em>. <a href="https://doi.org/10.32614/CRAN.package.DescTools">https://doi.org/10.32614/CRAN.package.DescTools</a>.
@@ -2432,7 +2425,8 @@ Wilke, Claus O., and Brenton M. Wiernik. 2022. <em><span class="nocase">ggtext</
     with temperature.}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-2023" class="csl-entry quarto-appendix-citeas" role="listitem">
-<span>“Comparing Multiple Means with ANOVA.”</span> 2023. March 28. <a href="https://madhatterguide.netlify.app/content/courses/Analytics/20-Inference/Modules/130-ThreeMeansOrMore/">https://madhatterguide.netlify.app/content/courses/Analytics/20-Inference/Modules/130-ThreeMeansOrMore/</a>.
+<span>“Comparing Multiple Means with ANOVA.”</span> 2023. March 28,
+2023. <a href="https://madhatterguide.netlify.app/content/courses/Analytics/20-Inference/Modules/130-ThreeMeansOrMore/">https://madhatterguide.netlify.app/content/courses/Analytics/20-Inference/Modules/130-ThreeMeansOrMore/</a>.
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

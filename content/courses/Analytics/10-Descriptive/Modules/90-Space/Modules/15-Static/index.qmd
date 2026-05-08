@@ -3,7 +3,7 @@ title: <iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-
 subtitle: "Where is the Secret Garden?"
 date: 22 April 2021
 order: 520
-date-modified: "`r Sys.Date()`"
+date-modified: today
 abstract: Making Static Vector Maps in R
 editor: 
   markdown: 
@@ -70,6 +70,8 @@ All jargon words will be capitalized and in **bold** font.
 ```{r}
 #| label: setup
 #| message: false
+#| tidy: formatR
+#| 
 library(tidyverse) # Maps using ggplot() + geom_sf()
 library(ggformula) # Maps using gf_sf()
 # For Spatial Data Frame Processing
@@ -94,11 +96,10 @@ library(rnaturalearthhires)
 
 
 ```{r}
-#| label: Extra Pedagogical Packages
+#| label: Extra-Pedagogical-Packages
 #| echo: false
 #| message: false
 
-knitr::opts_chunk$set(tidy = TRUE)
 library(checkdown)
 library(epoxy)
 library(grateful)
@@ -115,7 +116,8 @@ library(grateful)
 #| code-fold: true
 #| messages: false
 #| warning: false
-
+#| tidy: false
+#| 
 library(systemfonts)
 library(showtext)
 library(ggrepel)
@@ -138,7 +140,7 @@ sysfonts::font_add(family = "Roboto Condensed",
   bolditalic = "../../../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
 
 showtext_auto(enable = TRUE) #enable showtext
-##
+
 theme_custom <- function(){ 
 
     theme_bw(base_size = 10) + 
@@ -151,13 +153,11 @@ theme_custom <- function(){
     
     theme_sub_axis(text = element_text(family = "Roboto Condensed", 
                                        size = 6),
-                   ##
                    title = element_text(family = "Roboto Condensed", 
                                        size = 8)) + 
     
     theme_sub_legend(text = element_text(family = "Roboto Condensed", 
                                          size = 6),
-                     ##
                      title = element_text(family = "Alegreya", 
                                           size = 8)) + 
     
@@ -256,7 +256,7 @@ a)  Using a longitude latitude info from [Bounding Box
   -   Move/resize this box and then copy the bounding box from the menu at the bottom. Ensure you copy in **CSV** format.
 
 ```{r}
-#| label:  I-am-going-home 1
+#| label: I-am-going-home-1
 
 # https://boundingbox.klokantech.com
 # CSV: 77.574028,12.917262,77.595073,12.939895
@@ -274,7 +274,7 @@ bbox_1
 b)  Using a place name to look up a BOUNDING BOX with `osmdata::getbb`.
     This may not always work if the place name is not well known.
 
-```{r I-am-going-home 2}
+```{r I-am-going-home-2}
 # Using getbb command from the osmdata package
 bbox_2 <- osmdata::getbb("Malleswaram, Bangalore, India")
 bbox_2
@@ -284,6 +284,7 @@ bbox_2
 Let us examine both the calculated BOUNDING BOXes:
 
 ```{r}
+#| label: bboxes
 bbox_1
 bbox_2
 
@@ -351,11 +352,14 @@ help also us get the associated **key-value pairs** to retrieve data
 from OSM.
 
 ```{r}
+#| label: available-features
 #| layout-ncol: 2
 osmdata::available_features() %>% as_tibble() %>% reactable::reactable(data = ., filterable = TRUE, minRows = 10)
-available_tags(feature = "highway") %>% reactable::reactable(data = ., filterable = TRUE, minRows = 10)
-available_tags(feature = "amenity") %>% reactable::reactable(data = ., filterable = TRUE, minRows = 10)
-available_tags(feature = "natural") %>% reactable::reactable(data = ., filterable = TRUE, minRows = 10)
+##
+## As of May 2026, the `available_tags()` command seems to have a bug.
+# osmdata::available_tags(feature = "highway") %>% reactable::reactable(data = ., filterable = TRUE, minRows = 10)
+# available_tags(feature = "amenity") %>% reactable::reactable(data = ., filterable = TRUE, minRows = 10)
+# available_tags(feature = "natural") %>% reactable::reactable(data = ., filterable = TRUE, minRows = 10)
 
 ```
 
@@ -480,6 +484,7 @@ How many rows? ( Rows -\> Features ) What kind of `geom` column in each
 data set?
 
 ```{r}
+#| label: Kitne-aadmi-thay?
 # How many buildings?
 nrow(buildings)
 buildings$geom
@@ -506,7 +511,9 @@ There are three ways of plotting maps that we will learn:
 #### Using ggformula
 
 ```{r}
-
+#| label: using-ggformula-1
+#| tidy: false
+#| 
 # POLYGONS
 gf_sf(data = buildings, geometry = ~ geom, 
       fill = "gold", color = "grey", 
@@ -514,7 +521,8 @@ gf_sf(data = buildings, geometry = ~ geom,
   
 # LINES
   gf_sf(data = roads, geometry = ~ geom, 
-        color = '#ff9999', linewidth = 0.5) %>%    
+        color = "pink", 
+        linewidth = 0.5) %>%    
 
 # POLYGONS
   gf_sf(data = greenery, geometry = ~geom, 
@@ -537,7 +545,8 @@ First we will plot with `{ggplot2}` and `geom_sf()` : recall that our data is st
 `greenery`.
 
 ```{r}
-
+#| label: using-ggplot-1
+#| tidy: false
 ggplot() +
   geom_sf(data = buildings, fill = "gold", color = "grey", 
           linewidth = 0.025) +    # POLYGONS
@@ -576,6 +585,8 @@ We can also create a map using a package called `tmap`. Here we alsohave the opt
 
 ```{r}
 #| label: using-tmap
+#| tidy: false
+#| 
 
 ## Let's see if we can Malleswaram look like Venice
 ## Red roof tops
@@ -643,6 +654,8 @@ city.
 
 ```{r}
 #| label: My-Static-World
+#| tidy: false
+#| 
 tmap_mode("plot") # Making this a static plot
 
 # Group 1
@@ -671,6 +684,7 @@ Let us make up some dummy data:
 
 ```{r}
 #| label: hand-crafted-point-data
+#| tidy: false
 #| layout-ncol: 3
 #| 
 data("World")
@@ -703,6 +717,8 @@ Suppose we make MULTIPOINT, LINESTRING, and POLYGON dataframes? We need to use t
 
 ```{r}
 #| label: hand-crafted-multipoint-data
+#| tidy: false
+#| 
 df_sf_multipoint <- sf_multipoint( df, multipoint_id = "id" ) %>%   st_set_crs(value = crs_india) # Convert CRS to India
 str(df_sf_multipoint)
 df_sf_linestring <- sf_linestring(df, linestring_id = "id" ) %>%   st_set_crs(value = crs_india) # Convert CRS to India
@@ -744,7 +760,8 @@ gf_sf(data = india, linewidth = 0.5,
 
 ```
 ::: .callout-warning
-#### `{sfheaders}` makes no data checks
+#### `{sfheaders}` makes no data checks!!!
+
 It is a very lght package, compared to `{sf}` (which is heavy) and it makes no data checks. Some of the shapes generated may not be SIMPLE!! Be careful with your data!
 
 :::
@@ -758,7 +775,7 @@ The `{rnaturalearth}` package allows us to download shapes of countries. We can 
 boundaries.
 
 ```{r}
-#| label:  spatial_data from natural earth
+#| label:  spatial-data-from-natural-earth
 india <- 
   ne_states(country =  "india", 
             returnclass = "sf") # gives a ready sf dataframe !
@@ -775,6 +792,7 @@ Let's look at the attribute variable columns to colour our graph and to
 shape our symbols:
 
 ```{r}
+#| label: inspect-sf-frame
 names(india)
 names(india_neighbours)
 
@@ -797,7 +815,9 @@ In the `india_neighbours` data frame:\
 neighbouring country.
 
 ```{r}
-#| label:  Map_1
+#| label:  Map-1
+#| tidy: false
+#| 
 tmap_mode("plot")
 
 # Plot India
@@ -817,7 +837,7 @@ tmap_mode("plot")
     # size by population in 2020
     
   tm_layout(legend.show = FALSE) +
-  tm_credits("Geographical Boundaries are not accurate",
+  tm_credits("Geographical Boundaries of India are not accurate",
              size = 0.5,
              position = c("right", "bottom")) +
   tm_compass(position = c("right", "top")) +
@@ -864,12 +884,13 @@ write_sf(dat_R, dsn = "gpkg-data/restaurants.gpkg",append = FALSE, quiet = FALSE
 Now reading the saved Restaurant Data:
 
 ```{r}
+#| label: restaurant-data-2
 restaurants <- st_read("gpkg-data/restaurants.gpkg")
 ```
 
 How many restaurants have we got?
 
-```{r restaurant-data-2}
+```{r restaurant-data-3}
 
 restaurants %>% nrow()
 
@@ -881,7 +902,7 @@ their geometry is naturally a POINT type of `geom` column.
 These are the names of columns in the Restaurant Data: Note the
 `cuisine` column.
 
-```{r restaurant-data-3}
+```{r restaurant-data-4}
 
 glimpse(restaurants)
 
@@ -893,7 +914,7 @@ colour the POINT based on the `cuisine` offered at that restaurant.
 
 So Let's look therefore at the `cuisine` column!
 
-```{r restaurant-data-4}
+```{r restaurant-data-5}
 # ( I want pizza...)
 restaurants$cuisine %>% unique()
 
@@ -916,6 +937,9 @@ Let's get one cuisine entry per restaurant, and drop off the ones that
 do not mention a cuisine at all:
 
 ```{r}
+#| label: clean-restaurants
+#| tidy: false
+#| 
 restaurants <- restaurants %>% 
   drop_na(cuisine) %>% # Knock off nondescript restaurants
   
@@ -941,6 +965,9 @@ Looks clean! Each entry is only ONE and not multiple any more. Now let's
 plot the Restaurants as POINTs:
 
 ```{r}
+#| label: plot-restaurants
+#| tidy: false
+#| 
 # http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf
 # 
 ggplot() +
@@ -963,7 +990,7 @@ ggplot() +
        caption = "Based on osmdata")
 ```
 
-We could have done a (much!) better job, by combining cuisines into
+We could have done a (much, much!) better job, by combining cuisines into
 simpler and fewer categories, ( South_India and South_Indian ), but that
 is for another day!!
 
@@ -994,6 +1021,8 @@ Refer to this page for more ideas
 We will generate some random locations and plot them on the 3D globe.
 
 ```{r}
+#| label: using-globejs
+#| 
 # Random Lats and Longs
 lat <- rpois(10, 60) + rnorm(10, 80)
 long <- rpois(10, 60) + rnorm(10, 10)
@@ -1010,6 +1039,9 @@ control the height/width/colour of the spikes, as well as the initial
 view of the globe itself: zoom, location and so on
 
 ```{r}
+#| label: globejs-2
+#| tidy: false
+#| 
 globejs(
   lat = lat,
   long = long,
@@ -1023,6 +1055,9 @@ globejs(
 ```
 
 ```{r}
+#| label: globejs-3
+#| tidy: false
+#| 
 globejs(
   lat = lat,
   long = long,
