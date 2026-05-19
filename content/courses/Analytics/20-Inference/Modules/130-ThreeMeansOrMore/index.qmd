@@ -2,9 +2,10 @@
 title: "Comparing Multiple Means with ANOVA" 
 abstract: "ANOVA to investigate how frogspawn hatching time varies with temperature."
 date: 28/Mar/2023
-date-modified: "`r Sys.Date()`"
+date-modified: today
 order: 130
 image: preview.jpg
+fig-align: "center"
 bibliography: 
   - references.bib
   - grateful-refs.bib
@@ -340,7 +341,8 @@ gf_boxplot(data = frogs_long,
   gf_labs(title = "Frog Spawn Hatching Time vs Temperature",
           x = "Temperature", y = "Hatching Time", 
           caption = "Using ggprism") %>%
-  gf_annotate(geom = "text", label = "Overall Mean", x = 3, y = mean(frogs_long$Time) + 0.5, size = 4) %>%
+  gf_annotate(geom = "text", label = "Overall Mean", x = 3, 
+              y = mean(frogs_long$Time) + 0.5, size = 4) %>%
   gf_refine(scale_fill_paletteer_d("ggthemes::colorblind"),
             scale_x_discrete(guide = "prism_bracket"),
             guides(fill = guide_legend(title = "Temperature level (°C)"))) 
@@ -864,6 +866,7 @@ gf_dist("f", df1 = df_SSA, df2 = df_SSE,
 ```{r}
 #| label: F-distribution-Plot
 #| code-fold: true
+#| fig-align: "center"
 #| 
 ggplot2::theme_set(new = theme_custom())
 
@@ -906,6 +909,7 @@ supernova::equation(frogs_anova)
 ```{r}
 #| label: Fitted-Equation-Plot
 #| code-fold: true
+#| fig-align: "center"
 #| warning: true
 #| message: false
 #| 
@@ -1328,7 +1332,8 @@ observed_infer
 We see that the observed F-Statistic is of course $385.8966$ as before. Now we use `infer` to generate a NULL distribution using permutation of the factor `TempFac`:
 
 ```{r}
-#| label: Permutation using infer
+#| label: Permutation-using-infer
+#| fig-align: "center"
 
 null_dist_infer <- frogs_long %>% 
   specify(Time ~ TempFac) %>% 

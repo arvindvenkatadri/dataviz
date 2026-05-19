@@ -2,7 +2,7 @@
 title: "Inference for a Single Mean"
 subtitle: "“The more I love humanity in general, the less I love man in particular. ― Fyodor Dostoyevsky, The Brothers Karamazov"
 date: 10/Nov/2022
-date-modified: "`r Sys.Date()`"
+date-modified: today
 abstract: "Inference Tests for a Single population Mean"
 order: 100
 categories:
@@ -250,7 +250,7 @@ Since the CLT **assumes** the [sample is normally-distributed]{style="background
 ```{r}
 #| label: toy-data
 #| eval: false
-set.seed(42) # for replication
+set.seed(1947) # for replication
 #
 # Data as individual vectors 
 # ( for t.tests etc)
@@ -271,7 +271,7 @@ mydata
 #| label: toy-data-table
 #| echo: false
 
-set.seed(42) # for replication
+set.seed(1947) # for replication
 y <- rnorm(n = 50, mean = 2, sd = 2)
 # And as tibble too 
 mydata <- tibble(y = y)
@@ -404,8 +404,9 @@ mosaic::xqnorm(p = c(0.025, 0.975), mean = sample_mean, sd = sample_se,
 
 xqnorm(p = c(0.025, 0.975),  mean = sample_mean, sd = sample_se,
        digits = 3, plot = TRUE,
-       return = c("plot"), verbose = F, alpha = 0.5, colour = "black",
-        system = "gg")  %>% 
+       return = c("plot"), pattern = "ring",
+       verbose = F, alpha = 0.5, colour = "black",
+       system = "gg")  %>% 
   gf_dhistogram(~ y, data = mydata, inherit = F) %>% ## Very important!
   gf_vline(xintercept = ~ 0, colour = "red") %>% 
   gf_vline(xintercept = sample_mean, colour = "purple") %>% 
@@ -545,9 +546,9 @@ obs_diff_mosaic
 null_dist_mosaic <- 
 mosaic::do(9999) * mean( ~ abs(y) * 
           sample(c(-1, 1), # +/- 1s multiply y
-            length(y),     # How many +/- 1s?
-            replace = T),  # select with replacement
-        data = mydata)
+          length(y),     # How many +/- 1s?
+          replace = T),  # select with replacement
+          data = mydata)
 ##
 range(null_dist_mosaic$mean)
 ##
@@ -679,13 +680,16 @@ How can we visualize this?
 #| 
 ggplot2::theme_set(new = theme_custom())
 
-mosaic::xqnorm(p = c(0.025, 0.975), mean = sample_mean, sd = sample_se,
+mosaic::xqnorm(p = c(0.025, 0.975), 
+               mean = sample_mean, sd = sample_se,
                return = c("value"), verbose = T, plot = F) -> xq
 
 ## Sample-Mean Distribution
-xqnorm(p = c(0.025, 0.975),  mean = sample_mean, sd = sample_se,
+xqnorm(p = c(0.025, 0.975),  
+       mean = sample_mean, sd = sample_se,
        digits = 3, plot = TRUE,
-       return = c("plot"), verbose = F, alpha = 0.5, colour = "black",
+       return = c("plot"), pattern = "rings",
+       verbose = F, alpha = 0.5, colour = "black",
        system = "gg")  %>% 
   gf_dhistogram(~ y, data = mydata, inherit = F) %>% 
   gf_fitdistr(~ y, data = mydata) %>% 
@@ -896,8 +900,8 @@ null_dist_grade <-
 mosaic::do(4999) * 
   mean(~ (course_grade - belief) * 
           sample(c(-1, 1),             # +/- 1s multiply y
-                 length(course_grade), # How many +/- 1s?
-                 replace = T),         # select with replacement
+          length(course_grade),        # How many +/- 1s?
+          replace = T),                # select with replacement
       data = exam_grades
 )
 
@@ -1038,13 +1042,16 @@ Now let us plot the figure with all these calculations:
 ## Sample Data
 ggplot2::theme_set(new = theme_custom())
 
-mosaic::xqnorm(p = c(0.025, 0.975), mean = obs_mean_2, sd = sample_se_2,
+mosaic::xqnorm(p = c(0.025, 0.975), 
+               mean = obs_mean_2, sd = sample_se_2,
                return = c("value"), verbose = T, plot = F) -> xq2
 
 ## Sample-Mean Distribution
-xqnorm(p = c(0.025, 0.975),  mean = obs_mean_2, sd = sample_se_2,
+xqnorm(p = c(0.025, 0.975),  
+       mean = obs_mean_2, sd = sample_se_2,
        digits = 3, plot = TRUE,
-       return = c("plot"), verbose = F, alpha = 0.5, colour = "black",
+       return = c("plot"), verbose = F, 
+       alpha = 0.5, colour = "black",pattern = "rings",
        system = "gg")  %>% 
 gf_dhistogram(~ course_grade, data = exam_grades, inherit = F) %>% 
   gf_fitdistr(~ course_grade, data = exam_grades, inherit = F) %>% 
@@ -1096,7 +1103,8 @@ gf_dhistogram(~ course_grade, data = exam_grades, inherit = F) %>%
           subtitle = "Sample-Mean-Distribution is plotted as theoretical Gaussian Bell Curve", 
           x = "Sample Values and Means", y = "Density") %>%
 
-  gf_refine(scale_y_continuous(limits = c(0, 0.7), expand = expansion(add = c(0,0))),
+  gf_refine(scale_y_continuous(limits = c(0, 0.7), 
+                               expand = expansion(add = c(0,0))),
             scale_x_continuous(limits = c(60, 85)))
 
 ```

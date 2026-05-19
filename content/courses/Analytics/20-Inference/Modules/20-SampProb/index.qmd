@@ -1,8 +1,8 @@
 ---
-title: "\U0001F3B2 Samples, Populations, Statistics and Inference"
+title: "\U0001F3B2 Samples, Populations, Statistics, and Inference"
 subtitle: "What we want to know, and how we find out"
 date: 25/Nov/2022
-date-modified: "`r Sys.Date()`"
+date-modified: today
 order: 20
 abstract: "How much ~~Land~~ Data does a Man need?"
 image: preview.jpg
@@ -69,6 +69,7 @@ library(visualize) # Plot Densities, Histograms and Probabilities as areas under
 #library(shinylive)
 library(ggrepel)
 library(marquee)
+library(grid)
 
 ```
 
@@ -197,7 +198,7 @@ mathematically denote the population's size using upper-case `N`.
 A *population parameter* is some numerical summary about the population
 that is unknown but you wish you knew. For example, when this quantity
 is a mean like *the mean height of all Bangaloreans*, the population
-parameter of interest is the *population mean* $\mu$.
+parameter of interest is the *population mean* $\mu_{pop}$.
 
 A *census* is an exhaustive enumeration or counting of all N individuals
 in the population. We do this in order to compute the population
@@ -260,6 +261,8 @@ NOTE: there is an
 
 : Parameters and Statistics
 
+Some examples:
+
 ::: callout-note
 ## Question
 
@@ -319,7 +322,11 @@ To achieve this purpose, we need a certain amount of theoretical justification. 
 First something counter-intuitive: we need to *define a population* for the sake of reference. We will use the `NHANES` dataset, and pick one variable out it it, `Height`, and treat it as our population.
 
 ```{r}
+#| label: read_data
+#| code-fold: true
+#| 
 data("NHANES")
+NHANES %>% glimpse()
 ```
 
 
@@ -327,20 +334,22 @@ Let us create a NHANES (sub)-dataset without duplicated IDs and only
 adults and select the `Height` variable:
 
 ```{r}
-
+#| label: data_select
+#| code-fold: true
+#| 
 NHANES_adult<-  
   NHANES %>%
   distinct(ID, .keep_all = TRUE) %>% 
   filter(Age >= 18) %>% 
   select(Height) %>% drop_na(Height)
-NHANES_adult %>% glimpse()
+NHANES_adult
 
 ```
 
 ::: callout-important
 ## An "Assumed" Population
 
-We will now onwards **treat** this single-variable dataset as our **Population**. So this is our *population*, with appropriate *population parameters* such as `pop_mean`, and `pop_sd`.
+We will now onwards **treat** this single-variable dataset as our **Population**. So this is our *population*, with appropriate *population parameters* such as `pop_mean` = $\mu$, and `pop_sd` = $\sigma$.
 :::
 
 Let us calculate the **population parameters** for the `Height` data
@@ -361,8 +370,8 @@ Let us now start our sampling game!
 ### {{< iconify game-icons card-pickup >}} Sampling
 
 Now, we will sample **ONCE** from the `Height` variable. Let us
-take a sample of `sample size` 50. We will compare **sample statistics**
-with **population parameters** on the basis of this ONE sample of 50:
+take a sample of `sample size` n = 50. We will compare **sample statistics**
+with **population parameters** on the basis of this ONE sample of n = 50:
 
 :::: {layout="[ 40, 60 ]"}
 
@@ -434,10 +443,10 @@ sample_50 %>%
 
 ### {{< iconify ic baseline-loop >}} {{< iconify game-icons card-pickup >}} {{< iconify icon-park-outline average >}} Repeated Samples and Sample Means
 
-OK, so the `sample_mean_50` is not too far from the
-`pop_mean`. Is this ***always*** true, i.e. for ***any sample***? 
+OK, so the `sample_mean_50`($\bar{x}$) is not too far from the
+`pop_mean` ($\mu$). Is this ***always*** true, i.e. for ***any sample***? 
 
-Let us check: we will create 500 repeated samples, each of size 50. And calculate their mean as the *sample statistic*, giving us a data frame containing 500 `sample means`. We will then see if ***all these 500 means*** lie close to the `pop_mean`:
+Let us check: we will create 500 repeated samples, each of size 50. And calculate their mean as the *sample statistic*, giving us a data frame containing 500 `sample means` ($\bar{x}$-s). We will then see if ***all these 500 means*** lie close to the `pop_mean`($\mu$):
 
 ```{r}
 #| label: 500-samples-of-50-each
@@ -456,7 +465,7 @@ sample_50_500 <- do(500) * {
 }
 sample_50_500 <- 
   sample_50_500 %>% 
-  select(.index, sample_mean, sample_sd, sample_min, sample_max)
+  select(index = .index, sample_min, sample_max, sample_mean, sample_sd)
 sample_50_500
 dim(sample_50_500)
 
@@ -474,13 +483,13 @@ dim(sample_50_500)
 ggplot2::theme_set(new = theme_custom())
 
 sample_50_500 %>%
-  gf_point(.index ~ sample_mean, color = "purple",
+  gf_point(index ~ sample_mean, color = "purple",
            title = "Sample Means are close to the Population Mean",
            subtitle = "Sample Means are Random!",
            caption = "Grey lines represent our 500 samples") %>%
   
   gf_segment(
-    .index + .index ~ sample_min + sample_max,
+    index + index ~ sample_min + sample_max,
     color = "grey",
     linewidth = 0.3,
     alpha = 0.3,
@@ -498,7 +507,7 @@ sample_50_500 %>%
 ##
 
 sample_50_500 %>%
-  gf_point(.index ~ sample_sd, color = "purple",
+  gf_point(index ~ sample_sd, color = "purple",
            title = "Sample SDs are close to the Population SD",
            subtitle = "Sample SDs are Random!",) %>%
   
@@ -516,9 +525,9 @@ sample_50_500 %>%
 ::: callout-note
 ### Sample Means and Sample SDs are a Random Variables!![^8]
 
-The `sample_mean`s (purple dots @fig-sample-means-sds-1) are all generally in the vicinity of the `pop_mean` (vertical black line). And since they are themselves random [because the samples are random]{.black .bg-gold}, they will have their own distribution, with a`mean` and `sd` too ,over all the 500 sample-means. 
+The `sample_mean`s (the $\bar{x}$-s, purple dots @fig-sample-means-sds-1) are all generally in the vicinity of the `pop_mean` ($\mu$, vertical black line). And since they are themselves random [because the samples are random]{.black .bg-yellow}, they will have [their own distribution]{.bg-yellow .black}, with a `mean` and `sd` too, over all the 500 sample-means. 
 
-And the `sample_sd`s are also random (see @fig-sample-means-sds-2) and [have their own distribution](https://www.researchgate.net/post/Standard_Deviation_Distribution/59032925ed99e1ba910f11ff/citation/download), around the `pop_sd`.[^5]. This distribution of the sample-sds will also have its own `mean` and `sd` too !!
+And the `sample_sd`(the $s$-s) are also random (see @fig-sample-means-sds-2) and [have their own distribution](https://www.researchgate.net/post/Standard_Deviation_Distribution/59032925ed99e1ba910f11ff/citation/download), around the `pop_sd` ($\sigma$).[^5]. This distribution of the sample-sds will also have its own `mean` and `sd` too !!
 
 Are you confused yet? Hold tight! `r emoji::emoji("scream")` `r emoji::emoji("scream")` `r emoji::emoji("scream")` `r emoji::emoji("scream")`
 :::
@@ -529,7 +538,7 @@ Are you confused yet? Hold tight! `r emoji::emoji("scream")` `r emoji::emoji("sc
 
 ### {{< iconify game-icons card-pickup >}} {{< iconify tabler chart-histogram >}} Distribution of Sample-Means
 
-So now let's plot the **distribution** of these 500 sample-means themselves, called [**a distribution of sample-means**]{.bg-yellow .black}. We will also plot the position of the population mean `pop_mean` parameter, the mean of the `Height` variable.
+So now let's plot the **distribution** of these 500 sample-means themselves, called [**a distribution of sample-means**]{.bg-yellow .black}. We will also plot the position of the population mean `pop_mean` parameter $\mu$, the mean of the `Height` variable.
 
 ::: callout-note
 WHY? Because we want to see how the sample-means are distributed around the population mean, and how they compare with the population distribution itself.
@@ -555,7 +564,7 @@ sample_50_500 %>%
   gf_label(0.01 ~ pop_mean, 
             label = "Population Mean", 
             color = "blue") %>% 
-gf_labs(title = "Sampling Mean Distribution",
+gf_labs(title = "Sample Means are Distributed around Pop. Mean!",
         subtitle = "500 means")
 
 
@@ -577,11 +586,11 @@ sample_50_500 %>%
                alpha = 0.2, fill = "blue", 
                bins = 30) %>% 
   
-  gf_label(0.025 ~ (pop_mean + 20), 
-           label = "Population Distribution of Height", 
+  gf_label(0.045 ~ (pop_mean + 20), 
+           label = "Population Distribution\n of Height", 
            color = "blue") %>% 
-gf_labs(title = "Sampling Mean Distribution", 
-        subtitle = "Original Population overlay")
+gf_labs(title = "Sample Means are Close Together!", 
+        subtitle = "Compare Original Population overlay!")
 
 
 ```
@@ -591,16 +600,16 @@ gf_labs(title = "Sampling Mean Distribution",
 
 
 -   We see in the @fig-Sampling-Mean-Distribution-1 above that the *distribution of sample-means* is centered around the
-    `pop_mean`. ( Mean of the sample means = `pop_mean`!! `r emoji::emoji("scream")`)
+    `pop_mean` $\mu$. ( *Mean of the sample means* = `pop_mean` $\mu$!! `r emoji::emoji("scream")`)
 -   And from @fig-Sampling-Mean-Distribution-2 that the "spread" aka `sd` of the *distribution of sample means* is within than population itself. [Well within](https://www.alice-in-wonderland.net/resources/chapters-script/alices-adventures-in-wonderland/chapter-7/) ! Curiouser and curiouser! 
 -   But exactly how much is it? And what is the kind of distribution?
--   Why are we interested? *Any single sample* needs to give us a `pop_mean` estimate. And it had better be good, with small standard deviation. 
-- Does the sample ***size*** matter? Does the sample mean distribution change with sample size?
+-   Why are we interested? *Any single sample* needs to give us an estimate for `pop_mean` $\mu$. And it had better be good, with small standard deviation. 
+- And does the sample ***size*** matter? Does the sample mean distribution change if we take a larger sample?
 
 One more experiment. 
 
-Now let's repeatedly sample `Height` and compute the sample-means, and
-look at the resulting histograms. (We will deal with sample-standard-deviations shortly.) We will also use sample sizes of `c(8, 16, 32, 64)` and generate 1000 samples each time, take the means and plot these 4 * 1000 means:
+Now let's repeatedly sample `Height` and compute the sample-means ( $\bar{x}$-s), and
+look at the resulting histograms. (We will deal with sample-standard-deviations shortly.) We will also use sample sizes $n$ = `c(8, 16, 32, 64)` and generate 1000 samples each time, take the means and plot these 4 * 1000 means:
 
 :::: {layout="[25,25, 25, 25]"}
 
@@ -609,7 +618,10 @@ look at the resulting histograms. (We will deal with sample-standard-deviations 
 #| code-fold: true
 set.seed(12345)
 samples_08_1000 <- do(1000) * resample(NHANES_adult$Height, 
-                                       size = 08) %>% mean()
+                                       size = 08) %>% 
+                   mean() 
+samples_08_1000 <- samples_08_1000 %>% 
+                   dplyr::rename("mean" = result) # rename the column
 samples_08_1000
 
 ```
@@ -622,7 +634,10 @@ Means of 1000 samples of size 8
 set.seed(12345)
 samples_16_1000 <- do(1000) * resample(NHANES_adult$Height, 
                                        size = 16) %>% mean()
+samples_16_1000 <- samples_16_1000 %>% 
+                   dplyr::rename("mean" = result) # rename the column
 samples_16_1000
+
 ```
 Means of 1000 samples of size 16
 :::
@@ -633,6 +648,8 @@ Means of 1000 samples of size 16
 set.seed(12345)
 samples_32_1000 <- do(1000) * resample(NHANES_adult$Height, 
                                        size = 32) %>% mean()
+samples_32_1000 <- samples_32_1000 %>% 
+                   dplyr::rename("mean" = result) # rename the column
 samples_32_1000
 ```
 Means of 1000 samples of size 32
@@ -644,6 +661,8 @@ Means of 1000 samples of size 32
 set.seed(12345)
 samples_64_1000 <- do(1000) * resample(NHANES_adult$Height, 
                                        size = 64) %>% mean()
+samples_64_1000 <- samples_64_1000 %>% 
+                   dplyr::rename("mean" = result) # rename the column
 samples_64_1000
 ```
 Means of 1000 samples of size 64
@@ -660,22 +679,22 @@ Means of 1000 samples of size 64
 ggplot2::theme_set(new = theme_custom())
 
 # Now let's create separate Q-Q plots for the different sample sizes.
-p1 <- gf_qq( ~ result, data = samples_08_1000,
+p1 <- gf_qq( ~ mean, data = samples_08_1000,
              title = "N = 8", 
              color = "dodgerblue") %>%
   gf_qqline()
 
-p2 <- gf_qq( ~ result, data = samples_16_1000,
+p2 <- gf_qq( ~ mean, data = samples_16_1000,
             title = "N = 16", 
             color = "sienna") %>%
   gf_qqline()
 
-p3 <- gf_qq( ~ result, data = samples_32_1000,
+p3 <- gf_qq( ~ mean, data = samples_32_1000,
             title = "N = 32", 
             color = "palegreen") %>%
   gf_qqline()
 
-p4 <- gf_qq( ~ result, data = samples_64_1000,
+p4 <- gf_qq( ~ mean, data = samples_64_1000,
             title = "N = 64", 
             color = "violetred") %>%
   gf_qqline()
@@ -704,10 +723,10 @@ Let us plot their individual histograms to compare them:
 ggplot2::theme_set(new = theme_custom())
 
 # Let us overlay their individual histograms to compare them:
-p5 <- gf_dhistogram(~ result,
+p5 <- gf_dhistogram(~ mean,
               data = samples_08_1000,
               color = "grey",
-              fill = "dodgerblue",title = "N = 8") %>%
+              fill = "dodgerblue",title = "N = 8", xlab = "Sample Means") %>%
   gf_fitdistr(linewidth = 1) %>%
   gf_vline(xintercept = pop_mean, inherit = FALSE,
            color = "blue") %>%
@@ -716,10 +735,10 @@ p5 <- gf_dhistogram(~ result,
            color = "blue") %>% 
   gf_theme(scale_y_continuous(expand = expansion(mult = c(0.08,0.02))))
 ##
-p6 <- gf_dhistogram(~ result,
+p6 <- gf_dhistogram(~ mean,
               data = samples_16_1000,
               color = "grey",
-              fill = "sienna",title = "N = 16") %>%
+              fill = "sienna",title = "N = 16", xlab = "Sample Means") %>%
   gf_fitdistr(linewidth = 1) %>%
   gf_vline(xintercept = pop_mean,
            color = "blue") %>%
@@ -728,11 +747,11 @@ p6 <- gf_dhistogram(~ result,
            color = "blue") %>% 
   gf_theme(scale_y_continuous(expand = expansion(mult = c(0.08,0.02))))
 ##
-p7 <- gf_dhistogram(~ result,
+p7 <- gf_dhistogram(~ mean,
                     data = samples_32_1000 ,
                     na.rm = TRUE,
                     color = "grey",
-                    fill = "palegreen",title = "N = 32") %>%
+                    fill = "palegreen",title = "N = 32", xlab = "Sample Means") %>%
   gf_fitdistr(linewidth = 1) %>%
   gf_vline(xintercept = pop_mean,
            color = "blue") %>%
@@ -740,11 +759,11 @@ p7 <- gf_dhistogram(~ result,
            label = "Population Mean", color = "blue") %>% 
   gf_theme(scale_y_continuous(expand = expansion(mult = c(0.08,0.02))))
 
-p8 <- gf_dhistogram(~ result, 
+p8 <- gf_dhistogram(~ mean, 
                     data = samples_64_1000,
                     na.rm = TRUE,
                     color = "grey",
-                    fill = "violetred",title = "N = 64") %>% 
+                    fill = "violetred",title = "N = 64", xlab = "Sample Means") %>% 
   gf_fitdistr(linewidth = 1) %>% 
   gf_vline(xintercept = pop_mean,
          color = "blue") %>%
@@ -770,28 +789,28 @@ And if we overlay these histograms on top of one another:
 #| warning: false
 ggplot2::theme_set(new = theme_custom())
 
-gf_dhistogram(~ result,
+gf_dhistogram(~ mean,
               data = samples_08_1000,
               color = "grey",
-              fill = "dodgerblue",alpha = .5) %>% 
+              fill = "dodgerblue",alpha = .5, xlab = "Sample Means") %>% 
   # gf_label(0.15 ~ 172, inherit = FALSE,
   #          label = "N = 8", color = "dodgerblue") %>% 
 
-gf_dhistogram(~ result,
+gf_dhistogram(~ mean,
               data = samples_16_1000,
               color = "grey",
               fill = "sienna",alpha = 0.5) %>% 
     # gf_label(0.2 ~ 172, 
     #        label = "N = 16", color = "sienna") %>% 
 
-gf_dhistogram(~ result,
+gf_dhistogram(~ mean,
               data = samples_32_1000,
               color = "grey",
               fill = "palegreen",alpha = 0.5) %>% 
     # gf_label(0.3 ~ 172, 
     #        label = "N = 32", color = "palegreen") %>% 
 
-gf_dhistogram(~ result,
+gf_dhistogram(~ mean,
               data = samples_64_1000,
               color = "grey",
               fill = "violetred",alpha = 0.5) %>% 
@@ -799,26 +818,26 @@ gf_dhistogram(~ result,
     #        label = "N = 64", color = "violetred") %>% 
 
 gf_fitdistr(
-  ~ result,
+  ~ mean,
   data = samples_08_1000,
   color = "dodgerblue",size = 2
 ) %>%
   
   gf_fitdistr(
-    ~ result,
+    ~ mean,
     data = samples_16_1000 ,
     color = "sienna",size = 2
   ) %>%
   
   gf_fitdistr(
-    ~ result,
+    ~ mean,
     data = samples_32_1000 ,
     na.rm = TRUE,
     color = "palegreen",size = 2
   ) %>%
   
   gf_fitdistr(
-    ~ result,
+    ~ mean,
     data = samples_64_1000 ,
     na.rm = TRUE,
     color = "violetred", size = 2
@@ -837,26 +856,26 @@ gf_fitdistr(
             label = "N = 16", colour = "sienna") %>% 
   gf_annotate(geom = "label", x = 175, y = 0.1, 
             label = "N = 8", colour = "dodgerblue") %>% 
-gf_annotate("curve", 
+  gf_annotate("curve", 
             x = 175, y = 0.24, 
             xend = 171, yend = 0.22,
             curvature = 0, color = "violetred", 
-            arrow = arrow(length = unit(0.25,"cm"))) %>% 
+            arrow = grid::arrow(length = unit(0.25,"cm"))) %>% 
   gf_annotate("curve", 
             x = 175, y = 0.19, 
             xend = 171, yend = 0.17,
             curvature = 0, color = "green", 
-            arrow = arrow(length = unit(0.25,"cm"))) %>% 
+            arrow = grid::arrow(length = unit(0.25,"cm"))) %>% 
   gf_annotate("curve", 
             x = 175, y = 0.14, 
             xend = 171, yend = 0.12,
             curvature = 0, color = "sienna", 
-            arrow = arrow(length = unit(0.25,"cm"))) %>% 
+            arrow = grid::arrow(length = unit(0.25,"cm"))) %>% 
   gf_annotate("curve", 
             x = 175, y = 0.09, 
             xend = 172, yend = 0.08,
             curvature = 0, color = "dodgerblue", 
-            arrow = arrow(length = unit(0.25,"cm"))) %>% 
+            arrow = grid::arrow(length = unit(0.25,"cm"))) %>% 
   gf_labs(title = "Overlaid Sample Mean Distributions")
 
 
@@ -867,7 +886,7 @@ because when we sample from the population, many values will be close to
 the *population mean*, and values far away from the mean will be
 increasingly scarce.]{style="background-color: yellow;"}
 
-Let us calculate the means of the **sample-mean-distributions**:
+Let us calculate the means of the 4 **sample-mean-distributions**:
 
 ::::: columns
 ::: {.column width="60%"}
@@ -875,10 +894,10 @@ Let us calculate the means of the **sample-mean-distributions**:
 #| label: sample-means
 #| eval: false
 
-mean(~ result, data  = samples_08_1000) # Mean of means!!!;-0
-mean(~ result, data  = samples_16_1000)
-mean(~ result, data  = samples_32_1000)
-mean(~ result, data  = samples_64_1000)
+mean(~ mean, data  = samples_08_1000) # Mean of means!!!;-0
+mean(~ mean, data  = samples_16_1000)
+mean(~ mean, data  = samples_32_1000)
+mean(~ mean, data  = samples_64_1000)
 pop_mean
 
 ```
@@ -894,10 +913,10 @@ pop_mean
 
 All are nearly identical, and also pretty close to the population mean !!! So regardless of sample size, we get an estimate of the `pop_mean` from the mean of a sample! Whoo-Hoo!!! But how good can the estimate be? How much uncertainty is there in this estimate?
 
-For that, we need to look at the *standard deviations* of the sampling distributions:
+For that, we need to look at the *standard deviations* of the 4 sampling-mean distributions:
 
 $$
-\Large{sd_i = \sqrt{\frac{\Sigma[{x_i - \bar{x_i}}]^2}{n_i}}}
+\Large{sd_i = \sqrt{\frac{\Sigma^{1000}_{k} {[{mean_k} - \overline{mean_k}}]^2}{n_i}}}~, i = 1...4
 $$
 
 ::::: columns
@@ -934,10 +953,10 @@ subtitle = "Black Line = Mean")
 #| eval: false
 
 pop_sd
-sd(~ result, data  = samples_08_1000)
-sd(~ result, data  = samples_16_1000)
-sd(~ result, data  = samples_32_1000)
-sd(~ result, data  = samples_64_1000)
+sd(~ mean, data  = samples_08_1000)
+sd(~ mean, data  = samples_16_1000)
+sd(~ mean, data  = samples_32_1000)
+sd(~ mean, data  = samples_64_1000)
 
 ```
 :::
@@ -975,7 +994,10 @@ pop_sd / sqrt(64)
 :::
 :::::
 
+::: callout-important
+### SD of Sample-mean-distribution reduces with $1/sqrt(n)$
 As we can see, the *standard deviations* of the **sampling-mean-distributions** is inversely proportional to the square root of lengths of the sample. Which means that as we increase the sample size of our planned single sample, the *standard deviation* of the sample-mean-distribution decreases, and so does the uncertainty in our estimate of the `pop_mean`!
+:::
 
 ::: callout-note
 ## Central Limit Theorem
@@ -985,11 +1007,15 @@ Now we have enough to state the **Central Limit Theorem (CLT)**
 -   the [sample-means are normally distributed around the *population
     mean*]{style="background-color: yellow;"}. So any mean of a **single sample** is a good, **unbiased estimate** for the `pop_mean`.
     
-      - $\Large{\bar{x} \sim pop.mean }$
+    $$
+    \Large{\bar{x} \sim pop.mean }
+    $${#eq-clt-mean}
 
 -   the **sample-mean distributions** are centered around the `pop_mean` and have a *standard deviation* that is [inversely proportional to the square root of the sample size.]{style="background-color: yellow;"}. 
 
-    - $\Large{s \sim \frac{pop.sd}{sqrt(n)} }$
+    $$
+    \Large{s \sim \frac{pop.sd}{sqrt(n)} }
+    $${#eq-clt-sd}
 
 -   This is [regardless of the distribution of the *population*]{style="background-color: yellow;"} itself.[^1]
 :::
@@ -1000,41 +1026,48 @@ Now we have enough to state the **Central Limit Theorem (CLT)**
 
 This theorem underlies all our procedures and techniques for statistical inference, as we shall see.
 
-{{< video https://youtu.be/_YOr_yYPytM >}}
+:::{}
+<center>
+{{< video https://youtu.be/_YOr_yYPytM width=560 height=360 >}}
+</center>
+Understanding the Central Limit Theorem
+:::
 
 
 ## {{< iconify dashicons code-standards >}} The Standard Error
 
-Consider once again the *standard deviations* in each of the **sample-mean-distributions** that we have generated. As we saw these decrease with sample size.
+Consider once again the *standard deviations* in each of the **sample-mean-distributions** that we have generated. As we saw, these are smaller than the `pop_sd` $\sigma$, and decrease with sample size:
 
-`sd = pop_sd/sqrt(sample_size)`where sample-size[^2]  here is
+`sd = pop_sd/sqrt(sample_size)` where sample-size[^4] here is
 one of `c(8, 16, 32, 64)`.
 
-[^2]: Once `sample size = population`, we have complete access to the
-    population and there is no question of estimation error! So
-    `sample_sd = pop_sd`!
+[^4]: Once `sample size = population`, we have complete access to the
+    population! So ALL SAMPLES ARE IDENTICAL to the POPULATION, and so `sample_sd = 0`; there is no question of estimation error!
 
 ::: callout-important
-We reserve the term *Standard Deviation* for the population, and name
+We reserve the term *Standard Deviation* for the population sd, $\sigma$, and name
 this computed standard deviation of the sample-mean-distributions as the
 **Standard Error**. This statistic derived from the sample-mean-distribution will help us infer our population parameters with a precise estimate of the *uncertainty* involved.
 :::
 
 
 $$
-\Large{Standard\ Error\ \pmb {se} =  \frac{pop.sd}{\sqrt[]{n}}}\\
+\Large{Standard\ Error\ \pmb {se} =  \frac{\sigma}{\sqrt[]{n}}}\\
 $${#eq-standard-error}
 
 [However, we don't normally know the `pop_sd`!! So now what?? So is this chicken and egg??]{style="background-color: yellow;"}
 
 ## {{< iconify game-icons card-pickup >}} Back to One Sample!!
 
-Let us take **SINGLE SAMPLES** of each size, as we normally would:
+Remember, we are poor, and lazy. Let us take **SINGLE SAMPLES** of each size, as we normally would:
 
+::::: columns
+::: {.column width="85%"}
 ```{r}
 #| label: single-samples
-#| results: hold
-set.seed(42)
+#| eval: false
+#| 
+set.seed(1963)
 sample_08 <- mosaic::sample(NHANES_adult, size = 8)
 sample_16 <- mosaic::sample(NHANES_adult, size = 16)
 sample_32 <- mosaic::sample(NHANES_adult, size = 32)
@@ -1048,6 +1081,18 @@ sd(~ Height, data = sample_64)
   
 ```
 
+:::
+
+::: {.column width="15%"}
+
+
+```{r}
+#| ref.label: single-samples
+#| echo: false
+```
+:::
+:::::
+
 
 ::: callout-warning
 ### Distribution of Sample SDs
@@ -1060,7 +1105,7 @@ And so, in the same way, [we approximate the `pop_sd` with the sd of a **single 
 
 $$
 \boxed{\Large{Standard\ Error\ \pmb {se} \sim \frac{sample.sd}{\sqrt[]{n}}}}
-$$
+$${#eq-standard-error}
 
 With these, the Standard Errors(SE) evaluate to:
 
@@ -1095,12 +1140,16 @@ Why are we concerned with Standard Errors(SE)? Because they are the **uncertaint
 When we work with samples, we want to be able to speak with a certain
 degree of confidence about the **population mean**, based on the
 evaluation of **one** sample mean, not a large number of them. Given
-that sample-means are *normally distributed* around the `pop_mean`, we can say that:
+that sample-means are *normally distributed* around the `pop_mean` $\mu$, we can say that:
 
-- $68\%$ of *all possible sample-mean* lie within
+- $68\%$ of *all possible sample-mean-s* lie within
 $\pm 1* SE$ of the *population mean*; 
-- $95 \%$ of *all possible sample-mean* lie within $\pm 2 * SE$ of the *population mean*. 
-- These two multiplier-constants $\pm 1$ and $\pm 2$ are the `z-scores` from the *z-distribution* we saw earlier:
+- $95 \%$ of *all possible sample-mean-s* lie within $\pm 2 * SE$ of the *population mean*. 
+- These two multiplier-constants $\pm 1$ and $\pm 2$ are the `z-scores` from the *z-distribution* we saw earlier[^9].
+
+[^9]: We know $\Large{z_{score} = \frac{\bar{x} - \mu}{SE}}$, 
+and so $\bar{x} = \mu + z_{score} * SE$, which tells us ***how far*** our sample mean is from $\mu$.
+
 
 ```{r}
 #| label: fig-confidence-intervals-examples
@@ -1112,13 +1161,24 @@ $\pm 1* SE$ of the *population mean*;
 #|   - 95% CIs from Multiple Samples
 #| code-fold: true
 #| 
-set.seed(42)
-mosaic::xqnorm(p = c((1-0.68)/2, 1 - (1-0.68)/2),return = c("plot"), verbose = F) %>% gf_labs(x = "Z-score")
-mosaic::xqnorm(p = c((1-0.95)/2, 1 - (1-0.95)/2), return = c("plot"), verbose = F) %>% gf_labs(x = "Z-score")
-TeachingDemos::ci.examp(mean.sim = 100, sd = 2,n = 50, reps = 50)
+set.seed(42) # Not a good idea always!
+###
+mosaic::xqnorm(p = c((1-0.68)/2, 1 - (1-0.68)/2), 
+               return = c("plot"), verbose = F,
+               system = "gg", pattern = "rings",
+               alpha = 0.5, colour = "black",) %>% 
+  gf_labs(x = "Z-score (Increments of SE)", title = "68% Confidence Intervals") %>% gf_refine(scale_x_continuous(breaks = -4:4))
+###
+mosaic::xqnorm(p = c((1-0.95)/2, 1 - (1-0.95)/2), 
+               return = c("plot"), verbose = F, 
+               system = "gg", pattern = "rings",
+               alpha = 0.5, colour = "black") %>% gf_labs(x = "Z-score (Increments of SE)", title = "95% Confidence Intervals") %>% gf_refine(scale_x_continuous(breaks = -4:4))
+###
+TeachingDemos::ci.examp(mean.sim = 100, sd = 2,n = 50, reps = 50, method = "z")
 
 ```
-In @fig-confidence-intervals-examples-3, we see that $95\%$ confidence intervals straddle the population mean shown in black, almost always. One sample in 50 has missed it and is shown in pink. For a particular sample with $\bar{x} = 100$, the vertical red lines show the confidence interval derived from *that* sample. 
+
+In @fig-confidence-intervals-examples-3, we see that $95\%$ confidence intervals straddle the population mean shown in black, almost always. For a particular sample with $\bar{x} === 100$, the vertical red lines show the confidence interval derived from *that* sample.  One sample in 50 has missed it and is shown in [pink]{.black .bg-pink}.
 
 
 ## CI and Sample Size
@@ -1144,7 +1204,7 @@ gf_segment(index + index ~ lower_ci + upper_ci, linewidth = 1) %>%
 gf_vline(xintercept = pop_mean, colour = "blue", linewidth = 2) %>% 
 gf_labs(title = "95% Confidence Intervals for the Mean",
         subtitle = "Varying samples sizes 8-16-32-64",
-        y = "Sample Size", x = "Mean Ranges") %>% 
+        y = "Sample Size", x = "Mean") %>% 
 gf_refine(scale_y_discrete(labels = c(8,16,32,64))) %>% 
 gf_annotate(geom = "label", x = pop_mean + 1.75, y = 3.5, label = "Population Mean") %>% 
 gf_annotate("curve", 
@@ -1184,14 +1244,14 @@ xqnorm(p = c(0.025, 0.975),
 
 xqnorm(p = c(0.025, 0.975), 
         mean = mean_sample_16,
-        sd = se_sample_16, digits = 3,
+        sd = se_sample_16, digits = 3,system = "gg", pattern = "rings",
         return = c("plot"), verbose = F, alpha = 0.5, colour = "black") %>% 
 
 gf_refine(scale_y_continuous(expand = expansion(add = c(0,0.02)))) %>%
 gf_vline(xintercept = ~ pop_mean, colour = "red", linewidth = 1) %>% 
 gf_vline(xintercept = mean(~ Height, data = sample_16), 
          colour = "purple", linewidth = 1) %>% 
-gf_labs(x = "Sample Value",
+gf_labs(x = "Sample Means",
         title = "Confidence Intervals and the Bell Curve. N=16",
         subtitle = "Sample-Means Distribution") %>% 
 gf_annotate(geom = "label", x = pop_mean - 4, y = 0.15, 
@@ -1229,11 +1289,11 @@ gf_annotate(geom = "label", x = xq[2], y = 0.1,
 
 gf_annotate("curve", # CI
             x = xq[2], y = 0.09, 
-            xend = xq[2] - 2, yend = 0.016,
-            curvature = - 0.25, color = "purple", 
+            xend = xq[2] - 4, yend = 0.016,
+            curvature = - 0.30, color = "purple", 
             arrow = arrow(length = unit(0.25,"cm"))) %>% 
 
-gf_annotate(geom = "label", x = 163.55, y = 0.06, 
+gf_annotate(geom = "label", x = 162.5, y = 0.075, 
             label = "Distribution of\nSample Means", 
             colour = "black") %>% 
 
@@ -1291,24 +1351,25 @@ Upper Limit of CI
 
 So:
 
-- Every sample we could take sets up a Gaussian distribution for the estimate of the `pop_mean`. (Which is `sample_mean` in this case.)
-- Each sample will have a different `sample_mean`, and therefore the distribution curves, being centred on `sample_mean` would move to the right or to the left. 
+- Every sample we could take sets up a Gaussian distribution for the estimate of the `pop_mean` $\mu$. (Which is `sample_mean` $\bar{x}$ in this case.)
+- Each sample will have a different `sample_mean` $\bar{x}$, and therefore the distribution curves, being centred on `sample_mean` would move to the right or to the left. 
 - Each such sample distribution sets up a Confidence Interval. 
-- We expect that 95% of the samples will setup a Confidence Interval that contains the `pop_mean`.
+- [We expect that 95% out of all the samples will setup a Confidence Interval that contains the `pop_mean` $\mu$]{style="background-color:yellow;"}.
+- THEREFORE, any one of all those samples is good enough and all that we need!!!
 
 ## {{< iconify flat-color-icons workflow >}} CLT Workflow
 
 Thus if we want to estimate a *population mean*:
 
 -   we take one **random** sample from the population of length $n$
--   we calculate the mean from the sample `sample-mean`
--   we calculate the `sample-sd`
--   we calculate the *Standard Error* as $\frac{sample-sd}{\sqrt[]{n}}$
+-   we calculate the mean from the `sample_mean` $\bar{x}$
+-   we calculate the `sample_sd` $s$
+-   we calculate the *Standard Error* as $\frac{s}{\sqrt[]{n}}$
 -   we calculate 95% confidence intervals for the *population parameter* based on the formula
-    $CI_{95\%}= sample.mean \pm 2*SE$.
--   Since Standard Error decreases with sample size, we need to make our sample of adequate size.( $n=30$ seems appropriate in most cases. Why?)
--   And we do not have to worry about the distribution of the
-    population. It need not be normal/Gaussian/Bell-shaped !!
+    $CI_{95\%}= \bar{} \pm 2*SE$.
+- So finally, 
+$$ 
+\boxed{\Large{\mu \sim \bar{x} \pm 2.0 * \frac{s}{\sqrt[]{n}}}} $${#eq-pop-mean-estimate}
     
 ## {{< iconify flat-color-icons workflow >}} CLT Assumptions
 
@@ -1336,7 +1397,10 @@ grasp on Sampling and the CLT.
 - So we, as [frequentist]{style="background-color:yellow;"} people, ***pretend*** we can take many samples and calculate the `mean of the means` and the `standard deviation of the means` (Now called `standard error`), and the `relative probability` of a the calculated `statistic`
 - These tell us how the `mean`s are distributed and how accurate the `mean-mean` can be
 - Since `standard error` uses the (unknown and unknowable) `population sd`, we approximate that by `sample sd`
-- So $$ \boxed{\Large{\mu_{pop} \sim \mu_{sample} \pm 2.0 * \sigma_{sample}}}$$
+-   Since Standard Error decreases with sample size, we need to make our sample of adequate size.( $n=30$ seems appropriate in most cases. Why?)
+-   And we do not have to worry about the distribution of the
+    population. It need not be normal/Gaussian/Bell-shaped !!
+    
 
 
 ## {{< iconify ooui references-rtl >}} References

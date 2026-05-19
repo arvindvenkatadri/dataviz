@@ -3,7 +3,7 @@ title: "Inference for Two Independent Means"
 subtitle: "How diff-different(sic) are you?"
 abstract: "Two independent means from two separate populations."
 date: 22/Nov/2022
-date-modified: "`r Sys.Date()`"
+date-modified: today
 order: 110
 tags:
 - Permutation
@@ -866,13 +866,15 @@ boys_scores <- boys_AMAS %>% rename("boys" = AMAS)
 girls_scores <- boys_AMAS %>% rename("girls" = AMAS)
 all_diff <- expand_grid(boys_scores, girls_scores) %>% mutate(diff = boys - girls)
 ##
-mosaic::xqnorm(p = c(0.025, 0.975), mean = obs_diff_amas, sd = std_error_diff,
+mosaic::xqnorm(p = c(0.025, 0.975), 
+               mean = obs_diff_amas, sd = std_error_diff,
                return = c("value"), verbose = T, plot = F) -> xq1
 
-xqnorm(p = c(0.025, 0.975),  mean = obs_diff_amas, sd = std_error_diff,
-       digits = 3, plot = TRUE,
-       return = c("plot"), verbose = F, alpha = 0.5, colour = "black",
-        system = "gg")  %>% 
+xqnorm(p = c(0.025, 0.975),  
+       mean = obs_diff_amas, sd = std_error_diff,
+       digits = 3, plot = TRUE, return = c("plot"), 
+       verbose = F, alpha = 0.5, 
+       colour = "black",pattern = "rings", system = "gg")  %>% 
   gf_dhistogram(~ diff, data = all_diff,bins = 50, 
                 xlab = "Difference in Means",
                 ylab = "Density", inherit = F) %>% ## Very important!
@@ -887,7 +889,7 @@ xqnorm(p = c(0.025, 0.975),  mean = obs_diff_amas, sd = std_error_diff,
                                  decimal.mark = "."))) %>% 
   
     gf_annotate(geom = "label", x = -4.5, y = 0.15, 
-            label = "Sample-Difference Histogram and Density", 
+            label = "Sample-Difference Histogram\n and Density", 
             colour = "black") %>% 
   
   ## Observed Difference

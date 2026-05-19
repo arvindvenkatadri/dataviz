@@ -1,8 +1,7 @@
 ---
 title: "Inference for Correlation"
 date: 25/Nov/2022
-date-modified: "`r Sys.Date()`"
-author: Arvind V. 
+date-modified: today
 order: 150
 keywords: Statistics ; Tests; p-value
 abstract: "Statistical Significance Tests for Correlations between two Variables"
@@ -13,6 +12,7 @@ citation: true
 editor: 
   markdown: 
     wrap: 72
+fig-align: "center"
 format: 
   html: default
   revealjs: 
@@ -391,6 +391,8 @@ Let us first quickly plot a graph that is relevant to each of the two research q
 #|   - Daughters
 #| layout-ncol: 2
 #| code-fold: true
+#| out-width: "75%"
+#| out-height: "75%"
 #| 
 ggplot2::theme_set(new = theme_custom())
 
@@ -412,6 +414,10 @@ Galton_daughters %>%
 We might even plot the **overall** `height`s together and colour by `sex` of the child:
 
 ```{r}
+#| out-width: "50%"
+#| out-height: "50%"
+#| fig-align: center
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 Galton %>% 
@@ -444,8 +450,15 @@ shapiro.test(Galton_daughters$daughter)
 Let us also check the densities and quartile plots of the `height`s in the dataset: 
 
 ```{r}
+#| label: fig-plot-galton-density-quartile
+#| fig-cap: "Checking Children's Heights for Normality"
+#| fig-subcap:
+#|   - Densities
+#|   - Q-Q plots
 #| layout-ncol: 2
 #| code-fold: true
+#| out-width: "75%"
+#| out-height: "75%"
 #| 
 ggplot2::theme_set(new = theme_custom())
 
@@ -474,8 +487,15 @@ Galton %>% group_by(sex) %>%
 and the `father`'s heights:
 
 ```{r}
-#| code-fold: true
+#| label: fig-plot-galton-fathers-distributions
+#| fig-cap: "Are Dads Normally Distributed?"
+#| fig-subcap:
+#|   - Fathers Distributions facetted by Child Sex
+#|   - Fathers Q-Q Plots facetted by Child Sex
 #| layout-ncol: 2
+#| code-fold: true
+#| out-width: "75%"
+#| out-height: "75%"
 #| 
 ggplot2::theme_set(new = theme_custom())
 
@@ -561,7 +581,7 @@ cor_daughter_spearman
 
 Again both tests state that the correlation between `daughter` and `father` is significant. 
 
-#### {{< iconify game-icons dragon-head size=2x >}}Intuitive
+#### {{< iconify game-icons dragon-head size=2x >}} Intuitive
 
 What is happening under the hood in `cor.test`?
 
@@ -658,8 +678,8 @@ This t-statistic follows a t-distribution with $n - 2$ degrees of freedom under 
 
 The t-test for the correlation coefficient is closely related to the t-test for the slope of a linear regression model. Suppose we regress $Y$ on $X$:
 $$Y = \beta_0 + \beta_1 X + \epsilon$$
-The slope $\beta_1$ estimates the change in $Y$ per unit change in $X$. The sample slope $b_1$ is:
-$$b_1 = \frac{\text{Cov}(X, Y)}{\text{Var}(X)} = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sum (x_i - \bar{x})^2}$$
+The slope $\beta_1$ estimates the change in $Y$ per unit change in $X$. The sample slope $\beta_1$ is:
+$$\beta_1 = \frac{\text{Cov}(X, Y)}{\text{Var}(X)} = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sum (x_i - \bar{x})^2}$$
 Notice the relationship between $b_1$ and $r$. Since:
 $$r = \frac{\text{Cov}(X, Y)}{\sqrt{\text{Var}(X) \text{Var}(Y)}}$$
 
@@ -667,7 +687,7 @@ We can express the covariance as:
 $$\text{Cov}(X, Y) = r \sqrt{\text{Var}(X) \text{Var}(Y)}$$
 So:
 $$
-b_1 = \frac{r \sqrt{\text{Var}(X) \text{Var}(Y)}}{\text{Var}(X)} = r \sqrt{\frac{\text{Var}(Y)}{\text{Var}(X)}} = r \frac{s_y}{s_x}
+\beta_1 = \frac{r \sqrt{\text{Var}(X) \text{Var}(Y)}}{\text{Var}(X)} = r \sqrt{\frac{\text{Var}(Y)}{\text{Var}(X)}} = r \frac{s_y}{s_x}
 $${#eq-slope-corr}
 
 where $s_x = \sqrt{\text{Var}(X)} = \sqrt{\sum (x_i - \bar{x})^2 / (n-1)}$ and $s_y = \sqrt{\text{Var}(Y)}$ are the sample standard deviations.
@@ -676,10 +696,10 @@ where $s_x = \sqrt{\text{Var}(X)} = \sqrt{\sum (x_i - \bar{x})^2 / (n-1)}$ and $
 
 To test $H_0: \beta_1 = 0$, we use the `t-statistic` for the slope:
 
-$$t = \frac{b_1}{\text{SE}(b_1)}$$
-where $\text{SE}(b_1)$ is the standard error of the `slope`. The variance of the slope estimate is derived from the regression model. Assuming the errors $\epsilon$ are normally distributed with variance $\sigma^2$, the variance of $b_1$ is:
+$$t = \frac{\beta_1}{\text{SE}(\beta_1)}$$
+where $\text{SE}(\beta_1)$ is the standard error of the `slope`. The variance of the slope estimate is derived from the regression model. Assuming the errors $\epsilon$ are normally distributed with variance $\sigma^2$, the variance of $\beta_1$ is:
 
-$$\text{Var}(b_1) = \frac{\sigma^2}{\sum (x_i - \bar{x})^2}$$
+$$\text{Var}(\beta_1) = \frac{\sigma^2}{\sum (x_i - \bar{x})^2}$$
 The standard error is:
 $$\text{SE}(b_1) = \sqrt{\frac{\sigma^2}{\sum (x_i - \bar{x})^2}}$$
 Since $\sigma^2$ is unknown, we estimate it with the residual variance $s^2$:
@@ -689,7 +709,7 @@ Thus:
 $$\text{SE}(b_1) = \frac{s}{\sqrt{\sum (x_i - \bar{x})^2}}$$
 So the t-statistic is:
 
-$$t = \frac{b_1 \sqrt{\sum (x_i - \bar{x})^2}}{s}$$
+$$t = \frac{\beta_1 \sqrt{\sum (x_i - \bar{x})^2}}{s}$$
 
 ###### Step 5: Relating the Residual Variance to $r$
 
@@ -704,13 +724,13 @@ where:
 - $\text{SSE} = \sum (y_i - \hat{y}_i)^2$ (sum of squares of errors),
 - $\text{SST} = \sum (y_i - \bar{y})^2$ (total sum of squares).
 
-Since $\hat{y}_i - \bar{y} = b_1 (x_i - \bar{x})$, we have:
+Since $\hat{y}_i - \bar{y} = \beta_1 (x_i - \bar{x})$, we have:
 
-$$\text{SSR} = \sum (b_1 (x_i - \bar{x}))^2 = b_1^2 \sum (x_i - \bar{x})^2$$
+$$\text{SSR} = \sum (\beta_1 (x_i - \bar{x}))^2 = \beta_1^2 \sum (x_i - \bar{x})^2$$
 
-Substitute $b_1 = r \frac{s_y}{s_x}$:
+Substitute $\beta_1 = r \frac{s_y}{s_x}$:
 
-$$b_1^2 = r^2 \frac{s_y^2}{s_x^2} = r^2 \frac{\sum (y_i - \bar{y})^2 / (n-1)}{\sum (x_i - \bar{x})^2 / (n-1)} = r^2 \frac{\sum (y_i - \bar{y})^2}{\sum (x_i - \bar{x})^2}$$
+$$\beta_1^2 = r^2 \frac{s_y^2}{s_x^2} = r^2 \frac{\sum (y_i - \bar{y})^2 / (n-1)}{\sum (x_i - \bar{x})^2 / (n-1)} = r^2 \frac{\sum (y_i - \bar{y})^2}{\sum (x_i - \bar{x})^2}$$
 
 So:
 $$\text{SSR} = r^2 \frac{\sum (y_i - \bar{y})^2}{\sum (x_i - \bar{x})^2} \cdot \sum (x_i - \bar{x})^2 = r^2 \sum (y_i - \bar{y})^2$$
@@ -725,17 +745,17 @@ $$s^2 = \frac{\text{SSE}}{n - 2} = \frac{(1 - r^2) \sum (y_i - \bar{y})^2}{n - 2
 So:
 $$s = \sqrt{\frac{(1 - r^2) \sum (y_i - \bar{y})^2}{n - 2}}$$
 
-Step 6: Substitute into the t-Statistic
+###### Step 6: Substitute into the t-Statistic
 
 Recall:
-$$t = \frac{b_1 \sqrt{\sum (x_i - \bar{x})^2}}{s}$$
+$$t = \frac{\beta_1 \sqrt{\sum (x_i - \bar{x})^2}}{s}$$
 
-Substitute $b_1 = r \frac{s_y}{s_x}$, where $s_y = \sqrt{\sum (y_i - \bar{y})^2 / (n-1)}$, $s_x = \sqrt{\sum (x_i - \bar{x})^2 / (n-1)}$:
+Substitute $\beta_1 = r \frac{s_y}{s_x}$, where $s_y = \sqrt{\sum (y_i - \bar{y})^2 / (n-1)}$, $s_x = \sqrt{\sum (x_i - \bar{x})^2 / (n-1)}$:
 
-$$b_1 = r \frac{\sqrt{\sum (y_i - \bar{y})^2 / (n-1)}}{\sqrt{\sum (x_i - \bar{x})^2 / (n-1)}} = r \sqrt{\frac{\sum (y_i - \bar{y})^2}{\sum (x_i - \bar{x})^2}}$$
+$$\beta_1 = r \frac{\sqrt{\sum (y_i - \bar{y})^2 / (n-1)}}{\sqrt{\sum (x_i - \bar{x})^2 / (n-1)}} = r \sqrt{\frac{\sum (y_i - \bar{y})^2}{\sum (x_i - \bar{x})^2}}$$
 
 Now compute:
-$$b_1 \sqrt{\sum (x_i - \bar{x})^2} = r \sqrt{\frac{\sum (y_i - \bar{y})^2}{\sum (x_i - \bar{x})^2}} \cdot \sqrt{\sum (x_i - \bar{x})^2} = r \sqrt{\sum (y_i - \bar{y})^2}$$
+$$\beta_1 \sqrt{\sum (x_i - \bar{x})^2} = r \sqrt{\frac{\sum (y_i - \bar{y})^2}{\sum (x_i - \bar{x})^2}} \cdot \sqrt{\sum (x_i - \bar{x})^2} = r \sqrt{\sum (y_i - \bar{y})^2}$$
 
 The standard error term involves:
 $$s = \sqrt{\frac{(1 - r^2) \sum (y_i - \bar{y})^2}{n - 2}}$$
@@ -746,7 +766,7 @@ $$t = \frac{r \sqrt{\sum (y_i - \bar{y})^2}}{\sqrt{\frac{(1 - r^2) \sum (y_i - \
 The $\sqrt{\sum (y_i - \bar{y})^2}$ terms cancel out:
 $$t = \frac{r \sqrt{n - 2}}{\sqrt{1 - r^2}}$$
 
-Step 7: Linking to Ratio of Variances
+###### Step 7: Linking to Ratio of Variances
 
 Our inquiry started with a “ratio of variances.” In the context of the t-test, the t-statistic can be interpreted through the lens of explained versus unexplained variance. From the regression perspective:
 $$r^2 = \frac{\text{SSR}}{\text{SST}} = \frac{\text{Explained Variance}}{\text{Total Variance}}$$
@@ -769,8 +789,6 @@ $$t = \frac{r \sqrt{n - 2}}{\sqrt{1 - r^2}}$$
 This formula arises from the ratio of explained to unexplained variance in the regression model, where $r^2$ represents the proportion of variance in $Y$ explained by $X$, and $1 - r^2$ represents the unexplained variance, adjusted by the degrees of freedom $n - 2$.
 
 $$\Large{\boxed{t = \frac{r \sqrt{n - 2}}{\sqrt{1 - r^2}}}}$$
-
-
 
 On to the computations!
 
@@ -867,10 +885,13 @@ H. Plotting the t-distribution
 #|   - "t-statistic and t-critical marked"
 #|   - "Estimate and Confidence Intervals"
 #| code-fold: true
-#| 
+#| out-width: "75%"
+#| out-height: "75%"
+#| fig-align: center
 
 mosaic::xqt(p = c(0.025, 0.975), df = 463, 
             return = c("plot"), alpha = 0.5, 
+            pattern = "rings",
             colour = "black", system = "gg") %>% 
   gf_vline(xintercept = t_statistic, color = "red") %>%
   gf_vline(xintercept = t_critical, color = "blue") %>%
@@ -922,6 +943,10 @@ obs_daughter_corr
 ```
 
 ```{r}
+#| out-width: "75%"
+#| out-height: "75%"
+#| fig-align: center
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 corr_daughter_null <- 

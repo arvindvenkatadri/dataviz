@@ -2,8 +2,7 @@
 title: "Inference Test for Two Proportions"
 date: 10/Nov/2022
 abstract: "Inference Test for Two Proportions"
-author: Arvind V. 
-date-modified: "`r Sys.Date()`"
+date-modified: today
 order: 190
 image: preview.jpg
 image-alt: From The Internet Archive
@@ -350,7 +349,12 @@ The Contingency Table can be plotted using a `mosaic` plot using two packages, [
 #### vcd
 
 ```{r}
+#| label: fig-vcd1
+#| fig-cap: vcd Mosaic Plot of Death Penalty by Education
 #| code-fold: true
+#| out-width: "75%"
+#| out-height: "75%"
+#| fig-align: center
 
 # Computing the Contingency Table with rows and columns swapped
 # For plotting purposes
@@ -532,8 +536,7 @@ Let us now perform the base `chisq test`: We need a `contingency table` and then
 #| label: chi-squared-test1
 
 # Already computed
-# contingency_table <- vcd::structable(Education ~ DeathPenalty,
-#   data = GSS2002_modified)
+# contingency_table <- vcd::structable(Education ~ DeathPenalty, data = GSS2002_modified)
 
 xq_test_object <- xchisq.test(contingency_table) 
 
@@ -568,9 +571,12 @@ that proportions of `DeathPenalty` (opinion) are affected by `Education`.
 As always, *we analyze our plots, and plot our analysis*. Here is a plot for this test:
 
 ```{r}
-#| code-fold: true
 #| label: fig-chi-square-critical-value
 #| fig-cap: Results of Chi-Square Test
+#| code-fold: true
+#| out-width: "75%"
+#| out-height: "50%"
+#| fig-align: center
 #| 
 ggplot2::theme_set(new = theme_custom())
 
@@ -624,10 +630,10 @@ As per the `key` above, this is actually [**four 2-row tables interleaved togeth
 
 Let us plot these tables and develop first a visual intuition, and then a mathematical one. If we pull apart the four tables, here are the mosaic plots for the *actual* and *expected* Contingency Tables, along with the *association* plot showing the differences, as we did when plotting [Proportions](../../../10-Descriptive/Modules/40-CatData/index.qmd#coloured-tiles-actual-and-expected-contingency-tables):
 
+::: column-body-outset-right
 
 ```{r}
-#| layout-ncol: 2
-#| out-height: "150%"
+#| layout-ncol: 3
 #| label: fig-mosaic-actual-expected-differences
 #| fig-cap: Mosaic Plots of Actual, Expected and Differences in Contingency Tables
 #| fig-subcap: 
@@ -678,6 +684,9 @@ vcd::assoc(contingency_table, gp = shading_max, legend = TRUE, direction = "v",
   ) # Left side. How?)
 
 ```
+:::
+
+
 
 
 In @fig-mosaic-actual-expected-differences-1, we have the *Observed Contingency Table* as a mosaic, with its imbalances. The horizontal slice-line provides the overall proportion `Favour::Oppose`. The vertical slice-lines tell us that this proportion is *not the same* across levels of `Education`. 
@@ -822,9 +831,18 @@ Post](https://stats.stackexchange.com/a/303548):
 
 
 ```{r}
+#| label: fig-normal-chisquare
 #| echo: false
 #| warning: false
 #| layout-ncol: 2
+#| out-width: "75%"
+#| out-height: "75%"
+#| fig-align: center
+#| fig-cap: Normal to Chi-Square variable transformation
+#| fig-subcap: 
+#| - Normal Density
+#| - Squared Normal = Chi-Square
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 df <- tibble(x = rnorm(500, mean = 0, sd = 2), 
@@ -908,10 +926,12 @@ summary
 ```
 
 ```{r}
-#| label: Difference in Proportion
+#| label: fig-Difference-in-Proportion
+#| fig-cap: Observed Difference in Proportion
 #| layout: [[20],[80]]
 #| code-fold: true
 #| warning: false
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 obs_difference <-
@@ -981,9 +1001,9 @@ selections made by either set of evaluators*. So we can just:
 How would that pooled shuffled set of evaluations look like?
 
 ```{r}
-#| label: Shuffle the data once
+#| label: fig-Shuffle-the-data-once
 #| code-fold: true
-
+set.seed(1947)
 data_shuffled <- data %>%
   
   # knock off the coordinates prior to shuffle
@@ -1008,6 +1028,7 @@ data_shuffled %>%
 #| code-fold: true
 #| layout: [[45,-10, 45]]
 #| warning: false
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 data_shuffled %>% 
@@ -1093,6 +1114,9 @@ observed figure from Mother Nature.
 ```{r}
 #| layout: [[60, -10, 30]]
 #| code-fold: true
+#| out-width: "75%"
+#| out-height: "75%"
+#| fig-align: center
 #| 
 ggplot2::theme_set(new = theme_custom())
 
@@ -1125,7 +1149,9 @@ reject our NULL Hypothesis that there is no bias.
 We should now repeat the test with permutations on `Education`:
 
 ```{r}
-#| code-fold: true
+#| out-width: "75%"
+#| out-height: "75%"
+#| fig-align: center
 #| 
 ggplot2::theme_set(new = theme_custom())
 

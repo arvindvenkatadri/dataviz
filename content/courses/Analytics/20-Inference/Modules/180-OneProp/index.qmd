@@ -1,10 +1,10 @@
 ---
 title: "Testing a Single Proportion"
 date: 10/Nov/2022
-date-modified: "`r Sys.Date()`"
-author: Arvind V. 
+date-modified: today
 abstract: "Inference Tests for the significance of a Proportion"
 order: 180
+df-print: paged
 image: preview.jpg
 image-alt: From The Internet Archive
 categories:
@@ -281,7 +281,7 @@ Question 2 is an inference we need to make about the *population of highschooler
 For our first Research Question, we will choose the column `helmet_12m`: Remember that you can use `filter` to limit the dataset to just non-helmet wearers. Here, we will name the (filtered ) dataset `no_helmet`.
 
 ```{r}
-#| label: no-helmet-text
+#| label: no_helmet_text
 yrbss %>% 
   group_by(helmet_12m) %>% count()
 
@@ -292,6 +292,7 @@ yrbss %>%
 Also, it may be easier to calculate the proportion if we create a new variable that specifies whether the individual has [***texted every day***]{style="background-color:yellow;"} while driving over the past 30 days or not. We will call this variable `text_ind`.
 
 ```{r}
+
 no_helmet_text <- yrbss %>%
   filter(helmet_12m == "never") %>% 
   mutate(text_ind = ifelse(text_while_driving_30d == "30", "yes", "no")) %>% 
@@ -302,7 +303,7 @@ no_helmet_text
 no_helmet_text %>% drop_na() %>% count(text_ind)
 
 no_helmet_text %>% drop_na() %>% 
-  summarize(prop = prop(text_ind, success = "yes"), n = n())
+  dplyr::summarize(prop = prop(text_ind, success = "yes"), n = n())
 
 ```
 
@@ -314,7 +315,6 @@ We can quickly plot this, just for the sake of visual understanding of the propo
 
 :::: {.columns}
 ::: {.column}
-
 ```{r}
 #| label: plot-no-helmet-text
 #| eval: false
@@ -330,6 +330,8 @@ no_helmet_text %>% drop_na() %>%
 :::
 
 ::: {.column}
+
+
 ```{r}
 #| ref-label: plot-no-helmet-text
 #| echo: false
