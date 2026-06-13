@@ -2,7 +2,7 @@
 title: "Modelling with Logistic Regression"
 abstract: "Predicting Qualitative Target Variables"
 date: 13/Apr/2023
-date-modified: "`r Sys.Date()`"
+date-modified: today
 order: 30
 image: featured.png
 image-alt: ""
@@ -330,11 +330,7 @@ target side)?
 
 ###### 3. Making the LHS continuous? 
 
-What can we try? In dummy encoding our target variable, we found a range of \[0,1\], [which is the same
-    range for a **probability** value]{.black .bg-yellow}! Could we try
-    to use **probability of the outcome** as our target, even though we
-    are interested in binary outcomes? This would still leave us with a
-    range of $[0,1]$ for the target variable, as before.
+What can we try? In dummy encoding our target variable, we found a range of \[0,1\], [which is the same as the range for a **probability** value]{.black .bg-yellow}! Could we try to use ***probability of the outcome*** as our target, even though we are interested in binary outcomes themselves? This would still leave us with a range of $[0,1]$ for the target variable, as before.
 
 :::::: callout-note
 
@@ -392,8 +388,8 @@ very shortly!
 
 How would one "extend" the range of a target variable
     from \[0,1\] to $[-\infty, \infty]$ ? One step would be to try the
-    **odds of the outcome**, instead of trying to predict the outcomes
-    directly (Yes or No), or their probabilities $[0,1]$.
+    ***odds of the outcome***, instead of trying to predict the outcomes
+    directly (Yes or No), or even their probabilities $[0,1]$.
 
 ::: callout-note
 #### Odds
@@ -462,7 +458,7 @@ $$
 a Quantitative target!
 
   There is an additional benefit if this `log()` transformation: the
-**Error Distributions with Odds targets**. See the plot below. Odds are
+**Error/Residual Distributions with Odds targets**. See the plot below. Odds are
 a necessarily nonlinear function of probability; the slope of
 `Odds ~ probability` also depends upon the probability itself, as we saw
 with the probability curve earlier.
@@ -509,8 +505,9 @@ change in the probabilities. The basic curve is non-linear and the `log`
 transformation flattens this out to provide a more linear relationship,
 which is what we desire.
 
-So in our model, instead of modeling *odds* as the dependent variable,
-we will use $log(odds)$, also known as the **logit**, defined as:
+###### 6. Putting it all together: Logistic Regression
+
+So finally in our model, instead of modeling *levels/labels of the Qual target variable events (i.e Yes / No )*, we will use $log(odds)$ of the events themselves, also known as the **logit**, defined as:
 
 $$
 \begin{align}
@@ -634,7 +631,7 @@ since it includes *three variables*. We'll see this shortly, with code.
 The thing to note is that the formula inside the `exp()` is a **linear
 combination** of the predictors!
 
-###### 6.Estimation of Model Parameters: 
+###### 7. Estimation of Model Parameters: 
 
 The parameters $\beta_i$ now
     need to be estimated. How might we do that? This last problem is
@@ -756,8 +753,8 @@ data.
 ### {{< iconify flat-color-icons workflow >}} Workflow: Data Munging
 
 Let us rename `y` as `diagnosis` and take two other Quantitative
-parameters as `predictors`, suitably naming them too. We will also
-create a binary-valued variable called `diagnosis_malignant` (Binary,
+parameters as `predictors`, suitably (re)naming them too. We will also
+create a *binary-valued* variable called `diagnosis_malignant` (Binary,
 Malignant = 1, Benign = 0) for use as a `target` in our logistic
 regression model.
 
@@ -819,7 +816,7 @@ cancer_modified %>%
   lower = list(continuous = wrap("points", alpha = 0.3)),
   
   title = "Cancer Pairs Plot #1") + 
-  scale_color_brewer(palette = "Set1", 
+  scale_color_brewer(palette = "Set1", direction = -1,
                      aesthetics = c("color", "fill"))
   
 ```
@@ -914,7 +911,7 @@ cancer_modified %>%
     x = decision_point + 0.45,
     y = 0.4,
     angle = -90
-  ), scale_color_brewer(palette = "Set1")) %>%
+  ), scale_color_brewer(palette = "Set1", direction = -1)) %>%
   gf_hline(yintercept = 0.5) %>% 
   gf_theme(theme(plot.title.position = "plot")) %>% 
   gf_refine(xlim(5, 30))
@@ -936,7 +933,7 @@ ggplot(cancer_modified, aes(radius_mean, diagnosis_malignant)) +
   geom_point(aes(color = diagnosis, shape = diagnosis), alpha = 0.5, size = 3) + 
   geom_smooth(method = glm, method.args = list(family = "binomial"), se = FALSE, color = "black") +
   geom_vline(xintercept = decision_point, linetype = "dashed") +
-  scale_color_brewer(palette = "Set1") +
+  scale_color_brewer(palette = "Set1", direction = -1) +
   guides(color = "none", shape = "none") +
   labs(title = "diagnosis ~ radius_mean",
        x = "Average radius",
@@ -1016,7 +1013,7 @@ cancer_modified %>%
   gf_abline(slope = decision_slope, intercept = decision_intercept, 
             linetype = "dashed") %>% 
   gf_refine(
-  scale_color_brewer(palette = "Set1"),
+  scale_color_brewer(palette = "Set1", direction = -1),
   annotate("text", label = paste0("q = ", qthresh), x = 10, y = c(0.08, 0.1, 0.115), angle = -17.155)) %>% 
   gf_theme(theme(plot.title.position = "plot"))
 
@@ -1104,6 +1101,7 @@ beta1_sample = coef(glm_sample_model)[2]
 #| echo: false
 #| label: fig-multiple-models
 #| fig-cap: "Multiple Models"
+#| 
 ggplot2::theme_set(new = theme_custom())
 
 colors <- RColorBrewer::brewer.pal(3, "Set1")
@@ -1114,7 +1112,7 @@ cancer_modified_sample %>%
     se = FALSE,
     color = "black", linewidth = 1.5
   ) %>%
-  gf_refine(scale_colour_brewer(palette = "Set1")) %>%
+  gf_refine(scale_colour_brewer(palette = "Set1", direction = -1)) %>%
 ## Overlaid regression curves
     gf_fun(ilogit(x * (beta1_sample - 0.002) + beta0_sample - 1) ~ x, xlim = c(10,20), color = "orange") %>% 
   gf_fun(ilogit(x * (beta1_sample + 0.0075) + beta0_sample + 1) ~ x, xlim = c(10,20), color = "limegreen") %>% 
@@ -1161,7 +1159,7 @@ plot_dat %>%
     se = FALSE,
     color = "grey"
   ) %>%
-  gf_refine(scale_color_brewer(palette = "Set1")) %>%
+  gf_refine(scale_color_brewer(palette = "Set1", direction = -1)) %>%
 ## Overlaid regression curves
     gf_fun(ilogit(x * (beta1_sample - 0.002) + beta0_sample - 1) ~ x, xlim = c(10,20), color = "orange",linewidth = 2) %>% 
   gf_point(curve1 ~ radius_mean, size = 4) %>% 
@@ -1181,7 +1179,7 @@ plot_dat %>%
     se = FALSE,
     color = "grey"
   ) %>%
-  gf_refine(scale_color_brewer(palette = "Set1")) %>%
+  gf_refine(scale_color_brewer(palette = "Set1", direction = -1)) %>%
   
 gf_fun(ilogit(x * (beta1_sample - 0.002) + beta0_sample - 1) ~ x, 
        xlim = c(10,20), color = "orange", linewidth = 2) %>% 
@@ -1205,7 +1203,7 @@ plot_dat %>%
     se = FALSE,
     color = "grey"
   ) %>%
-  gf_refine(scale_color_brewer(palette = "Set1")) %>%
+  gf_refine(scale_color_brewer(palette = "Set1", direction = -1)) %>%
   ## Overlaid regression curves
     gf_fun(ilogit(x * (beta1_sample + 0.0075) + beta0_sample + 1) ~ x, xlim = c(10,20), color = "limegreen", linewidth = 2) %>% 
   gf_point(curve2 ~ radius_mean, size = 4) %>% 
@@ -1216,7 +1214,7 @@ plot_dat %>%
   gf_point(diagnosis_malignant ~ radius_mean, 
            colour = ~ diagnosis, size = 4, alpha = 0.3,
            title = "Predicted Probability Lookup") %>% 
-    gf_refine(scale_color_brewer(palette = "Set1")) %>%
+    gf_refine(scale_color_brewer(palette = "Set1", direction = -1)) %>%
     gf_smooth(
     method = glm,
     method.args = list(family = "binomial"),
@@ -1416,7 +1414,11 @@ How do we calculate the next value of x using the tangent?
 
 - Logistic Regression is a great ML algorithm for predicting **Qualitative** target variables. 
 - It also works for *multi-level/multi-valued* Qual variables (multinomial logistic regression)
-- The internals of Logistic Regression are quite different compared to Linear Regression
+- The internals of Logistic Regression seem quite different compared to those for Linear Regression. ***However***, when we use the [LINE assumptions]() to model the errors as *Gaussian* in [Linear Regression](), and follow through with a [*probabilistic analysis*](), we can conclude that the *Ordinary Least Squares* method we saw there is another manifestation of MLE! Here is a tutorial on [MLE](files/index.qmd) for the intrepid!
+
+## {{< iconify openmoji person >}} Your Turn
+To be written up.
+
 
 ## {{< iconify ooui references-rtl >}} References {#sec-references}
 

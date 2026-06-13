@@ -149,8 +149,8 @@ You can either download it, save a copy, and read it in as usual, or use the URL
 ```{r data.world_leaflet_example}
 #| message: false
 
-#library(devtools)
-#devtools::install_github("datadotworld/data.world-r", build_vignettes = TRUE)
+# library(pak)
+# pak::pak("datadotworld/data.world-r", build_vignettes = TRUE)
 
 library(data.world)
 
@@ -182,7 +182,7 @@ india_airports %>% head()
 
 ```
 
-Let us plot this in \`mapview\`, using an ESRI National Geographic style map instead of the OSM Base Map. We will also place small circle markers for each airport.
+Let us plot this in `{{mapview}}`, using an ESRI National Geographic style map instead of the OSM Base Map. We will also place small circle markers for each airport.
 
 ```{r}
 # Change the order of basemaps in mapview
@@ -207,8 +207,10 @@ By default, `mapview` provides a mouseover label information (`feature ID`, or a
 
     We will download a small dataset of restaurants in say Malleswaram, Bangalore and plot them with `mapview`, adding popups and labels:
 
-```{r}
-#library(osmdata)
+```{{r}}
+# This code is for reference
+# Run these commands ONCE in your Console
+# Or manually run this chunk once to get the data and save it as a GeoPackage file for future us
 
 bbox<- osmdata::getbb("Malleswaram, Bengaluru")
 bbox
@@ -224,6 +226,15 @@ restaurants <- restaurants %>%
   dplyr::filter(cuisine == "indian")
 restaurants
 
+sf::st_write(restaurants, dsn = "./gpkg-data/restaurants.gpkg", 
+         append = FALSE, quiet = FALSE) # Save the data as a GeoPackage file for future use
+```
+
+Let us now read back the saved Data:
+
+```{r}
+#| label: resume-from-here
+restaurants <- sf::st_read("./gpkg-data/restaurants.gpkg")
 
 ```
 
@@ -392,7 +403,8 @@ addMarkers()
 Let us make a list of logos of the Companies and use them as markers!
 
 ```{r}
-
+#| eval: false
+#| echo: false
 # a named list of rescaled icons with links to images
 
 favicons <- iconList(

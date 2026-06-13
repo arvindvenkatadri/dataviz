@@ -1,0 +1,212 @@
+---
+title: "The Maximum Likelihood Estimation (MLE) method"
+abstract: The "other ML method"- Estimating Model Parameters
+date: 13/Jun/2026
+date-modified: today
+order: 200
+image: featured.png
+image-alt: ""
+categories: 
+  - Logistic Regression
+  - Qualitative Variable
+  - Probability
+  - Odds
+  - Log Transformation
+bibliography: 
+  - grateful-refs.bib
+citation: true
+#suppress-bibliography: true
+editor: 
+  markdown: 
+    wrap: 72
+format: 
+  html: default
+  revealjs: 
+    theme: default
+    output-file: counts-reveal.html
+    smaller: true
+    center: false
+    scroll-view: true
+    scrollable: true
+    slide-level: 3
+    slide-number: true
+    chalkboard: true
+    df-print: paged
+    highlight-style: tango
+    menu: true
+    overview: true
+    preload-iframes: true
+    preview-links: true
+    touch: true
+---
+
+## {{< iconify noto-v1 package >}} Setting up R Packages
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(ggformula)
+library(mosaic)
+library(skimr)
+library(GGally)
+library(infer)
+
+```
+
+```{r}
+#| label: Extra-Pedagogical-Packages
+#| echo: false
+#| message: false
+
+library(checkdown)
+library(epoxy)
+library(TeachHist)
+library(TeachingDemos)
+library(grateful)
+library(ggrepel)
+library(marquee)
+
+```
+
+#### Plot Fonts and Theme
+
+```{r}
+#| label: plot-theme-ggplot4
+#| cache: false
+#| code-fold: true
+#| messages: false
+#| warning: false
+#| 
+library(systemfonts)
+library(showtext)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../../fonts/Alegreya-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+showtext_auto(enable = TRUE) #enable showtext
+##
+theme_custom <- function(){ 
+
+    theme_bw(base_size = 10) + 
+    
+    # theme(panel.widths = unit(11, "cm"), 
+    #       panel.heights = unit(6.79, "cm")) + # Golden Ratio
+    
+    theme(plot.margin = margin_auto(t = 1, r = 2, b = 1, l = 1, unit = "cm"),
+          plot.background = element_rect(fill = "bisque",
+                                         colour = "black",
+                                         linewidth = 1)) + 
+            
+    theme_sub_axis(title = element_text(family = "Roboto Condensed", 
+                                       size = 10),
+                   text = element_text(family = "Roboto Condensed", 
+                                       size = 8)) + 
+    
+    theme_sub_legend(text = element_text(family = "Roboto Condensed", 
+                                         size = 6),
+                     title = element_text(family = "Alegreya", 
+                                          size = 8)) + 
+    
+    theme_sub_plot(title = element_text(family = "Alegreya", 
+                                        size = 14, face = "bold"),
+                   title.position = "plot",
+                   subtitle = element_text(family = "Alegreya", 
+                                           size = 10),
+                   caption = element_text(family = "Alegreya", 
+                                          size = 6),
+                   caption.position = "plot") 
+    
+}
+
+## Use available fonts in ggplot text geoms too!
+ggplot2::update_geom_defaults(geom = "text", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+ggplot2::update_geom_defaults(geom = "marquee", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "text_repel", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label_repel", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
+
+## tinytable options
+options("tinytable_tt_digits" = 2)
+options("tinytable_format_num_fmt" = "significant_cell")
+options(tinytable_html_mathjax = TRUE)
+
+
+## Set defaults for flextable
+flextable::set_flextable_defaults(font.family = "Roboto Condensed")
+
+```
+
+
+
+
+
+
+
+
+
+::: {#refs style="font-size: 60%;"}
+###### {{< iconify lucide package-check >}} R Package Citations
+
+```{r}
+#| echo: false
+# scan_packages()
+cite_packages(
+  output = "table",
+  out.dir = ".",
+  out.format = "html",
+  pkgs = c("ISLR","equatiomatic")
+) %>%
+  knitr::kable(format = "simple")
+
+```
+:::
+
