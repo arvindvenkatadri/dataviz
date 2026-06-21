@@ -7,12 +7,12 @@
 <script src="../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-795e9e8eca1e12b12abcb09a27409631.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-4bd490e9cd57f2396cbd188312c0541c.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script src="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.8.27">
+  <meta name="generator" content="quarto-1.9.38">
 
   <meta name="dcterms.date" content="2022-11-10">
   <title>The Mad Hatter's Guide to Data Viz and Stats in R – Inference for Comparing Two Paired Means</title>
@@ -22,6 +22,9 @@
   <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reveal.css">
   <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -101,7 +104,6 @@
     div.csl-bib-body { }
     div.csl-entry {
       clear: both;
-      margin-bottom: 0em;
     }
     .hanging-indent div.csl-entry {
       margin-left:2em;
@@ -118,7 +120,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/theme/quarto-180c62c9bcf69a0506044dd7f3253a18.css">
+  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/theme/quarto-7d27a531335543ee0379719666959585.css">
   <link href="../../../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -220,7 +222,7 @@
   <script src="../../../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 <meta property="og:title" content="Inference for Comparing Two Paired Means – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:description" content="Means from repeated measurements">
-<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
+<meta property="og:site_name" content="The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta name="twitter:title" content="Inference for Comparing Two Paired Means – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta name="twitter:description" content="Means from repeated measurements">
 <meta name="twitter:card" content="summary">
@@ -239,7 +241,7 @@
   <p class="date">2022-11-10</p>
 </section>
 <section>
-<section id="setting-up-r-packages" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(tidyverse)</span>
@@ -381,16 +383,16 @@
 </details>
 </div></section>
 <section>
-<section id="introduction-to-inference-for-paired-data" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction-to-inference-for-paired-data" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="openmoji:japanese-symbol-for-beginner" aria-label="Icon japanese-symbol-for-beginner from openmoji Iconify.design set." title="Icon japanese-symbol-for-beginner from openmoji Iconify.design set."></iconify-icon> Introduction to Inference for Paired Data</h2>
 
 </section>
-<section id="what-is-paired-data" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e7420706169722d32342d66696c6c6564203e7d7d-what-is-paired-data" class="slide level3">
 <h3><iconify-icon inline="" icon="fluent:pair-24-filled" aria-label="Icon pair-24-filled from fluent Iconify.design set." title="Icon pair-24-filled from fluent Iconify.design set."></iconify-icon> What is Paired Data?</h3>
 <p>Sometimes the data is collected on the same set of individual categories, e.g.&nbsp;scores by <em>the same</em> sport persons in two separate tournaments, or sales of <em>identical items</em> in two separate locations of a chain store. Or say the number of customers in the morning and in the evening, at a set of store locations. In this case we treat the two sets of observations as <strong>paired</strong>, since they correspond to the same set of observable entities (Qual !!) . This is how some experiments give us paired data.</p>
 <p>We would naturally be interested in the differences in <strong>means</strong> across these two sets, which exploits this paired nature. In this module, we will examine tests for this purpose.</p>
 </section>
-<section id="workflow-for-inference-for-paired-means" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-for-inference-for-paired-means" class="slide level3">
 <h3><iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow for Inference for Paired Means</h3>
 <div class="cell" data-reveal="true" data-layout-align="default">
 <div class="cell-output-display">
@@ -414,11 +416,11 @@
 <p>We will now use a couple to case studies to traverse all the possible pathways in the Workflow above.</p>
 </section></section>
 <section>
-<section id="case-study-1-results-from-a-diving-championship" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792070616a616d61732069737375652d747970652d746573742d63617365203e7d7d-case-study-1-results-from-a-diving-championship" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="pajamas:issue-type-test-case" aria-label="Icon issue-type-test-case from pajamas Iconify.design set." title="Icon issue-type-test-case from pajamas Iconify.design set."></iconify-icon> Case Study #1: Results from a Diving Championship</h2>
 <p>Here we have swimming records across a Semi-Final and a Final:</p>
 </section>
-<section id="inspecting-and-charting-data" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e2063686172742d3364203e7d7d-inspecting-and-charting-data" class="slide level3">
 <h3><iconify-icon inline="" icon="carbon:chart-3d" aria-label="Icon chart-3d from carbon Iconify.design set." title="Icon chart-3d from carbon Iconify.design set."></iconify-icon> Inspecting and Charting Data</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">data</span>(<span class="st">"Diving2017"</span>, <span class="at">package =</span> <span class="st">"resampledata3"</span>)</span>
@@ -559,7 +561,7 @@
 <li>Although the two <em>medians</em> appear to be different, the box plots overlap considerably. So one cannot visually conclude that the two sets of race timings have different <em>means</em>.</li>
 </ul>
 </section>
-<section id="a.-check-for-normality" class="slide level3">
+<section id="a.-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d64692063686172742d62656c6c2d63757276652073697a653d3278203e7d7d-check-for-normality" class="slide level3">
 <h3>A. <iconify-icon inline="" icon="mdi:chart-bell-curve" style="font-size: 2em;" aria-label="Icon chart-bell-curve from mdi Iconify.design set." title="Icon chart-bell-curve from mdi Iconify.design set."></iconify-icon> Check for Normality</h3>
 <p>Let us also complete a check for normality: the <code>shapiro.wilk</code> test checks whether a Quant variable is from a normal distribution; the NULL hypothesis is that the data <em>are</em> from a normal distribution.</p>
 <div class="columns">
@@ -614,7 +616,7 @@ W = 0.86554, p-value = 0.05738</code></pre>
 </div></div>
 <p>We see in the QQ-plots that the <code>Final</code> scores are closer to the straight line than the <code>Semifinal</code> scores. But it is perhaps still hard to accept the data as normally distributed…hmm.</p>
 </section>
-<section id="b.-check-for-variances" class="slide level3">
+<section id="b.-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d6469207369676d612d6c6f7765722073697a653d3278203e7d7d-check-for-variances" class="slide level3">
 <h3>B. <iconify-icon inline="" icon="mdi:sigma-lower" style="font-size: 2em;" aria-label="Icon sigma-lower from mdi Iconify.design set." title="Icon sigma-lower from mdi Iconify.design set."></iconify-icon> Check for Variances</h3>
 <p>Let us check if the two variables have similar variances: the <code>var.test</code> does this for us, with a NULL hypothesis that the variances are not significantly different:</p>
 <div class="cell">
@@ -654,7 +656,7 @@ W = 0.86554, p-value = 0.05738</code></pre>
 </div>
 </div>
 </section>
-<section id="hypothesis" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792061636164656d69636f6e73206879706f746865736973203e7d7d-hypothesis" class="slide level3">
 <h3><iconify-icon inline="" icon="academicons:hypothesis" aria-label="Icon hypothesis from academicons Iconify.design set." title="Icon hypothesis from academicons Iconify.design set."></iconify-icon> Hypothesis</h3>
 <p>Based on the graph, how would we formulate our Hypothesis? We wish to infer whether there is any change in performance between the <strong>population of swimmers</strong> who might have participated in these two races. So accordingly:</p>
 <p><span class="math display">\[
@@ -664,7 +666,7 @@ H_0: \mu_{semifinal} = \mu_{final}\\
 H_a: \mu_{semifinal} \ne \mu_{final}\
 \]</span></p>
 </section>
-<section id="observed-and-test-statistic" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792061636164656d69636f6e73206879706f746865736973203e7d7d-observed-and-test-statistic" class="slide level3">
 <h3><iconify-icon inline="" icon="academicons:hypothesis" aria-label="Icon hypothesis from academicons Iconify.design set." title="Icon hypothesis from academicons Iconify.design set."></iconify-icon> Observed and Test Statistic</h3>
 <p>What would be the <strong>test statistic</strong> we would use? The <strong>difference in means</strong>. Is the observed difference in the means between the two groups of scores non-zero? We use the <code>diffmean</code> function, with the argument <code>only.2 = FALSE</code> to allow for <em>paired data</em>:</p>
 <div class="cell">
@@ -684,7 +686,7 @@ H_a: \mu_{semifinal} \ne \mu_{final}\
 </div>
 </div>
 </section>
-<section id="inference" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c3220696e736967687473203e7d7d-inference" class="slide level3">
 <h3><iconify-icon inline="" icon="fluent-mdl2:insights" aria-label="Icon insights from fluent-mdl2 Iconify.design set." title="Icon insights from fluent-mdl2 Iconify.design set."></iconify-icon> Inference</h3>
 <div class="panel-tabset nav-pills" style="background: whitesmoke;">
 <ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1"><em>Paired</em> t.test</a></li><li><a href="#tabset-1-2"><em>Paired</em> Wilcoxon test</a></li><li><a href="#tabset-1-3">Linear Model Method</a></li><li><a href="#tabset-1-4">Permutation Tests</a></li></ul>
@@ -2839,7 +2841,7 @@ H_a: \beta_0 \ne 0\\
 <p>The linear model and the <code>t.test</code> are nearly identical in performance; the p.values are the same. The same is also true of the <code>wilcox.test</code> and the linear model with sign-rank data differences. This is of course not surprising!</p>
 </section></section>
 <section>
-<section id="case-study-2-walmart-vs-target" class="title-slide slide level2 center scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792070616a616d61732069737375652d747970652d746573742d63617365203e7d7d-case-study-2-walmart-vs-target" class="title-slide slide level2 center scrollable">
 <h2><iconify-icon inline="" icon="pajamas:issue-type-test-case" aria-label="Icon issue-type-test-case from pajamas Iconify.design set." title="Icon issue-type-test-case from pajamas Iconify.design set."></iconify-icon> Case Study #2: Walmart vs Target</h2>
 <p>Is there a difference in the price of Groceries sold by the two retailers Target and Walmart? The data set <code>Groceries</code> contains a sample of grocery items and their prices advertised on their respective web sites on one specific day. We will:</p>
 <ol type="a">
@@ -2850,7 +2852,7 @@ H_a: \beta_0 \ne 0\\
 <li>Redo the hypothesis test without this observation. Would we reach the same conclusion?</li>
 </ol>
 </section>
-<section id="inspecting-and-charting-data-1" class="slide level3 scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e2063686172742d3364203e7d7d-inspecting-and-charting-data-1" class="slide level3 scrollable">
 <h3><iconify-icon inline="" icon="carbon:chart-3d" aria-label="Icon chart-3d from carbon Iconify.design set." title="Icon chart-3d from carbon Iconify.design set."></iconify-icon> Inspecting and Charting Data</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a><span class="fu">data</span>(<span class="st">"Groceries"</span>)</span>
@@ -3046,7 +3048,7 @@ $ Walmart &lt;dbl&gt; 2.78, 6.01, 2.98, 2.68, 2.98, 1.98, 2.50, 4.79, 1.28, 2.98
 </div>
 </div>
 <aside><ol class="aside-footnotes"><li id="fn1"><p><a href="https://raw.githubusercontent.com/gadenbuie/tidyexplain/main/images/tidyr-pivoting.gif" class="uri">https://raw.githubusercontent.com/gadenbuie/tidyexplain/main/images/tidyr-pivoting.gif</a></p></li></ol></aside></section>
-<section id="hypothesis-1" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792061636164656d69636f6e73206879706f746865736973203e7d7d-hypothesis-1" class="slide level3">
 <h3><iconify-icon inline="" icon="academicons:hypothesis" aria-label="Icon hypothesis from academicons Iconify.design set." title="Icon hypothesis from academicons Iconify.design set."></iconify-icon> Hypothesis</h3>
 <p>Based on the graph, how would we formulate our Hypothesis? We wish to infer whether there is any change in prices, <strong>per product</strong> between the two Store chains. So accordingly:</p>
 <p><span class="math display">\[
@@ -3060,7 +3062,7 @@ H_a: \mu_{Walmart} \ne \mu_{Target}\
 <h3>Testing for Assumptions on the Data</h3>
 <p>There are a few checks we need to make of our data, to decide what test procedure to use.</p>
 </section>
-<section id="a.-check-for-normality-1" class="slide level3">
+<section id="a.-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d64692063686172742d62656c6c2d63757276652073697a653d3278203e7d7d-check-for-normality-1" class="slide level3">
 <h3>A. <iconify-icon inline="" icon="mdi:chart-bell-curve" style="font-size: 2em;" aria-label="Icon chart-bell-curve from mdi Iconify.design set." title="Icon chart-bell-curve from mdi Iconify.design set."></iconify-icon> Check for Normality</h3>
 <div class="columns">
 <div class="column" style="width:55%;">
@@ -3088,7 +3090,7 @@ W = 0.79722, p-value = 5.836e-05</code></pre>
 </div></div>
 <p>For both tests, we see that the <code>p.value</code> is very small, indicating that the data are unlikely to be normally distributed. This means we cannot apply a standard <code>paired t.test</code> and need to use the non-parametric <code>wilcox.test</code>, that does not rely on the assumption of normality.</p>
 </section>
-<section id="b.-check-for-variances-1" class="slide level3">
+<section id="b.-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d6469207369676d612d6c6f7765722073697a653d3278203e7d7d-check-for-variances-1" class="slide level3">
 <h3>B. <iconify-icon inline="" icon="mdi:sigma-lower" style="font-size: 2em;" aria-label="Icon sigma-lower from mdi Iconify.design set." title="Icon sigma-lower from mdi Iconify.design set."></iconify-icon> Check for Variances</h3>
 <p>Let us check if the two variables have similar variances:</p>
 <div class="cell">
@@ -3109,7 +3111,7 @@ ratio of variances
 </div>
 <p>It appears from the <span class="math inline">\(p.value = 0.9\)</span> and the <span class="math inline">\(Confidence Interval = [0.4629, 2.0432]\)</span>, which includes <span class="math inline">\(1\)</span>, that we cannot reject the NULL Hypothesis that the variances are not significantly different. ( Remember: this test looks at the <strong>ratio</strong> of the two variances, and the NULL Hypothesis is that this ratio is <span class="math inline">\(1\)</span> ).</p>
 </section>
-<section id="inference-1" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c3220696e736967687473203e7d7d-inference-1" class="slide level3">
 <h3><iconify-icon inline="" icon="fluent-mdl2:insights" aria-label="Icon insights from fluent-mdl2 Iconify.design set." title="Icon insights from fluent-mdl2 Iconify.design set."></iconify-icon> Inference</h3>
 <div class="panel-tabset nav-pills" style="background: whitesmoke;">
 <ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">Using <em>paired</em> t.test</a></li><li><a href="#tabset-2-2">Using non-parametric <em>paired</em> Wilcoxon test</a></li><li><a href="#tabset-2-3">Using the Linear Model Method</a></li><li><a href="#tabset-2-4">Permutation Tests</a></li></ul>
@@ -5313,18 +5315,18 @@ ratio of variances
 <p>We see that removing the Quaker Oats product item from the data <strong>does</strong> give a significant difference in mean prices !!! That one price difference was in <em>the opposite direction compared to the general trend in differences</em>, so when it was removed, we obtained a truer picture of price differences.</p>
 <p>Try to do a regular parametric t.test with this reduced data!</p>
 </section></section>
-<section id="wait-but-why" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="mingcute:thought-line" aria-label="Icon thought-line from mingcute Iconify.design set." title="Icon thought-line from mingcute Iconify.design set."></iconify-icon> Wait, But Why?</h2>
 <p><code>Paired</code> data is a special case of dependent data, where the observations are paired in some way. This can be due to repeated measures on the same subjects, or matched subjects in a case-control study. The paired t-test and the Wilcoxon signed-rank test are both designed for paired data, and take into account the fact that the observations are not independent.</p>
 <p>Can you think of an underlying experiment where the data may be paired?</p>
 </section>
 
-<section id="conclusion" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusion</h2>
 <p>We have learnt how to perform inference for paired-means. We have looked at the conditions that make the regular <code>t.test</code> possible, and learnt what to do if the conditions of normality and equal variance are not met. We have also looked at how these tests can be understood as manifestations of the <em>linear model</em>, with data and sign-ranked data. It should also be fairly clear now that we can test for the equivalence of two paired means, using a very simple permutation tests. Given computing power, we can always mechanize this test very quickly to get our results. And that performing this test yields reliable results without having to rely on any assumption relating to underlying distributions and so on.</p>
 </section>
 
-<section id="your-turn" class="title-slide slide level2 center scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a6920706572736f6e203e7d7d-your-turn" class="title-slide slide level2 center scrollable">
 <h2><iconify-icon inline="" icon="openmoji:person" aria-label="Icon person from openmoji Iconify.design set." title="Icon person from openmoji Iconify.design set."></iconify-icon> Your Turn</h2>
 <ol type="1">
 <li><p>Try the datasets in the <code>openintro</code> package. Use <code>data(package = "openintro")</code> in your Console to list out the data packages. Then simply type the name of the dataset in a Quarto chunk ( e.g.&nbsp;<code>babynames</code>) to read it.</p></li>
@@ -5334,7 +5336,7 @@ ratio of variances
 </section>
 
 <section>
-<section id="references" class="title-slide slide level2 center scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d6c7472203e7d7d-references" class="title-slide slide level2 center scrollable">
 <h2><iconify-icon inline="" icon="ooui:references-ltr" aria-label="Icon references-ltr from ooui Iconify.design set." title="Icon references-ltr from ooui Iconify.design set."></iconify-icon> References</h2>
 <ol type="1">
 <li>Paired Independence test with the package <code>infer</code>: <a href="https://infer.netlify.app/articles/paired" class="uri">https://infer.netlify.app/articles/paired</a></li>
@@ -5343,8 +5345,8 @@ ratio of variances
 <li><a href="https://statsandr.com/blog/wilcoxon-test-in-r-how-to-compare-2-groups-under-the-non-normality-assumption/" class="uri">https://statsandr.com/blog/wilcoxon-test-in-r-how-to-compare-2-groups-under-the-non-normality-assumption/</a></li>
 </ol>
 </section>
-<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" data-entry-spacing="0" role="list">
-<h6 id="r-package-citations"><iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
+<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" role="list">
+<h6 id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c7563696465207061636b6167652d636865636b203e7d7d-r-package-citations"><iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
 <div class="cell">
 <div class="cell-output-display">
 <table class="caption-top">
@@ -5381,13 +5383,13 @@ ratio of variances
 </div>
 </div>
 <div id="ref-openintro" class="csl-entry" role="listitem">
-Çetinkaya-Rundel, Mine, David Diez, Andrew Bray, Albert Y. Kim, Ben Baumer, Chester Ismay, Nick Paterno, and Christopher Barr. 2024. <em><span class="nocase">openintro</span>: Datasets and Supplemental Functions from <span>“<span>OpenIntro</span>”</span> Textbooks and Labs</em>. <a href="https://doi.org/10.32614/CRAN.package.openintro">https://doi.org/10.32614/CRAN.package.openintro</a>.
+Çetinkaya-Rundel, Mine, David Diez, Andrew Bray, et al. 2024. <em><span class="nocase">openintro</span>: Datasets and Supplemental Functions from <span>“<span>OpenIntro</span>”</span> Textbooks and Labs</em>. <a href="https://doi.org/10.32614/CRAN.package.openintro">https://doi.org/10.32614/CRAN.package.openintro</a>.
 </div>
 <div id="ref-infer" class="csl-entry" role="listitem">
 Couch, Simon P., Andrew P. Bray, Chester Ismay, Evgeni Chasnovski, Benjamin S. Baumer, and Mine Çetinkaya-Rundel. 2021. <span>“<span class="nocase">infer</span>: An <span>R</span> Package for Tidyverse-Friendly Statistical Inference.”</span> <em>Journal of Open Source Software</em> 6 (65): 3661. <a href="https://doi.org/10.21105/joss.03661">https://doi.org/10.21105/joss.03661</a>.
 </div>
 <div id="ref-gt" class="csl-entry" role="listitem">
-Iannone, Richard, Joe Cheng, Barret Schloerke, Shannon Haughton, Ellis Hughes, Alexandra Lauer, Romain François, JooYoung Seo, Ken Brevoort, and Olivier Roy. 2026. <em><span class="nocase">gt</span>: Easily Create Presentation-Ready Display Tables</em>. <a href="https://doi.org/10.32614/CRAN.package.gt">https://doi.org/10.32614/CRAN.package.gt</a>.
+Iannone, Richard, Joe Cheng, Barret Schloerke, et al. 2026. <em><span class="nocase">gt</span>: Easily Create Presentation-Ready Display Tables</em>. <a href="https://doi.org/10.32614/CRAN.package.gt">https://doi.org/10.32614/CRAN.package.gt</a>.
 </div>
 <div id="ref-MKinfer" class="csl-entry" role="listitem">
 Kohl, Matthias. 2025. <em><span>MKinfer: Inferential Statistics</span></em>. <a href="https://github.com/stamats/MKinfer">https://github.com/stamats/MKinfer</a>.
@@ -5432,7 +5434,6 @@ Kohl, Matthias. 2025. <em><span>MKinfer: Inferential Statistics</span></em>. <a 
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
 'jumpToSlide': true,
-'view': "scroll",
 'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
 'chalkboard': {"buttons":true},
 'smaller': true,
@@ -5576,6 +5577,13 @@ Kohl, Matthias. 2025. <em><span>MKinfer: Inferential Statistics</span></em>. <a 
         // devices. It is advisable to set this to a lower number than
         // viewDistance in order to save resources.
         mobileViewDistance: 2,
+
+        // Enable scroll view
+        view: 'scroll',
+        scrollProgress: 'auto',
+        scrollActivationWidth: 0,
+        scrollSnap: 'mandatory',
+        scrollLayout: 'full',
 
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be

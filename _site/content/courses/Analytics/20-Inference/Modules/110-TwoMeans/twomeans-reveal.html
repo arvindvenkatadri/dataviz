@@ -7,12 +7,12 @@
 <script src="../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-795e9e8eca1e12b12abcb09a27409631.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-4bd490e9cd57f2396cbd188312c0541c.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script src="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.8.27">
+  <meta name="generator" content="quarto-1.9.38">
 
   <meta name="dcterms.date" content="2022-11-22">
   <title>The Mad Hatter's Guide to Data Viz and Stats in R – Inference for Two Independent Means</title>
@@ -22,6 +22,9 @@
   <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reveal.css">
   <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -101,7 +104,6 @@
     div.csl-bib-body { }
     div.csl-entry {
       clear: both;
-      margin-bottom: 0em;
     }
     .hanging-indent div.csl-entry {
       margin-left:2em;
@@ -118,7 +120,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/theme/quarto-180c62c9bcf69a0506044dd7f3253a18.css">
+  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/theme/quarto-7d27a531335543ee0379719666959585.css">
   <link href="../../../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -220,7 +222,7 @@
   <script src="../../../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 <meta property="og:title" content="Inference for Two Independent Means – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:description" content="Two independent means from two separate populations.">
-<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
+<meta property="og:site_name" content="The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta name="twitter:title" content="Inference for Two Independent Means – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta name="twitter:description" content="Two independent means from two separate populations.">
 <meta name="twitter:card" content="summary">
@@ -248,7 +250,7 @@
 </div>
 </section>
 <section>
-<section id="setting-up-r-packages" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(tidyverse)</span>
@@ -396,7 +398,7 @@
 <span id="cb2-123"><a></a>flextable<span class="sc">::</span><span class="fu">set_flextable_defaults</span>(<span class="at">font.family =</span> <span class="st">"Roboto Condensed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div></section>
-<section id="introduction" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="openmoji:japanese-symbol-for-beginner" aria-label="Icon japanese-symbol-for-beginner from openmoji Iconify.design set." title="Icon japanese-symbol-for-beginner from openmoji Iconify.design set."></iconify-icon> Introduction</h2>
 <p>Sometimes, we need to compare if two distinct populations have the same mean. For instance we may wish to compare salaries between two different professions, or test scores between two different teaching methods. In this case, we take a sample ( not necessarily of equal length ) from each population, and compare the means of the two samples.</p>
 <p>Here is a diagram showing the workflow of this test based on the kind of data samples we encounter.</p>
@@ -423,11 +425,11 @@
 </section>
 
 <section>
-<section id="case-study-1-math-anxiety" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792070616a616d61732069737375652d747970652d746573742d63617365203e7d7d-case-study-1-math-anxiety" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="pajamas:issue-type-test-case" aria-label="Icon issue-type-test-case from pajamas Iconify.design set." title="Icon issue-type-test-case from pajamas Iconify.design set."></iconify-icon> Case Study #1: Math Anxiety</h2>
 <p>Let us look at the <code>MathAnxiety</code> dataset from the package <code>resampledata</code>. Here we have “anxiety” scores for boys and girls, for different components of mathematics.</p>
 </section>
-<section id="inspecting-and-charting-data" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e2063686172742d3364203e7d7d-inspecting-and-charting-data" class="slide level3">
 <h3><iconify-icon inline="" icon="carbon:chart-3d" aria-label="Icon chart-3d from carbon Iconify.design set." title="Icon chart-3d from carbon Iconify.design set."></iconify-icon> Inspecting and Charting Data</h3>
 <div class="cell" data-tbl-subcap="[&quot;Dataset (first 10 rows)&quot;,&quot;Qualitative Variables&quot;,&quot;Quantitative Variables&quot;]">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">data</span>(<span class="st">"MathAnxiety"</span>, <span class="at">package =</span> <span class="st">"resampledata"</span>)</span>
@@ -637,7 +639,7 @@ Table&nbsp;1: Math Anxiety Dataset
 </div>
 </div>
 </section>
-<section id="data-dictionary" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e652064696374696f6e6172792d6c616e67756167652d626f6f6b2d736f6c6964203e7d7d-data-dictionary" class="slide level3">
 <h3><iconify-icon inline="" icon="streamline:dictionary-language-book-solid" aria-label="Icon dictionary-language-book-solid from streamline Iconify.design set." title="Icon dictionary-language-book-solid from streamline Iconify.design set."></iconify-icon> Data Dictionary</h3>
 <p>The <code>MathAnxiety</code> dataset contains data on students’ anxiety levels, with ~600 data observations.</p>
 <div class="callout callout-note callout-titled callout-style-default">
@@ -675,7 +677,7 @@ Table&nbsp;1: Math Anxiety Dataset
 </div>
 </div>
 </section>
-<section id="hypothesis-and-research-questions" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920206d6174657269616c2d73796d626f6c73206c61622d7265736561726368203e7d7d-hypothesis-and-research-questions" class="slide level3">
 <h3><iconify-icon inline="" icon="material-symbols:lab-research" aria-label="Icon lab-research from material-symbols Iconify.design set." title="Icon lab-research from material-symbols Iconify.design set."></iconify-icon> Hypothesis and Research Questions</h3>
 <ul>
 <li>The <em>target variable-s</em> for an experiment that resulted in this data might be either of the two Anxiety-related scores.</li>
@@ -698,7 +700,7 @@ Table&nbsp;1: Math Anxiety Dataset
 </div>
 </div>
 </section>
-<section id="graphs" class="slide level3 scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d64692063686172742d6172656173706c696e65203e7d7d-graphs" class="slide level3 scrollable">
 <h3><iconify-icon inline="" icon="mdi:chart-areaspline" aria-label="Icon chart-areaspline from mdi Iconify.design set." title="Icon chart-areaspline from mdi Iconify.design set."></iconify-icon> Graphs</h3>
 <p>First, histograms, densities and counts of the variable we are interested in, after converting data into long format:</p>
 <details class="code-fold">
@@ -809,7 +811,7 @@ Figure&nbsp;1: AMAS Anxiety Score graphs
 </figure>
 </div>
 <p>The distributions for anxiety scores for boys and girls overlap considerably and are very similar, though the jitter plot for boys shows significant outliers. Are they close to being <em>normal distributions</em> too? We should check.</p>
-<h4 id="a.-check-for-normality">A. <iconify-icon inline="" icon="mdi:chart-bell-curve" aria-label="Icon chart-bell-curve from mdi Iconify.design set." title="Icon chart-bell-curve from mdi Iconify.design set."></iconify-icon> Check for Normality</h4>
+<h4 id="a.-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d64692063686172742d62656c6c2d6375727665203e7d7d-check-for-normality">A. <iconify-icon inline="" icon="mdi:chart-bell-curve" aria-label="Icon chart-bell-curve from mdi Iconify.design set." title="Icon chart-bell-curve from mdi Iconify.design set."></iconify-icon> Check for Normality</h4>
 <p>Statistical tests for means <em>usually</em> require a couple of checks<sup>1</sup> <sup>2</sup>:<br>
 </p>
 <ul>
@@ -928,7 +930,7 @@ W = 0.99074, p-value = 0.07835</code></pre>
 </div>
 </div>
 <p>We see that <code>MathAnxiety</code> contains discrete-level scores for anxiety for the two variables (for Boys and Girls) anxiety scores. The <code>boys</code> score has a significant outlier, which we saw earlier and perhaps that makes that variable lose out, perhaps narrowly.</p>
-<h4 id="b.-check-for-variances">B. <iconify-icon inline="" icon="mdi:sigma-lower" aria-label="Icon sigma-lower from mdi Iconify.design set." title="Icon sigma-lower from mdi Iconify.design set."></iconify-icon> Check for Variances</h4>
+<h4 id="b.-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d6469207369676d612d6c6f776572203e7d7d-check-for-variances">B. <iconify-icon inline="" icon="mdi:sigma-lower" aria-label="Icon sigma-lower from mdi Iconify.design set." title="Icon sigma-lower from mdi Iconify.design set."></iconify-icon> Check for Variances</h4>
 <p>Let us check if the two variables have similar variances: the <code>var.test</code> does this for us, with a NULL hypothesis that the variances are not significantly different:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>MathAnxiety <span class="sc">%&gt;%</span></span>
@@ -976,7 +978,7 @@ W = 0.99074, p-value = 0.07835</code></pre>
 </div>
 </div>
 <aside><ol class="aside-footnotes"><li id="fn1"><p><a href="https://stats.stackexchange.com/questions/2492/is-normality-testing-essentially-useless" class="uri">https://stats.stackexchange.com/questions/2492/is-normality-testing-essentially-useless</a></p></li><li id="fn2"><p><a href="https://www.allendowney.com/blog/2023/01/28/never-test-for-normality/" class="uri">https://www.allendowney.com/blog/2023/01/28/never-test-for-normality/</a></p></li></ol></aside></section>
-<section id="hypothesis" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792061636164656d69636f6e73206879706f746865736973203e7d7d-hypothesis" class="slide level3">
 <h3><iconify-icon inline="" icon="academicons:hypothesis" aria-label="Icon hypothesis from academicons Iconify.design set." title="Icon hypothesis from academicons Iconify.design set."></iconify-icon> Hypothesis</h3>
 <p>Based on the graphs, how would we formulate our Hypothesis? We wish to infer whether there is any difference in the mean anxiety score between Girls and Boys, in the <strong>population</strong> from which the dataset <code>MathAnxiety</code> has been drawn. So accordingly:</p>
 <p><span class="math display">\[
@@ -986,7 +988,7 @@ H_0: \mu_{Boys} - \mu_{Girls} = 0\\
 H_a: \mu_{Boys} - \mu_{Girls} \ne 0\\
 \]</span></p>
 </section>
-<section id="observed-and-test-statistic" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792061636164656d69636f6e73206879706f746865736973203e7d7d-observed-and-test-statistic" class="slide level3">
 <h3><iconify-icon inline="" icon="academicons:hypothesis" aria-label="Icon hypothesis from academicons Iconify.design set." title="Icon hypothesis from academicons Iconify.design set."></iconify-icon> Observed and Test Statistic</h3>
 <p>What would be the <strong>test statistic</strong> we would use? The <strong>difference in means</strong>. Is the observed difference in the means between the two groups of scores non-zero? We use the <code>diffmean</code> function:</p>
 <div class="cell">
@@ -1012,7 +1014,7 @@ H_a: \mu_{Boys} - \mu_{Girls} \ne 0\\
 </div>
 </div>
 </section>
-<section id="inference" class="slide level3 scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c3220696e736967687473203e7d7d-inference" class="slide level3 scrollable">
 <h3><iconify-icon inline="" icon="fluent-mdl2:insights" aria-label="Icon insights from fluent-mdl2 Iconify.design set." title="Icon insights from fluent-mdl2 Iconify.design set."></iconify-icon> Inference</h3>
 <div class="panel-tabset nav-pills" style="background: whitesmoke;">
 <ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Parametric t.test</a></li><li><a href="#tabset-1-2">Mann-Whitney Test</a></li><li><a href="#tabset-1-3">Linear Model Interpretation</a></li><li><a href="#tabset-1-4">Permutation Test</a></li><li><a href="#tabset-1-5">Visual and by Hand t.test</a></li></ul>
@@ -1557,13 +1559,13 @@ Table&nbsp;2: All Tests for AMAS Anxiety Scores
 </figcaption>
 <div aria-describedby="tbl-All-Tests-tt-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="tbl-All-Tests-tt-1-1" class="lightable-paper do-not-create-environment quarto-float quarto-figure quarto-figure-center" data-quarto-postprocess="true" style="color: black; font-family: Roboto Condensed; width: auto !important; margin-left: auto; margin-right: auto;">
+<div id="tbl-All-Tests-tt-1-1" class="lightable-paper quarto-float quarto-figure quarto-figure-center" style="color: black; font-family: Roboto Condensed; width: auto !important; margin-left: auto; margin-right: auto;" data-quarto-postprocess="true">
 <figure class="quarto-float quarto-subfloat-tbl">
 <figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-All-Tests-tt-1-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a) t.test
 </figcaption>
 <div aria-describedby="tbl-All-Tests-tt-1-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table id="tbl-All-Tests-tt-1-1" class="lightable-paper do-not-create-environment caption-top" style="color: black; font-family: Roboto Condensed; width: auto !important; margin-left: auto; margin-right: auto;">
+<table id="tbl-All-Tests-tt-1-1" class="lightable-paper caption-top" style="color: black; font-family: Roboto Condensed; width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr class="header">
 <th style="text-align: right;" data-quarto-table-cell-role="th">estimate</th>
@@ -1599,13 +1601,13 @@ Table&nbsp;2: All Tests for AMAS Anxiety Scores
 
 
 
-<div id="tbl-All-Tests-tt-1-2" class="lightable-paper do-not-create-environment quarto-float quarto-figure quarto-figure-center" data-quarto-postprocess="true" style="color: black; font-family: Roboto Condensed; width: auto !important; margin-left: auto; margin-right: auto;">
+<div id="tbl-All-Tests-tt-1-2" class="lightable-paper quarto-float quarto-figure quarto-figure-center" style="color: black; font-family: Roboto Condensed; width: auto !important; margin-left: auto; margin-right: auto;" data-quarto-postprocess="true">
 <figure class="quarto-float quarto-subfloat-tbl">
 <figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-All-Tests-tt-1-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (b) wilcox.test
 </figcaption>
 <div aria-describedby="tbl-All-Tests-tt-1-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table id="tbl-All-Tests-tt-1-2" class="lightable-paper do-not-create-environment caption-top" style="color: black; font-family: Roboto Condensed; width: auto !important; margin-left: auto; margin-right: auto;">
+<table id="tbl-All-Tests-tt-1-2" class="lightable-paper caption-top" style="color: black; font-family: Roboto Condensed; width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr class="header">
 <th style="text-align: right;" data-quarto-table-cell-role="th">statistic</th>
@@ -1629,13 +1631,13 @@ Table&nbsp;2: All Tests for AMAS Anxiety Scores
 
 
 
-<div id="tbl-All-Tests-tt-1-3" class="lightable-paper do-not-create-environment quarto-float quarto-figure quarto-figure-center" data-quarto-postprocess="true" style="color: black; font-family: Roboto Condensed; width: auto !important; margin-left: auto; margin-right: auto;">
+<div id="tbl-All-Tests-tt-1-3" class="lightable-paper quarto-float quarto-figure quarto-figure-center" style="color: black; font-family: Roboto Condensed; width: auto !important; margin-left: auto; margin-right: auto;" data-quarto-postprocess="true">
 <figure class="quarto-float quarto-subfloat-tbl">
 <figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-All-Tests-tt-1-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (c) Linear Model with Original Data
 </figcaption>
 <div aria-describedby="tbl-All-Tests-tt-1-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table id="tbl-All-Tests-tt-1-3" class="lightable-paper do-not-create-environment caption-top" style="color: black; font-family: Roboto Condensed; width: auto !important; margin-left: auto; margin-right: auto;">
+<table id="tbl-All-Tests-tt-1-3" class="lightable-paper caption-top" style="color: black; font-family: Roboto Condensed; width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th">term</th>
@@ -1674,13 +1676,13 @@ Table&nbsp;2: All Tests for AMAS Anxiety Scores
 
 
 
-<div id="tbl-All-Tests-tt-1-4" class="lightable-paper do-not-create-environment quarto-float quarto-figure quarto-figure-center" data-quarto-postprocess="true" style="color: black; font-family: Roboto Condensed; width: auto !important; margin-left: auto; margin-right: auto;">
+<div id="tbl-All-Tests-tt-1-4" class="lightable-paper quarto-float quarto-figure quarto-figure-center" style="color: black; font-family: Roboto Condensed; width: auto !important; margin-left: auto; margin-right: auto;" data-quarto-postprocess="true">
 <figure class="quarto-float quarto-subfloat-tbl">
 <figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-All-Tests-tt-1-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (d) Linear Model with Ranked Data
 </figcaption>
 <div aria-describedby="tbl-All-Tests-tt-1-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table id="tbl-All-Tests-tt-1-4" class="lightable-paper do-not-create-environment caption-top" style="color: black; font-family: Roboto Condensed; width: auto !important; margin-left: auto; margin-right: auto;">
+<table id="tbl-All-Tests-tt-1-4" class="lightable-paper caption-top" style="color: black; font-family: Roboto Condensed; width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th">term</th>
@@ -1723,7 +1725,7 @@ Table&nbsp;2: All Tests for AMAS Anxiety Scores
 </div>
 <p>As we can see, all tests are in agreement that there is a significant <em>effect</em> of <code>Gender</code> on the <code>AMAS</code> anxiety scores!</p>
 </section>
-<section id="one-test-to-rule-them-all-visstatistics" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792066612d736f6c69642072696e67203e7d7d-one-test-to-rule-them-all-visstatistics" class="slide level3">
 <h3><iconify-icon inline="" icon="fa-solid:ring" aria-label="Icon ring from fa-solid Iconify.design set." title="Icon ring from fa-solid Iconify.design set."></iconify-icon> One Test to Rule Them All: visStatistics</h3>
 <p>We can use the <code>visStatistics</code> package to run all the tests in one go, using the in-built <strong>decision tree</strong>. This is a very useful package for teaching statistics, and it can be used to run all the tests we have seen so far, and more. Here goes: we use the <code>visstat</code> function to run all the tests, and then we can summarize the results. The <code>visstat</code> function takes a dataset, a quantitative variable, a qualitative variable, and some options for the tests to run.</p>
 <p>From the <code>visStatistics</code> package documentation:</p>
@@ -1872,11 +1874,11 @@ Figure&nbsp;8: visStatistics Output for AMAS Anxiety Scores
 <p>At <span class="math inline">\(\alpha = 0.001056\)</span>, the observed differences (higher mean Math Anxiety among girls than boys) are considered statistically significant. Therefore, based on this analysis and context provided, we have sufficient evidence to reject the null hypothesis that there is no difference in average Math-related Anxiety Scores between boys and girls.</p>
 </section></section>
 <section>
-<section id="case-study-2-youth-risk-behavior-surveillance-system-yrbss-survey" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792070616a616d61732069737375652d747970652d746573742d63617365203e7d7d-case-study-2-youth-risk-behavior-surveillance-system-yrbss-survey" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="pajamas:issue-type-test-case" aria-label="Icon issue-type-test-case from pajamas Iconify.design set." title="Icon issue-type-test-case from pajamas Iconify.design set."></iconify-icon> Case Study #2: Youth Risk Behavior Surveillance System (YRBSS) survey</h2>
 <p>Every two years, the <a href="https://www.cdc.gov/">Centers for Disease Control and Prevention</a> in the USA conduct the <strong>Youth Risk Behavior Surveillance System (YRBSS)</strong> survey, where it takes data from high-schoolers (9th through 12th grade), to analyze health patterns. We will work with a selected group of variables from a random sample of observations during one of the years the YRBSS was conducted. The <code>yrbss</code> dataset is part of the <code>openintro</code> package. Type this in your console: <code>help(yrbss)</code>.</p>
 </section>
-<section id="inspecting-and-charting-data-1" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e2063686172742d3364203e7d7d-inspecting-and-charting-data-1" class="slide level3">
 <h3><iconify-icon inline="" icon="carbon:chart-3d" aria-label="Icon chart-3d from carbon Iconify.design set." title="Icon chart-3d from carbon Iconify.design set."></iconify-icon> Inspecting and Charting Data</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a><span class="fu">data</span>(yrbss, <span class="at">package =</span> <span class="st">"openintro"</span>)</span>
@@ -2009,7 +2011,7 @@ Figure&nbsp;9: Highschoolers’ Weights Distributions
 </div>
 <p>Overlapped Distribution plot shows some difference in the <em>means</em>; and the Jitter plots show visible difference in the <em>means</em>. In this Case Study, our research question is:</p>
 </section>
-<section id="hypothesis-1" class="slide level3 scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792061636164656d69636f6e73206879706f746865736973203e7d7d-hypothesis-1" class="slide level3 scrollable">
 <h3><iconify-icon inline="" icon="academicons:hypothesis" aria-label="Icon hypothesis from academicons Iconify.design set." title="Icon hypothesis from academicons Iconify.design set."></iconify-icon> Hypothesis</h3>
 <div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
@@ -2031,7 +2033,7 @@ H_0: \mu_{weight-male} = \mu_{weight-female}
 <p><span class="math display">\[
 H_a: \mu_{weight-male} \ne \mu_{weight-female}
 \]</span></p>
-<h4 id="a.-check-for-normality-1">A. <iconify-icon inline="" icon="mdi:chart-bell-curve" aria-label="Icon chart-bell-curve from mdi Iconify.design set." title="Icon chart-bell-curve from mdi Iconify.design set."></iconify-icon> Check for Normality</h4>
+<h4 id="a.-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d64692063686172742d62656c6c2d6375727665203e7d7d-check-for-normality-1">A. <iconify-icon inline="" icon="mdi:chart-bell-curve" aria-label="Icon chart-bell-curve from mdi Iconify.design set." title="Icon chart-bell-curve from mdi Iconify.design set."></iconify-icon> Check for Normality</h4>
 <p>As stated before, statistical tests for means <em>usually</em> require a couple of checks:<br>
 </p>
 <ul>
@@ -2128,7 +2130,7 @@ A = 157.17, p-value &lt; 2.2e-16</code></pre>
 </div>
 </div>
 <p><code>p-values</code> are very low and there is no reason to think that the data is normal.</p>
-<h4 id="b.-check-for-variances-1">B. <iconify-icon inline="" icon="mdi:sigma-lower" aria-label="Icon sigma-lower from mdi Iconify.design set." title="Icon sigma-lower from mdi Iconify.design set."></iconify-icon> Check for Variances</h4>
+<h4 id="b.-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d6469207369676d612d6c6f776572203e7d7d-check-for-variances-1">B. <iconify-icon inline="" icon="mdi:sigma-lower" aria-label="Icon sigma-lower from mdi Iconify.design set." title="Icon sigma-lower from mdi Iconify.design set."></iconify-icon> Check for Variances</h4>
 <p>Let us check if the two variables have similar variances: the <code>var.test</code>does this for us, with a NULL hypothesis that the variances are not significantly different:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a></a><span class="fu">var.test</span>(weight <span class="sc">~</span> gender,</span>
@@ -2166,7 +2168,7 @@ A = 157.17, p-value &lt; 2.2e-16</code></pre>
 </div>
 <p>This means that the parametric <code>t.test</code> must be eschewed in favour of the non-parametric <code>wilcox.test</code>. We will use that, and also attempt <code>linear models</code> with rank data, and a final permutation test.</p>
 <aside><ol class="aside-footnotes"><li id="fn5"><p><a href="https://stats.stackexchange.com/questions/92374/testing-large-dataset-for-normality-how-and-is-it-reliable" class="uri">https://stats.stackexchange.com/questions/92374/testing-large-dataset-for-normality-how-and-is-it-reliable</a></p></li></ol></aside></section>
-<section id="observed-and-test-statistic-1" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792061636164656d69636f6e73206879706f746865736973203e7d7d-observed-and-test-statistic-1" class="slide level3">
 <h3><iconify-icon inline="" icon="academicons:hypothesis" aria-label="Icon hypothesis from academicons Iconify.design set." title="Icon hypothesis from academicons Iconify.design set."></iconify-icon> Observed and Test Statistic</h3>
 <p>What would be the <strong>test statistic</strong> we would use? The <strong>difference in means</strong>. Is the observed difference in the means between the two groups of scores non-zero? We use the <code>diffmean</code> function, from <code>mosaic</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a></a>obs_diff_gender <span class="ot">&lt;-</span> <span class="fu">diffmean</span>(weight <span class="sc">~</span> gender,</span>
@@ -2183,7 +2185,7 @@ A = 157.17, p-value &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </section>
-<section id="inference-1" class="slide level3 scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c3220696e736967687473203e7d7d-inference-1" class="slide level3 scrollable">
 <h3><iconify-icon inline="" icon="fluent-mdl2:insights" aria-label="Icon insights from fluent-mdl2 Iconify.design set." title="Icon insights from fluent-mdl2 Iconify.design set."></iconify-icon> Inference</h3>
 <div class="panel-tabset nav-pills" style="background: whitesmoke;">
 <ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">Mann-Whitney test</a></li><li><a href="#tabset-2-2">Linear Model</a></li><li><a href="#tabset-2-3">Permutation Test</a></li></ul>
@@ -2563,7 +2565,7 @@ Table&nbsp;3: All Tests for YRBSS Weights
 </div>
 <p>The <code>wilcox.test</code> and the linear model with rank data offer the same results. This is of course not surprising!</p>
 </section>
-<section id="one-test-to-rule-them-all-visstatistics-again" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792066612d736f6c69642072696e67203e7d7d-one-test-to-rule-them-all-visstatistics-again" class="slide level3">
 <h3><iconify-icon inline="" icon="fa-solid:ring" aria-label="Icon ring from fa-solid Iconify.design set." title="Icon ring from fa-solid Iconify.design set."></iconify-icon> One Test to Rule Them All: visStatistics again</h3>
 <p>We need to use a smaller sample of the dataset <code>yrbss_select_gender</code>, for the (same) reason: <code>visstat()</code> defaults to using the <code>shapiro.wilk</code> test internally:</p>
 <div class="cell">
@@ -2662,7 +2664,7 @@ Figure&nbsp;14: visStatistics Output for YRBSS Weights Model
 <p>Compare these results with those calculated earlier!</p>
 </section></section>
 <section>
-<section id="case-study-3-weight-vs-exercise-in-the-yrbss-survey" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792070616a616d61732069737375652d747970652d746573742d63617365203e7d7d-case-study-3-weight-vs-exercise-in-the-yrbss-survey" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="pajamas:issue-type-test-case" aria-label="Icon issue-type-test-case from pajamas Iconify.design set." title="Icon issue-type-test-case from pajamas Iconify.design set."></iconify-icon> Case Study #3: Weight vs Exercise in the YRBSS Survey</h2>
 <p>Finally, consider the possible relationship between a highschooler’s weight and their physical activity.</p>
 <p>First, let’s create a new variable <code>physical_3plus</code>, which will be coded as either “yes” if the student is physically active for <em>at least</em> 3 days a week, and “no” if not. Recall that we have several <em>missing</em> data in that column, so we will (sadly) drop these before generating the new variable:</p>
@@ -2706,7 +2708,7 @@ Figure&nbsp;14: visStatistics Output for YRBSS Weights Model
 </div>
 </div>
 </section>
-<section id="inspecting-and-charting-data-2" class="slide level3 scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e2063686172742d3364203e7d7d-inspecting-and-charting-data-2" class="slide level3 scrollable">
 <h3><iconify-icon inline="" icon="carbon:chart-3d" aria-label="Icon chart-3d from carbon Iconify.design set." title="Icon chart-3d from carbon Iconify.design set."></iconify-icon> Inspecting and Charting Data</h3>
 <p>We can make distribution plots for <code>weight</code> by <code>physical_3plus</code>:</p>
 <details class="code-fold">
@@ -2800,7 +2802,7 @@ Figure&nbsp;15: Highschoolers’ Weights by Days of Exercise
 </div>
 </div>
 <p>There is an <em>observed difference</em>, but is this difference large enough to deem it “statistically significant”? In order to answer this question we will conduct a hypothesis test. But before that a few more checks on the data:</p>
-<h4 id="a.-check-for-normality-2">A. <iconify-icon inline="" icon="mdi:chart-bell-curve" aria-label="Icon chart-bell-curve from mdi Iconify.design set." title="Icon chart-bell-curve from mdi Iconify.design set."></iconify-icon> Check for Normality</h4>
+<h4 id="a.-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d64692063686172742d62656c6c2d6375727665203e7d7d-check-for-normality-2">A. <iconify-icon inline="" icon="mdi:chart-bell-curve" aria-label="Icon chart-bell-curve from mdi Iconify.design set." title="Icon chart-bell-curve from mdi Iconify.design set."></iconify-icon> Check for Normality</h4>
 <p>As stated before, statistical tests for means <em>usually</em> require a couple of checks:<br>
 </p>
 <ul>
@@ -2875,7 +2877,7 @@ Figure&nbsp;16: Highschoolers’ Weights Normality Check
 </figure>
 </div>
 <p>Again, not normally distributed…</p>
-<h4 id="b.-check-for-variances-2">B. <iconify-icon inline="" icon="mdi:sigma-lower" aria-label="Icon sigma-lower from mdi Iconify.design set." title="Icon sigma-lower from mdi Iconify.design set."></iconify-icon> Check for Variances</h4>
+<h4 id="b.-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d6469207369676d612d6c6f776572203e7d7d-check-for-variances-2">B. <iconify-icon inline="" icon="mdi:sigma-lower" aria-label="Icon sigma-lower from mdi Iconify.design set." title="Icon sigma-lower from mdi Iconify.design set."></iconify-icon> Check for Variances</h4>
 <p>Let us check if the two variables have similar variances: the <code>var.test</code> does this for us, with a NULL hypothesis that the variances are not significantly different:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a></a><span class="fu">var.test</span>(weight <span class="sc">~</span> physical_3plus,</span>
 <span id="cb58-2"><a></a>  <span class="at">data =</span> yrbss_select_phy,</span>
@@ -2919,7 +2921,7 @@ Figure&nbsp;16: Highschoolers’ Weights Normality Check
 </div>
 <p>Hence we will have to use <em>non-parametric tests</em> to infer if the means are similar.</p>
 </section>
-<section id="hypothesis-2" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792061636164656d69636f6e73206879706f746865736973203e7d7d-hypothesis-2" class="slide level3">
 <h3><iconify-icon inline="" icon="academicons:hypothesis" aria-label="Icon hypothesis from academicons Iconify.design set." title="Icon hypothesis from academicons Iconify.design set."></iconify-icon> Hypothesis</h3>
 <p>Based on the graphs, how would we formulate our Hypothesis? We wish to infer whether there is difference in mean <code>weight</code> across <code>physical_3plus</code>. So accordingly:</p>
 <p><span class="math display">\[
@@ -2929,7 +2931,7 @@ H_0: \mu_{physical-3plus-Yes} = \mu_{physical-3plus-No}
 H_a: \mu_{physical-3plus-Yes} \ne \mu_{physical-3plus-No}
 \]</span></p>
 </section>
-<section id="observed-and-test-statistic-2" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792061636164656d69636f6e73206879706f746865736973203e7d7d-observed-and-test-statistic-2" class="slide level3">
 <h3><iconify-icon inline="" icon="academicons:hypothesis" aria-label="Icon hypothesis from academicons Iconify.design set." title="Icon hypothesis from academicons Iconify.design set."></iconify-icon> Observed and Test Statistic</h3>
 <p>What would be the <strong>test statistic</strong> we would use? The <strong>difference in means</strong>. Is the observed difference in the means between the two groups of scores non-zero? We use the <code>diffmean</code> function, from <code>mosaic</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a></a>obs_diff_phy <span class="ot">&lt;-</span> <span class="fu">diffmean</span>(weight <span class="sc">~</span> physical_3plus,</span>
@@ -2946,7 +2948,7 @@ H_a: \mu_{physical-3plus-Yes} \ne \mu_{physical-3plus-No}
 </div>
 </div>
 </section>
-<section id="inference-2" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c3220696e736967687473203e7d7d-inference-2" class="slide level3">
 <h3><iconify-icon inline="" icon="fluent-mdl2:insights" aria-label="Icon insights from fluent-mdl2 Iconify.design set." title="Icon insights from fluent-mdl2 Iconify.design set."></iconify-icon> Inference</h3>
 <div class="panel-tabset nav-pills" style="background: whitesmoke;">
 <ul id="tabset-3" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-3-1"><em>Parametric</em> t.test</a></li><li><a href="#tabset-3-2"><em>Non-Parametric</em> Wilcoxon test</a></li><li><a href="#tabset-3-3">Linear Model Interpretation</a></li></ul>
@@ -3217,7 +3219,7 @@ Figure&nbsp;18: Null Distribution of Difference in Weights Means
 </div>
 <p>Clearly there is a serious effect of Physical Exercise on the body weights of students in the population from which this dataset is drawn.</p>
 </section></section>
-<section id="wait-but-why" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="mingcute:thought-line" aria-label="Icon thought-line from mingcute Iconify.design set." title="Icon thought-line from mingcute Iconify.design set."></iconify-icon> Wait, But Why?</h2>
 <ul>
 <li>In our target population for our design intervention, we often perceive groups</li>
@@ -3229,7 +3231,7 @@ Figure&nbsp;18: Null Distribution of Difference in Weights Means
 </ul>
 </section>
 
-<section id="conclusion-1" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusion</h2>
 <ul>
 <li>We have learnt how to perform inference for independent means.<br>
@@ -3241,7 +3243,7 @@ Figure&nbsp;18: Null Distribution of Difference in Weights Means
 </ul>
 </section>
 
-<section id="your-turn" class="title-slide slide level2 center scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a6920706572736f6e203e7d7d-your-turn" class="title-slide slide level2 center scrollable">
 <h2><iconify-icon inline="" icon="openmoji:person" aria-label="Icon person from openmoji Iconify.design set." title="Icon person from openmoji Iconify.design set."></iconify-icon> Your Turn</h2>
 <ol type="1">
 <li><p>Try the <code>SwimRecords</code> dataset from the <code>mosaicData</code> package.</p></li>
@@ -3258,8 +3260,8 @@ Figure&nbsp;18: Null Distribution of Difference in Weights Means
 <li><a href="https://statsandr.com/blog/wilcoxon-test-in-r-how-to-compare-2-groups-under-the-non-normality-assumption/" class="uri">https://statsandr.com/blog/wilcoxon-test-in-r-how-to-compare-2-groups-under-the-non-normality-assumption/</a></li>
 </ol>
 </section>
-<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" data-entry-spacing="0" role="list">
-<h6 id="r-package-citations"><iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
+<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" role="list">
+<h6 id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c7563696465207061636b6167652d636865636b203e7d7d-r-package-citations"><iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
 <div class="cell">
 <div class="cell-output-display">
 <table class="caption-top">
@@ -3314,7 +3316,7 @@ Figure&nbsp;18: Null Distribution of Difference in Weights Means
 Arel-Bundock, Vincent. 2026. <em><span class="nocase">tinytable</span>: Simple and Configurable Tables in <span>“<span>HTML</span>,”</span> <span>“<span>LaTeX</span>,”</span> <span>“<span>Markdown</span>,”</span> <span>“<span>Word</span>,”</span> <span>“<span>PNG</span>,”</span> <span>“<span>PDF</span>,”</span> and <span>“<span>Typst</span>”</span> Formats</em>. <a href="https://doi.org/10.32614/CRAN.package.tinytable">https://doi.org/10.32614/CRAN.package.tinytable</a>.
 </div>
 <div id="ref-openintro" class="csl-entry" role="listitem">
-Çetinkaya-Rundel, Mine, David Diez, Andrew Bray, Albert Y. Kim, Ben Baumer, Chester Ismay, Nick Paterno, and Christopher Barr. 2024. <em><span class="nocase">openintro</span>: Datasets and Supplemental Functions from <span>“<span>OpenIntro</span>”</span> Textbooks and Labs</em>. <a href="https://doi.org/10.32614/CRAN.package.openintro">https://doi.org/10.32614/CRAN.package.openintro</a>.
+Çetinkaya-Rundel, Mine, David Diez, Andrew Bray, et al. 2024. <em><span class="nocase">openintro</span>: Datasets and Supplemental Functions from <span>“<span>OpenIntro</span>”</span> Textbooks and Labs</em>. <a href="https://doi.org/10.32614/CRAN.package.openintro">https://doi.org/10.32614/CRAN.package.openintro</a>.
 </div>
 <div id="ref-resampledata" class="csl-entry" role="listitem">
 Chihara, Laura M., and Tim C. Hesterberg. 2018. <em>Mathematical Statistics with Resampling and r</em>. John Wiley &amp; Sons Hoboken NJ. <a href="https://github.com/lchihara/MathStatsResamplingR?tab=readme-ov-file">https://github.com/lchihara/MathStatsResamplingR?tab=readme-ov-file</a>.
@@ -3371,7 +3373,6 @@ Snow, Greg. 2024. <em><span>TeachingDemos</span>: Demonstrations for Teaching an
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
 'jumpToSlide': true,
-'view': "scroll",
 'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
 'chalkboard': {"buttons":true},
 'smaller': true,
@@ -3515,6 +3516,13 @@ Snow, Greg. 2024. <em><span>TeachingDemos</span>: Demonstrations for Teaching an
         // devices. It is advisable to set this to a lower number than
         // viewDistance in order to save resources.
         mobileViewDistance: 2,
+
+        // Enable scroll view
+        view: 'scroll',
+        scrollProgress: 'auto',
+        scrollActivationWidth: 0,
+        scrollSnap: 'mandatory',
+        scrollLayout: 'full',
 
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be

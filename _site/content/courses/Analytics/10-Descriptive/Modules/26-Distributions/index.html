@@ -2,11 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.9.38">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="dcterms.date" content="2024-06-22">
 <title> Distributions – The Mad Hatter's Guide to Data Viz and Stats in R</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -57,7 +60,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
-  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -87,15 +89,14 @@ div.csl-indent {
 <link href="../../../../../../content/materials/icon-park-twotone--concept-sharing.svg" rel="icon" type="image/svg+xml">
 <script src="../../../../../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../../../../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../../../../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-795e9e8eca1e12b12abcb09a27409631.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-4bd490e9cd57f2396cbd188312c0541c.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../../../../site_libs/bootstrap/bootstrap-f98024d38ba10b6a495c0c63f82dd59d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../../../site_libs/bootstrap/bootstrap-fcc7b2a3b14c77575dee92098a957997.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="../../../../../../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.css" rel="stylesheet">
 <script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script src="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
@@ -1050,7 +1051,7 @@ globalThis.qwebrExecuteCode = async function (
     }
 }
 
-</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -1083,7 +1084,7 @@ window.Quarto = {
 <meta property="og:title" content=" Distributions – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:description" content="Quant and Qual Variable Graphs and their Siblings">
 <meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/26-Distributions/preview.jpg">
-<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
+<meta property="og:site_name" content="The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:image:alt" content="Image by rawpixel.com">
 <meta name="twitter:title" content=" Distributions – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta name="twitter:description" content="Quant and Qual Variable Graphs and their Siblings">
@@ -1691,26 +1692,26 @@ window.Quarto = {
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#setting-up-r-packages" id="toc-setting-up-r-packages" class="nav-link active" data-scroll-target="#setting-up-r-packages"><span class="header-section-number">1</span> <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</a></li>
-  <li><a href="#what-graphs-will-we-see-today" id="toc-what-graphs-will-we-see-today" class="nav-link" data-scroll-target="#what-graphs-will-we-see-today"><span class="header-section-number">2</span> <iconify-icon inline="" icon="fxemoji:japanesesymbolforbeginner" aria-label="Icon japanesesymbolforbeginner from fxemoji Iconify.design set." title="Icon japanesesymbolforbeginner from fxemoji Iconify.design set."></iconify-icon> What graphs will we see today?</a></li>
-  <li><a href="#what-kind-of-data-variables-will-we-choose" id="toc-what-kind-of-data-variables-will-we-choose" class="nav-link" data-scroll-target="#what-kind-of-data-variables-will-we-choose"><span class="header-section-number">3</span> <iconify-icon inline="" icon="tabler:variable" aria-label="Icon variable from tabler Iconify.design set." title="Icon variable from tabler Iconify.design set."></iconify-icon> What kind of Data Variables will we choose?</a></li>
-  <li><a href="#inspiration" id="toc-inspiration" class="nav-link" data-scroll-target="#inspiration"><span class="header-section-number">4</span> <iconify-icon inline="" icon="icons8:idea" aria-label="Icon idea from icons8 Iconify.design set." title="Icon idea from icons8 Iconify.design set."></iconify-icon> Inspiration</a></li>
-  <li><a href="#what-is-a-density-plot" id="toc-what-is-a-density-plot" class="nav-link" data-scroll-target="#what-is-a-density-plot"><span class="header-section-number">5</span> <iconify-icon inline="" icon="mdi:chart-bell-curve" aria-label="Icon chart-bell-curve from mdi Iconify.design set." title="Icon chart-bell-curve from mdi Iconify.design set."></iconify-icon> What is a “Density Plot”?</a></li>
+<li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="nav-link active" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages"><span class="header-section-number">1</span> <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206678656d6f6a69206a6170616e65736573796d626f6c666f72626567696e6e6572203e7d7d-what-graphs-will-we-see-today" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206678656d6f6a69206a6170616e65736573796d626f6c666f72626567696e6e6572203e7d7d-what-graphs-will-we-see-today" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206678656d6f6a69206a6170616e65736573796d626f6c666f72626567696e6e6572203e7d7d-what-graphs-will-we-see-today"><span class="header-section-number">2</span> <iconify-icon inline="" icon="fxemoji:japanesesymbolforbeginner" aria-label="Icon japanesesymbolforbeginner from fxemoji Iconify.design set." title="Icon japanesesymbolforbeginner from fxemoji Iconify.design set."></iconify-icon> What graphs will we see today?</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679207461626c6572207661726961626c65203e7d7d-what-kind-of-data-variables-will-we-choose" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679207461626c6572207661726961626c65203e7d7d-what-kind-of-data-variables-will-we-choose" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679207461626c6572207661726961626c65203e7d7d-what-kind-of-data-variables-will-we-choose"><span class="header-section-number">3</span> <iconify-icon inline="" icon="tabler:variable" aria-label="Icon variable from tabler Iconify.design set." title="Icon variable from tabler Iconify.design set."></iconify-icon> What kind of Data Variables will we choose?</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069636f6e73382069646561203e7d7d-inspiration" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069636f6e73382069646561203e7d7d-inspiration" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069636f6e73382069646561203e7d7d-inspiration"><span class="header-section-number">4</span> <iconify-icon inline="" icon="icons8:idea" aria-label="Icon idea from icons8 Iconify.design set." title="Icon idea from icons8 Iconify.design set."></iconify-icon> Inspiration</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920206d64692063686172742d62656c6c2d6375727665203e7d7d-what-is-a-density-plot" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920206d64692063686172742d62656c6c2d6375727665203e7d7d-what-is-a-density-plot" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920206d64692063686172742d62656c6c2d6375727665203e7d7d-what-is-a-density-plot"><span class="header-section-number">5</span> <iconify-icon inline="" icon="mdi:chart-bell-curve" aria-label="Icon chart-bell-curve from mdi Iconify.design set." title="Icon chart-bell-curve from mdi Iconify.design set."></iconify-icon> What is a “Density Plot”?</a></li>
   <li>
-<a href="#case-study-1-penguins-dataset" id="toc-case-study-1-penguins-dataset" class="nav-link" data-scroll-target="#case-study-1-penguins-dataset"><span class="header-section-number">6</span> <iconify-icon inline="" icon="grommet-icons:test" aria-label="Icon test from grommet-icons Iconify.design set." title="Icon test from grommet-icons Iconify.design set."></iconify-icon> Case Study-1: <code>penguins</code> dataset</a>
+<a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792067726f6d6d65742d69636f6e732074657374203e7d7d-case-study-1-penguins-dataset" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792067726f6d6d65742d69636f6e732074657374203e7d7d-case-study-1-penguins-dataset" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792067726f6d6d65742d69636f6e732074657374203e7d7d-case-study-1-penguins-dataset"><span class="header-section-number">6</span> <iconify-icon inline="" icon="grommet-icons:test" aria-label="Icon test from grommet-icons Iconify.design set." title="Icon test from grommet-icons Iconify.design set."></iconify-icon> Case Study-1: <code>penguins</code> dataset</a>
   <ul class="collapse">
-<li><a href="#read-the-data" id="toc-read-the-data" class="nav-link" data-scroll-target="#read-the-data"><span class="header-section-number">6.1</span> <iconify-icon inline="" icon="la:r-project" aria-label="Icon r-project from la Iconify.design set." title="Icon r-project from la Iconify.design set."></iconify-icon> Read the Data</a></li>
-  <li><a href="#examine-the-data" id="toc-examine-the-data" class="nav-link" data-scroll-target="#examine-the-data"><span class="header-section-number">6.2</span> <iconify-icon inline="" icon="file-icons:influxdata" aria-label="Icon influxdata from file-icons Iconify.design set." title="Icon influxdata from file-icons Iconify.design set."></iconify-icon> Examine the Data</a></li>
-  <li><a href="#data-munging" id="toc-data-munging" class="nav-link" data-scroll-target="#data-munging"><span class="header-section-number">6.3</span> <iconify-icon inline="" icon="carbon:clean" aria-label="Icon clean from carbon Iconify.design set." title="Icon clean from carbon Iconify.design set."></iconify-icon> Data Munging</a></li>
-  <li><a href="#data-dictionary" id="toc-data-dictionary" class="nav-link" data-scroll-target="#data-dictionary"><span class="header-section-number">6.4</span> <iconify-icon inline="" icon="streamline:dictionary-language-book-solid" aria-label="Icon dictionary-language-book-solid from streamline Iconify.design set." title="Icon dictionary-language-book-solid from streamline Iconify.design set."></iconify-icon> Data Dictionary</a></li>
-  <li><a href="#plotting-densities" id="toc-plotting-densities" class="nav-link" data-scroll-target="#plotting-densities"><span class="header-section-number">6.5</span> <iconify-icon inline="" icon="mdi:chart-bell-curve" aria-label="Icon chart-bell-curve from mdi Iconify.design set." title="Icon chart-bell-curve from mdi Iconify.design set."></iconify-icon> Plotting Densities</a></li>
-  <li><a href="#ridge-plots" id="toc-ridge-plots" class="nav-link" data-scroll-target="#ridge-plots"><span class="header-section-number">6.6</span> <iconify-icon inline="" icon="streamline:nature-ecology-rainbow-arch-rain-colorful-rainbow-curve-half-circle" aria-label="Icon nature-ecology-rainbow-arch-rain-colorful-rainbow-curve-half-circle from streamline Iconify.design set." title="Icon nature-ecology-rainbow-arch-rain-colorful-rainbow-curve-half-circle from streamline Iconify.design set."></iconify-icon> Ridge Plots</a></li>
+<li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c6120722d70726f6a656374203e7d7d-read-the-data" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c6120722d70726f6a656374203e7d7d-read-the-data" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c6120722d70726f6a656374203e7d7d-read-the-data"><span class="header-section-number">6.1</span> <iconify-icon inline="" icon="la:r-project" aria-label="Icon r-project from la Iconify.design set." title="Icon r-project from la Iconify.design set."></iconify-icon> Read the Data</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792066696c652d69636f6e7320696e666c757864617461203e7d7d-examine-the-data" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792066696c652d69636f6e7320696e666c757864617461203e7d7d-examine-the-data" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792066696c652d69636f6e7320696e666c757864617461203e7d7d-examine-the-data"><span class="header-section-number">6.2</span> <iconify-icon inline="" icon="file-icons:influxdata" aria-label="Icon influxdata from file-icons Iconify.design set." title="Icon influxdata from file-icons Iconify.design set."></iconify-icon> Examine the Data</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e20636c65616e203e7d7d-data-munging" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e20636c65616e203e7d7d-data-munging" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e20636c65616e203e7d7d-data-munging"><span class="header-section-number">6.3</span> <iconify-icon inline="" icon="carbon:clean" aria-label="Icon clean from carbon Iconify.design set." title="Icon clean from carbon Iconify.design set."></iconify-icon> Data Munging</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e652064696374696f6e6172792d6c616e67756167652d626f6f6b2d736f6c6964203e7d7d-data-dictionary" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e652064696374696f6e6172792d6c616e67756167652d626f6f6b2d736f6c6964203e7d7d-data-dictionary" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e652064696374696f6e6172792d6c616e67756167652d626f6f6b2d736f6c6964203e7d7d-data-dictionary"><span class="header-section-number">6.4</span> <iconify-icon inline="" icon="streamline:dictionary-language-book-solid" aria-label="Icon dictionary-language-book-solid from streamline Iconify.design set." title="Icon dictionary-language-book-solid from streamline Iconify.design set."></iconify-icon> Data Dictionary</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d64692063686172742d62656c6c2d6375727665203e7d7d-plotting-densities" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d64692063686172742d62656c6c2d6375727665203e7d7d-plotting-densities" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d64692063686172742d62656c6c2d6375727665203e7d7d-plotting-densities"><span class="header-section-number">6.5</span> <iconify-icon inline="" icon="mdi:chart-bell-curve" aria-label="Icon chart-bell-curve from mdi Iconify.design set." title="Icon chart-bell-curve from mdi Iconify.design set."></iconify-icon> Plotting Densities</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e65206e61747572652d65636f6c6f67792d7261696e626f772d617263682d7261696e2d636f6c6f7266756c2d7261696e626f772d63757276652d68616c662d636972636c65203e7d7d-ridge-plots" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e65206e61747572652d65636f6c6f67792d7261696e626f772d617263682d7261696e2d636f6c6f7266756c2d7261696e626f772d63757276652d68616c662d636972636c65203e7d7d-ridge-plots" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e65206e61747572652d65636f6c6f67792d7261696e626f772d617263682d7261696e2d636f6c6f7266756c2d7261696e626f772d63757276652d68616c662d636972636c65203e7d7d-ridge-plots"><span class="header-section-number">6.6</span> <iconify-icon inline="" icon="streamline:nature-ecology-rainbow-arch-rain-colorful-rainbow-curve-half-circle" aria-label="Icon nature-ecology-rainbow-arch-rain-colorful-rainbow-curve-half-circle from streamline Iconify.design set." title="Icon nature-ecology-rainbow-arch-rain-colorful-rainbow-curve-half-circle from streamline Iconify.design set."></iconify-icon> Ridge Plots</a></li>
   </ul>
 </li>
-  <li><a href="#wait-but-why" id="toc-wait-but-why" class="nav-link" data-scroll-target="#wait-but-why"><span class="header-section-number">7</span> <iconify-icon inline="" icon="mingcute:thought-line" aria-label="Icon thought-line from mingcute Iconify.design set." title="Icon thought-line from mingcute Iconify.design set."></iconify-icon> Wait, But Why?</a></li>
-  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">8</span> <iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusion</a></li>
-  <li><a href="#your-turn" id="toc-your-turn" class="nav-link" data-scroll-target="#your-turn"><span class="header-section-number">9</span> <iconify-icon inline="" icon="openmoji:person" aria-label="Icon person from openmoji Iconify.design set." title="Icon person from openmoji Iconify.design set."></iconify-icon> Your Turn</a></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">10</span> <iconify-icon inline="" icon="ooui:references-rtl" aria-label="Icon references-rtl from ooui Iconify.design set." title="Icon references-rtl from ooui Iconify.design set."></iconify-icon> References</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why"><span class="header-section-number">7</span> <iconify-icon inline="" icon="mingcute:thought-line" aria-label="Icon thought-line from mingcute Iconify.design set." title="Icon thought-line from mingcute Iconify.design set."></iconify-icon> Wait, But Why?</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion"><span class="header-section-number">8</span> <iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusion</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a6920706572736f6e203e7d7d-your-turn" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a6920706572736f6e203e7d7d-your-turn" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a6920706572736f6e203e7d7d-your-turn"><span class="header-section-number">9</span> <iconify-icon inline="" icon="openmoji:person" aria-label="Icon person from openmoji Iconify.design set." title="Icon person from openmoji Iconify.design set."></iconify-icon> Your Turn</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d72746c203e7d7d-references" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d72746c203e7d7d-references" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d72746c203e7d7d-references"><span class="header-section-number">10</span> <iconify-icon inline="" icon="ooui:references-rtl" aria-label="Icon references-rtl from ooui Iconify.design set." title="Icon references-rtl from ooui Iconify.design set."></iconify-icon> References</a></li>
   </ul><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="distributions-reveal.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></nav>
     </div>
 <!-- main -->
@@ -1963,7 +1964,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">June 13, 2026</p>
+      <p class="date-modified">June 21, 2026</p>
     </div>
   </div>
     
@@ -1983,7 +1984,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <p><span class="f6 ttu tracked fs-normal">— Marcus Aurelius</span></p>
 </div>
 </div>
-<section id="setting-up-r-packages" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="setting-up-r-packages">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages">
 <span class="header-section-number">1</span> <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
@@ -2131,7 +2132,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <span><span class="fu">flextable</span><span class="fu">::</span><span class="fu"><a href="https://davidgohel.github.io/flextable/reference/set_flextable_defaults.html">set_flextable_defaults</a></span><span class="op">(</span>font.family <span class="op">=</span> <span class="st">"Roboto Condensed"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-</section></section><section id="what-graphs-will-we-see-today" class="level2" data-number="2"><h2 data-number="2" class="anchored" data-anchor-id="what-graphs-will-we-see-today">
+</section></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206678656d6f6a69206a6170616e65736573796d626f6c666f72626567696e6e6572203e7d7d-what-graphs-will-we-see-today" class="level2" data-number="2"><h2 data-number="2" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206678656d6f6a69206a6170616e65736573796d626f6c666f72626567696e6e6572203e7d7d-what-graphs-will-we-see-today">
 <span class="header-section-number">2</span> <iconify-icon inline="" icon="fxemoji:japanesesymbolforbeginner" aria-label="Icon japanesesymbolforbeginner from fxemoji Iconify.design set." title="Icon japanesesymbolforbeginner from fxemoji Iconify.design set."></iconify-icon> What graphs will we see today?</h2>
 <table class="table">
 <colgroup>
@@ -2155,7 +2156,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <td style="text-align: center;"><p><iconify-icon inline="" icon="mdi:chart-bell-curve" style="font-size: 4em;" aria-label="Icon chart-bell-curve from mdi Iconify.design set." title="Icon chart-bell-curve from mdi Iconify.design set."></iconify-icon></p></td>
 <td style="text-align: center;"></td>
 </tr></tbody>
-</table></section><section id="what-kind-of-data-variables-will-we-choose" class="level2" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="what-kind-of-data-variables-will-we-choose">
+</table></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679207461626c6572207661726961626c65203e7d7d-what-kind-of-data-variables-will-we-choose" class="level2" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679207461626c6572207661726961626c65203e7d7d-what-kind-of-data-variables-will-we-choose">
 <span class="header-section-number">3</span> <iconify-icon inline="" icon="tabler:variable" aria-label="Icon variable from tabler Iconify.design set." title="Icon variable from tabler Iconify.design set."></iconify-icon> What kind of Data Variables will we choose?</h2>
 <div class="cell">
 <div class="cell-output-display">
@@ -2218,7 +2219,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <!-- hack to avoid NA insertion in last line -->
 </div>
 </div>
-</section><section id="inspiration" class="level2" data-number="4"><h2 data-number="4" class="anchored" data-anchor-id="inspiration">
+</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069636f6e73382069646561203e7d7d-inspiration" class="level2" data-number="4"><h2 data-number="4" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069636f6e73382069646561203e7d7d-inspiration">
 <span class="header-section-number">4</span> <iconify-icon inline="" icon="icons8:idea" aria-label="Icon idea from icons8 Iconify.design set." title="Icon idea from icons8 Iconify.design set."></iconify-icon> Inspiration</h2>
 <div class="cell" data-layout-align="center">
 <details class="code-fold"><summary>Show the Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
@@ -2244,15 +2245,15 @@ Figure&nbsp;1: Lincoln, Nebraska, in the Sun
 </div>
 </div>
 <p><a href="https://www.poetryfoundation.org/poems/47311/the-waste-land">April is the cruelest month</a>, said T.S Eliot. But December in Nebraska must be tough.</p>
-</section><section id="what-is-a-density-plot" class="level2" data-number="5"><h2 data-number="5" class="anchored" data-anchor-id="what-is-a-density-plot">
+</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920206d64692063686172742d62656c6c2d6375727665203e7d7d-what-is-a-density-plot" class="level2" data-number="5"><h2 data-number="5" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920206d64692063686172742d62656c6c2d6375727665203e7d7d-what-is-a-density-plot">
 <span class="header-section-number">5</span> <iconify-icon inline="" icon="mdi:chart-bell-curve" aria-label="Icon chart-bell-curve from mdi Iconify.design set." title="Icon chart-bell-curve from mdi Iconify.design set."></iconify-icon> What is a “Density Plot”?</h2>
 <p>As we saw earlier, <strong>Histograms</strong> are best to show the distribution of raw <strong>Quantitative data</strong>, by displaying the number of values that fall within defined ranges, often called <em>buckets</em> or <em>bins</em>.</p>
 <p>Sometimes it is useful to consider a chart where the <em>bucket width</em> shrinks to zero!</p>
 <p>You might imagine a density chart as a histogram where the buckets are infinitesimally small, i.e.&nbsp;zero width. Think of the frequency density as a <a href="">differentiation (as in calculus)</a> of the histogram. By taking the smallest of steps <span class="math inline">\(\sim 0\)</span>, we get a measure of the <em>slope</em> of distribution. This may seem counter-intuitive, but densities have their uses in spotting the ranges in the data where there are more frequent values. In this, they serve a similar purpose as do histograms, but may offer insights not readily apparent with histograms, especially with default bucket widths. The <em>chunkiness</em> that we see in the histograms is removed and gives us a smooth curve showing in which <em>range</em> the data are more <em>frequent</em>.</p>
-</section><section id="case-study-1-penguins-dataset" class="level2 page-columns page-full" data-number="6"><h2 data-number="6" class="anchored" data-anchor-id="case-study-1-penguins-dataset">
+</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792067726f6d6d65742d69636f6e732074657374203e7d7d-case-study-1-penguins-dataset" class="level2 page-columns page-full" data-number="6"><h2 data-number="6" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792067726f6d6d65742d69636f6e732074657374203e7d7d-case-study-1-penguins-dataset">
 <span class="header-section-number">6</span> <iconify-icon inline="" icon="grommet-icons:test" aria-label="Icon test from grommet-icons Iconify.design set." title="Icon test from grommet-icons Iconify.design set."></iconify-icon> Case Study-1: <code>penguins</code> dataset</h2>
 <p>We will first look at at a dataset that is available as a part of the <a href="https://allisonhorst.github.io/palmerpenguins/">palmerpenguins</a> package (and also directly available in R now), the <code>penguins</code> dataset. Data were collected and made available by <a href="https://www.uaf.edu/cfos/people/faculty/detail/kristen-gorman.php">Dr.&nbsp;Kristen Gorman</a> and the <a href="https://pallter.marine.rutgers.edu/">Palmer Station, Antarctica LTER</a>, a member of the <a href="https://lternet.edu/">Long Term Ecological Research Network</a>.</p>
-<section id="read-the-data" class="level3" data-number="6.1"><h3 data-number="6.1" class="anchored" data-anchor-id="read-the-data">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c6120722d70726f6a656374203e7d7d-read-the-data" class="level3" data-number="6.1"><h3 data-number="6.1" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c6120722d70726f6a656374203e7d7d-read-the-data">
 <span class="header-section-number">6.1</span> <iconify-icon inline="" icon="la:r-project" aria-label="Icon r-project from la Iconify.design set." title="Icon r-project from la Iconify.design set."></iconify-icon> Read the Data</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">penguins_raw</span>, package <span class="op">=</span> <span class="st">"datasets"</span><span class="op">)</span></span>
@@ -2266,7 +2267,7 @@ Figure&nbsp;1: Lincoln, Nebraska, in the Sun
 [16] "Delta 13 C (o/oo)"   "Comments"           </code></pre>
 </div>
 </div>
-</section><section id="examine-the-data" class="level3" data-number="6.2"><h3 data-number="6.2" class="anchored" data-anchor-id="examine-the-data">
+</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792066696c652d69636f6e7320696e666c757864617461203e7d7d-examine-the-data" class="level3" data-number="6.2"><h3 data-number="6.2" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792066696c652d69636f6e7320696e666c757864617461203e7d7d-examine-the-data">
 <span class="header-section-number">6.2</span> <iconify-icon inline="" icon="file-icons:influxdata" aria-label="Icon influxdata from file-icons Iconify.design set." title="Icon influxdata from file-icons Iconify.design set."></iconify-icon> Examine the Data</h3>
 <p>As per our Workflow, we will look at the data using all the three methods we have seen.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset nav-pills" style="background: whitesmoke;">
@@ -2683,7 +2684,7 @@ quantitative variables:
 </div>
 </div>
 </div>
-</section><section id="data-munging" class="level3" data-number="6.3"><h3 data-number="6.3" class="anchored" data-anchor-id="data-munging">
+</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e20636c65616e203e7d7d-data-munging" class="level3" data-number="6.3"><h3 data-number="6.3" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e20636c65616e203e7d7d-data-munging">
 <span class="header-section-number">6.3</span> <iconify-icon inline="" icon="carbon:clean" aria-label="Icon clean from carbon Iconify.design set." title="Icon clean from carbon Iconify.design set."></iconify-icon> Data Munging</h3>
 <p>Among the variables that define the <em>physical measurements</em> of the penguins, there are a couple of entries that show missing data. Elsewhere there are more. The variable names also are <em>human-readable</em>, but not really <em>computer-readable</em>.</p>
 <p>So let us follow through with our Data Munging Process:</p>
@@ -2745,7 +2746,7 @@ Table&nbsp;1: Penguins Clean Dynamic Data Table
 </figcaption></figure>
 </div>
 </div>
-</section><section id="data-dictionary" class="level3 page-columns page-full" data-number="6.4"><h3 data-number="6.4" class="anchored" data-anchor-id="data-dictionary">
+</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e652064696374696f6e6172792d6c616e67756167652d626f6f6b2d736f6c6964203e7d7d-data-dictionary" class="level3 page-columns page-full" data-number="6.4"><h3 data-number="6.4" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e652064696374696f6e6172792d6c616e67756167652d626f6f6b2d736f6c6964203e7d7d-data-dictionary">
 <span class="header-section-number">6.4</span> <iconify-icon inline="" icon="streamline:dictionary-language-book-solid" aria-label="Icon dictionary-language-book-solid from streamline Iconify.design set." title="Icon dictionary-language-book-solid from streamline Iconify.design set."></iconify-icon> Data Dictionary</h3>
 <p>We will restrict ourselves to some of the variables that pertain, by and large, to the body dimensions of our penguins:</p>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -2832,7 +2833,7 @@ Figure&nbsp;3: Penguin Features
 </ul>
 </div>
 </div>
-</section><section id="plotting-densities" class="level3 page-columns page-full" data-number="6.5"><h3 data-number="6.5" class="anchored" data-anchor-id="plotting-densities">
+</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d64692063686172742d62656c6c2d6375727665203e7d7d-plotting-densities" class="level3 page-columns page-full" data-number="6.5"><h3 data-number="6.5" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d64692063686172742d62656c6c2d6375727665203e7d7d-plotting-densities">
 <span class="header-section-number">6.5</span> <iconify-icon inline="" icon="mdi:chart-bell-curve" aria-label="Icon chart-bell-curve from mdi Iconify.design set." title="Icon chart-bell-curve from mdi Iconify.design set."></iconify-icon> Plotting Densities</h3>
 <div class="column-page-inset-right">
 <div class="tabset-margin-container"></div><div class="panel-tabset nav-pills" style="background: whitesmoke;">
@@ -3091,7 +3092,7 @@ Figure&nbsp;3: Penguin Features
 </div>
 </div>
 </div>
-</section><section id="ridge-plots" class="level3 page-columns page-full" data-number="6.6"><h3 data-number="6.6" class="anchored" data-anchor-id="ridge-plots">
+</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e65206e61747572652d65636f6c6f67792d7261696e626f772d617263682d7261696e2d636f6c6f7266756c2d7261696e626f772d63757276652d68616c662d636972636c65203e7d7d-ridge-plots" class="level3 page-columns page-full" data-number="6.6"><h3 data-number="6.6" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e65206e61747572652d65636f6c6f67792d7261696e626f772d617263682d7261696e2d636f6c6f7266756c2d7261696e626f772d63757276652d68616c662d636972636c65203e7d7d-ridge-plots">
 <span class="header-section-number">6.6</span> <iconify-icon inline="" icon="streamline:nature-ecology-rainbow-arch-rain-colorful-rainbow-curve-half-circle" aria-label="Icon nature-ecology-rainbow-arch-rain-colorful-rainbow-curve-half-circle from streamline Iconify.design set." title="Icon nature-ecology-rainbow-arch-rain-colorful-rainbow-curve-half-circle from streamline Iconify.design set."></iconify-icon> Ridge Plots</h3>
 <p>Sometimes we may wish to show the distribution/density of a Quant variable, against several <em>levels</em> of a Qual variable. For instance, the prices of different items of furniture, based on the furniture “style” variable. Or the <code>sales</code> of a particular line of products, across different shops or cities. We did this with both histograms and densities, by colouring based on a Qual variable, and by facetting using a Qual variable. There is a third way, using what is called a <em>ridge plot</em>. <a href="https://github.com/ProjectMOSAIC/ggformula">ggformula</a> supports this plot by importing/depending upon the <a href="https://wilkelab.org/ggridges/">ggridges</a> package. <a href="https://wilkelab.org/ggridges/">ggridges</a> provides direct support for ridge plots, and can be used as an extension to <a href="https://ggplot2.tidyverse.org">ggplot2</a> and <a href="https://github.com/ProjectMOSAIC/ggformula">ggformula</a>.</p>
 <div class="column-page-inset-right">
@@ -3184,13 +3185,13 @@ Figure&nbsp;3: Penguin Features
 </div>
 </div>
 </div>
-</section></section><section id="wait-but-why" class="level2" data-number="7"><h2 data-number="7" class="anchored" data-anchor-id="wait-but-why">
+</section></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why" class="level2" data-number="7"><h2 data-number="7" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why">
 <span class="header-section-number">7</span> <iconify-icon inline="" icon="mingcute:thought-line" aria-label="Icon thought-line from mingcute Iconify.design set." title="Icon thought-line from mingcute Iconify.design set."></iconify-icon> Wait, But Why?</h2>
 <ul>
 <li>Densities are sometimes easier to compare side by side. That is what <a href="https://clauswilke.com/dataviz/">Claus Wilke</a> says, at least. Perhaps because they look less “busy” than histograms.</li>
 <li>Ridge Density Plots are very cool when it comes to comparing the density of a Quant variable as it varies against the levels of a Qual variable, without having to <code>facet</code> or <code>group</code>.</li>
 <li>It is possible to plot 2D-densities too, for <strong>two</strong> Quant variables, which give very evocative contour-like plots. Try to do this with the <code>faithful</code> dataset in R.</li>
-</ul></section><section id="conclusion" class="level2" data-number="8"><h2 data-number="8" class="anchored" data-anchor-id="conclusion">
+</ul></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion" class="level2" data-number="8"><h2 data-number="8" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion">
 <span class="header-section-number">8</span> <iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusion</h2>
 <ul>
 <li>Histograms and Frequency Distributions are both used for Quantitative data variables</li>
@@ -3201,7 +3202,7 @@ Figure&nbsp;3: Penguin Features
 <li>Ridge Plots are <strong>density plots</strong> used for describing one Quant and one Qual variable (by inherent splitting)</li>
 <li>We can split all these plots on the basis of another Qualitative variable.(Ridge Plots are already split)</li>
 <li>Long tailed distributions need care in visualization and in inference making!</li>
-</ul></section><section id="your-turn" class="level2" data-number="9"><h2 data-number="9" class="anchored" data-anchor-id="your-turn">
+</ul></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a6920706572736f6e203e7d7d-your-turn" class="level2" data-number="9"><h2 data-number="9" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a6920706572736f6e203e7d7d-your-turn">
 <span class="header-section-number">9</span> <iconify-icon inline="" icon="openmoji:person" aria-label="Icon person from openmoji Iconify.design set." title="Icon person from openmoji Iconify.design set."></iconify-icon> Your Turn</h2>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -3288,7 +3289,7 @@ Figure&nbsp;3: Penguin Features
 </div>
 </div>
 </div>
-</section><section id="references" class="level2" data-number="10"><h2 data-number="10" class="anchored" data-anchor-id="references">
+</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d72746c203e7d7d-references" class="level2" data-number="10"><h2 data-number="10" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d72746c203e7d7d-references">
 <span class="header-section-number">10</span> <iconify-icon inline="" icon="ooui:references-rtl" aria-label="Icon references-rtl from ooui Iconify.design set." title="Icon references-rtl from ooui Iconify.design set."></iconify-icon> References</h2>
 <ol type="1">
 <li>Winston Chang (2024). <em>R Graphics Cookbook</em>. <a href="https://r-graphics.org" class="uri">https://r-graphics.org</a>
@@ -3300,8 +3301,8 @@ Figure&nbsp;3: Penguin Features
 <li>Sebastian Sauer, <a href="https://data-se.netlify.app/2021/02/06/plotting-multiple-plots-using-purrr-map-and-ggplot/"><em>Plotting multiple plots using purrr::map and ggplot</em></a><br>
 </li>
 </ol>
-<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" data-entry-spacing="0" role="list">
-<section id="r-package-citations" class="level6"><h6 class="anchored" data-anchor-id="r-package-citations">
+<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" role="list">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c7563696465207061636b6167652d636865636b203e7d7d-r-package-citations" class="level6"><h6 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c7563696465207061636b6167652d636865636b203e7d7d-r-package-citations">
 <iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
 <div class="cell">
 <div class="cell-output-display">
@@ -3350,7 +3351,7 @@ Figure&nbsp;3: Penguin Features
 <tr class="even">
 <td style="text-align: left;">tinyplot</td>
 <td style="text-align: left;">0.6.1</td>
-<td style="text-align: left;"><span class="citation" data-cites="tinyplot">McDermott, Arel-Bundock, and Zeileis (<a href="#ref-tinyplot" role="doc-biblioref">2026</a>)</span></td>
+<td style="text-align: left;"><span class="citation" data-cites="tinyplot">McDermott et al. (<a href="#ref-tinyplot" role="doc-biblioref">2026</a>)</span></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">tinytable</td>
@@ -3415,7 +3416,7 @@ Wilke, Claus O. 2025. <em><span class="nocase">ggridges</span>: Ridgeline Plots 
 <span>“&lt;Iconify-Icon Icon=<span>‘clarity:bell-Curve-Line’</span>
 Width=<span>‘1.2em’</span>
 Height=<span>‘1.2em’</span>&gt;&lt;/Iconify-Icon&gt;
-Distributions.”</span> 2024. June 22, 2024. <a href="https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/26-Distributions/">https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/26-Distributions/</a>.
+Distributions.”</span> 2024. June 22. <a href="https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/26-Distributions/">https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/26-Distributions/</a>.
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
