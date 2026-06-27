@@ -7,12 +7,12 @@
 <script src="../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-4bd490e9cd57f2396cbd188312c0541c.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-795e9e8eca1e12b12abcb09a27409631.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script src="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.9.38">
+  <meta name="generator" content="quarto-1.8.27">
 
   <meta name="dcterms.date" content="2023-03-28">
   <title>The Mad Hatter's Guide to Data Viz and Stats in R – Comparing Multiple Means with ANOVA</title>
@@ -22,9 +22,6 @@
   <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reveal.css">
   <style>
-    /* Default styles provided by pandoc.
-    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-    */
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -104,6 +101,7 @@
     div.csl-bib-body { }
     div.csl-entry {
       clear: both;
+      margin-bottom: 0em;
     }
     .hanging-indent div.csl-entry {
       margin-left:2em;
@@ -120,7 +118,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/theme/quarto-7d27a531335543ee0379719666959585.css">
+  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/theme/quarto-180c62c9bcf69a0506044dd7f3253a18.css">
   <link href="../../../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -220,7 +218,7 @@
 <meta property="og:title" content="Comparing Multiple Means with ANOVA – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:description" content="ANOVA to investigate how frogspawn hatching time varies with temperature.">
 <meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/20-Inference/Modules/130-ThreeMeansOrMore/preview.jpg">
-<meta property="og:site_name" content="The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
 <meta name="twitter:title" content="Comparing Multiple Means with ANOVA – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta name="twitter:description" content="ANOVA to investigate how frogspawn hatching time varies with temperature.">
 <meta name="twitter:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/20-Inference/Modules/130-ThreeMeansOrMore/preview.jpg">
@@ -239,7 +237,7 @@
   <p class="date">2023-03-28</p>
 </section>
 <section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="title-slide slide level2 center">
+<section id="setting-up-r-packages" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(tidyverse) <span class="co"># Tidy data processing</span></span>
@@ -256,7 +254,7 @@
 <span id="cb1-12"><a></a><span class="fu">library</span>(paletteer) <span class="co"># Color Palettes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<h4 id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e6520676c6f62616c2d6c6561726e696e67203e7d7d-extra-pedagogical-packages"><iconify-icon inline="" icon="streamline:global-learning" aria-label="Icon global-learning from streamline Iconify.design set." title="Icon global-learning from streamline Iconify.design set."></iconify-icon> Extra Pedagogical Packages</h4>
+<h4 id="extra-pedagogical-packages"><iconify-icon inline="" icon="streamline:global-learning" aria-label="Icon global-learning from streamline Iconify.design set." title="Icon global-learning from streamline Iconify.design set."></iconify-icon> Extra Pedagogical Packages</h4>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -277,7 +275,7 @@
 <span id="cb2-15"><a></a><span class="fu">library</span>(statlingua) <span class="co"># LLM-driven plain English statistical explanations</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<h4 id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679207673636f64652d69636f6e7320666f6c6465722d747970652d7468656d653e7d7d-plot-fonts-and-theme"><iconify-icon inline="" icon="vscode-icons:folder-type-theme" aria-label="Icon folder-type-theme from vscode-icons Iconify.design set." title="Icon folder-type-theme from vscode-icons Iconify.design set."></iconify-icon> Plot Fonts and Theme</h4>
+<h4 id="plot-fonts-and-theme"><iconify-icon inline="" icon="vscode-icons:folder-type-theme" aria-label="Icon folder-type-theme from vscode-icons Iconify.design set." title="Icon folder-type-theme from vscode-icons Iconify.design set."></iconify-icon> Plot Fonts and Theme</h4>
 <div class="cell" data-messages="false">
 <details class="code-fold">
 <summary>Code</summary>
@@ -406,7 +404,7 @@
 <span id="cb3-123"><a></a>flextable<span class="sc">::</span><span class="fu">set_flextable_defaults</span>(<span class="at">font.family =</span> <span class="st">"Roboto Condensed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div></section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction" class="title-slide slide level2 center scrollable">
+<section id="introduction" class="title-slide slide level2 center scrollable">
 <h2><iconify-icon inline="" icon="openmoji:japanese-symbol-for-beginner" aria-label="Icon japanese-symbol-for-beginner from openmoji Iconify.design set." title="Icon japanese-symbol-for-beginner from openmoji Iconify.design set."></iconify-icon> Introduction</h2>
 <p>Suppose we have three sales strategies on our website, to sell a certain product, say men’s shirts. We have observations of customer website interactions over several months. How do we know which strategy makes people buy the fastest ?</p>
 <p>If there is a University course that is offered in parallel in three different classrooms, is there a difference between the average marks obtained by students in each of the classrooms?</p>
@@ -428,7 +426,7 @@
 </div>
 <aside><ol class="aside-footnotes"><li id="fn1"><p>The ANOVA tutorial at <a href="https://ourcodingclub.github.io/tutorials/anova/">Our Coding Club</a>.</p></li></ol></aside></section>
 
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-read-the-data" class="title-slide slide level2 center">
+<section id="workflow-read-the-data" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Read the Data</h2>
 <p>Download the data by clicking the button below.</p>
 <div class="callout callout-important callout-titled callout-style-default">
@@ -458,7 +456,7 @@
 <p>Our response variable is the hatching <code>Time</code>. Our explanatory variable is a <em>factor</em>, <code>Temperature</code>, with 3 levels: 13°C, 18°C and 25°C. Different samples of spawn were subject to each of these temperatures respectively.</p>
 </section>
 
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d6174657269616c2d73796d626f6c73207069766f742d7461626c652d6368617274203e7d7d-workflow-clean-the-data" class="title-slide slide level2 center">
+<section id="workflow-clean-the-data" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="material-symbols:pivot-table-chart" aria-label="Icon pivot-table-chart from material-symbols Iconify.design set." title="Icon pivot-table-chart from material-symbols Iconify.design set."></iconify-icon> Workflow: Clean the Data</h2>
 <p>The data is in wide-format, with a separate column for each Temperature, and a common column for Sample ID. This is good for humans, but poor for a computer: there are NA entries since not all samples of spawn can be subject to all temperatures. (E.g. Sample ID #1 was maintained at 13°C, and there are obvious NAs in the other two columns, which we don’t need).</p>
 <p>We will first stack up the <code>Temperature</code> columns into a single column, separate that into pieces and then retain just the number part (13, 18, 25), getting rid of the <em>word</em> <code>Temperature</code> from the column titles. Then the remaining <strong>numerical</strong> column with temperatures (13, 18, 25) will be converted into a factor.</p>
@@ -544,7 +542,7 @@ Table&nbsp;1: Frogspawn data
 <p>So we have cleaned up our data and have <code>20</code> samples for Hatching <code>Time</code> per <code>TempFac</code> setting.</p>
 </section>
 
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-eda" class="title-slide slide level2 center">
+<section id="workflow-eda" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: EDA</h2>
 <p>Let us plot jitter-plots, boxplots, and histograms of Hatching Time:</p>
 <div class="columns">
@@ -656,7 +654,7 @@ Table&nbsp;1: Frogspawn data
 <p>Let’s go ahead with our ANOVA test.</p>
 </section>
 
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-anova" class="title-slide slide level2 center scrollable">
+<section id="workflow-anova" class="title-slide slide level2 center scrollable">
 <h2><iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: ANOVA</h2>
 <p>We will first execute the ANOVA test with code and evaluate the results. Then we will do an <em>intuitive walkthrough</em> of the process and finally, <em>hand-calculate</em> entire analysis for clear understanding. For now, a little faith!</p>
 <div class="panel-tabset nav-pills" style="background: whitesmoke;">
@@ -1123,7 +1121,7 @@ F_{stat} = \frac{SSA / df_{SSA}}{SSE / df_{SSE}}
 </div>
 <aside><ol class="aside-footnotes"><li id="fn2"><p><a href="https://github.com/UCLATALL/supernova" class="uri">https://github.com/UCLATALL/supernova</a></p></li><li id="fn3"><p><a href="https://www.openintro.org/go/?id=anova-supplement" class="uri">https://www.openintro.org/go/?id=anova-supplement</a></p></li><li id="fn4"><p>Pruim R, Kaplan DT, Horton NJ (2017). “The mosaic Package: Helping Students to ‘Think with Data’ Using R.” The R Journal, 9(1), 77–102. https://journal.r-project.org/archive/2017/RJ-2017-024/index.html.</p></li><li id="fn5"><p><code>mosaic::xpf()</code> gives both a graph and the probabilities.</p></li></ol></aside></section>
 
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e206d6f64656c203e7d7d-stating-the-model" class="title-slide slide level2 center">
+<section id="stating-the-model" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="carbon:model" aria-label="Icon model from carbon Iconify.design set." title="Icon model from carbon Iconify.design set."></iconify-icon> Stating the Model</h2>
 <p>And <code>supernova</code> gives us a nice linear equation relating <code>Hatching_Time</code> to <code>TempFac</code>:</p>
 <div class="cell">
@@ -1192,7 +1190,7 @@ Time = 26.3 + -5.3*TempFac18 + -10.1*TempFac25 + e</code></pre>
 </section>
 
 <section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-checking-anova-assumptions" class="title-slide slide level2 center scrollable">
+<section id="workflow-checking-anova-assumptions" class="title-slide slide level2 center scrollable">
 <h2><iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Checking ANOVA Assumptions</h2>
 <p>ANOVA makes 3 fundamental assumptions:</p>
 <ol type="a">
@@ -1202,7 +1200,7 @@ Time = 26.3 + -5.3*TempFac18 + -10.1*TempFac25 + e</code></pre>
 </ol>
 <p>We can check these using checks and graphs.</p>
 </section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069632074776f746f6e652d72756c65203e7d7d-checks-for-normality" class="slide level3">
+<section id="checks-for-normality" class="slide level3">
 <h3><iconify-icon inline="" icon="ic:twotone-rule" aria-label="Icon twotone-rule from ic Iconify.design set." title="Icon twotone-rule from ic Iconify.design set."></iconify-icon> Checks for Normality</h3>
 <p>The <code>shapiro.wilk</code> test tests if a vector of numeric data is normally distributed and rejects the hypothesis of normality when the <a href="https://variation.com/wp-content/distribution_analyzer_help/hs132.htm">p-value</a> is less than or equal to 0.05.</p>
 <div class="columns">
@@ -1307,7 +1305,7 @@ W = 0.94814, p-value = 0.01275</code></pre>
 </div></div>
 <p>Unsurprisingly, the residuals are also not normally distributed either. We really need more samples / observations!! But the differences in means are so large that we can still be confident of the results.</p>
 </section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069632074776f746f6e652d72756c65203e7d7d-check-for-similar-variance" class="slide level3">
+<section id="check-for-similar-variance" class="slide level3">
 <h3><iconify-icon inline="" icon="ic:twotone-rule" aria-label="Icon twotone-rule from ic Iconify.design set." title="Icon twotone-rule from ic Iconify.design set."></iconify-icon> Check for Similar Variance</h3>
 <p>Response data with different variances at different levels of an <em>explanatory</em> variable are said to exhibit <strong>heteroscedasticity</strong>. This violates one of the assumptions of ANOVA.</p>
 <p>To check if the <code>Time</code> readings are similar in <code>variance</code> across levels of <code>TempFac</code>, we can use the <span style="background-color: yellow;">Levene Test</span>, or since our per-group observations are not normally distributed, a non-parametric rank-based <span style="background-color: yellow;">Fligner-Killeen Test</span>. The NULL hypothesis is that the data <strong>are</strong> with similar variances. The tests assess how probable this is with the given data assuming this NULL hypothesis:</p>
@@ -1350,12 +1348,12 @@ Fligner-Killeen:med chi-squared = 0.53898, df = 2, p-value = 0.7638</code></pre>
 </div>
 <p>It seems that there is no cause for concern here; the data do not have significantly different variances at different levels of <code>TempFac</code>.</p>
 </section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069632074776f746f6e652d72756c65203e7d7d-independent-observations" class="slide level3">
+<section id="independent-observations" class="slide level3">
 <h3><iconify-icon inline="" icon="ic:twotone-rule" aria-label="Icon twotone-rule from ic Iconify.design set." title="Icon twotone-rule from ic Iconify.design set."></iconify-icon> Independent Observations</h3>
 <p>This is an experiment <em>design</em> concern; the way the data is gathered must be specified such that data for each level of the factors ( factor combinations if there are more than one) should be independent.</p>
 </section></section>
 <section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-effect-size" class="title-slide slide level2 center">
+<section id="workflow-effect-size" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Effect Size</h2>
 <p>The simplest way to find the actual <code>effect sizes</code> detected by an ANOVA test is something we have already done, with the <code>supernova</code> package: Here is the table and plot again:</p>
 <div class="columns">
@@ -1576,7 +1574,7 @@ Figure&nbsp;1: ggstatsplot ANOVA
 <p>This plot also shows the <span class="math inline">\(p.value = 0\)</span> for each pairwise comparison, attesting to its significance.</p>
 <p>The <code>ggstatsplot</code> package is very useful for quick visualizations of statistical tests.</p>
 <aside><ol class="aside-footnotes"><li id="fn6"><p>ggplot2 Based Plots with Statistical Details • ggstatsplot <a href="https://indrajeetpatil.github.io/ggstatsplot/" class="uri">https://indrajeetpatil.github.io/ggstatsplot/</a></p></li></ol></aside></section></section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-anova-using-permutation-tests" class="title-slide slide level2 center scrollable">
+<section id="workflow-anova-using-permutation-tests" class="title-slide slide level2 center scrollable">
 <h2><iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: ANOVA using Permutation Tests</h2>
 <p>We wish to establish the significance of the effect size due to each of the levels in <code>TempFac</code>. From the normality tests conducted earlier we see that except at one level of <code>TempFac</code>, the times are are not normally distributed. Hence we opt for a Permutation Test to check for significance of effect.</p>
 <p>As remarked in Ernst<sup>1</sup>, the non-parametric permutation test can be both <em>exact</em> and also <strong>intuitively easier</strong> for students to grasp.</p>
@@ -1632,7 +1630,7 @@ Figure&nbsp;1: ggstatsplot ANOVA
 <p>As seen, the <code>infer</code> based permutation test also shows that the permutationally generated F-statistics are nowhere near that which was observed. The effect of <code>TempFac</code> is very strong.</p>
 <aside><ol class="aside-footnotes"><li id="fn7"><p>Ernst, Michael D. 2004. “Permutation Methods: A Basis for Exact Inference.” Statistical Science 19 (4): 676–85. doi:10.1214/088342304000000396.</p></li></ol></aside></section>
 
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why" class="title-slide slide level2 center">
+<section id="wait-but-why" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="mingcute:thought-line" aria-label="Icon thought-line from mingcute Iconify.design set." title="Icon thought-line from mingcute Iconify.design set."></iconify-icon> Wait, But Why?</h2>
 <ul>
 <li>In marketing, design, or business research, similar quantities may be measured across different locations, or stores, or categories of people, for instance.</li>
@@ -1641,7 +1639,7 @@ Figure&nbsp;1: ggstatsplot ANOVA
 </ul>
 </section>
 
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusions" class="title-slide slide level2 center">
+<section id="conclusions" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusions</h2>
 <p>We have discussed ANOVA as a means of modelling the effects of a Categorical variable on a Continuous (Quant) variable. ANOVA can be carried out using the standard formula <code>aov</code> when assumptions on distributions, variances, and independence are met. Permutation ANOVA tests can be carried out when these assumptions do not quite hold.</p>
 <div class="callout callout-note callout-titled callout-style-default">
@@ -1674,7 +1672,7 @@ It <em>is</em> possible to incorporate these beliefs into the ANOVA model, using
 </div>
 </section>
 
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920626920706572736f6e2d7570203e7d7d-your-turn" class="title-slide slide level2 center scrollable">
+<section id="your-turn" class="title-slide slide level2 center scrollable">
 <h2><iconify-icon inline="" icon="bi:person-up" aria-label="Icon person-up from bi Iconify.design set." title="Icon person-up from bi Iconify.design set."></iconify-icon> Your Turn</h2>
 <ol type="1">
 <li><p>Try the simple datasets at <a href="https://www.performingmusicresearch.com/datasets/" class="uri">https://www.performingmusicresearch.com/datasets/</a></p></li>
@@ -1708,8 +1706,8 @@ It <em>is</em> possible to incorporate these beliefs into the ANOVA model, using
 <li>Bidyut Ghosh (Aug 28, 2017). One-way ANOVA in R. <a href="https://datascienceplus.com/one-way-anova-in-r/" class="uri">https://datascienceplus.com/one-way-anova-in-r/</a></li>
 </ol>
 </section>
-<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" role="list">
-<h6 id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c7563696465207061636b6167652d636865636b203e7d7d-r-package-citations"><iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
+<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" data-entry-spacing="0" role="list">
+<h6 id="r-package-citations"><iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
 <div class="cell">
 <div class="cell-output-display">
 <table class="caption-top">
@@ -1770,7 +1768,7 @@ Dawson, Charlotte. 2025. <em><span class="nocase">ggprism</span>: A <span>“<sp
 Langsrud, Øyvind. 2003. <em>Statistics and Computing</em> 13 (2): 163–67. <a href="https://doi.org/10.1023/a:1023260610025">https://doi.org/10.1023/a:1023260610025</a>.
 </div>
 <div id="ref-ggstatsplot" class="csl-entry" role="listitem">
-Patil, Indrajeet. 2021. <span>“<span class="nocase">Visualizations with statistical details: The <span><span>‘<span class="nocase">ggstatsplot</span>’</span></span> approach</span>.”</span> <em><span class="nocase">Journal of Open Source Software</span></em> 6 (61): 3167. <a href="https://doi.org/10.21105/joss.03167">https://doi.org/10.21105/joss.03167</a>.
+Patil, Indrajeet. 2021. <span>“<span class="nocase">Visualizations with statistical details: The <span><span>‘<span class="nocase">ggstatsplot</span>’</span></span> approach</span>.”</span> <em><span>Journal of Open Source Software</span></em> 6 (61): 3167. <a href="https://doi.org/10.21105/joss.03167">https://doi.org/10.21105/joss.03167</a>.
 </div>
 <div id="ref-DescTools" class="csl-entry" role="listitem">
 Signorell, Andri. 2025. <em><span>DescTools</span>: Tools for Descriptive Statistics</em>. <a href="https://doi.org/10.32614/CRAN.package.DescTools">https://doi.org/10.32614/CRAN.package.DescTools</a>.
@@ -1886,6 +1884,7 @@ Wilke, Claus O., and Brenton M. Wiernik. 2022. <em><span class="nocase">ggtext</
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
 'jumpToSlide': true,
+'view': "scroll",
 'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
 'chalkboard': {"buttons":true},
 'smaller': true,
@@ -2029,13 +2028,6 @@ Wilke, Claus O., and Brenton M. Wiernik. 2022. <em><span class="nocase">ggtext</
         // devices. It is advisable to set this to a lower number than
         // viewDistance in order to save resources.
         mobileViewDistance: 2,
-
-        // Enable scroll view
-        view: 'scroll',
-        scrollProgress: 'auto',
-        scrollActivationWidth: 0,
-        scrollSnap: 'mandatory',
-        scrollLayout: 'full',
 
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be

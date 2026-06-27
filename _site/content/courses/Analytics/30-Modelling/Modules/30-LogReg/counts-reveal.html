@@ -7,12 +7,12 @@
 <script src="../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-4bd490e9cd57f2396cbd188312c0541c.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-795e9e8eca1e12b12abcb09a27409631.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script src="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.9.38">
+  <meta name="generator" content="quarto-1.8.27">
 
   <meta name="dcterms.date" content="2023-04-13">
   <title>The Mad Hatter's Guide to Data Viz and Stats in R – Modelling with Logistic Regression</title>
@@ -22,9 +22,6 @@
   <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reveal.css">
   <style>
-    /* Default styles provided by pandoc.
-    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-    */
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -104,6 +101,7 @@
     div.csl-bib-body { }
     div.csl-entry {
       clear: both;
+      margin-bottom: 0em;
     }
     .hanging-indent div.csl-entry {
       margin-left:2em;
@@ -120,7 +118,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/theme/quarto-7d27a531335543ee0379719666959585.css">
+  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/theme/quarto-180c62c9bcf69a0506044dd7f3253a18.css">
   <link href="../../../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -220,7 +218,7 @@
 <meta property="og:title" content="Modelling with Logistic Regression – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:description" content="Predicting Qualitative Target Variables">
 <meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/30-Modelling/Modules/30-LogReg/featured.png">
-<meta property="og:site_name" content="The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
 <meta property="og:image:height" content="1667">
 <meta property="og:image:width" content="2459">
 <meta name="twitter:title" content="Modelling with Logistic Regression – The Mad Hatter’s Guide to Data Viz and Stats in R">
@@ -243,7 +241,7 @@
   <p class="date">2023-04-13</p>
 </section>
 <section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="title-slide slide level2 center">
+<section id="setting-up-r-packages" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(tidyverse)</span>
@@ -383,13 +381,13 @@
 <span id="cb2-123"><a></a>flextable<span class="sc">::</span><span class="fu">set_flextable_defaults</span>(<span class="at">font.family =</span> <span class="st">"Roboto Condensed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div></section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction" class="title-slide slide level2 center">
+<section id="introduction" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="openmoji:japanese-symbol-for-beginner" aria-label="Icon japanese-symbol-for-beginner from openmoji Iconify.design set." title="Icon japanese-symbol-for-beginner from openmoji Iconify.design set."></iconify-icon> Introduction</h2>
 <p>Sometimes the dependent variable is Qualitative: an either/or categorization. for example, or the variable we want to predict might be <code>won</code> or <code>lost</code> the contest, <code>has an ailment</code> or <code>not</code>, <code>voted</code> or <code>not</code> in the last election, or <code>graduated</code> from college or <code>not</code>. There might even be more than two categories such as <code>voted for Congress</code>, <code>BJP</code>, or <code>Independent</code>; or <code>never smoker</code>, <code>former smoker</code>, or <code>current smoker</code>.</p>
 </section>
 
 <section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792072616469782d69636f6e7320626f782d6d6f64656c203e7d7d-the-logistic-regression-model" class="title-slide slide level2 center scrollable">
+<section id="the-logistic-regression-model" class="title-slide slide level2 center scrollable">
 <h2><iconify-icon inline="" icon="radix-icons:box-model" aria-label="Icon box-model from radix-icons Iconify.design set." title="Icon box-model from radix-icons Iconify.design set."></iconify-icon> The Logistic Regression Model</h2>
 <p>We saw with the <a href="../../../../../../content/courses/Analytics/30-Modelling/Modules/20-LinReg/index.html#assumptions-in-linear-models"><strong>General Linear Model</strong></a> that it models the <strong>mean</strong> of a target <em>Quantitative</em> variable as a linear weighted sum of the predictor variables:</p>
 <p><span id="eq-general-linear-model"><span class="math display">\[
@@ -450,7 +448,7 @@ Figure&nbsp;1: Naive Linear Model
 </div>
 </div>
 </section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920696320626173656c696e652d7265706f72742d70726f626c656d203e7d7d-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920616e742d64657369676e20736f6c7574696f6e2d6f75746c696e6564203e7d7d-problemsand-solutions" class="slide level3">
+<section id="problemsand-solutions" class="slide level3">
 <h3><iconify-icon inline="" icon="ic:baseline-report-problem" aria-label="Icon baseline-report-problem from ic Iconify.design set." title="Icon baseline-report-problem from ic Iconify.design set."></iconify-icon> <iconify-icon inline="" icon="ant-design:solution-outlined" aria-label="Icon solution-outlined from ant-design Iconify.design set." title="Icon solution-outlined from ant-design Iconify.design set."></iconify-icon> Problems…and Solutions</h3>
 <p>Where do we go from here?</p>
 <h6 id="model-equation">1. Model Equation:</h6>
@@ -694,13 +692,13 @@ p(default) &amp;= \frac{exp(\beta_0 + \beta_1 * balance + \beta_2 * income)}{1 +
 </div>
 <p>Instead, we will have to use <a href="./#workflow-model-building"><strong>maximum likelihood estimation(MLE)</strong></a> to estimate the models. The <em>maximum likelihood method</em> maximizes the probability of obtaining the data at hand against every choice of model parameters <span class="math inline">\(\beta_i\)</span>. (And compare that method with the <span class="math inline">\(X^2\)</span> (“chi-squared”) test and statistic instead of <code>t</code> and <code>F</code> to evaluate the model comparisons)</p>
 </section></section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-breast-cancer-dataset" class="title-slide slide level2 center">
+<section id="workflow-breast-cancer-dataset" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Breast Cancer Dataset</h2>
 <p>Let us proceed with the logistic regression workflow. We will use the well-known <code>Wisconsin breast cancer</code> dataset, readily available from <a href="https://vincentarelbundock.github.io/Rdatasets/articles/data.html">Vincent Arel-Bundock’s website.</a></p>
 </section>
 
 <section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-read-the-data" class="title-slide slide level2 center">
+<section id="workflow-read-the-data" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Read the Data</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>cancer <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://vincentarelbundock.github.io/Rdatasets/csv/dslabs/brca.csv"</span>) <span class="sc">%&gt;%</span></span>
@@ -1262,7 +1260,7 @@ $ y                   &lt;chr&gt; "B", "B", "B", "B", "B", "B", "B", "B", "B", "
 </div>
 <p>We see that there are 31 Quantitative variables, all named as <code>x_***</code>, and one Qualitative variable,<code>y</code>, which is a two-level target. (B = Benign, M = Malignant). The dataset has 569 observations, and no missing data.</p>
 </section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-data-munging" class="slide level3">
+<section id="workflow-data-munging" class="slide level3">
 <h3><iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Data Munging</h3>
 <p>Let us rename <code>y</code> as <code>diagnosis</code> and take two other Quantitative parameters as <code>predictors</code>, suitably (re)naming them too. We will also create a <em>binary-valued</em> variable called <code>diagnosis_malignant</code> (Binary, Malignant = 1, Benign = 0) for use as a <code>target</code> in our logistic regression model.</p>
 <div class="cell">
@@ -1308,7 +1306,7 @@ $ y                   &lt;chr&gt; "B", "B", "B", "B", "B", "B", "B", "B", "B", "
 </div>
 </div>
 </section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-eda" class="slide level3">
+<section id="workflow-eda" class="slide level3">
 <h3><iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: EDA</h3>
 <p>Let us use <code>GGally</code> to plot a set of combo-plots for our modified dataset:</p>
 <div class="cell">
@@ -1370,7 +1368,7 @@ Figure&nbsp;5: Pairs Plot for Cancer Data
 </div>
 </div>
 </section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-model-building" class="slide level3">
+<section id="workflow-model-building" class="slide level3">
 <h3><iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Model Building</h3>
 <div class="panel-tabset nav-pills" style="background: whitesmoke;">
 <ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1"><iconify-icon inline="" icon="mingcute:code-fill" aria-label="Icon code-fill from mingcute Iconify.design set." title="Icon code-fill from mingcute Iconify.design set."></iconify-icon> Model Code</a></li><li><a href="#tabset-1-2"><iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Model Checking and Diagnostics</a></li><li><a href="#tabset-1-3"><iconify-icon inline="" icon="ic:twotone-rule" aria-label="Icon twotone-rule from ic Iconify.design set." title="Icon twotone-rule from ic Iconify.design set."></iconify-icon> Workflow: Checks for Uncertainty</a></li><li><a href="#tabset-1-4"><iconify-icon inline="" icon="simple-icons:hypothesis" aria-label="Icon hypothesis from simple-icons Iconify.design set." title="Icon hypothesis from simple-icons Iconify.design set."></iconify-icon> Logistic Regression Models as Hypothesis Tests</a></li></ul>
@@ -1841,7 +1839,7 @@ log~likelihood ~~ ll(\beta_i) &amp;= log\prod_{}^{}(p_i)^{y_i} * (1-p_i)^{1-y_i}
 </ul>
 </section>
 
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusions" class="title-slide slide level2 center">
+<section id="conclusions" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusions</h2>
 <ul>
 <li>Logistic Regression is a great ML algorithm for predicting <strong>Qualitative</strong> target variables.</li>
@@ -1850,7 +1848,7 @@ log~likelihood ~~ ll(\beta_i) &amp;= log\prod_{}^{}(p_i)^{y_i} * (1-p_i)^{1-y_i}
 </ul>
 </section>
 
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a6920706572736f6e203e7d7d-your-turn" class="title-slide slide level2 center">
+<section id="your-turn" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="openmoji:person" aria-label="Icon person from openmoji Iconify.design set." title="Icon person from openmoji Iconify.design set."></iconify-icon> Your Turn</h2>
 <p>To be written up.</p>
 </section>
@@ -1875,8 +1873,8 @@ log~likelihood ~~ ll(\beta_i) &amp;= log\prod_{}^{}(p_i)^{y_i} * (1-p_i)^{1-y_i}
 <li>Paul Roback &amp; Julie Legler. (January 26, 2021). <em>Beyond Multiple Linear Regression: Applied Generalized Linear Models and Multilevel Models in R</em> <a href="https://bookdown.org/roback/bookdown-BeyondMLR/" class="uri">https://bookdown.org/roback/bookdown-BeyondMLR/</a></li>
 </ol>
 </section>
-<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" role="list">
-<h6 id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c7563696465207061636b6167652d636865636b203e7d7d-r-package-citations"><iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
+<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" data-entry-spacing="0" role="list">
+<h6 id="r-package-citations"><iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
 <div class="cell">
 <div class="cell-output-display">
 <table class="caption-top">
@@ -1891,7 +1889,7 @@ log~likelihood ~~ ll(\beta_i) &amp;= log\prod_{}^{}(p_i)^{y_i} * (1-p_i)^{1-y_i}
 <tr class="odd">
 <td style="text-align: left;">equatiomatic</td>
 <td style="text-align: left;">0.4.8</td>
-<td style="text-align: left;"><span class="citation" data-cites="equatiomatic">Anderson et al. (<a href="" role="doc-biblioref" onclick="return false;">2026</a>)</span></td>
+<td style="text-align: left;"><span class="citation" data-cites="equatiomatic">Anderson, Heiss, and Sumners (<a href="" role="doc-biblioref" onclick="return false;">2026</a>)</span></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">ISLR</td>
@@ -1948,6 +1946,7 @@ James, Gareth, Daniela Witten, Trevor Hastie, and Rob Tibshirani. 2021. <em><spa
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
 'jumpToSlide': true,
+'view': "scroll",
 'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
 'chalkboard': {"buttons":true},
 'smaller': true,
@@ -2091,13 +2090,6 @@ James, Gareth, Daniela Witten, Trevor Hastie, and Rob Tibshirani. 2021. <em><spa
         // devices. It is advisable to set this to a lower number than
         // viewDistance in order to save resources.
         mobileViewDistance: 2,
-
-        // Enable scroll view
-        view: 'scroll',
-        scrollProgress: 'auto',
-        scrollActivationWidth: 0,
-        scrollSnap: 'mandatory',
-        scrollLayout: 'full',
 
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be

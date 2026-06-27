@@ -2,15 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.8.27">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Arvind V.">
 <meta name="dcterms.date" content="2023-05-03">
 <title>Tutorial: Multiple Linear Regression with Backward Selection – The Mad Hatter’s Guide to Data Viz and Stats in R</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -61,6 +58,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -88,14 +86,15 @@ div.csl-indent {
 <link href="../../../../../../../content/materials/icon-park-twotone--concept-sharing.svg" rel="icon" type="image/svg+xml">
 <script src="../../../../../../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../../../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../../../../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../../../../../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../../../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-4bd490e9cd57f2396cbd188312c0541c.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-795e9e8eca1e12b12abcb09a27409631.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../../../../../site_libs/bootstrap/bootstrap-fcc7b2a3b14c77575dee92098a957997.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../../../../site_libs/bootstrap/bootstrap-f98024d38ba10b6a495c0c63f82dd59d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="../../../../../../../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.css" rel="stylesheet">
 <script src="../../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script src="../../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
@@ -129,7 +128,7 @@ div.csl-indent {
   }
 }</script><style>html{ scroll-behavior: smooth; }</style>
 <link href="../../../../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="../../../../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+<script src="../../../../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -162,7 +161,7 @@ window.Quarto = {
 <meta property="og:title" content="Tutorial: Multiple Linear Regression with Backward Selection – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:description" content="Using Multiple Regression to predict Quantitative Target Variables">
 <meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/30-Modelling/Modules/20-LinReg/files/backward-selection-1_files/figure-html/corrtest plots-1.png">
-<meta property="og:site_name" content="The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
 <meta property="og:image:height" content="960">
 <meta property="og:image:width" content="1344">
 <meta name="twitter:title" content="Tutorial: Multiple Linear Regression with Backward Selection – The Mad Hatter’s Guide to Data Viz and Stats in R">
@@ -772,14 +771,14 @@ window.Quarto = {
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="nav-link active" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages"><span class="header-section-number">1</span> <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-read-the-data" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-read-the-data" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-read-the-data"><span class="header-section-number">2</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Read the Data</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-correlations" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-correlations" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-correlations"><span class="header-section-number">3</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Correlations</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-maximal-multiple-regression-model" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-maximal-multiple-regression-model" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-maximal-multiple-regression-model"><span class="header-section-number">4</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Maximal Multiple Regression Model</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-model-reduction" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-model-reduction" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-model-reduction"><span class="header-section-number">5</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Model Reduction</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-diagnostics" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-diagnostics" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-diagnostics"><span class="header-section-number">6</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Diagnostics</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion"><span class="header-section-number">7</span> <iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusion</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d72746c203e7d7d-references" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d72746c203e7d7d-references" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d72746c203e7d7d-references"><span class="header-section-number">8</span> <iconify-icon inline="" icon="ooui:references-rtl" aria-label="Icon references-rtl from ooui Iconify.design set." title="Icon references-rtl from ooui Iconify.design set."></iconify-icon> References</a></li>
+<li><a href="#setting-up-r-packages" id="toc-setting-up-r-packages" class="nav-link active" data-scroll-target="#setting-up-r-packages"><span class="header-section-number">1</span> <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</a></li>
+  <li><a href="#workflow-read-the-data" id="toc-workflow-read-the-data" class="nav-link" data-scroll-target="#workflow-read-the-data"><span class="header-section-number">2</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Read the Data</a></li>
+  <li><a href="#workflow-correlations" id="toc-workflow-correlations" class="nav-link" data-scroll-target="#workflow-correlations"><span class="header-section-number">3</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Correlations</a></li>
+  <li><a href="#workflow-maximal-multiple-regression-model" id="toc-workflow-maximal-multiple-regression-model" class="nav-link" data-scroll-target="#workflow-maximal-multiple-regression-model"><span class="header-section-number">4</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Maximal Multiple Regression Model</a></li>
+  <li><a href="#workflow-model-reduction" id="toc-workflow-model-reduction" class="nav-link" data-scroll-target="#workflow-model-reduction"><span class="header-section-number">5</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Model Reduction</a></li>
+  <li><a href="#workflow-diagnostics" id="toc-workflow-diagnostics" class="nav-link" data-scroll-target="#workflow-diagnostics"><span class="header-section-number">6</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Diagnostics</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">7</span> <iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusion</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">8</span> <iconify-icon inline="" icon="ooui:references-rtl" aria-label="Icon references-rtl from ooui Iconify.design set." title="Icon references-rtl from ooui Iconify.design set."></iconify-icon> References</a></li>
   </ul></nav>
     </div>
 <!-- main -->
@@ -829,7 +828,7 @@ window.Quarto = {
 </div>
 
 
-</header><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages">
+</header><section id="setting-up-r-packages" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="setting-up-r-packages">
 <span class="header-section-number">1</span> <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>scipen <span class="op">=</span> <span class="fl">1</span>, digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="co"># set to three decimal</span></span>
@@ -945,7 +944,7 @@ window.Quarto = {
 <p>And how do we choose the “best” model, based on a tradeoff between Model Complexity and Model Accuracy?</p>
 </div>
 </div>
-</section></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-read-the-data" class="level2" data-number="2"><h2 data-number="2" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-read-the-data">
+</section></section><section id="workflow-read-the-data" class="level2" data-number="2"><h2 data-number="2" class="anchored" data-anchor-id="workflow-read-the-data">
 <span class="header-section-number">2</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Read the Data</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"BostonHousing2"</span>, package <span class="op">=</span> <span class="st">"mlbench"</span><span class="op">)</span></span>
@@ -1087,7 +1086,7 @@ quantitative variables:
 </tr>
 </tbody></table>
 <p>Our response variable is <code>cmedv</code>, the <em>corrected median value of owner-occupied homes in USD 1000’</em>s. Their are many Quantitative feature variables that we can use to predict <code>cmedv</code>. And there are two Qualitative features, <code>chas</code> and <code>tax</code>.</p>
-</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-correlations" class="level2" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-correlations">
+</section><section id="workflow-correlations" class="level2" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="workflow-correlations">
 <span class="header-section-number">3</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Correlations</h2>
 <p>We can use <code>purrr</code> to evaluate all pair-wise correlations in one shot:</p>
 <div class="cell">
@@ -1098,12 +1097,12 @@ quantitative variables:
 <span>  <span class="co"># leave off cmedv/medv to get all the remaining ones</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">cmedv</span>, <span class="op">-</span><span class="va">medv</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># perform a cor.test for all variables against cmedv</span></span>
-<span>  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span></span>
+<span>  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/purrr/man/map.html">map</a></span><span class="op">(</span></span>
 <span>    .x <span class="op">=</span> <span class="va">.</span>,</span>
 <span>    .f <span class="op">=</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://www.mosaic-web.org/mosaic/reference/cor.test.html">cor.test</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">housing</span><span class="op">$</span><span class="va">cmedv</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># tidy up the cor.test outputs into a tidy data frame</span></span>
-<span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html">map_dfr</a></span><span class="op">(</span><span class="fu">broom</span><span class="fu">::</span><span class="va"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span>, .id <span class="op">=</span> <span class="st">"predictor"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/purrr/man/map_dfr.html">map_dfr</a></span><span class="op">(</span><span class="fu">broom</span><span class="fu">::</span><span class="va"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span>, .id <span class="op">=</span> <span class="st">"predictor"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">all_corrs</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
@@ -1145,7 +1144,7 @@ quantitative variables:
 </div>
 </div>
 <p>The variables <code>rm</code>, <code>lstat</code> seem to have high correlations with <code>cmedv</code> which are also statistically significant.</p>
-</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-maximal-multiple-regression-model" class="level2" data-number="4"><h2 data-number="4" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-maximal-multiple-regression-model">
+</section><section id="workflow-maximal-multiple-regression-model" class="level2" data-number="4"><h2 data-number="4" class="anchored" data-anchor-id="workflow-maximal-multiple-regression-model">
 <span class="header-section-number">4</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Maximal Multiple Regression Model</h2>
 <p>We will create a regression model for <code>cmedv</code> using <strong>all</strong> the other numerical predictor features in the dataset.</p>
 <div class="cell">
@@ -1200,7 +1199,7 @@ F-statistic: 94.3 on 15 and 490 DF,  p-value: &lt;2e-16</code></pre>
 </div>
 </div>
 <p>The maximal model has an R.squared of <span class="math inline">\(0.7426\)</span> which is much better than that we obtained for a simple model based on <code>rm</code> alone. How much can we simplify this maximal model, without losing out on <code>R.squared</code>?</p>
-</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-model-reduction" class="level2" data-number="5"><h2 data-number="5" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-model-reduction">
+</section><section id="workflow-model-reduction" class="level2" data-number="5"><h2 data-number="5" class="anchored" data-anchor-id="workflow-model-reduction">
 <span class="header-section-number">5</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Model Reduction</h2>
 <p>We now proceed naively by <u>removing one predictor after another.</u> We will resort to what may amount to <strong>p-hacking</strong> by <em>sorting the predictors based on their p-value</em><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> in the maximal model and removing them in decreasing order of their p-value.</p>
 <p>We will also use some powerful features from the <code>purrr</code> package (also part of the <code>tidyverse</code>), to create <strong>all</strong> these models all at once. Then we will be able to plot their <code>R.squared</code> values together and decide where we wish to trade off <em>Explainability vs Complexity</em> for our model.</p>
@@ -1250,7 +1249,7 @@ F-statistic: 94.3 on 15 and 490 DF,  p-value: &lt;2e-16</code></pre>
 <span>  <span class="co"># list of predictor variables for each model</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span></span>
 <span>    mod_vars <span class="op">=</span></span>
-<span>      <span class="fu"><a href="https://purrr.tidyverse.org/reference/pmap.html">pmap</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/pkg/purrr/man/pmap.html">pmap</a></span><span class="op">(</span></span>
 <span>        .l <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">all_vars</span>, <span class="va">keep_vars</span>, <span class="va">data</span><span class="op">)</span>,</span>
 <span>        .f <span class="op">=</span> \<span class="op">(</span><span class="va">all_vars</span>, <span class="va">keep_vars</span>, <span class="va">data</span><span class="op">)</span> <span class="va">all_vars</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">keep_vars</span><span class="op">]</span></span>
 <span>      <span class="op">)</span></span>
@@ -1258,7 +1257,7 @@ F-statistic: 94.3 on 15 and 490 DF,  p-value: &lt;2e-16</code></pre>
 <span>  <span class="co"># build formulae with these for linear regression</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span></span>
 <span>    formula <span class="op">=</span></span>
-<span>      <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/pkg/purrr/man/map.html">map</a></span><span class="op">(</span></span>
 <span>        .x <span class="op">=</span> <span class="va">mod_vars</span>,</span>
 <span>        .f <span class="op">=</span> \<span class="op">(</span><span class="va">mod_vars</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/formula.html">as.formula</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span></span>
 <span>          <span class="st">"cmedv ~"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">mod_vars</span>, collapse <span class="op">=</span> <span class="st">"+"</span><span class="op">)</span></span>
@@ -1268,7 +1267,7 @@ F-statistic: 94.3 on 15 and 490 DF,  p-value: &lt;2e-16</code></pre>
 <span>  <span class="co"># use the formulae to build multiple linear models</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span></span>
 <span>    models <span class="op">=</span></span>
-<span>      <span class="fu"><a href="https://purrr.tidyverse.org/reference/pmap.html">pmap</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/pkg/purrr/man/pmap.html">pmap</a></span><span class="op">(</span></span>
 <span>        .l <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">formula</span><span class="op">)</span>,</span>
 <span>        .f <span class="op">=</span> \<span class="op">(</span><span class="va">data</span>, <span class="va">formula</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">formula</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span>
 <span>      <span class="op">)</span></span>
@@ -1278,7 +1277,7 @@ F-statistic: 94.3 on 15 and 490 DF,  p-value: &lt;2e-16</code></pre>
 <span><span class="va">housing_models_tidy</span> <span class="op">&lt;-</span> <span class="va">housing_model_set</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span></span>
 <span>    tidy_models <span class="op">=</span></span>
-<span>      <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/pkg/purrr/man/map.html">map</a></span><span class="op">(</span></span>
 <span>        .x <span class="op">=</span> <span class="va">models</span>,</span>
 <span>        .f <span class="op">=</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/glance.html">glance</a></span><span class="op">(</span><span class="va">x</span>,</span>
 <span>          conf.int <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -1340,7 +1339,7 @@ F-statistic: 94.3 on 15 and 490 DF,  p-value: &lt;2e-16</code></pre>
 <span>  <span class="co"># tidy up the model</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span></span>
 <span>    tidy_models <span class="op">=</span></span>
-<span>      <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/pkg/purrr/man/map.html">map</a></span><span class="op">(</span></span>
 <span>        .x <span class="op">=</span> <span class="va">models</span>,</span>
 <span>        .f <span class="op">=</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="va">x</span>,</span>
 <span>          conf.int <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -1386,7 +1385,7 @@ F-statistic: 94.3 on 15 and 490 DF,  p-value: &lt;2e-16</code></pre>
 </div>
 </div>
 </div>
-</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-diagnostics" class="level2" data-number="6"><h2 data-number="6" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-diagnostics">
+</section><section id="workflow-diagnostics" class="level2" data-number="6"><h2 data-number="6" class="anchored" data-anchor-id="workflow-diagnostics">
 <span class="header-section-number">6</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Diagnostics</h2>
 <p>Let us use <code><a href="https://generics.r-lib.org/reference/augment.html">broom::augment</a></code> to calculate residuals and predictions to arrive at a quick set of diagnostic plots.</p>
 <div class="cell">
@@ -1396,7 +1395,7 @@ F-statistic: 94.3 on 15 and 490 DF,  p-value: &lt;2e-16</code></pre>
 <span>  <span class="co"># augment the model</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span></span>
 <span>    augment_models <span class="op">=</span></span>
-<span>      <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/pkg/purrr/man/map.html">map</a></span><span class="op">(</span></span>
 <span>        .x <span class="op">=</span> <span class="va">models</span>,</span>
 <span>        .f <span class="op">=</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/augment.html">augment</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span>      <span class="op">)</span></span>
@@ -1455,15 +1454,15 @@ F-statistic: 94.3 on 15 and 490 DF,  p-value: &lt;2e-16</code></pre>
 <p>The residuals plot shows a curved trend, and certainly does not resemble the <em>stars at night</em>, so it is possible that we have left out some possible richness in our model-making, a “systemic inadequacy”.</p>
 <p>The Q-Q plot of residuals also shows a <code>J-shape</code> which indicates a non-normal distribution of residuals.</p>
 <p>These could indicate that more complex model ( e.g.&nbsp;linear model with <strong>interactions</strong> between variables ( i.e.&nbsp;product terms ) may be necessary.</p>
-</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion" class="level2" data-number="7"><h2 data-number="7" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion">
+</section><section id="conclusion" class="level2" data-number="7"><h2 data-number="7" class="anchored" data-anchor-id="conclusion">
 <span class="header-section-number">7</span> <iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusion</h2>
 <p>We have used a multiple-regression workflow that takes all predictor variables into account in a linear model, and then systematically simplified that model such that the performance was just adequate.</p>
 <p>The models we chose were all linear of course, but without <em>interaction terms</em> : each predictor was used only for its <strong>main effect</strong>. When the diagnostic plots were examined, we did see some shortcomings in the model. This could be overcome with a more complex model. These might include selected interactions, transformations of target(<span class="math inline">\(cmedv^2\)</span>, or <span class="math inline">\(sqrt(cmedv)\)</span>) and some selected predictors.</p>
-</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d72746c203e7d7d-references" class="level2" data-number="8"><h2 data-number="8" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d72746c203e7d7d-references">
+</section><section id="references" class="level2" data-number="8"><h2 data-number="8" class="anchored" data-anchor-id="references">
 <span class="header-section-number">8</span> <iconify-icon inline="" icon="ooui:references-rtl" aria-label="Icon references-rtl from ooui Iconify.design set." title="Icon references-rtl from ooui Iconify.design set."></iconify-icon> References</h2>
-<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" role="list">
+<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" data-entry-spacing="0" role="list">
 <p>James, Witten, Hastie, Tibshirani, <em>An Introduction to Statistical Learning. Chapter 3. Linear Regression.</em> <a href="https://hastie.su.domains/ISLR2/Labs/Rmarkdown_Notebooks/Ch3-linreg-lab.html" class="uri">https://hastie.su.domains/ISLR2/Labs/Rmarkdown_Notebooks/Ch3-linreg-lab.html</a></p>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c7563696465207061636b6167652d636865636b203e7d7d-r-package-citations" class="level6"><h6 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c7563696465207061636b6167652d636865636b203e7d7d-r-package-citations">
+<section id="r-package-citations" class="level6"><h6 class="anchored" data-anchor-id="r-package-citations">
 <iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
 <div class="cell">
 <div class="cell-output-display">
@@ -1528,13 +1527,13 @@ Firke, Sam. 2024. <em><span class="nocase">janitor</span>: Simple Tools for Exam
 Hughes, Jeffrey, and David Beiner. 2023. <em><span class="nocase">reghelper</span>: Helper Functions for Regression Analysis</em>. <a href="https://doi.org/10.32614/CRAN.package.reghelper">https://doi.org/10.32614/CRAN.package.reghelper</a>.
 </div>
 <div id="ref-gt" class="csl-entry" role="listitem">
-Iannone, Richard, Joe Cheng, Barret Schloerke, et al. 2026. <em><span class="nocase">gt</span>: Easily Create Presentation-Ready Display Tables</em>. <a href="https://doi.org/10.32614/CRAN.package.gt">https://doi.org/10.32614/CRAN.package.gt</a>.
+Iannone, Richard, Joe Cheng, Barret Schloerke, Shannon Haughton, Ellis Hughes, Alexandra Lauer, Romain François, JooYoung Seo, Ken Brevoort, and Olivier Roy. 2026. <em><span class="nocase">gt</span>: Easily Create Presentation-Ready Display Tables</em>. <a href="https://doi.org/10.32614/CRAN.package.gt">https://doi.org/10.32614/CRAN.package.gt</a>.
 </div>
 <div id="ref-ISLR" class="csl-entry" role="listitem">
 James, Gareth, Daniela Witten, Trevor Hastie, and Rob Tibshirani. 2021. <em><span>ISLR</span>: Data for an Introduction to Statistical Learning with Applications in r</em>. <a href="https://doi.org/10.32614/CRAN.package.ISLR">https://doi.org/10.32614/CRAN.package.ISLR</a>.
 </div>
 <div id="ref-GGally" class="csl-entry" role="listitem">
-Schloerke, Barret, Di Cook, Joseph Larmarange, et al. 2025. <em><span>GGally</span>: Extension to <span>“<span class="nocase">ggplot2</span>”</span></em>. <a href="https://doi.org/10.32614/CRAN.package.GGally">https://doi.org/10.32614/CRAN.package.GGally</a>.
+Schloerke, Barret, Di Cook, Joseph Larmarange, Francois Briatte, Moritz Marbach, Edwin Thoen, Amos Elberg, and Jason Crowley. 2025. <em><span>GGally</span>: Extension to <span>“<span class="nocase">ggplot2</span>”</span></em>. <a href="https://doi.org/10.32614/CRAN.package.GGally">https://doi.org/10.32614/CRAN.package.GGally</a>.
 </div>
 <div id="ref-corrplot" class="csl-entry" role="listitem">
 Wei, Taiyun, and Viliam Simko. 2024. <em>R Package <span>“<span class="nocase">corrplot</span>”</span>: Visualization of a Correlation Matrix</em>. <a href="https://github.com/taiyun/corrplot">https://github.com/taiyun/corrplot</a>.
@@ -1561,7 +1560,7 @@ Wright, Kevin. 2026. <em><span class="nocase">corrgram</span>: Plot a Correlogra
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-v.2023" class="csl-entry quarto-appendix-citeas" role="listitem">
 V., Arvind. 2023. <span>“Tutorial: Multiple Linear Regression with
-Backward Selection.”</span> May 3. <a href="https://madhatterguide.netlify.app/content/courses/Analytics/30-Modelling/Modules/20-LinReg/files/backward-selection-1.html">https://madhatterguide.netlify.app/content/courses/Analytics/30-Modelling/Modules/20-LinReg/files/backward-selection-1.html</a>.
+Backward Selection.”</span> May 3, 2023. <a href="https://madhatterguide.netlify.app/content/courses/Analytics/30-Modelling/Modules/20-LinReg/files/backward-selection-1.html">https://madhatterguide.netlify.app/content/courses/Analytics/30-Modelling/Modules/20-LinReg/files/backward-selection-1.html</a>.
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
