@@ -1,9 +1,8 @@
 ---
 title: "Making Diagrams in R"
-subtitle: "Using d2 and ggdiagram"
-author: Arvind V. 
+subtitle: "Using ggdiagram and ggforce"
 date: 2025/8/30
-date-modified: "`r Sys.Date()`"
+date-modified: today
 filter:
   - d2
 order: 70
@@ -20,15 +19,31 @@ draft: true
 #| 
 library(tidyverse)  
 library(ggformula)
-library(systemfonts) ## use custom fonts (need to be installed on your OS)  
+library(ggdiagram)   ## create diagrams with ggplot2
+library(plotly) # Add interactivity
+
+```
+
+```{r}
+#| label: Themes and Extra Packages
+#| echo: false
+#| message: false
+#| 
+library(checkdown)
+library(epoxy)
+library(explore) # fake data generation
+library(grateful)
+##
+library(downloadthis)
+library(ggrepel)
+library(marquee)
+#devtools::install_github("mccarthy-m-g/embedr")
+library(embedr) # Embed multimedia in HTML files
+library(systemfonts) ## use custom fonts (need to be installed on your OS) 
+library(showtext)   ## add google fonts to plots
 library(scico)       ## scico color palettes(http://www.fabiocrameri.ch/colourmaps.php) in R 
 library(ggtext)      ## add improved text rendering to ggplot2
 library(ggforce)     ## add missing functionality to ggplot2
-library(showtext)   ## add google fonts to plots
-library(ggrepel)
-library(marquee)
-library(ggdiagram)   ## create diagrams with ggplot2
-
 
 ```
 
@@ -38,15 +53,16 @@ We may have been using `ggplot2` for a while now, but sometimes we need somethin
 
 Annotations help to draw attention to specific parts or the graph, specific areas of interest that are useful in telling the story .
 
-We have already seen the `annotate()` command from `ggplot2` first ( and the new `gf_annotate()` from `ggformula`). Here we will look at some of the intrigung features from the `ggforce` package. 
+We have already seen the `annotate()` command from `ggplot2` first ( and the new `gf_annotate()` from `ggformula`). Here we will look at some of the intriguing features from the `ggdiagram` package. We will also explore the `ggforce` package, and see if we can make our diagrams interactive with `plotly`. 
+
 
 ### Fonts and Themes
-
-AAs we learnt in the [Fonts Module](../20-Fonts/index.qmd), let us set the ggplot theme with fonts for both the chart defining elements **and** our annotations. I am going to use local fonts from my machine, that I have downloaded from Google Fonts earlier and saved in a `fonts` folder at the root of my project.
 
 ```{r}
 #| label: add-local-fonts
 #| code-fold: true
+#| message: false
+#| warning: false
 #| 
 ## Clean the slate
 systemfonts::clear_local_fonts()
@@ -82,11 +98,11 @@ sysfonts::font_add(family = "Schoolbell",
   regular = "../../../../../../fonts/Schoolbell-Regular.ttf") # Only regular is available
 
 showtext_auto() # set these fonts as default for the session
-sysfonts::font_families() # check which fonts are available in the session
+# sysfonts::font_families() # check which fonts are available in the session
 
 ```
 
-
+## Set the Theme
 ```{r}
 #| label: set-ggplot2-theme
 #| code-fold: true
@@ -170,235 +186,181 @@ flextable::set_flextable_defaults(font.family = "Roboto Condensed")
 
 ```
 
+## {{< iconify openmoji japanese-symbol-for-beginner >}} Introduction
+
+`{{ggdiagram}}` is a relatively new package in R that exploits some of the more recent developments in the R core. It uses for example, a new Object Oriented System in R called [S7](https://rconsortium.github.io/S7/) that allows commands to be "cascaded" in a way similar to Python and Javascript. Its best feature is that it allows precise control of shapes, their locations and connections, and returns a `ggplot` chart at the end, allowing us to use all the ggplot skills and bells and whistles, should we need them. 
+
+The webpage for `{{ggdiagram}}` is at <https://wjschne.github.io/ggdiagram/>
 
 
-## Data
+## Method
 
-We will again work with a **familiar** dataset, so that we can concentrate on the chart aesthetics, without having to spend time getting used to the data: the `penguins` dataset again, ~~from the `palmerpenguins` package~~ now part of the R installation!. 
+`{{ggdiagram}}` allows to create diverse shapes, and then connect them together as we need. 
 
-As always, we will start with a **table** of the data:
+The method we will use is as follows: `Define -> Place -> Connect`:
 
+- pre-create the shapes we need and save them as variables
+- place the shapes in relation to each other using `ggdiagram::place()`;
+- invoke `ggdiagram()` and then `ggdiagram::connect()` the shapes we have created in the and manner that we need. 
+
+
+### Basic Shapes in `{{ggdiagram}}`
+
+:::: {.columns}
+::: {.column}
 ```{r}
-#| label: tbl-read-penguins-data
-#| tbl-cap: "Penguins Dataset"
-#| message: false
-
-penguins <- penguins %>% drop_na() # remove data containing missing data
-
-## Create a nicely formatted table
-## uses `kableExtra` package
-## 
-penguins %>% 
-  kableExtra::kbl() %>%
-  kableExtra::kable_paper(full_width = TRUE) %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "condensed", "responsive")) %>%
-  kableExtra::scroll_box(width = "700px", height = "350px")
-
-```
-
-## Basic Plot
-
-A basic scatter plot, which we will use to highlight and draw attention to specific areas of the plot. We will include, for the sake of retaining context, the fonts and labels that we have used in previous modules. And we will also use `ggtext` to format the axis titles and the plot title.
-
-
-```{r}
-#| label: basic-ggformula-plot
-#| code-fold: true
-
-
-p1 <- gf_point(data = penguins, bill_dep ~ bill_len, 
-              color = ~ body_mass, alpha = 0.8, size = 3.5) %>% 
-
-  ## custom colors from the scico package
-  gf_refine(scico::scale_color_scico(palette = "tokyo", direction = -1)) %>% 
-  
-  ## custom labels
-  gf_labs(
-    title = 'Bill Dimensions of Brush-Tailed Penguins (**Pygoscelis**)',
-    subtitle = 'A scatter plot of bill depth versus bill length.',
-    caption = 'Data: Gorman, Williams & Fraser (2014) PLoS ONE',
-    x = '**Bill Length** (mm)', 
-    y = '**Bill Depth** (mm)',
-    color = 'Body mass (g)') %>% 
-   
-  ## 2. Add theme related commands from ggtext
-  ## render respective text elements
-  gf_theme(theme(
-    plot.title = ggtext::element_markdown(),
-    plot.caption = ggtext::element_markdown(),
-    axis.title.x = ggtext::element_markdown(),
-    axis.title.y = ggtext::element_markdown()
-  ))
-
-
-p1
-
-```
-
-
-
-## Using `{ggforce}`
-
-From [Thomas Lin Pedersen's website](www.ggforce.data-imaginist.com) → www.ggforce.data-imaginist.com
-
-> `ggforce` is a package aimed at providing missing functionality to `ggplot2` through the extension system introduced with `ggplot2` v2.0.0. Broadly speaking `ggplot2` has been aimed primarily at explorative data visualization in order to investigate the data at hand, and less at providing utilities for composing custom plots a la `D3.js`. `ggforce` is mainly an attempt to address these “shortcoming” (design choices might be a better description). The goal is to provide a repository of geoms, stats, etc. that are as well documented and implemented as the official ones found in `ggplot2`.
-
-
-
-We will start with the basic plot, with the fonts, labels and `ggtext` related work done up to now: First, let us update the theme to use the `ggtext` options, and then we will add the `ggforce` annotations.
-
-```{r}
+#| label: fig-circle-1
 #| eval: false
-#| echo: false
-## Existing theme
-theme_set(theme_classic(base_size = 14, 
-                        base_family = "roboto-condensed"))
 
-## modify plot elements globally (for all following plots)
-theme_update(
-  axis.ticks = element_line(color = "grey92"),
-  axis.ticks.length = unit(.5, "lines"),
-  panel.grid.minor = element_blank(),
-  legend.title = element_text(size = 12, family = "ibarra"),
-  legend.text = element_text(color = "grey30"),
-  
-## theme updates here
-  plot.title = ggtext::element_markdown(),
-  plot.caption = ggtext::element_markdown(),
-  axis.title.x = ggtext::element_markdown(),
-  axis.title.y = ggtext::element_markdown()
-)
+c1 <- ob_circle()
+ggdiagram() + c1
 
 ```
+:::
 
-
-
-
+::: {.column}
 ```{r}
+#| ref-label: fig-circle-1
+#| echo: false
+```
+
+:::
+
+::::
+
+:::: {.columns}
+::: {.column}
+```{r}
+#| label: fig-square-1
 #| eval: false
+
+s1 <- ob_rectangle()
+ggdiagram() + s1
+
+```
+:::
+
+::: {.column}
+```{r}
+#| ref-label: fig-square-1
+#| fig-cap: Square
 #| echo: false
-## plot that we will annotate with ggforce afterwards
-p3 <- ggplot(penguins, aes(x = bill_len, y = bill_dep, 
-                           colour = body_mass)) + 
-  geom_point(size = 3.5) + 
-  coord_cartesian(xlim = c(25, 65), ylim = c(10, 25)) +
-  
-  # Add colours
-  scico::scale_color_scico(palette = "bamako", direction = -1) +
-  rcartocolor::scale_fill_carto_d(palette = "Bold") +
-  
-  # Add labels
-  labs(
-    title = "Bill Dimensions of Brush-Tailed Penguins (*Pygoscelis*)",
-    subtitle = 'A scatter plot of bill depth versus bill length.',
-    caption = "Data: Gorman, Williams & Fraser (2014) *PLoS ONE*",
-    x = "**Bill Length** (mm)", 
-    y = "**Bill Depth** (mm)",
-    color = "Body mass (g)",
-    fill = "Species"
-  )
-p3
-
 ```
 
-### Using ellipses
+:::
+
+::::
+
+:::: {.columns}
+::: {.column}
 ```{r}
-#| label: ellipses
-## ellipsoids for all groups
-p1 +
-  # penguins data is inherited automatically
-  # Can use other data also if needed
-  ggforce::geom_mark_ellipse( 
-    aes(fill = species, 
-        label = species), 
-    alpha = .15, 
-    show.legend = FALSE
-  ) +
-  
-  # Repeat the points!
-  # Why? So the ellipses don't hide them!
-  geom_point(aes(color = body_mass), 
-             alpha = .6, 
-             size = 3.5)
+#| label: fig-releaux-1
+#| eval: false
 
+r1 <- ob_reuleaux(fill = "white")
+ggdiagram() + r1
 
 ```
+:::
 
-### Highlighting one group
-
-#### Add an Ellipse
+::: {.column}
 ```{r}
-
-## ellipsoids for specific subset
-p1 +
-  ggforce::geom_mark_ellipse(
-    aes(fill = species, 
-        label = species, 
-        filter = species == 'Gentoo'), # Very Curious syntax here!!
-    alpha = 0.25, 
-    show.legend = FALSE
-  ) +
- geom_point(aes(color = body_mass), 
-            alpha = .6, 
-            size = 3.5)
-
+#| ref-label: fig-releaux-1
+#| fig-cap: Releaux Square!
+#| echo: false
 ```
 
+:::
 
-#### Adding Circles
+::::
+
+
+:::: {.columns}
+::: {.column}
 ```{r}
+#| label: fig-array-1
+#| eval: false
 
-## circles
-p1 +
-  ggforce::geom_mark_circle(
-    aes(fill = species, label = species, 
-        filter = species == 'Gentoo'), 
-    alpha = 0.25, 
-    show.legend = FALSE
-  ) +
-  geom_point(aes(color = body_mass), 
-             alpha = .6, 
-             size = 3.5)
+ca1 <-  ob_circle() |>
+  ob_array(k = 5, # Creating 5 circles
+           label = 1:5,
+           where = "southeast", # Array sloping down and right
+           sep = .5) 
+ggdiagram() + ca1
 
 ```
+:::
 
-
-#### Adding Rectangles
+::: {.column}
 ```{r}
-
-## rectangles
-p1 +
-  ggforce::geom_mark_rect(
-    aes(fill = species, 
-        label = species, 
-        filter = species == 'Gentoo'), 
-    alpha = 0.25, 
-    show.legend = FALSE
-  ) +
-  geom_point(aes(color = body_mass), 
-             alpha = .6, 
-             size = 3.5) 
-
+#| ref-label: fig-array-1
+#| fig-cap: Circle Array
+#| echo: false
 ```
 
+:::
 
-#### Adding a Convex Hull
+::::
+
+
+### Placement
+
+
+
+### Connecting Shapes
+
+:::: {.columns}
+::: {.column}
 ```{r}
-library(concaveman)
-## hull
-p1 +
-  ggforce::geom_mark_hull(
-    aes(fill = species, 
-        label = species, 
-        filter = species == 'Gentoo'), 
-    alpha = 0.25, 
-    show.legend = FALSE
-  ) +
-  geom_point(aes(color = body_mass), 
-             alpha = .6, 
-             size = 3.5)
+#| label: fig-connection-1
+#| eval: false
 
+# 1) Define shapes
+start <- ob_circle(radius = 0.5)
+decision <- ob_rectangle(width = 2.0, height = 1.0)
+end <- ob_circle(radius = 0.5)
+
+# 2) Place shapes
+decision <- decision %>%  place(from = start, where = "right", sep = 1.5)
+end <- end %>%  place(from = decision, where = "right", sep = 1.5)
+
+# 3) Draw diagram
+ggdiagram() +
+  start +
+  decision +
+  end +
+  connect(start, decision) +
+  connect(decision, end) +
+  coord_fixed() +
+  theme_void()
 ```
+:::
+
+::: {.column}
+```{r}
+#| ref-label: fig-connection-1
+#| fig-cap: Only Connect!!
+#| echo: false
+```
+
+:::
+
+::::
+
+### Adding Text
+
+
+### Math Markup
+
+
+### Adding Diagram Content to Charts
+
+
+### Using Outputs from Stats Pacakges
+
+
+## Is Animation possible?
+
 
 ## {{< iconify ooui references-ltr >}} References
 
@@ -413,7 +375,7 @@ cite_packages(
   output = "table",
   out.dir = ".",
   out.format = "html",
-  pkgs = c("paletteer", "ggthemes", "patchwork", "grDevices", "reactable", "wesanderson", "gameofthrones", "harrypotter")) %>%
+  pkgs = c("ggdiagram", "ggforce", "plotly")) %>%
   knitr::kable(format = "simple")
 
 ```
