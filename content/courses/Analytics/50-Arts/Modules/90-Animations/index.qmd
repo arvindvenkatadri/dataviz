@@ -1,0 +1,518 @@
+---
+title: "Animating our Charts"
+subtitle: "Using the gganimate package"
+date: 25/June/2026
+date-modified: today
+order: 90
+fig-height: 4
+fig-width: 5.5
+bibliography: 
+  - grateful-refs.bib
+draft: true
+---
+
+## {{< iconify noto-v1 package >}} Setting up R Packages
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+#| fig-directory: "80-figs"
+
+library(tidyverse) # Manage data
+library(plotly) # For 2D and 3D interactive plots
+library(gganimate)
+```
+
+```{r}
+#| label: Themes and Extra Packages
+#| echo: false
+#| message: false
+library(checkdown)
+library(epoxy)
+library(explore) # fake data generation
+library(grateful)
+##
+library(downloadthis)
+library(ggrepel)
+library(marquee)
+#devtools::install_github("mccarthy-m-g/embedr")
+library(embedr) # Embed multimedia in HTML files
+
+```
+
+#### Plot Fonts and Theme
+
+```{r}
+#| label: plot-theme-ggplot4
+#| cache: false
+#| code-fold: true
+#| messages: false
+#| warning: false
+#| 
+library(systemfonts)
+library(showtext)
+library(ggrepel)
+library(marquee)
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+##
+showtext_opts(dpi = 96) #set DPI for showtext
+sysfonts::font_add(family = "Alegreya",
+  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
+  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
+  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
+  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
+
+sysfonts::font_add(family = "Roboto Condensed", 
+  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
+  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
+  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
+  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
+showtext_auto(enable = TRUE) #enable showtext
+##
+theme_custom <- function(){ 
+
+    theme_bw(base_size = 10) + 
+    
+    theme_sub_axis(title = element_text(family = "Roboto Condensed", 
+                                       size = 8),
+                   text = element_text(family = "Roboto Condensed", 
+                                       size = 6)) + 
+    
+    theme_sub_legend(text = element_text(family = "Roboto Condensed", 
+                                         size = 6),
+                     title = element_text(family = "Alegreya", 
+                                          size = 8)) + 
+    
+    theme_sub_plot(title = element_text(family = "Alegreya", 
+                                        size = 14, face = "bold"),
+                   title.position = "plot",
+                   subtitle = element_text(family = "Alegreya", 
+                                           size = 10),
+                   caption = element_text(family = "Alegreya", 
+                                          size = 6),
+                   caption.position = "plot")
+    
+}
+
+## Use available fonts in ggplot text geoms too!
+ggplot2::update_geom_defaults(geom = "text", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+ggplot2::update_geom_defaults(geom = "marquee", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "text_repel", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label_repel", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 3.5,
+  color = "#2b2b2b"
+)
+)
+
+## Set the theme
+ggplot2::theme_set(new = theme_custom())
+
+## tinytable options
+options("tinytable_tt_digits" = 2)
+options("tinytable_format_num_fmt" = "significant_cell")
+options(tinytable_html_mathjax = TRUE)
+
+
+## Set defaults for flextable
+flextable::set_flextable_defaults(font.family = "Roboto Condensed")
+
+```
+
+
+## {{< iconify openmoji japanese-symbol-for-beginner >}} Introduction
+
+The `{{plotly}}` package in R, created by Carson Sievert allows the plotly.js JavaScript library to be used in R, using R syntax. It offers a wide variety of 2D and 3D interactive charts. 
+
+We will today see how to make our charts interactive, with popups and labels. And we can zoom in and out too. 
+
+3D charts are generally not a good idea, the literature says. but sometimes, they are exactly the thing that is needed, especially in teaching and learning. So we will look at those too. Both of these aspects using a new package called `{{plotly}}`.
+
+For form's sake, we will proceed as we have always done, looking at a dataset (however familiar), writing up its Data Dictionary, and then making plots. 
+
+## {{< iconify file-icons influxdata >}} Examine the Data
+
+We will use the `penguins` dataset built into R itself. Your should try other datasets too!
+
+Here is a glimpse of the data:
+
+```{r}
+data(penguins,package = "datasets") # Load the penguins dataset)
+glimpse(penguins)
+
+```
+
+### {{< iconify streamline dictionary-language-book-solid >}} Data Dictionary
+
+::: callout-note
+#### Quantitative Data
+- `bill_len` - length of the penguin's bill in millimeters (continuous)
+- `bill_dep` - depth of the penguin's bill in millimeters (continuous)
+- `flipper_len` - length of the penguin's flipper in millimeters (continuous)
+- `body_mass` - mass of the penguin in grams (continuous)
+- `year` - year of observation (discrete, integer)
+
+:::
+
+::: callout-note
+#### Qualitative Data
+- `species` - the species of penguin (categorical)
+- `island` - the island where the penguin was observed (categorical)
+:::
+
+## Our first interactive chart with `{{plotly}}`
+
+`{{plotly}}` uses the tidyverse syntax and supports use of the pipe as well ( both the tidyverse pipe and the R-native pipe). So let's do this:
+
+```{r}
+#| label: fig-plotly-start
+#| fig-cap: Interactive 2D Scatter Plot
+#| 
+
+penguins %>% drop_na() %>% 
+  plot_ly(x = ~ flipper_len, y = ~ body_mass, 
+          color = ~ species, # colour by categorical variable
+          type = "scatter",
+          mode = "markers", #lines", "markers", "lines+markers", "lines+markers+text", "none"
+          colors = "Accent" # Palettes from RColorBrewer
+  )
+
+```
+
+Note the automatic toolbar at the top-left of the chart; this allows all sorts of interactivity. Each point in the chart pops up a set of values for the two variables, and the popup itself is coloured based on the grouping variable. 
+
+All these aspects we will customize presently, once we have understood the basics of the `{{plotly}}` API. 
+
+## The `{{plotly}}` API defined
+
+If we type `help(plot_ly)` in our Console, we obtain the following parameters for the `plot_ly()` command:
+
+- `data`: The Data frame driving the chart
+- `type`: chart type (e.g. "scatter", "bar", "box"...)
+- `name`: trace name. Acts like grouping variable
+- `color`: Colour for marker ( i.e. symbol glyph), fill, text...
+- `colors`: Colour palette
+- `alpha`: Colour saturation,
+- `stroke`: Stroke colour when Markers have separate colour and fill attributes
+- `strokes`: Strokes palette
+- `alpha_stroke`: Stroke colour saturation
+
+- `size`: Controls mapping of data to size/width of marker/text/...
+- `sizes`: c(10, 100): Scale for mapping `size` to variable
+
+- `span`: Controls mapping of data to `stroke-size`
+- `spans`: c(1, 20): Scale for mapping `span` to variable
+
+- `symbol`: Discrete values for type of symbol used
+- `symbols`: Controls mapping of `symbol` to variable (think `pch`)
+- `linetype`: "solid", "dot", "dash", "longdash", "dashdot", or "longdashdot"
+- `linetypes`: Controls mapping of `linetype` to variable
+- `split`: Grouping variable
+- `frame`: Variable values for chart animation ( yes!) 
+- `width`: width in pixels
+- `height`: height in pixels
+- `source`: Used with `shiny` apps. ( Yet another R course!!)
+)
+
+This function is rather like `ggplot()` that initiates a plot and passes on *global chart variables* to the subsequent *layers* of the chart. However, with `type` specified, it is capable of building a chart on its own, unlike with `{{ggplot2}}`. 
+
+In order to learn the different chart types, we will **not specify** `type in the `plot_ly()` command, and use specific chart oriented commands to achieve our purposes. This will become clear in the following. 
+
+## Basic 2D Chart Types in `{{plotly}}`
+
+Let us rapidly look at `{{plotly}}` code to generate a set of basic familiar charts. 
+
+### Scatter Revisited
+
+```{r}
+#| label: fig-scatter-revisited
+#| fig-cap: Scatter Plot with Size and Colour Mapping
+#| code-fold: true
+#| 
+penguins <- penguins %>% drop_na() 
+model <- stats::lm(body_mass ~ flipper_len, 
+                           data = penguins)
+
+penguins %>% mutate(island = as_factor(island), species = as_factor(species)) %>% 
+  plot_ly() %>% 
+  add_trace(x = ~ flipper_len, y = ~ body_mass, 
+            name = ~ species,
+            symbol = ~ species,
+            size = ~ as.integer(species), # Note!!
+            sizes = c(5,25),
+            type = "scatter", mode = "markers") %>% 
+  add_lines(x = ~ flipper_len, 
+            y = ~ stats::fitted(model), 
+            name = "Linear Regression Line", showlegend =T) %>% 
+## See <https://plotly.com/r/reference/layout/>
+layout(
+    font = list(family = "Roboto Condensed"),
+    title = list(
+      text = "Penguins, with Linear Model",
+      subtitle = list(text = "Scatter with Colour with Size")),
+    
+    legend = list(title = list(text = "Species")),
+    margin = c(5,20,5,20),
+    plot_bgcolor = "#DCE2F0",
+    paper_bgcolor = "#7b9acc",
+    modebar = list(bgcolor = "white", activecolor = "black"),
+    xaxis = list(title = "Flipper Length", gridcolor = "white"),
+    yaxis = list(title = "Body Mass in grams", gridcolor = "white")
+  )
+
+
+```
+
+### Line
+```{r}
+#| label: fig-line-chart
+#| fig-cap: Economic Trends
+#| code-fold: true
+#| 
+
+apple <- read_csv('https://raw.githubusercontent.com/plotly/datasets/master/2014_apple_stock.csv')
+apple
+apple %>% 
+  mutate(AAPL_x = as.Date(AAPL_x)) %>% 
+  plot_ly(x = ~AAPL_x, 
+               y = ~AAPL_y, type = 'scatter', 
+               mode = 'lines', 
+               name = 'Share Prices (in USD)') %>% 
+  layout(title = 'Apple Share Prices over time (2014)',
+         plot_bgcolor='#e5ecf6',  
+         xaxis = list(  
+           title = 'Time',
+           zerolinecolor = '#ffff',  
+           zerolinewidth = 2,  
+           gridcolor = 'ffff'),  
+         yaxis = list(  
+           title = 'Apple Stock Price',
+           zerolinecolor = '#ffff',  
+           zerolinewidth = 2,  
+           gridcolor = 'ffff'),
+         showlegend = TRUE,
+         margin = c(5,5,5,5))
+
+```
+
+### Bars and Histograms
+
+```{r}
+#| label: fig-bar-chart
+#| fig-cap: Plotly Bar Chart
+#| fig-subcap: 
+#|   - Pre-computed Counts
+#|   - Chart-Computed Counts
+#| renderings: 
+#|   - light
+#|   - dark
+#| code-fold: true
+#| layout-ncol: 2
+
+penguins %>% drop_na() %>% 
+  dplyr::count(species, name = "count") %>% 
+  plot_ly() %>% 
+  add_bars(x = ~ species, y = ~ count, color = ~ species)
+
+penguins %>% drop_na() %>% 
+  # dplyr::count(species, name = "count") %>% 
+  plot_ly() %>% 
+  add_histogram(x = ~ species, color = ~ species)
+
+```
+
+```{r}
+#| label: fig-stacked-bar
+#| fig-cap: Stacked Bar Chart
+#| code-fold: true
+#| 
+# number of diamonds by cut and clarity (n)
+cc <- count(diamonds, cut, clarity)
+cc
+# number of diamonds by cut (nn)
+cc2 <- left_join(cc, count(cc, cut, wt = n, name = 'nn'))
+cc2
+
+cc2 %>%
+  mutate(prop = n / nn) %>%
+  plot_ly(x = ~cut, y = ~prop, color = ~clarity) %>%
+  add_bars() %>%
+  layout(barmode = "stack")
+```
+
+
+### Histogram and Density
+
+```{r}
+#| label: fig-histograms
+#| fig-cap: Histograms
+#| 
+plot_ly(diamonds, x = ~cut, color = ~clarity) %>%
+  add_histogram() %>% 
+  layout(title = "Diamond Prices",
+         autosize = TRUE,
+    margin = list(l = 50, r = 20, b = 20, t = 40, pad = 20))
+
+```
+
+
+### Box Plots
+
+```{r}
+#| label: fig-boxplots
+#| fig-cap: Boxplots for Diamond Prices (two subplots)
+#| 
+p <- plot_ly(diamonds, y = ~price, color = I("black"), 
+             alpha = 0.1, boxpoints = "suspectedoutliers")
+p1 <- p %>% add_boxplot(x = "Overall")
+p2 <- p %>% add_boxplot(x = ~cut, color = ~cut, fillcolor = ~ cut)
+subplot(
+  p1, p2, shareY = TRUE,
+  widths = c(0.2, 0.8), margin = 0.05
+) %>% hide_legend()
+
+```
+
+### Combo Chart
+
+### Maps
+
+
+## Basic of 3D charts in `{{plotly}}`
+
+
+### 3D Scatter
+```{r}
+#| label: fig-3D-scatter
+#| fig-cap: 3D Scatter Plot
+#| code-fold: true
+#| 
+plot_ly(penguins, x = ~flipper_len, y = ~bill_len, z = ~ body_mass) %>%
+  add_markers(color = ~ species) %>%
+  layout(
+    scene = list(
+      xaxis = list(title = "Flipper Length"),
+      yaxis = list(title = "Bill Length"),
+      zaxis = list(title = "Body Mass")
+    )
+  )
+```
+
+### 3D Surface
+
+
+```{r}
+#| label: fig-3d-surface
+#| fig-cap: 3D Gaussian RBF Surface
+#| code-fold: true
+#| 
+x0 <- 1
+y0 <- -0.5
+sigma <- 1
+
+x <- seq(-3, 3, length.out = 80)
+y <- seq(-3, 3, length.out = 80)
+grid <- expand.grid(x = x, y = y)
+
+grid$z <- exp(-(((grid$x - x0)^2 + (grid$y - y0)^2) / (2 * sigma^2)))
+
+z_matrix <- matrix(grid$z, nrow = length(x), ncol = length(y))
+
+plot_ly(
+  x = ~x,
+  y = ~y,
+  z = ~ z_matrix,
+  type = "surface",
+  colorscale = "Viridis"
+) %>%
+  layout(
+    title = list(
+      text = "3D Gaussian RBF Surface<br><span style='font-size: 14px;'>Centered at the [1,-0.5]</span>"
+    ),
+    scene = list(
+      xaxis = list(title = "x"),
+      yaxis = list(title = "y"),
+      zaxis = list(title = "phi(r)")
+    ),
+    autosize = TRUE,
+    margin = list(l = 20, r = 20, b = 40, t = 40, pad = 40)
+  )
+
+```
+
+### 3D Combo Chart
+And what exactly do you intend here, Arvind?
+
+## Customizing the `{{plotly}}` chart
+
+### Themes
+
+### Facets
+
+### Toolbar
+
+### Custom Popups
+
+### Animations
+
+
+## {{< iconify fluent-mdl2 decision-solid >}} Conclusion
+
+
+
+## {{< iconify ooui references-ltr >}} References
+
+1. The `gganimate` package. <https://gganimate.com/> 
+1. ROpenSci. *learngganimate* archive.  <https://github.com/ropensci-archive/learngganimate>
+
+
+
+::: {#refs style="font-size: 60%;"}
+###### {{< iconify lucide package-check >}} R Package Citations
+
+```{r}
+#| echo: false
+library(grateful)
+#scan_packages()
+cite_packages(
+  output = "table",
+  out.dir = ".",
+  out.format = "html",
+  pkgs = c("gganimate")) %>%
+  knitr::kable(format = "simple")
+
+```
+
+:::
+
+
