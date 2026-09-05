@@ -7,12 +7,12 @@
 <script src="../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-795e9e8eca1e12b12abcb09a27409631.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-12757e4b7af482b2d9c5bd8860d2b707.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script src="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.8.27">
+  <meta name="generator" content="quarto-1.10.18">
 
   <meta name="dcterms.date" content="2022-12-27">
   <title>The Mad Hatter's Guide to Data Viz and Stats in R –  Surveys</title>
@@ -22,10 +22,16 @@
   <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reveal.css">
   <style>
-    code{white-space: pre-wrap;}
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
@@ -101,7 +107,6 @@
     div.csl-bib-body { }
     div.csl-entry {
       clear: both;
-      margin-bottom: 0em;
     }
     .hanging-indent div.csl-entry {
       margin-left:2em;
@@ -118,7 +123,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/theme/quarto-180c62c9bcf69a0506044dd7f3253a18.css">
+  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/theme/quarto-7d27a531335543ee0379719666959585.css">
   <link href="../../../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -220,7 +225,7 @@
 <meta property="og:title" content=" Surveys – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:description" content="Surveys, Questions, and Responses">
 <meta property="og:image" content="https://madhatterguide.netlify.app/content/materials/images/rural-survey.jpg">
-<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
+<meta property="og:site_name" content="The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta name="twitter:title" content=" Surveys – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta name="twitter:description" content="Surveys, Questions, and Responses">
 <meta name="twitter:image" content="https://madhatterguide.netlify.app/content/materials/images/rural-survey.jpg">
@@ -262,155 +267,155 @@ Figure&nbsp;1: Rural Survey
 <section id="sec-setting-up-r-packages" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a></a><span class="fu">library</span>(mosaic) <span class="co"># Our trusted friend</span></span>
-<span id="cb1-3"><a></a><span class="fu">library</span>(skimr)</span>
-<span id="cb1-4"><a></a><span class="fu">library</span>(vcd) <span class="co"># Michael Friendly's package, Visualizing Categorical Data</span></span>
-<span id="cb1-5"><a></a><span class="fu">library</span>(vcdExtra) <span class="co"># Categorical Data Sets</span></span>
-<span id="cb1-6"><a></a><span class="fu">library</span>(resampledata) <span class="co"># More datasets</span></span>
-<span id="cb1-7"><a></a></span>
-<span id="cb1-8"><a></a><span class="fu">library</span>(ggstats) <span class="co"># Likert Scale Plots</span></span>
-<span id="cb1-9"><a></a><span class="fu">library</span>(labelled) <span class="co"># Creating Labelled Data for Likert Plots</span></span>
-<span id="cb1-10"><a></a><span class="fu">library</span>(sjPlot) <span class="co"># Another package for Likert Plots</span></span>
-<span id="cb1-11"><a></a></span>
-<span id="cb1-12"><a></a><span class="do">## Making Tables</span></span>
-<span id="cb1-13"><a></a><span class="fu">library</span>(kableExtra) <span class="co"># html styled tables</span></span>
-<span id="cb1-14"><a></a><span class="fu">library</span>(tinytable) <span class="co"># Elegant Tables for our data</span></span>
-<span id="cb1-15"><a></a><span class="fu">library</span>(DT) <span class="co"># Interactive Tables for our data</span></span>
-<span id="cb1-16"><a></a><span class="fu">library</span>(ggrepel)</span>
-<span id="cb1-17"><a></a><span class="fu">library</span>(marquee)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a aria-label="1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a aria-label="2"></a><span class="fu">library</span>(mosaic) <span class="co"># Our trusted friend</span></span>
+<span id="cb1-3"><a aria-label="3"></a><span class="fu">library</span>(skimr)</span>
+<span id="cb1-4"><a aria-label="4"></a><span class="fu">library</span>(vcd) <span class="co"># Michael Friendly's package, Visualizing Categorical Data</span></span>
+<span id="cb1-5"><a aria-label="5"></a><span class="fu">library</span>(vcdExtra) <span class="co"># Categorical Data Sets</span></span>
+<span id="cb1-6"><a aria-label="6"></a><span class="fu">library</span>(resampledata) <span class="co"># More datasets</span></span>
+<span id="cb1-7"><a aria-label="7"></a></span>
+<span id="cb1-8"><a aria-label="8"></a><span class="fu">library</span>(ggstats) <span class="co"># Likert Scale Plots</span></span>
+<span id="cb1-9"><a aria-label="9"></a><span class="fu">library</span>(labelled) <span class="co"># Creating Labelled Data for Likert Plots</span></span>
+<span id="cb1-10"><a aria-label="10"></a><span class="fu">library</span>(sjPlot) <span class="co"># Another package for Likert Plots</span></span>
+<span id="cb1-11"><a aria-label="11"></a></span>
+<span id="cb1-12"><a aria-label="12"></a><span class="do">## Making Tables</span></span>
+<span id="cb1-13"><a aria-label="13"></a><span class="fu">library</span>(kableExtra) <span class="co"># html styled tables</span></span>
+<span id="cb1-14"><a aria-label="14"></a><span class="fu">library</span>(tinytable) <span class="co"># Elegant Tables for our data</span></span>
+<span id="cb1-15"><a aria-label="15"></a><span class="fu">library</span>(DT) <span class="co"># Interactive Tables for our data</span></span>
+<span id="cb1-16"><a aria-label="16"></a><span class="fu">library</span>(ggrepel)</span>
+<span id="cb1-17"><a aria-label="17"></a><span class="fu">library</span>(marquee)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <h4 id="plot-fonts-and-theme">Plot Fonts and Theme</h4>
 <div class="cell" data-messages="false">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">library</span>(systemfonts)</span>
-<span id="cb2-2"><a></a><span class="fu">library</span>(showtext)</span>
-<span id="cb2-3"><a></a><span class="do">## Clean the slate</span></span>
-<span id="cb2-4"><a></a>systemfonts<span class="sc">::</span><span class="fu">clear_local_fonts</span>()</span>
-<span id="cb2-5"><a></a>systemfonts<span class="sc">::</span><span class="fu">clear_registry</span>()</span>
-<span id="cb2-6"><a></a><span class="do">##</span></span>
-<span id="cb2-7"><a></a><span class="fu">showtext_opts</span>(<span class="at">dpi =</span> <span class="dv">96</span>) <span class="co"># set DPI for showtext</span></span>
-<span id="cb2-8"><a></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
-<span id="cb2-9"><a></a>  <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-10"><a></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/Alegreya-Regular.ttf"</span>,</span>
-<span id="cb2-11"><a></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/Alegreya-Bold.ttf"</span>,</span>
-<span id="cb2-12"><a></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/Alegreya-Italic.ttf"</span>,</span>
-<span id="cb2-13"><a></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/Alegreya-BoldItalic.ttf"</span></span>
-<span id="cb2-14"><a></a>)</span>
-<span id="cb2-15"><a></a></span>
-<span id="cb2-16"><a></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
-<span id="cb2-17"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-18"><a></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Regular.ttf"</span>,</span>
-<span id="cb2-19"><a></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Bold.ttf"</span>,</span>
-<span id="cb2-20"><a></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Italic.ttf"</span>,</span>
-<span id="cb2-21"><a></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-BoldItalic.ttf"</span></span>
-<span id="cb2-22"><a></a>)</span>
-<span id="cb2-23"><a></a><span class="fu">showtext_auto</span>(<span class="at">enable =</span> <span class="cn">TRUE</span>) <span class="co"># enable showtext</span></span>
-<span id="cb2-24"><a></a><span class="do">##</span></span>
-<span id="cb2-25"><a></a>theme_custom <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb2-26"><a></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">10</span>) <span class="sc">+</span></span>
-<span id="cb2-27"><a></a></span>
-<span id="cb2-28"><a></a>    <span class="co"># theme(panel.widths = unit(11, "cm"),</span></span>
-<span id="cb2-29"><a></a>    <span class="co">#       panel.heights = unit(6.79, "cm")) + # Golden Ratio</span></span>
-<span id="cb2-30"><a></a></span>
-<span id="cb2-31"><a></a>    <span class="fu">theme</span>(</span>
-<span id="cb2-32"><a></a>      <span class="at">plot.margin =</span> <span class="fu">margin_auto</span>(<span class="at">t =</span> <span class="dv">1</span>, <span class="at">r =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="dv">1</span>, <span class="at">l =</span> <span class="dv">1</span>, <span class="at">unit =</span> <span class="st">"cm"</span>),</span>
-<span id="cb2-33"><a></a>      <span class="at">plot.background =</span> <span class="fu">element_rect</span>(</span>
-<span id="cb2-34"><a></a>        <span class="at">fill =</span> <span class="st">"bisque"</span>,</span>
-<span id="cb2-35"><a></a>        <span class="at">colour =</span> <span class="st">"black"</span>,</span>
-<span id="cb2-36"><a></a>        <span class="at">linewidth =</span> <span class="dv">1</span></span>
-<span id="cb2-37"><a></a>      )</span>
-<span id="cb2-38"><a></a>    ) <span class="sc">+</span></span>
-<span id="cb2-39"><a></a></span>
-<span id="cb2-40"><a></a>    <span class="fu">theme_sub_axis</span>(</span>
-<span id="cb2-41"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-42"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-43"><a></a>        <span class="at">size =</span> <span class="dv">10</span></span>
-<span id="cb2-44"><a></a>      ),</span>
-<span id="cb2-45"><a></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-46"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-47"><a></a>        <span class="at">size =</span> <span class="dv">8</span></span>
-<span id="cb2-48"><a></a>      )</span>
-<span id="cb2-49"><a></a>    ) <span class="sc">+</span></span>
-<span id="cb2-50"><a></a></span>
-<span id="cb2-51"><a></a>    <span class="fu">theme_sub_legend</span>(</span>
-<span id="cb2-52"><a></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-53"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-54"><a></a>        <span class="at">size =</span> <span class="dv">6</span></span>
-<span id="cb2-55"><a></a>      ),</span>
-<span id="cb2-56"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-57"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-58"><a></a>        <span class="at">size =</span> <span class="dv">8</span></span>
-<span id="cb2-59"><a></a>      )</span>
-<span id="cb2-60"><a></a>    ) <span class="sc">+</span></span>
-<span id="cb2-61"><a></a></span>
-<span id="cb2-62"><a></a>    <span class="fu">theme_sub_plot</span>(</span>
-<span id="cb2-63"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-64"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-65"><a></a>        <span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span></span>
-<span id="cb2-66"><a></a>      ),</span>
-<span id="cb2-67"><a></a>      <span class="at">title.position =</span> <span class="st">"plot"</span>,</span>
-<span id="cb2-68"><a></a>      <span class="at">subtitle =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-69"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-70"><a></a>        <span class="at">size =</span> <span class="dv">10</span></span>
-<span id="cb2-71"><a></a>      ),</span>
-<span id="cb2-72"><a></a>      <span class="at">caption =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-73"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-74"><a></a>        <span class="at">size =</span> <span class="dv">6</span></span>
-<span id="cb2-75"><a></a>      ),</span>
-<span id="cb2-76"><a></a>      <span class="at">caption.position =</span> <span class="st">"plot"</span></span>
-<span id="cb2-77"><a></a>    )</span>
-<span id="cb2-78"><a></a>}</span>
-<span id="cb2-79"><a></a></span>
-<span id="cb2-80"><a></a><span class="do">## Use available fonts in ggplot text geoms too!</span></span>
-<span id="cb2-81"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-82"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-83"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-84"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-85"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-86"><a></a>))</span>
-<span id="cb2-87"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-88"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-89"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-90"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-91"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-92"><a></a>))</span>
-<span id="cb2-93"><a></a></span>
-<span id="cb2-94"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"marquee"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-95"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-96"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-97"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-98"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-99"><a></a>))</span>
-<span id="cb2-100"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-101"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-102"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-103"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-104"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-105"><a></a>))</span>
-<span id="cb2-106"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-107"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-108"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-109"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-110"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-111"><a></a>))</span>
-<span id="cb2-112"><a></a></span>
-<span id="cb2-113"><a></a><span class="do">## Set the theme</span></span>
-<span id="cb2-114"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb2-115"><a></a></span>
-<span id="cb2-116"><a></a><span class="do">## tinytable options</span></span>
-<span id="cb2-117"><a></a><span class="fu">options</span>(<span class="st">"tinytable_tt_digits"</span> <span class="ot">=</span> <span class="dv">2</span>)</span>
-<span id="cb2-118"><a></a><span class="fu">options</span>(<span class="st">"tinytable_format_num_fmt"</span> <span class="ot">=</span> <span class="st">"significant_cell"</span>)</span>
-<span id="cb2-119"><a></a><span class="fu">options</span>(<span class="at">tinytable_html_mathjax =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-120"><a></a></span>
-<span id="cb2-121"><a></a></span>
-<span id="cb2-122"><a></a><span class="do">## Set defaults for flextable</span></span>
-<span id="cb2-123"><a></a>flextable<span class="sc">::</span><span class="fu">set_flextable_defaults</span>(<span class="at">font.family =</span> <span class="st">"Roboto Condensed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a aria-label="1"></a><span class="fu">library</span>(systemfonts)</span>
+<span id="cb2-2"><a aria-label="2"></a><span class="fu">library</span>(showtext)</span>
+<span id="cb2-3"><a aria-label="3"></a><span class="do">## Clean the slate</span></span>
+<span id="cb2-4"><a aria-label="4"></a>systemfonts<span class="sc">::</span><span class="fu">clear_local_fonts</span>()</span>
+<span id="cb2-5"><a aria-label="5"></a>systemfonts<span class="sc">::</span><span class="fu">clear_registry</span>()</span>
+<span id="cb2-6"><a aria-label="6"></a><span class="do">##</span></span>
+<span id="cb2-7"><a aria-label="7"></a><span class="fu">showtext_opts</span>(<span class="at">dpi =</span> <span class="dv">96</span>) <span class="co"># set DPI for showtext</span></span>
+<span id="cb2-8"><a aria-label="8"></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
+<span id="cb2-9"><a aria-label="9"></a>  <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-10"><a aria-label="10"></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/Alegreya-Regular.ttf"</span>,</span>
+<span id="cb2-11"><a aria-label="11"></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/Alegreya-Bold.ttf"</span>,</span>
+<span id="cb2-12"><a aria-label="12"></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/Alegreya-Italic.ttf"</span>,</span>
+<span id="cb2-13"><a aria-label="13"></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/Alegreya-BoldItalic.ttf"</span></span>
+<span id="cb2-14"><a aria-label="14"></a>)</span>
+<span id="cb2-15"><a aria-label="15"></a></span>
+<span id="cb2-16"><a aria-label="16"></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
+<span id="cb2-17"><a aria-label="17"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-18"><a aria-label="18"></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Regular.ttf"</span>,</span>
+<span id="cb2-19"><a aria-label="19"></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Bold.ttf"</span>,</span>
+<span id="cb2-20"><a aria-label="20"></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Italic.ttf"</span>,</span>
+<span id="cb2-21"><a aria-label="21"></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-BoldItalic.ttf"</span></span>
+<span id="cb2-22"><a aria-label="22"></a>)</span>
+<span id="cb2-23"><a aria-label="23"></a><span class="fu">showtext_auto</span>(<span class="at">enable =</span> <span class="cn">TRUE</span>) <span class="co"># enable showtext</span></span>
+<span id="cb2-24"><a aria-label="24"></a><span class="do">##</span></span>
+<span id="cb2-25"><a aria-label="25"></a>theme_custom <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb2-26"><a aria-label="26"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">10</span>) <span class="sc">+</span></span>
+<span id="cb2-27"><a aria-label="27"></a></span>
+<span id="cb2-28"><a aria-label="28"></a>    <span class="co"># theme(panel.widths = unit(11, "cm"),</span></span>
+<span id="cb2-29"><a aria-label="29"></a>    <span class="co">#       panel.heights = unit(6.79, "cm")) + # Golden Ratio</span></span>
+<span id="cb2-30"><a aria-label="30"></a></span>
+<span id="cb2-31"><a aria-label="31"></a>    <span class="fu">theme</span>(</span>
+<span id="cb2-32"><a aria-label="32"></a>      <span class="at">plot.margin =</span> <span class="fu">margin_auto</span>(<span class="at">t =</span> <span class="dv">1</span>, <span class="at">r =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="dv">1</span>, <span class="at">l =</span> <span class="dv">1</span>, <span class="at">unit =</span> <span class="st">"cm"</span>),</span>
+<span id="cb2-33"><a aria-label="33"></a>      <span class="at">plot.background =</span> <span class="fu">element_rect</span>(</span>
+<span id="cb2-34"><a aria-label="34"></a>        <span class="at">fill =</span> <span class="st">"bisque"</span>,</span>
+<span id="cb2-35"><a aria-label="35"></a>        <span class="at">colour =</span> <span class="st">"black"</span>,</span>
+<span id="cb2-36"><a aria-label="36"></a>        <span class="at">linewidth =</span> <span class="dv">1</span></span>
+<span id="cb2-37"><a aria-label="37"></a>      )</span>
+<span id="cb2-38"><a aria-label="38"></a>    ) <span class="sc">+</span></span>
+<span id="cb2-39"><a aria-label="39"></a></span>
+<span id="cb2-40"><a aria-label="40"></a>    <span class="fu">theme_sub_axis</span>(</span>
+<span id="cb2-41"><a aria-label="41"></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-42"><a aria-label="42"></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-43"><a aria-label="43"></a>        <span class="at">size =</span> <span class="dv">10</span></span>
+<span id="cb2-44"><a aria-label="44"></a>      ),</span>
+<span id="cb2-45"><a aria-label="45"></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-46"><a aria-label="46"></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-47"><a aria-label="47"></a>        <span class="at">size =</span> <span class="dv">8</span></span>
+<span id="cb2-48"><a aria-label="48"></a>      )</span>
+<span id="cb2-49"><a aria-label="49"></a>    ) <span class="sc">+</span></span>
+<span id="cb2-50"><a aria-label="50"></a></span>
+<span id="cb2-51"><a aria-label="51"></a>    <span class="fu">theme_sub_legend</span>(</span>
+<span id="cb2-52"><a aria-label="52"></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-53"><a aria-label="53"></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-54"><a aria-label="54"></a>        <span class="at">size =</span> <span class="dv">6</span></span>
+<span id="cb2-55"><a aria-label="55"></a>      ),</span>
+<span id="cb2-56"><a aria-label="56"></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-57"><a aria-label="57"></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-58"><a aria-label="58"></a>        <span class="at">size =</span> <span class="dv">8</span></span>
+<span id="cb2-59"><a aria-label="59"></a>      )</span>
+<span id="cb2-60"><a aria-label="60"></a>    ) <span class="sc">+</span></span>
+<span id="cb2-61"><a aria-label="61"></a></span>
+<span id="cb2-62"><a aria-label="62"></a>    <span class="fu">theme_sub_plot</span>(</span>
+<span id="cb2-63"><a aria-label="63"></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-64"><a aria-label="64"></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-65"><a aria-label="65"></a>        <span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span></span>
+<span id="cb2-66"><a aria-label="66"></a>      ),</span>
+<span id="cb2-67"><a aria-label="67"></a>      <span class="at">title.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb2-68"><a aria-label="68"></a>      <span class="at">subtitle =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-69"><a aria-label="69"></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-70"><a aria-label="70"></a>        <span class="at">size =</span> <span class="dv">10</span></span>
+<span id="cb2-71"><a aria-label="71"></a>      ),</span>
+<span id="cb2-72"><a aria-label="72"></a>      <span class="at">caption =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-73"><a aria-label="73"></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-74"><a aria-label="74"></a>        <span class="at">size =</span> <span class="dv">6</span></span>
+<span id="cb2-75"><a aria-label="75"></a>      ),</span>
+<span id="cb2-76"><a aria-label="76"></a>      <span class="at">caption.position =</span> <span class="st">"plot"</span></span>
+<span id="cb2-77"><a aria-label="77"></a>    )</span>
+<span id="cb2-78"><a aria-label="78"></a>}</span>
+<span id="cb2-79"><a aria-label="79"></a></span>
+<span id="cb2-80"><a aria-label="80"></a><span class="do">## Use available fonts in ggplot text geoms too!</span></span>
+<span id="cb2-81"><a aria-label="81"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-82"><a aria-label="82"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-83"><a aria-label="83"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-84"><a aria-label="84"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-85"><a aria-label="85"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-86"><a aria-label="86"></a>))</span>
+<span id="cb2-87"><a aria-label="87"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-88"><a aria-label="88"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-89"><a aria-label="89"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-90"><a aria-label="90"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-91"><a aria-label="91"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-92"><a aria-label="92"></a>))</span>
+<span id="cb2-93"><a aria-label="93"></a></span>
+<span id="cb2-94"><a aria-label="94"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"marquee"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-95"><a aria-label="95"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-96"><a aria-label="96"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-97"><a aria-label="97"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-98"><a aria-label="98"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-99"><a aria-label="99"></a>))</span>
+<span id="cb2-100"><a aria-label="100"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-101"><a aria-label="101"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-102"><a aria-label="102"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-103"><a aria-label="103"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-104"><a aria-label="104"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-105"><a aria-label="105"></a>))</span>
+<span id="cb2-106"><a aria-label="106"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-107"><a aria-label="107"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-108"><a aria-label="108"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-109"><a aria-label="109"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-110"><a aria-label="110"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-111"><a aria-label="111"></a>))</span>
+<span id="cb2-112"><a aria-label="112"></a></span>
+<span id="cb2-113"><a aria-label="113"></a><span class="do">## Set the theme</span></span>
+<span id="cb2-114"><a aria-label="114"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb2-115"><a aria-label="115"></a></span>
+<span id="cb2-116"><a aria-label="116"></a><span class="do">## tinytable options</span></span>
+<span id="cb2-117"><a aria-label="117"></a><span class="fu">options</span>(<span class="st">"tinytable_tt_digits"</span> <span class="ot">=</span> <span class="dv">2</span>)</span>
+<span id="cb2-118"><a aria-label="118"></a><span class="fu">options</span>(<span class="st">"tinytable_format_num_fmt"</span> <span class="ot">=</span> <span class="st">"significant_cell"</span>)</span>
+<span id="cb2-119"><a aria-label="119"></a><span class="fu">options</span>(<span class="at">tinytable_html_mathjax =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-120"><a aria-label="120"></a></span>
+<span id="cb2-121"><a aria-label="121"></a></span>
+<span id="cb2-122"><a aria-label="122"></a><span class="do">## Set defaults for flextable</span></span>
+<span id="cb2-123"><a aria-label="123"></a>flextable<span class="sc">::</span><span class="fu">set_flextable_defaults</span>(<span class="at">font.family =</span> <span class="st">"Roboto Condensed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div></section>
-<section id="inspiration" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069636f6e73382069646561203e7d7d-inspiration" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="icons8:idea" aria-label="Icon idea from icons8 Iconify.design set." title="Icon idea from icons8 Iconify.design set."></iconify-icon> Inspiration</h2>
 <div id="fig-machiavellism" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig">
@@ -427,7 +432,7 @@ Figure&nbsp;2: <a href="https://medium.com/orikami-blog/behind-the-screens-liker
 <p>Are there any surprises, peasants of Gantiganahalli?</p>
 </section>
 
-<section id="what-graphs-will-we-see-today" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666520626567696e6e6572203e7d7d-what-graphs-will-we-see-today" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="fe:beginner" aria-label="Icon beginner from fe Iconify.design set." title="Icon beginner from fe Iconify.design set."></iconify-icon> What graphs will we see today?</h2>
 <table class="caption-top" style="width:100%;">
 <colgroup>
@@ -455,15 +460,13 @@ Figure&nbsp;2: <a href="https://medium.com/orikami-blog/behind-the-screens-liker
 </table>
 </section>
 
-<section id="what-kind-of-data-variables-will-we-choose" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679207461626c6572207661726961626c65203e7d7d-what-kind-of-data-variables-will-we-choose" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="tabler:variable" aria-label="Icon variable from tabler Iconify.design set." title="Icon variable from tabler Iconify.design set."></iconify-icon> What kind of Data Variables will we choose?</h2>
 <div class="column-page-inset-right">
 <div class="cell">
 <div class="cell-output-display">
-<!-- preamble start -->
-
-    <!-- tinytable mathjax start -->
-    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- tinytable mathjax start -->
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script>
     MathJax = {
       tex: {
@@ -480,19 +483,19 @@ Figure&nbsp;2: <a href="https://medium.com/orikami-blog/behind-the-screens-liker
 
     <script>
       // Create table-specific functions using external factory
-      const tableFns_i4xbzzdj97bicofpaz03 = TinyTable.createTableFunctions("tinytable_i4xbzzdj97bicofpaz03");
+      const tableFns_c6t3piki32dzpbc4bep4 = TinyTable.createTableFunctions("tinytable_c6t3piki32dzpbc4bep4");
       // tinytable span after
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '1', j: 1 }, { i: '1', j: 2 }, { i: '1', j: 3 }, { i: '1', j: 4 }, { i: '1', j: 5 }, { i: '1', j: 6 } ], css_id: 'tinytable_css_xfnd45g5n2219l640lz3',}, 
-          { positions: [ { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 } ], css_id: 'tinytable_css_pjkx8nwpt6b19tt3h11s',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '1', j: 2 }, { i: '1', j: 3 }, { i: '1', j: 4 }, { i: '1', j: 5 }, { i: '1', j: 6 } ], css_id: 'tinytable_css_pejxxczka8r6pzrix5b8',}, 
+          { positions: [ { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 } ], css_id: 'tinytable_css_b734msvg1a5ielqb7zco',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  tableFns_i4xbzzdj97bicofpaz03.styleCell(cell.i, cell.j, group.css_id);
+                  tableFns_c6t3piki32dzpbc4bep4.styleCell(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -501,11 +504,11 @@ Figure&nbsp;2: <a href="https://medium.com/orikami-blog/behind-the-screens-liker
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.css">
     <style>
     /* tinytable css entries after */
-    #tinytable_i4xbzzdj97bicofpaz03 td.tinytable_css_xfnd45g5n2219l640lz3, #tinytable_i4xbzzdj97bicofpaz03 th.tinytable_css_xfnd45g5n2219l640lz3 {  position: relative; --border-bottom: 1; --border-left: 1; --border-right: 1; --border-top: 1; --line-color-bottom: white; --line-color-left: white; --line-color-right: white; --line-color-top: white; --line-width-bottom: 0.4em; --line-width-left: 0.4em; --line-width-right: 0.4em; --line-width-top: 0.4em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; font-size: 0.75em; color: black; background-color: #ededed }
-    #tinytable_i4xbzzdj97bicofpaz03 td.tinytable_css_pjkx8nwpt6b19tt3h11s, #tinytable_i4xbzzdj97bicofpaz03 th.tinytable_css_pjkx8nwpt6b19tt3h11s {  position: relative; --border-bottom: 1; --border-left: 1; --border-right: 1; --border-top: 1; --line-color-bottom: white; --line-color-left: white; --line-color-right: white; --line-color-top: white; --line-width-bottom: 0.4em; --line-width-left: 0.4em; --line-width-right: 0.4em; --line-width-top: 0.4em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; font-size: 0.75em; color: black }
+    #tinytable_c6t3piki32dzpbc4bep4 td.tinytable_css_pejxxczka8r6pzrix5b8, #tinytable_c6t3piki32dzpbc4bep4 th.tinytable_css_pejxxczka8r6pzrix5b8 {  position: relative; --border-bottom: 1; --border-left: 1; --border-right: 1; --border-top: 1; --line-color-bottom: white; --line-color-left: white; --line-color-right: white; --line-color-top: white; --line-width-bottom: 0.4em; --line-width-left: 0.4em; --line-width-right: 0.4em; --line-width-top: 0.4em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; font-size: 0.75em; color: black; background-color: #ededed }
+    #tinytable_c6t3piki32dzpbc4bep4 td.tinytable_css_b734msvg1a5ielqb7zco, #tinytable_c6t3piki32dzpbc4bep4 th.tinytable_css_b734msvg1a5ielqb7zco {  position: relative; --border-bottom: 1; --border-left: 1; --border-right: 1; --border-top: 1; --line-color-bottom: white; --line-color-left: white; --line-color-right: white; --line-color-top: white; --line-width-bottom: 0.4em; --line-width-left: 0.4em; --line-width-right: 0.4em; --line-width-top: 0.4em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; font-size: 0.75em; color: black }
     </style>
     <div class="container">
-      <table class="tinytable" id="tinytable_i4xbzzdj97bicofpaz03" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="tinytable" id="tinytable_c6t3piki32dzpbc4bep4" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         
         <thead>
               <tr>
@@ -536,7 +539,7 @@ Figure&nbsp;2: <a href="https://medium.com/orikami-blog/behind-the-screens-liker
 </div>
 </section>
 
-<section id="how-do-these-charts-work" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d646920666f6f642d70726f636573736f722d6f75746c696e65203e7d7d-how-do-these-charts-work" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="mdi:food-processor-outline" aria-label="Icon food-processor-outline from mdi Iconify.design set." title="Icon food-processor-outline from mdi Iconify.design set."></iconify-icon> How do these Chart(s) Work?</h2>
 <p>In many business and design situations, we perform say <em>customer surveys</em> to get <a href="https://www.simplypsychology.org/likert-scale.html">Likert Scale</a> data, where several respondents rate a product or a service on a scale of <code>Very much like</code>, <code>somewhat like</code>, <code>neutral</code>, <code>Dislike</code> and <code>Very much dislike,</code> for example. These are then plotted in a chart to get a distribution of opinions for each question in the survey. Some examples of Likert Scales are shown below.</p>
 <div id="fig-likert-scales" class="quarto-float quarto-figure quarto-figure-center">
@@ -552,12 +555,12 @@ Figure&nbsp;3: Likert Scale Questionnaire Samples
 <p>As seen, we can use Likert Scale based questionnaire for a variety of aspects in our survey instruments.</p>
 </section>
 
-<section id="plots-for-survey-data" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e74206c696b6572742d31362d726567756c6172203e7d7d-plots-for-survey-data" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="fluent:likert-16-regular" aria-label="Icon likert-16-regular from fluent Iconify.design set." title="Icon likert-16-regular from fluent Iconify.design set."></iconify-icon> Plots for Survey Data</h2>
 <p>How does this data look like, and how does one plot it? Let us consider a fictitious example, followed by a real world dataset.</p>
 </section>
 
-<section id="case-study-1-a-fictitious-app-survey-dataset" class="title-slide slide level2 center scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792067726f6d6d65742d69636f6e732074657374203e7d7d-case-study-1-a-fictitious-app-survey-dataset" class="title-slide slide level2 center scrollable">
 <h2><iconify-icon inline="" icon="grommet-icons:test" aria-label="Icon test from grommet-icons Iconify.design set." title="Icon test from grommet-icons Iconify.design set."></iconify-icon> Case Study-1: A fictitious app Survey dataset</h2>
 <div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
@@ -691,7 +694,7 @@ Figure&nbsp;4: Likert Plot for the User Survey for QuickEZ
 <p>Based on this chart, since it looks like about 40% the survey respondents have not heard of our app, we need more publicity, and many do not find it easy to use 😿, so we have serious re-design and user testing to do !! But at least those who have managed to get past the hurdles are stating they will continue to use the app, so it does the job, but we can make it easier to use.</p>
 </section>
 
-<section id="case-study-2-eurofam-survey-dataset" class="title-slide slide level2 center scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792067726f6d6d65742d69636f6e732074657374203e7d7d-case-study-2-eurofam-survey-dataset" class="title-slide slide level2 center scrollable">
 <h2><iconify-icon inline="" icon="grommet-icons:test" aria-label="Icon test from grommet-icons Iconify.design set." title="Icon test from grommet-icons Iconify.design set."></iconify-icon> Case Study-2: EUROFAM Survey dataset</h2>
 <p>Here is another example of Likert data from the <em>healthcare industry</em>.</p>
 <p><code>efc</code> is a German data set from a European study titled <a href="https://doi.org/10.1093/geront/48.6.752"><strong>EUROFAM study</strong></a>, on <em>family care of older people</em>. Following a common protocol, data were collected from national samples of approximately 1,000 family carers (i.e.&nbsp;caregivers) per country and clustered into comparable subgroups to facilitate cross-national analysis. The <em>research questions</em> in <a href="https://doi.org/10.1093/geront/48.6.752"><strong>this EUROFAM study</strong></a> were:</p>
@@ -703,8 +706,8 @@ Figure&nbsp;4: Likert Plot for the User Survey for QuickEZ
 </ol>
 <p>We will select the variables from the <code>efc</code> data set that related to <em>coping</em> (on part of care-givers) and plot their responses after inspecting them:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">data</span>(efc, <span class="at">package =</span> <span class="st">"sjPlot"</span>)</span>
-<span id="cb4-2"><a></a><span class="fu">glimpse</span>(efc)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a aria-label="1"></a><span class="fu">data</span>(efc, <span class="at">package =</span> <span class="st">"sjPlot"</span>)</span>
+<span id="cb4-2"><a aria-label="2"></a><span class="fu">glimpse</span>(efc)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 908
 Columns: 26
@@ -736,13 +739,13 @@ $ n4pstu   &lt;dbl&gt; 0, 0, 2, 3, 2, 2, 3, 1, 3, 3, 3, 1, 3, 1, 0, 0, 0, 2, 1, 
 $ nur_pst  &lt;dbl&gt; NA, NA, 2, 3, 2, 2, 3, 1, 3, 3, 3, 1, 3, 1, NA, NA, NA, 2, 1,…</code></pre>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>efc <span class="sc">%&gt;%</span></span>
-<span id="cb6-2"><a></a>  <span class="fu">select</span>(dplyr<span class="sc">::</span><span class="fu">contains</span>(<span class="st">"cop"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb6-3"><a></a>  <span class="fu">head</span>(<span class="dv">20</span>)</span>
-<span id="cb6-4"><a></a><span class="do">##</span></span>
-<span id="cb6-5"><a></a>efc <span class="sc">%&gt;%</span></span>
-<span id="cb6-6"><a></a>  <span class="fu">select</span>(dplyr<span class="sc">::</span><span class="fu">contains</span>(<span class="st">"cop"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb6-7"><a></a>  <span class="fu">str</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a aria-label="1"></a>efc <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a aria-label="2"></a>  <span class="fu">select</span>(dplyr<span class="sc">::</span><span class="fu">contains</span>(<span class="st">"cop"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a aria-label="3"></a>  <span class="fu">head</span>(<span class="dv">20</span>)</span>
+<span id="cb6-4"><a aria-label="4"></a><span class="do">##</span></span>
+<span id="cb6-5"><a aria-label="5"></a>efc <span class="sc">%&gt;%</span></span>
+<span id="cb6-6"><a aria-label="6"></a>  <span class="fu">select</span>(dplyr<span class="sc">::</span><span class="fu">contains</span>(<span class="st">"cop"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-7"><a aria-label="7"></a>  <span class="fu">str</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell column-body-outset-right quarto-layout-panel" data-layout-nrow="2">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
@@ -814,7 +817,7 @@ Figure&nbsp;5: Likert Plot for the User Survey for EUROFAM Healthcare Dataset
 <p>Many questions here have strong <em>negative</em> responses. This may indicate that policy and publicity related efforts may be required.</p>
 </section>
 
-<section id="labelled-data" class="title-slide slide level2 center scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d656d6f6a69206c6162656c203e7d7d-labelled-data" class="title-slide slide level2 center scrollable">
 <h2><iconify-icon inline="" icon="fluent-emoji:label" aria-label="Icon label from fluent-emoji Iconify.design set." title="Icon label from fluent-emoji Iconify.design set."></iconify-icon> Labelled Data</h2>
 <p>Note how the y-axis has been populated with <strong>Survey Questions</strong>: this is an example of a <em>labelled dataset</em>, where not only do the variables have <em>names</em> i.e.&nbsp;column names, but also have longish text <strong>labels</strong> that add information to the data variables. The <strong>data values</strong> ( i.e scores) in the columns is also <strong>labelled</strong> as per the the Likert scale (<code>Like/Dislike/Strongly Dislike</code> OR <code>never/sometimes/often/always</code>) etc. These <strong>Likert scores</strong> are usually a set of contiguous integers.</p>
 <div class="callout callout-note callout-titled callout-style-default">
@@ -880,7 +883,7 @@ Figure&nbsp;7: Likert Plot for Do You Use R Survey
 <p>There are a few other plots with this type of data, which are useful in very specialized circumstances. One example of this is the <code>agreement plot</code><sup>5</sup> which captures the agreement between two (sets) of evaluators, on ratings given on a shared ordinal scale to a set of items. An example from the field of medical diagnosis is the opinions of two specialists on a common set of patients. However, that is for a more advanced course!</p>
 <aside><ol class="aside-footnotes"><li id="fn1"><p>Piping Hot Data: Leveraging Labelled Data in R, <a href="https://www.pipinghotdata.com/posts/2020-12-23-leveraging-labelled-data-in-r/" class="uri">https://www.pipinghotdata.com/posts/2020-12-23-leveraging-labelled-data-in-r/</a></p></li><li id="fn2"><p>Introduction to <code>labelled</code>:<a href="https://larmarange.github.io/labelled/articles/intro_labelled.html#using-labelled-with-dplyrmagrittr" class="uri">https://larmarange.github.io/labelled/articles/intro_labelled.html#using-labelled-with-dplyrmagrittr</a></p></li><li id="fn3"><p>Label Support in R:<a href="https://cran.r-project.org/web/packages/sjlabelled/index.html" class="uri">https://cran.r-project.org/web/packages/sjlabelled/index.html</a></p></li><li id="fn4"><p>Using the <code>labelr</code> package: <a href="https://cran.r-project.org/web/packages/labelr/vignettes/labelr-introduction.html" class="uri">https://cran.r-project.org/web/packages/labelr/vignettes/labelr-introduction.html</a></p></li><li id="fn5"><p>Bangdiwala, S.I., Shankar, V. The agreement chart. BMC Med Res Methodol 13, 97 (2013). https://doi.org/10.1186/1471-2288-13-97</p></li></ol></aside></section>
 
-<section id="wait-but-why" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="mingcute:thought-line" aria-label="Icon thought-line from mingcute Iconify.design set." title="Icon thought-line from mingcute Iconify.design set."></iconify-icon> Wait, But Why?</h2>
 <ul>
 <li>Likert plots are like stacked bar-charts aligned horizontally, back to back <iconify-icon inline="" icon="noto:open-hands-medium-skin-tone" style="font-size: 3em;" aria-label="Icon open-hands-medium-skin-tone from noto Iconify.design set." title="Icon open-hands-medium-skin-tone from noto Iconify.design set."></iconify-icon>. They are useful to indicate aspects like opinion, belief, and habits.</li>
@@ -889,13 +892,13 @@ Figure&nbsp;7: Likert Plot for Do You Use R Survey
 </ul>
 </section>
 
-<section id="conclusion" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusion</h2>
 <p>Likert Plots for Survey data are not too different from Bar Plots; we can view the Likert Charts as a set of stacked bar charts, based on Likert-scale response counts. At a pinch we can make a Likert Plot with vanilla bar graphs, but the elegance and power of the <code>{ggstat}</code> package is undeniable. The packages <code>{sjPlot}</code> and <code>{sjlabelled}</code> also feature a <code>plot_likert</code> graphing function which is very elegant too.</p>
 <p>The package <code>{sjstats}</code> provides the tools to analyze survey data. There is also a more recent package called <code>{surveydown}</code>, which I need to investigate. And <code>{srvyr}</code> and <code>{survey}</code>. Sigh.</p>
 </section>
 
-<section id="your-turn" class="title-slide slide level2 center scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a6920706572736f6e203e7d7d-your-turn" class="title-slide slide level2 center scrollable">
 <h2><iconify-icon inline="" icon="openmoji:person" aria-label="Icon person from openmoji Iconify.design set." title="Icon person from openmoji Iconify.design set."></iconify-icon> Your Turn</h2>
 <ol type="1">
 <li><p>Take some of the categorical datasets from the <code>{vcd}</code> and <code>{vcdExtra}</code> packages and recreate the plots from this module. Go to <a href="https://vincentarelbundock.github.io/Rdatasets/articles/data.html" class="uri">https://vincentarelbundock.github.io/Rdatasets/articles/data.html</a> and type “vcd” in the <code>search</code> box. You can directly load CSV files from there, using <code>read_csv("url-to-csv")</code>.</p></li>
@@ -907,7 +910,7 @@ Figure&nbsp;7: Likert Plot for Do You Use R Survey
 </ol>
 </section>
 
-<section id="references" class="title-slide slide level2 center scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d6c7472203e7d7d-references" class="title-slide slide level2 center scrollable">
 <h2><iconify-icon inline="" icon="ooui:references-ltr" aria-label="Icon references-ltr from ooui Iconify.design set." title="Icon references-ltr from ooui Iconify.design set."></iconify-icon> References</h2>
 <ol type="1">
 <li>Winston Chang (2024). <em>R Graphics Cookbook</em>. <a href="https://r-graphics.org" class="uri">https://r-graphics.org</a></li>
@@ -922,7 +925,7 @@ Figure&nbsp;7: Likert Plot for Do You Use R Survey
 </section>
 
 <section>
-<section id="additional-readings" class="title-slide slide level2 center scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e6520626f6f6b2d72656164696e67203e7d7d-additional-readings" class="title-slide slide level2 center scrollable">
 <h2><iconify-icon inline="" icon="streamline:book-reading" aria-label="Icon book-reading from streamline Iconify.design set." title="Icon book-reading from streamline Iconify.design set."></iconify-icon> Additional Readings</h2>
 <ol type="1">
 <li>Daniel Lüdecke. (2024-05-13). <em>Plotting Likert Scales with sjPlot</em>. <a href="https://cran.r-project.org/web/packages/sjPlot/vignettes/plot_likert_scales.html" class="uri">https://cran.r-project.org/web/packages/sjPlot/vignettes/plot_likert_scales.html</a></li>
@@ -932,8 +935,8 @@ Figure&nbsp;7: Likert Plot for Do You Use R Survey
 <li>Stephanie Zimmer, Rebecca Powell, Isabella Velasquez (Aug 2025). <em>Complex Survey Data Analysis: A Tidy Introduction with {srvyr} and {survey}</em>. <a href="https://tidy-survey-r.github.io/user-2025-survey-data-tutorial" class="uri">https://tidy-survey-r.github.io/user-2025-survey-data-tutorial</a>. useR! 2025 tutorial held at Duke University, August 2025.</li>
 </ol>
 </section>
-<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" data-entry-spacing="0" role="list">
-<h6 id="r-package-citations"><iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
+<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" role="list">
+<h6 id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c7563696465207061636b6167652d636865636b203e7d7d-r-package-citations"><iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
 <div class="cell">
 <div class="cell-output-display">
 <table class="caption-top">
@@ -947,13 +950,13 @@ Figure&nbsp;7: Likert Plot for Do You Use R Survey
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">ggstats</td>
-<td style="text-align: left;">0.13.0</td>
-<td style="text-align: left;"><span class="citation" data-cites="ggstats">Larmarange (<a href="" role="doc-biblioref" onclick="return false;">2026</a>)</span></td>
+<td style="text-align: left;">0.14.0</td>
+<td style="text-align: left;"><span class="citation" data-cites="ggstats">Larmarange (<a href="" role="doc-biblioref" onclick="return false;">2026a</a>)</span></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">labelled</td>
-<td style="text-align: left;">2.16.0</td>
-<td style="text-align: left;"><span class="citation" data-cites="labelled">Larmarange (<a href="" role="doc-biblioref" onclick="return false;">2025</a>)</span></td>
+<td style="text-align: left;">2.16.1</td>
+<td style="text-align: left;"><span class="citation" data-cites="labelled">Larmarange (<a href="" role="doc-biblioref" onclick="return false;">2026b</a>)</span></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">sjPlot</td>
@@ -964,11 +967,11 @@ Figure&nbsp;7: Likert Plot for Do You Use R Survey
 </table>
 </div>
 </div>
-<div id="ref-labelled" class="csl-entry" role="listitem">
-Larmarange, Joseph. 2025. <em><span class="nocase">labelled</span>: Manipulating Labelled Data</em>. <a href="https://doi.org/10.32614/CRAN.package.labelled">https://doi.org/10.32614/CRAN.package.labelled</a>.
-</div>
 <div id="ref-ggstats" class="csl-entry" role="listitem">
-———. 2026. <em><span class="nocase">ggstats</span>: Extension to <span>“<span class="nocase">ggplot2</span>”</span> for Plotting Stats</em>. <a href="https://doi.org/10.32614/CRAN.package.ggstats">https://doi.org/10.32614/CRAN.package.ggstats</a>.
+Larmarange, Joseph. 2026a. <em><span class="nocase">ggstats</span>: Extension to <span>“<span class="nocase">ggplot2</span>”</span> for Plotting Stats</em>. <a href="https://doi.org/10.32614/CRAN.package.ggstats">https://doi.org/10.32614/CRAN.package.ggstats</a>.
+</div>
+<div id="ref-labelled" class="csl-entry" role="listitem">
+Larmarange, Joseph. 2026b. <em><span class="nocase">labelled</span>: Manipulating Labelled Data</em>. <a href="https://doi.org/10.32614/CRAN.package.labelled">https://doi.org/10.32614/CRAN.package.labelled</a>.
 </div>
 <div id="ref-sjPlot" class="csl-entry" role="listitem">
 Lüdecke, Daniel. 2025. <em><span class="nocase">sjPlot</span>: Data Visualization for Statistics in Social Science</em>. <a href="https://CRAN.R-project.org/package=sjPlot">https://CRAN.R-project.org/package=sjPlot</a>.
@@ -1013,7 +1016,6 @@ Lüdecke, Daniel. 2025. <em><span class="nocase">sjPlot</span>: Data Visualizati
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
 'jumpToSlide': true,
-'view': "scroll",
 'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
 'chalkboard': {"buttons":true},
 'smaller': true,
@@ -1157,6 +1159,13 @@ Lüdecke, Daniel. 2025. <em><span class="nocase">sjPlot</span>: Data Visualizati
         // devices. It is advisable to set this to a lower number than
         // viewDistance in order to save resources.
         mobileViewDistance: 2,
+
+        // Enable scroll view
+        view: 'scroll',
+        scrollProgress: 'auto',
+        scrollActivationWidth: 0,
+        scrollSnap: 'mandatory',
+        scrollLayout: 'full',
 
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be

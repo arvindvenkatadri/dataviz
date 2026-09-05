@@ -2,15 +2,21 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.10.18">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="dcterms.date" content="2022-11-27">
 <title>Basics of Randomization Tests – The Mad Hatter’s Guide to Data Viz and Stats in R</title>
 <style>
-code{white-space: pre-wrap;}
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -67,15 +73,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../../../../../content/materials/icon-park-twotone--concept-sharing.svg" rel="icon" type="image/svg+xml">
 <script src="../../../../../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../../../../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../../../../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-795e9e8eca1e12b12abcb09a27409631.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-12757e4b7af482b2d9c5bd8860d2b707.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../../../../site_libs/bootstrap/bootstrap-f98024d38ba10b6a495c0c63f82dd59d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../../../site_libs/bootstrap/bootstrap-399a7021ca91a6069b26050344c551bc.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="../../../../../../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.css" rel="stylesheet">
 <script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script src="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
@@ -109,7 +114,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script><style>html{ scroll-behavior: smooth; }</style>
 <link href="../../../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="../../../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+<script src="../../../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script><script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script><script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+<script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -142,7 +161,7 @@ window.Quarto = {
 <meta property="og:title" content="Basics of Randomization Tests – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:description" content="What is meant by a Randomization Test?">
 <meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/20-Inference/Modules/60-SimTest/preview.jpg">
-<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
+<meta property="og:site_name" content="The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:image:alt" content="Photo by Pixabay: https://www.pexels.com/photo/white-and-yellow-playing-cards-39018/">
 <meta name="twitter:title" content="Basics of Randomization Tests – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta name="twitter:description" content="What is meant by a Randomization Test?">
@@ -750,7 +769,7 @@ window.Quarto = {
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#setting-up-r-packages" id="toc-setting-up-r-packages" class="nav-link active" data-scroll-target="#setting-up-r-packages"><span class="header-section-number">1</span> <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R packages</a></li>
+<li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="nav-link active" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages"><span class="header-section-number">1</span> <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R packages</a></li>
   <li>
 <a href="#introduction-the-lady-who-drank-tea" id="toc-introduction-the-lady-who-drank-tea" class="nav-link" data-scroll-target="#introduction-the-lady-who-drank-tea"><span class="header-section-number">2</span> Introduction: The Lady who Drank Tea</a>
   <ul class="collapse">
@@ -790,7 +809,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">August 2, 2026</p>
+      <p class="date-modified">September 5, 2026</p>
     </div>
   </div>
     
@@ -809,7 +828,7 @@ window.Quarto = {
 <figure class="figure"><p><a href="preview.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="preview.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Pick a Card" width="286"></a></p>
 </figure>
 </div>
-<section id="setting-up-r-packages" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="setting-up-r-packages">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages">
 <span class="header-section-number">1</span> <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R packages</h2>
 <div class="cell">
 <details class="code-fold"><summary>Show the Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
@@ -1016,13 +1035,13 @@ Figure&nbsp;1: Modelling Cups of Tea with Coin Flips
 </div>
 </div>
 </div>
-<p>So what do we conclude? It is possible that the lady could get 9 or 10 correct just by guessing, but it is not very likely (it only happened in about <span class="math inline">\(\frac{97+8}{10000} = 1.05\%\)</span> of our simulations). So one of two things must be true:</p>
+<p>So what do we conclude? It is possible that the lady could get 9 or 10 correct just by guessing, but it is not very likely (it only happened in about <span class="math inline">\frac{97+8}{10000} = 1.05\%</span> of our simulations). So one of two things must be true:</p>
 <p>• The lady got unusually “lucky”, by chance; OR<br>
 • The lady is not just guessing and really has some ability in this regard.</p>
 </section></section><section id="commentary" class="level2" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="commentary">
 <span class="header-section-number">3</span> Commentary</h2>
 <ul>
-<li><p>First we realize something is <strong>surprising</strong>, and then we have a <strong>question</strong> or <strong>doubt</strong>. This is based on something we see, or measure, a <strong>test statistic</strong>. In our story, it is the <strong>score</strong> of <span class="math inline">\(10/10\)</span> that the Lady was able to achieve about how the Tea was made.</p></li>
+<li><p>First we realize something is <strong>surprising</strong>, and then we have a <strong>question</strong> or <strong>doubt</strong>. This is based on something we see, or measure, a <strong>test statistic</strong>. In our story, it is the <strong>score</strong> of <span class="math inline">10/10</span> that the Lady was able to achieve about how the Tea was made.</p></li>
 <li><p>We then <strong>assume</strong> the Lady is guessing <em>and</em> somehow <strong>by chance</strong> able to guess correctly. This would be our….<strong>NULL Hypothesis</strong>. This is our (conservative) <em>belief</em> about the <strong>Real World</strong>.</p></li>
 <li><p>We then <em>randomly generate</em> many <strong>Parallel Counterfactual Worlds</strong>, where we repeat the experiment many many times, each time calculating the <em>test statistic</em>, under the <em>assumption</em> of the NULL Hypothesis is TRUE.</p></li>
 <li><p>We see how often our <em>Parallel Worlds</em> can mimic or exceed <em>Real World</em> measurement of the the <em>test statistic</em> by comparison. If this is common (i.e.&nbsp;probability is high) we say we cannot reject the NULL Hypothesis (and the Lady is lucky). If the occurrence is rare, as in our case, we say we have reason to reject the NULL Hypothesis and reason to believe an underlying pattern (and Lady’s ability is beyond <strong>Question</strong> !)</p></li>
@@ -1046,7 +1065,7 @@ Figure&nbsp;2: Simulation Test Schematic
 <li>
 <p>Draw a conclusion.</p>
 <p>In a traditional introductory statistics course, once this general framework has been mastered, the main work is in <strong>applying the correct formula</strong> to compute the standard test statistics in step 2 and using a table or computer to <strong>determine the p-value</strong> based on the known (usually approximate) <strong>theoretical distribution of the test statistic</strong> under the null hypothesis.</p>
-<p>In a <strong>simulation-based approach</strong>, steps 2 and 3 change. In Step 2, it is no longer required that the test statistic be normalized to conform with a known, named distribution. Instead, natural test statistics, like the difference between two sample means <span class="math inline">\(y1 − y2\)</span> can be used.</p>
+<p>In a <strong>simulation-based approach</strong>, steps 2 and 3 change. In Step 2, it is no longer required that the test statistic be normalized to conform with a known, named distribution. Instead, natural test statistics, like the difference between two sample means <span class="math inline">y1 − y2</span> can be used.</p>
 <p>In Step 3, we use <strong>randomization to approximate the sampling distribution of the test statistic</strong>. Our lady tasting tea example demonstrates how this can be done from first principles. More typically, we will use randomization <strong>to create new simulated data sets</strong> ( “<em>Parallel Worlds</em>”) that are like our original data in some ways, but make the null hypothesis true. For each simulated data set, we calculate our test statistic, just as we did for the original sample. Together, this collection of test statistics computed from the simulated samples constitute our randomization distribution.</p>
 <p>When creating a randomization distribution, we will attempt to satisfy 3 guiding principles.</p>
 </li>

@@ -2,15 +2,21 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.10.18">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="dcterms.date" content="2023-04-13">
 <title>Modelling with Logistic Regression – The Mad Hatter’s Guide to Data Viz and Stats in R</title>
 <style>
-code{white-space: pre-wrap;}
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -57,7 +63,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
-  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -87,15 +92,14 @@ div.csl-indent {
 <link href="../../../../../../content/materials/icon-park-twotone--concept-sharing.svg" rel="icon" type="image/svg+xml">
 <script src="../../../../../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../../../../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../../../../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-795e9e8eca1e12b12abcb09a27409631.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-12757e4b7af482b2d9c5bd8860d2b707.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../../../../site_libs/bootstrap/bootstrap-f98024d38ba10b6a495c0c63f82dd59d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../../../site_libs/bootstrap/bootstrap-399a7021ca91a6069b26050344c551bc.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="../../../../../../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.css" rel="stylesheet">
 <script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script src="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
@@ -129,7 +133,21 @@ div.csl-indent {
   }
 }</script><style>html{ scroll-behavior: smooth; }</style>
 <link href="../../../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="../../../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+<script src="../../../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script><script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script><script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+<script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -162,7 +180,7 @@ window.Quarto = {
 <meta property="og:title" content="Modelling with Logistic Regression – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:description" content="Predicting Qualitative Target Variables">
 <meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/30-Modelling/Modules/30-LogReg/featured.png">
-<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
+<meta property="og:site_name" content="The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:image:height" content="1667">
 <meta property="og:image:width" content="2459">
 <meta name="twitter:title" content="Modelling with Logistic Regression – The Mad Hatter’s Guide to Data Viz and Stats in R">
@@ -772,22 +790,22 @@ window.Quarto = {
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#setting-up-r-packages" id="toc-setting-up-r-packages" class="nav-link active" data-scroll-target="#setting-up-r-packages"><span class="header-section-number">1</span> <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</a></li>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction"><span class="header-section-number">2</span> <iconify-icon inline="" icon="openmoji:japanese-symbol-for-beginner" aria-label="Icon japanese-symbol-for-beginner from openmoji Iconify.design set." title="Icon japanese-symbol-for-beginner from openmoji Iconify.design set."></iconify-icon> Introduction</a></li>
+<li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="nav-link active" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages"><span class="header-section-number">1</span> <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction"><span class="header-section-number">2</span> <iconify-icon inline="" icon="openmoji:japanese-symbol-for-beginner" aria-label="Icon japanese-symbol-for-beginner from openmoji Iconify.design set." title="Icon japanese-symbol-for-beginner from openmoji Iconify.design set."></iconify-icon> Introduction</a></li>
   <li>
-<a href="#the-logistic-regression-model" id="toc-the-logistic-regression-model" class="nav-link" data-scroll-target="#the-logistic-regression-model"><span class="header-section-number">3</span> <iconify-icon inline="" icon="radix-icons:box-model" aria-label="Icon box-model from radix-icons Iconify.design set." title="Icon box-model from radix-icons Iconify.design set."></iconify-icon> The Logistic Regression Model</a>
+<a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792072616469782d69636f6e7320626f782d6d6f64656c203e7d7d-the-logistic-regression-model" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792072616469782d69636f6e7320626f782d6d6f64656c203e7d7d-the-logistic-regression-model" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792072616469782d69636f6e7320626f782d6d6f64656c203e7d7d-the-logistic-regression-model"><span class="header-section-number">3</span> <iconify-icon inline="" icon="radix-icons:box-model" aria-label="Icon box-model from radix-icons Iconify.design set." title="Icon box-model from radix-icons Iconify.design set."></iconify-icon> The Logistic Regression Model</a>
   <ul class="collapse">
 <li><a href="#linear-models-for-categorical-targets" id="toc-linear-models-for-categorical-targets" class="nav-link" data-scroll-target="#linear-models-for-categorical-targets"><span class="header-section-number">3.1</span> Linear Models for Categorical Targets?</a></li>
-  <li><a href="#problemsand-solutions" id="toc-problemsand-solutions" class="nav-link" data-scroll-target="#problemsand-solutions"><span class="header-section-number">3.2</span> <iconify-icon inline="" icon="ic:baseline-report-problem" aria-label="Icon baseline-report-problem from ic Iconify.design set." title="Icon baseline-report-problem from ic Iconify.design set."></iconify-icon><iconify-icon inline="" icon="ant-design:solution-outlined" aria-label="Icon solution-outlined from ant-design Iconify.design set." title="Icon solution-outlined from ant-design Iconify.design set."></iconify-icon> Problems…and Solutions</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920696320626173656c696e652d7265706f72742d70726f626c656d203e7d7d-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920616e742d64657369676e20736f6c7574696f6e2d6f75746c696e6564203e7d7d-problemsand-solutions" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920696320626173656c696e652d7265706f72742d70726f626c656d203e7d7d-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920616e742d64657369676e20736f6c7574696f6e2d6f75746c696e6564203e7d7d-problemsand-solutions" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920696320626173656c696e652d7265706f72742d70726f626c656d203e7d7d-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920616e742d64657369676e20736f6c7574696f6e2d6f75746c696e6564203e7d7d-problemsand-solutions"><span class="header-section-number">3.2</span> <iconify-icon inline="" icon="ic:baseline-report-problem" aria-label="Icon baseline-report-problem from ic Iconify.design set." title="Icon baseline-report-problem from ic Iconify.design set."></iconify-icon><iconify-icon inline="" icon="ant-design:solution-outlined" aria-label="Icon solution-outlined from ant-design Iconify.design set." title="Icon solution-outlined from ant-design Iconify.design set."></iconify-icon> Problems…and Solutions</a></li>
   </ul>
 </li>
-  <li><a href="#workflow-breast-cancer-dataset" id="toc-workflow-breast-cancer-dataset" class="nav-link" data-scroll-target="#workflow-breast-cancer-dataset"><span class="header-section-number">4</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Breast Cancer Dataset</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-breast-cancer-dataset" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-breast-cancer-dataset" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-breast-cancer-dataset"><span class="header-section-number">4</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Breast Cancer Dataset</a></li>
   <li>
-<a href="#workflow-read-the-data" id="toc-workflow-read-the-data" class="nav-link" data-scroll-target="#workflow-read-the-data"><span class="header-section-number">5</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Read the Data</a>
+<a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-read-the-data" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-read-the-data" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-read-the-data"><span class="header-section-number">5</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Read the Data</a>
   <ul class="collapse">
-<li><a href="#workflow-data-munging" id="toc-workflow-data-munging" class="nav-link" data-scroll-target="#workflow-data-munging"><span class="header-section-number">5.1</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Data Munging</a></li>
-  <li><a href="#workflow-eda" id="toc-workflow-eda" class="nav-link" data-scroll-target="#workflow-eda"><span class="header-section-number">5.2</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: EDA</a></li>
-  <li><a href="#workflow-model-building" id="toc-workflow-model-building" class="nav-link" data-scroll-target="#workflow-model-building"><span class="header-section-number">5.3</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Model Building</a></li>
+<li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-data-munging" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-data-munging" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-data-munging"><span class="header-section-number">5.1</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Data Munging</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-eda" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-eda" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-eda"><span class="header-section-number">5.2</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: EDA</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-model-building" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-model-building" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-model-building"><span class="header-section-number">5.3</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Model Building</a></li>
   </ul>
 </li>
   <li>
@@ -798,8 +816,8 @@ window.Quarto = {
   </ul>
 </li>
   <li><a href="#to-be-written-up" id="toc-to-be-written-up" class="nav-link" data-scroll-target="#to-be-written-up"><span class="header-section-number">7</span> To be written up</a></li>
-  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions"><span class="header-section-number">8</span> <iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusions</a></li>
-  <li><a href="#your-turn" id="toc-your-turn" class="nav-link" data-scroll-target="#your-turn"><span class="header-section-number">9</span> <iconify-icon inline="" icon="openmoji:person" aria-label="Icon person from openmoji Iconify.design set." title="Icon person from openmoji Iconify.design set."></iconify-icon> Your Turn</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusions" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusions" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusions"><span class="header-section-number">8</span> <iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusions</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a6920706572736f6e203e7d7d-your-turn" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a6920706572736f6e203e7d7d-your-turn" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a6920706572736f6e203e7d7d-your-turn"><span class="header-section-number">9</span> <iconify-icon inline="" icon="openmoji:person" aria-label="Icon person from openmoji Iconify.design set." title="Icon person from openmoji Iconify.design set."></iconify-icon> Your Turn</a></li>
   <li><a href="#sec-references" id="toc-sec-references" class="nav-link" data-scroll-target="#sec-references"><span class="header-section-number">10</span> <iconify-icon inline="" icon="ooui:references-rtl" aria-label="Icon references-rtl from ooui Iconify.design set." title="Icon references-rtl from ooui Iconify.design set."></iconify-icon> References</a></li>
   </ul><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="counts-reveal.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></nav>
     </div>
@@ -830,7 +848,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">August 2, 2026</p>
+      <p class="date-modified">September 5, 2026</p>
     </div>
   </div>
     
@@ -844,7 +862,7 @@ window.Quarto = {
 </div>
 
 
-</header><section id="setting-up-r-packages" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="setting-up-r-packages">
+</header><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages">
 <span class="header-section-number">1</span> <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
@@ -981,16 +999,16 @@ window.Quarto = {
 <span><span class="fu">flextable</span><span class="fu">::</span><span class="fu"><a href="https://davidgohel.github.io/flextable/reference/set_flextable_defaults.html">set_flextable_defaults</a></span><span class="op">(</span>font.family <span class="op">=</span> <span class="st">"Roboto Condensed"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-</section></section><section id="introduction" class="level2" data-number="2"><h2 data-number="2" class="anchored" data-anchor-id="introduction">
+</section></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction" class="level2" data-number="2"><h2 data-number="2" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction">
 <span class="header-section-number">2</span> <iconify-icon inline="" icon="openmoji:japanese-symbol-for-beginner" aria-label="Icon japanese-symbol-for-beginner from openmoji Iconify.design set." title="Icon japanese-symbol-for-beginner from openmoji Iconify.design set."></iconify-icon> Introduction</h2>
 <p>Sometimes the dependent variable is Qualitative: an either/or categorization. for example, or the variable we want to predict might be <code>won</code> or <code>lost</code> the contest, <code>has an ailment</code> or <code>not</code>, <code>voted</code> or <code>not</code> in the last election, or <code>graduated</code> from college or <code>not</code>. There might even be more than two categories such as <code>voted for Congress</code>, <code>BJP</code>, or <code>Independent</code>; or <code>never smoker</code>, <code>former smoker</code>, or <code>current smoker</code>.</p>
-</section><section id="the-logistic-regression-model" class="level2 page-columns page-full" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="the-logistic-regression-model">
+</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792072616469782d69636f6e7320626f782d6d6f64656c203e7d7d-the-logistic-regression-model" class="level2 page-columns page-full" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792072616469782d69636f6e7320626f782d6d6f64656c203e7d7d-the-logistic-regression-model">
 <span class="header-section-number">3</span> <iconify-icon inline="" icon="radix-icons:box-model" aria-label="Icon box-model from radix-icons Iconify.design set." title="Icon box-model from radix-icons Iconify.design set."></iconify-icon> The Logistic Regression Model</h2>
 <p>We saw with the <a href="../../../../../../content/courses/Analytics/30-Modelling/Modules/20-LinReg/index.html#assumptions-in-linear-models"><strong>General Linear Model</strong></a> that it models the <strong>mean</strong> of a target <em>Quantitative</em> variable as a linear weighted sum of the predictor variables:</p>
-<p><span id="eq-general-linear-model"><span class="math display">\[
+<p><span id="eq-general-linear-model"><span class="math display">
 \Large{y \sim N(x_i^T * \beta, ~~\sigma^2)}
-\tag{1}\]</span></span></p>
-<p>This model is considered to be <strong>general</strong> because of the dependence on potentially <em>more than one explanatory variable</em>, v.s. the <strong>simple</strong> linear model:<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> <span class="math inline">\(y = \beta_0 + \beta_1*x_1 + \epsilon\)</span>. The general linear model gives us model “shapes” that start from <span class="black bg-yellow">a simple straight line to a <em>p-dimensional hyperplane</em></span>.</p>
+\tag{1}</span></span></p>
+<p>This model is considered to be <strong>general</strong> because of the dependence on potentially <em>more than one explanatory variable</em>, v.s. the <strong>simple</strong> linear model:<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> <span class="math inline">y = \beta_0 + \beta_1*x_1 + \epsilon</span>. The general linear model gives us model “shapes” that start from <span class="black bg-yellow">a simple straight line to a <em>p-dimensional hyperplane</em></span>.</p>
 <p>Although a very useful framework, there are some situations where general linear models are not appropriate:</p>
 <ul>
 <li>the range of Y is restricted (e.g.&nbsp;binary, count)</li>
@@ -1001,17 +1019,17 @@ window.Quarto = {
 <section id="linear-models-for-categorical-targets" class="level3" data-number="3.1"><h3 data-number="3.1" class="anchored" data-anchor-id="linear-models-for-categorical-targets">
 <span class="header-section-number">3.1</span> Linear Models for Categorical Targets?</h3>
 <p>Recall that we spoke of <code>dummy-encoded  Qualitative **predictor** variables</code> for our linear models and how we would <strong>dummy encode</strong> them using numerical values, such as 0 and 1, or +1 and -1. Could we try the same way for a <strong>target</strong> categorical variable?</p>
-<p><span class="math display">\[
+<p><span class="math display">
 Y_i = \beta_0 + \beta_1*X_i + \epsilon_i\\ \nonumber
-\]</span> <span class="math display">\[
+</span> <span class="math display">
 where\\\
-\]</span></p>
-<p><span class="math display">\[
+</span></p>
+<p><span class="math display">
 \begin{align}
 Y_i &amp;= 0 ~ if ~~~"No"\\ \nonumber
     &amp;= 1 ~ if ~~~ "Yes"  \nonumber
 \end{align}
-\]</span></p>
+</span></p>
 <p>Sadly this seems to not work for categorical dependent variables using a simple linear model as before. Consider the Credit Card <code>Default</code> data from the package <code>ISLR</code>.</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -1039,29 +1057,29 @@ Figure&nbsp;1: Naive Linear Model
 </div>
 </div>
 <div class="g-col-6">
-<p>…it is pretty much clear from <a href="#fig-naive-linear-model" class="quarto-xref">Figure&nbsp;1</a> that something is very odd. (no pun intended! See below!) If the only possible values for <code>default</code> are <span class="math inline">\(No = 0\)</span> and <span class="math inline">\(Yes = 1\)</span>, how could we interpret predicted value of, say, <span class="math inline">\(Y_i = 0.25\)</span> or <span class="math inline">\(Y_i = 1.55\)</span>, or perhaps <span class="math inline">\(Y_i = -0.22\)</span>? Anything other than Yes/No is hard to interpret!</p>
+<p>…it is pretty much clear from <a href="#fig-naive-linear-model" class="quarto-xref">Figure&nbsp;1</a> that something is very odd. (no pun intended! See below!) If the only possible values for <code>default</code> are <span class="math inline">No = 0</span> and <span class="math inline">Yes = 1</span>, how could we interpret predicted value of, say, <span class="math inline">Y_i = 0.25</span> or <span class="math inline">Y_i = 1.55</span>, or perhaps <span class="math inline">Y_i = -0.22</span>? Anything other than Yes/No is hard to interpret!</p>
 </div>
 </div>
-</section><section id="problemsand-solutions" class="level3 page-columns page-full" data-number="3.2"><h3 data-number="3.2" class="anchored" data-anchor-id="problemsand-solutions">
+</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920696320626173656c696e652d7265706f72742d70726f626c656d203e7d7d-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920616e742d64657369676e20736f6c7574696f6e2d6f75746c696e6564203e7d7d-problemsand-solutions" class="level3 page-columns page-full" data-number="3.2"><h3 data-number="3.2" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920696320626173656c696e652d7265706f72742d70726f626c656d203e7d7d-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920616e742d64657369676e20736f6c7574696f6e2d6f75746c696e6564203e7d7d-problemsand-solutions">
 <span class="header-section-number">3.2</span> <iconify-icon inline="" icon="ic:baseline-report-problem" aria-label="Icon baseline-report-problem from ic Iconify.design set." title="Icon baseline-report-problem from ic Iconify.design set."></iconify-icon><iconify-icon inline="" icon="ant-design:solution-outlined" aria-label="Icon solution-outlined from ant-design Iconify.design set." title="Icon solution-outlined from ant-design Iconify.design set."></iconify-icon> Problems…and Solutions</h3>
 <p>Where do we go from here?</p>
 <section id="model-equation" class="level6"><h6 class="anchored" data-anchor-id="model-equation">1. Model Equation:</h6>
 <p>Let us state what we might desire of our model: despite this setback, we would still like our model to be as close as possible to the familiar linear model equation.</p>
-<p><span class="math display">\[
+<p><span class="math display">
     Y_i = \beta_0 + \beta_1*X_i + \epsilon_i\\ \nonumber
-\]</span> <span class="math display">\[
+</span> <span class="math display">
     where\\\
-\]</span></p>
-<p><span id="eq-linear-model"><span class="math display">\[
+</span></p>
+<p><span id="eq-linear-model"><span class="math display">
     \begin{align}
     Y_i &amp;= 0 ~ if ~~~"No"\\ \nonumber
     &amp;= 1 ~ if ~~~ "Yes"  \nonumber
     \end{align}
-\tag{2}\]</span></span></p>
+\tag{2}</span></span></p>
 </section><section id="predictors-and-weights" class="level6"><h6 class="anchored" data-anchor-id="predictors-and-weights">2. Predictors and Weights:</h6>
 <p>We have quantitative <strong>predictors</strong> so we still want to use a linear-weighted sum for the RHS (i.e predictor side) of the model equation. What can we try to make this work? Especially for the LHS (i.e the target side)?</p>
 </section><section id="making-the-lhs-continuous" class="level6"><h6 class="anchored" data-anchor-id="making-the-lhs-continuous">3. Making the LHS continuous?</h6>
-<p>What can we try? In dummy encoding our target variable, we found a range of [0,1], <span class="black bg-yellow">which is the same as the range for a <strong>probability</strong> value</span>! Could we try to use <strong><em>probability of the outcome</em></strong> as our target, even though we are interested in binary outcomes themselves? This would still leave us with a range of <span class="math inline">\([0,1]\)</span> for the target variable, as before.</p>
+<p>What can we try? In dummy encoding our target variable, we found a range of [0,1], <span class="black bg-yellow">which is the same as the range for a <strong>probability</strong> value</span>! Could we try to use <strong><em>probability of the outcome</em></strong> as our target, even though we are interested in binary outcomes themselves? This would still leave us with a range of <span class="math inline">[0,1]</span> for the target variable, as before.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1091,12 +1109,12 @@ Figure&nbsp;2: Variance vs Mean for Binomial Distribution
 <p><span class="black bg-yellow">If we map our Categorical/Qualitative target variable into a Quantitative probability</span>, we need immediately to look at the <a href="../../../../../../content/courses/Analytics/30-Modelling/Modules/20-LinReg/index.html#sec-assumptions-in-linear-models"><strong>LINE</strong> assumptions in linear regression</a>.</p>
 </div>
 </div>
-<p><span class="black bg-yellow">In linear regression, we assume a normally distributed target variable</span>, i.e.&nbsp;the residuals/errors around the predicted value are normally distributed. With a categorical target variable with two levels <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span> it would be impossible for the errors <span class="math inline">\(e_i = Y_i - \hat{Y_i}\)</span> to have a <em>normal distribution</em>, as assumed for the statistical tests to be valid. The errors are bounded by <span class="math inline">\([0,1]\)</span>! <span class="black bg-yellow">One candidate for the error distribution in this case is the <em>binomial distribution</em></span>, whose mean and variance are <code>p</code> and <code>np(1-p)</code> respectively.</p>
-<p>Note immediately that <strong>the binomial variance moves with the mean</strong>! The LINE assumption of <em>normality</em> is clearly violated. And from the figure above, extreme probabilities (near 1 or 0) are more stable (i.e., have less error variance) than middle probabilities. So the model has <span class="black bg-yellow"><em>“built-in” heteroscedasticity</em></span>, which we need to counter with transformations such as the <span class="math inline">\(log()\)</span> function. More on this very shortly!</p>
+<p><span class="black bg-yellow">In linear regression, we assume a normally distributed target variable</span>, i.e.&nbsp;the residuals/errors around the predicted value are normally distributed. With a categorical target variable with two levels <span class="math inline">0</span> and <span class="math inline">1</span> it would be impossible for the errors <span class="math inline">e_i = Y_i - \hat{Y_i}</span> to have a <em>normal distribution</em>, as assumed for the statistical tests to be valid. The errors are bounded by <span class="math inline">[0,1]</span>! <span class="black bg-yellow">One candidate for the error distribution in this case is the <em>binomial distribution</em></span>, whose mean and variance are <code>p</code> and <code>np(1-p)</code> respectively.</p>
+<p>Note immediately that <strong>the binomial variance moves with the mean</strong>! The LINE assumption of <em>normality</em> is clearly violated. And from the figure above, extreme probabilities (near 1 or 0) are more stable (i.e., have less error variance) than middle probabilities. So the model has <span class="black bg-yellow"><em>“built-in” heteroscedasticity</em></span>, which we need to counter with transformations such as the <span class="math inline">log()</span> function. More on this very shortly!</p>
 </div>
 </div>
 </section><section id="odds" class="level6"><h6 class="anchored" data-anchor-id="odds">4. Odds?</h6>
-<p>How would one “extend” the range of a target variable from [0,1] to <span class="math inline">\([-\infty, \infty]\)</span> ? One step would be to try the <strong><em>odds of the outcome</em></strong>, instead of trying to predict the outcomes directly (Yes or No), or even their probabilities <span class="math inline">\([0,1]\)</span>.</p>
+<p>How would one “extend” the range of a target variable from [0,1] to <span class="math inline">[-\infty, \infty]</span> ? One step would be to try the <strong><em>odds of the outcome</em></strong>, instead of trying to predict the outcomes directly (Yes or No), or even their probabilities <span class="math inline">[0,1]</span>.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1107,7 +1125,7 @@ Figure&nbsp;2: Variance vs Mean for Binomial Distribution
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Odds of an event with probability <code>p</code> of occurrence is defined as <span class="math inline">\(Odds = p/(1-p)\)</span>. As can be seen, the odds are the <em>ratio</em> of two probabilities, that of the event and its complement. In the <code>Default</code> dataset just considered, the odds of default and the odds of non-default can be calculated as:</p>
+<p>Odds of an event with probability <code>p</code> of occurrence is defined as <span class="math inline">Odds = p/(1-p)</span>. As can be seen, the odds are the <em>ratio</em> of two probabilities, that of the event and its complement. In the <code>Default</code> dataset just considered, the odds of default and the odds of non-default can be calculated as:</p>
 <div class="grid">
 <div class="g-col-4">
 <div class="cell">
@@ -1121,34 +1139,34 @@ Figure&nbsp;2: Variance vs Mean for Binomial Distribution
 </div>
 </div>
 <div class="g-col-8">
-<p><span class="math display">\[
+<p><span class="math display">
 \begin{align}
 p(Default) &amp;= 333/(333 + 9667)\\ \nonumber
            &amp;= 0.333\\ \nonumber
 \end{align}
-\]</span></p>
+</span></p>
 <p>therefore:</p>
-<p><span class="math display">\[
+<p><span class="math display">
 \begin{align}
 Odds~of~Default &amp;=p(Default)/(1-p(Default))\\ \nonumber
             &amp;= 0.333/(1-0.333)\\ \nonumber
             &amp;= 0.5\\
 \end{align}
-\]</span></p>
+</span></p>
 <p>and</p>
-<p><span class="math display">\[
+<p><span class="math display">
 Odds~No~Default = 0.9667/(1-0.9667) = 29
-\]</span>.</p>
+</span>.</p>
 </div>
 </div>
-<p>Now, <span class="black bg-yellow"><em>odds</em> cover half of real number line, i.e.&nbsp;<span class="math inline">\([0, \infty]\)</span></span> ! Clearly, when the probability <code>p</code> of an event is <span class="math inline">\(0\)</span>, the odds are <span class="math inline">\(0\)</span>…and when it nears <span class="math inline">\(1\)</span>, the odds tend to <span class="math inline">\(\infty\)</span>. So we have <strong>transformed</strong> a simple probability that lies between <span class="math inline">\([0,1]\)</span> to odds lying between <span class="math inline">\([0, \infty]\)</span>. That’s one step towards making a linear model possible; we have “removed” one of the limits on our linear model’s prediction range by using <code>Odds</code> as our target variable.</p>
+<p>Now, <span class="black bg-yellow"><em>odds</em> cover half of real number line, i.e.&nbsp;<span class="math inline">[0, \infty]</span></span> ! Clearly, when the probability <code>p</code> of an event is <span class="math inline">0</span>, the odds are <span class="math inline">0</span>…and when it nears <span class="math inline">1</span>, the odds tend to <span class="math inline">\infty</span>. So we have <strong>transformed</strong> a simple probability that lies between <span class="math inline">[0,1]</span> to odds lying between <span class="math inline">[0, \infty]</span>. That’s one step towards making a linear model possible; we have “removed” one of the limits on our linear model’s prediction range by using <code>Odds</code> as our target variable.</p>
 </div>
 </div>
 </section><section id="transformation-using-log" class="level6"><h6 class="anchored" data-anchor-id="transformation-using-log">5. Transformation using <code><a href="https://rdrr.io/r/base/Log.html">log()</a></code>?</h6>
-<p>We need one more leap of faith: how do we convert a <span class="math inline">\([0, \infty]\)</span> range to a <span class="math inline">\([-\infty, \infty]\)</span>? Can we try a log transformation?</p>
-<p><span class="math display">\[
+<p>We need one more leap of faith: how do we convert a <span class="math inline">[0, \infty]</span> range to a <span class="math inline">[-\infty, \infty]</span>? Can we try a log transformation?</p>
+<p><span class="math display">
     log([0, \infty]) ~ = ~ [-\infty, \infty]
-\]</span></p>
+</span></p>
 <p>This extends the range of our Qualitative target to the same as with a Quantitative target!</p>
 <p>There is an additional benefit if this <code><a href="https://rdrr.io/r/base/Log.html">log()</a></code> transformation: the <strong>Error/Residual Distributions with Odds targets</strong>. See the plot below. Odds are a necessarily nonlinear function of probability; the slope of <code>Odds ~ probability</code> also depends upon the probability itself, as we saw with the probability curve earlier.</p>
 <div id="fig-odds-plot" class="quarto-layout-panel">
@@ -1180,30 +1198,30 @@ Odds~No~Default = 0.9667/(1-0.9667) = 29
 Figure&nbsp;3: Odds vs Probability
 </figcaption></figure>
 </div>
-<p>To understand this issue intuitively, consider what happens to, say, a 5% change in the odds ratio near 1.0. If the odds ratio is <span class="math inline">\(1.0\)</span>, then the probabilities <code>p</code> and <code>1-p</code> are <span class="math inline">\(0.5\)</span>, and <span class="math inline">\(0.5\)</span>. A 20% increase in the odds ratio to <span class="math inline">\(1.20\)</span> would correspond to probabilities of <span class="math inline">\(0.545\)</span> and <span class="math inline">\(0.455\)</span>. However, if the original probabilities were <span class="math inline">\(0.9\)</span> and <span class="math inline">\(0.1\)</span> for an odds ratio <span class="math inline">\(9\)</span>, then a 20% increase (in odds ratio) to <span class="math inline">\(10.8\)</span> would correspond to probabilities of <span class="math inline">\(0.915\)</span> and <span class="math inline">\(0.085\)</span>, a much smaller change in the probabilities. The basic curve is non-linear and the <code>log</code> transformation flattens this out to provide a more linear relationship, which is what we desire.</p>
+<p>To understand this issue intuitively, consider what happens to, say, a 5% change in the odds ratio near 1.0. If the odds ratio is <span class="math inline">1.0</span>, then the probabilities <code>p</code> and <code>1-p</code> are <span class="math inline">0.5</span>, and <span class="math inline">0.5</span>. A 20% increase in the odds ratio to <span class="math inline">1.20</span> would correspond to probabilities of <span class="math inline">0.545</span> and <span class="math inline">0.455</span>. However, if the original probabilities were <span class="math inline">0.9</span> and <span class="math inline">0.1</span> for an odds ratio <span class="math inline">9</span>, then a 20% increase (in odds ratio) to <span class="math inline">10.8</span> would correspond to probabilities of <span class="math inline">0.915</span> and <span class="math inline">0.085</span>, a much smaller change in the probabilities. The basic curve is non-linear and the <code>log</code> transformation flattens this out to provide a more linear relationship, which is what we desire.</p>
 </section><section id="putting-it-all-together-logistic-regression" class="level6 page-columns page-full"><h6 class="anchored" data-anchor-id="putting-it-all-together-logistic-regression">6. Putting it all together: Logistic Regression</h6>
-<p>So finally in our model, instead of modeling <em>levels/labels of the Qual target variable events (i.e Yes / No )</em>, we will use <span class="math inline">\(log(odds)\)</span> of the events themselves, also known as the <strong>logit</strong>, defined as:</p>
-<p><span id="eq-logit"><span class="math display">\[
+<p>So finally in our model, instead of modeling <em>levels/labels of the Qual target variable events (i.e Yes / No )</em>, we will use <span class="math inline">log(odds)</span> of the events themselves, also known as the <strong>logit</strong>, defined as:</p>
+<p><span id="eq-logit"><span class="math display">
 \begin{align}
 log(odds_i) &amp;= log\bigg[p_i/(1-p_i)\bigg]\\ \nonumber
             &amp;= logit(p_i)\\
 \end{align}
-\tag{3}\]</span></span></p>
+\tag{3}</span></span></p>
 <p>This is our <strong>Logistic Regression Model</strong>, which uses a Quantitative Predictor variable to predict a Categorical target variable. We write the model as ( for the <code>Default</code> dataset ) :</p>
-<p><span id="eq-logistic-regression-1"><span class="math display">\[
+<p><span id="eq-logistic-regression-1"><span class="math display">
 \Large{logit(default) = \beta_0 + \beta_1 * balance}
-\tag{4}\]</span></span></p>
+\tag{4}</span></span></p>
 <p>This means that:</p>
-<p><span class="math display">\[
+<p><span class="math display">
 log(p(default)/(1-p(default))) = \beta_0+\beta_1 * balance
-\]</span> and therefore:</p>
-<p><span id="eq-logistic-regression-2"><span class="math display">\[
+</span> and therefore:</p>
+<p><span id="eq-logistic-regression-2"><span class="math display">
 \begin{align}
 p(default) &amp;= \frac{exp(\beta_0 + \beta_1 * balance)}{1 + exp(\beta_0 + \beta_1 * balance)}\\
 &amp;= \frac{1}{1 + exp^{-(\beta_0 + \beta_1 * balance)}}
 \end{align}
-\tag{5}\]</span></span></p>
-<p>From the <a href="#eq-logistic-regression-1" class="quarto-xref">Equation&nbsp;4</a> above it should be clear that a <em>unit increase</em> in <code>balance</code> should increase the odds of <code>default</code> by <span class="math inline">\(\beta_1\)</span> units. The RHS of <a href="#eq-logistic-regression-2" class="quarto-xref">Equation&nbsp;5</a> is a <em>sigmoid</em> function of the weighted sum of predictors and is limited to the range [0,1].</p>
+\tag{5}</span></span></p>
+<p>From the <a href="#eq-logistic-regression-1" class="quarto-xref">Equation&nbsp;4</a> above it should be clear that a <em>unit increase</em> in <code>balance</code> should increase the odds of <code>default</code> by <span class="math inline">\beta_1</span> units. The RHS of <a href="#eq-logistic-regression-2" class="quarto-xref">Equation&nbsp;5</a> is a <em>sigmoid</em> function of the weighted sum of predictors and is limited to the range [0,1].</p>
 <div class="page-columns page-full">
 <div id="fig-model-plots" class="quarto-layout-panel page-columns page-full">
 <figure class="quarto-float quarto-float-fig figure page-columns page-full"><div aria-describedby="fig-model-plots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca" class="page-columns page-full">
@@ -1246,15 +1264,15 @@ Figure&nbsp;4: Model Plots
 </div>
 <p>If we were to include <code>income</code> also as a <em>predictor</em> variable in the model, we might obtain something like:</p>
 </div>
-<p><span id="eq-logistic-regression-3"><span class="math display">\[
+<p><span id="eq-logistic-regression-3"><span class="math display">
 \begin{align}
 p(default) &amp;= \frac{exp(\beta_0 + \beta_1 * balance + \beta_2 * income)}{1 + exp(\beta_0 + \beta_1 * balance + \beta_2 * income)}\\
 &amp;= \frac{1}{1 + exp^{-(\beta_0 + \beta_1 * balance + \beta_2 * income)}}
 \end{align}
-\tag{6}\]</span></span></p>
+\tag{6}</span></span></p>
 <p>This model <a href="#eq-logistic-regression-3" class="quarto-xref">Equation&nbsp;6</a> is plotted a little differently, since it includes <em>three variables</em>. We’ll see this shortly, with code. The thing to note is that the formula inside the <code><a href="https://rdrr.io/r/base/Log.html">exp()</a></code> is a <strong>linear combination</strong> of the predictors!</p>
 </section><section id="estimation-of-model-parameters" class="level6"><h6 class="anchored" data-anchor-id="estimation-of-model-parameters">7. Estimation of Model Parameters:</h6>
-<p>The parameters <span class="math inline">\(\beta_i\)</span> now need to be estimated. How might we do that? This last problem is that because we have made so many transformations to get to the <code>logits</code> that we want to model, the logic of minimizing the <strong>sum of squared errors(SSE)</strong> is no longer appropriate.</p>
+<p>The parameters <span class="math inline">\beta_i</span> now need to be estimated. How might we do that? This last problem is that because we have made so many transformations to get to the <code>logits</code> that we want to model, the logic of minimizing the <strong>sum of squared errors(SSE)</strong> is no longer appropriate.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1265,14 +1283,14 @@ p(default) &amp;= \frac{exp(\beta_0 + \beta_1 * balance + \beta_2 * income)}{1 +
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The probabilities for <code>default</code> are <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span>. At these values <span class="black bg-red">the <code>log(odds)</code> will map respectively to <span class="math inline">\(-\infty\)</span> and <span class="math inline">\(\infty\)</span></span> 🙀. So if we naively try to take residuals, we will find that they are <strong>all</strong> <span class="math inline">\(\infty\)</span> !! Hence the Sum of Squared Errors <span class="math inline">\(SSE\)</span> cannot be computed and we need another way to assess the quality of our model.</p>
+<p>The probabilities for <code>default</code> are <span class="math inline">0</span> and <span class="math inline">1</span>. At these values <span class="black bg-red">the <code>log(odds)</code> will map respectively to <span class="math inline">-\infty</span> and <span class="math inline">\infty</span></span> 🙀. So if we naively try to take residuals, we will find that they are <strong>all</strong> <span class="math inline">\infty</span> !! Hence the Sum of Squared Errors <span class="math inline">SSE</span> cannot be computed and we need another way to assess the quality of our model.</p>
 </div>
 </div>
-<p>Instead, we will have to use <a href="./#workflow-model-building"><strong>maximum likelihood estimation(MLE)</strong></a> to estimate the models. The <em>maximum likelihood method</em> maximizes the probability of obtaining the data at hand against every choice of model parameters <span class="math inline">\(\beta_i\)</span>. (And compare that method with the <span class="math inline">\(X^2\)</span> (“chi-squared”) test and statistic instead of <code>t</code> and <code>F</code> to evaluate the model comparisons)</p>
-</section></section></section><section id="workflow-breast-cancer-dataset" class="level2" data-number="4"><h2 data-number="4" class="anchored" data-anchor-id="workflow-breast-cancer-dataset">
+<p>Instead, we will have to use <a href="./#workflow-model-building"><strong>maximum likelihood estimation(MLE)</strong></a> to estimate the models. The <em>maximum likelihood method</em> maximizes the probability of obtaining the data at hand against every choice of model parameters <span class="math inline">\beta_i</span>. (And compare that method with the <span class="math inline">X^2</span> (“chi-squared”) test and statistic instead of <code>t</code> and <code>F</code> to evaluate the model comparisons)</p>
+</section></section></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-breast-cancer-dataset" class="level2" data-number="4"><h2 data-number="4" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-breast-cancer-dataset">
 <span class="header-section-number">4</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Breast Cancer Dataset</h2>
 <p>Let us proceed with the logistic regression workflow. We will use the well-known <code>Wisconsin breast cancer</code> dataset, readily available from <a href="https://vincentarelbundock.github.io/Rdatasets/articles/data.html">Vincent Arel-Bundock’s website.</a></p>
-</section><section id="workflow-read-the-data" class="level2" data-number="5"><h2 data-number="5" class="anchored" data-anchor-id="workflow-read-the-data">
+</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-read-the-data" class="level2" data-number="5"><h2 data-number="5" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-read-the-data">
 <span class="header-section-number">5</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Read the Data</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cancer</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span><span class="op">(</span><span class="st">"https://vincentarelbundock.github.io/Rdatasets/csv/dslabs/brca.csv"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -1827,7 +1845,7 @@ $ y                   &lt;chr&gt; "B", "B", "B", "B", "B", "B", "B", "B", "B", "
 </div>
 </div>
 <p>We see that there are 31 Quantitative variables, all named as <code>x_***</code>, and one Qualitative variable,<code>y</code>, which is a two-level target. (B = Benign, M = Malignant). The dataset has 569 observations, and no missing data.</p>
-<section id="workflow-data-munging" class="level3" data-number="5.1"><h3 data-number="5.1" class="anchored" data-anchor-id="workflow-data-munging">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-data-munging" class="level3" data-number="5.1"><h3 data-number="5.1" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-data-munging">
 <span class="header-section-number">5.1</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Data Munging</h3>
 <p>Let us rename <code>y</code> as <code>diagnosis</code> and take two other Quantitative parameters as <code>predictors</code>, suitably (re)naming them too. We will also create a <em>binary-valued</em> variable called <code>diagnosis_malignant</code> (Binary, Malignant = 1, Benign = 0) for use as a <code>target</code> in our logistic regression model.</p>
 <div class="cell">
@@ -1869,7 +1887,7 @@ $ y                   &lt;chr&gt; "B", "B", "B", "B", "B", "B", "B", "B", "B", "
 <p>How can we predict whether a cancerous tumour is <code>Benign</code> or <code>Malignant</code>, based on the variable <code>radius_mean</code> <strong>alone</strong>, and with both <code>radius_mean</code> and <code>concave_points_mean</code>?</p>
 </div>
 </div>
-</section><section id="workflow-eda" class="level3" data-number="5.2"><h3 data-number="5.2" class="anchored" data-anchor-id="workflow-eda">
+</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-eda" class="level3" data-number="5.2"><h3 data-number="5.2" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-eda">
 <span class="header-section-number">5.2</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: EDA</h3>
 <p>Let us use <code>GGally</code> to plot a set of combo-plots for our modified dataset:</p>
 <div class="cell">
@@ -1921,11 +1939,11 @@ Figure&nbsp;5: Pairs Plot for Cancer Data
 <ul>
 <li>The counts for “B” and “M” are not terribly unbalanced; and both the <code>radius_mean</code> and <code>concave_pts_mean</code> appear to have well-separated box plot distributions for “B” and “M”.</li>
 <li>Given the visible separation of the box-plots for both variables <code>radius_mean</code> and <code>concave_pts_mean</code>, we can believe that these will be good choices as predictors.</li>
-<li>Interestingly, <code>radius_mean</code> and <code>concave_pts_mean</code> are also mutually well-correlated, with a <span class="math inline">\(\rho = 0.823\)</span>; we may wish (later) to choose (a pair of) predictor variables that are less strongly correlated.</li>
+<li>Interestingly, <code>radius_mean</code> and <code>concave_pts_mean</code> are also mutually well-correlated, with a <span class="math inline">\rho = 0.823</span>; we may wish (later) to choose (a pair of) predictor variables that are less strongly correlated.</li>
 </ul>
 </div>
 </div>
-</section><section id="workflow-model-building" class="level3" data-number="5.3"><h3 data-number="5.3" class="anchored" data-anchor-id="workflow-model-building">
+</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-model-building" class="level3" data-number="5.3"><h3 data-number="5.3" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-model-building">
 <span class="header-section-number">5.3</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Model Building</h3>
 <div class="tabset-margin-container"></div><div class="panel-tabset nav-pills" style="background: whitesmoke;">
 <ul class="nav nav-tabs" role="tablist">
@@ -1960,14 +1978,14 @@ Table&nbsp;1: Simple Model
 </div>
 </div>
 <p>The equation for the simple model is:</p>
-<p><span id="eq-simple-model"><span class="math display">\[
+<p><span id="eq-simple-model"><span class="math display">
 \begin{aligned}
 \operatorname{diagnosis\_malignant} &amp;\sim Bernoulli\left(\operatorname{prob}_{\operatorname{diagnosis\_malignant} = \operatorname{1}}= \hat{P}\right) \\
 \log\left[ \frac { \hat{P} }{ 1 - \hat{P} } \right]
 &amp;= -15.25 + 1.03(\operatorname{radius\_mean})
 \end{aligned}
-\tag{7}\]</span></span></p>
-<p>Increasing <code>radius_mean</code> by one unit changes the log odds by <span class="math inline">\(\hat{\beta_1} = 1.033\)</span> or equivalently it multiplies the odds by <span class="math inline">\(exp(\hat{\beta_1}) =  2.809\)</span>. We can plot the model as shown below:</p>
+\tag{7}</span></span></p>
+<p>Increasing <code>radius_mean</code> by one unit changes the log odds by <span class="math inline">\hat{\beta_1} = 1.033</span> or equivalently it multiplies the odds by <span class="math inline">exp(\hat{\beta_1}) =  2.809</span>. We can plot the model as shown below:</p>
 <div class="cell">
 <details class="code-fold"><summary>Show the Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -2013,7 +2031,7 @@ Figure&nbsp;6: Simple Model plot
 </div>
 </div>
 </div>
-<p>The dotted lines show how the model can be used to classify the data in to two classes (“B” and “M”) depending upon the threshold probability <span class="math inline">\(q\)</span>.</p>
+<p>The dotted lines show how the model can be used to classify the data in to two classes (“B” and “M”) depending upon the threshold probability <span class="math inline">q</span>.</p>
 <p>Taking both predictor variables, we obtain the model:</p>
 <div class="cell">
 <details class="code-fold"><summary>Show the Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cancer_fit_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">diagnosis_malignant</span> <span class="op">~</span> <span class="va">radius_mean</span> <span class="op">+</span> <span class="va">concave_points_mean</span>,</span>
@@ -2038,15 +2056,15 @@ Table&nbsp;2
 </div>
 </div>
 <p>The equation for the more complex model is:</p>
-<p><span id="eq-complex-model"><span class="math display">\[
+<p><span id="eq-complex-model"><span class="math display">
 \begin{aligned}
 \operatorname{diagnosis\_malignant} &amp;\sim Bernoulli\left(\operatorname{prob}_{\operatorname{diagnosis\_malignant} = \operatorname{1}}= \hat{P}\right) \\
 \log\left[ \frac { \hat{P} }{ 1 - \hat{P} } \right]
 &amp;= -13.7 + 0.64(\operatorname{radius\_mean}) + 84.22(\operatorname{concave\_points\_mean})
 \end{aligned}
-\tag{8}\]</span></span></p>
-<p>Increasing <code>radius_mean</code> by one unit changes the log odds by <span class="math inline">\(\hat{\beta_1} = 0.6389\)</span> or equivalently it multiplies the odds by <span class="math inline">\(exp(\hat{\beta_1}) =  1.894\)</span>, provided <code>concave_points_mean</code> is held fixed.</p>
-<p>We can plot the model as shown below: we create a scatter plot of the two predictor variables. The superimposed diagonal lines are lines for several constant values of threshold probability <span class="math inline">\(q\)</span>.</p>
+\tag{8}</span></span></p>
+<p>Increasing <code>radius_mean</code> by one unit changes the log odds by <span class="math inline">\hat{\beta_1} = 0.6389</span> or equivalently it multiplies the odds by <span class="math inline">exp(\hat{\beta_1}) =  1.894</span>, provided <code>concave_points_mean</code> is held fixed.</p>
+<p>We can plot the model as shown below: we create a scatter plot of the two predictor variables. The superimposed diagonal lines are lines for several constant values of threshold probability <span class="math inline">q</span>.</p>
 <div class="cell">
 <details class="code-fold"><summary>Show the Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -2107,16 +2125,16 @@ Figure&nbsp;7: Complex Model plot
 <ol type="1">
 <li>Plot a scatter plot <code>gf_point(diagnosis ~ average_radius, data = cancer_modified)</code>
 </li>
-<li>Start with a sigmoid curve with some initial parameters <span class="math inline">\(\hat{\beta_1}\)</span> and <span class="math inline">\(\hat{\beta_0}\)</span> that gives us some prediction of the probability of <code>diagnosis</code> for any given <code>average_radius</code>
+<li>Start with a sigmoid curve with some initial parameters <span class="math inline">\hat{\beta_1}</span> and <span class="math inline">\hat{\beta_0}</span> that gives us some prediction of the probability of <code>diagnosis</code> for any given <code>average_radius</code>
 </li>
-<li>We know the target labels for each data point ( i.e.&nbsp;“B” and “M”). We can calculate <span class="black bg-yellow">the <strong><em>likelihood</em></strong> of <span class="math inline">\(\hat{\beta_1}\)</span> and <span class="math inline">\(\hat{\beta_0}\)</span>, <strong><em>given</em></strong> the data</span>.</li>
-<li>We then change the values of <span class="math inline">\(\hat{\beta_1}\)</span> and<span class="math inline">\(\hat{\beta_0}\)</span> and calculate the likelihood again.</li>
-<li>The set of parameters with the <strong><em>maximum likelihood(ML)</em></strong> for <span class="math inline">\(\hat{\beta_1}\)</span> and <span class="math inline">\(\hat{\beta_0}\)</span> gives us our logistic regression model.</li>
+<li>We know the target labels for each data point ( i.e.&nbsp;“B” and “M”). We can calculate <span class="black bg-yellow">the <strong><em>likelihood</em></strong> of <span class="math inline">\hat{\beta_1}</span> and <span class="math inline">\hat{\beta_0}</span>, <strong><em>given</em></strong> the data</span>.</li>
+<li>We then change the values of <span class="math inline">\hat{\beta_1}</span> and<span class="math inline">\hat{\beta_0}</span> and calculate the likelihood again.</li>
+<li>The set of parameters with the <strong><em>maximum likelihood(ML)</em></strong> for <span class="math inline">\hat{\beta_1}</span> and <span class="math inline">\hat{\beta_0}</span> gives us our logistic regression model.</li>
 <li>Use that model henceforth as a model for prediction.</li>
 </ol>
 <p>How does one find out the “ML” parameters? There is clearly a two step procedure:</p>
 <ul>
-<li>Find the likelihood of the data for the parameters <span class="math inline">\(\beta_1\)</span>
+<li>Find the likelihood of the data for the parameters <span class="math inline">\beta_1</span>
 </li>
 <li>Maximize the likelihood by varying them. In practice, the changes to the parameters (step 5) are made in accordance with a method such as the <a href="https://www.geeksforgeeks.org/newton-raphson-method/">Newton-Raphson</a> method that can rapidly find the ML values for the parameters.</li>
 </ul>
@@ -2125,7 +2143,7 @@ Figure&nbsp;7: Complex Model plot
 <p>Let us visualize the variations and computations from step(5). For the sake of clarity:</p>
 <ul>
 <li>we will take a small sample of the original dataset</li>
-<li>we take several different values for <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>
+<li>we take several different values for <span class="math inline">\beta_0</span> and <span class="math inline">\beta_1</span>
 </li>
 <li>Use these get a set of regression curves</li>
 <li>which we superimpose on the scatter plot of the sample</li>
@@ -2287,8 +2305,8 @@ Figure&nbsp;8: Multiple Models
 Figure&nbsp;9: Point Projection and Probability Lookup
 </figcaption></figure>
 </div>
-<p>The predicted probability <span class="math inline">\(p_i\)</span> for each datum(radius_mean) is for the tumour being Malignant. If the datum corresponds to a tumour that is Benign, we must take <span class="math inline">\(1-p_i\)</span>. Each datum point is assumed to be <em>independent</em>, so we can calculate the likelihood as a <strong>product of probabilities</strong>, as follows: In this way, we calculate the likelihood of the data, give the model parameters as:</p>
-<p><span class="math display">\[
+<p>The predicted probability <span class="math inline">p_i</span> for each datum(radius_mean) is for the tumour being Malignant. If the datum corresponds to a tumour that is Benign, we must take <span class="math inline">1-p_i</span>. Each datum point is assumed to be <em>independent</em>, so we can calculate the likelihood as a <strong>product of probabilities</strong>, as follows: In this way, we calculate the likelihood of the data, give the model parameters as:</p>
+<p><span class="math display">
 \large{
 \begin{equation}
 \begin{aligned}
@@ -2299,9 +2317,9 @@ likelihood &amp;=  \prod_{Malignant}^{}p_i ~ \times ~ \prod_{Benign}^{}(1 - p_i)
 \end{aligned}
 \end{equation}
 }
-\]</span></p>
+</span></p>
 <p>Lastly, since this is a product of small numbers, it can lead to inaccuracies, so we take the log of the whole thing to make it into an addition, obtaining the <strong>log-likelihood (LL)</strong>:</p>
-<p><span id="eq-log-likelihood"><span class="math display">\[
+<p><span id="eq-log-likelihood"><span class="math display">
 \large{
 \begin{equation}
 \begin{aligned}
@@ -2310,10 +2328,10 @@ log~likelihood ~~ ll(\beta_i) &amp;= log\prod_{}^{}(p_i)^{y_i} * (1-p_i)^{1-y_i}
 \end{aligned}
 \end{equation}
 }
-\tag{9}\]</span></span></p>
+\tag{9}</span></span></p>
 </section><section id="maximum-likelihood-estimation" class="level3" data-number="6.2"><h3 data-number="6.2" class="anchored" data-anchor-id="maximum-likelihood-estimation">
 <span class="header-section-number">6.2</span> Maximum Likelihood Estimation</h3>
-<p>We now need to find the (global) <strong>maximum</strong> of this quantity and determine the <span class="math inline">\(\beta_i\)</span>. Flipping this problem around, we find the <em>maximum likelihood</em> by <strong>minimizing</strong> the slope/gradient of of the LL!! And, to minimize the <em>slope of the LL</em>, we use the <a href="https://www.geeksforgeeks.org/newton-raphson-method/">Newton-Raphson method</a> or equivalent. Phew!</p>
+<p>We now need to find the (global) <strong>maximum</strong> of this quantity and determine the <span class="math inline">\beta_i</span>. Flipping this problem around, we find the <em>maximum likelihood</em> by <strong>minimizing</strong> the slope/gradient of of the LL!! And, to minimize the <em>slope of the LL</em>, we use the <a href="https://www.geeksforgeeks.org/newton-raphson-method/">Newton-Raphson method</a> or equivalent. Phew!</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -2337,21 +2355,21 @@ log~likelihood ~~ ll(\beta_i) &amp;= log\prod_{}^{}(p_i)^{y_i} * (1-p_i)^{1-y_i}
 </div>
 <div class="g-col-6">
 <ul>
-<li>The black curve <span class="math inline">\(y = fx)\)</span> is the function to be minimized, i.e.&nbsp;it is the <strong>gradient of the LL function</strong>.</li>
-<li>We start with any arbitrary starting value of <span class="math inline">\(x = x1, y1 = f(x1)\)</span> and calculate the tangent/slope/gradient equation <span class="math inline">\(f'(x1)\)</span> at point <span class="math inline">\((x1, y1) = (x1, f(x1))\)</span>.</li>
-<li>The tangent <span class="math inline">\(f'(x1)\)</span> cuts the <span class="math inline">\(x-axis\)</span> at <span class="math inline">\(x2\)</span>.(Grey line).</li>
+<li>The black curve <span class="math inline">y = fx)</span> is the function to be minimized, i.e.&nbsp;it is the <strong>gradient of the LL function</strong>.</li>
+<li>We start with any arbitrary starting value of <span class="math inline">x = x1, y1 = f(x1)</span> and calculate the tangent/slope/gradient equation <span class="math inline">f'(x1)</span> at point <span class="math inline">(x1, y1) = (x1, f(x1))</span>.</li>
+<li>The tangent <span class="math inline">f'(x1)</span> cuts the <span class="math inline">x-axis</span> at <span class="math inline">x2</span>.(Grey line).</li>
 <li>Repeat.</li>
-<li>Stop when the gradient becomes very small and <span class="math inline">\(x_i\)</span> changes very in successive iterations.</li>
+<li>Stop when the gradient becomes very small and <span class="math inline">x_i</span> changes very in successive iterations.</li>
 </ul>
 </div>
 </div>
 <p>How do we calculate the next value of x using the tangent?</p>
 <ul>
-<li>At <span class="math inline">\((x1,y1)\)</span>, the tangent equation is: <span class="math inline">\(y = y1 - slope1 * (x - x1)\)</span>.</li>
-<li>This equation applies at point <span class="math inline">\((x2,0\)</span>), so <span class="math inline">\(0 = y1 - slope1 *(x2 - x1)\)</span>. (NOTE: <em>Imagine that this is obtained by temporarily moving the y-axis to <span class="math inline">\(x = x1\)</span></em> (dotted line), so <span class="math inline">\(y1\)</span> in effect is the “c” in <span class="math inline">\(y = mx + c\)</span>)</li>
-<li>Solving for <span class="math inline">\(x2\)</span>, we get: <span class="math inline">\(x2 = y1/slope1 - x1 = f(x1)/f'(x1)\)</span>
+<li>At <span class="math inline">(x1,y1)</span>, the tangent equation is: <span class="math inline">y = y1 - slope1 * (x - x1)</span>.</li>
+<li>This equation applies at point <span class="math inline">(x2,0</span>), so <span class="math inline">0 = y1 - slope1 *(x2 - x1)</span>. (NOTE: <em>Imagine that this is obtained by temporarily moving the y-axis to <span class="math inline">x = x1</span></em> (dotted line), so <span class="math inline">y1</span> in effect is the “c” in <span class="math inline">y = mx + c</span>)</li>
+<li>Solving for <span class="math inline">x2</span>, we get: <span class="math inline">x2 = y1/slope1 - x1 = f(x1)/f'(x1)</span>
 </li>
-<li>Since <span class="math inline">\(f(x)\)</span> <strong>is already the gradient of LL</strong>, we have: <span class="math inline">\(x2 = x1 - ll'(x1)/ll''(x1)\)</span> !!</li>
+<li>Since <span class="math inline">f(x)</span> <strong>is already the gradient of LL</strong>, we have: <span class="math inline">x2 = x1 - ll'(x1)/ll''(x1)</span> !!</li>
 </ul>
 </div>
 </div>
@@ -2362,13 +2380,13 @@ log~likelihood ~~ ll(\beta_i) &amp;= log\prod_{}^{}(p_i)^{y_i} * (1-p_i)^{1-y_i}
 <li>Convergence of Newton- Raphson method for Maximum Likelihood</li>
 <li>Hand Calculation of all steps (!!)</li>
 <li>Bah.</li>
-</ul></section><section id="conclusions" class="level2" data-number="8"><h2 data-number="8" class="anchored" data-anchor-id="conclusions">
+</ul></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusions" class="level2" data-number="8"><h2 data-number="8" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusions">
 <span class="header-section-number">8</span> <iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusions</h2>
 <ul>
 <li>Logistic Regression is a great ML algorithm for predicting <strong>Qualitative</strong> target variables.</li>
 <li>It also works for <em>multi-level/multi-valued</em> Qual variables (multinomial logistic regression)</li>
 <li>The internals of Logistic Regression seem quite different compared to those for Linear Regression. <strong><em>However</em></strong>, when we use the <a href="">LINE assumptions</a> to model the errors as <em>Gaussian</em> in <a href="">Linear Regression</a>, and follow through with a <a href=""><em>probabilistic analysis</em></a>, we can conclude that the <em>Ordinary Least Squares</em> method we saw there is another manifestation of MLE! Here is a tutorial on <a href="../../../../../../content/courses/Analytics/30-Modelling/Modules/30-LogReg/files/index.html">MLE</a> for the intrepid!</li>
-</ul></section><section id="your-turn" class="level2" data-number="9"><h2 data-number="9" class="anchored" data-anchor-id="your-turn">
+</ul></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a6920706572736f6e203e7d7d-your-turn" class="level2" data-number="9"><h2 data-number="9" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a6920706572736f6e203e7d7d-your-turn">
 <span class="header-section-number">9</span> <iconify-icon inline="" icon="openmoji:person" aria-label="Icon person from openmoji Iconify.design set." title="Icon person from openmoji Iconify.design set."></iconify-icon> Your Turn</h2>
 <p>To be written up.</p>
 </section><section id="sec-references" class="level2" data-number="10"><h2 data-number="10" class="anchored" data-anchor-id="sec-references">
@@ -2394,8 +2412,8 @@ log~likelihood ~~ ll(\beta_i) &amp;= log\prod_{}^{}(p_i)^{y_i} * (1-p_i)^{1-y_i}
 <li>Paul Roback &amp; Julie Legler. (January 26, 2021). <em>Beyond Multiple Linear Regression: Applied Generalized Linear Models and Multilevel Models in R</em> <a href="https://bookdown.org/roback/bookdown-BeyondMLR/" class="uri">https://bookdown.org/roback/bookdown-BeyondMLR/</a>
 </li>
 </ol>
-<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" data-entry-spacing="0" role="list">
-<section id="r-package-citations" class="level6"><h6 class="anchored" data-anchor-id="r-package-citations">
+<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" role="list">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c7563696465207061636b6167652d636865636b203e7d7d-r-package-citations" class="level6"><h6 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c7563696465207061636b6167652d636865636b203e7d7d-r-package-citations">
 <iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
 <div class="cell">
 <div class="cell-output-display">
@@ -2408,8 +2426,8 @@ log~likelihood ~~ ll(\beta_i) &amp;= log\prod_{}^{}(p_i)^{y_i} * (1-p_i)^{1-y_i}
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">equatiomatic</td>
-<td style="text-align: left;">0.4.8</td>
-<td style="text-align: left;"><span class="citation" data-cites="equatiomatic">Anderson, Heiss, and Sumners (<a href="#ref-equatiomatic" role="doc-biblioref">2026</a>)</span></td>
+<td style="text-align: left;">0.4.9</td>
+<td style="text-align: left;"><span class="citation" data-cites="equatiomatic">Anderson et al. (<a href="#ref-equatiomatic" role="doc-biblioref">2026</a>)</span></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">ISLR</td>
@@ -2443,8 +2461,7 @@ James, Gareth, Daniela Witten, Trevor Hastie, and Rob Tibshirani. 2021. <em><spa
   abstract = {Predicting Qualitative Target Variables}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-2023" class="csl-entry quarto-appendix-citeas" role="listitem">
-<span>“Modelling with Logistic Regression.”</span> 2023. April 13, 2023.
-<a href="https://madhatterguide.netlify.app/content/courses/Analytics/30-Modelling/Modules/30-LogReg/">https://madhatterguide.netlify.app/content/courses/Analytics/30-Modelling/Modules/30-LogReg/</a>.
+<span>“Modelling with Logistic Regression.”</span> 2023. April 13. <a href="https://madhatterguide.netlify.app/content/courses/Analytics/30-Modelling/Modules/30-LogReg/">https://madhatterguide.netlify.app/content/courses/Analytics/30-Modelling/Modules/30-LogReg/</a>.
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

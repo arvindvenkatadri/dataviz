@@ -7,14 +7,14 @@
 <script src="../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-795e9e8eca1e12b12abcb09a27409631.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-12757e4b7af482b2d9c5bd8860d2b707.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <link href="../../../../../../site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
 <link href="../../../../../../site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
 <script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script src="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.8.27">
+  <meta name="generator" content="quarto-1.10.18">
 
   <meta name="dcterms.date" content="2023-04-13">
   <title>The Mad Hatter's Guide to Data Viz and Stats in R – Modelling with Linear Regression</title>
@@ -24,10 +24,16 @@
   <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reveal.css">
   <style>
-    code{white-space: pre-wrap;}
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
@@ -103,7 +109,6 @@
     div.csl-bib-body { }
     div.csl-entry {
       clear: both;
-      margin-bottom: 0em;
     }
     .hanging-indent div.csl-entry {
       margin-left:2em;
@@ -120,7 +125,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/theme/quarto-180c62c9bcf69a0506044dd7f3253a18.css">
+  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/theme/quarto-7d27a531335543ee0379719666959585.css">
   <link href="../../../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -220,7 +225,7 @@
 <meta property="og:title" content="Modelling with Linear Regression – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:description" content="Predicting Quantitative Target Variables">
 <meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/30-Modelling/Modules/20-LinReg/featured.jpg">
-<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
+<meta property="og:site_name" content="The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta name="twitter:title" content="Modelling with Linear Regression – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta name="twitter:description" content="Predicting Quantitative Target Variables">
 <meta name="twitter:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/30-Modelling/Modules/20-LinReg/featured.jpg">
@@ -257,148 +262,148 @@
 </section>
 
 <section>
-<section id="setting-up-r-packages" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a></a><span class="fu">library</span>(ggformula)</span>
-<span id="cb1-3"><a></a><span class="fu">library</span>(mosaic)</span>
-<span id="cb1-4"><a></a><span class="fu">library</span>(GGally)</span>
-<span id="cb1-5"><a></a><span class="fu">library</span>(corrplot)</span>
-<span id="cb1-6"><a></a><span class="fu">library</span>(corrgram)</span>
-<span id="cb1-7"><a></a><span class="fu">library</span>(ggstatsplot)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a aria-label="1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a aria-label="2"></a><span class="fu">library</span>(ggformula)</span>
+<span id="cb1-3"><a aria-label="3"></a><span class="fu">library</span>(mosaic)</span>
+<span id="cb1-4"><a aria-label="4"></a><span class="fu">library</span>(GGally)</span>
+<span id="cb1-5"><a aria-label="5"></a><span class="fu">library</span>(corrplot)</span>
+<span id="cb1-6"><a aria-label="6"></a><span class="fu">library</span>(corrgram)</span>
+<span id="cb1-7"><a aria-label="7"></a><span class="fu">library</span>(ggstatsplot)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <h4 id="plot-fonts-and-theme">Plot Fonts and Theme</h4>
 <div class="cell" data-messages="false">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">library</span>(systemfonts)</span>
-<span id="cb2-2"><a></a><span class="fu">library</span>(showtext)</span>
-<span id="cb2-3"><a></a><span class="do">## Clean the slate</span></span>
-<span id="cb2-4"><a></a>systemfonts<span class="sc">::</span><span class="fu">clear_local_fonts</span>()</span>
-<span id="cb2-5"><a></a>systemfonts<span class="sc">::</span><span class="fu">clear_registry</span>()</span>
-<span id="cb2-6"><a></a><span class="do">##</span></span>
-<span id="cb2-7"><a></a><span class="fu">showtext_opts</span>(<span class="at">dpi =</span> <span class="dv">96</span>) <span class="co"># set DPI for showtext</span></span>
-<span id="cb2-8"><a></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
-<span id="cb2-9"><a></a>  <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-10"><a></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/Alegreya-Regular.ttf"</span>,</span>
-<span id="cb2-11"><a></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/Alegreya-Bold.ttf"</span>,</span>
-<span id="cb2-12"><a></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/Alegreya-Italic.ttf"</span>,</span>
-<span id="cb2-13"><a></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/Alegreya-BoldItalic.ttf"</span></span>
-<span id="cb2-14"><a></a>)</span>
-<span id="cb2-15"><a></a></span>
-<span id="cb2-16"><a></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
-<span id="cb2-17"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-18"><a></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Regular.ttf"</span>,</span>
-<span id="cb2-19"><a></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Bold.ttf"</span>,</span>
-<span id="cb2-20"><a></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Italic.ttf"</span>,</span>
-<span id="cb2-21"><a></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-BoldItalic.ttf"</span></span>
-<span id="cb2-22"><a></a>)</span>
-<span id="cb2-23"><a></a><span class="fu">showtext_auto</span>(<span class="at">enable =</span> <span class="cn">TRUE</span>) <span class="co"># enable showtext</span></span>
-<span id="cb2-24"><a></a><span class="do">##</span></span>
-<span id="cb2-25"><a></a>theme_custom <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb2-26"><a></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">10</span>) <span class="sc">+</span></span>
-<span id="cb2-27"><a></a></span>
-<span id="cb2-28"><a></a>    <span class="co"># theme(panel.widths = unit(11, "cm"),</span></span>
-<span id="cb2-29"><a></a>    <span class="co">#       panel.heights = unit(6.79, "cm")) + # Golden Ratio</span></span>
-<span id="cb2-30"><a></a></span>
-<span id="cb2-31"><a></a>    <span class="fu">theme</span>(</span>
-<span id="cb2-32"><a></a>      <span class="at">plot.margin =</span> <span class="fu">margin_auto</span>(<span class="at">t =</span> <span class="dv">1</span>, <span class="at">r =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="dv">1</span>, <span class="at">l =</span> <span class="dv">1</span>, <span class="at">unit =</span> <span class="st">"cm"</span>),</span>
-<span id="cb2-33"><a></a>      <span class="at">plot.background =</span> <span class="fu">element_rect</span>(</span>
-<span id="cb2-34"><a></a>        <span class="at">fill =</span> <span class="st">"bisque"</span>,</span>
-<span id="cb2-35"><a></a>        <span class="at">colour =</span> <span class="st">"black"</span>,</span>
-<span id="cb2-36"><a></a>        <span class="at">linewidth =</span> <span class="dv">1</span></span>
-<span id="cb2-37"><a></a>      )</span>
-<span id="cb2-38"><a></a>    ) <span class="sc">+</span></span>
-<span id="cb2-39"><a></a></span>
-<span id="cb2-40"><a></a>    <span class="fu">theme_sub_axis</span>(</span>
-<span id="cb2-41"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-42"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-43"><a></a>        <span class="at">size =</span> <span class="dv">10</span></span>
-<span id="cb2-44"><a></a>      ),</span>
-<span id="cb2-45"><a></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-46"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-47"><a></a>        <span class="at">size =</span> <span class="dv">8</span></span>
-<span id="cb2-48"><a></a>      )</span>
-<span id="cb2-49"><a></a>    ) <span class="sc">+</span></span>
-<span id="cb2-50"><a></a></span>
-<span id="cb2-51"><a></a>    <span class="fu">theme_sub_legend</span>(</span>
-<span id="cb2-52"><a></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-53"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-54"><a></a>        <span class="at">size =</span> <span class="dv">6</span></span>
-<span id="cb2-55"><a></a>      ),</span>
-<span id="cb2-56"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-57"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-58"><a></a>        <span class="at">size =</span> <span class="dv">8</span></span>
-<span id="cb2-59"><a></a>      )</span>
-<span id="cb2-60"><a></a>    ) <span class="sc">+</span></span>
-<span id="cb2-61"><a></a></span>
-<span id="cb2-62"><a></a>    <span class="fu">theme_sub_plot</span>(</span>
-<span id="cb2-63"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-64"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-65"><a></a>        <span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span></span>
-<span id="cb2-66"><a></a>      ),</span>
-<span id="cb2-67"><a></a>      <span class="at">title.position =</span> <span class="st">"plot"</span>,</span>
-<span id="cb2-68"><a></a>      <span class="at">subtitle =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-69"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-70"><a></a>        <span class="at">size =</span> <span class="dv">10</span></span>
-<span id="cb2-71"><a></a>      ),</span>
-<span id="cb2-72"><a></a>      <span class="at">caption =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-73"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-74"><a></a>        <span class="at">size =</span> <span class="dv">6</span></span>
-<span id="cb2-75"><a></a>      ),</span>
-<span id="cb2-76"><a></a>      <span class="at">caption.position =</span> <span class="st">"plot"</span></span>
-<span id="cb2-77"><a></a>    )</span>
-<span id="cb2-78"><a></a>}</span>
-<span id="cb2-79"><a></a></span>
-<span id="cb2-80"><a></a><span class="do">## Use available fonts in ggplot text geoms too!</span></span>
-<span id="cb2-81"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-82"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-83"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-84"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-85"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-86"><a></a>))</span>
-<span id="cb2-87"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-88"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-89"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-90"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-91"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-92"><a></a>))</span>
-<span id="cb2-93"><a></a></span>
-<span id="cb2-94"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"marquee"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-95"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-96"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-97"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-98"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-99"><a></a>))</span>
-<span id="cb2-100"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-101"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-102"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-103"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-104"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-105"><a></a>))</span>
-<span id="cb2-106"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-107"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-108"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-109"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-110"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-111"><a></a>))</span>
-<span id="cb2-112"><a></a></span>
-<span id="cb2-113"><a></a><span class="do">## Set the theme</span></span>
-<span id="cb2-114"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb2-115"><a></a></span>
-<span id="cb2-116"><a></a><span class="do">## tinytable options</span></span>
-<span id="cb2-117"><a></a><span class="fu">options</span>(<span class="st">"tinytable_tt_digits"</span> <span class="ot">=</span> <span class="dv">2</span>)</span>
-<span id="cb2-118"><a></a><span class="fu">options</span>(<span class="st">"tinytable_format_num_fmt"</span> <span class="ot">=</span> <span class="st">"significant_cell"</span>)</span>
-<span id="cb2-119"><a></a><span class="fu">options</span>(<span class="at">tinytable_html_mathjax =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-120"><a></a></span>
-<span id="cb2-121"><a></a></span>
-<span id="cb2-122"><a></a><span class="do">## Set defaults for flextable</span></span>
-<span id="cb2-123"><a></a>flextable<span class="sc">::</span><span class="fu">set_flextable_defaults</span>(<span class="at">font.family =</span> <span class="st">"Roboto Condensed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a aria-label="1"></a><span class="fu">library</span>(systemfonts)</span>
+<span id="cb2-2"><a aria-label="2"></a><span class="fu">library</span>(showtext)</span>
+<span id="cb2-3"><a aria-label="3"></a><span class="do">## Clean the slate</span></span>
+<span id="cb2-4"><a aria-label="4"></a>systemfonts<span class="sc">::</span><span class="fu">clear_local_fonts</span>()</span>
+<span id="cb2-5"><a aria-label="5"></a>systemfonts<span class="sc">::</span><span class="fu">clear_registry</span>()</span>
+<span id="cb2-6"><a aria-label="6"></a><span class="do">##</span></span>
+<span id="cb2-7"><a aria-label="7"></a><span class="fu">showtext_opts</span>(<span class="at">dpi =</span> <span class="dv">96</span>) <span class="co"># set DPI for showtext</span></span>
+<span id="cb2-8"><a aria-label="8"></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
+<span id="cb2-9"><a aria-label="9"></a>  <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-10"><a aria-label="10"></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/Alegreya-Regular.ttf"</span>,</span>
+<span id="cb2-11"><a aria-label="11"></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/Alegreya-Bold.ttf"</span>,</span>
+<span id="cb2-12"><a aria-label="12"></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/Alegreya-Italic.ttf"</span>,</span>
+<span id="cb2-13"><a aria-label="13"></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/Alegreya-BoldItalic.ttf"</span></span>
+<span id="cb2-14"><a aria-label="14"></a>)</span>
+<span id="cb2-15"><a aria-label="15"></a></span>
+<span id="cb2-16"><a aria-label="16"></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
+<span id="cb2-17"><a aria-label="17"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-18"><a aria-label="18"></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Regular.ttf"</span>,</span>
+<span id="cb2-19"><a aria-label="19"></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Bold.ttf"</span>,</span>
+<span id="cb2-20"><a aria-label="20"></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Italic.ttf"</span>,</span>
+<span id="cb2-21"><a aria-label="21"></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-BoldItalic.ttf"</span></span>
+<span id="cb2-22"><a aria-label="22"></a>)</span>
+<span id="cb2-23"><a aria-label="23"></a><span class="fu">showtext_auto</span>(<span class="at">enable =</span> <span class="cn">TRUE</span>) <span class="co"># enable showtext</span></span>
+<span id="cb2-24"><a aria-label="24"></a><span class="do">##</span></span>
+<span id="cb2-25"><a aria-label="25"></a>theme_custom <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb2-26"><a aria-label="26"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">10</span>) <span class="sc">+</span></span>
+<span id="cb2-27"><a aria-label="27"></a></span>
+<span id="cb2-28"><a aria-label="28"></a>    <span class="co"># theme(panel.widths = unit(11, "cm"),</span></span>
+<span id="cb2-29"><a aria-label="29"></a>    <span class="co">#       panel.heights = unit(6.79, "cm")) + # Golden Ratio</span></span>
+<span id="cb2-30"><a aria-label="30"></a></span>
+<span id="cb2-31"><a aria-label="31"></a>    <span class="fu">theme</span>(</span>
+<span id="cb2-32"><a aria-label="32"></a>      <span class="at">plot.margin =</span> <span class="fu">margin_auto</span>(<span class="at">t =</span> <span class="dv">1</span>, <span class="at">r =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="dv">1</span>, <span class="at">l =</span> <span class="dv">1</span>, <span class="at">unit =</span> <span class="st">"cm"</span>),</span>
+<span id="cb2-33"><a aria-label="33"></a>      <span class="at">plot.background =</span> <span class="fu">element_rect</span>(</span>
+<span id="cb2-34"><a aria-label="34"></a>        <span class="at">fill =</span> <span class="st">"bisque"</span>,</span>
+<span id="cb2-35"><a aria-label="35"></a>        <span class="at">colour =</span> <span class="st">"black"</span>,</span>
+<span id="cb2-36"><a aria-label="36"></a>        <span class="at">linewidth =</span> <span class="dv">1</span></span>
+<span id="cb2-37"><a aria-label="37"></a>      )</span>
+<span id="cb2-38"><a aria-label="38"></a>    ) <span class="sc">+</span></span>
+<span id="cb2-39"><a aria-label="39"></a></span>
+<span id="cb2-40"><a aria-label="40"></a>    <span class="fu">theme_sub_axis</span>(</span>
+<span id="cb2-41"><a aria-label="41"></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-42"><a aria-label="42"></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-43"><a aria-label="43"></a>        <span class="at">size =</span> <span class="dv">10</span></span>
+<span id="cb2-44"><a aria-label="44"></a>      ),</span>
+<span id="cb2-45"><a aria-label="45"></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-46"><a aria-label="46"></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-47"><a aria-label="47"></a>        <span class="at">size =</span> <span class="dv">8</span></span>
+<span id="cb2-48"><a aria-label="48"></a>      )</span>
+<span id="cb2-49"><a aria-label="49"></a>    ) <span class="sc">+</span></span>
+<span id="cb2-50"><a aria-label="50"></a></span>
+<span id="cb2-51"><a aria-label="51"></a>    <span class="fu">theme_sub_legend</span>(</span>
+<span id="cb2-52"><a aria-label="52"></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-53"><a aria-label="53"></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-54"><a aria-label="54"></a>        <span class="at">size =</span> <span class="dv">6</span></span>
+<span id="cb2-55"><a aria-label="55"></a>      ),</span>
+<span id="cb2-56"><a aria-label="56"></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-57"><a aria-label="57"></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-58"><a aria-label="58"></a>        <span class="at">size =</span> <span class="dv">8</span></span>
+<span id="cb2-59"><a aria-label="59"></a>      )</span>
+<span id="cb2-60"><a aria-label="60"></a>    ) <span class="sc">+</span></span>
+<span id="cb2-61"><a aria-label="61"></a></span>
+<span id="cb2-62"><a aria-label="62"></a>    <span class="fu">theme_sub_plot</span>(</span>
+<span id="cb2-63"><a aria-label="63"></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-64"><a aria-label="64"></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-65"><a aria-label="65"></a>        <span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span></span>
+<span id="cb2-66"><a aria-label="66"></a>      ),</span>
+<span id="cb2-67"><a aria-label="67"></a>      <span class="at">title.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb2-68"><a aria-label="68"></a>      <span class="at">subtitle =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-69"><a aria-label="69"></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-70"><a aria-label="70"></a>        <span class="at">size =</span> <span class="dv">10</span></span>
+<span id="cb2-71"><a aria-label="71"></a>      ),</span>
+<span id="cb2-72"><a aria-label="72"></a>      <span class="at">caption =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-73"><a aria-label="73"></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-74"><a aria-label="74"></a>        <span class="at">size =</span> <span class="dv">6</span></span>
+<span id="cb2-75"><a aria-label="75"></a>      ),</span>
+<span id="cb2-76"><a aria-label="76"></a>      <span class="at">caption.position =</span> <span class="st">"plot"</span></span>
+<span id="cb2-77"><a aria-label="77"></a>    )</span>
+<span id="cb2-78"><a aria-label="78"></a>}</span>
+<span id="cb2-79"><a aria-label="79"></a></span>
+<span id="cb2-80"><a aria-label="80"></a><span class="do">## Use available fonts in ggplot text geoms too!</span></span>
+<span id="cb2-81"><a aria-label="81"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-82"><a aria-label="82"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-83"><a aria-label="83"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-84"><a aria-label="84"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-85"><a aria-label="85"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-86"><a aria-label="86"></a>))</span>
+<span id="cb2-87"><a aria-label="87"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-88"><a aria-label="88"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-89"><a aria-label="89"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-90"><a aria-label="90"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-91"><a aria-label="91"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-92"><a aria-label="92"></a>))</span>
+<span id="cb2-93"><a aria-label="93"></a></span>
+<span id="cb2-94"><a aria-label="94"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"marquee"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-95"><a aria-label="95"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-96"><a aria-label="96"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-97"><a aria-label="97"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-98"><a aria-label="98"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-99"><a aria-label="99"></a>))</span>
+<span id="cb2-100"><a aria-label="100"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-101"><a aria-label="101"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-102"><a aria-label="102"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-103"><a aria-label="103"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-104"><a aria-label="104"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-105"><a aria-label="105"></a>))</span>
+<span id="cb2-106"><a aria-label="106"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-107"><a aria-label="107"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-108"><a aria-label="108"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-109"><a aria-label="109"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-110"><a aria-label="110"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-111"><a aria-label="111"></a>))</span>
+<span id="cb2-112"><a aria-label="112"></a></span>
+<span id="cb2-113"><a aria-label="113"></a><span class="do">## Set the theme</span></span>
+<span id="cb2-114"><a aria-label="114"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb2-115"><a aria-label="115"></a></span>
+<span id="cb2-116"><a aria-label="116"></a><span class="do">## tinytable options</span></span>
+<span id="cb2-117"><a aria-label="117"></a><span class="fu">options</span>(<span class="st">"tinytable_tt_digits"</span> <span class="ot">=</span> <span class="dv">2</span>)</span>
+<span id="cb2-118"><a aria-label="118"></a><span class="fu">options</span>(<span class="st">"tinytable_format_num_fmt"</span> <span class="ot">=</span> <span class="st">"significant_cell"</span>)</span>
+<span id="cb2-119"><a aria-label="119"></a><span class="fu">options</span>(<span class="at">tinytable_html_mathjax =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-120"><a aria-label="120"></a></span>
+<span id="cb2-121"><a aria-label="121"></a></span>
+<span id="cb2-122"><a aria-label="122"></a><span class="do">## Set defaults for flextable</span></span>
+<span id="cb2-123"><a aria-label="123"></a>flextable<span class="sc">::</span><span class="fu">set_flextable_defaults</span>(<span class="at">font.family =</span> <span class="st">"Roboto Condensed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div></section>
-<section id="introduction" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="openmoji:japanese-symbol-for-beginner" aria-label="Icon japanese-symbol-for-beginner from openmoji Iconify.design set." title="Icon japanese-symbol-for-beginner from openmoji Iconify.design set."></iconify-icon> Introduction</h2>
 <p>One of the most common problems in Prediction Analytics is that of predicting a Quantitative response variable, based on one or more Quantitative predictor variables or <em>features</em>. This is called <strong><em>Linear Regression</em></strong>. We will use the intuitions built up during our study of ANOVA to develop our ideas about Linear Regression.</p>
 <p>Suppose we have data on salaries in a Company, with years of study and previous experience. Would we be able to predict the prospective salary of a new candidate, based on their years of study and experience? Or based on the mileage done, could we predict the resale price of a used car? These are typical problems in Linear Regression.</p>
@@ -418,7 +423,7 @@
 </div>
 </section>
 
-<section id="the-linear-regression-model" class="title-slide slide level2 center scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792072616469782d69636f6e7320626f782d6d6f64656c203e7d7d-the-linear-regression-model" class="title-slide slide level2 center scrollable">
 <h2><iconify-icon inline="" icon="radix-icons:box-model" aria-label="Icon box-model from radix-icons Iconify.design set." title="Icon box-model from radix-icons Iconify.design set."></iconify-icon> The Linear Regression Model</h2>
 <p>The premise here is that many common statistical tests are special cases of the linear model.</p>
 <p>A linear model estimates the relationship between one <em>continuous</em> or <em>ordinal</em> variable (dependent variable or “response”) and one or more other variables (explanatory variable or “predictors”). It is assumed that the relationship is linear:<sup>1</sup></p>
@@ -464,7 +469,7 @@ Figure&nbsp;1: Least Squares
 </div>
 <aside><ol class="aside-footnotes"><li id="fn1"><p>The model is linear in the <strong>parameters</strong> <span class="math inline">\(\beta_i\)</span>, e.g.&nbsp;We can have this:</p></li></ol></aside></section>
 
-<section id="linear-models-as-hypothesis-tests" class="title-slide slide level2 center scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073696d706c652d69636f6e73206879706f746865736973203e7d7d-linear-models-as-hypothesis-tests" class="title-slide slide level2 center scrollable">
 <h2><iconify-icon inline="" icon="simple-icons:hypothesis" aria-label="Icon hypothesis from simple-icons Iconify.design set." title="Icon hypothesis from simple-icons Iconify.design set."></iconify-icon> Linear Models as Hypothesis Tests</h2>
 <p>Using linear models is based on the idea of <strong>Testing of Hypotheses</strong>. The Hypothesis Testing method typically defines a NULL Hypothesis where the statements read as “<strong>there is no relationship</strong>” between the variables at hand, explanatory and responses. The Alternative Hypothesis typically states that there <em>is</em> a relationship between the variables.</p>
 <p>Accordingly, in fitting a linear model, we follow the process as follows:</p>
@@ -556,17 +561,17 @@ Figure&nbsp;2: OLS Assumptions
 </section>
 
 <section>
-<section id="linear-model-workflow" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-linear-model-workflow" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Linear Model Workflow</h2>
 <p>OK, on with the computation!</p>
 </section>
-<section id="workflow-read-the-data" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-read-the-data" class="slide level3">
 <h3><iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: Read the Data</h3>
 <p>Let us now read in the data and check for these assumptions as part of our Workflow.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">data</span>(<span class="st">"BostonHousing2"</span>, <span class="at">package =</span> <span class="st">"mlbench"</span>)</span>
-<span id="cb3-2"><a></a>housing <span class="ot">&lt;-</span> BostonHousing2</span>
-<span id="cb3-3"><a></a>skimr<span class="sc">::</span><span class="fu">skim</span>(housing)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a aria-label="1"></a><span class="fu">data</span>(<span class="st">"BostonHousing2"</span>, <span class="at">package =</span> <span class="st">"mlbench"</span>)</span>
+<span id="cb3-2"><a aria-label="2"></a>housing <span class="ot">&lt;-</span> BostonHousing2</span>
+<span id="cb3-3"><a aria-label="3"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(housing)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top">
 <caption>Data summary</caption>
@@ -905,7 +910,7 @@ Figure&nbsp;2: OLS Assumptions
 </div>
 </div>
 </section>
-<section id="data-dictionary" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e652064696374696f6e6172792d6c616e67756167652d626f6f6b2d736f6c6964203e7d7d-data-dictionary" class="slide level3">
 <h3><iconify-icon inline="" icon="streamline:dictionary-language-book-solid" aria-label="Icon dictionary-language-book-solid from streamline Iconify.design set." title="Icon dictionary-language-book-solid from streamline Iconify.design set."></iconify-icon> Data Dictionary</h3>
 <p>The original data are 506 observations on 14 variables, <code>medv</code> being the target variable:</p>
 <table class="caption-top">
@@ -999,7 +1004,7 @@ Figure&nbsp;2: OLS Assumptions
 </table>
 <p>Our response variable is <code>cmedv</code>, the <em>corrected median value of owner-occupied homes in USD 1000’</em>s. Their are many Quantitative feature variables that we can use to predict <code>cmedv</code>. And there are two Qualitative features, <code>chas</code> and <code>tax</code>.</p>
 </section>
-<section id="workflow-eda" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-eda" class="slide level3">
 <h3><iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow: EDA</h3>
 <p>In order to fit the linear model, we need to choose <strong>predictor</strong> variables that have strong correlations with the <strong>target</strong> variable. We will first do this with <code>GGally</code>, and then with the <code>tidyverse</code> itself. Both give us a very unique view into the correlations that exist within this dataset.</p>
 <div class="panel-tabset nav-pills" style="background: whitesmoke;">
@@ -1009,54 +1014,54 @@ Figure&nbsp;2: OLS Assumptions
 <p>Let us select a few sets of Quantitative and Qualitative features, along with the target variable <code>cmedv</code> and do a pairs-plots with them:</p>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb4-2"><a></a></span>
-<span id="cb4-3"><a></a>housing <span class="sc">%&gt;%</span></span>
-<span id="cb4-4"><a></a>  <span class="co"># Target variable cmedv</span></span>
-<span id="cb4-5"><a></a>  <span class="co"># Predictors Rooms / Age / Distance to City Centres / Radial Highway Access</span></span>
-<span id="cb4-6"><a></a>  <span class="fu">select</span>(cmedv, rm, age, dis) <span class="sc">%&gt;%</span></span>
-<span id="cb4-7"><a></a>  GGally<span class="sc">::</span><span class="fu">ggpairs</span>(</span>
-<span id="cb4-8"><a></a>    <span class="at">title =</span> <span class="st">"Plot 1"</span>,</span>
-<span id="cb4-9"><a></a>    <span class="at">progress =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb4-10"><a></a>    <span class="at">lower =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(<span class="st">"smooth"</span>,</span>
-<span id="cb4-11"><a></a>      <span class="at">alpha =</span> <span class="fl">0.2</span></span>
-<span id="cb4-12"><a></a>    ))</span>
-<span id="cb4-13"><a></a>  )</span>
-<span id="cb4-14"><a></a></span>
-<span id="cb4-15"><a></a>housing <span class="sc">%&gt;%</span></span>
-<span id="cb4-16"><a></a>  <span class="co"># Target variable cmedv</span></span>
-<span id="cb4-17"><a></a>  <span class="co"># Predictors: Access to Radial Highways, / Resid. Land Proportion / proportion of non-retail business acres / full-value property-tax rate per USD 10,000</span></span>
-<span id="cb4-18"><a></a>  <span class="fu">select</span>(cmedv, rad, zn, indus, tax) <span class="sc">%&gt;%</span></span>
-<span id="cb4-19"><a></a>  GGally<span class="sc">::</span><span class="fu">ggpairs</span>(</span>
-<span id="cb4-20"><a></a>    <span class="at">title =</span> <span class="st">"Plot 2"</span>,</span>
-<span id="cb4-21"><a></a>    <span class="at">progress =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb4-22"><a></a>    <span class="at">lower =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(<span class="st">"smooth"</span>,</span>
-<span id="cb4-23"><a></a>      <span class="at">alpha =</span> <span class="fl">0.2</span></span>
-<span id="cb4-24"><a></a>    ))</span>
-<span id="cb4-25"><a></a>  )</span>
-<span id="cb4-26"><a></a></span>
-<span id="cb4-27"><a></a>housing <span class="sc">%&gt;%</span></span>
-<span id="cb4-28"><a></a>  <span class="co"># Target variable cmedv</span></span>
-<span id="cb4-29"><a></a>  <span class="co"># Predictors Crime Rate / Nitrous Oxide / Black Population / Lower Status Population</span></span>
-<span id="cb4-30"><a></a>  <span class="fu">select</span>(cmedv, crim, nox, rad, b, lstat) <span class="sc">%&gt;%</span></span>
-<span id="cb4-31"><a></a>  GGally<span class="sc">::</span><span class="fu">ggpairs</span>(</span>
-<span id="cb4-32"><a></a>    <span class="at">title =</span> <span class="st">"Plot 3"</span>,</span>
-<span id="cb4-33"><a></a>    <span class="at">progress =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb4-34"><a></a>    <span class="at">lower =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(<span class="st">"smooth"</span>,</span>
-<span id="cb4-35"><a></a>      <span class="at">alpha =</span> <span class="fl">0.2</span></span>
-<span id="cb4-36"><a></a>    ))</span>
-<span id="cb4-37"><a></a>  )</span>
-<span id="cb4-38"><a></a>housing <span class="sc">%&gt;%</span></span>
-<span id="cb4-39"><a></a>  <span class="co"># Target variable cmedv</span></span>
-<span id="cb4-40"><a></a>  <span class="co"># Predictor Access to Charles River</span></span>
-<span id="cb4-41"><a></a>  <span class="fu">select</span>(cmedv, chas) <span class="sc">%&gt;%</span></span>
-<span id="cb4-42"><a></a>  GGally<span class="sc">::</span><span class="fu">ggpairs</span>(</span>
-<span id="cb4-43"><a></a>    <span class="at">title =</span> <span class="st">"Plot 4"</span>,</span>
-<span id="cb4-44"><a></a>    <span class="at">progress =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb4-45"><a></a>    <span class="at">lower =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(<span class="st">"smooth"</span>,</span>
-<span id="cb4-46"><a></a>      <span class="at">alpha =</span> <span class="fl">0.2</span></span>
-<span id="cb4-47"><a></a>    ))</span>
-<span id="cb4-48"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb4-2"><a aria-label="2"></a></span>
+<span id="cb4-3"><a aria-label="3"></a>housing <span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a aria-label="4"></a>  <span class="co"># Target variable cmedv</span></span>
+<span id="cb4-5"><a aria-label="5"></a>  <span class="co"># Predictors Rooms / Age / Distance to City Centres / Radial Highway Access</span></span>
+<span id="cb4-6"><a aria-label="6"></a>  <span class="fu">select</span>(cmedv, rm, age, dis) <span class="sc">%&gt;%</span></span>
+<span id="cb4-7"><a aria-label="7"></a>  GGally<span class="sc">::</span><span class="fu">ggpairs</span>(</span>
+<span id="cb4-8"><a aria-label="8"></a>    <span class="at">title =</span> <span class="st">"Plot 1"</span>,</span>
+<span id="cb4-9"><a aria-label="9"></a>    <span class="at">progress =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb4-10"><a aria-label="10"></a>    <span class="at">lower =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(<span class="st">"smooth"</span>,</span>
+<span id="cb4-11"><a aria-label="11"></a>      <span class="at">alpha =</span> <span class="fl">0.2</span></span>
+<span id="cb4-12"><a aria-label="12"></a>    ))</span>
+<span id="cb4-13"><a aria-label="13"></a>  )</span>
+<span id="cb4-14"><a aria-label="14"></a></span>
+<span id="cb4-15"><a aria-label="15"></a>housing <span class="sc">%&gt;%</span></span>
+<span id="cb4-16"><a aria-label="16"></a>  <span class="co"># Target variable cmedv</span></span>
+<span id="cb4-17"><a aria-label="17"></a>  <span class="co"># Predictors: Access to Radial Highways, / Resid. Land Proportion / proportion of non-retail business acres / full-value property-tax rate per USD 10,000</span></span>
+<span id="cb4-18"><a aria-label="18"></a>  <span class="fu">select</span>(cmedv, rad, zn, indus, tax) <span class="sc">%&gt;%</span></span>
+<span id="cb4-19"><a aria-label="19"></a>  GGally<span class="sc">::</span><span class="fu">ggpairs</span>(</span>
+<span id="cb4-20"><a aria-label="20"></a>    <span class="at">title =</span> <span class="st">"Plot 2"</span>,</span>
+<span id="cb4-21"><a aria-label="21"></a>    <span class="at">progress =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb4-22"><a aria-label="22"></a>    <span class="at">lower =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(<span class="st">"smooth"</span>,</span>
+<span id="cb4-23"><a aria-label="23"></a>      <span class="at">alpha =</span> <span class="fl">0.2</span></span>
+<span id="cb4-24"><a aria-label="24"></a>    ))</span>
+<span id="cb4-25"><a aria-label="25"></a>  )</span>
+<span id="cb4-26"><a aria-label="26"></a></span>
+<span id="cb4-27"><a aria-label="27"></a>housing <span class="sc">%&gt;%</span></span>
+<span id="cb4-28"><a aria-label="28"></a>  <span class="co"># Target variable cmedv</span></span>
+<span id="cb4-29"><a aria-label="29"></a>  <span class="co"># Predictors Crime Rate / Nitrous Oxide / Black Population / Lower Status Population</span></span>
+<span id="cb4-30"><a aria-label="30"></a>  <span class="fu">select</span>(cmedv, crim, nox, rad, b, lstat) <span class="sc">%&gt;%</span></span>
+<span id="cb4-31"><a aria-label="31"></a>  GGally<span class="sc">::</span><span class="fu">ggpairs</span>(</span>
+<span id="cb4-32"><a aria-label="32"></a>    <span class="at">title =</span> <span class="st">"Plot 3"</span>,</span>
+<span id="cb4-33"><a aria-label="33"></a>    <span class="at">progress =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb4-34"><a aria-label="34"></a>    <span class="at">lower =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(<span class="st">"smooth"</span>,</span>
+<span id="cb4-35"><a aria-label="35"></a>      <span class="at">alpha =</span> <span class="fl">0.2</span></span>
+<span id="cb4-36"><a aria-label="36"></a>    ))</span>
+<span id="cb4-37"><a aria-label="37"></a>  )</span>
+<span id="cb4-38"><a aria-label="38"></a>housing <span class="sc">%&gt;%</span></span>
+<span id="cb4-39"><a aria-label="39"></a>  <span class="co"># Target variable cmedv</span></span>
+<span id="cb4-40"><a aria-label="40"></a>  <span class="co"># Predictor Access to Charles River</span></span>
+<span id="cb4-41"><a aria-label="41"></a>  <span class="fu">select</span>(cmedv, chas) <span class="sc">%&gt;%</span></span>
+<span id="cb4-42"><a aria-label="42"></a>  GGally<span class="sc">::</span><span class="fu">ggpairs</span>(</span>
+<span id="cb4-43"><a aria-label="43"></a>    <span class="at">title =</span> <span class="st">"Plot 4"</span>,</span>
+<span id="cb4-44"><a aria-label="44"></a>    <span class="at">progress =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb4-45"><a aria-label="45"></a>    <span class="at">lower =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(<span class="st">"smooth"</span>,</span>
+<span id="cb4-46"><a aria-label="46"></a>      <span class="at">alpha =</span> <span class="fl">0.2</span></span>
+<span id="cb4-47"><a aria-label="47"></a>    ))</span>
+<span id="cb4-48"><a aria-label="48"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div id="fig-ggpairs-plots" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig">
@@ -1156,20 +1161,20 @@ Figure&nbsp;3: Pairs Plots with GGally
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>correlation<span class="sc">::</span><span class="fu">correlation</span>(housing <span class="sc">%&gt;%</span></span>
-<span id="cb5-2"><a></a>  <span class="fu">select</span>(<span class="fu">where</span>(is.numeric))) <span class="sc">%&gt;%</span></span>
-<span id="cb5-3"><a></a>  <span class="fu">filter</span>(Parameter1 <span class="sc">==</span> <span class="st">"cmedv"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb5-4"><a></a>  <span class="fu">gf_errorbar</span>(CI_low <span class="sc">+</span> CI_high <span class="sc">~</span> <span class="fu">reorder</span>(Parameter2, r),</span>
-<span id="cb5-5"><a></a>    <span class="at">width =</span> <span class="fl">0.5</span></span>
-<span id="cb5-6"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb5-7"><a></a>  <span class="fu">gf_point</span>(r <span class="sc">~</span> <span class="fu">reorder</span>(Parameter2, r), <span class="at">size =</span> <span class="dv">4</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb5-8"><a></a>  <span class="fu">gf_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"grey"</span>, <span class="at">linewidth =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb5-9"><a></a>  <span class="fu">gf_labs</span>(</span>
-<span id="cb5-10"><a></a>    <span class="at">title =</span> <span class="st">"Correlation Errorbar Chart"</span>,</span>
-<span id="cb5-11"><a></a>    <span class="at">subtitle =</span> <span class="st">"Target variable: cmedv"</span>,</span>
-<span id="cb5-12"><a></a>    <span class="at">x =</span> <span class="st">"Predictor Variable"</span>,</span>
-<span id="cb5-13"><a></a>    <span class="at">y =</span> <span class="st">"Correlation Score with cmedv"</span></span>
-<span id="cb5-14"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a aria-label="1"></a>correlation<span class="sc">::</span><span class="fu">correlation</span>(housing <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a aria-label="2"></a>  <span class="fu">select</span>(<span class="fu">where</span>(is.numeric))) <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a aria-label="3"></a>  <span class="fu">filter</span>(Parameter1 <span class="sc">==</span> <span class="st">"cmedv"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a aria-label="4"></a>  <span class="fu">gf_errorbar</span>(CI_low <span class="sc">+</span> CI_high <span class="sc">~</span> <span class="fu">reorder</span>(Parameter2, r),</span>
+<span id="cb5-5"><a aria-label="5"></a>    <span class="at">width =</span> <span class="fl">0.5</span></span>
+<span id="cb5-6"><a aria-label="6"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb5-7"><a aria-label="7"></a>  <span class="fu">gf_point</span>(r <span class="sc">~</span> <span class="fu">reorder</span>(Parameter2, r), <span class="at">size =</span> <span class="dv">4</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-8"><a aria-label="8"></a>  <span class="fu">gf_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"grey"</span>, <span class="at">linewidth =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-9"><a aria-label="9"></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb5-10"><a aria-label="10"></a>    <span class="at">title =</span> <span class="st">"Correlation Errorbar Chart"</span>,</span>
+<span id="cb5-11"><a aria-label="11"></a>    <span class="at">subtitle =</span> <span class="st">"Target variable: cmedv"</span>,</span>
+<span id="cb5-12"><a aria-label="12"></a>    <span class="at">x =</span> <span class="st">"Predictor Variable"</span>,</span>
+<span id="cb5-13"><a aria-label="13"></a>    <span class="at">y =</span> <span class="st">"Correlation Score with cmedv"</span></span>
+<span id="cb5-14"><a aria-label="14"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-error-bar-plot" class="quarto-float quarto-figure quarto-figure-center">
@@ -1188,7 +1193,7 @@ Figure&nbsp;4: Correlation of Quantitative Predictors with Target Variable cmedv
 </div>
 </div>
 </section>
-<section id="model-building" class="slide level3 scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-model-building" class="slide level3 scrollable">
 <h3><iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Model Building</h3>
 <p>We will first execute the <code>lm</code> test with code and evaluate the results. Then we will do an intuitive walk through of the process and finally, hand-calculate entire analysis for clear understanding.</p>
 <div class="panel-tabset nav-pills" style="background: whitesmoke;">
@@ -1197,8 +1202,8 @@ Figure&nbsp;4: Correlation of Quantitative Predictors with Target Variable cmedv
 <div id="tabset-2-1">
 <p>R offers a very simple command <code>lm</code> to execute an Linear Model: Note the familiar <code>formula</code> of stating the variables: ( <span class="math inline">\(y \sim x\)</span>; where <span class="math inline">\(y\)</span> = target, <span class="math inline">\(x\)</span> = predictor)</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>housing_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(cmedv <span class="sc">~</span> rm, <span class="at">data =</span> housing)</span>
-<span id="cb6-2"><a></a><span class="fu">summary</span>(housing_lm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a aria-label="1"></a>housing_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(cmedv <span class="sc">~</span> rm, <span class="at">data =</span> housing)</span>
+<span id="cb6-2"><a aria-label="2"></a><span class="fu">summary</span>(housing_lm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -1222,14 +1227,14 @@ F-statistic: 474.3 on 1 and 504 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 <p>The model can be presented in <em>tidy form</em> using the <code>broom</code> package:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="co"># Tidy Data frame for the model using `broom`</span></span>
-<span id="cb8-2"><a></a>housing_lm_tidy <span class="ot">&lt;-</span></span>
-<span id="cb8-3"><a></a>  housing_lm <span class="sc">%&gt;%</span></span>
-<span id="cb8-4"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(</span>
-<span id="cb8-5"><a></a>    <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb8-6"><a></a>    <span class="at">conf.level =</span> <span class="fl">0.95</span></span>
-<span id="cb8-7"><a></a>  )</span>
-<span id="cb8-8"><a></a>housing_lm_tidy</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a aria-label="1"></a><span class="co"># Tidy Data frame for the model using `broom`</span></span>
+<span id="cb8-2"><a aria-label="2"></a>housing_lm_tidy <span class="ot">&lt;-</span></span>
+<span id="cb8-3"><a aria-label="3"></a>  housing_lm <span class="sc">%&gt;%</span></span>
+<span id="cb8-4"><a aria-label="4"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(</span>
+<span id="cb8-5"><a aria-label="5"></a>    <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb8-6"><a aria-label="6"></a>    <span class="at">conf.level =</span> <span class="fl">0.95</span></span>
+<span id="cb8-7"><a aria-label="7"></a>  )</span>
+<span id="cb8-8"><a aria-label="8"></a>housing_lm_tidy</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -1265,34 +1270,34 @@ F-statistic: 474.3 on 1 and 504 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>To predict <code>cmedv</code> with <em>new</em> values of <code>rm</code>, we use <code>predict</code>. Let us now try to make predictions with some new data:</p>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>new <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">rm =</span> <span class="fu">seq</span>(<span class="dv">3</span>, <span class="dv">10</span>)) <span class="co"># must be named "rm"</span></span>
-<span id="cb9-2"><a></a>new <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(</span>
-<span id="cb9-3"><a></a>  <span class="at">predictions =</span></span>
-<span id="cb9-4"><a></a>    stats<span class="sc">::</span><span class="fu">predict</span>(</span>
-<span id="cb9-5"><a></a>      <span class="at">object =</span> housing_lm,</span>
-<span id="cb9-6"><a></a>      <span class="at">newdata =</span> .,</span>
-<span id="cb9-7"><a></a>      <span class="at">se.fit =</span> <span class="cn">FALSE</span></span>
-<span id="cb9-8"><a></a>    )</span>
-<span id="cb9-9"><a></a>)</span>
-<span id="cb9-10"><a></a>housing_lm_augment <span class="ot">&lt;-</span></span>
-<span id="cb9-11"><a></a>  housing_lm <span class="sc">%&gt;%</span></span>
-<span id="cb9-12"><a></a>  broom<span class="sc">::</span><span class="fu">augment</span>(</span>
-<span id="cb9-13"><a></a>    <span class="at">se_fit =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb9-14"><a></a>    <span class="at">interval =</span> <span class="st">"confidence"</span></span>
-<span id="cb9-15"><a></a>  )</span>
-<span id="cb9-16"><a></a>housing_lm_augment</span>
-<span id="cb9-17"><a></a><span class="do">##</span></span>
-<span id="cb9-18"><a></a>intercept <span class="ot">&lt;-</span></span>
-<span id="cb9-19"><a></a>  housing_lm_tidy <span class="sc">%&gt;%</span></span>
-<span id="cb9-20"><a></a>  <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"(Intercept)"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb9-21"><a></a>  <span class="fu">select</span>(estimate) <span class="sc">%&gt;%</span></span>
-<span id="cb9-22"><a></a>  <span class="fu">as.numeric</span>()</span>
-<span id="cb9-23"><a></a><span class="do">##</span></span>
-<span id="cb9-24"><a></a>slope <span class="ot">&lt;-</span></span>
-<span id="cb9-25"><a></a>  housing_lm_tidy <span class="sc">%&gt;%</span></span>
-<span id="cb9-26"><a></a>  <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"rm"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb9-27"><a></a>  <span class="fu">select</span>(estimate) <span class="sc">%&gt;%</span></span>
-<span id="cb9-28"><a></a>  <span class="fu">as.numeric</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a aria-label="1"></a>new <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">rm =</span> <span class="fu">seq</span>(<span class="dv">3</span>, <span class="dv">10</span>)) <span class="co"># must be named "rm"</span></span>
+<span id="cb9-2"><a aria-label="2"></a>new <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(</span>
+<span id="cb9-3"><a aria-label="3"></a>  <span class="at">predictions =</span></span>
+<span id="cb9-4"><a aria-label="4"></a>    stats<span class="sc">::</span><span class="fu">predict</span>(</span>
+<span id="cb9-5"><a aria-label="5"></a>      <span class="at">object =</span> housing_lm,</span>
+<span id="cb9-6"><a aria-label="6"></a>      <span class="at">newdata =</span> .,</span>
+<span id="cb9-7"><a aria-label="7"></a>      <span class="at">se.fit =</span> <span class="cn">FALSE</span></span>
+<span id="cb9-8"><a aria-label="8"></a>    )</span>
+<span id="cb9-9"><a aria-label="9"></a>)</span>
+<span id="cb9-10"><a aria-label="10"></a>housing_lm_augment <span class="ot">&lt;-</span></span>
+<span id="cb9-11"><a aria-label="11"></a>  housing_lm <span class="sc">%&gt;%</span></span>
+<span id="cb9-12"><a aria-label="12"></a>  broom<span class="sc">::</span><span class="fu">augment</span>(</span>
+<span id="cb9-13"><a aria-label="13"></a>    <span class="at">se_fit =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-14"><a aria-label="14"></a>    <span class="at">interval =</span> <span class="st">"confidence"</span></span>
+<span id="cb9-15"><a aria-label="15"></a>  )</span>
+<span id="cb9-16"><a aria-label="16"></a>housing_lm_augment</span>
+<span id="cb9-17"><a aria-label="17"></a><span class="do">##</span></span>
+<span id="cb9-18"><a aria-label="18"></a>intercept <span class="ot">&lt;-</span></span>
+<span id="cb9-19"><a aria-label="19"></a>  housing_lm_tidy <span class="sc">%&gt;%</span></span>
+<span id="cb9-20"><a aria-label="20"></a>  <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"(Intercept)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-21"><a aria-label="21"></a>  <span class="fu">select</span>(estimate) <span class="sc">%&gt;%</span></span>
+<span id="cb9-22"><a aria-label="22"></a>  <span class="fu">as.numeric</span>()</span>
+<span id="cb9-23"><a aria-label="23"></a><span class="do">##</span></span>
+<span id="cb9-24"><a aria-label="24"></a>slope <span class="ot">&lt;-</span></span>
+<span id="cb9-25"><a aria-label="25"></a>  housing_lm_tidy <span class="sc">%&gt;%</span></span>
+<span id="cb9-26"><a aria-label="26"></a>  <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"rm"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-27"><a aria-label="27"></a>  <span class="fu">select</span>(estimate) <span class="sc">%&gt;%</span></span>
+<span id="cb9-28"><a aria-label="28"></a>  <span class="fu">as.numeric</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div id="tbl-housing-lm-predict" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-tbl">
@@ -1346,66 +1351,66 @@ Table&nbsp;1: Predictions of cmedv
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb10-2"><a></a><span class="fu">set.seed</span>(<span class="dv">44</span>) <span class="co"># for reproducibility</span></span>
-<span id="cb10-3"><a></a></span>
-<span id="cb10-4"><a></a>housing_lm_augment <span class="sc">%&gt;%</span></span>
-<span id="cb10-5"><a></a>  <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">20</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb10-6"><a></a>  <span class="fu">gf_point</span>(</span>
-<span id="cb10-7"><a></a>    cmedv <span class="sc">~</span> rm,</span>
-<span id="cb10-8"><a></a>    <span class="at">title =</span> <span class="st">"Price vs Average no. of Rooms"</span>,</span>
-<span id="cb10-9"><a></a>    <span class="at">ylab =</span> <span class="st">"Median Price"</span>,</span>
-<span id="cb10-10"><a></a>    <span class="at">xlab =</span> <span class="st">"Avg. No. of Rooms"</span>,</span>
-<span id="cb10-11"><a></a>    <span class="at">caption =</span> <span class="st">"Showing only a sample of the Data"</span></span>
-<span id="cb10-12"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb10-13"><a></a>  <span class="co"># Plot the model equation</span></span>
-<span id="cb10-14"><a></a>  <span class="fu">gf_abline</span>(</span>
-<span id="cb10-15"><a></a>    <span class="at">slope =</span> slope, <span class="at">intercept =</span> intercept,</span>
-<span id="cb10-16"><a></a>    <span class="at">colour =</span> <span class="st">"lightcoral"</span>,</span>
-<span id="cb10-17"><a></a>    <span class="at">linewidth =</span> <span class="dv">2</span></span>
-<span id="cb10-18"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb10-19"><a></a>  <span class="co"># Plot the model prediction points on the line</span></span>
-<span id="cb10-20"><a></a>  <span class="fu">gf_point</span>(.fitted <span class="sc">~</span> rm,</span>
-<span id="cb10-21"><a></a>    <span class="at">shape =</span> <span class="sc">~</span><span class="st">"fitted"</span>, <span class="at">size =</span> <span class="dv">4</span>,</span>
-<span id="cb10-22"><a></a>    <span class="at">color =</span> <span class="st">"grey30"</span></span>
-<span id="cb10-23"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb10-24"><a></a>  <span class="fu">gf_annotate</span>(</span>
-<span id="cb10-25"><a></a>    <span class="at">geom =</span> <span class="st">"segment"</span>,</span>
-<span id="cb10-26"><a></a>    <span class="at">y =</span> <span class="dv">0</span>, <span class="at">yend =</span> <span class="dv">29</span>, <span class="at">x =</span> <span class="dv">7</span>, <span class="at">xend =</span> <span class="dv">7</span>, <span class="co"># manually calculated</span></span>
-<span id="cb10-27"><a></a>    <span class="at">color =</span> <span class="st">"dodgerblue"</span>,</span>
-<span id="cb10-28"><a></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(</span>
-<span id="cb10-29"><a></a>      <span class="at">angle =</span> <span class="dv">30</span>,</span>
-<span id="cb10-30"><a></a>      <span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">"inches"</span>),</span>
-<span id="cb10-31"><a></a>      <span class="at">ends =</span> <span class="st">"last"</span>,</span>
-<span id="cb10-32"><a></a>      <span class="at">type =</span> <span class="st">"open"</span></span>
-<span id="cb10-33"><a></a>    )</span>
-<span id="cb10-34"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb10-35"><a></a>  <span class="fu">gf_annotate</span>(</span>
-<span id="cb10-36"><a></a>    <span class="at">geom =</span> <span class="st">"segment"</span>,</span>
-<span id="cb10-37"><a></a>    <span class="at">y =</span> <span class="dv">29</span>, <span class="at">yend =</span> <span class="dv">29</span>, <span class="at">x =</span> <span class="fl">2.5</span>, <span class="at">xend =</span> <span class="dv">7</span>, <span class="co"># manually calculated</span></span>
-<span id="cb10-38"><a></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(</span>
-<span id="cb10-39"><a></a>      <span class="at">angle =</span> <span class="dv">30</span>,</span>
-<span id="cb10-40"><a></a>      <span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">"inches"</span>),</span>
-<span id="cb10-41"><a></a>      <span class="at">ends =</span> <span class="st">"first"</span>,</span>
-<span id="cb10-42"><a></a>      <span class="at">type =</span> <span class="st">"open"</span></span>
-<span id="cb10-43"><a></a>    ),</span>
-<span id="cb10-44"><a></a>    <span class="at">color =</span> <span class="st">"dodgerblue"</span></span>
-<span id="cb10-45"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb10-46"><a></a>  <span class="fu">gf_refine</span>(</span>
-<span id="cb10-47"><a></a>    <span class="fu">scale_x_continuous</span>(</span>
-<span id="cb10-48"><a></a>      <span class="at">limits =</span> <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="dv">10</span>),</span>
-<span id="cb10-49"><a></a>      <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)</span>
-<span id="cb10-50"><a></a>    ),</span>
-<span id="cb10-51"><a></a>    <span class="fu">scale_shape_manual</span>(</span>
-<span id="cb10-52"><a></a>      <span class="at">values =</span> <span class="fu">c</span>(<span class="at">fitted =</span> <span class="dv">9</span>),</span>
-<span id="cb10-53"><a></a>      <span class="at">name =</span> <span class="st">"Model Predictions"</span></span>
-<span id="cb10-54"><a></a>    ),</span>
-<span id="cb10-55"><a></a>    <span class="co"># removes plot panel margins</span></span>
-<span id="cb10-56"><a></a>    <span class="fu">scale_y_continuous</span>(</span>
-<span id="cb10-57"><a></a>      <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">55</span>),</span>
-<span id="cb10-58"><a></a>      <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)</span>
-<span id="cb10-59"><a></a>    )</span>
-<span id="cb10-60"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb10-2"><a aria-label="2"></a><span class="fu">set.seed</span>(<span class="dv">44</span>) <span class="co"># for reproducibility</span></span>
+<span id="cb10-3"><a aria-label="3"></a></span>
+<span id="cb10-4"><a aria-label="4"></a>housing_lm_augment <span class="sc">%&gt;%</span></span>
+<span id="cb10-5"><a aria-label="5"></a>  <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">20</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-6"><a aria-label="6"></a>  <span class="fu">gf_point</span>(</span>
+<span id="cb10-7"><a aria-label="7"></a>    cmedv <span class="sc">~</span> rm,</span>
+<span id="cb10-8"><a aria-label="8"></a>    <span class="at">title =</span> <span class="st">"Price vs Average no. of Rooms"</span>,</span>
+<span id="cb10-9"><a aria-label="9"></a>    <span class="at">ylab =</span> <span class="st">"Median Price"</span>,</span>
+<span id="cb10-10"><a aria-label="10"></a>    <span class="at">xlab =</span> <span class="st">"Avg. No. of Rooms"</span>,</span>
+<span id="cb10-11"><a aria-label="11"></a>    <span class="at">caption =</span> <span class="st">"Showing only a sample of the Data"</span></span>
+<span id="cb10-12"><a aria-label="12"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb10-13"><a aria-label="13"></a>  <span class="co"># Plot the model equation</span></span>
+<span id="cb10-14"><a aria-label="14"></a>  <span class="fu">gf_abline</span>(</span>
+<span id="cb10-15"><a aria-label="15"></a>    <span class="at">slope =</span> slope, <span class="at">intercept =</span> intercept,</span>
+<span id="cb10-16"><a aria-label="16"></a>    <span class="at">colour =</span> <span class="st">"lightcoral"</span>,</span>
+<span id="cb10-17"><a aria-label="17"></a>    <span class="at">linewidth =</span> <span class="dv">2</span></span>
+<span id="cb10-18"><a aria-label="18"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb10-19"><a aria-label="19"></a>  <span class="co"># Plot the model prediction points on the line</span></span>
+<span id="cb10-20"><a aria-label="20"></a>  <span class="fu">gf_point</span>(.fitted <span class="sc">~</span> rm,</span>
+<span id="cb10-21"><a aria-label="21"></a>    <span class="at">shape =</span> <span class="sc">~</span><span class="st">"fitted"</span>, <span class="at">size =</span> <span class="dv">4</span>,</span>
+<span id="cb10-22"><a aria-label="22"></a>    <span class="at">color =</span> <span class="st">"grey30"</span></span>
+<span id="cb10-23"><a aria-label="23"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb10-24"><a aria-label="24"></a>  <span class="fu">gf_annotate</span>(</span>
+<span id="cb10-25"><a aria-label="25"></a>    <span class="at">geom =</span> <span class="st">"segment"</span>,</span>
+<span id="cb10-26"><a aria-label="26"></a>    <span class="at">y =</span> <span class="dv">0</span>, <span class="at">yend =</span> <span class="dv">29</span>, <span class="at">x =</span> <span class="dv">7</span>, <span class="at">xend =</span> <span class="dv">7</span>, <span class="co"># manually calculated</span></span>
+<span id="cb10-27"><a aria-label="27"></a>    <span class="at">color =</span> <span class="st">"dodgerblue"</span>,</span>
+<span id="cb10-28"><a aria-label="28"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(</span>
+<span id="cb10-29"><a aria-label="29"></a>      <span class="at">angle =</span> <span class="dv">30</span>,</span>
+<span id="cb10-30"><a aria-label="30"></a>      <span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">"inches"</span>),</span>
+<span id="cb10-31"><a aria-label="31"></a>      <span class="at">ends =</span> <span class="st">"last"</span>,</span>
+<span id="cb10-32"><a aria-label="32"></a>      <span class="at">type =</span> <span class="st">"open"</span></span>
+<span id="cb10-33"><a aria-label="33"></a>    )</span>
+<span id="cb10-34"><a aria-label="34"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb10-35"><a aria-label="35"></a>  <span class="fu">gf_annotate</span>(</span>
+<span id="cb10-36"><a aria-label="36"></a>    <span class="at">geom =</span> <span class="st">"segment"</span>,</span>
+<span id="cb10-37"><a aria-label="37"></a>    <span class="at">y =</span> <span class="dv">29</span>, <span class="at">yend =</span> <span class="dv">29</span>, <span class="at">x =</span> <span class="fl">2.5</span>, <span class="at">xend =</span> <span class="dv">7</span>, <span class="co"># manually calculated</span></span>
+<span id="cb10-38"><a aria-label="38"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(</span>
+<span id="cb10-39"><a aria-label="39"></a>      <span class="at">angle =</span> <span class="dv">30</span>,</span>
+<span id="cb10-40"><a aria-label="40"></a>      <span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">"inches"</span>),</span>
+<span id="cb10-41"><a aria-label="41"></a>      <span class="at">ends =</span> <span class="st">"first"</span>,</span>
+<span id="cb10-42"><a aria-label="42"></a>      <span class="at">type =</span> <span class="st">"open"</span></span>
+<span id="cb10-43"><a aria-label="43"></a>    ),</span>
+<span id="cb10-44"><a aria-label="44"></a>    <span class="at">color =</span> <span class="st">"dodgerblue"</span></span>
+<span id="cb10-45"><a aria-label="45"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb10-46"><a aria-label="46"></a>  <span class="fu">gf_refine</span>(</span>
+<span id="cb10-47"><a aria-label="47"></a>    <span class="fu">scale_x_continuous</span>(</span>
+<span id="cb10-48"><a aria-label="48"></a>      <span class="at">limits =</span> <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="dv">10</span>),</span>
+<span id="cb10-49"><a aria-label="49"></a>      <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb10-50"><a aria-label="50"></a>    ),</span>
+<span id="cb10-51"><a aria-label="51"></a>    <span class="fu">scale_shape_manual</span>(</span>
+<span id="cb10-52"><a aria-label="52"></a>      <span class="at">values =</span> <span class="fu">c</span>(<span class="at">fitted =</span> <span class="dv">9</span>),</span>
+<span id="cb10-53"><a aria-label="53"></a>      <span class="at">name =</span> <span class="st">"Model Predictions"</span></span>
+<span id="cb10-54"><a aria-label="54"></a>    ),</span>
+<span id="cb10-55"><a aria-label="55"></a>    <span class="co"># removes plot panel margins</span></span>
+<span id="cb10-56"><a aria-label="56"></a>    <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb10-57"><a aria-label="57"></a>      <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">55</span>),</span>
+<span id="cb10-58"><a aria-label="58"></a>      <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb10-59"><a aria-label="59"></a>    )</span>
+<span id="cb10-60"><a aria-label="60"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-housing-lm-plot" class="quarto-float quarto-figure quarto-figure-center">
@@ -1433,62 +1438,62 @@ Figure&nbsp;5: Linear Model: Price vs Average no. of Rooms
 <p>How does one fit the “best” line? Consider a choice of “lines” that we can use to fit to the data. Here are 6 lines of varying slopes (and intercepts ) that we can try as candidates for the best fit line:</p>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb11-2"><a></a></span>
-<span id="cb11-3"><a></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
-<span id="cb11-4"><a></a>housing_sample <span class="ot">&lt;-</span> housing_lm_augment <span class="sc">%&gt;%</span></span>
-<span id="cb11-5"><a></a>  <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">15</span>)</span>
-<span id="cb11-6"><a></a>mean_cmedv_sample <span class="ot">&lt;-</span></span>
-<span id="cb11-7"><a></a>  <span class="fu">mean</span>(<span class="sc">~</span>cmedv, <span class="at">na.rm =</span> <span class="cn">TRUE</span>, <span class="at">data =</span> housing_sample)</span>
-<span id="cb11-8"><a></a>mean_rm_sample <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="sc">~</span>rm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>, <span class="at">data =</span> housing_sample)</span>
-<span id="cb11-9"><a></a></span>
-<span id="cb11-10"><a></a>lm_sample <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb11-11"><a></a>  <span class="at">slope =</span> slope <span class="sc">+</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">0</span>, <span class="sc">-</span><span class="dv">2</span>, <span class="sc">-</span><span class="dv">5</span>, <span class="sc">-</span>slope),</span>
-<span id="cb11-12"><a></a>  <span class="at">intercept =</span> intercept <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">30</span>, <span class="sc">-</span><span class="dv">15</span>, <span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">30</span>, <span class="sc">-</span>intercept <span class="sc">+</span> mean_cmedv_sample),</span>
-<span id="cb11-13"><a></a>  <span class="co"># List column containing `housing_sample`</span></span>
-<span id="cb11-14"><a></a>  <span class="co"># No repetition needed !!!</span></span>
-<span id="cb11-15"><a></a>  <span class="co"># Auto recycle for each of slope + intercept</span></span>
-<span id="cb11-16"><a></a>  <span class="at">sample =</span> <span class="fu">list</span>(housing_sample)</span>
-<span id="cb11-17"><a></a>)</span>
-<span id="cb11-18"><a></a></span>
-<span id="cb11-19"><a></a>lm_sample <span class="ot">&lt;-</span> lm_sample <span class="sc">%&gt;%</span></span>
-<span id="cb11-20"><a></a>  <span class="fu">mutate</span>(<span class="at">line =</span> <span class="fu">pmap</span>(</span>
-<span id="cb11-21"><a></a>    <span class="at">.l =</span> <span class="fu">list</span>(intercept, slope, sample),</span>
-<span id="cb11-22"><a></a>    <span class="at">.f =</span> \(intercept, slope, sample)</span>
-<span id="cb11-23"><a></a>    <span class="fu">tibble</span>(</span>
-<span id="cb11-24"><a></a>      <span class="at">pred =</span> intercept <span class="sc">+</span> slope <span class="sc">*</span> sample<span class="sc">$</span>rm,</span>
-<span id="cb11-25"><a></a>      <span class="at">rm =</span> sample<span class="sc">$</span>rm</span>
-<span id="cb11-26"><a></a>    )</span>
-<span id="cb11-27"><a></a>  )) <span class="sc">%&gt;%</span></span>
-<span id="cb11-28"><a></a>  <span class="fu">mutate</span>(<span class="at">graphs =</span> <span class="fu">pmap</span>(</span>
-<span id="cb11-29"><a></a>    <span class="at">.l =</span> <span class="fu">list</span>(sample, line),</span>
-<span id="cb11-30"><a></a>    <span class="at">.f =</span> \(sample, line)</span>
-<span id="cb11-31"><a></a>    <span class="fu">gf_point</span>(cmedv <span class="sc">~</span> rm, <span class="at">data =</span> sample, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb11-32"><a></a>      <span class="fu">gf_line</span>(</span>
-<span id="cb11-33"><a></a>        pred <span class="sc">~</span> rm,</span>
-<span id="cb11-34"><a></a>        <span class="at">data =</span> line,</span>
-<span id="cb11-35"><a></a>        <span class="at">color =</span> <span class="st">"dodgerblue"</span>,</span>
-<span id="cb11-36"><a></a>        <span class="at">linewidth =</span> <span class="dv">2</span></span>
-<span id="cb11-37"><a></a>      ) <span class="sc">%&gt;%</span></span>
-<span id="cb11-38"><a></a>      <span class="fu">gf_refine</span>(</span>
-<span id="cb11-39"><a></a>        <span class="fu">scale_x_continuous</span>(</span>
-<span id="cb11-40"><a></a>          <span class="at">limits =</span> <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="dv">10</span>),</span>
-<span id="cb11-41"><a></a>          <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)</span>
-<span id="cb11-42"><a></a>        ),</span>
-<span id="cb11-43"><a></a>        <span class="co"># removes plot panel margins</span></span>
-<span id="cb11-44"><a></a>        <span class="fu">scale_y_continuous</span>(</span>
-<span id="cb11-45"><a></a>          <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">55</span>),</span>
-<span id="cb11-46"><a></a>          <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)</span>
-<span id="cb11-47"><a></a>        )</span>
-<span id="cb11-48"><a></a>      )</span>
-<span id="cb11-49"><a></a>  ))</span>
-<span id="cb11-50"><a></a></span>
-<span id="cb11-51"><a></a>lm_sample <span class="sc">%&gt;%</span> <span class="fu">pluck</span>(<span class="st">"graphs"</span>, <span class="dv">1</span>)</span>
-<span id="cb11-52"><a></a>lm_sample <span class="sc">%&gt;%</span> <span class="fu">pluck</span>(<span class="st">"graphs"</span>, <span class="dv">2</span>)</span>
-<span id="cb11-53"><a></a>lm_sample <span class="sc">%&gt;%</span> <span class="fu">pluck</span>(<span class="st">"graphs"</span>, <span class="dv">3</span>)</span>
-<span id="cb11-54"><a></a>lm_sample <span class="sc">%&gt;%</span> <span class="fu">pluck</span>(<span class="st">"graphs"</span>, <span class="dv">4</span>)</span>
-<span id="cb11-55"><a></a>lm_sample <span class="sc">%&gt;%</span> <span class="fu">pluck</span>(<span class="st">"graphs"</span>, <span class="dv">5</span>)</span>
-<span id="cb11-56"><a></a>lm_sample <span class="sc">%&gt;%</span> <span class="fu">pluck</span>(<span class="st">"graphs"</span>, <span class="dv">6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb11-2"><a aria-label="2"></a></span>
+<span id="cb11-3"><a aria-label="3"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb11-4"><a aria-label="4"></a>housing_sample <span class="ot">&lt;-</span> housing_lm_augment <span class="sc">%&gt;%</span></span>
+<span id="cb11-5"><a aria-label="5"></a>  <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">15</span>)</span>
+<span id="cb11-6"><a aria-label="6"></a>mean_cmedv_sample <span class="ot">&lt;-</span></span>
+<span id="cb11-7"><a aria-label="7"></a>  <span class="fu">mean</span>(<span class="sc">~</span>cmedv, <span class="at">na.rm =</span> <span class="cn">TRUE</span>, <span class="at">data =</span> housing_sample)</span>
+<span id="cb11-8"><a aria-label="8"></a>mean_rm_sample <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="sc">~</span>rm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>, <span class="at">data =</span> housing_sample)</span>
+<span id="cb11-9"><a aria-label="9"></a></span>
+<span id="cb11-10"><a aria-label="10"></a>lm_sample <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb11-11"><a aria-label="11"></a>  <span class="at">slope =</span> slope <span class="sc">+</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">0</span>, <span class="sc">-</span><span class="dv">2</span>, <span class="sc">-</span><span class="dv">5</span>, <span class="sc">-</span>slope),</span>
+<span id="cb11-12"><a aria-label="12"></a>  <span class="at">intercept =</span> intercept <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">30</span>, <span class="sc">-</span><span class="dv">15</span>, <span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">30</span>, <span class="sc">-</span>intercept <span class="sc">+</span> mean_cmedv_sample),</span>
+<span id="cb11-13"><a aria-label="13"></a>  <span class="co"># List column containing `housing_sample`</span></span>
+<span id="cb11-14"><a aria-label="14"></a>  <span class="co"># No repetition needed !!!</span></span>
+<span id="cb11-15"><a aria-label="15"></a>  <span class="co"># Auto recycle for each of slope + intercept</span></span>
+<span id="cb11-16"><a aria-label="16"></a>  <span class="at">sample =</span> <span class="fu">list</span>(housing_sample)</span>
+<span id="cb11-17"><a aria-label="17"></a>)</span>
+<span id="cb11-18"><a aria-label="18"></a></span>
+<span id="cb11-19"><a aria-label="19"></a>lm_sample <span class="ot">&lt;-</span> lm_sample <span class="sc">%&gt;%</span></span>
+<span id="cb11-20"><a aria-label="20"></a>  <span class="fu">mutate</span>(<span class="at">line =</span> <span class="fu">pmap</span>(</span>
+<span id="cb11-21"><a aria-label="21"></a>    <span class="at">.l =</span> <span class="fu">list</span>(intercept, slope, sample),</span>
+<span id="cb11-22"><a aria-label="22"></a>    <span class="at">.f =</span> \(intercept, slope, sample)</span>
+<span id="cb11-23"><a aria-label="23"></a>    <span class="fu">tibble</span>(</span>
+<span id="cb11-24"><a aria-label="24"></a>      <span class="at">pred =</span> intercept <span class="sc">+</span> slope <span class="sc">*</span> sample<span class="sc">$</span>rm,</span>
+<span id="cb11-25"><a aria-label="25"></a>      <span class="at">rm =</span> sample<span class="sc">$</span>rm</span>
+<span id="cb11-26"><a aria-label="26"></a>    )</span>
+<span id="cb11-27"><a aria-label="27"></a>  )) <span class="sc">%&gt;%</span></span>
+<span id="cb11-28"><a aria-label="28"></a>  <span class="fu">mutate</span>(<span class="at">graphs =</span> <span class="fu">pmap</span>(</span>
+<span id="cb11-29"><a aria-label="29"></a>    <span class="at">.l =</span> <span class="fu">list</span>(sample, line),</span>
+<span id="cb11-30"><a aria-label="30"></a>    <span class="at">.f =</span> \(sample, line)</span>
+<span id="cb11-31"><a aria-label="31"></a>    <span class="fu">gf_point</span>(cmedv <span class="sc">~</span> rm, <span class="at">data =</span> sample, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-32"><a aria-label="32"></a>      <span class="fu">gf_line</span>(</span>
+<span id="cb11-33"><a aria-label="33"></a>        pred <span class="sc">~</span> rm,</span>
+<span id="cb11-34"><a aria-label="34"></a>        <span class="at">data =</span> line,</span>
+<span id="cb11-35"><a aria-label="35"></a>        <span class="at">color =</span> <span class="st">"dodgerblue"</span>,</span>
+<span id="cb11-36"><a aria-label="36"></a>        <span class="at">linewidth =</span> <span class="dv">2</span></span>
+<span id="cb11-37"><a aria-label="37"></a>      ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-38"><a aria-label="38"></a>      <span class="fu">gf_refine</span>(</span>
+<span id="cb11-39"><a aria-label="39"></a>        <span class="fu">scale_x_continuous</span>(</span>
+<span id="cb11-40"><a aria-label="40"></a>          <span class="at">limits =</span> <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="dv">10</span>),</span>
+<span id="cb11-41"><a aria-label="41"></a>          <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb11-42"><a aria-label="42"></a>        ),</span>
+<span id="cb11-43"><a aria-label="43"></a>        <span class="co"># removes plot panel margins</span></span>
+<span id="cb11-44"><a aria-label="44"></a>        <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb11-45"><a aria-label="45"></a>          <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">55</span>),</span>
+<span id="cb11-46"><a aria-label="46"></a>          <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb11-47"><a aria-label="47"></a>        )</span>
+<span id="cb11-48"><a aria-label="48"></a>      )</span>
+<span id="cb11-49"><a aria-label="49"></a>  ))</span>
+<span id="cb11-50"><a aria-label="50"></a></span>
+<span id="cb11-51"><a aria-label="51"></a>lm_sample <span class="sc">%&gt;%</span> <span class="fu">pluck</span>(<span class="st">"graphs"</span>, <span class="dv">1</span>)</span>
+<span id="cb11-52"><a aria-label="52"></a>lm_sample <span class="sc">%&gt;%</span> <span class="fu">pluck</span>(<span class="st">"graphs"</span>, <span class="dv">2</span>)</span>
+<span id="cb11-53"><a aria-label="53"></a>lm_sample <span class="sc">%&gt;%</span> <span class="fu">pluck</span>(<span class="st">"graphs"</span>, <span class="dv">3</span>)</span>
+<span id="cb11-54"><a aria-label="54"></a>lm_sample <span class="sc">%&gt;%</span> <span class="fu">pluck</span>(<span class="st">"graphs"</span>, <span class="dv">4</span>)</span>
+<span id="cb11-55"><a aria-label="55"></a>lm_sample <span class="sc">%&gt;%</span> <span class="fu">pluck</span>(<span class="st">"graphs"</span>, <span class="dv">5</span>)</span>
+<span id="cb11-56"><a aria-label="56"></a>lm_sample <span class="sc">%&gt;%</span> <span class="fu">pluck</span>(<span class="st">"graphs"</span>, <span class="dv">6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div id="fig-housing-lm-intuitive1" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig">
@@ -1578,65 +1583,65 @@ Figure&nbsp;6: Linear Model: Price vs Average no. of Rooms: Various Candidate Re
 <p>It should be apparent that while we cannot determine which line may be the best, the <strong>worst</strong> line seems to be the one in the final plot, which ignores the x-variable <code>rm</code> altogether. This corresponds to the <em>NULL Hypothesis</em>, that there is <em>no relationship</em> between the two variables. Any of the other lines could be a decent candidate, so how do we decide?</p>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb12-2"><a></a></span>
-<span id="cb12-3"><a></a>housing_sample <span class="sc">%&gt;%</span></span>
-<span id="cb12-4"><a></a>  <span class="fu">gf_hline</span>(</span>
-<span id="cb12-5"><a></a>    <span class="at">yintercept =</span> <span class="sc">~</span>mean_cmedv_sample,</span>
-<span id="cb12-6"><a></a>    <span class="at">color =</span> <span class="st">"dodgerblue"</span>, <span class="at">linewidth =</span> <span class="dv">2</span></span>
-<span id="cb12-7"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb12-8"><a></a>  <span class="fu">gf_segment</span>(</span>
-<span id="cb12-9"><a></a>    <span class="at">color =</span> <span class="st">"springgreen3"</span>, <span class="at">linewidth =</span> <span class="dv">2</span>,</span>
-<span id="cb12-10"><a></a>    mean_cmedv_sample <span class="sc">+</span> cmedv <span class="sc">~</span> rm <span class="sc">+</span> rm,</span>
-<span id="cb12-11"><a></a>    <span class="at">title =</span> <span class="st">"Fig A: Price vs </span><span class="sc">\n</span><span class="st">Average no. of Rooms"</span>,</span>
-<span id="cb12-12"><a></a>    <span class="at">subtitle =</span> <span class="st">"NULL Hypothesis"</span>,</span>
-<span id="cb12-13"><a></a>    <span class="at">ylab =</span> <span class="st">"cmedv (Median Price)"</span>,</span>
-<span id="cb12-14"><a></a>    <span class="at">xlab =</span> <span class="st">"rm (Avg. No. of Rooms)"</span></span>
-<span id="cb12-15"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb12-16"><a></a>  <span class="fu">gf_point</span>(cmedv <span class="sc">~</span> rm, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb12-17"><a></a>  <span class="fu">gf_annotate</span>(</span>
-<span id="cb12-18"><a></a>    <span class="at">geom =</span> <span class="st">"label"</span>,</span>
-<span id="cb12-19"><a></a>    <span class="at">y =</span> mean_cmedv_sample <span class="sc">-</span> <span class="dv">2</span>, <span class="at">x =</span> <span class="fl">7.5</span>,</span>
-<span id="cb12-20"><a></a>    <span class="at">label =</span> <span class="st">"Overall Mean of cmedv"</span>,</span>
-<span id="cb12-21"><a></a>    <span class="at">inherit =</span> F</span>
-<span id="cb12-22"><a></a>  )</span>
-<span id="cb12-23"><a></a><span class="do">##</span></span>
-<span id="cb12-24"><a></a>housing_sample <span class="sc">%&gt;%</span></span>
-<span id="cb12-25"><a></a>  <span class="fu">gf_segment</span>(</span>
-<span id="cb12-26"><a></a>    .fitted <span class="sc">+</span> cmedv <span class="sc">~</span> rm <span class="sc">+</span> rm,</span>
-<span id="cb12-27"><a></a>    <span class="at">color =</span> <span class="st">"orangered1"</span>, <span class="at">linewidth =</span> <span class="dv">2</span>,</span>
-<span id="cb12-28"><a></a>    <span class="at">title =</span> <span class="st">"Fig B: Price vs </span><span class="sc">\n</span><span class="st">Average no. of Rooms"</span>,</span>
-<span id="cb12-29"><a></a>    <span class="at">subtitle =</span> <span class="st">"Alternative Hypothesis"</span>,</span>
-<span id="cb12-30"><a></a>    <span class="at">ylab =</span> <span class="st">"cmedv (Median Price)"</span>,</span>
-<span id="cb12-31"><a></a>    <span class="at">xlab =</span> <span class="st">"rm (Avg. No. of Rooms)"</span></span>
-<span id="cb12-32"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb12-33"><a></a>  <span class="fu">gf_abline</span>(</span>
-<span id="cb12-34"><a></a>    <span class="at">slope =</span> slope,</span>
-<span id="cb12-35"><a></a>    <span class="at">intercept =</span> intercept,</span>
-<span id="cb12-36"><a></a>    <span class="at">colour =</span> <span class="st">"purple"</span>, <span class="at">linewidth =</span> <span class="dv">2</span></span>
-<span id="cb12-37"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb12-38"><a></a>  <span class="fu">gf_point</span>(cmedv <span class="sc">~</span> rm, <span class="at">size =</span> <span class="dv">3</span>)</span>
-<span id="cb12-39"><a></a></span>
-<span id="cb12-40"><a></a><span class="do">##</span></span>
-<span id="cb12-41"><a></a>housing_sample <span class="sc">%&gt;%</span></span>
-<span id="cb12-42"><a></a>  <span class="fu">gf_hline</span>(</span>
-<span id="cb12-43"><a></a>    <span class="at">yintercept =</span> <span class="sc">~</span>mean_cmedv_sample,</span>
-<span id="cb12-44"><a></a>    <span class="at">color =</span> <span class="st">"dodgerblue"</span>, <span class="at">linewidth =</span> <span class="dv">2</span></span>
-<span id="cb12-45"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb12-46"><a></a>  <span class="fu">gf_abline</span>(</span>
-<span id="cb12-47"><a></a>    <span class="at">slope =</span> slope,</span>
-<span id="cb12-48"><a></a>    <span class="at">intercept =</span> intercept,</span>
-<span id="cb12-49"><a></a>    <span class="at">colour =</span> <span class="st">"purple"</span>, <span class="at">linewidth =</span> <span class="dv">2</span></span>
-<span id="cb12-50"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb12-51"><a></a>  <span class="fu">gf_segment</span>(</span>
-<span id="cb12-52"><a></a>    .fitted <span class="sc">+</span> mean_cmedv_sample <span class="sc">~</span> rm <span class="sc">+</span> rm,</span>
-<span id="cb12-53"><a></a>    <span class="at">color =</span> <span class="st">"grey50"</span>, <span class="at">linewidth =</span> <span class="dv">2</span>,</span>
-<span id="cb12-54"><a></a>    <span class="at">title =</span> <span class="st">"Fig C: Price vs </span><span class="sc">\n</span><span class="st">Average no. of Rooms"</span>,</span>
-<span id="cb12-55"><a></a>    <span class="at">subtitle =</span> <span class="st">"Residual Error after Modelling"</span>,</span>
-<span id="cb12-56"><a></a>    <span class="at">ylab =</span> <span class="st">"cmedv (Median Price)"</span>,</span>
-<span id="cb12-57"><a></a>    <span class="at">xlab =</span> <span class="st">"rm (Avg. No. of Rooms)"</span></span>
-<span id="cb12-58"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb12-59"><a></a>  <span class="fu">gf_point</span>(cmedv <span class="sc">~</span> rm, <span class="at">size =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb12-2"><a aria-label="2"></a></span>
+<span id="cb12-3"><a aria-label="3"></a>housing_sample <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a aria-label="4"></a>  <span class="fu">gf_hline</span>(</span>
+<span id="cb12-5"><a aria-label="5"></a>    <span class="at">yintercept =</span> <span class="sc">~</span>mean_cmedv_sample,</span>
+<span id="cb12-6"><a aria-label="6"></a>    <span class="at">color =</span> <span class="st">"dodgerblue"</span>, <span class="at">linewidth =</span> <span class="dv">2</span></span>
+<span id="cb12-7"><a aria-label="7"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb12-8"><a aria-label="8"></a>  <span class="fu">gf_segment</span>(</span>
+<span id="cb12-9"><a aria-label="9"></a>    <span class="at">color =</span> <span class="st">"springgreen3"</span>, <span class="at">linewidth =</span> <span class="dv">2</span>,</span>
+<span id="cb12-10"><a aria-label="10"></a>    mean_cmedv_sample <span class="sc">+</span> cmedv <span class="sc">~</span> rm <span class="sc">+</span> rm,</span>
+<span id="cb12-11"><a aria-label="11"></a>    <span class="at">title =</span> <span class="st">"Fig A: Price vs </span><span class="sc">\n</span><span class="st">Average no. of Rooms"</span>,</span>
+<span id="cb12-12"><a aria-label="12"></a>    <span class="at">subtitle =</span> <span class="st">"NULL Hypothesis"</span>,</span>
+<span id="cb12-13"><a aria-label="13"></a>    <span class="at">ylab =</span> <span class="st">"cmedv (Median Price)"</span>,</span>
+<span id="cb12-14"><a aria-label="14"></a>    <span class="at">xlab =</span> <span class="st">"rm (Avg. No. of Rooms)"</span></span>
+<span id="cb12-15"><a aria-label="15"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb12-16"><a aria-label="16"></a>  <span class="fu">gf_point</span>(cmedv <span class="sc">~</span> rm, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-17"><a aria-label="17"></a>  <span class="fu">gf_annotate</span>(</span>
+<span id="cb12-18"><a aria-label="18"></a>    <span class="at">geom =</span> <span class="st">"label"</span>,</span>
+<span id="cb12-19"><a aria-label="19"></a>    <span class="at">y =</span> mean_cmedv_sample <span class="sc">-</span> <span class="dv">2</span>, <span class="at">x =</span> <span class="fl">7.5</span>,</span>
+<span id="cb12-20"><a aria-label="20"></a>    <span class="at">label =</span> <span class="st">"Overall Mean of cmedv"</span>,</span>
+<span id="cb12-21"><a aria-label="21"></a>    <span class="at">inherit =</span> F</span>
+<span id="cb12-22"><a aria-label="22"></a>  )</span>
+<span id="cb12-23"><a aria-label="23"></a><span class="do">##</span></span>
+<span id="cb12-24"><a aria-label="24"></a>housing_sample <span class="sc">%&gt;%</span></span>
+<span id="cb12-25"><a aria-label="25"></a>  <span class="fu">gf_segment</span>(</span>
+<span id="cb12-26"><a aria-label="26"></a>    .fitted <span class="sc">+</span> cmedv <span class="sc">~</span> rm <span class="sc">+</span> rm,</span>
+<span id="cb12-27"><a aria-label="27"></a>    <span class="at">color =</span> <span class="st">"orangered1"</span>, <span class="at">linewidth =</span> <span class="dv">2</span>,</span>
+<span id="cb12-28"><a aria-label="28"></a>    <span class="at">title =</span> <span class="st">"Fig B: Price vs </span><span class="sc">\n</span><span class="st">Average no. of Rooms"</span>,</span>
+<span id="cb12-29"><a aria-label="29"></a>    <span class="at">subtitle =</span> <span class="st">"Alternative Hypothesis"</span>,</span>
+<span id="cb12-30"><a aria-label="30"></a>    <span class="at">ylab =</span> <span class="st">"cmedv (Median Price)"</span>,</span>
+<span id="cb12-31"><a aria-label="31"></a>    <span class="at">xlab =</span> <span class="st">"rm (Avg. No. of Rooms)"</span></span>
+<span id="cb12-32"><a aria-label="32"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb12-33"><a aria-label="33"></a>  <span class="fu">gf_abline</span>(</span>
+<span id="cb12-34"><a aria-label="34"></a>    <span class="at">slope =</span> slope,</span>
+<span id="cb12-35"><a aria-label="35"></a>    <span class="at">intercept =</span> intercept,</span>
+<span id="cb12-36"><a aria-label="36"></a>    <span class="at">colour =</span> <span class="st">"purple"</span>, <span class="at">linewidth =</span> <span class="dv">2</span></span>
+<span id="cb12-37"><a aria-label="37"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb12-38"><a aria-label="38"></a>  <span class="fu">gf_point</span>(cmedv <span class="sc">~</span> rm, <span class="at">size =</span> <span class="dv">3</span>)</span>
+<span id="cb12-39"><a aria-label="39"></a></span>
+<span id="cb12-40"><a aria-label="40"></a><span class="do">##</span></span>
+<span id="cb12-41"><a aria-label="41"></a>housing_sample <span class="sc">%&gt;%</span></span>
+<span id="cb12-42"><a aria-label="42"></a>  <span class="fu">gf_hline</span>(</span>
+<span id="cb12-43"><a aria-label="43"></a>    <span class="at">yintercept =</span> <span class="sc">~</span>mean_cmedv_sample,</span>
+<span id="cb12-44"><a aria-label="44"></a>    <span class="at">color =</span> <span class="st">"dodgerblue"</span>, <span class="at">linewidth =</span> <span class="dv">2</span></span>
+<span id="cb12-45"><a aria-label="45"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb12-46"><a aria-label="46"></a>  <span class="fu">gf_abline</span>(</span>
+<span id="cb12-47"><a aria-label="47"></a>    <span class="at">slope =</span> slope,</span>
+<span id="cb12-48"><a aria-label="48"></a>    <span class="at">intercept =</span> intercept,</span>
+<span id="cb12-49"><a aria-label="49"></a>    <span class="at">colour =</span> <span class="st">"purple"</span>, <span class="at">linewidth =</span> <span class="dv">2</span></span>
+<span id="cb12-50"><a aria-label="50"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb12-51"><a aria-label="51"></a>  <span class="fu">gf_segment</span>(</span>
+<span id="cb12-52"><a aria-label="52"></a>    .fitted <span class="sc">+</span> mean_cmedv_sample <span class="sc">~</span> rm <span class="sc">+</span> rm,</span>
+<span id="cb12-53"><a aria-label="53"></a>    <span class="at">color =</span> <span class="st">"grey50"</span>, <span class="at">linewidth =</span> <span class="dv">2</span>,</span>
+<span id="cb12-54"><a aria-label="54"></a>    <span class="at">title =</span> <span class="st">"Fig C: Price vs </span><span class="sc">\n</span><span class="st">Average no. of Rooms"</span>,</span>
+<span id="cb12-55"><a aria-label="55"></a>    <span class="at">subtitle =</span> <span class="st">"Residual Error after Modelling"</span>,</span>
+<span id="cb12-56"><a aria-label="56"></a>    <span class="at">ylab =</span> <span class="st">"cmedv (Median Price)"</span>,</span>
+<span id="cb12-57"><a aria-label="57"></a>    <span class="at">xlab =</span> <span class="st">"rm (Avg. No. of Rooms)"</span></span>
+<span id="cb12-58"><a aria-label="58"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb12-59"><a aria-label="59"></a>  <span class="fu">gf_point</span>(cmedv <span class="sc">~</span> rm, <span class="at">size =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div id="fig-housing-lm-intuitive2" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig">
@@ -1704,39 +1709,39 @@ SST = SSR + SSE
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb13-2"><a></a></span>
-<span id="cb13-3"><a></a>sim_model <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb13-4"><a></a>  <span class="at">b =</span> slope <span class="sc">+</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">5</span>, <span class="dv">5</span>),</span>
-<span id="cb13-5"><a></a>  <span class="at">a =</span> intercept,</span>
-<span id="cb13-6"><a></a>  <span class="at">dat =</span> <span class="fu">list</span>(<span class="fu">tibble</span>(</span>
-<span id="cb13-7"><a></a>    <span class="at">cmedv =</span> housing_sample<span class="sc">$</span>cmedv,</span>
-<span id="cb13-8"><a></a>    <span class="at">rm =</span> housing_sample<span class="sc">$</span>rm</span>
-<span id="cb13-9"><a></a>  ))</span>
-<span id="cb13-10"><a></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb13-11"><a></a>  <span class="fu">mutate</span>(<span class="at">r_squared =</span> <span class="fu">pmap_dbl</span>(</span>
-<span id="cb13-12"><a></a>    <span class="at">.l =</span> <span class="fu">list</span>(a, b, dat),</span>
-<span id="cb13-13"><a></a>    <span class="at">.f =</span> \(a, b, dat) <span class="fu">sum</span>((dat<span class="sc">$</span>cmedv <span class="sc">-</span> (b <span class="sc">*</span> dat<span class="sc">$</span>rm <span class="sc">+</span> a))<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb13-14"><a></a>  ))</span>
-<span id="cb13-15"><a></a>min_r_squared <span class="ot">&lt;-</span> sim_model <span class="sc">%&gt;%</span></span>
-<span id="cb13-16"><a></a>  <span class="fu">select</span>(r_squared) <span class="sc">%&gt;%</span></span>
-<span id="cb13-17"><a></a>  <span class="fu">min</span>()</span>
-<span id="cb13-18"><a></a>min_slope <span class="ot">&lt;-</span> sim_model <span class="sc">%&gt;%</span></span>
-<span id="cb13-19"><a></a>  <span class="fu">filter</span>(r_squared <span class="sc">==</span> min_r_squared) <span class="sc">%&gt;%</span></span>
-<span id="cb13-20"><a></a>  <span class="fu">select</span>(b) <span class="sc">%&gt;%</span></span>
-<span id="cb13-21"><a></a>  <span class="fu">as.numeric</span>()</span>
-<span id="cb13-22"><a></a>sim_model <span class="sc">%&gt;%</span></span>
-<span id="cb13-23"><a></a>  <span class="fu">gf_point</span>(r_squared <span class="sc">~</span> b, <span class="at">data =</span> ., <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb13-24"><a></a>  <span class="fu">gf_line</span>(<span class="at">ylab =</span> <span class="st">"SSE"</span>, <span class="at">xlab =</span> <span class="st">"slope"</span>, <span class="at">title =</span> <span class="st">"Error vs Slope"</span>, <span class="at">caption =</span> <span class="st">"X-Axis drawn lower down for clarity"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb13-25"><a></a>  <span class="fu">gf_hline</span>(<span class="at">yintercept =</span> min_r_squared, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb13-26"><a></a>  <span class="fu">gf_segment</span>(min_r_squared <span class="sc">+</span> (<span class="sc">-</span><span class="dv">2000</span>) <span class="sc">~</span> min_slope <span class="sc">+</span> min_slope,</span>
-<span id="cb13-27"><a></a>    <span class="at">colour =</span> <span class="st">"red"</span>,</span>
-<span id="cb13-28"><a></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">ends =</span> <span class="st">"last"</span>, <span class="at">length =</span> <span class="fu">unit</span>(<span class="dv">4</span>, <span class="st">"mm"</span>))</span>
-<span id="cb13-29"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb13-30"><a></a>  <span class="fu">gf_refine</span>(</span>
-<span id="cb13-31"><a></a>    <span class="fu">coord_cartesian</span>(<span class="at">expand =</span> <span class="cn">FALSE</span>),</span>
-<span id="cb13-32"><a></a>    <span class="fu">expand_limits</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2000</span>, <span class="dv">20000</span>), <span class="at">x =</span> <span class="fu">c</span>(<span class="fl">3.5</span>, <span class="dv">15</span>))</span>
-<span id="cb13-33"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb13-2"><a aria-label="2"></a></span>
+<span id="cb13-3"><a aria-label="3"></a>sim_model <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb13-4"><a aria-label="4"></a>  <span class="at">b =</span> slope <span class="sc">+</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">5</span>, <span class="dv">5</span>),</span>
+<span id="cb13-5"><a aria-label="5"></a>  <span class="at">a =</span> intercept,</span>
+<span id="cb13-6"><a aria-label="6"></a>  <span class="at">dat =</span> <span class="fu">list</span>(<span class="fu">tibble</span>(</span>
+<span id="cb13-7"><a aria-label="7"></a>    <span class="at">cmedv =</span> housing_sample<span class="sc">$</span>cmedv,</span>
+<span id="cb13-8"><a aria-label="8"></a>    <span class="at">rm =</span> housing_sample<span class="sc">$</span>rm</span>
+<span id="cb13-9"><a aria-label="9"></a>  ))</span>
+<span id="cb13-10"><a aria-label="10"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-11"><a aria-label="11"></a>  <span class="fu">mutate</span>(<span class="at">r_squared =</span> <span class="fu">pmap_dbl</span>(</span>
+<span id="cb13-12"><a aria-label="12"></a>    <span class="at">.l =</span> <span class="fu">list</span>(a, b, dat),</span>
+<span id="cb13-13"><a aria-label="13"></a>    <span class="at">.f =</span> \(a, b, dat) <span class="fu">sum</span>((dat<span class="sc">$</span>cmedv <span class="sc">-</span> (b <span class="sc">*</span> dat<span class="sc">$</span>rm <span class="sc">+</span> a))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb13-14"><a aria-label="14"></a>  ))</span>
+<span id="cb13-15"><a aria-label="15"></a>min_r_squared <span class="ot">&lt;-</span> sim_model <span class="sc">%&gt;%</span></span>
+<span id="cb13-16"><a aria-label="16"></a>  <span class="fu">select</span>(r_squared) <span class="sc">%&gt;%</span></span>
+<span id="cb13-17"><a aria-label="17"></a>  <span class="fu">min</span>()</span>
+<span id="cb13-18"><a aria-label="18"></a>min_slope <span class="ot">&lt;-</span> sim_model <span class="sc">%&gt;%</span></span>
+<span id="cb13-19"><a aria-label="19"></a>  <span class="fu">filter</span>(r_squared <span class="sc">==</span> min_r_squared) <span class="sc">%&gt;%</span></span>
+<span id="cb13-20"><a aria-label="20"></a>  <span class="fu">select</span>(b) <span class="sc">%&gt;%</span></span>
+<span id="cb13-21"><a aria-label="21"></a>  <span class="fu">as.numeric</span>()</span>
+<span id="cb13-22"><a aria-label="22"></a>sim_model <span class="sc">%&gt;%</span></span>
+<span id="cb13-23"><a aria-label="23"></a>  <span class="fu">gf_point</span>(r_squared <span class="sc">~</span> b, <span class="at">data =</span> ., <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-24"><a aria-label="24"></a>  <span class="fu">gf_line</span>(<span class="at">ylab =</span> <span class="st">"SSE"</span>, <span class="at">xlab =</span> <span class="st">"slope"</span>, <span class="at">title =</span> <span class="st">"Error vs Slope"</span>, <span class="at">caption =</span> <span class="st">"X-Axis drawn lower down for clarity"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-25"><a aria-label="25"></a>  <span class="fu">gf_hline</span>(<span class="at">yintercept =</span> min_r_squared, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-26"><a aria-label="26"></a>  <span class="fu">gf_segment</span>(min_r_squared <span class="sc">+</span> (<span class="sc">-</span><span class="dv">2000</span>) <span class="sc">~</span> min_slope <span class="sc">+</span> min_slope,</span>
+<span id="cb13-27"><a aria-label="27"></a>    <span class="at">colour =</span> <span class="st">"red"</span>,</span>
+<span id="cb13-28"><a aria-label="28"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">ends =</span> <span class="st">"last"</span>, <span class="at">length =</span> <span class="fu">unit</span>(<span class="dv">4</span>, <span class="st">"mm"</span>))</span>
+<span id="cb13-29"><a aria-label="29"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb13-30"><a aria-label="30"></a>  <span class="fu">gf_refine</span>(</span>
+<span id="cb13-31"><a aria-label="31"></a>    <span class="fu">coord_cartesian</span>(<span class="at">expand =</span> <span class="cn">FALSE</span>),</span>
+<span id="cb13-32"><a aria-label="32"></a>    <span class="fu">expand_limits</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2000</span>, <span class="dv">20000</span>), <span class="at">x =</span> <span class="fu">c</span>(<span class="fl">3.5</span>, <span class="dv">15</span>))</span>
+<span id="cb13-33"><a aria-label="33"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-housing-lm-intuitive3" class="quarto-float quarto-figure quarto-figure-center">
@@ -1759,26 +1764,26 @@ Figure&nbsp;8: Linear Model: Price vs Average no. of Rooms: Error vs Slope
 <div id="tabset-2-5">
 <p>Let us hand-calculate the numbers so we know what the test is doing. Here is the SST: we pretend that there is no relationship between <code>cmedv</code> ans <code>rm</code> and compute a <strong>NULL</strong> model:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a><span class="co"># Calculate overall sum squares SST</span></span>
-<span id="cb14-2"><a></a></span>
-<span id="cb14-3"><a></a>SST <span class="ot">&lt;-</span> <span class="fu">deviance</span>(<span class="fu">lm</span>(cmedv <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> housing))</span>
-<span id="cb14-4"><a></a>SST</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a aria-label="1"></a><span class="co"># Calculate overall sum squares SST</span></span>
+<span id="cb14-2"><a aria-label="2"></a></span>
+<span id="cb14-3"><a aria-label="3"></a>SST <span class="ot">&lt;-</span> <span class="fu">deviance</span>(<span class="fu">lm</span>(cmedv <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> housing))</span>
+<span id="cb14-4"><a aria-label="4"></a>SST</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 42577.74</code></pre>
 </div>
 </div>
 <p>And here is the SSE:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>SSE <span class="ot">&lt;-</span> <span class="fu">deviance</span>(housing_lm)</span>
-<span id="cb16-2"><a></a>SSE</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a aria-label="1"></a>SSE <span class="ot">&lt;-</span> <span class="fu">deviance</span>(housing_lm)</span>
+<span id="cb16-2"><a aria-label="2"></a>SSE</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 21934.39</code></pre>
 </div>
 </div>
 <p>Given that the model leaves <strong>unexplained</strong> variations in <code>cmedv</code> to the extent of <span class="math inline">\(SSE\)</span>, we can compute the <span class="math inline">\(SSR\)</span>, <span style="background-color: yellow;">the Regression Sum of Squares</span>, the amount of variation in <code>cmedv</code> that the linear model <strong>does</strong> explain:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>SSR <span class="ot">&lt;-</span> SST <span class="sc">-</span> SSE</span>
-<span id="cb18-2"><a></a>SSR</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a aria-label="1"></a>SSR <span class="ot">&lt;-</span> SST <span class="sc">-</span> SSE</span>
+<span id="cb18-2"><a aria-label="2"></a>SSR</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 20643.35</code></pre>
 </div>
@@ -1797,13 +1802,13 @@ F_{stat} = \frac{SSR / df_{SSR}}{SSE / df_{SSE}}
 </ul>
 <p>Now we are ready to compute the F-statistic:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>n <span class="ot">&lt;-</span> housing <span class="sc">%&gt;%</span></span>
-<span id="cb20-2"><a></a>  <span class="fu">count</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb20-3"><a></a>  <span class="fu">as.numeric</span>()</span>
-<span id="cb20-4"><a></a>df_SSR <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb20-5"><a></a>df_SSE <span class="ot">&lt;-</span> n <span class="sc">-</span> <span class="dv">2</span></span>
-<span id="cb20-6"><a></a>F_stat <span class="ot">&lt;-</span> (SSR <span class="sc">/</span> df_SSR) <span class="sc">/</span> (SSE <span class="sc">/</span> df_SSE)</span>
-<span id="cb20-7"><a></a>F_stat</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a aria-label="1"></a>n <span class="ot">&lt;-</span> housing <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a aria-label="2"></a>  <span class="fu">count</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb20-3"><a aria-label="3"></a>  <span class="fu">as.numeric</span>()</span>
+<span id="cb20-4"><a aria-label="4"></a>df_SSR <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb20-5"><a aria-label="5"></a>df_SSE <span class="ot">&lt;-</span> n <span class="sc">-</span> <span class="dv">2</span></span>
+<span id="cb20-6"><a aria-label="6"></a>F_stat <span class="ot">&lt;-</span> (SSR <span class="sc">/</span> df_SSR) <span class="sc">/</span> (SSE <span class="sc">/</span> df_SSE)</span>
+<span id="cb20-7"><a aria-label="7"></a>F_stat</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 474.3349</code></pre>
 </div>
@@ -1824,16 +1829,16 @@ F_{stat} = \frac{SSR / df_{SSR}}{SSE / df_{SSE}}
 </div>
 <p>As with our hypothesis tests, we set the significance level to 0.95, and quote the two relevant degrees of freedom as parameters to <code>qf()</code> which computes the critical F value as a <strong>quartile</strong>:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>F_crit <span class="ot">&lt;-</span> <span class="fu">qf</span>(</span>
-<span id="cb22-2"><a></a>  <span class="at">p =</span> <span class="fl">0.95</span>, <span class="co"># Significance level is 5%</span></span>
-<span id="cb22-3"><a></a>  <span class="at">df1 =</span> df_SSR, <span class="co"># Numerator degrees of freedom</span></span>
-<span id="cb22-4"><a></a>  <span class="at">df2 =</span> df_SSE</span>
-<span id="cb22-5"><a></a>) <span class="co"># Denominator degrees of freedom</span></span>
-<span id="cb22-6"><a></a>F_crit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a aria-label="1"></a>F_crit <span class="ot">&lt;-</span> <span class="fu">qf</span>(</span>
+<span id="cb22-2"><a aria-label="2"></a>  <span class="at">p =</span> <span class="fl">0.95</span>, <span class="co"># Significance level is 5%</span></span>
+<span id="cb22-3"><a aria-label="3"></a>  <span class="at">df1 =</span> df_SSR, <span class="co"># Numerator degrees of freedom</span></span>
+<span id="cb22-4"><a aria-label="4"></a>  <span class="at">df2 =</span> df_SSE</span>
+<span id="cb22-5"><a aria-label="5"></a>) <span class="co"># Denominator degrees of freedom</span></span>
+<span id="cb22-6"><a aria-label="6"></a>F_crit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 3.859975</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a>F_stat</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a aria-label="1"></a>F_stat</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 474.3349</code></pre>
 </div>
@@ -1842,32 +1847,32 @@ F_{stat} = \frac{SSR / df_{SSR}}{SSE / df_{SSE}}
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a></a>mosaic<span class="sc">::</span><span class="fu">xpf</span>(</span>
-<span id="cb26-2"><a></a>  <span class="at">q =</span> F_crit,</span>
-<span id="cb26-3"><a></a>  <span class="at">df1 =</span> df_SSR, <span class="at">df2 =</span> df_SSE, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">plot =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb26-4"><a></a>  <span class="at">return =</span> <span class="fu">c</span>(<span class="st">"plot"</span>), <span class="at">verbose =</span> F, <span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">colour =</span> <span class="st">"black"</span>,</span>
-<span id="cb26-5"><a></a>  <span class="at">system =</span> <span class="st">"gg"</span></span>
-<span id="cb26-6"><a></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb26-7"><a></a>  <span class="fu">gf_vline</span>(<span class="at">xintercept =</span> F_crit, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb26-8"><a></a>  <span class="fu">gf_annotate</span>(</span>
-<span id="cb26-9"><a></a>    <span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">x =</span> <span class="dv">3</span>, <span class="at">y =</span> <span class="fl">1.6</span>, <span class="at">size =</span> <span class="dv">4</span>,</span>
-<span id="cb26-10"><a></a>    <span class="at">label =</span> <span class="st">"F Critical Value = 3.86"</span>, <span class="at">colour =</span> <span class="st">"purple"</span></span>
-<span id="cb26-11"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb26-12"><a></a>  <span class="fu">gf_annotate</span>(<span class="st">"curve"</span>,</span>
-<span id="cb26-13"><a></a>    <span class="at">x =</span> <span class="dv">3</span>, <span class="at">y =</span> <span class="fl">1.5</span>,</span>
-<span id="cb26-14"><a></a>    <span class="at">xend =</span> F_crit <span class="sc">-</span> <span class="fl">0.025</span>, <span class="at">yend =</span> <span class="dv">1</span>, <span class="at">curvature =</span> <span class="fl">0.5</span>,</span>
-<span id="cb26-15"><a></a>    <span class="at">color =</span> <span class="st">"purple"</span>, <span class="at">linewidth =</span> <span class="fl">0.5</span>,</span>
-<span id="cb26-16"><a></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">"cm"</span>))</span>
-<span id="cb26-17"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb26-18"><a></a>  <span class="fu">gf_labs</span>(</span>
-<span id="cb26-19"><a></a>    <span class="at">title =</span> <span class="st">"F Distribution"</span>,</span>
-<span id="cb26-20"><a></a>    <span class="at">subtitle =</span> <span class="fu">paste</span>(<span class="st">"df1 ="</span>, df_SSR, <span class="st">", df2 ="</span>, df_SSE),</span>
-<span id="cb26-21"><a></a>    <span class="at">x =</span> <span class="st">"F value"</span>, <span class="at">y =</span> <span class="st">"Density"</span></span>
-<span id="cb26-22"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb26-23"><a></a>  <span class="fu">gf_refine</span>(</span>
-<span id="cb26-24"><a></a>    <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5</span>), <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)),</span>
-<span id="cb26-25"><a></a>    <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.7</span>), <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>))</span>
-<span id="cb26-26"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a aria-label="1"></a>mosaic<span class="sc">::</span><span class="fu">xpf</span>(</span>
+<span id="cb26-2"><a aria-label="2"></a>  <span class="at">q =</span> F_crit,</span>
+<span id="cb26-3"><a aria-label="3"></a>  <span class="at">df1 =</span> df_SSR, <span class="at">df2 =</span> df_SSE, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">plot =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb26-4"><a aria-label="4"></a>  <span class="at">return =</span> <span class="fu">c</span>(<span class="st">"plot"</span>), <span class="at">verbose =</span> F, <span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">colour =</span> <span class="st">"black"</span>,</span>
+<span id="cb26-5"><a aria-label="5"></a>  <span class="at">system =</span> <span class="st">"gg"</span></span>
+<span id="cb26-6"><a aria-label="6"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-7"><a aria-label="7"></a>  <span class="fu">gf_vline</span>(<span class="at">xintercept =</span> F_crit, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-8"><a aria-label="8"></a>  <span class="fu">gf_annotate</span>(</span>
+<span id="cb26-9"><a aria-label="9"></a>    <span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">x =</span> <span class="dv">3</span>, <span class="at">y =</span> <span class="fl">1.6</span>, <span class="at">size =</span> <span class="dv">4</span>,</span>
+<span id="cb26-10"><a aria-label="10"></a>    <span class="at">label =</span> <span class="st">"F Critical Value = 3.86"</span>, <span class="at">colour =</span> <span class="st">"purple"</span></span>
+<span id="cb26-11"><a aria-label="11"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb26-12"><a aria-label="12"></a>  <span class="fu">gf_annotate</span>(<span class="st">"curve"</span>,</span>
+<span id="cb26-13"><a aria-label="13"></a>    <span class="at">x =</span> <span class="dv">3</span>, <span class="at">y =</span> <span class="fl">1.5</span>,</span>
+<span id="cb26-14"><a aria-label="14"></a>    <span class="at">xend =</span> F_crit <span class="sc">-</span> <span class="fl">0.025</span>, <span class="at">yend =</span> <span class="dv">1</span>, <span class="at">curvature =</span> <span class="fl">0.5</span>,</span>
+<span id="cb26-15"><a aria-label="15"></a>    <span class="at">color =</span> <span class="st">"purple"</span>, <span class="at">linewidth =</span> <span class="fl">0.5</span>,</span>
+<span id="cb26-16"><a aria-label="16"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">"cm"</span>))</span>
+<span id="cb26-17"><a aria-label="17"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb26-18"><a aria-label="18"></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb26-19"><a aria-label="19"></a>    <span class="at">title =</span> <span class="st">"F Distribution"</span>,</span>
+<span id="cb26-20"><a aria-label="20"></a>    <span class="at">subtitle =</span> <span class="fu">paste</span>(<span class="st">"df1 ="</span>, df_SSR, <span class="st">", df2 ="</span>, df_SSE),</span>
+<span id="cb26-21"><a aria-label="21"></a>    <span class="at">x =</span> <span class="st">"F value"</span>, <span class="at">y =</span> <span class="st">"Density"</span></span>
+<span id="cb26-22"><a aria-label="22"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb26-23"><a aria-label="23"></a>  <span class="fu">gf_refine</span>(</span>
+<span id="cb26-24"><a aria-label="24"></a>    <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5</span>), <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)),</span>
+<span id="cb26-25"><a aria-label="25"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.7</span>), <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>))</span>
+<span id="cb26-26"><a aria-label="26"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-f-distribution" class="quarto-float quarto-figure quarto-figure-center">
@@ -1888,13 +1893,13 @@ Figure&nbsp;9: F Distribution with Critical Value
 R.squared = \frac{SSR}{SST} = \frac{SSY-SSE}{SST}
 \tag{9}\]</span></span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>r_squared <span class="ot">&lt;-</span> (SST <span class="sc">-</span> SSE) <span class="sc">/</span> SST</span>
-<span id="cb27-2"><a></a>r_squared</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a aria-label="1"></a>r_squared <span class="ot">&lt;-</span> (SST <span class="sc">-</span> SSE) <span class="sc">/</span> SST</span>
+<span id="cb27-2"><a aria-label="2"></a>r_squared</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.484839</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a><span class="co"># Also computable by</span></span>
-<span id="cb29-2"><a></a><span class="co"># mosaic::rsquared(housing_lm)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a aria-label="1"></a><span class="co"># Also computable by</span></span>
+<span id="cb29-2"><a aria-label="2"></a><span class="co"># mosaic::rsquared(housing_lm)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>So <code>R.squared</code> = 0.484839</p>
 <p>The value of Slope and Intercept are computed using a maximum likelihood derivation and the knowledge that the means square error is a minimum at the optimum slope: for a linear model <span class="math inline">\(y \sim mx + c\)</span></p>
@@ -1919,14 +1924,14 @@ slope = \frac{\Sigma[(y - y_{mean})*(x - x_{mean})]}{\Sigma(x - x_{mean})^2}
 Intercept = y_{mean} - slope * x_{mean}
 \]</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a>slope <span class="ot">&lt;-</span> mosaic<span class="sc">::</span><span class="fu">cov</span>(cmedv <span class="sc">~</span> rm, <span class="at">data =</span> housing) <span class="sc">/</span> mosaic<span class="sc">::</span><span class="fu">var</span>(<span class="sc">~</span>rm, <span class="at">data =</span> housing)</span>
-<span id="cb30-2"><a></a>slope</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a aria-label="1"></a>slope <span class="ot">&lt;-</span> mosaic<span class="sc">::</span><span class="fu">cov</span>(cmedv <span class="sc">~</span> rm, <span class="at">data =</span> housing) <span class="sc">/</span> mosaic<span class="sc">::</span><span class="fu">var</span>(<span class="sc">~</span>rm, <span class="at">data =</span> housing)</span>
+<span id="cb30-2"><a aria-label="2"></a>slope</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 9.09967</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a><span class="do">##</span></span>
-<span id="cb32-2"><a></a>intercept <span class="ot">&lt;-</span> mosaic<span class="sc">::</span><span class="fu">mean</span>(<span class="sc">~</span>cmedv, <span class="at">data =</span> housing) <span class="sc">-</span> slope <span class="sc">*</span> mosaic<span class="sc">::</span><span class="fu">mean</span>(<span class="sc">~</span>rm, <span class="at">data =</span> housing)</span>
-<span id="cb32-3"><a></a>intercept</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a aria-label="1"></a><span class="do">##</span></span>
+<span id="cb32-2"><a aria-label="2"></a>intercept <span class="ot">&lt;-</span> mosaic<span class="sc">::</span><span class="fu">mean</span>(<span class="sc">~</span>cmedv, <span class="at">data =</span> housing) <span class="sc">-</span> slope <span class="sc">*</span> mosaic<span class="sc">::</span><span class="fu">mean</span>(<span class="sc">~</span>rm, <span class="at">data =</span> housing)</span>
+<span id="cb32-3"><a aria-label="3"></a>intercept</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] -34.65924</code></pre>
 </div>
@@ -1946,12 +1951,12 @@ Intercept = y_{mean} - slope * x_{mean}
 <p>Therefore, the regression model must be closely diagnosed in order to detect potential problems and to check whether the assumptions made by the linear regression model are met or not. To do so, we generally examine the distribution of <strong>residuals errors</strong>, that can tell us more about our data.</p>
 </blockquote>
 </section>
-<section id="workflow-checks-for-uncertainty" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069632074776f746f6e652d72756c65203e7d7d-workflow-checks-for-uncertainty" class="slide level3">
 <h3><iconify-icon inline="" icon="ic:twotone-rule" aria-label="Icon twotone-rule from ic Iconify.design set." title="Icon twotone-rule from ic Iconify.design set."></iconify-icon> Workflow: Checks for Uncertainty</h3>
 <p>Let us first look at the uncertainties in the estimates of slope and intercept. These are most easily read off from the <code>broom::tidy</code>-ed model:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a></a><span class="co"># housing_lm_tidy &lt;-  housing_lm %&gt;% broom::tidy()</span></span>
-<span id="cb34-2"><a></a>housing_lm_tidy</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a aria-label="1"></a><span class="co"># housing_lm_tidy &lt;-  housing_lm %&gt;% broom::tidy()</span></span>
+<span id="cb34-2"><a aria-label="2"></a>housing_lm_tidy</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -1963,23 +1968,23 @@ Intercept = y_{mean} - slope * x_{mean}
 <p>Plotting this is simple too:</p>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb35-2"><a></a></span>
-<span id="cb35-3"><a></a>housing_lm_tidy <span class="sc">%&gt;%</span></span>
-<span id="cb35-4"><a></a>  <span class="fu">gf_col</span>(estimate <span class="sc">~</span> term, <span class="at">fill =</span> <span class="sc">~</span>term, <span class="at">width =</span> <span class="fl">0.25</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb35-5"><a></a>  <span class="fu">gf_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb35-6"><a></a>  <span class="fu">gf_errorbar</span>(conf.low <span class="sc">+</span> conf.high <span class="sc">~</span> term,</span>
-<span id="cb35-7"><a></a>    <span class="at">width =</span> <span class="fl">0.1</span>,</span>
-<span id="cb35-8"><a></a>    <span class="at">title =</span> <span class="st">"Model Bar Plot for Estimates with Confidence Intervals"</span></span>
-<span id="cb35-9"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb35-10"><a></a>  <span class="fu">gf_theme</span>(<span class="at">theme =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb35-11"><a></a><span class="do">##</span></span>
-<span id="cb35-12"><a></a>housing_lm_tidy <span class="sc">%&gt;%</span></span>
-<span id="cb35-13"><a></a>  <span class="fu">gf_pointrange</span>(estimate <span class="sc">+</span> conf.low <span class="sc">+</span> conf.high <span class="sc">~</span> term,</span>
-<span id="cb35-14"><a></a>    <span class="at">title =</span> <span class="st">"Model Point-Range Plot for Estimates with Confidence Intervals"</span></span>
-<span id="cb35-15"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb35-16"><a></a>  <span class="fu">gf_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb35-17"><a></a>  <span class="fu">gf_theme</span>(<span class="at">theme =</span> <span class="fu">theme_custom</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb35-2"><a aria-label="2"></a></span>
+<span id="cb35-3"><a aria-label="3"></a>housing_lm_tidy <span class="sc">%&gt;%</span></span>
+<span id="cb35-4"><a aria-label="4"></a>  <span class="fu">gf_col</span>(estimate <span class="sc">~</span> term, <span class="at">fill =</span> <span class="sc">~</span>term, <span class="at">width =</span> <span class="fl">0.25</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb35-5"><a aria-label="5"></a>  <span class="fu">gf_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb35-6"><a aria-label="6"></a>  <span class="fu">gf_errorbar</span>(conf.low <span class="sc">+</span> conf.high <span class="sc">~</span> term,</span>
+<span id="cb35-7"><a aria-label="7"></a>    <span class="at">width =</span> <span class="fl">0.1</span>,</span>
+<span id="cb35-8"><a aria-label="8"></a>    <span class="at">title =</span> <span class="st">"Model Bar Plot for Estimates with Confidence Intervals"</span></span>
+<span id="cb35-9"><a aria-label="9"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb35-10"><a aria-label="10"></a>  <span class="fu">gf_theme</span>(<span class="at">theme =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb35-11"><a aria-label="11"></a><span class="do">##</span></span>
+<span id="cb35-12"><a aria-label="12"></a>housing_lm_tidy <span class="sc">%&gt;%</span></span>
+<span id="cb35-13"><a aria-label="13"></a>  <span class="fu">gf_pointrange</span>(estimate <span class="sc">+</span> conf.low <span class="sc">+</span> conf.high <span class="sc">~</span> term,</span>
+<span id="cb35-14"><a aria-label="14"></a>    <span class="at">title =</span> <span class="st">"Model Point-Range Plot for Estimates with Confidence Intervals"</span></span>
+<span id="cb35-15"><a aria-label="15"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb35-16"><a aria-label="16"></a>  <span class="fu">gf_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb35-17"><a aria-label="17"></a>  <span class="fu">gf_theme</span>(<span class="at">theme =</span> <span class="fu">theme_custom</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell quarto-layout-panel" data-warn="false" data-layout-ncol="2">
 <div class="quarto-layout-row">
@@ -1994,7 +1999,7 @@ Intercept = y_{mean} - slope * x_{mean}
 <p>The point-range plot helps to avoid what has been called <a href="https://graphics.cs.wisc.edu/Papers/2014/CG14/Preprint.pdf">“within-the-bar bias”</a>. The estimate is just a value, which we might plot as a <em>bar</em> or as a <em>point</em>, with uncertainty error-bars.</p>
 <p>Values <strong>within the bar</strong> are not more likely!! This is the bias that the point-range plot avoids.</p>
 </section>
-<section id="checks-for-constant-varianceheteroscedasticity" class="slide level3 scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069632074776f746f6e652d72756c65203e7d7d-checks-for-constant-varianceheteroscedasticity" class="slide level3 scrollable">
 <h3><iconify-icon inline="" icon="ic:twotone-rule" aria-label="Icon twotone-rule from ic Iconify.design set." title="Icon twotone-rule from ic Iconify.design set."></iconify-icon> Checks for Constant Variance/Heteroscedasticity</h3>
 <p>Linear Modelling makes 4 fundamental assumptions:(“<strong>LINE</strong>”)</p>
 <ol type="1">
@@ -2006,23 +2011,23 @@ Intercept = y_{mean} - slope * x_{mean}
 <p>We can check these using checks and graphs: Here we plot the residuals against the independent/feature variable and see if there is a gross variation in their range:</p>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb36-2"><a></a></span>
-<span id="cb36-3"><a></a>housing_lm_augment <span class="sc">%&gt;%</span></span>
-<span id="cb36-4"><a></a>  <span class="fu">gf_point</span>(.resid <span class="sc">~</span> .fitted, <span class="at">title =</span> <span class="st">"Residuals vs Fitted"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb36-5"><a></a>  <span class="fu">gf_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>)</span>
-<span id="cb36-6"><a></a></span>
-<span id="cb36-7"><a></a>housing_lm_augment <span class="sc">%&gt;%</span></span>
-<span id="cb36-8"><a></a>  <span class="fu">gf_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"grey"</span>, <span class="at">linewidth =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb36-9"><a></a>  <span class="fu">gf_point</span>(.resid <span class="sc">~</span> cmedv, <span class="at">title =</span> <span class="st">"Residuals vs Target Variable"</span>)</span>
-<span id="cb36-10"><a></a></span>
-<span id="cb36-11"><a></a>housing_lm_augment <span class="sc">%&gt;%</span></span>
-<span id="cb36-12"><a></a>  <span class="fu">gf_dhistogram</span>(<span class="sc">~</span>.resid, <span class="at">title =</span> <span class="st">"Histogram of Residuals"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb36-13"><a></a>  <span class="fu">gf_fitdistr</span>()</span>
-<span id="cb36-14"><a></a></span>
-<span id="cb36-15"><a></a>housing_lm_augment <span class="sc">%&gt;%</span></span>
-<span id="cb36-16"><a></a>  <span class="fu">gf_qq</span>(<span class="sc">~</span>.resid, <span class="at">title =</span> <span class="st">"Q-Q Residuals"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb36-17"><a></a>  <span class="fu">gf_qqline</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb36-2"><a aria-label="2"></a></span>
+<span id="cb36-3"><a aria-label="3"></a>housing_lm_augment <span class="sc">%&gt;%</span></span>
+<span id="cb36-4"><a aria-label="4"></a>  <span class="fu">gf_point</span>(.resid <span class="sc">~</span> .fitted, <span class="at">title =</span> <span class="st">"Residuals vs Fitted"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb36-5"><a aria-label="5"></a>  <span class="fu">gf_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>)</span>
+<span id="cb36-6"><a aria-label="6"></a></span>
+<span id="cb36-7"><a aria-label="7"></a>housing_lm_augment <span class="sc">%&gt;%</span></span>
+<span id="cb36-8"><a aria-label="8"></a>  <span class="fu">gf_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"grey"</span>, <span class="at">linewidth =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb36-9"><a aria-label="9"></a>  <span class="fu">gf_point</span>(.resid <span class="sc">~</span> cmedv, <span class="at">title =</span> <span class="st">"Residuals vs Target Variable"</span>)</span>
+<span id="cb36-10"><a aria-label="10"></a></span>
+<span id="cb36-11"><a aria-label="11"></a>housing_lm_augment <span class="sc">%&gt;%</span></span>
+<span id="cb36-12"><a aria-label="12"></a>  <span class="fu">gf_dhistogram</span>(<span class="sc">~</span>.resid, <span class="at">title =</span> <span class="st">"Histogram of Residuals"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb36-13"><a aria-label="13"></a>  <span class="fu">gf_fitdistr</span>()</span>
+<span id="cb36-14"><a aria-label="14"></a></span>
+<span id="cb36-15"><a aria-label="15"></a>housing_lm_augment <span class="sc">%&gt;%</span></span>
+<span id="cb36-16"><a aria-label="16"></a>  <span class="fu">gf_qq</span>(<span class="sc">~</span>.resid, <span class="at">title =</span> <span class="st">"Q-Q Residuals"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb36-17"><a aria-label="17"></a>  <span class="fu">gf_qqline</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div id="fig-looking-at-residuals" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig">
@@ -2103,14 +2108,14 @@ Figure&nbsp;10: Looking at Residuals
 <h4 id="sec-using-other-packages"><iconify-icon inline="" icon="iconoir:stats-report" aria-label="Icon stats-report from iconoir Iconify.design set." title="Icon stats-report from iconoir Iconify.design set."></iconify-icon> Using Other Packages</h4>
 <p>There is a very neat package called <code>ggstatsplot</code><a href="#/fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> that allows us to plot very comprehensive statistical graphs. Let us quickly do this:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb38-2"><a></a></span>
-<span id="cb38-3"><a></a><span class="fu">library</span>(ggstatsplot)</span>
-<span id="cb38-4"><a></a>housing_lm <span class="sc">%&gt;%</span></span>
-<span id="cb38-5"><a></a>  ggstatsplot<span class="sc">::</span><span class="fu">ggcoefstats</span>(</span>
-<span id="cb38-6"><a></a>    <span class="at">title =</span> <span class="st">"Linear Model for Boston Housing"</span>,</span>
-<span id="cb38-7"><a></a>    <span class="at">subtitle =</span> <span class="st">"Using ggstatsplot"</span></span>
-<span id="cb38-8"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb38-2"><a aria-label="2"></a></span>
+<span id="cb38-3"><a aria-label="3"></a><span class="fu">library</span>(ggstatsplot)</span>
+<span id="cb38-4"><a aria-label="4"></a>housing_lm <span class="sc">%&gt;%</span></span>
+<span id="cb38-5"><a aria-label="5"></a>  ggstatsplot<span class="sc">::</span><span class="fu">ggcoefstats</span>(</span>
+<span id="cb38-6"><a aria-label="6"></a>    <span class="at">title =</span> <span class="st">"Linear Model for Boston Housing"</span>,</span>
+<span id="cb38-7"><a aria-label="7"></a>    <span class="at">subtitle =</span> <span class="st">"Using ggstatsplot"</span></span>
+<span id="cb38-8"><a aria-label="8"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -2121,8 +2126,8 @@ Figure&nbsp;10: Looking at Residuals
 </div>
 <p>This chart shows the estimates for the <code>intercept</code> and <code>rm</code> along with their error bars, the <code>t-statistic</code>, degrees of freedom, and the <code>p-value</code>.</p>
 <p>We can also obtain crisp-looking model tables from the new <code>supernova</code> package <a href="#/fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>, which is based on the methods discussed in <a href="https://www.dataanalysisbook.com/index.html">Judd et al</a>.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a><span class="fu">library</span>(supernova)</span>
-<span id="cb39-2"><a></a>supernova<span class="sc">::</span><span class="fu">supernova</span>(housing_lm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a aria-label="1"></a><span class="fu">library</span>(supernova)</span>
+<span id="cb39-2"><a aria-label="2"></a>supernova<span class="sc">::</span><span class="fu">supernova</span>(housing_lm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
 <div class="cell-output cell-output-stdout quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
@@ -2139,7 +2144,7 @@ Figure&nbsp;10: Looking at Residuals
 </div>
 </div>
 <p>This table is very neat in that it gives the <code>Sums of Squares</code> for both the NULL (empty) model, and the current model for comparison. The <code>PRE</code> entry is the <em>Proportional Reduction in Error</em>, a measure that is identical with <code>r.squared</code>, which shows how much the model reduces the error compared to the NULL model(48%). The PRE idea is nicely discussed in <a href="https://www.dataanalysisbook.com/index.html">Judd et al.</a></p>
-<h4 id="workflow-model-diagnostic-plots"><iconify-icon inline="" icon="ic:twotone-rule" aria-label="Icon twotone-rule from ic Iconify.design set." title="Icon twotone-rule from ic Iconify.design set."></iconify-icon> Workflow: Model Diagnostic Plots</h4>
+<h4 id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069632074776f746f6e652d72756c65203e7d7d-workflow-model-diagnostic-plots"><iconify-icon inline="" icon="ic:twotone-rule" aria-label="Icon twotone-rule from ic Iconify.design set." title="Icon twotone-rule from ic Iconify.design set."></iconify-icon> Workflow: Model Diagnostic Plots</h4>
 <div class="grid">
 <div class="g-col-6">
 <div class="callout callout-tip callout-titled callout-style-default">
@@ -2152,7 +2157,7 @@ Figure&nbsp;10: Looking at Residuals
 </div>
 <div class="callout-content">
 <p>Base R has a crisp command to plot these diagnostic graphs. But we will continue to use <code>ggformula</code>.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a></a><span class="fu">plot</span>(housing_lm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a aria-label="1"></a><span class="fu">plot</span>(housing_lm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div id="fig-using-base-r" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig">
 <div aria-describedby="fig-using-base-r-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -2230,12 +2235,12 @@ Figure&nbsp;11: Using Base R for Model Diagnostics
 <div class="callout-content">
 <p>One of the <a href="https://exts.ggplot2.tidyverse.org/gallery/">ggplot extension packages</a> named <code>{lindia}</code> also has a crisp command to plot these diagnostic graphs.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_bw</span>())</span>
-<span id="cb42-2"><a></a></span>
-<span id="cb42-3"><a></a><span class="fu">library</span>(lindia)</span>
-<span id="cb42-4"><a></a><span class="fu">gg_diagnose</span>(housing_lm,</span>
-<span id="cb42-5"><a></a>  <span class="at">mode =</span> <span class="st">"base_r"</span></span>
-<span id="cb42-6"><a></a>) <span class="co"># or "all"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_bw</span>())</span>
+<span id="cb42-2"><a aria-label="2"></a></span>
+<span id="cb42-3"><a aria-label="3"></a><span class="fu">library</span>(lindia)</span>
+<span id="cb42-4"><a aria-label="4"></a><span class="fu">gg_diagnose</span>(housing_lm,</span>
+<span id="cb42-5"><a aria-label="5"></a>  <span class="at">mode =</span> <span class="st">"base_r"</span></span>
+<span id="cb42-6"><a aria-label="6"></a>) <span class="co"># or "all"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div id="fig-using-lindia-package" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig">
@@ -2296,86 +2301,86 @@ y = \beta_0 + \beta_1*x_1 + \beta_2*x_2 ...+ \beta_n*x_n
 <li><strong>Mixed Selection</strong>: Wherein we start with no predictors and add them to gain improvement, or remove them at as their <em>significance</em> changes based on other predictors that have been added.</li>
 </ul>
 <p>The first two are covered in the <a href="#/sec-linreg" class="quarto-xref">Section&nbsp;1</a>; Mixed Selection we will leave for a more advanced course. But for now we will first use just one predictor <code>rm</code>(Avg. no. of Rooms) to model housing prices.</p></section>
-<section id="conclusions" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusions" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusions</h2>
 <p>We have seen how starting from a basic EDA of the data, we have been able to choose a single Quantitative predictor variable to model a Quantitative target variable, using Linear Regression. As stated earlier, we may have wish to use more than one predictor variables, to build more sophisticated models with improved prediction capability. And there is more than one way of selecting these predictor variables, which we will examine in the Tutorials.</p>
 <p>Secondly, sometimes it may be necessary to mathematically transform the variables in the dataset to enable the construction of better models, something that was not needed here.</p>
 <p>We may also encounter cases where the predictor variables seem to work together; one predictor may influence “how well” another predictor works, something called an <em>interaction effect</em> or a <em>synergy effect</em>. We might then have to modify our formula to include <em>interaction terms</em> that look like <span class="math inline">\(predictor1 \times predictor2\)</span>.</p>
 <p>So our Linear Modelling workflow might look like this: we have not seen all stages yet, but that is for another course module or tutorial!</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43" data-theme="MixedBerryBlue" data-layout="dagre"><pre class="sourceCode numberSource d2 number-lines code-with-copy"><code class="sourceCode"><span id="cb43-1"><a></a></span>
-<span id="cb43-2"><a></a>title: Our Linear Regression Workflow {</span>
-<span id="cb43-3"><a></a>  near: top-center</span>
-<span id="cb43-4"><a></a>  shape: text</span>
-<span id="cb43-5"><a></a>  style: {</span>
-<span id="cb43-6"><a></a>    font-size: 29</span>
-<span id="cb43-7"><a></a>    bold: true</span>
-<span id="cb43-8"><a></a>    underline: true</span>
-<span id="cb43-9"><a></a>  }</span>
-<span id="cb43-10"><a></a>}</span>
-<span id="cb43-11"><a></a>  Data :  {</span>
-<span id="cb43-12"><a></a>  style: {</span>
-<span id="cb43-13"><a></a>    stroke: "#53C0D8"</span>
-<span id="cb43-14"><a></a>    stroke-width: 5</span>
-<span id="cb43-15"><a></a>    shadow: true</span>
-<span id="cb43-16"><a></a>  }</span>
-<span id="cb43-17"><a></a>}</span>
-<span id="cb43-18"><a></a>  </span>
-<span id="cb43-19"><a></a>  EDA : {</span>
-<span id="cb43-20"><a></a>  style: {</span>
-<span id="cb43-21"><a></a>    opacity: 0.6</span>
-<span id="cb43-22"><a></a>    fill: red</span>
-<span id="cb43-23"><a></a>    3d: true</span>
-<span id="cb43-24"><a></a>    stroke: black</span>
-<span id="cb43-25"><a></a>  }</span>
-<span id="cb43-26"><a></a>}</span>
-<span id="cb43-27"><a></a>Check Relationships; </span>
-<span id="cb43-28"><a></a>Build Model; </span>
-<span id="cb43-29"><a></a>Transform Variables {shape: cloud}; Try Multiple Regression\n and/or interaction effects {shape: cloud};</span>
-<span id="cb43-30"><a></a>Check Model Diagnostics: {shape: diamond}</span>
-<span id="cb43-31"><a></a>Check Model Diagnostics: {tooltip: Check R^2 }</span>
-<span id="cb43-32"><a></a>Interpret Model</span>
-<span id="cb43-33"><a></a>Apply Model {shape: oval}</span>
-<span id="cb43-34"><a></a></span>
-<span id="cb43-35"><a></a>    Data -&gt; EDA : "inspect"</span>
-<span id="cb43-36"><a></a>    Data -&gt; EDA : "ggformula"</span>
-<span id="cb43-37"><a></a>    Data -&gt; EDA : "glimpse"</span>
-<span id="cb43-38"><a></a>    Data -&gt; EDA : "skim"</span>
-<span id="cb43-39"><a></a>    EDA --&gt; Check Relationships : "corrplot"</span>
-<span id="cb43-40"><a></a>    EDA --&gt; Check Relationships : "corrgram"</span>
-<span id="cb43-41"><a></a>    EDA -&gt; Check Relationships : "ggformula + purrr"</span>
-<span id="cb43-42"><a></a>    EDA -&gt; Check Relationships : "cor.test"</span>
-<span id="cb43-43"><a></a>    Check Relationships --&gt; Simple or\nComplex Model Decision</span>
-<span id="cb43-44"><a></a>    Simple or\nComplex Model Decision -&gt; Is the Model Possible?</span>
-<span id="cb43-45"><a></a>    Is the Model Possible? -&gt; Build Model</span>
-<span id="cb43-46"><a></a>    Build Model -&gt; Check Model Diagnostics</span>
-<span id="cb43-47"><a></a>    Check Model Diagnostics -&gt; Interpret Model : "All Good"</span>
-<span id="cb43-48"><a></a>    Check Model Diagnostics -&gt; Transform Variables : "Inadequate" {</span>
-<span id="cb43-49"><a></a></span>
-<span id="cb43-50"><a></a>          source-arrowhead.label: 1</span>
-<span id="cb43-51"><a></a>          style.stroke: red</span>
-<span id="cb43-52"><a></a>          target-arrowhead: {</span>
-<span id="cb43-53"><a></a>          shape: diamond</span>
-<span id="cb43-54"><a></a>          style.filled: true</span>
-<span id="cb43-55"><a></a>          label: 1</span>
-<span id="cb43-56"><a></a>          }</span>
-<span id="cb43-57"><a></a>    }</span>
-<span id="cb43-58"><a></a>    Check Model Diagnostics -&gt; Try Multiple Regression\n and/or interaction effects : " Still Inadequate" {</span>
-<span id="cb43-59"><a></a>          source-arrowhead.label: 2</span>
-<span id="cb43-60"><a></a>          style.stroke: red</span>
-<span id="cb43-61"><a></a>          target-arrowhead: {</span>
-<span id="cb43-62"><a></a>          shape: diamond</span>
-<span id="cb43-63"><a></a>          style.filled: true</span>
-<span id="cb43-64"><a></a>          label: 2</span>
-<span id="cb43-65"><a></a>          }</span>
-<span id="cb43-66"><a></a>    }</span>
-<span id="cb43-67"><a></a>    Transform Variables -&gt;  Build Model {style.stroke: red }</span>
-<span id="cb43-68"><a></a>     Try Multiple Regression\n and/or interaction effects -&gt;  Build Model {style.stroke: red }</span>
-<span id="cb43-69"><a></a>    Interpret Model -&gt; Apply Model</span>
-<span id="cb43-70"><a></a>    </span>
-<span id="cb43-71"><a></a>  </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43" data-theme="MixedBerryBlue" data-layout="dagre"><pre class="sourceCode numberSource d2 number-lines code-with-copy"><code class="sourceCode"><span id="cb43-1"><a aria-label="1"></a></span>
+<span id="cb43-2"><a aria-label="2"></a>title: Our Linear Regression Workflow {</span>
+<span id="cb43-3"><a aria-label="3"></a>  near: top-center</span>
+<span id="cb43-4"><a aria-label="4"></a>  shape: text</span>
+<span id="cb43-5"><a aria-label="5"></a>  style: {</span>
+<span id="cb43-6"><a aria-label="6"></a>    font-size: 29</span>
+<span id="cb43-7"><a aria-label="7"></a>    bold: true</span>
+<span id="cb43-8"><a aria-label="8"></a>    underline: true</span>
+<span id="cb43-9"><a aria-label="9"></a>  }</span>
+<span id="cb43-10"><a aria-label="10"></a>}</span>
+<span id="cb43-11"><a aria-label="11"></a>  Data :  {</span>
+<span id="cb43-12"><a aria-label="12"></a>  style: {</span>
+<span id="cb43-13"><a aria-label="13"></a>    stroke: "#53C0D8"</span>
+<span id="cb43-14"><a aria-label="14"></a>    stroke-width: 5</span>
+<span id="cb43-15"><a aria-label="15"></a>    shadow: true</span>
+<span id="cb43-16"><a aria-label="16"></a>  }</span>
+<span id="cb43-17"><a aria-label="17"></a>}</span>
+<span id="cb43-18"><a aria-label="18"></a>  </span>
+<span id="cb43-19"><a aria-label="19"></a>  EDA : {</span>
+<span id="cb43-20"><a aria-label="20"></a>  style: {</span>
+<span id="cb43-21"><a aria-label="21"></a>    opacity: 0.6</span>
+<span id="cb43-22"><a aria-label="22"></a>    fill: red</span>
+<span id="cb43-23"><a aria-label="23"></a>    3d: true</span>
+<span id="cb43-24"><a aria-label="24"></a>    stroke: black</span>
+<span id="cb43-25"><a aria-label="25"></a>  }</span>
+<span id="cb43-26"><a aria-label="26"></a>}</span>
+<span id="cb43-27"><a aria-label="27"></a>Check Relationships; </span>
+<span id="cb43-28"><a aria-label="28"></a>Build Model; </span>
+<span id="cb43-29"><a aria-label="29"></a>Transform Variables {shape: cloud}; Try Multiple Regression\n and/or interaction effects {shape: cloud};</span>
+<span id="cb43-30"><a aria-label="30"></a>Check Model Diagnostics: {shape: diamond}</span>
+<span id="cb43-31"><a aria-label="31"></a>Check Model Diagnostics: {tooltip: Check R^2 }</span>
+<span id="cb43-32"><a aria-label="32"></a>Interpret Model</span>
+<span id="cb43-33"><a aria-label="33"></a>Apply Model {shape: oval}</span>
+<span id="cb43-34"><a aria-label="34"></a></span>
+<span id="cb43-35"><a aria-label="35"></a>    Data -&gt; EDA : "inspect"</span>
+<span id="cb43-36"><a aria-label="36"></a>    Data -&gt; EDA : "ggformula"</span>
+<span id="cb43-37"><a aria-label="37"></a>    Data -&gt; EDA : "glimpse"</span>
+<span id="cb43-38"><a aria-label="38"></a>    Data -&gt; EDA : "skim"</span>
+<span id="cb43-39"><a aria-label="39"></a>    EDA --&gt; Check Relationships : "corrplot"</span>
+<span id="cb43-40"><a aria-label="40"></a>    EDA --&gt; Check Relationships : "corrgram"</span>
+<span id="cb43-41"><a aria-label="41"></a>    EDA -&gt; Check Relationships : "ggformula + purrr"</span>
+<span id="cb43-42"><a aria-label="42"></a>    EDA -&gt; Check Relationships : "cor.test"</span>
+<span id="cb43-43"><a aria-label="43"></a>    Check Relationships --&gt; Simple or\nComplex Model Decision</span>
+<span id="cb43-44"><a aria-label="44"></a>    Simple or\nComplex Model Decision -&gt; Is the Model Possible?</span>
+<span id="cb43-45"><a aria-label="45"></a>    Is the Model Possible? -&gt; Build Model</span>
+<span id="cb43-46"><a aria-label="46"></a>    Build Model -&gt; Check Model Diagnostics</span>
+<span id="cb43-47"><a aria-label="47"></a>    Check Model Diagnostics -&gt; Interpret Model : "All Good"</span>
+<span id="cb43-48"><a aria-label="48"></a>    Check Model Diagnostics -&gt; Transform Variables : "Inadequate" {</span>
+<span id="cb43-49"><a aria-label="49"></a></span>
+<span id="cb43-50"><a aria-label="50"></a>          source-arrowhead.label: 1</span>
+<span id="cb43-51"><a aria-label="51"></a>          style.stroke: red</span>
+<span id="cb43-52"><a aria-label="52"></a>          target-arrowhead: {</span>
+<span id="cb43-53"><a aria-label="53"></a>          shape: diamond</span>
+<span id="cb43-54"><a aria-label="54"></a>          style.filled: true</span>
+<span id="cb43-55"><a aria-label="55"></a>          label: 1</span>
+<span id="cb43-56"><a aria-label="56"></a>          }</span>
+<span id="cb43-57"><a aria-label="57"></a>    }</span>
+<span id="cb43-58"><a aria-label="58"></a>    Check Model Diagnostics -&gt; Try Multiple Regression\n and/or interaction effects : " Still Inadequate" {</span>
+<span id="cb43-59"><a aria-label="59"></a>          source-arrowhead.label: 2</span>
+<span id="cb43-60"><a aria-label="60"></a>          style.stroke: red</span>
+<span id="cb43-61"><a aria-label="61"></a>          target-arrowhead: {</span>
+<span id="cb43-62"><a aria-label="62"></a>          shape: diamond</span>
+<span id="cb43-63"><a aria-label="63"></a>          style.filled: true</span>
+<span id="cb43-64"><a aria-label="64"></a>          label: 2</span>
+<span id="cb43-65"><a aria-label="65"></a>          }</span>
+<span id="cb43-66"><a aria-label="66"></a>    }</span>
+<span id="cb43-67"><a aria-label="67"></a>    Transform Variables -&gt;  Build Model {style.stroke: red }</span>
+<span id="cb43-68"><a aria-label="68"></a>     Try Multiple Regression\n and/or interaction effects -&gt;  Build Model {style.stroke: red }</span>
+<span id="cb43-69"><a aria-label="69"></a>    Interpret Model -&gt; Apply Model</span>
+<span id="cb43-70"><a aria-label="70"></a>    </span>
+<span id="cb43-71"><a aria-label="71"></a>  </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 
-<section id="your-turn" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a6920706572736f6e203e7d7d-your-turn" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="openmoji:person" aria-label="Icon person from openmoji Iconify.design set." title="Icon person from openmoji Iconify.design set."></iconify-icon> Your Turn</h2>
 <p>To be written up.</p>
 </section>
@@ -2408,8 +2413,8 @@ y = \beta_0 + \beta_1*x_1 + \beta_2*x_2 ...+ \beta_n*x_n
 </li>
 </ol>
 </section>
-<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" data-entry-spacing="0" role="list">
-<h6 id="r-package-citations"><iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
+<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" role="list">
+<h6 id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c7563696465207061636b6167652d636865636b203e7d7d-r-package-citations"><iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
 <div class="cell">
 <div class="cell-output-display">
 <table class="caption-top">
@@ -2428,7 +2433,7 @@ y = \beta_0 + \beta_1*x_1 + \beta_2*x_2 ...+ \beta_n*x_n
 </tr>
 <tr class="even">
 <td style="text-align: left;">corrgram</td>
-<td style="text-align: left;">1.15</td>
+<td style="text-align: left;">1.16</td>
 <td style="text-align: left;"><span class="citation" data-cites="corrgram">Wright (<a href="" role="doc-biblioref" onclick="return false;">2026</a>)</span></td>
 </tr>
 <tr class="odd">
@@ -2439,7 +2444,7 @@ y = \beta_0 + \beta_1*x_1 + \beta_2*x_2 ...+ \beta_n*x_n
 <tr class="even">
 <td style="text-align: left;">geomtextpath</td>
 <td style="text-align: left;">0.2.0</td>
-<td style="text-align: left;"><span class="citation" data-cites="geomtextpath">Cameron and van den Brand (<a href="" role="doc-biblioref" onclick="return false;">2025</a>)</span></td>
+<td style="text-align: left;"><span class="citation" data-cites="geomtextpath"><span class="nocase">Cameron and van den Brand</span> (<a href="" role="doc-biblioref" onclick="return false;">2025</a>)</span></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">GGally</td>
@@ -2448,7 +2453,7 @@ y = \beta_0 + \beta_1*x_1 + \beta_2*x_2 ...+ \beta_n*x_n
 </tr>
 <tr class="even">
 <td style="text-align: left;">ggstatsplot</td>
-<td style="text-align: left;">1.0.0</td>
+<td style="text-align: left;">1.1.1</td>
 <td style="text-align: left;"><span class="citation" data-cites="ggstatsplot">Patil (<a href="" role="doc-biblioref" onclick="return false;">2021</a>)</span></td>
 </tr>
 <tr class="odd">
@@ -2484,7 +2489,7 @@ y = \beta_0 + \beta_1*x_1 + \beta_2*x_2 ...+ \beta_n*x_n
 Blake, Adam, Jeff Chrabaszcz, Ji Son, and Jim Stigler. 2026. <em><span class="nocase">supernova</span>: Judd, McClelland, &amp; Ryan Formatting for ANOVA Output</em>. <a href="https://doi.org/10.32614/CRAN.package.supernova">https://doi.org/10.32614/CRAN.package.supernova</a>.
 </div>
 <div id="ref-geomtextpath" class="csl-entry" role="listitem">
-Cameron, Allan, and Teun van den Brand. 2025. <em><span class="nocase">geomtextpath</span>: Curved Text in <span>“<span class="nocase">ggplot2</span>”</span></em>. <a href="https://doi.org/10.32614/CRAN.package.geomtextpath">https://doi.org/10.32614/CRAN.package.geomtextpath</a>.
+<span class="nocase">Cameron, Allan, and Teun van den Brand</span>. 2025. <em><span class="nocase">geomtextpath</span>: Curved Text in <span>“<span class="nocase">ggplot2</span>”</span></em>. <a href="https://doi.org/10.32614/CRAN.package.geomtextpath">https://doi.org/10.32614/CRAN.package.geomtextpath</a>.
 </div>
 <div id="ref-janitor" class="csl-entry" role="listitem">
 Firke, Sam. 2024. <em><span class="nocase">janitor</span>: Simple Tools for Examining and Cleaning Dirty Data</em>. <a href="https://doi.org/10.32614/CRAN.package.janitor">https://doi.org/10.32614/CRAN.package.janitor</a>.
@@ -2499,13 +2504,13 @@ James, Gareth, Daniela Witten, Trevor Hastie, and Rob Tibshirani. 2021. <em><spa
 Lee, Yeuk Yu, and Samuel Ventura. 2023. <em><span class="nocase">lindia</span>: Automated Linear Regression Diagnostic</em>. <a href="https://doi.org/10.32614/CRAN.package.lindia">https://doi.org/10.32614/CRAN.package.lindia</a>.
 </div>
 <div id="ref-ggstatsplot" class="csl-entry" role="listitem">
-Patil, Indrajeet. 2021. <span>“<span class="nocase">Visualizations with statistical details: The <span><span>‘<span class="nocase">ggstatsplot</span>’</span></span> approach</span>.”</span> <em><span>Journal of Open Source Software</span></em> 6 (61): 3167. <a href="https://doi.org/10.21105/joss.03167">https://doi.org/10.21105/joss.03167</a>.
+Patil, Indrajeet. 2021. <span>“<span class="nocase">Visualizations with statistical details: The <span><span>‘<span class="nocase">ggstatsplot</span>’</span></span> approach</span>.”</span> <em><span class="nocase">Journal of Open Source Software</span></em> 6 (61): 3167. <a href="https://doi.org/10.21105/joss.03167">https://doi.org/10.21105/joss.03167</a>.
 </div>
 <div id="ref-broom" class="csl-entry" role="listitem">
 Robinson, David, Alex Hayes, Simon Couch, and Emil Hvitfeldt. 2026. <em><span class="nocase">broom</span>: Convert Statistical Objects into Tidy Tibbles</em>. <a href="https://doi.org/10.32614/CRAN.package.broom">https://doi.org/10.32614/CRAN.package.broom</a>.
 </div>
 <div id="ref-GGally" class="csl-entry" role="listitem">
-Schloerke, Barret, Di Cook, Joseph Larmarange, Francois Briatte, Moritz Marbach, Edwin Thoen, Amos Elberg, and Jason Crowley. 2025. <em><span>GGally</span>: Extension to <span>“<span class="nocase">ggplot2</span>”</span></em>. <a href="https://doi.org/10.32614/CRAN.package.GGally">https://doi.org/10.32614/CRAN.package.GGally</a>.
+Schloerke, Barret, Di Cook, Joseph Larmarange, et al. 2025. <em><span>GGally</span>: Extension to <span>“<span class="nocase">ggplot2</span>”</span></em>. <a href="https://doi.org/10.32614/CRAN.package.GGally">https://doi.org/10.32614/CRAN.package.GGally</a>.
 </div>
 <div id="ref-corrplot" class="csl-entry" role="listitem">
 Wei, Taiyun, and Viliam Simko. 2024. <em>R Package <span>“<span class="nocase">corrplot</span>”</span>: Visualization of a Correlation Matrix</em>. <a href="https://github.com/taiyun/corrplot">https://github.com/taiyun/corrplot</a>.
@@ -2553,7 +2558,6 @@ Wright, Kevin. 2026. <em><span class="nocase">corrgram</span>: Plot a Correlogra
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
 'jumpToSlide': true,
-'view': "scroll",
 'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
 'chalkboard': {"buttons":true},
 'smaller': true,
@@ -2697,6 +2701,13 @@ Wright, Kevin. 2026. <em><span class="nocase">corrgram</span>: Plot a Correlogra
         // devices. It is advisable to set this to a lower number than
         // viewDistance in order to save resources.
         mobileViewDistance: 2,
+
+        // Enable scroll view
+        view: 'scroll',
+        scrollProgress: 'auto',
+        scrollActivationWidth: 0,
+        scrollSnap: 'mandatory',
+        scrollLayout: 'full',
 
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be

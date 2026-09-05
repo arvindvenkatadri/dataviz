@@ -7,12 +7,12 @@
 <script src="../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-795e9e8eca1e12b12abcb09a27409631.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-12757e4b7af482b2d9c5bd8860d2b707.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script src="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.8.27">
+  <meta name="generator" content="quarto-1.10.18">
 
   <meta name="dcterms.date" content="2022-11-22">
   <title>The Mad Hatter's Guide to Data Viz and Stats in R –  Change</title>
@@ -22,10 +22,16 @@
   <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reveal.css">
   <style>
-    code{white-space: pre-wrap;}
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
@@ -101,7 +107,6 @@
     div.csl-bib-body { }
     div.csl-entry {
       clear: both;
-      margin-bottom: 0em;
     }
     .hanging-indent div.csl-entry {
       margin-left:2em;
@@ -118,7 +123,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/theme/quarto-180c62c9bcf69a0506044dd7f3253a18.css">
+  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/theme/quarto-7d27a531335543ee0379719666959585.css">
   <link rel="stylesheet" href="../../../../../../css/slides/lexis.css">
   <link rel="stylesheet" href="../../../../../../css/slides/lexis-fonts.css">
   <link href="../../../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -231,7 +236,7 @@
 <meta property="og:title" content=" Change – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:description" content="How one variable changes with another">
 <meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/30-Change/preview.jpg">
-<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
+<meta property="og:site_name" content="The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:image:alt" content="image from rawpixel.com">
 <meta name="twitter:title" content=" Change – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta name="twitter:description" content="How one variable changes with another">
@@ -262,163 +267,163 @@
 </div>
 </section>
 <section>
-<section id="setting-up-r-packages" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(tidyverse) <span class="co"># Tidy data processing and plotting</span></span>
-<span id="cb1-2"><a></a><span class="fu">library</span>(ggformula) <span class="co"># Formula based plots</span></span>
-<span id="cb1-3"><a></a><span class="fu">library</span>(mosaic) <span class="co"># Our go-to package</span></span>
-<span id="cb1-4"><a></a><span class="fu">library</span>(skimr) <span class="co"># Another Data inspection package</span></span>
-<span id="cb1-5"><a></a></span>
-<span id="cb1-6"><a></a><span class="fu">library</span>(GGally) <span class="co"># Corr plots</span></span>
-<span id="cb1-7"><a></a><span class="fu">library</span>(broom) <span class="co"># Clean reports from Stats / ML outputs</span></span>
-<span id="cb1-8"><a></a></span>
-<span id="cb1-9"><a></a><span class="co"># library(devtools)</span></span>
-<span id="cb1-10"><a></a><span class="co"># devtools::install_github("rpruim/Lock5withR")</span></span>
-<span id="cb1-11"><a></a><span class="fu">library</span>(Lock5withR) <span class="co"># Datasets</span></span>
-<span id="cb1-12"><a></a></span>
-<span id="cb1-13"><a></a><span class="fu">library</span>(easystats) <span class="co"># Easy Statistical Analysis and Charts</span></span>
-<span id="cb1-14"><a></a><span class="fu">library</span>(correlation) <span class="co"># Different Types of Correlations</span></span>
-<span id="cb1-15"><a></a></span>
-<span id="cb1-16"><a></a><span class="fu">library</span>(janitor) <span class="co"># Data cleaning and tidying package</span></span>
-<span id="cb1-17"><a></a><span class="fu">library</span>(visdat) <span class="co"># Visualize whole dataframes for missing data</span></span>
-<span id="cb1-18"><a></a><span class="fu">library</span>(naniar) <span class="co"># Clean missing data</span></span>
-<span id="cb1-19"><a></a><span class="fu">library</span>(DT) <span class="co"># Interactive Tables for our data</span></span>
-<span id="cb1-20"><a></a><span class="fu">library</span>(tinytable) <span class="co"># Elegant Tables for our data</span></span>
-<span id="cb1-21"><a></a><span class="fu">library</span>(ggrepel) <span class="co"># Repelled Text Labels in ggplot</span></span>
-<span id="cb1-22"><a></a><span class="fu">library</span>(marquee) <span class="co"># Marquee Text Labels in ggplot</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a aria-label="1"></a><span class="fu">library</span>(tidyverse) <span class="co"># Tidy data processing and plotting</span></span>
+<span id="cb1-2"><a aria-label="2"></a><span class="fu">library</span>(ggformula) <span class="co"># Formula based plots</span></span>
+<span id="cb1-3"><a aria-label="3"></a><span class="fu">library</span>(mosaic) <span class="co"># Our go-to package</span></span>
+<span id="cb1-4"><a aria-label="4"></a><span class="fu">library</span>(skimr) <span class="co"># Another Data inspection package</span></span>
+<span id="cb1-5"><a aria-label="5"></a></span>
+<span id="cb1-6"><a aria-label="6"></a><span class="fu">library</span>(GGally) <span class="co"># Corr plots</span></span>
+<span id="cb1-7"><a aria-label="7"></a><span class="fu">library</span>(broom) <span class="co"># Clean reports from Stats / ML outputs</span></span>
+<span id="cb1-8"><a aria-label="8"></a></span>
+<span id="cb1-9"><a aria-label="9"></a><span class="co"># library(devtools)</span></span>
+<span id="cb1-10"><a aria-label="10"></a><span class="co"># devtools::install_github("rpruim/Lock5withR")</span></span>
+<span id="cb1-11"><a aria-label="11"></a><span class="fu">library</span>(Lock5withR) <span class="co"># Datasets</span></span>
+<span id="cb1-12"><a aria-label="12"></a></span>
+<span id="cb1-13"><a aria-label="13"></a><span class="fu">library</span>(easystats) <span class="co"># Easy Statistical Analysis and Charts</span></span>
+<span id="cb1-14"><a aria-label="14"></a><span class="fu">library</span>(correlation) <span class="co"># Different Types of Correlations</span></span>
+<span id="cb1-15"><a aria-label="15"></a></span>
+<span id="cb1-16"><a aria-label="16"></a><span class="fu">library</span>(janitor) <span class="co"># Data cleaning and tidying package</span></span>
+<span id="cb1-17"><a aria-label="17"></a><span class="fu">library</span>(visdat) <span class="co"># Visualize whole dataframes for missing data</span></span>
+<span id="cb1-18"><a aria-label="18"></a><span class="fu">library</span>(naniar) <span class="co"># Clean missing data</span></span>
+<span id="cb1-19"><a aria-label="19"></a><span class="fu">library</span>(DT) <span class="co"># Interactive Tables for our data</span></span>
+<span id="cb1-20"><a aria-label="20"></a><span class="fu">library</span>(tinytable) <span class="co"># Elegant Tables for our data</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <h4 id="plot-fonts-and-theme">Plot Fonts and Theme</h4>
 <div class="cell" data-messages="false">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">library</span>(systemfonts)</span>
-<span id="cb2-2"><a></a><span class="fu">library</span>(showtext)</span>
-<span id="cb2-3"><a></a><span class="do">## Clean the slate</span></span>
-<span id="cb2-4"><a></a>systemfonts<span class="sc">::</span><span class="fu">clear_local_fonts</span>()</span>
-<span id="cb2-5"><a></a>systemfonts<span class="sc">::</span><span class="fu">clear_registry</span>()</span>
-<span id="cb2-6"><a></a><span class="do">##</span></span>
-<span id="cb2-7"><a></a><span class="fu">showtext_opts</span>(<span class="at">dpi =</span> <span class="dv">96</span>) <span class="co"># set DPI for showtext</span></span>
-<span id="cb2-8"><a></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
-<span id="cb2-9"><a></a>  <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-10"><a></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/Alegreya-Regular.ttf"</span>,</span>
-<span id="cb2-11"><a></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/Alegreya-Bold.ttf"</span>,</span>
-<span id="cb2-12"><a></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/Alegreya-Italic.ttf"</span>,</span>
-<span id="cb2-13"><a></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/Alegreya-BoldItalic.ttf"</span></span>
-<span id="cb2-14"><a></a>)</span>
-<span id="cb2-15"><a></a></span>
-<span id="cb2-16"><a></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
-<span id="cb2-17"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-18"><a></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Regular.ttf"</span>,</span>
-<span id="cb2-19"><a></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Bold.ttf"</span>,</span>
-<span id="cb2-20"><a></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Italic.ttf"</span>,</span>
-<span id="cb2-21"><a></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-BoldItalic.ttf"</span></span>
-<span id="cb2-22"><a></a>)</span>
-<span id="cb2-23"><a></a><span class="fu">showtext_auto</span>(<span class="at">enable =</span> <span class="cn">TRUE</span>) <span class="co"># enable showtext</span></span>
-<span id="cb2-24"><a></a><span class="do">##</span></span>
-<span id="cb2-25"><a></a>theme_custom <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb2-26"><a></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">10</span>) <span class="sc">+</span></span>
-<span id="cb2-27"><a></a></span>
-<span id="cb2-28"><a></a>    <span class="co"># theme(panel.widths = unit(11, "cm"),</span></span>
-<span id="cb2-29"><a></a>    <span class="co">#       panel.heights = unit(6.79, "cm")) + # Golden Ratio</span></span>
-<span id="cb2-30"><a></a></span>
-<span id="cb2-31"><a></a>    <span class="fu">theme</span>(</span>
-<span id="cb2-32"><a></a>      <span class="at">plot.margin =</span> <span class="fu">margin_auto</span>(<span class="at">t =</span> <span class="dv">1</span>, <span class="at">r =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="dv">1</span>, <span class="at">l =</span> <span class="dv">1</span>, <span class="at">unit =</span> <span class="st">"cm"</span>),</span>
-<span id="cb2-33"><a></a>      <span class="at">plot.background =</span> <span class="fu">element_rect</span>(</span>
-<span id="cb2-34"><a></a>        <span class="at">fill =</span> <span class="st">"bisque"</span>,</span>
-<span id="cb2-35"><a></a>        <span class="at">colour =</span> <span class="st">"black"</span>,</span>
-<span id="cb2-36"><a></a>        <span class="at">linewidth =</span> <span class="dv">1</span></span>
-<span id="cb2-37"><a></a>      )</span>
-<span id="cb2-38"><a></a>    ) <span class="sc">+</span></span>
-<span id="cb2-39"><a></a></span>
-<span id="cb2-40"><a></a>    <span class="fu">theme_sub_axis</span>(</span>
-<span id="cb2-41"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-42"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-43"><a></a>        <span class="at">size =</span> <span class="dv">10</span></span>
-<span id="cb2-44"><a></a>      ),</span>
-<span id="cb2-45"><a></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-46"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-47"><a></a>        <span class="at">size =</span> <span class="dv">8</span></span>
-<span id="cb2-48"><a></a>      )</span>
-<span id="cb2-49"><a></a>    ) <span class="sc">+</span></span>
-<span id="cb2-50"><a></a></span>
-<span id="cb2-51"><a></a>    <span class="fu">theme_sub_legend</span>(</span>
-<span id="cb2-52"><a></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-53"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-54"><a></a>        <span class="at">size =</span> <span class="dv">6</span></span>
-<span id="cb2-55"><a></a>      ),</span>
-<span id="cb2-56"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-57"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-58"><a></a>        <span class="at">size =</span> <span class="dv">8</span></span>
-<span id="cb2-59"><a></a>      )</span>
-<span id="cb2-60"><a></a>    ) <span class="sc">+</span></span>
-<span id="cb2-61"><a></a></span>
-<span id="cb2-62"><a></a>    <span class="fu">theme_sub_plot</span>(</span>
-<span id="cb2-63"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-64"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-65"><a></a>        <span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span></span>
-<span id="cb2-66"><a></a>      ),</span>
-<span id="cb2-67"><a></a>      <span class="at">title.position =</span> <span class="st">"plot"</span>,</span>
-<span id="cb2-68"><a></a>      <span class="at">subtitle =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-69"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-70"><a></a>        <span class="at">size =</span> <span class="dv">10</span></span>
-<span id="cb2-71"><a></a>      ),</span>
-<span id="cb2-72"><a></a>      <span class="at">caption =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-73"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-74"><a></a>        <span class="at">size =</span> <span class="dv">6</span></span>
-<span id="cb2-75"><a></a>      ),</span>
-<span id="cb2-76"><a></a>      <span class="at">caption.position =</span> <span class="st">"plot"</span></span>
-<span id="cb2-77"><a></a>    )</span>
-<span id="cb2-78"><a></a>}</span>
-<span id="cb2-79"><a></a></span>
-<span id="cb2-80"><a></a><span class="do">## Use available fonts in ggplot text geoms too!</span></span>
-<span id="cb2-81"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-82"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-83"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-84"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-85"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-86"><a></a>))</span>
-<span id="cb2-87"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-88"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-89"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-90"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-91"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-92"><a></a>))</span>
-<span id="cb2-93"><a></a></span>
-<span id="cb2-94"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"marquee"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-95"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-96"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-97"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-98"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-99"><a></a>))</span>
-<span id="cb2-100"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-101"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-102"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-103"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-104"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-105"><a></a>))</span>
-<span id="cb2-106"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-107"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-108"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-109"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-110"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-111"><a></a>))</span>
-<span id="cb2-112"><a></a></span>
-<span id="cb2-113"><a></a><span class="do">## Set the theme</span></span>
-<span id="cb2-114"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb2-115"><a></a></span>
-<span id="cb2-116"><a></a><span class="do">## tinytable options</span></span>
-<span id="cb2-117"><a></a><span class="fu">options</span>(<span class="st">"tinytable_tt_digits"</span> <span class="ot">=</span> <span class="dv">2</span>)</span>
-<span id="cb2-118"><a></a><span class="fu">options</span>(<span class="st">"tinytable_format_num_fmt"</span> <span class="ot">=</span> <span class="st">"significant_cell"</span>)</span>
-<span id="cb2-119"><a></a><span class="fu">options</span>(<span class="at">tinytable_html_mathjax =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-120"><a></a></span>
-<span id="cb2-121"><a></a></span>
-<span id="cb2-122"><a></a><span class="do">## Set defaults for flextable</span></span>
-<span id="cb2-123"><a></a>flextable<span class="sc">::</span><span class="fu">set_flextable_defaults</span>(<span class="at">font.family =</span> <span class="st">"Roboto Condensed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a aria-label="1"></a><span class="fu">library</span>(ggrepel) <span class="co"># Repelled Text Labels in ggplot</span></span>
+<span id="cb2-2"><a aria-label="2"></a><span class="fu">library</span>(marquee) <span class="co"># Marquee Text Labels in ggplot</span></span>
+<span id="cb2-3"><a aria-label="3"></a><span class="fu">library</span>(systemfonts)</span>
+<span id="cb2-4"><a aria-label="4"></a><span class="fu">library</span>(showtext)</span>
+<span id="cb2-5"><a aria-label="5"></a><span class="do">## Clean the slate</span></span>
+<span id="cb2-6"><a aria-label="6"></a>systemfonts<span class="sc">::</span><span class="fu">clear_local_fonts</span>()</span>
+<span id="cb2-7"><a aria-label="7"></a>systemfonts<span class="sc">::</span><span class="fu">clear_registry</span>()</span>
+<span id="cb2-8"><a aria-label="8"></a><span class="do">##</span></span>
+<span id="cb2-9"><a aria-label="9"></a><span class="fu">showtext_opts</span>(<span class="at">dpi =</span> <span class="dv">96</span>) <span class="co"># set DPI for showtext</span></span>
+<span id="cb2-10"><a aria-label="10"></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
+<span id="cb2-11"><a aria-label="11"></a>  <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-12"><a aria-label="12"></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/Alegreya-Regular.ttf"</span>,</span>
+<span id="cb2-13"><a aria-label="13"></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/Alegreya-Bold.ttf"</span>,</span>
+<span id="cb2-14"><a aria-label="14"></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/Alegreya-Italic.ttf"</span>,</span>
+<span id="cb2-15"><a aria-label="15"></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/Alegreya-BoldItalic.ttf"</span></span>
+<span id="cb2-16"><a aria-label="16"></a>)</span>
+<span id="cb2-17"><a aria-label="17"></a></span>
+<span id="cb2-18"><a aria-label="18"></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
+<span id="cb2-19"><a aria-label="19"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-20"><a aria-label="20"></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Regular.ttf"</span>,</span>
+<span id="cb2-21"><a aria-label="21"></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Bold.ttf"</span>,</span>
+<span id="cb2-22"><a aria-label="22"></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Italic.ttf"</span>,</span>
+<span id="cb2-23"><a aria-label="23"></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-BoldItalic.ttf"</span></span>
+<span id="cb2-24"><a aria-label="24"></a>)</span>
+<span id="cb2-25"><a aria-label="25"></a><span class="fu">showtext_auto</span>(<span class="at">enable =</span> <span class="cn">TRUE</span>) <span class="co"># enable showtext</span></span>
+<span id="cb2-26"><a aria-label="26"></a><span class="do">##</span></span>
+<span id="cb2-27"><a aria-label="27"></a>theme_custom <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb2-28"><a aria-label="28"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">10</span>) <span class="sc">+</span></span>
+<span id="cb2-29"><a aria-label="29"></a></span>
+<span id="cb2-30"><a aria-label="30"></a>    <span class="co"># theme(panel.widths = unit(11, "cm"),</span></span>
+<span id="cb2-31"><a aria-label="31"></a>    <span class="co">#       panel.heights = unit(6.79, "cm")) + # Golden Ratio</span></span>
+<span id="cb2-32"><a aria-label="32"></a></span>
+<span id="cb2-33"><a aria-label="33"></a>    <span class="fu">theme</span>(</span>
+<span id="cb2-34"><a aria-label="34"></a>      <span class="at">plot.margin =</span> <span class="fu">margin_auto</span>(<span class="at">t =</span> <span class="dv">1</span>, <span class="at">r =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="dv">1</span>, <span class="at">l =</span> <span class="dv">1</span>, <span class="at">unit =</span> <span class="st">"cm"</span>),</span>
+<span id="cb2-35"><a aria-label="35"></a>      <span class="at">plot.background =</span> <span class="fu">element_rect</span>(</span>
+<span id="cb2-36"><a aria-label="36"></a>        <span class="at">fill =</span> <span class="st">"bisque"</span>,</span>
+<span id="cb2-37"><a aria-label="37"></a>        <span class="at">colour =</span> <span class="st">"black"</span>,</span>
+<span id="cb2-38"><a aria-label="38"></a>        <span class="at">linewidth =</span> <span class="dv">1</span></span>
+<span id="cb2-39"><a aria-label="39"></a>      )</span>
+<span id="cb2-40"><a aria-label="40"></a>    ) <span class="sc">+</span></span>
+<span id="cb2-41"><a aria-label="41"></a></span>
+<span id="cb2-42"><a aria-label="42"></a>    <span class="fu">theme_sub_axis</span>(</span>
+<span id="cb2-43"><a aria-label="43"></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-44"><a aria-label="44"></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-45"><a aria-label="45"></a>        <span class="at">size =</span> <span class="dv">10</span></span>
+<span id="cb2-46"><a aria-label="46"></a>      ),</span>
+<span id="cb2-47"><a aria-label="47"></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-48"><a aria-label="48"></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-49"><a aria-label="49"></a>        <span class="at">size =</span> <span class="dv">8</span></span>
+<span id="cb2-50"><a aria-label="50"></a>      )</span>
+<span id="cb2-51"><a aria-label="51"></a>    ) <span class="sc">+</span></span>
+<span id="cb2-52"><a aria-label="52"></a></span>
+<span id="cb2-53"><a aria-label="53"></a>    <span class="fu">theme_sub_legend</span>(</span>
+<span id="cb2-54"><a aria-label="54"></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-55"><a aria-label="55"></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-56"><a aria-label="56"></a>        <span class="at">size =</span> <span class="dv">6</span></span>
+<span id="cb2-57"><a aria-label="57"></a>      ),</span>
+<span id="cb2-58"><a aria-label="58"></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-59"><a aria-label="59"></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-60"><a aria-label="60"></a>        <span class="at">size =</span> <span class="dv">8</span></span>
+<span id="cb2-61"><a aria-label="61"></a>      )</span>
+<span id="cb2-62"><a aria-label="62"></a>    ) <span class="sc">+</span></span>
+<span id="cb2-63"><a aria-label="63"></a></span>
+<span id="cb2-64"><a aria-label="64"></a>    <span class="fu">theme_sub_plot</span>(</span>
+<span id="cb2-65"><a aria-label="65"></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-66"><a aria-label="66"></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-67"><a aria-label="67"></a>        <span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span></span>
+<span id="cb2-68"><a aria-label="68"></a>      ),</span>
+<span id="cb2-69"><a aria-label="69"></a>      <span class="at">title.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb2-70"><a aria-label="70"></a>      <span class="at">subtitle =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-71"><a aria-label="71"></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-72"><a aria-label="72"></a>        <span class="at">size =</span> <span class="dv">10</span></span>
+<span id="cb2-73"><a aria-label="73"></a>      ),</span>
+<span id="cb2-74"><a aria-label="74"></a>      <span class="at">caption =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-75"><a aria-label="75"></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-76"><a aria-label="76"></a>        <span class="at">size =</span> <span class="dv">6</span></span>
+<span id="cb2-77"><a aria-label="77"></a>      ),</span>
+<span id="cb2-78"><a aria-label="78"></a>      <span class="at">caption.position =</span> <span class="st">"plot"</span></span>
+<span id="cb2-79"><a aria-label="79"></a>    )</span>
+<span id="cb2-80"><a aria-label="80"></a>}</span>
+<span id="cb2-81"><a aria-label="81"></a></span>
+<span id="cb2-82"><a aria-label="82"></a><span class="do">## Use available fonts in ggplot text geoms too!</span></span>
+<span id="cb2-83"><a aria-label="83"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-84"><a aria-label="84"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-85"><a aria-label="85"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-86"><a aria-label="86"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-87"><a aria-label="87"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-88"><a aria-label="88"></a>))</span>
+<span id="cb2-89"><a aria-label="89"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-90"><a aria-label="90"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-91"><a aria-label="91"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-92"><a aria-label="92"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-93"><a aria-label="93"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-94"><a aria-label="94"></a>))</span>
+<span id="cb2-95"><a aria-label="95"></a></span>
+<span id="cb2-96"><a aria-label="96"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"marquee"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-97"><a aria-label="97"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-98"><a aria-label="98"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-99"><a aria-label="99"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-100"><a aria-label="100"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-101"><a aria-label="101"></a>))</span>
+<span id="cb2-102"><a aria-label="102"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-103"><a aria-label="103"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-104"><a aria-label="104"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-105"><a aria-label="105"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-106"><a aria-label="106"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-107"><a aria-label="107"></a>))</span>
+<span id="cb2-108"><a aria-label="108"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-109"><a aria-label="109"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-110"><a aria-label="110"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-111"><a aria-label="111"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-112"><a aria-label="112"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-113"><a aria-label="113"></a>))</span>
+<span id="cb2-114"><a aria-label="114"></a></span>
+<span id="cb2-115"><a aria-label="115"></a><span class="do">## Set the theme</span></span>
+<span id="cb2-116"><a aria-label="116"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb2-117"><a aria-label="117"></a></span>
+<span id="cb2-118"><a aria-label="118"></a><span class="do">## tinytable options</span></span>
+<span id="cb2-119"><a aria-label="119"></a><span class="fu">options</span>(<span class="st">"tinytable_tt_digits"</span> <span class="ot">=</span> <span class="dv">2</span>)</span>
+<span id="cb2-120"><a aria-label="120"></a><span class="fu">options</span>(<span class="st">"tinytable_format_num_fmt"</span> <span class="ot">=</span> <span class="st">"significant_cell"</span>)</span>
+<span id="cb2-121"><a aria-label="121"></a><span class="fu">options</span>(<span class="at">tinytable_html_mathjax =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-122"><a aria-label="122"></a></span>
+<span id="cb2-123"><a aria-label="123"></a></span>
+<span id="cb2-124"><a aria-label="124"></a><span class="do">## Set defaults for flextable</span></span>
+<span id="cb2-125"><a aria-label="125"></a>flextable<span class="sc">::</span><span class="fu">set_flextable_defaults</span>(<span class="at">font.family =</span> <span class="st">"Roboto Condensed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div></section>
-<section id="what-graphs-will-we-see-today" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d6174657269616c2d73796d626f6c73206164642d63686172742d6f75746c696e65203e7d7d-what-graphs-will-we-see-today" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="material-symbols:add-chart-outline" aria-label="Icon add-chart-outline from material-symbols Iconify.design set." title="Icon add-chart-outline from material-symbols Iconify.design set."></iconify-icon> What graphs will we see today?</h2>
 <table class="caption-top">
 <colgroup>
@@ -457,14 +462,12 @@
 </ul>
 </section>
 
-<section id="what-kind-of-data-variables-will-we-choose" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679207461626c6572207661726961626c65203e7d7d-what-kind-of-data-variables-will-we-choose" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="tabler:variable" aria-label="Icon variable from tabler Iconify.design set." title="Icon variable from tabler Iconify.design set."></iconify-icon> What kind of Data Variables will we choose?</h2>
 <div class="cell">
 <div class="cell-output-display">
-<!-- preamble start -->
-
-    <!-- tinytable mathjax start -->
-    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- tinytable mathjax start -->
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script>
     MathJax = {
       tex: {
@@ -481,19 +484,19 @@
 
     <script>
       // Create table-specific functions using external factory
-      const tableFns_gjvoarh49xek1ujqxj9h = TinyTable.createTableFunctions("tinytable_gjvoarh49xek1ujqxj9h");
+      const tableFns_6y6c59zfs6th37oxu5zh = TinyTable.createTableFunctions("tinytable_6y6c59zfs6th37oxu5zh");
       // tinytable span after
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '1', j: 1 }, { i: '1', j: 2 }, { i: '1', j: 3 }, { i: '1', j: 4 }, { i: '1', j: 5 }, { i: '1', j: 6 } ], css_id: 'tinytable_css_p0mdalbi5ocb3e6y9z9h',}, 
-          { positions: [ { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 } ], css_id: 'tinytable_css_djfznda5cavwn4ro47uo',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '1', j: 2 }, { i: '1', j: 3 }, { i: '1', j: 4 }, { i: '1', j: 5 }, { i: '1', j: 6 } ], css_id: 'tinytable_css_6qa0jw628sx18m1kfknn',}, 
+          { positions: [ { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 } ], css_id: 'tinytable_css_qtajeqhgdg1vgxkf2ftg',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  tableFns_gjvoarh49xek1ujqxj9h.styleCell(cell.i, cell.j, group.css_id);
+                  tableFns_6y6c59zfs6th37oxu5zh.styleCell(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -502,11 +505,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.css">
     <style>
     /* tinytable css entries after */
-    #tinytable_gjvoarh49xek1ujqxj9h td.tinytable_css_p0mdalbi5ocb3e6y9z9h, #tinytable_gjvoarh49xek1ujqxj9h th.tinytable_css_p0mdalbi5ocb3e6y9z9h {  position: relative; --border-bottom: 1; --border-left: 1; --border-right: 1; --border-top: 1; --line-color-bottom: white; --line-color-left: white; --line-color-right: white; --line-color-top: white; --line-width-bottom: 0.4em; --line-width-left: 0.4em; --line-width-right: 0.4em; --line-width-top: 0.4em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; font-size: 0.75em; color: black; background-color: #ededed }
-    #tinytable_gjvoarh49xek1ujqxj9h td.tinytable_css_djfznda5cavwn4ro47uo, #tinytable_gjvoarh49xek1ujqxj9h th.tinytable_css_djfznda5cavwn4ro47uo {  position: relative; --border-bottom: 1; --border-left: 1; --border-right: 1; --border-top: 1; --line-color-bottom: white; --line-color-left: white; --line-color-right: white; --line-color-top: white; --line-width-bottom: 0.4em; --line-width-left: 0.4em; --line-width-right: 0.4em; --line-width-top: 0.4em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; font-size: 0.75em; color: black }
+    #tinytable_6y6c59zfs6th37oxu5zh td.tinytable_css_6qa0jw628sx18m1kfknn, #tinytable_6y6c59zfs6th37oxu5zh th.tinytable_css_6qa0jw628sx18m1kfknn {  position: relative; --border-bottom: 1; --border-left: 1; --border-right: 1; --border-top: 1; --line-color-bottom: white; --line-color-left: white; --line-color-right: white; --line-color-top: white; --line-width-bottom: 0.4em; --line-width-left: 0.4em; --line-width-right: 0.4em; --line-width-top: 0.4em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; font-size: 0.75em; color: black; background-color: #ededed }
+    #tinytable_6y6c59zfs6th37oxu5zh td.tinytable_css_qtajeqhgdg1vgxkf2ftg, #tinytable_6y6c59zfs6th37oxu5zh th.tinytable_css_qtajeqhgdg1vgxkf2ftg {  position: relative; --border-bottom: 1; --border-left: 1; --border-right: 1; --border-top: 1; --line-color-bottom: white; --line-color-left: white; --line-color-right: white; --line-color-top: white; --line-width-bottom: 0.4em; --line-width-left: 0.4em; --line-width-right: 0.4em; --line-width-top: 0.4em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; font-size: 0.75em; color: black }
     </style>
     <div class="container">
-      <table class="tinytable" id="tinytable_gjvoarh49xek1ujqxj9h" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="tinytable" id="tinytable_6y6c59zfs6th37oxu5zh" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         
         <thead>
               <tr>
@@ -536,7 +539,7 @@
 </div>
 </section>
 
-<section id="inspiration" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069636f6e73382069646561203e7d7d-inspiration" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="icons8:idea" aria-label="Icon idea from icons8 Iconify.design set." title="Icon idea from icons8 Iconify.design set."></iconify-icon> Inspiration</h2>
 <div id="fig-scatterplot-inspiration" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig">
@@ -552,24 +555,24 @@ Figure&nbsp;1: ScatterPlot Inspiration <a href="http://www.calamitiesofnature.co
 <p>And India?</p>
 </section>
 
-<section id="what-is-correlation" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679207461626c65722065786368616e6765203e7d7d-what-is-correlation" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="tabler:exchange" aria-label="Icon exchange from tabler Iconify.design set." title="Icon exchange from tabler Iconify.design set."></iconify-icon> What is Correlation?</h2>
 <p>One of the basic Questions we would have of our data is: Does some variable depend upon another in some way? Does <span class="math inline">\(y\)</span> vary with <span class="math inline">\(x\)</span>? A <strong>Correlation Test</strong> is designed to answer exactly this question.</p>
 <p>The word <strong>correlation</strong> is used in everyday life to denote some form of association. We might say that we have noticed a correlation between rainy days and reduced sales at supermarkets. However, in statistical terms we use correlation to denote association between two quantitative variables. We also assume that the association is <strong>linear</strong>, that one variable increases or decreases a fixed amount for a unit increase or decrease in the other. The other technique that is often used in these circumstances is <strong>regression</strong>, which involves estimating the best straight line to summarise the association.</p>
 </section>
 
-<section id="case-study-1-hollywoodmovies2011-dataset" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792067726f6d6d65742d69636f6e732074657374203e7d7d-case-study-1-hollywoodmovies2011-dataset" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="grommet-icons:test" aria-label="Icon test from grommet-icons Iconify.design set." title="Icon test from grommet-icons Iconify.design set."></iconify-icon> Case Study-1: <code>HollywoodMovies2011</code> dataset</h2>
 <p>Let us look at the <code>HollywoodMovies2011</code> dataset from the <code>{Lock5withR}</code> package.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">data</span>(HollywoodMovies2011, <span class="at">package =</span> <span class="st">"Lock5withR"</span>)</span>
-<span id="cb3-2"><a></a>movies_modified <span class="ot">&lt;-</span> HollywoodMovies2011 <span class="sc">%&gt;%</span></span>
-<span id="cb3-3"><a></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>(<span class="at">case =</span> <span class="st">"snake"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb3-4"><a></a>  janitor<span class="sc">::</span><span class="fu">remove_empty</span>(<span class="at">which =</span> <span class="fu">c</span>(<span class="st">"rows"</span>, <span class="st">"cols"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb3-5"><a></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
-<span id="cb3-6"><a></a>    <span class="fu">across</span>(<span class="fu">where</span>(is.character), as.factor)</span>
-<span id="cb3-7"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb3-8"><a></a>  dplyr<span class="sc">::</span><span class="fu">relocate</span>(<span class="fu">where</span>(is.factor))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a aria-label="1"></a><span class="fu">data</span>(HollywoodMovies2011, <span class="at">package =</span> <span class="st">"Lock5withR"</span>)</span>
+<span id="cb3-2"><a aria-label="2"></a>movies_modified <span class="ot">&lt;-</span> HollywoodMovies2011 <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a aria-label="3"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>(<span class="at">case =</span> <span class="st">"snake"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-4"><a aria-label="4"></a>  janitor<span class="sc">::</span><span class="fu">remove_empty</span>(<span class="at">which =</span> <span class="fu">c</span>(<span class="st">"rows"</span>, <span class="st">"cols"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb3-5"><a aria-label="5"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb3-6"><a aria-label="6"></a>    <span class="fu">across</span>(<span class="fu">where</span>(is.character), as.factor)</span>
+<span id="cb3-7"><a aria-label="7"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-8"><a aria-label="8"></a>  dplyr<span class="sc">::</span><span class="fu">relocate</span>(<span class="fu">where</span>(is.factor))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
@@ -614,27 +617,27 @@ Figure&nbsp;1: ScatterPlot Inspiration <a href="http://www.calamitiesofnature.co
 </div>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1"><a></a>#| context: setup</span>
-<span id="cb4-2"><a></a>#| </span>
-<span id="cb4-3"><a></a>data(HollywoodMovies2011, package = "Lock5withR")</span>
-<span id="cb4-4"><a></a>movies_modified &lt;- HollywoodMovies2011 %&gt;% </span>
-<span id="cb4-5"><a></a>  janitor::clean_names(case = "snake") %&gt;%</span>
-<span id="cb4-6"><a></a>  janitor::remove_empty(which = c("rows", "cols")) %&gt;%</span>
-<span id="cb4-7"><a></a>  dplyr::mutate(</span>
-<span id="cb4-8"><a></a>    across(where(is.character), as.factor)</span>
-<span id="cb4-9"><a></a>  ) %&gt;% </span>
-<span id="cb4-10"><a></a>  dplyr::relocate(where(is.factor))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1"><a aria-label="1"></a>#| context: setup</span>
+<span id="cb4-2"><a aria-label="2"></a>#| </span>
+<span id="cb4-3"><a aria-label="3"></a>data(HollywoodMovies2011, package = "Lock5withR")</span>
+<span id="cb4-4"><a aria-label="4"></a>movies_modified &lt;- HollywoodMovies2011 %&gt;% </span>
+<span id="cb4-5"><a aria-label="5"></a>  janitor::clean_names(case = "snake") %&gt;%</span>
+<span id="cb4-6"><a aria-label="6"></a>  janitor::remove_empty(which = c("rows", "cols")) %&gt;%</span>
+<span id="cb4-7"><a aria-label="7"></a>  dplyr::mutate(</span>
+<span id="cb4-8"><a aria-label="8"></a>    across(where(is.character), as.factor)</span>
+<span id="cb4-9"><a aria-label="9"></a>  ) %&gt;% </span>
+<span id="cb4-10"><a aria-label="10"></a>  dplyr::relocate(where(is.factor))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 
 <section>
-<section id="inspecting-the-data" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e2063686172742d3364203e7d7d-inspecting-the-data" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="carbon:chart-3d" aria-label="Icon chart-3d from carbon Iconify.design set." title="Icon chart-3d from carbon Iconify.design set."></iconify-icon> Inspecting the Data</h2>
 <div class="panel-tabset nav-pills" style="background: whitesmoke;">
 <ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1"><iconify-icon inline="" icon="la:r-project" aria-label="Icon r-project from la Iconify.design set." title="Icon r-project from la Iconify.design set."></iconify-icon> glimpse</a></li><li><a href="#tabset-1-2"><iconify-icon inline="" icon="la:r-project" aria-label="Icon r-project from la Iconify.design set." title="Icon r-project from la Iconify.design set."></iconify-icon> skimr</a></li><li><a href="#tabset-1-3"><iconify-icon inline="" icon="la:r-project" aria-label="Icon r-project from la Iconify.design set." title="Icon r-project from la Iconify.design set."></iconify-icon> mosaic</a></li><li><a href="#tabset-1-4"><iconify-icon inline="" icon="noto-v1:spider-web" aria-label="Icon spider-web from noto-v1 Iconify.design set." title="Icon spider-web from noto-v1 Iconify.design set."></iconify-icon> PlayGround</a></li></ul>
 <div class="tab-content nav-pills" style="background: whitesmoke;">
 <div id="tabset-1-1">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="fu">glimpse</span>(movies_modified)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a aria-label="1"></a><span class="fu">glimpse</span>(movies_modified)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 136
 Columns: 14
@@ -657,13 +660,11 @@ $ opening_weekend      &lt;dbl&gt; 13.27, 52.57, 31.60, 169.19, 26.25, 5.83, 26.
 </div>
 <div id="tabset-1-2">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>skimr<span class="sc">::</span><span class="fu">skim</span>(movies_modified) <span class="sc">%&gt;%</span></span>
-<span id="cb7-2"><a></a>  <span class="fu">tt</span>(<span class="at">theme =</span> <span class="st">"striped"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a aria-label="1"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(movies_modified) <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a aria-label="2"></a>  <span class="fu">tt</span>(<span class="at">theme =</span> <span class="st">"striped"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<!-- preamble start -->
-
-    <!-- tinytable mathjax start -->
-    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- tinytable mathjax start -->
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script>
     MathJax = {
       tex: {
@@ -680,18 +681,18 @@ $ opening_weekend      &lt;dbl&gt; 13.27, 52.57, 31.60, 169.19, 26.25, 5.83, 26.
 
     <script>
       // Create table-specific functions using external factory
-      const tableFns_48ld2jrs44xvqeivjiu1 = TinyTable.createTableFunctions("tinytable_48ld2jrs44xvqeivjiu1");
+      const tableFns_fpcsyrpkjvkv4pslpt2l = TinyTable.createTableFunctions("tinytable_fpcsyrpkjvkv4pslpt2l");
       // tinytable span after
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '1', j: 1 }, { i: '3', j: 1 }, { i: '5', j: 1 }, { i: '7', j: 1 }, { i: '9', j: 1 }, { i: '11', j: 1 }, { i: '13', j: 1 }, { i: '1', j: 2 }, { i: '3', j: 2 }, { i: '5', j: 2 }, { i: '7', j: 2 }, { i: '9', j: 2 }, { i: '11', j: 2 }, { i: '13', j: 2 }, { i: '1', j: 3 }, { i: '3', j: 3 }, { i: '5', j: 3 }, { i: '7', j: 3 }, { i: '9', j: 3 }, { i: '11', j: 3 }, { i: '13', j: 3 }, { i: '1', j: 4 }, { i: '3', j: 4 }, { i: '5', j: 4 }, { i: '7', j: 4 }, { i: '9', j: 4 }, { i: '11', j: 4 }, { i: '13', j: 4 }, { i: '1', j: 5 }, { i: '3', j: 5 }, { i: '5', j: 5 }, { i: '7', j: 5 }, { i: '9', j: 5 }, { i: '11', j: 5 }, { i: '13', j: 5 }, { i: '1', j: 6 }, { i: '3', j: 6 }, { i: '5', j: 6 }, { i: '7', j: 6 }, { i: '9', j: 6 }, { i: '11', j: 6 }, { i: '13', j: 6 }, { i: '1', j: 7 }, { i: '3', j: 7 }, { i: '5', j: 7 }, { i: '7', j: 7 }, { i: '9', j: 7 }, { i: '11', j: 7 }, { i: '13', j: 7 }, { i: '1', j: 8 }, { i: '3', j: 8 }, { i: '5', j: 8 }, { i: '7', j: 8 }, { i: '9', j: 8 }, { i: '11', j: 8 }, { i: '13', j: 8 }, { i: '1', j: 9 }, { i: '3', j: 9 }, { i: '5', j: 9 }, { i: '7', j: 9 }, { i: '9', j: 9 }, { i: '11', j: 9 }, { i: '13', j: 9 }, { i: '1', j: 10 }, { i: '3', j: 10 }, { i: '5', j: 10 }, { i: '7', j: 10 }, { i: '9', j: 10 }, { i: '11', j: 10 }, { i: '13', j: 10 }, { i: '1', j: 11 }, { i: '3', j: 11 }, { i: '5', j: 11 }, { i: '7', j: 11 }, { i: '9', j: 11 }, { i: '11', j: 11 }, { i: '13', j: 11 }, { i: '1', j: 12 }, { i: '3', j: 12 }, { i: '5', j: 12 }, { i: '7', j: 12 }, { i: '9', j: 12 }, { i: '11', j: 12 }, { i: '13', j: 12 }, { i: '1', j: 13 }, { i: '3', j: 13 }, { i: '5', j: 13 }, { i: '7', j: 13 }, { i: '9', j: 13 }, { i: '11', j: 13 }, { i: '13', j: 13 }, { i: '1', j: 14 }, { i: '3', j: 14 }, { i: '5', j: 14 }, { i: '7', j: 14 }, { i: '9', j: 14 }, { i: '11', j: 14 }, { i: '13', j: 14 }, { i: '1', j: 15 }, { i: '3', j: 15 }, { i: '5', j: 15 }, { i: '7', j: 15 }, { i: '9', j: 15 }, { i: '11', j: 15 }, { i: '13', j: 15 } ], css_id: 'tinytable_css_7w0pxouo0lvpziosn57d',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '3', j: 1 }, { i: '5', j: 1 }, { i: '7', j: 1 }, { i: '9', j: 1 }, { i: '11', j: 1 }, { i: '13', j: 1 }, { i: '1', j: 2 }, { i: '3', j: 2 }, { i: '5', j: 2 }, { i: '7', j: 2 }, { i: '9', j: 2 }, { i: '11', j: 2 }, { i: '13', j: 2 }, { i: '1', j: 3 }, { i: '3', j: 3 }, { i: '5', j: 3 }, { i: '7', j: 3 }, { i: '9', j: 3 }, { i: '11', j: 3 }, { i: '13', j: 3 }, { i: '1', j: 4 }, { i: '3', j: 4 }, { i: '5', j: 4 }, { i: '7', j: 4 }, { i: '9', j: 4 }, { i: '11', j: 4 }, { i: '13', j: 4 }, { i: '1', j: 5 }, { i: '3', j: 5 }, { i: '5', j: 5 }, { i: '7', j: 5 }, { i: '9', j: 5 }, { i: '11', j: 5 }, { i: '13', j: 5 }, { i: '1', j: 6 }, { i: '3', j: 6 }, { i: '5', j: 6 }, { i: '7', j: 6 }, { i: '9', j: 6 }, { i: '11', j: 6 }, { i: '13', j: 6 }, { i: '1', j: 7 }, { i: '3', j: 7 }, { i: '5', j: 7 }, { i: '7', j: 7 }, { i: '9', j: 7 }, { i: '11', j: 7 }, { i: '13', j: 7 }, { i: '1', j: 8 }, { i: '3', j: 8 }, { i: '5', j: 8 }, { i: '7', j: 8 }, { i: '9', j: 8 }, { i: '11', j: 8 }, { i: '13', j: 8 }, { i: '1', j: 9 }, { i: '3', j: 9 }, { i: '5', j: 9 }, { i: '7', j: 9 }, { i: '9', j: 9 }, { i: '11', j: 9 }, { i: '13', j: 9 }, { i: '1', j: 10 }, { i: '3', j: 10 }, { i: '5', j: 10 }, { i: '7', j: 10 }, { i: '9', j: 10 }, { i: '11', j: 10 }, { i: '13', j: 10 }, { i: '1', j: 11 }, { i: '3', j: 11 }, { i: '5', j: 11 }, { i: '7', j: 11 }, { i: '9', j: 11 }, { i: '11', j: 11 }, { i: '13', j: 11 }, { i: '1', j: 12 }, { i: '3', j: 12 }, { i: '5', j: 12 }, { i: '7', j: 12 }, { i: '9', j: 12 }, { i: '11', j: 12 }, { i: '13', j: 12 }, { i: '1', j: 13 }, { i: '3', j: 13 }, { i: '5', j: 13 }, { i: '7', j: 13 }, { i: '9', j: 13 }, { i: '11', j: 13 }, { i: '13', j: 13 }, { i: '1', j: 14 }, { i: '3', j: 14 }, { i: '5', j: 14 }, { i: '7', j: 14 }, { i: '9', j: 14 }, { i: '11', j: 14 }, { i: '13', j: 14 }, { i: '1', j: 15 }, { i: '3', j: 15 }, { i: '5', j: 15 }, { i: '7', j: 15 }, { i: '9', j: 15 }, { i: '11', j: 15 }, { i: '13', j: 15 } ], css_id: 'tinytable_css_00qwlmbt8nk6xl47dbpm',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  tableFns_48ld2jrs44xvqeivjiu1.styleCell(cell.i, cell.j, group.css_id);
+                  tableFns_fpcsyrpkjvkv4pslpt2l.styleCell(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -700,10 +701,10 @@ $ opening_weekend      &lt;dbl&gt; 13.27, 52.57, 31.60, 169.19, 26.25, 5.83, 26.
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.css">
     <style>
     /* tinytable css entries after */
-    #tinytable_48ld2jrs44xvqeivjiu1 td.tinytable_css_7w0pxouo0lvpziosn57d, #tinytable_48ld2jrs44xvqeivjiu1 th.tinytable_css_7w0pxouo0lvpziosn57d { background-color: #ededed }
+    #tinytable_fpcsyrpkjvkv4pslpt2l td.tinytable_css_00qwlmbt8nk6xl47dbpm, #tinytable_fpcsyrpkjvkv4pslpt2l th.tinytable_css_00qwlmbt8nk6xl47dbpm { background-color: #ededed }
     </style>
     <div class="container">
-      <table class="tinytable" id="tinytable_48ld2jrs44xvqeivjiu1" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="tinytable" id="tinytable_fpcsyrpkjvkv4pslpt2l" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         
         <thead>
               <tr>
@@ -973,15 +974,13 @@ $ opening_weekend      &lt;dbl&gt; 13.27, 52.57, 31.60, 169.19, 26.25, 5.83, 26.
 </div>
 <div id="tabset-1-3">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>movies_describe <span class="ot">&lt;-</span> <span class="fu">inspect</span>(movies_modified)</span>
-<span id="cb8-2"><a></a><span class="do">##</span></span>
-<span id="cb8-3"><a></a>movies_describe<span class="sc">$</span>categorical <span class="sc">%&gt;%</span></span>
-<span id="cb8-4"><a></a>  <span class="fu">tt</span>(<span class="at">theme =</span> <span class="st">"striped"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a aria-label="1"></a>movies_describe <span class="ot">&lt;-</span> <span class="fu">inspect</span>(movies_modified)</span>
+<span id="cb8-2"><a aria-label="2"></a><span class="do">##</span></span>
+<span id="cb8-3"><a aria-label="3"></a>movies_describe<span class="sc">$</span>categorical <span class="sc">%&gt;%</span></span>
+<span id="cb8-4"><a aria-label="4"></a>  <span class="fu">tt</span>(<span class="at">theme =</span> <span class="st">"striped"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<!-- preamble start -->
-
-    <!-- tinytable mathjax start -->
-    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- tinytable mathjax start -->
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script>
     MathJax = {
       tex: {
@@ -998,18 +997,18 @@ $ opening_weekend      &lt;dbl&gt; 13.27, 52.57, 31.60, 169.19, 26.25, 5.83, 26.
 
     <script>
       // Create table-specific functions using external factory
-      const tableFns_nybz43mye4tip8y22aum = TinyTable.createTableFunctions("tinytable_nybz43mye4tip8y22aum");
+      const tableFns_68aij2tco6dn0ohvc8sj = TinyTable.createTableFunctions("tinytable_68aij2tco6dn0ohvc8sj");
       // tinytable span after
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '1', j: 1 }, { i: '3', j: 1 }, { i: '1', j: 2 }, { i: '3', j: 2 }, { i: '1', j: 3 }, { i: '3', j: 3 }, { i: '1', j: 4 }, { i: '3', j: 4 }, { i: '1', j: 5 }, { i: '3', j: 5 }, { i: '1', j: 6 }, { i: '3', j: 6 } ], css_id: 'tinytable_css_w43glxzsja33xu15b482',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '3', j: 1 }, { i: '1', j: 2 }, { i: '3', j: 2 }, { i: '1', j: 3 }, { i: '3', j: 3 }, { i: '1', j: 4 }, { i: '3', j: 4 }, { i: '1', j: 5 }, { i: '3', j: 5 }, { i: '1', j: 6 }, { i: '3', j: 6 } ], css_id: 'tinytable_css_k8roo66h74zdap73w0xg',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  tableFns_nybz43mye4tip8y22aum.styleCell(cell.i, cell.j, group.css_id);
+                  tableFns_68aij2tco6dn0ohvc8sj.styleCell(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -1018,10 +1017,10 @@ $ opening_weekend      &lt;dbl&gt; 13.27, 52.57, 31.60, 169.19, 26.25, 5.83, 26.
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.css">
     <style>
     /* tinytable css entries after */
-    #tinytable_nybz43mye4tip8y22aum td.tinytable_css_w43glxzsja33xu15b482, #tinytable_nybz43mye4tip8y22aum th.tinytable_css_w43glxzsja33xu15b482 { background-color: #ededed }
+    #tinytable_68aij2tco6dn0ohvc8sj td.tinytable_css_k8roo66h74zdap73w0xg, #tinytable_68aij2tco6dn0ohvc8sj th.tinytable_css_k8roo66h74zdap73w0xg { background-color: #ededed }
     </style>
     <div class="container">
-      <table class="tinytable" id="tinytable_nybz43mye4tip8y22aum" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="tinytable" id="tinytable_68aij2tco6dn0ohvc8sj" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         
         <thead>
               <tr>
@@ -1072,14 +1071,12 @@ $ opening_weekend      &lt;dbl&gt; 13.27, 52.57, 31.60, 169.19, 26.25, 5.83, 26.
     </div>
 <!-- hack to avoid NA insertion in last line -->
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="do">##</span></span>
-<span id="cb9-2"><a></a>movies_describe<span class="sc">$</span>quantitative <span class="sc">%&gt;%</span></span>
-<span id="cb9-3"><a></a>  <span class="fu">tt</span>(<span class="at">theme =</span> <span class="st">"striped"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a aria-label="1"></a><span class="do">##</span></span>
+<span id="cb9-2"><a aria-label="2"></a>movies_describe<span class="sc">$</span>quantitative <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a aria-label="3"></a>  <span class="fu">tt</span>(<span class="at">theme =</span> <span class="st">"striped"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<!-- preamble start -->
-
-    <!-- tinytable mathjax start -->
-    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- tinytable mathjax start -->
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script>
     MathJax = {
       tex: {
@@ -1096,18 +1093,18 @@ $ opening_weekend      &lt;dbl&gt; 13.27, 52.57, 31.60, 169.19, 26.25, 5.83, 26.
 
     <script>
       // Create table-specific functions using external factory
-      const tableFns_zubyu8byiulbesse6ovl = TinyTable.createTableFunctions("tinytable_zubyu8byiulbesse6ovl");
+      const tableFns_wgihqnzbyne1svdqxbdt = TinyTable.createTableFunctions("tinytable_wgihqnzbyne1svdqxbdt");
       // tinytable span after
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '1', j: 1 }, { i: '3', j: 1 }, { i: '5', j: 1 }, { i: '7', j: 1 }, { i: '9', j: 1 }, { i: '1', j: 2 }, { i: '3', j: 2 }, { i: '5', j: 2 }, { i: '7', j: 2 }, { i: '9', j: 2 }, { i: '1', j: 3 }, { i: '3', j: 3 }, { i: '5', j: 3 }, { i: '7', j: 3 }, { i: '9', j: 3 }, { i: '1', j: 4 }, { i: '3', j: 4 }, { i: '5', j: 4 }, { i: '7', j: 4 }, { i: '9', j: 4 }, { i: '1', j: 5 }, { i: '3', j: 5 }, { i: '5', j: 5 }, { i: '7', j: 5 }, { i: '9', j: 5 }, { i: '1', j: 6 }, { i: '3', j: 6 }, { i: '5', j: 6 }, { i: '7', j: 6 }, { i: '9', j: 6 }, { i: '1', j: 7 }, { i: '3', j: 7 }, { i: '5', j: 7 }, { i: '7', j: 7 }, { i: '9', j: 7 }, { i: '1', j: 8 }, { i: '3', j: 8 }, { i: '5', j: 8 }, { i: '7', j: 8 }, { i: '9', j: 8 }, { i: '1', j: 9 }, { i: '3', j: 9 }, { i: '5', j: 9 }, { i: '7', j: 9 }, { i: '9', j: 9 }, { i: '1', j: 10 }, { i: '3', j: 10 }, { i: '5', j: 10 }, { i: '7', j: 10 }, { i: '9', j: 10 }, { i: '1', j: 11 }, { i: '3', j: 11 }, { i: '5', j: 11 }, { i: '7', j: 11 }, { i: '9', j: 11 } ], css_id: 'tinytable_css_o2gei1fb57zpo15mq0rw',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '3', j: 1 }, { i: '5', j: 1 }, { i: '7', j: 1 }, { i: '9', j: 1 }, { i: '1', j: 2 }, { i: '3', j: 2 }, { i: '5', j: 2 }, { i: '7', j: 2 }, { i: '9', j: 2 }, { i: '1', j: 3 }, { i: '3', j: 3 }, { i: '5', j: 3 }, { i: '7', j: 3 }, { i: '9', j: 3 }, { i: '1', j: 4 }, { i: '3', j: 4 }, { i: '5', j: 4 }, { i: '7', j: 4 }, { i: '9', j: 4 }, { i: '1', j: 5 }, { i: '3', j: 5 }, { i: '5', j: 5 }, { i: '7', j: 5 }, { i: '9', j: 5 }, { i: '1', j: 6 }, { i: '3', j: 6 }, { i: '5', j: 6 }, { i: '7', j: 6 }, { i: '9', j: 6 }, { i: '1', j: 7 }, { i: '3', j: 7 }, { i: '5', j: 7 }, { i: '7', j: 7 }, { i: '9', j: 7 }, { i: '1', j: 8 }, { i: '3', j: 8 }, { i: '5', j: 8 }, { i: '7', j: 8 }, { i: '9', j: 8 }, { i: '1', j: 9 }, { i: '3', j: 9 }, { i: '5', j: 9 }, { i: '7', j: 9 }, { i: '9', j: 9 }, { i: '1', j: 10 }, { i: '3', j: 10 }, { i: '5', j: 10 }, { i: '7', j: 10 }, { i: '9', j: 10 }, { i: '1', j: 11 }, { i: '3', j: 11 }, { i: '5', j: 11 }, { i: '7', j: 11 }, { i: '9', j: 11 } ], css_id: 'tinytable_css_ney9yu5yqdfu03k9nvcv',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  tableFns_zubyu8byiulbesse6ovl.styleCell(cell.i, cell.j, group.css_id);
+                  tableFns_wgihqnzbyne1svdqxbdt.styleCell(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -1116,10 +1113,10 @@ $ opening_weekend      &lt;dbl&gt; 13.27, 52.57, 31.60, 169.19, 26.25, 5.83, 26.
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.css">
     <style>
     /* tinytable css entries after */
-    #tinytable_zubyu8byiulbesse6ovl td.tinytable_css_o2gei1fb57zpo15mq0rw, #tinytable_zubyu8byiulbesse6ovl th.tinytable_css_o2gei1fb57zpo15mq0rw { background-color: #ededed }
+    #tinytable_wgihqnzbyne1svdqxbdt td.tinytable_css_ney9yu5yqdfu03k9nvcv, #tinytable_wgihqnzbyne1svdqxbdt th.tinytable_css_ney9yu5yqdfu03k9nvcv { background-color: #ededed }
     </style>
     <div class="container">
-      <table class="tinytable" id="tinytable_zubyu8byiulbesse6ovl" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="tinytable" id="tinytable_wgihqnzbyne1svdqxbdt" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         
         <thead>
               <tr>
@@ -1276,15 +1273,15 @@ $ opening_weekend      &lt;dbl&gt; 13.27, 52.57, 31.60, 169.19, 26.25, 5.83, 26.
 </div>
 </div>
 <div id="tabset-1-4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb10-1"><a></a></span>
-<span id="cb10-2"><a></a>glimpse(movies_modified)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb11-1"><a></a>#| label: skim-movies-webr</span>
-<span id="cb11-2"><a></a>skimr::skim(movies_modified)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb12-1"><a></a>#| label: inspect-movies-webr</span>
-<span id="cb12-2"><a></a></span>
-<span id="cb12-3"><a></a>movies_describe &lt;- inspect(movies_modified)</span>
-<span id="cb12-4"><a></a>movies_describe$categorical</span>
-<span id="cb12-5"><a></a>movies_describe$quantitative</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb10-1"><a aria-label="1"></a></span>
+<span id="cb10-2"><a aria-label="2"></a>glimpse(movies_modified)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb11-1"><a aria-label="1"></a>#| label: skim-movies-webr</span>
+<span id="cb11-2"><a aria-label="2"></a>skimr::skim(movies_modified)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb12-1"><a aria-label="1"></a>#| label: inspect-movies-webr</span>
+<span id="cb12-2"><a aria-label="2"></a></span>
+<span id="cb12-3"><a aria-label="3"></a>movies_describe &lt;- inspect(movies_modified)</span>
+<span id="cb12-4"><a aria-label="4"></a>movies_describe$categorical</span>
+<span id="cb12-5"><a aria-label="5"></a>movies_describe$quantitative</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -1321,19 +1318,19 @@ $ opening_weekend      &lt;dbl&gt; 13.27, 52.57, 31.60, 169.19, 26.25, 5.83, 26.
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>movies_modified <span class="sc">%&gt;%</span></span>
-<span id="cb13-2"><a></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
-<span id="cb13-3"><a></a>    <span class="at">caption =</span> htmltools<span class="sc">::</span>tags<span class="sc">$</span><span class="fu">caption</span>(</span>
-<span id="cb13-4"><a></a>      <span class="at">style =</span> <span class="st">"caption-side: top; text-align: left; color: black; font-size: 150%;"</span>,</span>
-<span id="cb13-5"><a></a>      <span class="st">"Movies Dataset (Clean)"</span></span>
-<span id="cb13-6"><a></a>    ),</span>
-<span id="cb13-7"><a></a>    <span class="at">options =</span> <span class="fu">list</span>(<span class="at">pageLength =</span> <span class="dv">10</span>, <span class="at">autoWidth =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb13-8"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb13-9"><a></a>  DT<span class="sc">::</span><span class="fu">formatStyle</span>(</span>
-<span id="cb13-10"><a></a>    <span class="at">columns =</span> <span class="fu">names</span>(movies_modified),</span>
-<span id="cb13-11"><a></a>    <span class="at">fontFamily =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb13-12"><a></a>    <span class="at">fontSize =</span> <span class="st">"12px"</span></span>
-<span id="cb13-13"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a aria-label="1"></a>movies_modified <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a aria-label="2"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
+<span id="cb13-3"><a aria-label="3"></a>    <span class="at">caption =</span> htmltools<span class="sc">::</span>tags<span class="sc">$</span><span class="fu">caption</span>(</span>
+<span id="cb13-4"><a aria-label="4"></a>      <span class="at">style =</span> <span class="st">"caption-side: top; text-align: left; color: black; font-size: 150%;"</span>,</span>
+<span id="cb13-5"><a aria-label="5"></a>      <span class="st">"Movies Dataset (Clean)"</span></span>
+<span id="cb13-6"><a aria-label="6"></a>    ),</span>
+<span id="cb13-7"><a aria-label="7"></a>    <span class="at">options =</span> <span class="fu">list</span>(<span class="at">pageLength =</span> <span class="dv">10</span>, <span class="at">autoWidth =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-8"><a aria-label="8"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb13-9"><a aria-label="9"></a>  DT<span class="sc">::</span><span class="fu">formatStyle</span>(</span>
+<span id="cb13-10"><a aria-label="10"></a>    <span class="at">columns =</span> <span class="fu">names</span>(movies_modified),</span>
+<span id="cb13-11"><a aria-label="11"></a>    <span class="at">fontFamily =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb13-12"><a aria-label="12"></a>    <span class="at">fontSize =</span> <span class="st">"12px"</span></span>
+<span id="cb13-13"><a aria-label="13"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div id="tbl-dt-for-data" class="cell quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-tbl">
@@ -1342,15 +1339,15 @@ Table&nbsp;1: Movies Clean Dynamic Data Table
 </figcaption>
 <div aria-describedby="tbl-dt-for-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div class="datatables html-widget html-fill-item" id="htmlwidget-af7546ff5e78ec28cf22" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-af7546ff5e78ec28cf22">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: left; color: black; font-size: 150%;\">Movies Dataset (Clean)<\/caption>","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82","83","84","85","86","87","88","89","90","91","92","93","94","95","96","97","98","99","100","101","102","103","104","105","106","107","108","109","110","111","112","113","114","115","116","117","118","119","120","121","122","123","124","125","126","127","128","129","130","131","132","133","134","135","136"],["Insidious","Paranormal Activity 3","Bad Teacher","Harry Potter and the Deathly Hallows Part 2","Bridesmaids","Midnight in Paris","The Help","The Hangover Part II","Another Earth","Limitless","Horrible Bosses","No Strings Attached","Twilight: Breaking Dawn","Transformers: Dark of the Moon","Gnomeo and Juliet","Rio","Super 8 ","Rise of the Planet of the Apes","Apollo 18","The Smurfs","Fast Five","Our Idiot Brother","50/50","Drive","Beginners","Kung Fu Panda 2","Unknown","The Ides of March","Friends With Benefits","Pirates of the Caribbean:\nOn Stranger Tides","Final Destination 5","Source Code","Mission Impossible","One Day","Sanctum","Sherlock Holmes 2","Johnny English Reborn","Diary of a Wimpy Kid 2: Rodrick Rules","Mr. Popper's Penguins","In Time","Water For Elephants","Battle: Los Angeles","Thor","Hop","Crazy, Stupid, Love","Cars 2","Spy Kids: All The Time in the World","Just Go With It","Captain America: The First Avenger","The Rite","Footloose","The Adjustment Bureau","Margin Call","The Roommate","Soul Surfer","Real Steel","Paul","Immortals","Scream 4","I Am Number Four","Dolphin Tale","Abduction","Hall Pass","Season Of The Witch","The Debt","Contagion","X-Men: First Class","Puss In Boots","Zookeeper","Hanna","Red Riding Hood","Moneyball","Monte Carlo","The Green Hornet","The Lincoln Lawyer","Rango","A Very Harold and Kumar Christmas","The Three Musketeers","Larry Crowne","Something Borrowed","The Tree Of Life","Beastly","Tower Heist","The Muppets","Shark Night 3D","Colombiana","What's Your Number","30 Minutes or Less","The Change Up","Priest","The Mechanic","Don't Be Afraid Of The Dark","Fright Night","The Descendants","Arthur","Winnie The Pooh","Green Lantern","Sucker Punch","The Eagle","Cowboys and Aliens","Jack and Jill","J.Edgar","The Dilemma","Warrior","My Week with Marilyn","Happy Feet 2","Dream House","Killer Elite","The Thing","Cedar Rapids","Drive Angry","Arthur Christmas","The Conspirator","Everything Must Go","Conan the Barbarian","Your Highness","The Rum Diary","Anonymous","A Dangerous Method","The Company Men","Take Shelter","The Beaver","Take Me Home Tonight","Red State","Mars Needs Moms","Dylan Dog: Dead of Night","The Big Year","Vanishing on 7th Street","Trespass","Hesher","Machine Gun Preacher","Waiting For Forever","The Son Of No One","Hugo","Jane Eyre","Never Back Down 2: The Beatdown"],["Sony","Independent","Independent","Warner Bros","Relativity Media","Sony","DreamWorks Pictures","Legendary Pictures","Independent","Virgin","Warner Bros","Spyglass Entertainment","Independent","DreamWorks Pictures","Disney","20th Century Fox","Paramount","20th Century Fox","Weinstein Company","Sony Pictures Animation","Universal","The Weinstein Company","Independent","Independent","Independent","DreamWorks Animation","Independent","Columbia","Warner Bros","Disney","New Line Cinema","Summit Entertainment","Paramount","Independent","Relativity Media","Warner Bros","Relativity Media","20th Century Fox","20th Century Fox","Regency Enterprises","20th Century Fox","Relativity Media","Disney","Relativity Media","Warner Bros","Pixar","Weinstein Company","Happy Madison","Disney","Warner Bros","Spyglass Entertainment","Independent","Independent","Independent","Sony","DreamWorks Pictures","Relativity","Relativity Media","Weinstein Company","Paramount","Independent","Vertigo Entertainment","Warner Bros","Relativity ","Universal","Warner Bros","Disney","DreamWorks","Happy Madison Productions","Universal","Warner Bros","Columbia","20th Century Fox","Columbia","Lionsgate","Paramount","Lionsgate","Independent","Universal","Independent","Independent","CBS Films","Relativity","Disney","Relativity","Sony","20th Century Fox","Independent","Relativity Media","Sony","Independent","Miramax Films","DreamWorks","20th Century Fox","Warner Bros","Disney","Warner Bros","Legendary Pictures","Universal","Universal","Happy Madison","Warner Bros","Spyglass Entertainment","Lionsgate","The Weinstein Company","Village Roadshow Pictures","Morgan Creek Productions","Independent","Universal","20th Century Fox","Independent","Aardman Animations","Independent","Reliance Entertainment","Lionsgate","Universal","Independent","Relativity Media","Independent","Weinstein Company","Independent","Summit Entertainment","Relativity","Independent","Disney","Independent","Independent","Independent","Independent","Independent","Lionsgate","Independent","Independent","Paramount","Universal","Sony"],["Monster Force","Monster Force","Comedy","Rivalry","Rivalry","Love","Maturation","Comedy","Temptation","Wretched Excess","Revenge","Comedy","Love","Quest","Love","Quest","Monster Force","Revenge","Monster Force","Fish Out Of Water","Escape","Comedy","Discovery","Rivalry","Love","Rivalry","The Riddle","Transformation","Temptation","Quest","Monster Force","The Riddle","Pursuit","Love","Quest","Pursuit","Comedy","Comedy","Discovery","The Riddle","Love","Monster Force","Monster Force","Fish Out Of Water","Discovery","Fish Out Of Water","Quest","Comedy","Metamorphosis","Monster Force","Transformation","Sacrifice","Sacrifice","Monster Force","Underdog","Underdog","Comedy","Revenge","Monster Force","Maturation","Quest","Maturation","Temptation","Monster Force","Pursuit","The Riddle","Monster Force","Quest","Comedy","Quest","Monster Force","Underdog","Love","Rivalry","Fish Out Of Water","Fish Out Of Water","Comedy","Rivalry","Discovery","Love","Discovery","Metamorphosis","Revenge","Quest","Escape","Revenge","Transformation","Comedy","Metamorphosis","Monster Force","Revenge","Monster Force","Rivalry","Discovery","Sacrifice","Quest","Metamorphosis","Quest","Quest","Monster Force","Comedy","Wretched Excess","Comedy","Rivalry","Love","Journey and Return","The Riddle","Rivalry","Monster Force","Maturation","Rescue","Journey and Return","Underdog","Discovery","Quest","Comedy","Discovery","Tragedy","Love","Discovery","Sacrifice","Transformation","Discovery","Escape","Rescue","Monster Force","Transformation","Monster Force","Escape","Wretched Excess","Transformation","Love","Discovery","","Love","Rivalry"],["Horror","Horror","Comedy","Fantasy","Comedy","Romance","Drama","Comedy","Fantasy","Thriller","Comedy","Comedy","Romance","Action","Animation","Animation","Horror","Action","Horror","Animation","Action","Comedy","Comedy","Thriller","Comedy","Animation","Thriller","Thriller","Romance","Action","Horror","Thriller","Action","Romance","Action","Action","Comedy","Comedy","Comedy","Thriller","Drama","Action","Action","Animation","Romance","Animation","Action","Romance","Action","Horror","Drama","Thriller","Thriller","Horror","Drama","Action","Comedy","Action","Horror","Thriller","Drama","Action","Comedy","Action","Thriller","Thriller","Action","Animation","Comedy","Action","Horror","Drama","Romance","Action","Drama","Animation","Comedy","Action","Drama","Romance","Drama","Romance","Comedy","Comedy","Horror","Action","Comedy","Comedy","Comedy","Action","Action","Horror","Horror","Drama","Comedy","Animation","Action","Action","Action","Action","Comedy","Drama","Comedy","Action","Drama","Animation","Horror","Action","Horror","Comedy","Action","Animation","Drama","Drama","Action","Comedy","Drama","Drama","Drama","Drama","Drama","Drama","Comedy","Horror","Animation","Horror","Comedy","Horror","Thriller","Drama","Action","Romance","Thriller","Adventure","Romance","Action"],[67,68,44,96,90,93,75,35,63,69,69,49,26,35,56,71,82,83,23,23,78,68,93,93,84,82,55,85,71,34,61,92,93,37,30,60,38,47,47,38,60,35,77,26,78,38,22,19,78,20,71,72,86,4,46,58,72,36,58,32,84,4,35,10,76,84,87,83,14,71,11,95,38,44,84,88,72,24,34,null,84,19,68,97,16,28,24,43,24,17,53,59,75,89,26,91,27,23,39,44,4,42,23,83,83,41,7,25,36,86,45,92,56,74,22,26,50,46,79,66,92,62,28,57,36,6,38,52,11,54,29,6,18,93,85,null],[65,58,38,92,77,84,91,58,74,73,72,57,68,67,52,73,78,87,31,50,83,79,93,79,80,80,57,76,68,61,56,81,86,54,39,79,55,63,54,55,72,50,80,50,81,56,40,63,75,43,71,67,73,29,79,81,70,59,57,57,81,46,44,32,70,63,88,76,42,67,41,89,50,47,82,69,71,48,46,null,61,50,61,87,25,55,50,48,53,37,52,37,68,88,49,79,48,48,43,50,59,84,31,93,84,59,38,48,52,61,38,82,65,53,34,36,48,66,89,55,85,57,46,59,43,28,62,62,24,68,71,53,61,84,77,44],[2408,3321,3049,4375,2918,944,2534,3615,null,2756,3040,3018,4061,4088,2994,3826,3379,3648,3328,3395,3644,2555,2458,2886,null,3925,3043,2199,2926,4155,3155,2961,3448,1719,2787,3703,1552,3167,3339,3122,2817,3417,3955,3579,3020,4115,3295,3548,3715,2985,3549,2840,null,2534,2214,3440,2802,3112,3305,3154,3507,3118,2950,2816,1826,3222,3641,3952,3482,2535,3030,2993,2473,3584,2707,3917,2875,3017,2973,2904,4,1952,3367,3440,2806,2614,3002,2888,2913,2864,2703,2760,3114,29,3276,2405,3816,3033,2296,3750,3438,1910,2940,1869,247,3606,2661,2986,2996,null,2290,3376,707,null,3015,2769,2273,265,null,106,null,22,2003,null,3117,null,2150,null,null,null,null,3,null,1277,null,null],[5511,15829,10365,38672,8995,6177,10278,23775,null,6860,9310,6512,34012,23937,8469,10252,10492,15024,2615,10489,23655,2744,3517,3929,null,12142,7183,4761,6364,21697,5715,5002,8672,2955,3390,10704,2470,7500,5524,3860,5979,10411,16618,10490,6326,16072,3534,8601,17512,4955,4383,7450,null,5921,4789,7942,4655,10349,5656,6167,5461,3504,4588,3769,5427,6935,15134,8623,5763,4880,4622,6516,3014,9335,4879,9722,4506,2875,4405,4802,93230,5047,7135,8500,2995,3982,1806,4616,4645,5221,4226,3089,2477,41038,3731,3267,13935,6284,3782,9715,7273,5873,6060,2805,7174,5889,3055,3132,2835,null,2265,3537,4960,null,3324,3380,2259,3856,null,6111,null,4890,1730,null,2218,null,1513,null,null,null,null,2972,null,8899,null,null],[54.01,103.66,100.29,381.01,169.11,56.18,169.22,254.46,1.32,79.25,117.54,70.59999999999999,260.8,352.39,99.97,143.62,127,176.7,17.69,142.61,209.83,24.82,34.9,34.68,5.79,165.25,63.69,40.49,55.8,241.07,42.59,54.71,197.8,13.84,23.2,179.04,8.31,52.7,68.22,36.49,58.71,83.55,181.03,108.09,84.34,191.45,38.54,103.03,176.65,33,51.16,62.5,4.94,37.3,43.85,83.61,37.41,80.48999999999999,38.18,55.1,71.08,28.07,45.06,24.8,31.18,75.64,146.41,142.09,80.36,40.26,37.66,74.20999999999999,23.18,98.8,58.01,123.26,34.04,20.25,35.61,39.05,13.3,27.87,74.5,66.63,18.88,36.67,14.01,37.05,37.08,29.14,29.2,24.05,18.3,24.54,33.04,26.69,116.6,36.39,19.49,100.24,68.91,35.06,48.5,13.66,5.31,57.31,21.3,25.12,16.93,6.86,10.72,33.7,11.54,2.71,21.3,21.6,13.07,4.46,0.54,4.4,1.57,0.97,6.93,1.1,21.39,1.19,7.17,0.02,0.02,0.38,0.54,0.03,0.03,null,11.24,null],[43,98.23999999999999,115.9,947.1,119.28,83,30.1,327,null,82.59999999999999,92.09999999999999,77.09999999999999,374,770.8099999999999,94,341.02,132.71,304.52,7.88,419.54,416.3,null,1.62,32.33,8.390000000000001,497.78,67.09999999999999,13.7,93.73999999999999,802.8,115.3,68.56999999999999,336.7,41.4,85.40000000000001,261,149.63,19.72,119.14,90.90000000000001,58.39,128.27,267.48,75.87,58.5,360.4,35.54,111.92,191.75,63,10.9,65.37,3.93,3.19,0.41,186.2,60.57,102,58.96,89.40000000000001,16.86,54,38.1,66.8,14.25,59.8,207.22,142.3,89.94,23.52,51.5,27.9,16.48,129,17,121.9,null,111.9,16.8,21.14,41,0.97,47,5.8,19.83,24.3,16.42,3.49,33.75,49.17,22,7.5,18.8,null,12.7,6.46,103.25,53.4,7.63,74.58,15,null,21.2,9.4,2.95,49.2,17.2,27.84,10.5,null,18.21,57.5,2.67,null,27.5,3.26,8.48,9.73,8.44,0.4,null,5.4,null,null,17.6,3.45,0.24,1.05,3.1,null,0.57,null,null,null,18.91,null],[97.009,201.897,216.196,1328.111,288.382,139.177,199.324,581.4640000000001,1.321,161.849,209.638,147.7,634.8,1123.195,193.967,484.634,259.713,481.226,25.562,562.158,626.13,24.816,36.511,67.00700000000001,14.182,663.024,130.786,54.194,149.541,1043.871,157.887,123.278,534.5,55.241,108.6,440.04,157.939,72.416,187.355,127.393,117.094,211.818,448.512,183.953,142.841,551.85,74.08,214.945,368.404,96,62.053,127.868,8.869,40.492,44.267,269.811,97.983,182.485,97.137,144.5,87.947,82.069,83.16,91.59999999999999,45.429,135.443,353.623,284.386,170.301,63.781,89.16200000000001,102.109,39.664,227.8,75.009,245.154,34.044,132.147,52.408,60.183,54.303,28.833,121.504,72.426,38.702,60.965,30.426,40.546,70.833,78.30800000000001,51.2,31.546,37.102,24.541,45.735,33.152,219.851,89.792,27.121,174.821,83.911,35.057,69.7,23.057,8.257999999999999,106.507,38.502,52.961,27.428,6.861,28.931,91.203,14.211,2.711,48.795,24.856,21.552,14.19,8.972894999999999,4.8,1.573,6.37,6.928,1.104,38.992,4.633,7.41,1.067,3.124,0.382,1.103,0.025,0.03,null,30.147,null],[1.5,5,20,125,32.5,17,25,80,0.2,27,35,25,110,195,36,90,50,93,5,110,125,5,8,15,3.2,150,30,12.5,35,250,40,32,145,15,30,125,45,21,55,40,38,70,150,63,50,200,27,80,140,37,24,50.2,3.5,16,18,110,40,75,40,60,37,35,36,40,20,60,160,130,80,30,42,50,20,120,40,135,19,75,30,35,32,17,75,45,25,40,20,28,52,60,40,25,30,20,40,30,200,82,25,163,79,35,70,25,10,135,50,70,38,10,45,150,25,5,90,49.9,45,30,20,15,5,21,25,4,150,20,41,10,35,7,30,5,15,null,null,3],[64.67266667,40.3794,10.8098,10.624888,8.873292308,8.186882353,7.97296,7.2683,6.605,5.994407407,5.989657143,5.908,5.770909091,5.759974359,5.387972222,5.384822222,5.19426,5.174473118,5.1124,5.110527273,5.00904,4.9632,4.563875,4.467133333,4.431875,4.42016,4.359533333,4.33552,4.2726,4.175484,3.947175,3.8524375,3.686206897,3.682733333,3.62,3.52032,3.509755556,3.448380952,3.406454545,3.184825,3.081421053,3.025971429,2.99008,2.919888889,2.85682,2.75925,2.743703704,2.6868125,2.631457143,2.594594595,2.585541667,2.547171315,2.534,2.53075,2.459277778,2.452827273,2.449575,2.433133333,2.428425,2.408333333,2.376945946,2.344828571,2.31,2.29,2.27145,2.257383333,2.21014375,2.187584615,2.1287625,2.126033333,2.122904762,2.04218,1.9832,1.898333333,1.875225,1.815955556,1.791789474,1.76196,1.746933333,1.719514286,1.69696875,1.696058824,1.620053333,1.609466667,1.54808,1.524125,1.5213,1.448071429,1.362173077,1.305133333,1.28,1.26184,1.236733333,1.22705,1.143375,1.105066667,1.099255,1.09502439,1.08484,1.072521472,1.062164557,1.001628571,0.995714286,0.92228,0.8258,0.788940741,0.7700399999999999,0.756585714,0.721789474,0.6861,0.642911111,0.60802,0.5684399999999999,0.5422,0.542166667,0.498116232,0.478933333,0.473,0.44864475,0.32,0.3146,0.303333333,0.27712,0.276,0.259946667,0.23165,0.180731707,0.1067,0.089257143,0.054571429,0.036766667,0.005,0.002,null,null,0],[13.27,52.57,31.6,169.19,26.25,5.83,26.04,85.95,0.08,18.91,28.3,19.7,138.12,97.84999999999999,25.36,39.23,35.45,54.81,8.699999999999999,35.61,null,null,8.640000000000001,11.34,0.14,47.66,21.86,10.47,18.62,90.15000000000001,18.03,14.81,29.55,5.08,9.4,39.63,3.83,23.75,18.45,12.05,16.84,35.57,65.72,37.54,19.1,66.14,11.64,30.51,65.06,14.8,15.56,21.16,0.5600000000000001,15,10.6,27.32,13.04,32.21,18.69,19.45,19.15,10.93,13.54,10.6,9.91,22.4,55.1,34.08,20.07,12.37,14.01,19.5,7.45,33.5,13.21,38.08,12.95,8.67,13.1,13.95,0.37,9.85,24.03,29.24,8.4,10.41,5.42,13.33,13.53,14.95,11.4,8.529999999999999,7.71,4.38,12.22,7.86,53.17,19.06,8.68,36.43,25,11.22,17.8,5.24,1.75,21.24,8.130000000000001,9.35,8.49,0.3,5.19,12.07,3.51,0.79,10.02,9.359999999999999,5.14,1.02,0.17,0.64,0.05,0.11,3.46,null,6.91,0.75,3.25,0,0.02,0.13,0.05,0.01,0.02,11.36,0.18,8.6]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>movie<\/th>\n      <th>lead_studio<\/th>\n      <th>story<\/th>\n      <th>genre<\/th>\n      <th>rotten_tomatoes<\/th>\n      <th>audience_score<\/th>\n      <th>theaters_open_week<\/th>\n      <th>bo_average_open_week<\/th>\n      <th>domestic_gross<\/th>\n      <th>foreign_gross<\/th>\n      <th>world_gross<\/th>\n      <th>budget<\/th>\n      <th>profitability<\/th>\n      <th>opening_weekend<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[5,6,7,8,9,10,11,12,13,14]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"movie","targets":1},{"name":"lead_studio","targets":2},{"name":"story","targets":3},{"name":"genre","targets":4},{"name":"rotten_tomatoes","targets":5},{"name":"audience_score","targets":6},{"name":"theaters_open_week","targets":7},{"name":"bo_average_open_week","targets":8},{"name":"domestic_gross","targets":9},{"name":"foreign_gross","targets":10},{"name":"world_gross","targets":11},{"name":"budget","targets":12},{"name":"profitability","targets":13},{"name":"opening_weekend","targets":14}],"order":[],"orderClasses":false,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[1]; $(this.api().cell(row, 1).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[2]; $(this.api().cell(row, 2).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[3]; $(this.api().cell(row, 3).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[4]; $(this.api().cell(row, 4).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[5]; $(this.api().cell(row, 5).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[6]; $(this.api().cell(row, 6).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[7]; $(this.api().cell(row, 7).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[8]; $(this.api().cell(row, 8).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[9]; $(this.api().cell(row, 9).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[10]; $(this.api().cell(row, 10).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[11]; $(this.api().cell(row, 11).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[12]; $(this.api().cell(row, 12).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[13]; $(this.api().cell(row, 13).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[14]; $(this.api().cell(row, 14).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\n}"}},"evals":["options.rowCallback"],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-31cc694ee7e8e69fc786" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-31cc694ee7e8e69fc786">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: left; color: black; font-size: 150%;\">Movies Dataset (Clean)<\/caption>","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82","83","84","85","86","87","88","89","90","91","92","93","94","95","96","97","98","99","100","101","102","103","104","105","106","107","108","109","110","111","112","113","114","115","116","117","118","119","120","121","122","123","124","125","126","127","128","129","130","131","132","133","134","135","136"],["Insidious","Paranormal Activity 3","Bad Teacher","Harry Potter and the Deathly Hallows Part 2","Bridesmaids","Midnight in Paris","The Help","The Hangover Part II","Another Earth","Limitless","Horrible Bosses","No Strings Attached","Twilight: Breaking Dawn","Transformers: Dark of the Moon","Gnomeo and Juliet","Rio","Super 8 ","Rise of the Planet of the Apes","Apollo 18","The Smurfs","Fast Five","Our Idiot Brother","50/50","Drive","Beginners","Kung Fu Panda 2","Unknown","The Ides of March","Friends With Benefits","Pirates of the Caribbean:\nOn Stranger Tides","Final Destination 5","Source Code","Mission Impossible","One Day","Sanctum","Sherlock Holmes 2","Johnny English Reborn","Diary of a Wimpy Kid 2: Rodrick Rules","Mr. Popper's Penguins","In Time","Water For Elephants","Battle: Los Angeles","Thor","Hop","Crazy, Stupid, Love","Cars 2","Spy Kids: All The Time in the World","Just Go With It","Captain America: The First Avenger","The Rite","Footloose","The Adjustment Bureau","Margin Call","The Roommate","Soul Surfer","Real Steel","Paul","Immortals","Scream 4","I Am Number Four","Dolphin Tale","Abduction","Hall Pass","Season Of The Witch","The Debt","Contagion","X-Men: First Class","Puss In Boots","Zookeeper","Hanna","Red Riding Hood","Moneyball","Monte Carlo","The Green Hornet","The Lincoln Lawyer","Rango","A Very Harold and Kumar Christmas","The Three Musketeers","Larry Crowne","Something Borrowed","The Tree Of Life","Beastly","Tower Heist","The Muppets","Shark Night 3D","Colombiana","What's Your Number","30 Minutes or Less","The Change Up","Priest","The Mechanic","Don't Be Afraid Of The Dark","Fright Night","The Descendants","Arthur","Winnie The Pooh","Green Lantern","Sucker Punch","The Eagle","Cowboys and Aliens","Jack and Jill","J.Edgar","The Dilemma","Warrior","My Week with Marilyn","Happy Feet 2","Dream House","Killer Elite","The Thing","Cedar Rapids","Drive Angry","Arthur Christmas","The Conspirator","Everything Must Go","Conan the Barbarian","Your Highness","The Rum Diary","Anonymous","A Dangerous Method","The Company Men","Take Shelter","The Beaver","Take Me Home Tonight","Red State","Mars Needs Moms","Dylan Dog: Dead of Night","The Big Year","Vanishing on 7th Street","Trespass","Hesher","Machine Gun Preacher","Waiting For Forever","The Son Of No One","Hugo","Jane Eyre","Never Back Down 2: The Beatdown"],["Sony","Independent","Independent","Warner Bros","Relativity Media","Sony","DreamWorks Pictures","Legendary Pictures","Independent","Virgin","Warner Bros","Spyglass Entertainment","Independent","DreamWorks Pictures","Disney","20th Century Fox","Paramount","20th Century Fox","Weinstein Company","Sony Pictures Animation","Universal","The Weinstein Company","Independent","Independent","Independent","DreamWorks Animation","Independent","Columbia","Warner Bros","Disney","New Line Cinema","Summit Entertainment","Paramount","Independent","Relativity Media","Warner Bros","Relativity Media","20th Century Fox","20th Century Fox","Regency Enterprises","20th Century Fox","Relativity Media","Disney","Relativity Media","Warner Bros","Pixar","Weinstein Company","Happy Madison","Disney","Warner Bros","Spyglass Entertainment","Independent","Independent","Independent","Sony","DreamWorks Pictures","Relativity","Relativity Media","Weinstein Company","Paramount","Independent","Vertigo Entertainment","Warner Bros","Relativity ","Universal","Warner Bros","Disney","DreamWorks","Happy Madison Productions","Universal","Warner Bros","Columbia","20th Century Fox","Columbia","Lionsgate","Paramount","Lionsgate","Independent","Universal","Independent","Independent","CBS Films","Relativity","Disney","Relativity","Sony","20th Century Fox","Independent","Relativity Media","Sony","Independent","Miramax Films","DreamWorks","20th Century Fox","Warner Bros","Disney","Warner Bros","Legendary Pictures","Universal","Universal","Happy Madison","Warner Bros","Spyglass Entertainment","Lionsgate","The Weinstein Company","Village Roadshow Pictures","Morgan Creek Productions","Independent","Universal","20th Century Fox","Independent","Aardman Animations","Independent","Reliance Entertainment","Lionsgate","Universal","Independent","Relativity Media","Independent","Weinstein Company","Independent","Summit Entertainment","Relativity","Independent","Disney","Independent","Independent","Independent","Independent","Independent","Lionsgate","Independent","Independent","Paramount","Universal","Sony"],["Monster Force","Monster Force","Comedy","Rivalry","Rivalry","Love","Maturation","Comedy","Temptation","Wretched Excess","Revenge","Comedy","Love","Quest","Love","Quest","Monster Force","Revenge","Monster Force","Fish Out Of Water","Escape","Comedy","Discovery","Rivalry","Love","Rivalry","The Riddle","Transformation","Temptation","Quest","Monster Force","The Riddle","Pursuit","Love","Quest","Pursuit","Comedy","Comedy","Discovery","The Riddle","Love","Monster Force","Monster Force","Fish Out Of Water","Discovery","Fish Out Of Water","Quest","Comedy","Metamorphosis","Monster Force","Transformation","Sacrifice","Sacrifice","Monster Force","Underdog","Underdog","Comedy","Revenge","Monster Force","Maturation","Quest","Maturation","Temptation","Monster Force","Pursuit","The Riddle","Monster Force","Quest","Comedy","Quest","Monster Force","Underdog","Love","Rivalry","Fish Out Of Water","Fish Out Of Water","Comedy","Rivalry","Discovery","Love","Discovery","Metamorphosis","Revenge","Quest","Escape","Revenge","Transformation","Comedy","Metamorphosis","Monster Force","Revenge","Monster Force","Rivalry","Discovery","Sacrifice","Quest","Metamorphosis","Quest","Quest","Monster Force","Comedy","Wretched Excess","Comedy","Rivalry","Love","Journey and Return","The Riddle","Rivalry","Monster Force","Maturation","Rescue","Journey and Return","Underdog","Discovery","Quest","Comedy","Discovery","Tragedy","Love","Discovery","Sacrifice","Transformation","Discovery","Escape","Rescue","Monster Force","Transformation","Monster Force","Escape","Wretched Excess","Transformation","Love","Discovery","","Love","Rivalry"],["Horror","Horror","Comedy","Fantasy","Comedy","Romance","Drama","Comedy","Fantasy","Thriller","Comedy","Comedy","Romance","Action","Animation","Animation","Horror","Action","Horror","Animation","Action","Comedy","Comedy","Thriller","Comedy","Animation","Thriller","Thriller","Romance","Action","Horror","Thriller","Action","Romance","Action","Action","Comedy","Comedy","Comedy","Thriller","Drama","Action","Action","Animation","Romance","Animation","Action","Romance","Action","Horror","Drama","Thriller","Thriller","Horror","Drama","Action","Comedy","Action","Horror","Thriller","Drama","Action","Comedy","Action","Thriller","Thriller","Action","Animation","Comedy","Action","Horror","Drama","Romance","Action","Drama","Animation","Comedy","Action","Drama","Romance","Drama","Romance","Comedy","Comedy","Horror","Action","Comedy","Comedy","Comedy","Action","Action","Horror","Horror","Drama","Comedy","Animation","Action","Action","Action","Action","Comedy","Drama","Comedy","Action","Drama","Animation","Horror","Action","Horror","Comedy","Action","Animation","Drama","Drama","Action","Comedy","Drama","Drama","Drama","Drama","Drama","Drama","Comedy","Horror","Animation","Horror","Comedy","Horror","Thriller","Drama","Action","Romance","Thriller","Adventure","Romance","Action"],[67,68,44,96,90,93,75,35,63,69,69,49,26,35,56,71,82,83,23,23,78,68,93,93,84,82,55,85,71,34,61,92,93,37,30,60,38,47,47,38,60,35,77,26,78,38,22,19,78,20,71,72,86,4,46,58,72,36,58,32,84,4,35,10,76,84,87,83,14,71,11,95,38,44,84,88,72,24,34,null,84,19,68,97,16,28,24,43,24,17,53,59,75,89,26,91,27,23,39,44,4,42,23,83,83,41,7,25,36,86,45,92,56,74,22,26,50,46,79,66,92,62,28,57,36,6,38,52,11,54,29,6,18,93,85,null],[65,58,38,92,77,84,91,58,74,73,72,57,68,67,52,73,78,87,31,50,83,79,93,79,80,80,57,76,68,61,56,81,86,54,39,79,55,63,54,55,72,50,80,50,81,56,40,63,75,43,71,67,73,29,79,81,70,59,57,57,81,46,44,32,70,63,88,76,42,67,41,89,50,47,82,69,71,48,46,null,61,50,61,87,25,55,50,48,53,37,52,37,68,88,49,79,48,48,43,50,59,84,31,93,84,59,38,48,52,61,38,82,65,53,34,36,48,66,89,55,85,57,46,59,43,28,62,62,24,68,71,53,61,84,77,44],[2408,3321,3049,4375,2918,944,2534,3615,null,2756,3040,3018,4061,4088,2994,3826,3379,3648,3328,3395,3644,2555,2458,2886,null,3925,3043,2199,2926,4155,3155,2961,3448,1719,2787,3703,1552,3167,3339,3122,2817,3417,3955,3579,3020,4115,3295,3548,3715,2985,3549,2840,null,2534,2214,3440,2802,3112,3305,3154,3507,3118,2950,2816,1826,3222,3641,3952,3482,2535,3030,2993,2473,3584,2707,3917,2875,3017,2973,2904,4,1952,3367,3440,2806,2614,3002,2888,2913,2864,2703,2760,3114,29,3276,2405,3816,3033,2296,3750,3438,1910,2940,1869,247,3606,2661,2986,2996,null,2290,3376,707,null,3015,2769,2273,265,null,106,null,22,2003,null,3117,null,2150,null,null,null,null,3,null,1277,null,null],[5511,15829,10365,38672,8995,6177,10278,23775,null,6860,9310,6512,34012,23937,8469,10252,10492,15024,2615,10489,23655,2744,3517,3929,null,12142,7183,4761,6364,21697,5715,5002,8672,2955,3390,10704,2470,7500,5524,3860,5979,10411,16618,10490,6326,16072,3534,8601,17512,4955,4383,7450,null,5921,4789,7942,4655,10349,5656,6167,5461,3504,4588,3769,5427,6935,15134,8623,5763,4880,4622,6516,3014,9335,4879,9722,4506,2875,4405,4802,93230,5047,7135,8500,2995,3982,1806,4616,4645,5221,4226,3089,2477,41038,3731,3267,13935,6284,3782,9715,7273,5873,6060,2805,7174,5889,3055,3132,2835,null,2265,3537,4960,null,3324,3380,2259,3856,null,6111,null,4890,1730,null,2218,null,1513,null,null,null,null,2972,null,8899,null,null],[54.01,103.66,100.29,381.01,169.11,56.18,169.22,254.46,1.32,79.25,117.54,70.59999999999999,260.8,352.39,99.97,143.62,127,176.7,17.69,142.61,209.83,24.82,34.9,34.68,5.79,165.25,63.69,40.49,55.8,241.07,42.59,54.71,197.8,13.84,23.2,179.04,8.31,52.7,68.22,36.49,58.71,83.55,181.03,108.09,84.34,191.45,38.54,103.03,176.65,33,51.16,62.5,4.94,37.3,43.85,83.61,37.41,80.48999999999999,38.18,55.1,71.08,28.07,45.06,24.8,31.18,75.64,146.41,142.09,80.36,40.26,37.66,74.20999999999999,23.18,98.8,58.01,123.26,34.04,20.25,35.61,39.05,13.3,27.87,74.5,66.63,18.88,36.67,14.01,37.05,37.08,29.14,29.2,24.05,18.3,24.54,33.04,26.69,116.6,36.39,19.49,100.24,68.91,35.06,48.5,13.66,5.31,57.31,21.3,25.12,16.93,6.86,10.72,33.7,11.54,2.71,21.3,21.6,13.07,4.46,0.54,4.4,1.57,0.97,6.93,1.1,21.39,1.19,7.17,0.02,0.02,0.38,0.54,0.03,0.03,null,11.24,null],[43,98.23999999999999,115.9,947.1,119.28,83,30.1,327,null,82.59999999999999,92.09999999999999,77.09999999999999,374,770.8099999999999,94,341.02,132.71,304.52,7.88,419.54,416.3,null,1.62,32.33,8.390000000000001,497.78,67.09999999999999,13.7,93.73999999999999,802.8,115.3,68.56999999999999,336.7,41.4,85.40000000000001,261,149.63,19.72,119.14,90.90000000000001,58.39,128.27,267.48,75.87,58.5,360.4,35.54,111.92,191.75,63,10.9,65.37,3.93,3.19,0.41,186.2,60.57,102,58.96,89.40000000000001,16.86,54,38.1,66.8,14.25,59.8,207.22,142.3,89.94,23.52,51.5,27.9,16.48,129,17,121.9,null,111.9,16.8,21.14,41,0.97,47,5.8,19.83,24.3,16.42,3.49,33.75,49.17,22,7.5,18.8,null,12.7,6.46,103.25,53.4,7.63,74.58,15,null,21.2,9.4,2.95,49.2,17.2,27.84,10.5,null,18.21,57.5,2.67,null,27.5,3.26,8.48,9.73,8.44,0.4,null,5.4,null,null,17.6,3.45,0.24,1.05,3.1,null,0.57,null,null,null,18.91,null],[97.009,201.897,216.196,1328.111,288.382,139.177,199.324,581.4640000000001,1.321,161.849,209.638,147.7,634.8,1123.195,193.967,484.634,259.713,481.226,25.562,562.158,626.13,24.816,36.511,67.00700000000001,14.182,663.024,130.786,54.194,149.541,1043.871,157.887,123.278,534.5,55.241,108.6,440.04,157.939,72.416,187.355,127.393,117.094,211.818,448.512,183.953,142.841,551.85,74.08,214.945,368.404,96,62.053,127.868,8.869,40.492,44.267,269.811,97.983,182.485,97.137,144.5,87.947,82.069,83.16,91.59999999999999,45.429,135.443,353.623,284.386,170.301,63.781,89.16200000000001,102.109,39.664,227.8,75.009,245.154,34.044,132.147,52.408,60.183,54.303,28.833,121.504,72.426,38.702,60.965,30.426,40.546,70.833,78.30800000000001,51.2,31.546,37.102,24.541,45.735,33.152,219.851,89.792,27.121,174.821,83.911,35.057,69.7,23.057,8.257999999999999,106.507,38.502,52.961,27.428,6.861,28.931,91.203,14.211,2.711,48.795,24.856,21.552,14.19,8.972894999999999,4.8,1.573,6.37,6.928,1.104,38.992,4.633,7.41,1.067,3.124,0.382,1.103,0.025,0.03,null,30.147,null],[1.5,5,20,125,32.5,17,25,80,0.2,27,35,25,110,195,36,90,50,93,5,110,125,5,8,15,3.2,150,30,12.5,35,250,40,32,145,15,30,125,45,21,55,40,38,70,150,63,50,200,27,80,140,37,24,50.2,3.5,16,18,110,40,75,40,60,37,35,36,40,20,60,160,130,80,30,42,50,20,120,40,135,19,75,30,35,32,17,75,45,25,40,20,28,52,60,40,25,30,20,40,30,200,82,25,163,79,35,70,25,10,135,50,70,38,10,45,150,25,5,90,49.9,45,30,20,15,5,21,25,4,150,20,41,10,35,7,30,5,15,null,null,3],[64.67266667,40.3794,10.8098,10.624888,8.873292308,8.186882353,7.97296,7.2683,6.605,5.994407407,5.989657143,5.908,5.770909091,5.759974359,5.387972222,5.384822222,5.19426,5.174473118,5.1124,5.110527273,5.00904,4.9632,4.563875,4.467133333,4.431875,4.42016,4.359533333,4.33552,4.2726,4.175484,3.947175,3.8524375,3.686206897,3.682733333,3.62,3.52032,3.509755556,3.448380952,3.406454545,3.184825,3.081421053,3.025971429,2.99008,2.919888889,2.85682,2.75925,2.743703704,2.6868125,2.631457143,2.594594595,2.585541667,2.547171315,2.534,2.53075,2.459277778,2.452827273,2.449575,2.433133333,2.428425,2.408333333,2.376945946,2.344828571,2.31,2.29,2.27145,2.257383333,2.21014375,2.187584615,2.1287625,2.126033333,2.122904762,2.04218,1.9832,1.898333333,1.875225,1.815955556,1.791789474,1.76196,1.746933333,1.719514286,1.69696875,1.696058824,1.620053333,1.609466667,1.54808,1.524125,1.5213,1.448071429,1.362173077,1.305133333,1.28,1.26184,1.236733333,1.22705,1.143375,1.105066667,1.099255,1.09502439,1.08484,1.072521472,1.062164557,1.001628571,0.995714286,0.92228,0.8258,0.788940741,0.7700399999999999,0.756585714,0.721789474,0.6861,0.642911111,0.60802,0.5684399999999999,0.5422,0.542166667,0.498116232,0.478933333,0.473,0.44864475,0.32,0.3146,0.303333333,0.27712,0.276,0.259946667,0.23165,0.180731707,0.1067,0.089257143,0.054571429,0.036766667,0.005,0.002,null,null,0],[13.27,52.57,31.6,169.19,26.25,5.83,26.04,85.95,0.08,18.91,28.3,19.7,138.12,97.84999999999999,25.36,39.23,35.45,54.81,8.699999999999999,35.61,null,null,8.640000000000001,11.34,0.14,47.66,21.86,10.47,18.62,90.15000000000001,18.03,14.81,29.55,5.08,9.4,39.63,3.83,23.75,18.45,12.05,16.84,35.57,65.72,37.54,19.1,66.14,11.64,30.51,65.06,14.8,15.56,21.16,0.5600000000000001,15,10.6,27.32,13.04,32.21,18.69,19.45,19.15,10.93,13.54,10.6,9.91,22.4,55.1,34.08,20.07,12.37,14.01,19.5,7.45,33.5,13.21,38.08,12.95,8.67,13.1,13.95,0.37,9.85,24.03,29.24,8.4,10.41,5.42,13.33,13.53,14.95,11.4,8.529999999999999,7.71,4.38,12.22,7.86,53.17,19.06,8.68,36.43,25,11.22,17.8,5.24,1.75,21.24,8.130000000000001,9.35,8.49,0.3,5.19,12.07,3.51,0.79,10.02,9.359999999999999,5.14,1.02,0.17,0.64,0.05,0.11,3.46,null,6.91,0.75,3.25,0,0.02,0.13,0.05,0.01,0.02,11.36,0.18,8.6]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>movie<\/th>\n      <th>lead_studio<\/th>\n      <th>story<\/th>\n      <th>genre<\/th>\n      <th>rotten_tomatoes<\/th>\n      <th>audience_score<\/th>\n      <th>theaters_open_week<\/th>\n      <th>bo_average_open_week<\/th>\n      <th>domestic_gross<\/th>\n      <th>foreign_gross<\/th>\n      <th>world_gross<\/th>\n      <th>budget<\/th>\n      <th>profitability<\/th>\n      <th>opening_weekend<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[5,6,7,8,9,10,11,12,13,14]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"movie","targets":1},{"name":"lead_studio","targets":2},{"name":"story","targets":3},{"name":"genre","targets":4},{"name":"rotten_tomatoes","targets":5},{"name":"audience_score","targets":6},{"name":"theaters_open_week","targets":7},{"name":"bo_average_open_week","targets":8},{"name":"domestic_gross","targets":9},{"name":"foreign_gross","targets":10},{"name":"world_gross","targets":11},{"name":"budget","targets":12},{"name":"profitability","targets":13},{"name":"opening_weekend","targets":14}],"order":[],"orderClasses":false,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[1]; $(this.api().cell(row, 1).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[2]; $(this.api().cell(row, 2).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[3]; $(this.api().cell(row, 3).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[4]; $(this.api().cell(row, 4).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[5]; $(this.api().cell(row, 5).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[6]; $(this.api().cell(row, 6).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[7]; $(this.api().cell(row, 7).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[8]; $(this.api().cell(row, 8).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[9]; $(this.api().cell(row, 9).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[10]; $(this.api().cell(row, 10).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[11]; $(this.api().cell(row, 11).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[12]; $(this.api().cell(row, 12).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[13]; $(this.api().cell(row, 13).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\nvar value=data[14]; $(this.api().cell(row, 14).node()).css({'font-family':'Roboto Condensed','font-size':'12px'});\n}"}},"evals":["options.rowCallback"],"jsHooks":[]}</script>
 </div>
 </div>
 </figure>
 </div>
 </div>
 </section>
-<section id="hypothesis-and-research-questions" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920206d6174657269616c2d73796d626f6c73206c61622d7265736561726368203e7d7d-hypothesis-and-research-questions" class="slide level3">
 <h3><iconify-icon inline="" icon="material-symbols:lab-research" aria-label="Icon lab-research from material-symbols Iconify.design set." title="Icon lab-research from material-symbols Iconify.design set."></iconify-icon> Hypothesis and Research Questions</h3>
 <p>Let us look at the <em>Quant</em> variables: are these related in anyway? Could the relationship between any two Quant variables also depend upon the level of a <em>Qual</em> variable? - The <em>target variable</em> for an experiment that resulted in this data might be the <code>profitability</code> variable, the resultant ratio of the money poured into the movie making, and the multiplier by which we obtain returns.</p>
 <div class="callout callout-note callout-titled callout-style-default">
@@ -1386,7 +1383,7 @@ Table&nbsp;1: Movies Clean Dynamic Data Table
 </div>
 </div>
 </section></section>
-<section id="scatter-plots" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792070682063686172742d736361747465722d626f6c64203e7d7d-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e2071712d706c6f74203e7d7d-scatter-plots" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="ph:chart-scatter-bold" aria-label="Icon chart-scatter-bold from ph Iconify.design set." title="Icon chart-scatter-bold from ph Iconify.design set."></iconify-icon> <iconify-icon inline="" icon="carbon:qq-plot" aria-label="Icon qq-plot from carbon Iconify.design set." title="Icon qq-plot from carbon Iconify.design set."></iconify-icon> Scatter Plots</h2>
 <p>Which are the numeric variables in <code>movies</code>?</p>
 <div class="panel-tabset nav-pills" style="background: whitesmoke;">
@@ -1394,10 +1391,10 @@ Table&nbsp;1: Movies Clean Dynamic Data Table
 <div class="tab-content nav-pills" style="background: whitesmoke;">
 <div id="tabset-2-1">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>movies_quant <span class="ot">&lt;-</span> movies_modified <span class="sc">%&gt;%</span></span>
-<span id="cb14-2"><a></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb14-3"><a></a>  <span class="fu">select</span>(<span class="fu">where</span>(is.numeric))</span>
-<span id="cb14-4"><a></a>movies_quant <span class="sc">%&gt;%</span> <span class="fu">names</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a aria-label="1"></a>movies_quant <span class="ot">&lt;-</span> movies_modified <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a aria-label="2"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a aria-label="3"></a>  <span class="fu">select</span>(<span class="fu">where</span>(is.numeric))</span>
+<span id="cb14-4"><a aria-label="4"></a>movies_quant <span class="sc">%&gt;%</span> <span class="fu">names</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "rotten_tomatoes"      "audience_score"       "theaters_open_week"  
  [4] "bo_average_open_week" "domestic_gross"       "foreign_gross"       
@@ -1407,11 +1404,11 @@ Table&nbsp;1: Movies Clean Dynamic Data Table
 </div>
 </div>
 <div id="tabset-2-2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb16-1"><a></a></span>
-<span id="cb16-2"><a></a>movies_quant &lt;- movies_modified %&gt;%</span>
-<span id="cb16-3"><a></a>  drop_na() %&gt;%</span>
-<span id="cb16-4"><a></a>  select(where(is.numeric))</span>
-<span id="cb16-5"><a></a>movies_quant %&gt;% names()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb16-1"><a aria-label="1"></a></span>
+<span id="cb16-2"><a aria-label="2"></a>movies_quant &lt;- movies_modified %&gt;%</span>
+<span id="cb16-3"><a aria-label="3"></a>  drop_na() %&gt;%</span>
+<span id="cb16-4"><a aria-label="4"></a>  select(where(is.numeric))</span>
+<span id="cb16-5"><a aria-label="5"></a>movies_quant %&gt;% names()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -1423,16 +1420,16 @@ Table&nbsp;1: Movies Clean Dynamic Data Table
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb17-2"><a></a></span>
-<span id="cb17-3"><a></a>movies_modified <span class="sc">%&gt;%</span></span>
-<span id="cb17-4"><a></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb17-5"><a></a>  <span class="fu">gf_point</span>(profitability <span class="sc">~</span> budget) <span class="sc">%&gt;%</span></span>
-<span id="cb17-6"><a></a>  <span class="fu">gf_lm</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb17-7"><a></a>  <span class="fu">gf_labs</span>(</span>
-<span id="cb17-8"><a></a>    <span class="at">title =</span> <span class="st">"Profitability vs budget"</span>,</span>
-<span id="cb17-9"><a></a>    <span class="at">subtitle =</span> <span class="st">"Movie profitability: Does budget affect profitability?"</span></span>
-<span id="cb17-10"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb17-2"><a aria-label="2"></a></span>
+<span id="cb17-3"><a aria-label="3"></a>movies_modified <span class="sc">%&gt;%</span></span>
+<span id="cb17-4"><a aria-label="4"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb17-5"><a aria-label="5"></a>  <span class="fu">gf_point</span>(profitability <span class="sc">~</span> budget) <span class="sc">%&gt;%</span></span>
+<span id="cb17-6"><a aria-label="6"></a>  <span class="fu">gf_lm</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb17-7"><a aria-label="7"></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb17-8"><a aria-label="8"></a>    <span class="at">title =</span> <span class="st">"Profitability vs budget"</span>,</span>
+<span id="cb17-9"><a aria-label="9"></a>    <span class="at">subtitle =</span> <span class="st">"Movie profitability: Does budget affect profitability?"</span></span>
+<span id="cb17-10"><a aria-label="10"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -1448,16 +1445,16 @@ Table&nbsp;1: Movies Clean Dynamic Data Table
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb18-2"><a></a></span>
-<span id="cb18-3"><a></a>movies_modified <span class="sc">%&gt;%</span></span>
-<span id="cb18-4"><a></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb18-5"><a></a>  <span class="fu">gf_point</span>(profitability <span class="sc">~</span> opening_weekend) <span class="sc">%&gt;%</span></span>
-<span id="cb18-6"><a></a>  <span class="fu">gf_lm</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb18-7"><a></a>  <span class="fu">gf_labs</span>(</span>
-<span id="cb18-8"><a></a>    <span class="at">title =</span> <span class="st">"Profitability vs Opening Weekend"</span>,</span>
-<span id="cb18-9"><a></a>    <span class="at">subtitle =</span> <span class="st">"Movies: Does Opening Week Earnings indicate profitability?"</span></span>
-<span id="cb18-10"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb18-2"><a aria-label="2"></a></span>
+<span id="cb18-3"><a aria-label="3"></a>movies_modified <span class="sc">%&gt;%</span></span>
+<span id="cb18-4"><a aria-label="4"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb18-5"><a aria-label="5"></a>  <span class="fu">gf_point</span>(profitability <span class="sc">~</span> opening_weekend) <span class="sc">%&gt;%</span></span>
+<span id="cb18-6"><a aria-label="6"></a>  <span class="fu">gf_lm</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb18-7"><a aria-label="7"></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb18-8"><a aria-label="8"></a>    <span class="at">title =</span> <span class="st">"Profitability vs Opening Weekend"</span>,</span>
+<span id="cb18-9"><a aria-label="9"></a>    <span class="at">subtitle =</span> <span class="st">"Movies: Does Opening Week Earnings indicate profitability?"</span></span>
+<span id="cb18-10"><a aria-label="10"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -1473,16 +1470,16 @@ Table&nbsp;1: Movies Clean Dynamic Data Table
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb19-2"><a></a></span>
-<span id="cb19-3"><a></a>movies_modified <span class="sc">%&gt;%</span></span>
-<span id="cb19-4"><a></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-5"><a></a>  <span class="fu">gf_point</span>(profitability <span class="sc">~</span> rotten_tomatoes) <span class="sc">%&gt;%</span></span>
-<span id="cb19-6"><a></a>  <span class="fu">gf_lm</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-7"><a></a>  <span class="fu">gf_labs</span>(</span>
-<span id="cb19-8"><a></a>    <span class="at">title =</span> <span class="st">"Profitability vs Rotten Tomatoes"</span>,</span>
-<span id="cb19-9"><a></a>    <span class="at">subtitle =</span> <span class="st">"Movie Ratings: Does Rotten Tomatoes affect profitability?"</span></span>
-<span id="cb19-10"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb19-2"><a aria-label="2"></a></span>
+<span id="cb19-3"><a aria-label="3"></a>movies_modified <span class="sc">%&gt;%</span></span>
+<span id="cb19-4"><a aria-label="4"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-5"><a aria-label="5"></a>  <span class="fu">gf_point</span>(profitability <span class="sc">~</span> rotten_tomatoes) <span class="sc">%&gt;%</span></span>
+<span id="cb19-6"><a aria-label="6"></a>  <span class="fu">gf_lm</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-7"><a aria-label="7"></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb19-8"><a aria-label="8"></a>    <span class="at">title =</span> <span class="st">"Profitability vs Rotten Tomatoes"</span>,</span>
+<span id="cb19-9"><a aria-label="9"></a>    <span class="at">subtitle =</span> <span class="st">"Movie Ratings: Does Rotten Tomatoes affect profitability?"</span></span>
+<span id="cb19-10"><a aria-label="10"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -1499,18 +1496,18 @@ Table&nbsp;1: Movies Clean Dynamic Data Table
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb20-2"><a></a></span>
-<span id="cb20-3"><a></a>movies_modified <span class="sc">%&gt;%</span></span>
-<span id="cb20-4"><a></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb20-5"><a></a>  <span class="fu">gf_point</span>(profitability <span class="sc">~</span> audience_score,</span>
-<span id="cb20-6"><a></a>    <span class="at">color =</span> <span class="sc">~</span>genre</span>
-<span id="cb20-7"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb20-8"><a></a>  <span class="fu">gf_lm</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb20-9"><a></a>  <span class="fu">gf_labs</span>(</span>
-<span id="cb20-10"><a></a>    <span class="at">title =</span> <span class="st">"Profitability vs Audience Score"</span>,</span>
-<span id="cb20-11"><a></a>    <span class="at">subtitle =</span> <span class="st">"Movie Ratings: Trends by Genre"</span></span>
-<span id="cb20-12"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb20-2"><a aria-label="2"></a></span>
+<span id="cb20-3"><a aria-label="3"></a>movies_modified <span class="sc">%&gt;%</span></span>
+<span id="cb20-4"><a aria-label="4"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb20-5"><a aria-label="5"></a>  <span class="fu">gf_point</span>(profitability <span class="sc">~</span> audience_score,</span>
+<span id="cb20-6"><a aria-label="6"></a>    <span class="at">color =</span> <span class="sc">~</span>genre</span>
+<span id="cb20-7"><a aria-label="7"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-8"><a aria-label="8"></a>  <span class="fu">gf_lm</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb20-9"><a aria-label="9"></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb20-10"><a aria-label="10"></a>    <span class="at">title =</span> <span class="st">"Profitability vs Audience Score"</span>,</span>
+<span id="cb20-11"><a aria-label="11"></a>    <span class="at">subtitle =</span> <span class="st">"Movie Ratings: Trends by Genre"</span></span>
+<span id="cb20-12"><a aria-label="12"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -1528,17 +1525,17 @@ Table&nbsp;1: Movies Clean Dynamic Data Table
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb21-2"><a></a></span>
-<span id="cb21-3"><a></a>movies_modified <span class="sc">%&gt;%</span></span>
-<span id="cb21-4"><a></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb21-5"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> profitability, <span class="at">x =</span> budget)) <span class="sc">+</span></span>
-<span id="cb21-6"><a></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb21-7"><a></a>  <span class="fu">geom_lm</span>() <span class="sc">+</span></span>
-<span id="cb21-8"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb21-9"><a></a>    <span class="at">title =</span> <span class="st">"Scatter Plot"</span>,</span>
-<span id="cb21-10"><a></a>    <span class="at">subtitle =</span> <span class="st">"Movie Gross Earnings: Domestics vs World"</span></span>
-<span id="cb21-11"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb21-2"><a aria-label="2"></a></span>
+<span id="cb21-3"><a aria-label="3"></a>movies_modified <span class="sc">%&gt;%</span></span>
+<span id="cb21-4"><a aria-label="4"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb21-5"><a aria-label="5"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> profitability, <span class="at">x =</span> budget)) <span class="sc">+</span></span>
+<span id="cb21-6"><a aria-label="6"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb21-7"><a aria-label="7"></a>  <span class="fu">geom_lm</span>() <span class="sc">+</span></span>
+<span id="cb21-8"><a aria-label="8"></a>  <span class="fu">labs</span>(</span>
+<span id="cb21-9"><a aria-label="9"></a>    <span class="at">title =</span> <span class="st">"Scatter Plot"</span>,</span>
+<span id="cb21-10"><a aria-label="10"></a>    <span class="at">subtitle =</span> <span class="st">"Movie Gross Earnings: Domestics vs World"</span></span>
+<span id="cb21-11"><a aria-label="11"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -1554,17 +1551,17 @@ Table&nbsp;1: Movies Clean Dynamic Data Table
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb22-2"><a></a></span>
-<span id="cb22-3"><a></a>movies_modified <span class="sc">%&gt;%</span></span>
-<span id="cb22-4"><a></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb22-5"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(opening_weekend, profitability)) <span class="sc">+</span></span>
-<span id="cb22-6"><a></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb22-7"><a></a>  <span class="fu">geom_lm</span>() <span class="sc">+</span></span>
-<span id="cb22-8"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb22-9"><a></a>    <span class="at">title =</span> <span class="st">"Scatter Plot"</span>,</span>
-<span id="cb22-10"><a></a>    <span class="at">subtitle =</span> <span class="st">"Movies: Does Opening Week Earnings indicate profitability?"</span></span>
-<span id="cb22-11"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb22-2"><a aria-label="2"></a></span>
+<span id="cb22-3"><a aria-label="3"></a>movies_modified <span class="sc">%&gt;%</span></span>
+<span id="cb22-4"><a aria-label="4"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb22-5"><a aria-label="5"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(opening_weekend, profitability)) <span class="sc">+</span></span>
+<span id="cb22-6"><a aria-label="6"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb22-7"><a aria-label="7"></a>  <span class="fu">geom_lm</span>() <span class="sc">+</span></span>
+<span id="cb22-8"><a aria-label="8"></a>  <span class="fu">labs</span>(</span>
+<span id="cb22-9"><a aria-label="9"></a>    <span class="at">title =</span> <span class="st">"Scatter Plot"</span>,</span>
+<span id="cb22-10"><a aria-label="10"></a>    <span class="at">subtitle =</span> <span class="st">"Movies: Does Opening Week Earnings indicate profitability?"</span></span>
+<span id="cb22-11"><a aria-label="11"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -1580,17 +1577,17 @@ Table&nbsp;1: Movies Clean Dynamic Data Table
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb23-2"><a></a></span>
-<span id="cb23-3"><a></a>movies_modified <span class="sc">%&gt;%</span></span>
-<span id="cb23-4"><a></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb23-5"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> profitability, <span class="at">x =</span> rotten_tomatoes)) <span class="sc">+</span></span>
-<span id="cb23-6"><a></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb23-7"><a></a>  <span class="fu">geom_lm</span>() <span class="sc">+</span></span>
-<span id="cb23-8"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb23-9"><a></a>    <span class="at">title =</span> <span class="st">"Scatter Plot"</span>,</span>
-<span id="cb23-10"><a></a>    <span class="at">subtitle =</span> <span class="st">"Movie Ratings: Tomatoes vs Audience"</span></span>
-<span id="cb23-11"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb23-2"><a aria-label="2"></a></span>
+<span id="cb23-3"><a aria-label="3"></a>movies_modified <span class="sc">%&gt;%</span></span>
+<span id="cb23-4"><a aria-label="4"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb23-5"><a aria-label="5"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> profitability, <span class="at">x =</span> rotten_tomatoes)) <span class="sc">+</span></span>
+<span id="cb23-6"><a aria-label="6"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb23-7"><a aria-label="7"></a>  <span class="fu">geom_lm</span>() <span class="sc">+</span></span>
+<span id="cb23-8"><a aria-label="8"></a>  <span class="fu">labs</span>(</span>
+<span id="cb23-9"><a aria-label="9"></a>    <span class="at">title =</span> <span class="st">"Scatter Plot"</span>,</span>
+<span id="cb23-10"><a aria-label="10"></a>    <span class="at">subtitle =</span> <span class="st">"Movie Ratings: Tomatoes vs Audience"</span></span>
+<span id="cb23-11"><a aria-label="11"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -1606,17 +1603,17 @@ Table&nbsp;1: Movies Clean Dynamic Data Table
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb24-2"><a></a></span>
-<span id="cb24-3"><a></a>movies_modified <span class="sc">%&gt;%</span></span>
-<span id="cb24-4"><a></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb24-5"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> profitability, <span class="at">x =</span> audience_score, <span class="at">color =</span> genre)) <span class="sc">+</span></span>
-<span id="cb24-6"><a></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb24-7"><a></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb24-8"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb24-9"><a></a>    <span class="at">title =</span> <span class="st">"Scatter Plot"</span>,</span>
-<span id="cb24-10"><a></a>    <span class="at">subtitle =</span> <span class="st">"Movie Ratings: Trends by Genre"</span></span>
-<span id="cb24-11"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb24-2"><a aria-label="2"></a></span>
+<span id="cb24-3"><a aria-label="3"></a>movies_modified <span class="sc">%&gt;%</span></span>
+<span id="cb24-4"><a aria-label="4"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb24-5"><a aria-label="5"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> profitability, <span class="at">x =</span> audience_score, <span class="at">color =</span> genre)) <span class="sc">+</span></span>
+<span id="cb24-6"><a aria-label="6"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb24-7"><a aria-label="7"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb24-8"><a aria-label="8"></a>  <span class="fu">labs</span>(</span>
+<span id="cb24-9"><a aria-label="9"></a>    <span class="at">title =</span> <span class="st">"Scatter Plot"</span>,</span>
+<span id="cb24-10"><a aria-label="10"></a>    <span class="at">subtitle =</span> <span class="st">"Movie Ratings: Trends by Genre"</span></span>
+<span id="cb24-11"><a aria-label="11"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -1631,38 +1628,38 @@ Table&nbsp;1: Movies Clean Dynamic Data Table
 </div></div>
 </div>
 <div id="tabset-3-3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb25-1"><a></a></span>
-<span id="cb25-2"><a></a>movies_modified %&gt;% </span>
-<span id="cb25-3"><a></a>  drop_na() %&gt;% </span>
-<span id="cb25-4"><a></a>  ggplot(aes(y = profitability, x = budget)) + </span>
-<span id="cb25-5"><a></a>  geom_point() + </span>
-<span id="cb25-6"><a></a>  geom_lm() + </span>
-<span id="cb25-7"><a></a>  labs(title = "Scatter Plot",</span>
-<span id="cb25-8"><a></a>       subtitle = "Movie Gross Earnings: Domestics vs World")</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb26-1"><a></a></span>
-<span id="cb26-2"><a></a>movies_modified %&gt;% </span>
-<span id="cb26-3"><a></a>  drop_na() %&gt;% </span>
-<span id="cb26-4"><a></a>  ggplot(aes(opening_weekend,profitability)) + </span>
-<span id="cb26-5"><a></a>  geom_point() + </span>
-<span id="cb26-6"><a></a>  geom_lm() + </span>
-<span id="cb26-7"><a></a>  labs(title = "Scatter Plot",</span>
-<span id="cb26-8"><a></a>       subtitle = "Movies: Does Opening Week Earnings indicate profitability?")</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb27-1"><a></a></span>
-<span id="cb27-2"><a></a>movies_modified %&gt;% </span>
-<span id="cb27-3"><a></a>drop_na() %&gt;% </span>
-<span id="cb27-4"><a></a>  gf_point(profitability ~ rotten_tomatoes) %&gt;% </span>
-<span id="cb27-5"><a></a>  gf_lm() %&gt;% </span>
-<span id="cb27-6"><a></a>  gf_labs(title = "Profitability vs Rotten Tomatoes",</span>
-<span id="cb27-7"><a></a>          subtitle = "Movie Ratings: Does Rotten Tomatoes affect profitability?")</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb28-1"><a></a>## We can split some of the scatter plots using one or other of the Qual variables. For instance, is the relationship between the two ratings the same, regardless of movie genre?</span>
-<span id="cb28-2"><a></a></span>
-<span id="cb28-3"><a></a>movies_modified %&gt;%</span>
-<span id="cb28-4"><a></a>  drop_na() %&gt;%</span>
-<span id="cb28-5"><a></a>  gf_point(profitability ~ audience_score, </span>
-<span id="cb28-6"><a></a>           color = ~ genre) %&gt;%</span>
-<span id="cb28-7"><a></a>  gf_lm() %&gt;% </span>
-<span id="cb28-8"><a></a>  gf_labs(title = "Profitability vs Audience Score",</span>
-<span id="cb28-9"><a></a>          subtitle = "Movie Ratings: Trends by Genre")</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb25-1"><a aria-label="1"></a></span>
+<span id="cb25-2"><a aria-label="2"></a>movies_modified %&gt;% </span>
+<span id="cb25-3"><a aria-label="3"></a>  drop_na() %&gt;% </span>
+<span id="cb25-4"><a aria-label="4"></a>  ggplot(aes(y = profitability, x = budget)) + </span>
+<span id="cb25-5"><a aria-label="5"></a>  geom_point() + </span>
+<span id="cb25-6"><a aria-label="6"></a>  geom_lm() + </span>
+<span id="cb25-7"><a aria-label="7"></a>  labs(title = "Scatter Plot",</span>
+<span id="cb25-8"><a aria-label="8"></a>       subtitle = "Movie Gross Earnings: Domestics vs World")</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb26-1"><a aria-label="1"></a></span>
+<span id="cb26-2"><a aria-label="2"></a>movies_modified %&gt;% </span>
+<span id="cb26-3"><a aria-label="3"></a>  drop_na() %&gt;% </span>
+<span id="cb26-4"><a aria-label="4"></a>  ggplot(aes(opening_weekend,profitability)) + </span>
+<span id="cb26-5"><a aria-label="5"></a>  geom_point() + </span>
+<span id="cb26-6"><a aria-label="6"></a>  geom_lm() + </span>
+<span id="cb26-7"><a aria-label="7"></a>  labs(title = "Scatter Plot",</span>
+<span id="cb26-8"><a aria-label="8"></a>       subtitle = "Movies: Does Opening Week Earnings indicate profitability?")</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb27-1"><a aria-label="1"></a></span>
+<span id="cb27-2"><a aria-label="2"></a>movies_modified %&gt;% </span>
+<span id="cb27-3"><a aria-label="3"></a>drop_na() %&gt;% </span>
+<span id="cb27-4"><a aria-label="4"></a>  gf_point(profitability ~ rotten_tomatoes) %&gt;% </span>
+<span id="cb27-5"><a aria-label="5"></a>  gf_lm() %&gt;% </span>
+<span id="cb27-6"><a aria-label="6"></a>  gf_labs(title = "Profitability vs Rotten Tomatoes",</span>
+<span id="cb27-7"><a aria-label="7"></a>          subtitle = "Movie Ratings: Does Rotten Tomatoes affect profitability?")</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb28-1"><a aria-label="1"></a>## We can split some of the scatter plots using one or other of the Qual variables. For instance, is the relationship between the two ratings the same, regardless of movie genre?</span>
+<span id="cb28-2"><a aria-label="2"></a></span>
+<span id="cb28-3"><a aria-label="3"></a>movies_modified %&gt;%</span>
+<span id="cb28-4"><a aria-label="4"></a>  drop_na() %&gt;%</span>
+<span id="cb28-5"><a aria-label="5"></a>  gf_point(profitability ~ audience_score, </span>
+<span id="cb28-6"><a aria-label="6"></a>           color = ~ genre) %&gt;%</span>
+<span id="cb28-7"><a aria-label="7"></a>  gf_lm() %&gt;% </span>
+<span id="cb28-8"><a aria-label="8"></a>  gf_labs(title = "Profitability vs Audience Score",</span>
+<span id="cb28-9"><a aria-label="9"></a>          subtitle = "Movie Ratings: Trends by Genre")</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -1689,11 +1686,11 @@ Table&nbsp;1: Movies Clean Dynamic Data Table
 </section>
 
 <section>
-<section id="quantizing-correlation" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-quantizing-correlation" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Quantizing Correlation</h2>
 <p>So we see that there are <em>visible relationships</em> between Quant variables. How do we <strong>quantize</strong> this relationship, into a <strong>correlation score</strong>? Let us first define for ourselves what a <strong>correlation score</strong> is, and then we will see how to calculate it.</p>
 </section>
-<section id="pearson-correlation-coefficient" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206172637469636f6e7320746170656d656173757265203e7d7d-pearson-correlation-coefficient" class="slide level3">
 <h3><iconify-icon inline="" icon="arcticons:tapemeasure" aria-label="Icon tapemeasure from arcticons Iconify.design set." title="Icon tapemeasure from arcticons Iconify.design set."></iconify-icon> Pearson Correlation coefficient</h3>
 <p>The degree of association is measured by a <em>correlation coefficient</em>, denoted by r. It is sometimes called <em>Pearson’s correlation coefficient</em> after its originator and is a measure of linear association. (<em>If a curved line is needed to express the relationship, other and more complicated measures of the correlation must be used.</em>)</p>
 <p>The correlation coefficient is measured on a scale that varies from + 1 through 0 to – 1. Complete correlation between two variables is expressed by either + 1 or -1. When one variable increases as the other increases the correlation is positive; when one decreases as the other increases it is negative.</p>
@@ -1754,7 +1751,7 @@ Figure&nbsp;2: Showing Calculation of Correlation Coefficient
 <p>OK, so how do we calculate this correlation coefficient? And how do we visualize it too? ( Remember: we want to visualize our analysis! )</p>
 </section></section>
 <section>
-<section id="correlation-plots-and-scores" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792070682063686172742d7069652d626f6c64203e7d7d-correlation-plots-and-scores" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="ph:chart-pie-bold" aria-label="Icon chart-pie-bold from ph Iconify.design set." title="Icon chart-pie-bold from ph Iconify.design set."></iconify-icon> Correlation Plots and Scores</h2>
 <p>We will use the <code>{GGally}</code> package to visualize correlation scores, and a formal <strong>correlation test</strong> with the <code>{mosaic}</code> package to calculate them.</p>
 </section>
@@ -1771,28 +1768,28 @@ Figure&nbsp;2: Showing Calculation of Correlation Coefficient
 <div class="columns">
 <div class="column" style="width:48%;">
 <div class="cell" data-warn="false">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_bw</span>(<span class="at">base_family =</span> <span class="st">"Roboto Condensed"</span>, <span class="at">base_size =</span> <span class="dv">14</span>))</span>
-<span id="cb29-2"><a></a></span>
-<span id="cb29-3"><a></a>GGally<span class="sc">::</span><span class="fu">ggpairs</span>(</span>
-<span id="cb29-4"><a></a>  movies_modified <span class="sc">%&gt;%</span> <span class="fu">drop_na</span>(),</span>
-<span id="cb29-5"><a></a>  <span class="co"># Select Quant variables only for now</span></span>
-<span id="cb29-6"><a></a>  <span class="at">columns =</span> <span class="fu">c</span>(</span>
-<span id="cb29-7"><a></a>    <span class="st">"profitability"</span>, <span class="st">"budget"</span>, <span class="st">"domestic_gross"</span>, <span class="st">"foreign_gross"</span></span>
-<span id="cb29-8"><a></a>  ),</span>
-<span id="cb29-9"><a></a>  <span class="at">switch =</span> <span class="st">"both"</span>,</span>
-<span id="cb29-10"><a></a>  <span class="co"># axis labels in more traditional locations(left and bottom)</span></span>
-<span id="cb29-11"><a></a></span>
-<span id="cb29-12"><a></a>  <span class="at">progress =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb29-13"><a></a>  <span class="co"># no compute progress messages needed</span></span>
-<span id="cb29-14"><a></a></span>
-<span id="cb29-15"><a></a>  <span class="co"># Choose the diagonal graphs (always single variable! Think!)</span></span>
-<span id="cb29-16"><a></a>  <span class="at">diag =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="st">"barDiag"</span>),</span>
-<span id="cb29-17"><a></a>  <span class="co"># choosing histogram,not density</span></span>
-<span id="cb29-18"><a></a></span>
-<span id="cb29-19"><a></a>  <span class="co"># Choose lower triangle graphs, two-variable graphs</span></span>
-<span id="cb29-20"><a></a>  <span class="at">lower =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(<span class="st">"smooth"</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">se =</span> <span class="cn">FALSE</span>)),</span>
-<span id="cb29-21"><a></a>  <span class="at">title =</span> <span class="st">"Movies Data Correlations Plot #1"</span></span>
-<span id="cb29-22"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_bw</span>(<span class="at">base_family =</span> <span class="st">"Roboto Condensed"</span>, <span class="at">base_size =</span> <span class="dv">14</span>))</span>
+<span id="cb29-2"><a aria-label="2"></a></span>
+<span id="cb29-3"><a aria-label="3"></a>GGally<span class="sc">::</span><span class="fu">ggpairs</span>(</span>
+<span id="cb29-4"><a aria-label="4"></a>  movies_modified <span class="sc">%&gt;%</span> <span class="fu">drop_na</span>(),</span>
+<span id="cb29-5"><a aria-label="5"></a>  <span class="co"># Select Quant variables only for now</span></span>
+<span id="cb29-6"><a aria-label="6"></a>  <span class="at">columns =</span> <span class="fu">c</span>(</span>
+<span id="cb29-7"><a aria-label="7"></a>    <span class="st">"profitability"</span>, <span class="st">"budget"</span>, <span class="st">"domestic_gross"</span>, <span class="st">"foreign_gross"</span></span>
+<span id="cb29-8"><a aria-label="8"></a>  ),</span>
+<span id="cb29-9"><a aria-label="9"></a>  <span class="at">switch =</span> <span class="st">"both"</span>,</span>
+<span id="cb29-10"><a aria-label="10"></a>  <span class="co"># axis labels in more traditional locations(left and bottom)</span></span>
+<span id="cb29-11"><a aria-label="11"></a></span>
+<span id="cb29-12"><a aria-label="12"></a>  <span class="at">progress =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb29-13"><a aria-label="13"></a>  <span class="co"># no compute progress messages needed</span></span>
+<span id="cb29-14"><a aria-label="14"></a></span>
+<span id="cb29-15"><a aria-label="15"></a>  <span class="co"># Choose the diagonal graphs (always single variable! Think!)</span></span>
+<span id="cb29-16"><a aria-label="16"></a>  <span class="at">diag =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="st">"barDiag"</span>),</span>
+<span id="cb29-17"><a aria-label="17"></a>  <span class="co"># choosing histogram,not density</span></span>
+<span id="cb29-18"><a aria-label="18"></a></span>
+<span id="cb29-19"><a aria-label="19"></a>  <span class="co"># Choose lower triangle graphs, two-variable graphs</span></span>
+<span id="cb29-20"><a aria-label="20"></a>  <span class="at">lower =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(<span class="st">"smooth"</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">se =</span> <span class="cn">FALSE</span>)),</span>
+<span id="cb29-21"><a aria-label="21"></a>  <span class="at">title =</span> <span class="st">"Movies Data Correlations Plot #1"</span></span>
+<span id="cb29-22"><a aria-label="22"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column" style="width:4%;">
 
@@ -1832,12 +1829,12 @@ Figure&nbsp;2: Showing Calculation of Correlation Coefficient
 <p>We need to conduct a <strong>statistical test</strong> to see if the correlation is <strong><em>significant</em></strong>, i.e.&nbsp;if it is likely to be true for the entire population from which our sample was drawn, and also assign numbers to the uncertainty that we must have in our correlation estimate.</p>
 <p>Both correlations scores, and the uncertainty we have can be obtained by conducting a formal test in R. We will use the <code>mosaic</code> function <code>cor_test</code> to get these results:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a>mosaic<span class="sc">::</span><span class="fu">cor_test</span>(profitability <span class="sc">~</span> budget, <span class="at">data =</span> movies_modified) <span class="sc">%&gt;%</span></span>
-<span id="cb30-2"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb30-3"><a></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
-<span id="cb30-4"><a></a>    <span class="at">digits =</span> <span class="dv">2</span>,</span>
-<span id="cb30-5"><a></a>    <span class="at">caption =</span> <span class="st">"Movie profitability vs budget"</span></span>
-<span id="cb30-6"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a aria-label="1"></a>mosaic<span class="sc">::</span><span class="fu">cor_test</span>(profitability <span class="sc">~</span> budget, <span class="at">data =</span> movies_modified) <span class="sc">%&gt;%</span></span>
+<span id="cb30-2"><a aria-label="2"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb30-3"><a aria-label="3"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb30-4"><a aria-label="4"></a>    <span class="at">digits =</span> <span class="dv">2</span>,</span>
+<span id="cb30-5"><a aria-label="5"></a>    <span class="at">caption =</span> <span class="st">"Movie profitability vs budget"</span></span>
+<span id="cb30-6"><a aria-label="6"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top">
 <caption>Movie profitability vs budget</caption>
@@ -1877,12 +1874,12 @@ Figure&nbsp;2: Showing Calculation of Correlation Coefficient
 </tbody>
 </table>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a>mosaic<span class="sc">::</span><span class="fu">cor_test</span>(domestic_gross <span class="sc">~</span> budget, <span class="at">data =</span> movies_modified) <span class="sc">%&gt;%</span></span>
-<span id="cb31-2"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb31-3"><a></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
-<span id="cb31-4"><a></a>    <span class="at">digits =</span> <span class="dv">2</span>,</span>
-<span id="cb31-5"><a></a>    <span class="at">caption =</span> <span class="st">"Movie Domestic Gross vs budget"</span></span>
-<span id="cb31-6"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a aria-label="1"></a>mosaic<span class="sc">::</span><span class="fu">cor_test</span>(domestic_gross <span class="sc">~</span> budget, <span class="at">data =</span> movies_modified) <span class="sc">%&gt;%</span></span>
+<span id="cb31-2"><a aria-label="2"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb31-3"><a aria-label="3"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb31-4"><a aria-label="4"></a>    <span class="at">digits =</span> <span class="dv">2</span>,</span>
+<span id="cb31-5"><a aria-label="5"></a>    <span class="at">caption =</span> <span class="st">"Movie Domestic Gross vs budget"</span></span>
+<span id="cb31-6"><a aria-label="6"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top">
 <caption>Movie Domestic Gross vs budget</caption>
@@ -1922,12 +1919,12 @@ Figure&nbsp;2: Showing Calculation of Correlation Coefficient
 </tbody>
 </table>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a>mosaic<span class="sc">::</span><span class="fu">cor_test</span>(foreign_gross <span class="sc">~</span> budget, <span class="at">data =</span> movies_modified) <span class="sc">%&gt;%</span></span>
-<span id="cb32-2"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb32-3"><a></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
-<span id="cb32-4"><a></a>    <span class="at">digits =</span> <span class="dv">2</span>,</span>
-<span id="cb32-5"><a></a>    <span class="at">caption =</span> <span class="st">"Movie Foreign Gross vs budget"</span></span>
-<span id="cb32-6"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a aria-label="1"></a>mosaic<span class="sc">::</span><span class="fu">cor_test</span>(foreign_gross <span class="sc">~</span> budget, <span class="at">data =</span> movies_modified) <span class="sc">%&gt;%</span></span>
+<span id="cb32-2"><a aria-label="2"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb32-3"><a aria-label="3"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb32-4"><a aria-label="4"></a>    <span class="at">digits =</span> <span class="dv">2</span>,</span>
+<span id="cb32-5"><a aria-label="5"></a>    <span class="at">caption =</span> <span class="st">"Movie Foreign Gross vs budget"</span></span>
+<span id="cb32-6"><a aria-label="6"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top">
 <caption>Movie Foreign Gross vs budget</caption>
@@ -1983,10 +1980,10 @@ Figure&nbsp;2: Showing Calculation of Correlation Coefficient
 </div>
 </div>
 </div>
-<h4 id="the-errorbar-plot-for-correlations"><iconify-icon inline="" icon="carbon:chart-error-bar-alt" aria-label="Icon chart-error-bar-alt from carbon Iconify.design set." title="Icon chart-error-bar-alt from carbon Iconify.design set."></iconify-icon> The ErrorBar Plot for Correlations</h4>
+<h4 id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e2063686172742d6572726f722d6261722d616c74203e7d7d-the-errorbar-plot-for-correlations"><iconify-icon inline="" icon="carbon:chart-error-bar-alt" aria-label="Icon chart-error-bar-alt from carbon Iconify.design set." title="Icon chart-error-bar-alt from carbon Iconify.design set."></iconify-icon> The ErrorBar Plot for Correlations</h4>
 <p>As stated earlier, in our dataset we have a specific <code>dependent</code> or <code>target</code> variable, which represents the outcome of our experiment or our business situation. The remaining variables are usually <code>independent</code> or <code>predictor</code> variables. A very useful thing to know, and to view, would be the correlations of <em>all</em> independent variables. Using the <code>{correlation}</code> package from the <code>{easystats}</code> family of R packages, this can be very easily achieved. Let us quickly do this for the familiar <code>mtcars</code> dataset: we will quickly <code>glimpse</code> it, identify the target variable, and plot the correlations:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a><span class="fu">glimpse</span>(mtcars)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a aria-label="1"></a><span class="fu">glimpse</span>(mtcars)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 32
 Columns: 11
@@ -2002,10 +1999,10 @@ $ am   &lt;dbl&gt; 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0
 $ gear &lt;dbl&gt; 4, 4, 4, 3, 3, 3, 3, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 4, 4, 4, 3, 3,…
 $ carb &lt;dbl&gt; 4, 4, 1, 1, 2, 1, 4, 2, 2, 4, 4, 3, 3, 3, 4, 4, 4, 1, 2, 1, 1, 2,…</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a><span class="do">## Target variable: mpg</span></span>
-<span id="cb35-2"><a></a><span class="do">## Calculate all correlations</span></span>
-<span id="cb35-3"><a></a>cor <span class="ot">&lt;-</span> correlation<span class="sc">::</span><span class="fu">correlation</span>(mtcars)</span>
-<span id="cb35-4"><a></a>cor</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a aria-label="1"></a><span class="do">## Target variable: mpg</span></span>
+<span id="cb35-2"><a aria-label="2"></a><span class="do">## Calculate all correlations</span></span>
+<span id="cb35-3"><a aria-label="3"></a>cor <span class="ot">&lt;-</span> correlation<span class="sc">::</span><span class="fu">correlation</span>(mtcars)</span>
+<span id="cb35-4"><a aria-label="4"></a>cor</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -2018,22 +2015,22 @@ $ carb &lt;dbl&gt; 4, 4, 1, 1, 2, 1, 4, 2, 2, 4, 4, 3, 3, 3, 4, 4, 4, 1, 2, 1, 1
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb36-2"><a></a></span>
-<span id="cb36-3"><a></a>cor <span class="sc">%&gt;%</span></span>
-<span id="cb36-4"><a></a>  <span class="co"># Filter for target variable `mpg` and plot</span></span>
-<span id="cb36-5"><a></a>  <span class="fu">filter</span>(Parameter1 <span class="sc">==</span> <span class="st">"mpg"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb36-6"><a></a>  <span class="fu">gf_errorbar</span>(CI_low <span class="sc">+</span> CI_high <span class="sc">~</span> <span class="fu">reorder</span>(Parameter2, r),</span>
-<span id="cb36-7"><a></a>    <span class="at">width =</span> <span class="fl">0.5</span></span>
-<span id="cb36-8"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb36-9"><a></a>  <span class="fu">gf_point</span>(r <span class="sc">~</span> <span class="fu">reorder</span>(Parameter2, r), <span class="at">size =</span> <span class="dv">4</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb36-10"><a></a>  <span class="fu">gf_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"grey"</span>, <span class="at">linewidth =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb36-11"><a></a>  <span class="fu">gf_labs</span>(</span>
-<span id="cb36-12"><a></a>    <span class="at">title =</span> <span class="st">"Correlation Errorbar Chart"</span>,</span>
-<span id="cb36-13"><a></a>    <span class="at">subtitle =</span> <span class="st">"Target variable: mpg"</span>,</span>
-<span id="cb36-14"><a></a>    <span class="at">x =</span> <span class="st">"Predictor Variable"</span>,</span>
-<span id="cb36-15"><a></a>    <span class="at">y =</span> <span class="st">"Correlation Score with mpg"</span></span>
-<span id="cb36-16"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb36-2"><a aria-label="2"></a></span>
+<span id="cb36-3"><a aria-label="3"></a>cor <span class="sc">%&gt;%</span></span>
+<span id="cb36-4"><a aria-label="4"></a>  <span class="co"># Filter for target variable `mpg` and plot</span></span>
+<span id="cb36-5"><a aria-label="5"></a>  <span class="fu">filter</span>(Parameter1 <span class="sc">==</span> <span class="st">"mpg"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb36-6"><a aria-label="6"></a>  <span class="fu">gf_errorbar</span>(CI_low <span class="sc">+</span> CI_high <span class="sc">~</span> <span class="fu">reorder</span>(Parameter2, r),</span>
+<span id="cb36-7"><a aria-label="7"></a>    <span class="at">width =</span> <span class="fl">0.5</span></span>
+<span id="cb36-8"><a aria-label="8"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb36-9"><a aria-label="9"></a>  <span class="fu">gf_point</span>(r <span class="sc">~</span> <span class="fu">reorder</span>(Parameter2, r), <span class="at">size =</span> <span class="dv">4</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb36-10"><a aria-label="10"></a>  <span class="fu">gf_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"grey"</span>, <span class="at">linewidth =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb36-11"><a aria-label="11"></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb36-12"><a aria-label="12"></a>    <span class="at">title =</span> <span class="st">"Correlation Errorbar Chart"</span>,</span>
+<span id="cb36-13"><a aria-label="13"></a>    <span class="at">subtitle =</span> <span class="st">"Target variable: mpg"</span>,</span>
+<span id="cb36-14"><a aria-label="14"></a>    <span class="at">x =</span> <span class="st">"Predictor Variable"</span>,</span>
+<span id="cb36-15"><a aria-label="15"></a>    <span class="at">y =</span> <span class="st">"Correlation Score with mpg"</span></span>
+<span id="cb36-16"><a aria-label="16"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -2076,7 +2073,7 @@ $ carb &lt;dbl&gt; 4, 4, 1, 1, 2, 1, 4, 2, 2, 4, 4, 3, 3, 3, 4, 4, 4, 1, 2, 1, 1
 <p>See how the overall correlation/regression line slopes upward, whereas that for the individual groups slopes downward!! This is an example of Simpson’s Paradox!</p>
 </section>
 
-<section id="your-turn" class="title-slide slide level2 center scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920626920706572736f6e2d7570203e7d7d-your-turn" class="title-slide slide level2 center scrollable">
 <h2><iconify-icon inline="" icon="bi:person-up" aria-label="Icon person-up from bi Iconify.design set." title="Icon person-up from bi Iconify.design set."></iconify-icon> Your Turn</h2>
 <ol type="1">
 <li>Try to play this online <a href="https://openintro.shinyapps.io/correlation_game/">Correlation Game</a>.</li>
@@ -2135,7 +2132,7 @@ $ carb &lt;dbl&gt; 4, 4, 1, 1, 2, 1, 4, 2, 2, 4, 4, 3, 3, 3, 4, 4, 4, 1, 2, 1, 1
 </div>
 </section>
 
-<section id="wait-but-why" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="mingcute:thought-line" aria-label="Icon thought-line from mingcute Iconify.design set." title="Icon thought-line from mingcute Iconify.design set."></iconify-icon> Wait, But Why?</h2>
 <ul>
 <li>Scatter Plots, when they show “linear” clouds, tell us that there is some relationship between two Quant variables we have just plotted</li>
@@ -2172,10 +2169,8 @@ $ carb &lt;dbl&gt; 4, 4, 1, 1, 2, 1, 4, 2, 2, 4, 4, 3, 3, 3, 4, 4, 4, 1, 2, 1, 1
 <div id="fig-datasaurus-1" class="cell-output-display quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig">
 <div aria-describedby="fig-datasaurus-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<!-- preamble start -->
-
-    <!-- tinytable mathjax start -->
-    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- tinytable mathjax start -->
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script>
     MathJax = {
       tex: {
@@ -2192,18 +2187,18 @@ $ carb &lt;dbl&gt; 4, 4, 1, 1, 2, 1, 4, 2, 2, 4, 4, 3, 3, 3, 4, 4, 4, 1, 2, 1, 1
 
     <script>
       // Create table-specific functions using external factory
-      const tableFns_6ci0982v32lwknqq45q1 = TinyTable.createTableFunctions("tinytable_6ci0982v32lwknqq45q1");
+      const tableFns_8kcopwxvj9klvz9em40t = TinyTable.createTableFunctions("tinytable_8kcopwxvj9klvz9em40t");
       // tinytable span after
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '1', j: 1 }, { i: '3', j: 1 }, { i: '5', j: 1 }, { i: '7', j: 1 }, { i: '9', j: 1 }, { i: '11', j: 1 }, { i: '13', j: 1 }, { i: '1', j: 2 }, { i: '3', j: 2 }, { i: '5', j: 2 }, { i: '7', j: 2 }, { i: '9', j: 2 }, { i: '11', j: 2 }, { i: '13', j: 2 }, { i: '1', j: 3 }, { i: '3', j: 3 }, { i: '5', j: 3 }, { i: '7', j: 3 }, { i: '9', j: 3 }, { i: '11', j: 3 }, { i: '13', j: 3 }, { i: '1', j: 4 }, { i: '3', j: 4 }, { i: '5', j: 4 }, { i: '7', j: 4 }, { i: '9', j: 4 }, { i: '11', j: 4 }, { i: '13', j: 4 }, { i: '1', j: 5 }, { i: '3', j: 5 }, { i: '5', j: 5 }, { i: '7', j: 5 }, { i: '9', j: 5 }, { i: '11', j: 5 }, { i: '13', j: 5 }, { i: '1', j: 6 }, { i: '3', j: 6 }, { i: '5', j: 6 }, { i: '7', j: 6 }, { i: '9', j: 6 }, { i: '11', j: 6 }, { i: '13', j: 6 } ], css_id: 'tinytable_css_qs64t5iznn2kss8ok32v',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '3', j: 1 }, { i: '5', j: 1 }, { i: '7', j: 1 }, { i: '9', j: 1 }, { i: '11', j: 1 }, { i: '13', j: 1 }, { i: '1', j: 2 }, { i: '3', j: 2 }, { i: '5', j: 2 }, { i: '7', j: 2 }, { i: '9', j: 2 }, { i: '11', j: 2 }, { i: '13', j: 2 }, { i: '1', j: 3 }, { i: '3', j: 3 }, { i: '5', j: 3 }, { i: '7', j: 3 }, { i: '9', j: 3 }, { i: '11', j: 3 }, { i: '13', j: 3 }, { i: '1', j: 4 }, { i: '3', j: 4 }, { i: '5', j: 4 }, { i: '7', j: 4 }, { i: '9', j: 4 }, { i: '11', j: 4 }, { i: '13', j: 4 }, { i: '1', j: 5 }, { i: '3', j: 5 }, { i: '5', j: 5 }, { i: '7', j: 5 }, { i: '9', j: 5 }, { i: '11', j: 5 }, { i: '13', j: 5 }, { i: '1', j: 6 }, { i: '3', j: 6 }, { i: '5', j: 6 }, { i: '7', j: 6 }, { i: '9', j: 6 }, { i: '11', j: 6 }, { i: '13', j: 6 } ], css_id: 'tinytable_css_pkek743i4h9946infyfk',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  tableFns_6ci0982v32lwknqq45q1.styleCell(cell.i, cell.j, group.css_id);
+                  tableFns_8kcopwxvj9klvz9em40t.styleCell(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -2212,10 +2207,10 @@ $ carb &lt;dbl&gt; 4, 4, 1, 1, 2, 1, 4, 2, 2, 4, 4, 3, 3, 3, 4, 4, 4, 1, 2, 1, 1
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.css">
     <style>
     /* tinytable css entries after */
-    #tinytable_6ci0982v32lwknqq45q1 td.tinytable_css_qs64t5iznn2kss8ok32v, #tinytable_6ci0982v32lwknqq45q1 th.tinytable_css_qs64t5iznn2kss8ok32v { background-color: #ededed }
+    #tinytable_8kcopwxvj9klvz9em40t td.tinytable_css_pkek743i4h9946infyfk, #tinytable_8kcopwxvj9klvz9em40t th.tinytable_css_pkek743i4h9946infyfk { background-color: #ededed }
     </style>
     <div class="container">
-      <table class="tinytable" id="tinytable_6ci0982v32lwknqq45q1" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="tinytable" id="tinytable_8kcopwxvj9klvz9em40t" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         
         <thead>
               <tr>
@@ -2408,12 +2403,12 @@ Figure&nbsp;4: Datasaurus Dirty Dozen: All have (almost) identical summary stati
 </div>
 </section>
 
-<section id="conclusions" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusions" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusions</h2>
 <p>Scatter Plots give a us sense of change; whether it is linear or non-linear. We can get an idea of correlation between variables with a scatter plot. Our workflow for evaluating correlations between target variable and several other predictor variables uses several packages such as <code>{GGally}</code>, <code>{corrplot}</code>, <code>{correlation}</code>, and of course <code>{mosaic}</code> for correlation tests.</p>
 </section>
 
-<section id="ai-generated-summary-and-podcast" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920656f732d69636f6e73206169203e7d7d-ai-generated-summary-and-podcast" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="eos-icons:ai" aria-label="Icon ai from eos-icons Iconify.design set." title="Icon ai from eos-icons Iconify.design set."></iconify-icon> AI Generated Summary and Podcast</h2>
 This document focusses on correlation between quantitative variables. It examines different ways to visualize correlations, including scatter plots and <em>correlograms</em>. The document provides examples of how to use R packages like <code>{GGally}</code> and <code>{corrplot}</code> to create these visualizations and <code>correlation tests</code> to assess the strength and significance of relationships between variables. The tutorial uses the <code>HollywoodMovies2011</code> and <code>mtcars</code> datasets as examples to demonstrate these concepts. <br><br>
 <center>
@@ -2426,7 +2421,7 @@ This document focusses on correlation between quantitative variables. It examine
 </section>
 
 <section>
-<section id="references" class="title-slide slide level2 center scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d6c7472203e7d7d-references" class="title-slide slide level2 center scrollable">
 <h2><iconify-icon inline="" icon="ooui:references-ltr" aria-label="Icon references-ltr from ooui Iconify.design set." title="Icon references-ltr from ooui Iconify.design set."></iconify-icon> References</h2>
 <ol type="1">
 <li>Winston Chang (2024). <em>R Graphics Cookbook</em>. <a href="https://r-graphics.org" class="uri">https://r-graphics.org</a></li>
@@ -2438,8 +2433,8 @@ This document focusses on correlation between quantitative variables. It examine
 </li>
 </ol>
 </section>
-<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" data-entry-spacing="0" role="list">
-<h6 id="r-package-citations"><iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
+<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" role="list">
+<h6 id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c7563696465207061636b6167652d636865636b203e7d7d-r-package-citations"><iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
 <div class="cell">
 <div class="cell-output-display">
 <table class="caption-top">
@@ -2498,7 +2493,7 @@ Meschiari, Stefano. 2026. <em>Latex2exp: Use LaTeX Expressions in Plots</em>. <a
 Robinson, David, Alex Hayes, Simon Couch, and Emil Hvitfeldt. 2026. <em><span class="nocase">broom</span>: Convert Statistical Objects into Tidy Tibbles</em>. <a href="https://doi.org/10.32614/CRAN.package.broom">https://doi.org/10.32614/CRAN.package.broom</a>.
 </div>
 <div id="ref-GGally" class="csl-entry" role="listitem">
-Schloerke, Barret, Di Cook, Joseph Larmarange, Francois Briatte, Moritz Marbach, Edwin Thoen, Amos Elberg, and Jason Crowley. 2025. <em><span>GGally</span>: Extension to <span>“<span class="nocase">ggplot2</span>”</span></em>. <a href="https://doi.org/10.32614/CRAN.package.GGally">https://doi.org/10.32614/CRAN.package.GGally</a>.
+Schloerke, Barret, Di Cook, Joseph Larmarange, et al. 2025. <em><span>GGally</span>: Extension to <span>“<span class="nocase">ggplot2</span>”</span></em>. <a href="https://doi.org/10.32614/CRAN.package.GGally">https://doi.org/10.32614/CRAN.package.GGally</a>.
 </div>
 <div id="ref-corrplot" class="csl-entry" role="listitem">
 Wei, Taiyun, and Viliam Simko. 2024. <em>R Package <span>“<span class="nocase">corrplot</span>”</span>: Visualization of a Correlation Matrix</em>. <a href="https://github.com/taiyun/corrplot">https://github.com/taiyun/corrplot</a>.
@@ -2542,7 +2537,6 @@ Wei, Taiyun, and Viliam Simko. 2024. <em>R Package <span>“<span class="nocase"
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
 'jumpToSlide': true,
-'view': "scroll",
 'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
 'chalkboard': {"buttons":true},
 'smaller': true,
@@ -2686,6 +2680,13 @@ Wei, Taiyun, and Viliam Simko. 2024. <em>R Package <span>“<span class="nocase"
         // devices. It is advisable to set this to a lower number than
         // viewDistance in order to save resources.
         mobileViewDistance: 2,
+
+        // Enable scroll view
+        view: 'scroll',
+        scrollProgress: 'auto',
+        scrollActivationWidth: 0,
+        scrollSnap: 'mandatory',
+        scrollLayout: 'full',
 
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be

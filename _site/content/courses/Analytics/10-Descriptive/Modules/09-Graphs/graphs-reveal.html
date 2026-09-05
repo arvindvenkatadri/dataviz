@@ -7,12 +7,12 @@
 <script src="../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-795e9e8eca1e12b12abcb09a27409631.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-12757e4b7af482b2d9c5bd8860d2b707.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script src="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.8.27">
+  <meta name="generator" content="quarto-1.10.18">
 
   <meta name="dcterms.date" content="2021-11-01">
   <title>The Mad Hatter's Guide to Data Viz and Stats in R –  Graphs</title>
@@ -22,10 +22,16 @@
   <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reveal.css">
   <style>
-    code{white-space: pre-wrap;}
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
@@ -101,7 +107,6 @@
     div.csl-bib-body { }
     div.csl-entry {
       clear: both;
-      margin-bottom: 0em;
     }
     .hanging-indent div.csl-entry {
       margin-left:2em;
@@ -118,7 +123,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/theme/quarto-180c62c9bcf69a0506044dd7f3253a18.css">
+  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/theme/quarto-7d27a531335543ee0379719666959585.css">
   <link href="../../../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -218,7 +223,7 @@
 <meta property="og:title" content=" Graphs – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:description" content="Charts and How they are generated from Data">
 <meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/09-Graphs/preview.png">
-<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
+<meta property="og:site_name" content="The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:image:alt" content="By Rudityas on Glazestock.com">
 <meta name="twitter:title" content=" Graphs – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta name="twitter:description" content="Charts and How they are generated from Data">
@@ -254,155 +259,155 @@
 </div>
 </section>
 <section>
-<section id="setting-up-r-packages" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a></a><span class="fu">library</span>(mosaic) <span class="co"># Our all-in-one package</span></span>
-<span id="cb1-3"><a></a><span class="fu">library</span>(skimr) <span class="co"># Looking at data</span></span>
-<span id="cb1-4"><a></a><span class="fu">library</span>(ggformula) <span class="co"># Our plotting package</span></span>
-<span id="cb1-5"><a></a><span class="fu">library</span>(visdat) <span class="co"># Mapping missing data</span></span>
-<span id="cb1-6"><a></a><span class="fu">library</span>(naniar) <span class="co"># Missing data visualization and munging</span></span>
-<span id="cb1-7"><a></a><span class="fu">library</span>(janitor) <span class="co"># Clean the data</span></span>
-<span id="cb1-8"><a></a><span class="fu">library</span>(tinytable) <span class="co"># Printing Tables for our data</span></span>
-<span id="cb1-9"><a></a><span class="fu">library</span>(DT) <span class="co"># Interactive Tables for our data</span></span>
-<span id="cb1-10"><a></a><span class="do">##</span></span>
-<span id="cb1-11"><a></a><span class="co"># devtools::install_github("rpruim/Lock5withR")</span></span>
-<span id="cb1-12"><a></a><span class="fu">library</span>(Lock5withR)</span>
-<span id="cb1-13"><a></a><span class="fu">library</span>(Lock5Data) <span class="co"># Some neat little datasets from a lovely textbook</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a aria-label="1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a aria-label="2"></a><span class="fu">library</span>(mosaic) <span class="co"># Our all-in-one package</span></span>
+<span id="cb1-3"><a aria-label="3"></a><span class="fu">library</span>(skimr) <span class="co"># Looking at data</span></span>
+<span id="cb1-4"><a aria-label="4"></a><span class="fu">library</span>(ggformula) <span class="co"># Our plotting package</span></span>
+<span id="cb1-5"><a aria-label="5"></a><span class="fu">library</span>(visdat) <span class="co"># Mapping missing data</span></span>
+<span id="cb1-6"><a aria-label="6"></a><span class="fu">library</span>(naniar) <span class="co"># Missing data visualization and munging</span></span>
+<span id="cb1-7"><a aria-label="7"></a><span class="fu">library</span>(janitor) <span class="co"># Clean the data</span></span>
+<span id="cb1-8"><a aria-label="8"></a><span class="fu">library</span>(tinytable) <span class="co"># Printing Tables for our data</span></span>
+<span id="cb1-9"><a aria-label="9"></a><span class="fu">library</span>(DT) <span class="co"># Interactive Tables for our data</span></span>
+<span id="cb1-10"><a aria-label="10"></a><span class="do">##</span></span>
+<span id="cb1-11"><a aria-label="11"></a><span class="co"># devtools::install_github("rpruim/Lock5withR")</span></span>
+<span id="cb1-12"><a aria-label="12"></a><span class="fu">library</span>(Lock5withR)</span>
+<span id="cb1-13"><a aria-label="13"></a><span class="fu">library</span>(Lock5Data) <span class="co"># Some neat little datasets from a lovely textbook</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <h4 id="plot-fonts-and-theme">Plot Fonts and Theme</h4>
 <div class="cell" data-messages="false">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">library</span>(systemfonts)</span>
-<span id="cb2-2"><a></a><span class="fu">library</span>(showtext)</span>
-<span id="cb2-3"><a></a><span class="do">## Clean the slate</span></span>
-<span id="cb2-4"><a></a>systemfonts<span class="sc">::</span><span class="fu">clear_local_fonts</span>()</span>
-<span id="cb2-5"><a></a>systemfonts<span class="sc">::</span><span class="fu">clear_registry</span>()</span>
-<span id="cb2-6"><a></a><span class="do">##</span></span>
-<span id="cb2-7"><a></a><span class="fu">showtext_opts</span>(<span class="at">dpi =</span> <span class="dv">96</span>) <span class="co"># set DPI for showtext</span></span>
-<span id="cb2-8"><a></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
-<span id="cb2-9"><a></a>  <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-10"><a></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/Alegreya-Regular.ttf"</span>,</span>
-<span id="cb2-11"><a></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/Alegreya-Bold.ttf"</span>,</span>
-<span id="cb2-12"><a></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/Alegreya-Italic.ttf"</span>,</span>
-<span id="cb2-13"><a></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/Alegreya-BoldItalic.ttf"</span></span>
-<span id="cb2-14"><a></a>)</span>
-<span id="cb2-15"><a></a></span>
-<span id="cb2-16"><a></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
-<span id="cb2-17"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-18"><a></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Regular.ttf"</span>,</span>
-<span id="cb2-19"><a></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Bold.ttf"</span>,</span>
-<span id="cb2-20"><a></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Italic.ttf"</span>,</span>
-<span id="cb2-21"><a></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-BoldItalic.ttf"</span></span>
-<span id="cb2-22"><a></a>)</span>
-<span id="cb2-23"><a></a><span class="fu">showtext_auto</span>(<span class="at">enable =</span> <span class="cn">TRUE</span>) <span class="co"># enable showtext</span></span>
-<span id="cb2-24"><a></a><span class="do">##</span></span>
-<span id="cb2-25"><a></a>theme_custom <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb2-26"><a></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">10</span>) <span class="sc">+</span></span>
-<span id="cb2-27"><a></a>    <span class="co">#</span></span>
-<span id="cb2-28"><a></a>    <span class="co"># theme(panel.widths = unit(11, "cm"),</span></span>
-<span id="cb2-29"><a></a>    <span class="co">#       panel.heights = unit(6.79, "cm")) + # Golden Ratio</span></span>
-<span id="cb2-30"><a></a>    <span class="co">#</span></span>
-<span id="cb2-31"><a></a>    <span class="fu">theme</span>(</span>
-<span id="cb2-32"><a></a>      <span class="at">plot.margin =</span> <span class="fu">margin_auto</span>(<span class="at">t =</span> <span class="dv">1</span>, <span class="at">r =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="dv">1</span>, <span class="at">l =</span> <span class="dv">1</span>, <span class="at">unit =</span> <span class="st">"cm"</span>),</span>
-<span id="cb2-33"><a></a>      <span class="at">plot.background =</span> <span class="fu">element_rect</span>(</span>
-<span id="cb2-34"><a></a>        <span class="at">fill =</span> <span class="st">"bisque"</span>,</span>
-<span id="cb2-35"><a></a>        <span class="at">colour =</span> <span class="st">"black"</span>,</span>
-<span id="cb2-36"><a></a>        <span class="at">linewidth =</span> <span class="dv">1</span></span>
-<span id="cb2-37"><a></a>      )</span>
-<span id="cb2-38"><a></a>    ) <span class="sc">+</span></span>
-<span id="cb2-39"><a></a></span>
-<span id="cb2-40"><a></a>    <span class="fu">theme_sub_axis</span>(</span>
-<span id="cb2-41"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-42"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-43"><a></a>        <span class="at">size =</span> <span class="dv">10</span></span>
-<span id="cb2-44"><a></a>      ),</span>
-<span id="cb2-45"><a></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-46"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-47"><a></a>        <span class="at">size =</span> <span class="dv">8</span></span>
-<span id="cb2-48"><a></a>      )</span>
-<span id="cb2-49"><a></a>    ) <span class="sc">+</span></span>
-<span id="cb2-50"><a></a></span>
-<span id="cb2-51"><a></a>    <span class="fu">theme_sub_legend</span>(</span>
-<span id="cb2-52"><a></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-53"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-54"><a></a>        <span class="at">size =</span> <span class="dv">6</span></span>
-<span id="cb2-55"><a></a>      ),</span>
-<span id="cb2-56"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-57"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-58"><a></a>        <span class="at">size =</span> <span class="dv">8</span></span>
-<span id="cb2-59"><a></a>      )</span>
-<span id="cb2-60"><a></a>    ) <span class="sc">+</span></span>
-<span id="cb2-61"><a></a></span>
-<span id="cb2-62"><a></a>    <span class="fu">theme_sub_plot</span>(</span>
-<span id="cb2-63"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-64"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-65"><a></a>        <span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span></span>
-<span id="cb2-66"><a></a>      ),</span>
-<span id="cb2-67"><a></a>      <span class="at">title.position =</span> <span class="st">"plot"</span>,</span>
-<span id="cb2-68"><a></a>      <span class="at">subtitle =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-69"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-70"><a></a>        <span class="at">size =</span> <span class="dv">10</span></span>
-<span id="cb2-71"><a></a>      ),</span>
-<span id="cb2-72"><a></a>      <span class="at">caption =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-73"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-74"><a></a>        <span class="at">size =</span> <span class="dv">6</span></span>
-<span id="cb2-75"><a></a>      ),</span>
-<span id="cb2-76"><a></a>      <span class="at">caption.position =</span> <span class="st">"plot"</span></span>
-<span id="cb2-77"><a></a>    )</span>
-<span id="cb2-78"><a></a>}</span>
-<span id="cb2-79"><a></a></span>
-<span id="cb2-80"><a></a><span class="do">## Use available fonts in ggplot text geoms too!</span></span>
-<span id="cb2-81"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-82"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-83"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-84"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-85"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-86"><a></a>))</span>
-<span id="cb2-87"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-88"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-89"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-90"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-91"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-92"><a></a>))</span>
-<span id="cb2-93"><a></a></span>
-<span id="cb2-94"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"marquee"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-95"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-96"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-97"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-98"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-99"><a></a>))</span>
-<span id="cb2-100"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-101"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-102"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-103"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-104"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-105"><a></a>))</span>
-<span id="cb2-106"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-107"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-108"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-109"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-110"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-111"><a></a>))</span>
-<span id="cb2-112"><a></a></span>
-<span id="cb2-113"><a></a><span class="do">## Set the theme</span></span>
-<span id="cb2-114"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb2-115"><a></a></span>
-<span id="cb2-116"><a></a><span class="do">## tinytable options</span></span>
-<span id="cb2-117"><a></a><span class="fu">options</span>(<span class="st">"tinytable_tt_digits"</span> <span class="ot">=</span> <span class="dv">2</span>)</span>
-<span id="cb2-118"><a></a><span class="fu">options</span>(<span class="st">"tinytable_format_num_fmt"</span> <span class="ot">=</span> <span class="st">"significant_cell"</span>)</span>
-<span id="cb2-119"><a></a><span class="fu">options</span>(<span class="at">tinytable_html_mathjax =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-120"><a></a></span>
-<span id="cb2-121"><a></a></span>
-<span id="cb2-122"><a></a><span class="do">## Set defaults for flextable</span></span>
-<span id="cb2-123"><a></a>flextable<span class="sc">::</span><span class="fu">set_flextable_defaults</span>(<span class="at">font.family =</span> <span class="st">"Roboto Condensed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a aria-label="1"></a><span class="fu">library</span>(systemfonts)</span>
+<span id="cb2-2"><a aria-label="2"></a><span class="fu">library</span>(showtext)</span>
+<span id="cb2-3"><a aria-label="3"></a><span class="do">## Clean the slate</span></span>
+<span id="cb2-4"><a aria-label="4"></a>systemfonts<span class="sc">::</span><span class="fu">clear_local_fonts</span>()</span>
+<span id="cb2-5"><a aria-label="5"></a>systemfonts<span class="sc">::</span><span class="fu">clear_registry</span>()</span>
+<span id="cb2-6"><a aria-label="6"></a><span class="do">##</span></span>
+<span id="cb2-7"><a aria-label="7"></a><span class="fu">showtext_opts</span>(<span class="at">dpi =</span> <span class="dv">96</span>) <span class="co"># set DPI for showtext</span></span>
+<span id="cb2-8"><a aria-label="8"></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
+<span id="cb2-9"><a aria-label="9"></a>  <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-10"><a aria-label="10"></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/Alegreya-Regular.ttf"</span>,</span>
+<span id="cb2-11"><a aria-label="11"></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/Alegreya-Bold.ttf"</span>,</span>
+<span id="cb2-12"><a aria-label="12"></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/Alegreya-Italic.ttf"</span>,</span>
+<span id="cb2-13"><a aria-label="13"></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/Alegreya-BoldItalic.ttf"</span></span>
+<span id="cb2-14"><a aria-label="14"></a>)</span>
+<span id="cb2-15"><a aria-label="15"></a></span>
+<span id="cb2-16"><a aria-label="16"></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
+<span id="cb2-17"><a aria-label="17"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-18"><a aria-label="18"></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Regular.ttf"</span>,</span>
+<span id="cb2-19"><a aria-label="19"></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Bold.ttf"</span>,</span>
+<span id="cb2-20"><a aria-label="20"></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Italic.ttf"</span>,</span>
+<span id="cb2-21"><a aria-label="21"></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-BoldItalic.ttf"</span></span>
+<span id="cb2-22"><a aria-label="22"></a>)</span>
+<span id="cb2-23"><a aria-label="23"></a><span class="fu">showtext_auto</span>(<span class="at">enable =</span> <span class="cn">TRUE</span>) <span class="co"># enable showtext</span></span>
+<span id="cb2-24"><a aria-label="24"></a><span class="do">##</span></span>
+<span id="cb2-25"><a aria-label="25"></a>theme_custom <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb2-26"><a aria-label="26"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">10</span>) <span class="sc">+</span></span>
+<span id="cb2-27"><a aria-label="27"></a>    <span class="co">#</span></span>
+<span id="cb2-28"><a aria-label="28"></a>    <span class="co"># theme(panel.widths = unit(11, "cm"),</span></span>
+<span id="cb2-29"><a aria-label="29"></a>    <span class="co">#       panel.heights = unit(6.79, "cm")) + # Golden Ratio</span></span>
+<span id="cb2-30"><a aria-label="30"></a>    <span class="co">#</span></span>
+<span id="cb2-31"><a aria-label="31"></a>    <span class="fu">theme</span>(</span>
+<span id="cb2-32"><a aria-label="32"></a>      <span class="at">plot.margin =</span> <span class="fu">margin_auto</span>(<span class="at">t =</span> <span class="dv">1</span>, <span class="at">r =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="dv">1</span>, <span class="at">l =</span> <span class="dv">1</span>, <span class="at">unit =</span> <span class="st">"cm"</span>),</span>
+<span id="cb2-33"><a aria-label="33"></a>      <span class="at">plot.background =</span> <span class="fu">element_rect</span>(</span>
+<span id="cb2-34"><a aria-label="34"></a>        <span class="at">fill =</span> <span class="st">"bisque"</span>,</span>
+<span id="cb2-35"><a aria-label="35"></a>        <span class="at">colour =</span> <span class="st">"black"</span>,</span>
+<span id="cb2-36"><a aria-label="36"></a>        <span class="at">linewidth =</span> <span class="dv">1</span></span>
+<span id="cb2-37"><a aria-label="37"></a>      )</span>
+<span id="cb2-38"><a aria-label="38"></a>    ) <span class="sc">+</span></span>
+<span id="cb2-39"><a aria-label="39"></a></span>
+<span id="cb2-40"><a aria-label="40"></a>    <span class="fu">theme_sub_axis</span>(</span>
+<span id="cb2-41"><a aria-label="41"></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-42"><a aria-label="42"></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-43"><a aria-label="43"></a>        <span class="at">size =</span> <span class="dv">10</span></span>
+<span id="cb2-44"><a aria-label="44"></a>      ),</span>
+<span id="cb2-45"><a aria-label="45"></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-46"><a aria-label="46"></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-47"><a aria-label="47"></a>        <span class="at">size =</span> <span class="dv">8</span></span>
+<span id="cb2-48"><a aria-label="48"></a>      )</span>
+<span id="cb2-49"><a aria-label="49"></a>    ) <span class="sc">+</span></span>
+<span id="cb2-50"><a aria-label="50"></a></span>
+<span id="cb2-51"><a aria-label="51"></a>    <span class="fu">theme_sub_legend</span>(</span>
+<span id="cb2-52"><a aria-label="52"></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-53"><a aria-label="53"></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-54"><a aria-label="54"></a>        <span class="at">size =</span> <span class="dv">6</span></span>
+<span id="cb2-55"><a aria-label="55"></a>      ),</span>
+<span id="cb2-56"><a aria-label="56"></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-57"><a aria-label="57"></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-58"><a aria-label="58"></a>        <span class="at">size =</span> <span class="dv">8</span></span>
+<span id="cb2-59"><a aria-label="59"></a>      )</span>
+<span id="cb2-60"><a aria-label="60"></a>    ) <span class="sc">+</span></span>
+<span id="cb2-61"><a aria-label="61"></a></span>
+<span id="cb2-62"><a aria-label="62"></a>    <span class="fu">theme_sub_plot</span>(</span>
+<span id="cb2-63"><a aria-label="63"></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-64"><a aria-label="64"></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-65"><a aria-label="65"></a>        <span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span></span>
+<span id="cb2-66"><a aria-label="66"></a>      ),</span>
+<span id="cb2-67"><a aria-label="67"></a>      <span class="at">title.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb2-68"><a aria-label="68"></a>      <span class="at">subtitle =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-69"><a aria-label="69"></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-70"><a aria-label="70"></a>        <span class="at">size =</span> <span class="dv">10</span></span>
+<span id="cb2-71"><a aria-label="71"></a>      ),</span>
+<span id="cb2-72"><a aria-label="72"></a>      <span class="at">caption =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-73"><a aria-label="73"></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-74"><a aria-label="74"></a>        <span class="at">size =</span> <span class="dv">6</span></span>
+<span id="cb2-75"><a aria-label="75"></a>      ),</span>
+<span id="cb2-76"><a aria-label="76"></a>      <span class="at">caption.position =</span> <span class="st">"plot"</span></span>
+<span id="cb2-77"><a aria-label="77"></a>    )</span>
+<span id="cb2-78"><a aria-label="78"></a>}</span>
+<span id="cb2-79"><a aria-label="79"></a></span>
+<span id="cb2-80"><a aria-label="80"></a><span class="do">## Use available fonts in ggplot text geoms too!</span></span>
+<span id="cb2-81"><a aria-label="81"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-82"><a aria-label="82"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-83"><a aria-label="83"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-84"><a aria-label="84"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-85"><a aria-label="85"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-86"><a aria-label="86"></a>))</span>
+<span id="cb2-87"><a aria-label="87"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-88"><a aria-label="88"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-89"><a aria-label="89"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-90"><a aria-label="90"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-91"><a aria-label="91"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-92"><a aria-label="92"></a>))</span>
+<span id="cb2-93"><a aria-label="93"></a></span>
+<span id="cb2-94"><a aria-label="94"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"marquee"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-95"><a aria-label="95"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-96"><a aria-label="96"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-97"><a aria-label="97"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-98"><a aria-label="98"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-99"><a aria-label="99"></a>))</span>
+<span id="cb2-100"><a aria-label="100"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-101"><a aria-label="101"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-102"><a aria-label="102"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-103"><a aria-label="103"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-104"><a aria-label="104"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-105"><a aria-label="105"></a>))</span>
+<span id="cb2-106"><a aria-label="106"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-107"><a aria-label="107"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-108"><a aria-label="108"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-109"><a aria-label="109"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-110"><a aria-label="110"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-111"><a aria-label="111"></a>))</span>
+<span id="cb2-112"><a aria-label="112"></a></span>
+<span id="cb2-113"><a aria-label="113"></a><span class="do">## Set the theme</span></span>
+<span id="cb2-114"><a aria-label="114"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb2-115"><a aria-label="115"></a></span>
+<span id="cb2-116"><a aria-label="116"></a><span class="do">## tinytable options</span></span>
+<span id="cb2-117"><a aria-label="117"></a><span class="fu">options</span>(<span class="st">"tinytable_tt_digits"</span> <span class="ot">=</span> <span class="dv">2</span>)</span>
+<span id="cb2-118"><a aria-label="118"></a><span class="fu">options</span>(<span class="st">"tinytable_format_num_fmt"</span> <span class="ot">=</span> <span class="st">"significant_cell"</span>)</span>
+<span id="cb2-119"><a aria-label="119"></a><span class="fu">options</span>(<span class="at">tinytable_html_mathjax =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-120"><a aria-label="120"></a></span>
+<span id="cb2-121"><a aria-label="121"></a></span>
+<span id="cb2-122"><a aria-label="122"></a><span class="do">## Set defaults for flextable</span></span>
+<span id="cb2-123"><a aria-label="123"></a>flextable<span class="sc">::</span><span class="fu">set_flextable_defaults</span>(<span class="at">font.family =</span> <span class="st">"Roboto Condensed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div></section>
 <section>
-<section id="why-visualize" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e2063686172742d3364203e7d7d-why-visualize" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="carbon:chart-3d" aria-label="Icon chart-3d from carbon Iconify.design set." title="Icon chart-3d from carbon Iconify.design set."></iconify-icon> Why Visualize?</h2>
 
 </section>
@@ -461,7 +466,7 @@ Figure&nbsp;2: Data Reveals Crime
 </ul>
 </section></section>
 <section>
-<section id="why-analyze" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920627820616e616c797365203e7d7d-why-analyze" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="bx:analyse" aria-label="Icon analyse from bx Iconify.design set." title="Icon analyse from bx Iconify.design set."></iconify-icon> Why Analyze?</h2>
 
 </section>
@@ -505,11 +510,11 @@ Figure&nbsp;3: Tidy Data
 </ul>
 </section></section>
 <section>
-<section id="what-is-a-data-visualization" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d6174657269616c2d73796d626f6c73206175746f2d6772617068203e7d7d-what-is-a-data-visualization" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="material-symbols:auto-graph" aria-label="Icon auto-graph from material-symbols Iconify.design set." title="Icon auto-graph from material-symbols Iconify.design set."></iconify-icon> What is a Data Visualization?</h2>
 
 </section>
-<section id="data-viz-data-geometry" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e2063686172742d6e6574776f726b203e7d7d-data-viz-data-geometry" class="slide level3">
 <h3><iconify-icon inline="" icon="carbon:chart-network" aria-label="Icon chart-network from carbon Iconify.design set." title="Icon chart-network from carbon Iconify.design set."></iconify-icon> Data Viz = Data + Geometry</h3>
 <ul>
 <li>How many <em>geometric things</em> do we know?</li>
@@ -532,7 +537,7 @@ Figure&nbsp;4: Common Geometric Aesthetics in Charts
 </div>
 </div>
 </section>
-<section id="mapping" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d6174657269616c2d73796d626f6c732066756e6374696f6e203e7d7d-mapping" class="slide level3">
 <h3><iconify-icon inline="" icon="material-symbols:function" aria-label="Icon function from material-symbols Iconify.design set." title="Icon function from material-symbols Iconify.design set."></iconify-icon> Mapping</h3>
 <ul>
 <li>How can we <strong><em>manipulate</em></strong> these geometric aesthetics, perhaps like <a href="https://www.wassilykandinsky.net">Wassily Kandinsky</a>?</li>
@@ -583,57 +588,57 @@ Figure&nbsp;4: Common Geometric Aesthetics in Charts
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">set.seed</span>(<span class="dv">1947</span>)</span>
-<span id="cb3-2"><a></a>diamonds <span class="sc">%&gt;%</span></span>
-<span id="cb3-3"><a></a>  <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">150</span>, <span class="at">weight_by =</span> cut) <span class="sc">%&gt;%</span></span>
-<span id="cb3-4"><a></a>  <span class="fu">gf_point</span>(price <span class="sc">~</span> carat,</span>
-<span id="cb3-5"><a></a>    <span class="at">colour =</span> <span class="sc">~</span>cut,</span>
-<span id="cb3-6"><a></a>    <span class="at">shape =</span> <span class="sc">~</span>cut,</span>
-<span id="cb3-7"><a></a>    <span class="at">size =</span> <span class="dv">2</span>, <span class="at">data =</span> .</span>
-<span id="cb3-8"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb3-9"><a></a>  <span class="fu">gf_labs</span>(</span>
-<span id="cb3-10"><a></a>    <span class="at">title =</span> <span class="st">"Plot Title = DIAMONDS ARE FOREVER"</span>,</span>
-<span id="cb3-11"><a></a>    <span class="at">subtitle =</span> <span class="st">"Plot Subtitle = AND A GIRL'S BEST FRIEND"</span>,</span>
-<span id="cb3-12"><a></a>    <span class="at">caption =</span> <span class="st">"Plot Caption = From the diamonds dataset"</span>,</span>
-<span id="cb3-13"><a></a>    <span class="at">x =</span> <span class="st">"x-Axis Title = CARAT"</span>,</span>
-<span id="cb3-14"><a></a>    <span class="at">y =</span> <span class="st">"y-Axis Title = PRICE"</span></span>
-<span id="cb3-15"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb3-16"><a></a>  <span class="co"># Use same name for scales to merge legends</span></span>
-<span id="cb3-17"><a></a>  <span class="fu">gf_refine</span>(</span>
-<span id="cb3-18"><a></a>    <span class="fu">scale_color_brewer</span>(</span>
-<span id="cb3-19"><a></a>      <span class="at">name =</span> <span class="st">"Legend = DIAMOND QUALITY"</span>,</span>
-<span id="cb3-20"><a></a>      <span class="at">palette =</span> <span class="st">"Set1"</span></span>
-<span id="cb3-21"><a></a>    ),</span>
-<span id="cb3-22"><a></a>    <span class="fu">scale_shape_manual</span>(</span>
-<span id="cb3-23"><a></a>      <span class="at">name =</span> <span class="st">"Legend = DIAMOND QUALITY"</span>,</span>
-<span id="cb3-24"><a></a>      <span class="at">values =</span> <span class="fu">c</span>(<span class="dv">15</span><span class="sc">:</span><span class="dv">21</span>)</span>
-<span id="cb3-25"><a></a>    )</span>
-<span id="cb3-26"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb3-27"><a></a>  <span class="fu">gf_annotate</span>(<span class="st">"text"</span>,</span>
-<span id="cb3-28"><a></a>    <span class="at">x =</span> <span class="fl">1.0</span>, <span class="at">y =</span> <span class="dv">16000</span>,</span>
-<span id="cb3-29"><a></a>    <span class="at">label =</span> <span class="st">"These DIAMONDS are</span><span class="sc">\n</span><span class="st"> Super Affordable!!"</span>,</span>
-<span id="cb3-30"><a></a>    <span class="at">fontface =</span> <span class="st">"bold"</span>,</span>
-<span id="cb3-31"><a></a>    <span class="at">size =</span> <span class="dv">2</span></span>
-<span id="cb3-32"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb3-33"><a></a>  <span class="fu">gf_annotate</span>(<span class="st">"curve"</span>,</span>
-<span id="cb3-34"><a></a>    <span class="at">x =</span> <span class="fl">0.9</span>,</span>
-<span id="cb3-35"><a></a>    <span class="at">y =</span> <span class="dv">14500</span>,</span>
-<span id="cb3-36"><a></a>    <span class="at">yend =</span> <span class="dv">8000</span>,</span>
-<span id="cb3-37"><a></a>    <span class="at">xend =</span> <span class="fl">0.95</span>,</span>
-<span id="cb3-38"><a></a>    <span class="at">linewidth =</span> <span class="fl">0.5</span>,</span>
-<span id="cb3-39"><a></a>    <span class="at">curvature =</span> <span class="fl">0.5</span>,</span>
-<span id="cb3-40"><a></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">"cm"</span>))</span>
-<span id="cb3-41"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb3-42"><a></a>  <span class="fu">gf_annotate</span>(</span>
-<span id="cb3-43"><a></a>    <span class="st">"rect"</span>,</span>
-<span id="cb3-44"><a></a>    <span class="at">xmin =</span> <span class="dv">1</span>,</span>
-<span id="cb3-45"><a></a>    <span class="at">xmax =</span> <span class="fl">1.25</span>,</span>
-<span id="cb3-46"><a></a>    <span class="at">ymin =</span> <span class="dv">2250</span>,</span>
-<span id="cb3-47"><a></a>    <span class="at">ymax =</span> <span class="dv">10000</span>,</span>
-<span id="cb3-48"><a></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
-<span id="cb3-49"><a></a>    <span class="at">fill =</span> <span class="st">"grey80"</span>,</span>
-<span id="cb3-50"><a></a>    <span class="at">col =</span> <span class="st">"black"</span></span>
-<span id="cb3-51"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a aria-label="1"></a><span class="fu">set.seed</span>(<span class="dv">1947</span>)</span>
+<span id="cb3-2"><a aria-label="2"></a>diamonds <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a aria-label="3"></a>  <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">150</span>, <span class="at">weight_by =</span> cut) <span class="sc">%&gt;%</span></span>
+<span id="cb3-4"><a aria-label="4"></a>  <span class="fu">gf_point</span>(price <span class="sc">~</span> carat,</span>
+<span id="cb3-5"><a aria-label="5"></a>    <span class="at">colour =</span> <span class="sc">~</span>cut,</span>
+<span id="cb3-6"><a aria-label="6"></a>    <span class="at">shape =</span> <span class="sc">~</span>cut,</span>
+<span id="cb3-7"><a aria-label="7"></a>    <span class="at">size =</span> <span class="dv">2</span>, <span class="at">data =</span> .</span>
+<span id="cb3-8"><a aria-label="8"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-9"><a aria-label="9"></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb3-10"><a aria-label="10"></a>    <span class="at">title =</span> <span class="st">"Plot Title = DIAMONDS ARE FOREVER"</span>,</span>
+<span id="cb3-11"><a aria-label="11"></a>    <span class="at">subtitle =</span> <span class="st">"Plot Subtitle = AND A GIRL'S BEST FRIEND"</span>,</span>
+<span id="cb3-12"><a aria-label="12"></a>    <span class="at">caption =</span> <span class="st">"Plot Caption = From the diamonds dataset"</span>,</span>
+<span id="cb3-13"><a aria-label="13"></a>    <span class="at">x =</span> <span class="st">"x-Axis Title = CARAT"</span>,</span>
+<span id="cb3-14"><a aria-label="14"></a>    <span class="at">y =</span> <span class="st">"y-Axis Title = PRICE"</span></span>
+<span id="cb3-15"><a aria-label="15"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-16"><a aria-label="16"></a>  <span class="co"># Use same name for scales to merge legends</span></span>
+<span id="cb3-17"><a aria-label="17"></a>  <span class="fu">gf_refine</span>(</span>
+<span id="cb3-18"><a aria-label="18"></a>    <span class="fu">scale_color_brewer</span>(</span>
+<span id="cb3-19"><a aria-label="19"></a>      <span class="at">name =</span> <span class="st">"Legend = DIAMOND QUALITY"</span>,</span>
+<span id="cb3-20"><a aria-label="20"></a>      <span class="at">palette =</span> <span class="st">"Set1"</span></span>
+<span id="cb3-21"><a aria-label="21"></a>    ),</span>
+<span id="cb3-22"><a aria-label="22"></a>    <span class="fu">scale_shape_manual</span>(</span>
+<span id="cb3-23"><a aria-label="23"></a>      <span class="at">name =</span> <span class="st">"Legend = DIAMOND QUALITY"</span>,</span>
+<span id="cb3-24"><a aria-label="24"></a>      <span class="at">values =</span> <span class="fu">c</span>(<span class="dv">15</span><span class="sc">:</span><span class="dv">21</span>)</span>
+<span id="cb3-25"><a aria-label="25"></a>    )</span>
+<span id="cb3-26"><a aria-label="26"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-27"><a aria-label="27"></a>  <span class="fu">gf_annotate</span>(<span class="st">"text"</span>,</span>
+<span id="cb3-28"><a aria-label="28"></a>    <span class="at">x =</span> <span class="fl">1.0</span>, <span class="at">y =</span> <span class="dv">16000</span>,</span>
+<span id="cb3-29"><a aria-label="29"></a>    <span class="at">label =</span> <span class="st">"Annotation = These DIAMONDS are</span><span class="sc">\n</span><span class="st"> Super Affordable!!"</span>,</span>
+<span id="cb3-30"><a aria-label="30"></a>    <span class="at">fontface =</span> <span class="st">"bold"</span>,</span>
+<span id="cb3-31"><a aria-label="31"></a>    <span class="at">size =</span> <span class="dv">2</span></span>
+<span id="cb3-32"><a aria-label="32"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-33"><a aria-label="33"></a>  <span class="fu">gf_annotate</span>(<span class="st">"curve"</span>,</span>
+<span id="cb3-34"><a aria-label="34"></a>    <span class="at">x =</span> <span class="fl">0.9</span>,</span>
+<span id="cb3-35"><a aria-label="35"></a>    <span class="at">y =</span> <span class="dv">14500</span>,</span>
+<span id="cb3-36"><a aria-label="36"></a>    <span class="at">yend =</span> <span class="dv">8000</span>,</span>
+<span id="cb3-37"><a aria-label="37"></a>    <span class="at">xend =</span> <span class="fl">0.95</span>,</span>
+<span id="cb3-38"><a aria-label="38"></a>    <span class="at">linewidth =</span> <span class="fl">0.5</span>,</span>
+<span id="cb3-39"><a aria-label="39"></a>    <span class="at">curvature =</span> <span class="fl">0.5</span>,</span>
+<span id="cb3-40"><a aria-label="40"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">"cm"</span>))</span>
+<span id="cb3-41"><a aria-label="41"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-42"><a aria-label="42"></a>  <span class="fu">gf_annotate</span>(</span>
+<span id="cb3-43"><a aria-label="43"></a>    <span class="st">"rect"</span>,</span>
+<span id="cb3-44"><a aria-label="44"></a>    <span class="at">xmin =</span> <span class="dv">1</span>,</span>
+<span id="cb3-45"><a aria-label="45"></a>    <span class="at">xmax =</span> <span class="fl">1.25</span>,</span>
+<span id="cb3-46"><a aria-label="46"></a>    <span class="at">ymin =</span> <span class="dv">2250</span>,</span>
+<span id="cb3-47"><a aria-label="47"></a>    <span class="at">ymax =</span> <span class="dv">10000</span>,</span>
+<span id="cb3-48"><a aria-label="48"></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
+<span id="cb3-49"><a aria-label="49"></a>    <span class="at">fill =</span> <span class="st">"grey80"</span>,</span>
+<span id="cb3-50"><a aria-label="50"></a>    <span class="at">col =</span> <span class="st">"black"</span></span>
+<span id="cb3-51"><a aria-label="51"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-data-vis-r" class="quarto-float quarto-figure quarto-figure-center">
@@ -658,6 +663,7 @@ Figure&nbsp;5: Data Vis Components and Features
 <li>What about <code>colour</code>? Could this be considered as <strong>another axis</strong> in the chart? <code>colour</code> is also mapped to <code>cut</code>.</li>
 <li>There are also other aspects that you can choose (not explicitly shown here) such as the <code>plot theme</code>(colours, fonts, backgrounds etc)</li>
 <li>which may <strong>not be mapped</strong> to data, but are nonetheless choices to be made.</li>
+<li>And Annotations ( rectangle, arrow, text…)</li>
 <li>We will get acquainted with this aspect as we build charts.</li>
 </ul>
 </section>
@@ -667,6 +673,7 @@ Figure&nbsp;5: Data Vis Components and Features
 <li>As we will see, Data Variables may be <strong><em>transformed</em></strong> before being mapped to some geometric aesthetic</li>
 <li>e.g.&nbsp;we may perform <strong><em>counts</em></strong> with a Qual variable that contains <strong><em>only</em></strong> the entries <code>{S, M, L, XL}</code>.</li>
 <li>We may also transform the <code>axes</code> (make them <em>logarithmic</em>, or even <em>polar</em> ) to create precisely the shape-meaning we wish.</li>
+<li>These choices depend upon the relationship between variables, e.g.&nbsp;cubic, exponential, linear, etc.</li>
 <li>This allows us considerable flexibility in making charts!!</li>
 </ul>
 </section>
@@ -679,32 +686,32 @@ Figure&nbsp;5: Data Vis Components and Features
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">set.seed</span>(<span class="dv">1947</span>)</span>
-<span id="cb4-2"><a></a>diamonds <span class="sc">%&gt;%</span></span>
-<span id="cb4-3"><a></a>  <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">150</span>, <span class="at">weight_by =</span> cut) <span class="sc">%&gt;%</span></span>
-<span id="cb4-4"><a></a>  <span class="fu">gf_point</span>(price <span class="sc">~</span> carat <span class="sc">|</span> clarity,</span>
-<span id="cb4-5"><a></a>    <span class="at">colour =</span> <span class="sc">~</span>cut,</span>
-<span id="cb4-6"><a></a>    <span class="at">shape =</span> <span class="sc">~</span>cut,</span>
-<span id="cb4-7"><a></a>    <span class="at">size =</span> <span class="dv">2</span>, <span class="at">data =</span> .</span>
-<span id="cb4-8"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb4-9"><a></a>  <span class="fu">gf_labs</span>(</span>
-<span id="cb4-10"><a></a>    <span class="at">title =</span> <span class="st">"Plot Title = DIAMONDS ARE FOREVER"</span>,</span>
-<span id="cb4-11"><a></a>    <span class="at">subtitle =</span> <span class="st">"Plot Subtitle = AND A GIRL'S BEST FRIEND"</span>,</span>
-<span id="cb4-12"><a></a>    <span class="at">caption =</span> <span class="st">"Plot Caption = From the diamonds dataset"</span>,</span>
-<span id="cb4-13"><a></a>    <span class="at">x =</span> <span class="st">"x-Axis Title = CARAT"</span>,</span>
-<span id="cb4-14"><a></a>    <span class="at">y =</span> <span class="st">"y-Axis Title = PRICE"</span></span>
-<span id="cb4-15"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb4-16"><a></a>  <span class="co"># Use same name for scales to merge legends</span></span>
-<span id="cb4-17"><a></a>  <span class="fu">gf_refine</span>(</span>
-<span id="cb4-18"><a></a>    <span class="fu">scale_color_brewer</span>(</span>
-<span id="cb4-19"><a></a>      <span class="at">name =</span> <span class="st">"Legend = DIAMOND QUALITY"</span>,</span>
-<span id="cb4-20"><a></a>      <span class="at">palette =</span> <span class="st">"Set1"</span></span>
-<span id="cb4-21"><a></a>    ),</span>
-<span id="cb4-22"><a></a>    <span class="fu">scale_shape_manual</span>(</span>
-<span id="cb4-23"><a></a>      <span class="at">name =</span> <span class="st">"Legend = DIAMOND QUALITY"</span>,</span>
-<span id="cb4-24"><a></a>      <span class="at">values =</span> <span class="fu">c</span>(<span class="dv">15</span><span class="sc">:</span><span class="dv">21</span>)</span>
-<span id="cb4-25"><a></a>    )</span>
-<span id="cb4-26"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a aria-label="1"></a><span class="fu">set.seed</span>(<span class="dv">1947</span>)</span>
+<span id="cb4-2"><a aria-label="2"></a>diamonds <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a aria-label="3"></a>  <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">150</span>, <span class="at">weight_by =</span> cut) <span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a aria-label="4"></a>  <span class="fu">gf_point</span>(price <span class="sc">~</span> carat <span class="sc">|</span> clarity,</span>
+<span id="cb4-5"><a aria-label="5"></a>    <span class="at">colour =</span> <span class="sc">~</span>cut,</span>
+<span id="cb4-6"><a aria-label="6"></a>    <span class="at">shape =</span> <span class="sc">~</span>cut,</span>
+<span id="cb4-7"><a aria-label="7"></a>    <span class="at">size =</span> <span class="dv">2</span>, <span class="at">data =</span> .</span>
+<span id="cb4-8"><a aria-label="8"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-9"><a aria-label="9"></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb4-10"><a aria-label="10"></a>    <span class="at">title =</span> <span class="st">"Plot Title = DIAMONDS ARE FOREVER"</span>,</span>
+<span id="cb4-11"><a aria-label="11"></a>    <span class="at">subtitle =</span> <span class="st">"Plot Subtitle = AND A GIRL'S BEST FRIEND"</span>,</span>
+<span id="cb4-12"><a aria-label="12"></a>    <span class="at">caption =</span> <span class="st">"Plot Caption = From the diamonds dataset"</span>,</span>
+<span id="cb4-13"><a aria-label="13"></a>    <span class="at">x =</span> <span class="st">"x-Axis Title = CARAT"</span>,</span>
+<span id="cb4-14"><a aria-label="14"></a>    <span class="at">y =</span> <span class="st">"y-Axis Title = PRICE"</span></span>
+<span id="cb4-15"><a aria-label="15"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-16"><a aria-label="16"></a>  <span class="co"># Use same name for scales to merge legends</span></span>
+<span id="cb4-17"><a aria-label="17"></a>  <span class="fu">gf_refine</span>(</span>
+<span id="cb4-18"><a aria-label="18"></a>    <span class="fu">scale_color_brewer</span>(</span>
+<span id="cb4-19"><a aria-label="19"></a>      <span class="at">name =</span> <span class="st">"Legend = DIAMOND QUALITY"</span>,</span>
+<span id="cb4-20"><a aria-label="20"></a>      <span class="at">palette =</span> <span class="st">"Set1"</span></span>
+<span id="cb4-21"><a aria-label="21"></a>    ),</span>
+<span id="cb4-22"><a aria-label="22"></a>    <span class="fu">scale_shape_manual</span>(</span>
+<span id="cb4-23"><a aria-label="23"></a>      <span class="at">name =</span> <span class="st">"Legend = DIAMOND QUALITY"</span>,</span>
+<span id="cb4-24"><a aria-label="24"></a>      <span class="at">values =</span> <span class="fu">c</span>(<span class="dv">15</span><span class="sc">:</span><span class="dv">21</span>)</span>
+<span id="cb4-25"><a aria-label="25"></a>    )</span>
+<span id="cb4-26"><a aria-label="26"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-data-facet" class="quarto-float quarto-figure quarto-figure-center">
@@ -791,7 +798,7 @@ Figure&nbsp;6: Data Vis Facets
 </table>
 </section></section>
 <section>
-<section id="conclusion" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusion</h2>
 
 </section>
@@ -826,7 +833,7 @@ Figure&nbsp;7: Data Science Workflow
 <p>Other parts of the Workflow (Transformation, Facetting, Analysis and Modelling) also fall within the grammar, as we shall see.</p>
 </section></section>
 <section>
-<section id="ai-generated-summary-and-podcast" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920656f732d69636f6e73206169203e7d7d-ai-generated-summary-and-podcast" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="eos-icons:ai" aria-label="Icon ai from eos-icons Iconify.design set." title="Icon ai from eos-icons Iconify.design set."></iconify-icon> AI Generated Summary and Podcast</h2>
 
 </section>
@@ -841,7 +848,7 @@ Figure&nbsp;7: Data Science Workflow
 </div>
 </center>
 </section></section>
-<section id="references" class="title-slide slide level2 smaller scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d6c7472203e7d7d-references" class="title-slide slide level2 smaller scrollable">
 <h2><iconify-icon inline="" icon="ooui:references-ltr" aria-label="Icon references-ltr from ooui Iconify.design set." title="Icon references-ltr from ooui Iconify.design set."></iconify-icon> References</h2>
 <ol type="1">
 <li>Claus Wilke. <em>Fundamentals of Data Visualization</em>. <a href="https://clauswilke.com/dataviz/" class="uri">https://clauswilke.com/dataviz/</a></li>
@@ -851,7 +858,7 @@ Figure&nbsp;7: Data Science Workflow
 <li>Jack Dougherty and Ilya Ilyankou. <em>Hands-On Data Visualization</em>. <a href="https://handsondataviz.org/" class="uri">https://handsondataviz.org/</a></li>
 <li>Albert Rapp. <em>Adding images to ggplot</em>. <a href="https://albert-rapp.de/posts/ggplot2-tips/27_images/27_images" class="uri">https://albert-rapp.de/posts/ggplot2-tips/27_images/27_images</a></li>
 </ol>
-<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" data-entry-spacing="0" role="list">
+<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" role="list">
 <p><iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -867,22 +874,22 @@ Figure&nbsp;7: Data Science Workflow
 <tr class="odd">
 <td style="text-align: left;">ggformula</td>
 <td style="text-align: left;">1.0.1</td>
-<td style="text-align: left;"><span class="citation" data-cites="ggformula">Kaplan and Pruim (<a href="#/references" role="doc-biblioref" onclick="">2026</a>)</span></td>
+<td style="text-align: left;"><span class="citation" data-cites="ggformula">Kaplan and Pruim (<a href="#/b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d6c7472203e7d7d-references" role="doc-biblioref" onclick="">2026</a>)</span></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Lock5Data</td>
 <td style="text-align: left;">4.0.1</td>
-<td style="text-align: left;"><span class="citation" data-cites="Lock5Data">Lock (<a href="#/references" role="doc-biblioref" onclick="">2026</a>)</span></td>
+<td style="text-align: left;"><span class="citation" data-cites="Lock5Data">Lock (<a href="#/b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d6c7472203e7d7d-references" role="doc-biblioref" onclick="">2026</a>)</span></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">mosaic</td>
 <td style="text-align: left;">1.10.2</td>
-<td style="text-align: left;"><span class="citation" data-cites="mosaic">Pruim, Kaplan, and Horton (<a href="#/references" role="doc-biblioref" onclick="">2017</a>)</span></td>
+<td style="text-align: left;"><span class="citation" data-cites="mosaic">Pruim et al. (<a href="#/b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d6c7472203e7d7d-references" role="doc-biblioref" onclick="">2017</a>)</span></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">TeachingDemos</td>
 <td style="text-align: left;">2.13</td>
-<td style="text-align: left;"><span class="citation" data-cites="TeachingDemos">Snow (<a href="#/references" role="doc-biblioref" onclick="">2024</a>)</span></td>
+<td style="text-align: left;"><span class="citation" data-cites="TeachingDemos">Snow (<a href="#/b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d6c7472203e7d7d-references" role="doc-biblioref" onclick="">2024</a>)</span></td>
 </tr>
 </tbody>
 </table>
@@ -942,7 +949,6 @@ Snow, Greg. 2024. <em><span>TeachingDemos</span>: Demonstrations for Teaching an
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
 'jumpToSlide': true,
-'view': "scroll",
 'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
 'chalkboard': {"buttons":true},
 'smaller': true,
@@ -1086,6 +1092,13 @@ Snow, Greg. 2024. <em><span>TeachingDemos</span>: Demonstrations for Teaching an
         // devices. It is advisable to set this to a lower number than
         // viewDistance in order to save resources.
         mobileViewDistance: 2,
+
+        // Enable scroll view
+        view: 'scroll',
+        scrollProgress: 'auto',
+        scrollActivationWidth: 0,
+        scrollSnap: 'mandatory',
+        scrollLayout: 'full',
 
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be

@@ -3,7 +3,7 @@ title: <iconify-icon icon="grommet-icons:inspect" width="1.2em" height="1.2em"><
 subtitle:  "Looking at your Data"
 abstract: "Getting used to what your Data tastes like"
 date: 22/Aug/2025
-date-modified: "`r Sys.Date()`"
+date-modified: today
 order: 06
 image: preview.png
 image-alt: Image by rawpixel.com
@@ -19,7 +19,7 @@ categories:
 - Quartiles
 bibliography: 
   - grateful-refs.bib
-citation: true
+# citation: true
 editor: 
   markdown: 
     wrap: 72
@@ -209,9 +209,7 @@ flextable::set_flextable_defaults(font.family = "Roboto Condensed")
 
 We spoke of Experiments and Data Gathering in the first module [Nature of Data](../05-NatureData/index.qmd#sec-where-data). This helped us to **obtain** data.
 
-Our first task is to get acquainted with our data, to check the variables, the size of the dataset, how it is formatted, to eat it, as it were. 
-
-We need to **inspect** the data, to understand what it is telling us. The physical significance of each variable needs to sink in before we can do anything with it. 
+Our first task is to get acquainted with our data, to check the variables, the size of the dataset, how it is formatted, to eat it, as it were. We need to **inspect** the data, to understand what it is telling us. The *physical significance of each variable* needs to sink in before we can do anything with it. 
 
 This is especially important in ***design***, since we may be working in domains that are not within our own range of acqaintance or expertise. It is also an important step in the data analysis process.
 
@@ -226,24 +224,6 @@ All this inspection will lead to:
 
 - ***Data Cleaning, or Munging***
 - A clean dataset, whose variables we understand the meaning of, and which we will explore all the charts at our disposal.
-
-## {{< iconify mdi food-processor-outline >}} How do these Inspections Work?
-
-### Steps in Data Inspection and Cleaning
-Inspection:
-
-- Use `readr::read_csv()` or `readr::read_delim()` to read the data
-- Inspect Variables Names: `base::names()` and `dplyr::glimpse()`
-- Discover Data Dimension/Size: `base::dim()`
-- Structure of the data: `utils::str()` [ Optional, but very useful. ]
-- Look for missing data: `visdat::vis_dat()` and `visdat::vis_miss()`
-
-And Munging: 
-
-- Clean the variable names: `janitor::clean_names()`
-- Clean up missing data: `naniar::replace_with_na_all()`
-- Make factors and rearrange factors to the left of our table using `dplyr::mutate()`, `base::factor()` or `forcats::as_factor()`, followed by `dplyr::relocate()`
-- Make a cool table for our cleaned data with `tinytable::tt()` (static) or `DT::datatable()` (interactive)
 
 
 ## {{< iconify grommet-icons test >}} Case Study: Fast Food
@@ -264,9 +244,9 @@ fastfood <- readr::read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/
 
 The output from `readr::read_csv()` tells us that the data frame contains 515 rows and 18 columns. At this point we can't tell if there are missing values anywhere, or even if there are badly formatted data values anywhere.
 
-## Data Inspection
+### Data Inspection
 
-### {{< iconify ri custom-size >}} The Size of our Dataset
+#### {{< iconify ri custom-size >}} The Size of our Dataset
 
 We already discover from the `read_csv()` output that the dataset has 515 rows and 18 columns. We can also use `dim()` to get this information:
 
@@ -279,7 +259,7 @@ dim(fastfood)
 
 This tells us that the dataset has 515 rows and 18 columns.
 
-### {{< iconify carbon structure >}} Variables Names
+#### {{< iconify carbon structure >}} Variables Names
 
 Again, `read_csv()` tells us that some columns are `character`, some are `double` and some are `integer`. We can use `names()` and `dplyr::glimpse()` to get more information about the variables in the dataset.
 
@@ -291,7 +271,7 @@ base::names(fastfood)
 
 ```
 
-### {{< iconify carbon structure >}} Variable Types
+#### {{< iconify carbon structure >}} Variable Types
 
 ```{r}
 #| label: structure-data-2
@@ -301,27 +281,31 @@ dplyr::glimpse(fastfood)
 
 ```
 
-By and large, the entries look good. There are no cases, immediately, of `character` data lurking in Quant variables and such like. 
+- Several first entries for each variable, along with the **nature of the variable** ( i.e.  `<chr>`, `<int>` and `<dbl>` ). 
+- By and large, the entries look good. 
+- There are no cases, immediately, of `character` data lurking in Quant variables and such like. 
 
-## Data Munging
+### Data Munging
 
 We need to deal with:
 
-- Variable Naming
-- Variable Type conversion
+- Variable Name Cleaning
 - Dealing with Missing Data
-- Locating Variables for Attention!
+- Variable Type conversion
+- Locating Variables appropriately for Attention!
 
-### {{< iconify carbon clean >}} Variable Name Options
+#### {{< iconify carbon clean >}} Variable Name Cleaning
 
-As a part of the process, we should make sure that the **variable names** (not entries!!) are formatted in a "clean" way: there are a few options here, such as `camelCase`, `snake_case`, `kebab-case`, or `dot.case`. We will use the `{{janitor}}` package to do this, and also to make sure that the variable names are unique. AND, we will stick with `snake_case` for the rest of this course. 
+As a part of the process, we should make sure that the **variable names** (not entries!!) are formatted in a "clean" way.
+
+- there are a few options here, such as `camelCase`, `snake_case`, `kebab-case`, or `dot.case`. 
+- We will use the `{{janitor}}` package to do this, and also to make sure that the variable names are unique. 
+- [AND, we will stick with `snake_case` for the rest of this course]{style="background-color: yellow;"}
 
 In this specific case, the variables names look evocative and meaningful enough, without being verbose; they seem just right. But as names in data become complex, with special characters ( `%$#@!*_|?` etc.), this becomes very useful.
 
 We will also not touch the original data, but save the modified data in a new variable called `fast_food_modified`. This is a good practice, as it allows us to keep the original data intact, and also to compare the two if needed.
 
-
-### Name Cleaning
 
 ```{r}
 #| label: clean-fastfood
@@ -335,7 +319,7 @@ fast_food_modified
 
 This cleaning up was not needed here, since the original names were already good. But it is a good practice to do this, as it will save you a lot of headaches later on.
 
-### {{< iconify file-icons influxdata >}} Check for Missing Data
+#### {{< iconify file-icons influxdata >}} Dealing with Missing Data
 
 Let us use the `{{visdat}}` package to visualize this:
 
@@ -354,9 +338,6 @@ visdat::vis_dat(fastfood, sort_type = TRUE, palette = "cb_safe")
 ```
 
 
-
-### What to Do with Missing Data
-
 It is clear that there are quite a few missing values in a few columns: `vit_a`, `vit_c` and `calcium`. Some missing values are also present in `fiber`. So what can one do? 
 
 A. **Remove rows with missing values**:
@@ -367,7 +348,7 @@ B. **Impute missing values**:
 
 For our work here, to learn, we will use method A, and simply drop the cells containing `NA`, whenever we have to. 
 
-### The `{{naniar}}` package
+#### The `{{naniar}}` package
 
 Missing or `NA` values can also, sadly, be encoded by humans using sets of `characters` or even `default numbers`! The `{{naniar}}` package has two built-in lists for common missing value codes:
 
@@ -398,11 +379,13 @@ glimpse(fast_food_modified)
 
 ```
 
-Note that with large datasets, this replacement of strings and numbers with `naniar::replace_with_na_all()` takes a lot of time to execute. 
+[Note that with large datasets, this replacement of strings and numbers with `naniar::replace_with_na_all()` takes a lot of time to execute.]{style="background-color: yellow;"}. There are other ways. 
 
-### {{< iconify streamline dictionary-language-book-solid >}} Data Munging
+### {{< iconify material-symbols-light change-circle-outline-rounded >}} Factorize!
 
-We see that there are certain variables that must be converted to **factors** for analytics purposes, since they are unmistakably **Qualitative** in nature. Let us do that now, for use later:
+We see that there are certain variables that must be converted to **factors** for analytics purposes, since they are unmistakably **Qualitative** in nature. And it usually makes sense to `relocate` Qual variable to the left of your dataset, as the first few variables. 
+
+Let us do that now, for use later:
 
 
 ```{r}
@@ -517,6 +500,23 @@ fast_food_modified %>%
     fontSize = '12px'
   )
 ```
+
+## {{< iconify mdi food-processor-outline >}} Steps in Data Inspection and Cleaning
+
+###### Inspection:
+
+- Use `readr::read_csv()` or `readr::read_delim()` to read the data
+- Inspect Variables Names: `base::names()` and `dplyr::glimpse()`
+- Discover Data Dimension/Size: `base::dim()`
+- Structure of the data: `utils::str()` [ Optional, but very useful. ]
+- Look for missing data: `visdat::vis_dat()` and `visdat::vis_miss()`
+
+###### Munging: 
+
+- Clean the variable names: `janitor::clean_names()`
+- Clean up missing data: `naniar::replace_with_na_all()`
+- Make factors and rearrange factors to the left of our table using `dplyr::mutate()`, `base::factor()` or `forcats::as_factor()`, followed by `dplyr::relocate()`
+- Make a cool table for our cleaned data with `tinytable::tt()` (static) or `DT::datatable()` (interactive)
 
 
 #### {{< iconify bi person-up >}} Your Turn

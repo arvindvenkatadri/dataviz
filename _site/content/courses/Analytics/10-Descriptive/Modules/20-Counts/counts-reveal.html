@@ -7,12 +7,12 @@
 <script src="../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-795e9e8eca1e12b12abcb09a27409631.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-12757e4b7af482b2d9c5bd8860d2b707.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script src="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.8.27">
+  <meta name="generator" content="quarto-1.10.18">
 
   <meta name="dcterms.date" content="2024-06-23">
   <title>The Mad Hatter's Guide to Data Viz and Stats in R –  Counts</title>
@@ -22,10 +22,16 @@
   <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reveal.css">
   <style>
-    code{white-space: pre-wrap;}
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
@@ -101,7 +107,6 @@
     div.csl-bib-body { }
     div.csl-entry {
       clear: both;
-      margin-bottom: 0em;
     }
     .hanging-indent div.csl-entry {
       margin-left:2em;
@@ -118,7 +123,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/theme/quarto-180c62c9bcf69a0506044dd7f3253a18.css">
+  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/theme/quarto-7d27a531335543ee0379719666959585.css">
   <link href="../../../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -219,7 +224,7 @@
 <meta property="og:title" content=" Counts – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:description" content="Bar Charts and their Siblings">
 <meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/10-Descriptive/Modules/20-Counts/preview.jpg">
-<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
+<meta property="og:site_name" content="The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:image:alt" content="Image by rawpixel.com">
 <meta name="twitter:title" content=" Counts – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta name="twitter:description" content="Bar Charts and their Siblings">
@@ -260,153 +265,153 @@
 </div>
 </section>
 <section>
-<section id="setting-up-r-packages" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(tidyverse) <span class="co"># Sine qua non</span></span>
-<span id="cb1-2"><a></a><span class="fu">library</span>(mosaic) <span class="co"># Out all-in-one package</span></span>
-<span id="cb1-3"><a></a><span class="fu">library</span>(ggformula) <span class="co"># Graphing package</span></span>
-<span id="cb1-4"><a></a><span class="fu">library</span>(skimr) <span class="co"># Looking at Data</span></span>
-<span id="cb1-5"><a></a><span class="fu">library</span>(janitor) <span class="co"># Clean the data</span></span>
-<span id="cb1-6"><a></a><span class="fu">library</span>(naniar) <span class="co"># Handle missing data</span></span>
-<span id="cb1-7"><a></a><span class="fu">library</span>(visdat) <span class="co"># Visualise missing data</span></span>
-<span id="cb1-8"><a></a><span class="fu">library</span>(tinytable) <span class="co"># Printing Static Tables for our data</span></span>
-<span id="cb1-9"><a></a><span class="fu">library</span>(DT) <span class="co"># Interactive Tables for our data</span></span>
-<span id="cb1-10"><a></a><span class="fu">library</span>(crosstable) <span class="co"># Multiple variable summaries</span></span>
-<span id="cb1-11"><a></a><span class="fu">library</span>(marquee) <span class="co"># For Annotations with Fonts</span></span>
-<span id="cb1-12"><a></a><span class="fu">library</span>(ggrepel) <span class="co"># Repel overlapping text labels in ggplot2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a aria-label="1"></a><span class="fu">library</span>(tidyverse) <span class="co"># Sine qua non</span></span>
+<span id="cb1-2"><a aria-label="2"></a><span class="fu">library</span>(mosaic) <span class="co"># Out all-in-one package</span></span>
+<span id="cb1-3"><a aria-label="3"></a><span class="fu">library</span>(ggformula) <span class="co"># Graphing package</span></span>
+<span id="cb1-4"><a aria-label="4"></a><span class="fu">library</span>(skimr) <span class="co"># Looking at Data</span></span>
+<span id="cb1-5"><a aria-label="5"></a><span class="fu">library</span>(janitor) <span class="co"># Clean the data</span></span>
+<span id="cb1-6"><a aria-label="6"></a><span class="fu">library</span>(naniar) <span class="co"># Handle missing data</span></span>
+<span id="cb1-7"><a aria-label="7"></a><span class="fu">library</span>(visdat) <span class="co"># Visualise missing data</span></span>
+<span id="cb1-8"><a aria-label="8"></a><span class="fu">library</span>(tinytable) <span class="co"># Printing Static Tables for our data</span></span>
+<span id="cb1-9"><a aria-label="9"></a><span class="fu">library</span>(DT) <span class="co"># Interactive Tables for our data</span></span>
+<span id="cb1-10"><a aria-label="10"></a><span class="fu">library</span>(crosstable) <span class="co"># Multiple variable summaries</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <h4 id="plot-fonts-and-theme">Plot Fonts and Theme</h4>
 <div class="cell" data-messages="false">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">library</span>(systemfonts)</span>
-<span id="cb2-2"><a></a><span class="fu">library</span>(showtext)</span>
-<span id="cb2-3"><a></a><span class="do">## Clean the slate</span></span>
-<span id="cb2-4"><a></a>systemfonts<span class="sc">::</span><span class="fu">clear_local_fonts</span>()</span>
-<span id="cb2-5"><a></a>systemfonts<span class="sc">::</span><span class="fu">clear_registry</span>()</span>
-<span id="cb2-6"><a></a><span class="do">##</span></span>
-<span id="cb2-7"><a></a><span class="fu">showtext_opts</span>(<span class="at">dpi =</span> <span class="dv">96</span>) <span class="co"># set DPI for showtext</span></span>
-<span id="cb2-8"><a></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
-<span id="cb2-9"><a></a>  <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-10"><a></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/Alegreya-Regular.ttf"</span>,</span>
-<span id="cb2-11"><a></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/Alegreya-Bold.ttf"</span>,</span>
-<span id="cb2-12"><a></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/Alegreya-Italic.ttf"</span>,</span>
-<span id="cb2-13"><a></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/Alegreya-BoldItalic.ttf"</span></span>
-<span id="cb2-14"><a></a>)</span>
-<span id="cb2-15"><a></a></span>
-<span id="cb2-16"><a></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
-<span id="cb2-17"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-18"><a></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Regular.ttf"</span>,</span>
-<span id="cb2-19"><a></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Bold.ttf"</span>,</span>
-<span id="cb2-20"><a></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Italic.ttf"</span>,</span>
-<span id="cb2-21"><a></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-BoldItalic.ttf"</span></span>
-<span id="cb2-22"><a></a>)</span>
-<span id="cb2-23"><a></a><span class="fu">showtext_auto</span>(<span class="at">enable =</span> <span class="cn">TRUE</span>) <span class="co"># enable showtext</span></span>
-<span id="cb2-24"><a></a><span class="do">##</span></span>
-<span id="cb2-25"><a></a>theme_custom <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb2-26"><a></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">10</span>) <span class="sc">+</span></span>
-<span id="cb2-27"><a></a></span>
-<span id="cb2-28"><a></a>    <span class="co"># theme(panel.widths = unit(11, "cm"),</span></span>
-<span id="cb2-29"><a></a>    <span class="co">#       panel.heights = unit(6.79, "cm")) + # Golden Ratio</span></span>
-<span id="cb2-30"><a></a></span>
-<span id="cb2-31"><a></a>    <span class="fu">theme</span>(</span>
-<span id="cb2-32"><a></a>      <span class="at">plot.margin =</span> <span class="fu">margin_auto</span>(<span class="at">t =</span> <span class="dv">1</span>, <span class="at">r =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="dv">1</span>, <span class="at">l =</span> <span class="dv">1</span>, <span class="at">unit =</span> <span class="st">"cm"</span>),</span>
-<span id="cb2-33"><a></a>      <span class="at">plot.background =</span> <span class="fu">element_rect</span>(</span>
-<span id="cb2-34"><a></a>        <span class="at">fill =</span> <span class="st">"bisque"</span>,</span>
-<span id="cb2-35"><a></a>        <span class="at">colour =</span> <span class="st">"black"</span>,</span>
-<span id="cb2-36"><a></a>        <span class="at">linewidth =</span> <span class="dv">1</span></span>
-<span id="cb2-37"><a></a>      )</span>
-<span id="cb2-38"><a></a>    ) <span class="sc">+</span></span>
-<span id="cb2-39"><a></a></span>
-<span id="cb2-40"><a></a>    <span class="fu">theme_sub_axis</span>(</span>
-<span id="cb2-41"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-42"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-43"><a></a>        <span class="at">size =</span> <span class="dv">10</span></span>
-<span id="cb2-44"><a></a>      ),</span>
-<span id="cb2-45"><a></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-46"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-47"><a></a>        <span class="at">size =</span> <span class="dv">8</span></span>
-<span id="cb2-48"><a></a>      )</span>
-<span id="cb2-49"><a></a>    ) <span class="sc">+</span></span>
-<span id="cb2-50"><a></a></span>
-<span id="cb2-51"><a></a>    <span class="fu">theme_sub_legend</span>(</span>
-<span id="cb2-52"><a></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-53"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-54"><a></a>        <span class="at">size =</span> <span class="dv">6</span></span>
-<span id="cb2-55"><a></a>      ),</span>
-<span id="cb2-56"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-57"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-58"><a></a>        <span class="at">size =</span> <span class="dv">8</span></span>
-<span id="cb2-59"><a></a>      )</span>
-<span id="cb2-60"><a></a>    ) <span class="sc">+</span></span>
-<span id="cb2-61"><a></a></span>
-<span id="cb2-62"><a></a>    <span class="fu">theme_sub_plot</span>(</span>
-<span id="cb2-63"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-64"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-65"><a></a>        <span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span></span>
-<span id="cb2-66"><a></a>      ),</span>
-<span id="cb2-67"><a></a>      <span class="at">title.position =</span> <span class="st">"plot"</span>,</span>
-<span id="cb2-68"><a></a>      <span class="at">subtitle =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-69"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-70"><a></a>        <span class="at">size =</span> <span class="dv">10</span></span>
-<span id="cb2-71"><a></a>      ),</span>
-<span id="cb2-72"><a></a>      <span class="at">caption =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-73"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-74"><a></a>        <span class="at">size =</span> <span class="dv">6</span></span>
-<span id="cb2-75"><a></a>      ),</span>
-<span id="cb2-76"><a></a>      <span class="at">caption.position =</span> <span class="st">"plot"</span></span>
-<span id="cb2-77"><a></a>    )</span>
-<span id="cb2-78"><a></a>}</span>
-<span id="cb2-79"><a></a></span>
-<span id="cb2-80"><a></a><span class="do">## Use available fonts in ggplot text geoms too!</span></span>
-<span id="cb2-81"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-82"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-83"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-84"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-85"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-86"><a></a>))</span>
-<span id="cb2-87"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-88"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-89"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-90"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-91"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-92"><a></a>))</span>
-<span id="cb2-93"><a></a></span>
-<span id="cb2-94"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"marquee"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-95"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-96"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-97"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-98"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-99"><a></a>))</span>
-<span id="cb2-100"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-101"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-102"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-103"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-104"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-105"><a></a>))</span>
-<span id="cb2-106"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-107"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-108"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-109"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-110"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-111"><a></a>))</span>
-<span id="cb2-112"><a></a></span>
-<span id="cb2-113"><a></a><span class="do">## Set the theme</span></span>
-<span id="cb2-114"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb2-115"><a></a></span>
-<span id="cb2-116"><a></a><span class="do">## tinytable options</span></span>
-<span id="cb2-117"><a></a><span class="fu">options</span>(<span class="st">"tinytable_tt_digits"</span> <span class="ot">=</span> <span class="dv">2</span>)</span>
-<span id="cb2-118"><a></a><span class="fu">options</span>(<span class="st">"tinytable_format_num_fmt"</span> <span class="ot">=</span> <span class="st">"significant_cell"</span>)</span>
-<span id="cb2-119"><a></a><span class="fu">options</span>(<span class="at">tinytable_html_mathjax =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-120"><a></a></span>
-<span id="cb2-121"><a></a></span>
-<span id="cb2-122"><a></a><span class="do">## Set defaults for flextable</span></span>
-<span id="cb2-123"><a></a>flextable<span class="sc">::</span><span class="fu">set_flextable_defaults</span>(<span class="at">font.family =</span> <span class="st">"Roboto Condensed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a aria-label="1"></a><span class="fu">library</span>(systemfonts)</span>
+<span id="cb2-2"><a aria-label="2"></a><span class="fu">library</span>(showtext)</span>
+<span id="cb2-3"><a aria-label="3"></a><span class="fu">library</span>(marquee) <span class="co"># For Annotations with Fonts</span></span>
+<span id="cb2-4"><a aria-label="4"></a><span class="fu">library</span>(ggrepel) <span class="co"># Repel overlapping text labels in ggplot2</span></span>
+<span id="cb2-5"><a aria-label="5"></a><span class="do">## Clean the slate</span></span>
+<span id="cb2-6"><a aria-label="6"></a>systemfonts<span class="sc">::</span><span class="fu">clear_local_fonts</span>()</span>
+<span id="cb2-7"><a aria-label="7"></a>systemfonts<span class="sc">::</span><span class="fu">clear_registry</span>()</span>
+<span id="cb2-8"><a aria-label="8"></a><span class="do">##</span></span>
+<span id="cb2-9"><a aria-label="9"></a><span class="fu">showtext_opts</span>(<span class="at">dpi =</span> <span class="dv">96</span>) <span class="co"># set DPI for showtext</span></span>
+<span id="cb2-10"><a aria-label="10"></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
+<span id="cb2-11"><a aria-label="11"></a>  <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-12"><a aria-label="12"></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/Alegreya-Regular.ttf"</span>,</span>
+<span id="cb2-13"><a aria-label="13"></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/Alegreya-Bold.ttf"</span>,</span>
+<span id="cb2-14"><a aria-label="14"></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/Alegreya-Italic.ttf"</span>,</span>
+<span id="cb2-15"><a aria-label="15"></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/Alegreya-BoldItalic.ttf"</span></span>
+<span id="cb2-16"><a aria-label="16"></a>)</span>
+<span id="cb2-17"><a aria-label="17"></a></span>
+<span id="cb2-18"><a aria-label="18"></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
+<span id="cb2-19"><a aria-label="19"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-20"><a aria-label="20"></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Regular.ttf"</span>,</span>
+<span id="cb2-21"><a aria-label="21"></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Bold.ttf"</span>,</span>
+<span id="cb2-22"><a aria-label="22"></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Italic.ttf"</span>,</span>
+<span id="cb2-23"><a aria-label="23"></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-BoldItalic.ttf"</span></span>
+<span id="cb2-24"><a aria-label="24"></a>)</span>
+<span id="cb2-25"><a aria-label="25"></a><span class="fu">showtext_auto</span>(<span class="at">enable =</span> <span class="cn">TRUE</span>) <span class="co"># enable showtext</span></span>
+<span id="cb2-26"><a aria-label="26"></a><span class="do">##</span></span>
+<span id="cb2-27"><a aria-label="27"></a>theme_custom <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb2-28"><a aria-label="28"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">10</span>) <span class="sc">+</span></span>
+<span id="cb2-29"><a aria-label="29"></a></span>
+<span id="cb2-30"><a aria-label="30"></a>    <span class="co"># theme(panel.widths = unit(11, "cm"),</span></span>
+<span id="cb2-31"><a aria-label="31"></a>    <span class="co">#       panel.heights = unit(6.79, "cm")) + # Golden Ratio</span></span>
+<span id="cb2-32"><a aria-label="32"></a></span>
+<span id="cb2-33"><a aria-label="33"></a>    <span class="fu">theme</span>(</span>
+<span id="cb2-34"><a aria-label="34"></a>      <span class="at">plot.margin =</span> <span class="fu">margin_auto</span>(<span class="at">t =</span> <span class="dv">1</span>, <span class="at">r =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="dv">1</span>, <span class="at">l =</span> <span class="dv">1</span>, <span class="at">unit =</span> <span class="st">"cm"</span>),</span>
+<span id="cb2-35"><a aria-label="35"></a>      <span class="at">plot.background =</span> <span class="fu">element_rect</span>(</span>
+<span id="cb2-36"><a aria-label="36"></a>        <span class="at">fill =</span> <span class="st">"bisque"</span>,</span>
+<span id="cb2-37"><a aria-label="37"></a>        <span class="at">colour =</span> <span class="st">"black"</span>,</span>
+<span id="cb2-38"><a aria-label="38"></a>        <span class="at">linewidth =</span> <span class="dv">1</span></span>
+<span id="cb2-39"><a aria-label="39"></a>      )</span>
+<span id="cb2-40"><a aria-label="40"></a>    ) <span class="sc">+</span></span>
+<span id="cb2-41"><a aria-label="41"></a></span>
+<span id="cb2-42"><a aria-label="42"></a>    <span class="fu">theme_sub_axis</span>(</span>
+<span id="cb2-43"><a aria-label="43"></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-44"><a aria-label="44"></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-45"><a aria-label="45"></a>        <span class="at">size =</span> <span class="dv">10</span></span>
+<span id="cb2-46"><a aria-label="46"></a>      ),</span>
+<span id="cb2-47"><a aria-label="47"></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-48"><a aria-label="48"></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-49"><a aria-label="49"></a>        <span class="at">size =</span> <span class="dv">8</span></span>
+<span id="cb2-50"><a aria-label="50"></a>      )</span>
+<span id="cb2-51"><a aria-label="51"></a>    ) <span class="sc">+</span></span>
+<span id="cb2-52"><a aria-label="52"></a></span>
+<span id="cb2-53"><a aria-label="53"></a>    <span class="fu">theme_sub_legend</span>(</span>
+<span id="cb2-54"><a aria-label="54"></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-55"><a aria-label="55"></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-56"><a aria-label="56"></a>        <span class="at">size =</span> <span class="dv">6</span></span>
+<span id="cb2-57"><a aria-label="57"></a>      ),</span>
+<span id="cb2-58"><a aria-label="58"></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-59"><a aria-label="59"></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-60"><a aria-label="60"></a>        <span class="at">size =</span> <span class="dv">8</span></span>
+<span id="cb2-61"><a aria-label="61"></a>      )</span>
+<span id="cb2-62"><a aria-label="62"></a>    ) <span class="sc">+</span></span>
+<span id="cb2-63"><a aria-label="63"></a></span>
+<span id="cb2-64"><a aria-label="64"></a>    <span class="fu">theme_sub_plot</span>(</span>
+<span id="cb2-65"><a aria-label="65"></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-66"><a aria-label="66"></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-67"><a aria-label="67"></a>        <span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span></span>
+<span id="cb2-68"><a aria-label="68"></a>      ),</span>
+<span id="cb2-69"><a aria-label="69"></a>      <span class="at">title.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb2-70"><a aria-label="70"></a>      <span class="at">subtitle =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-71"><a aria-label="71"></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-72"><a aria-label="72"></a>        <span class="at">size =</span> <span class="dv">10</span></span>
+<span id="cb2-73"><a aria-label="73"></a>      ),</span>
+<span id="cb2-74"><a aria-label="74"></a>      <span class="at">caption =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-75"><a aria-label="75"></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-76"><a aria-label="76"></a>        <span class="at">size =</span> <span class="dv">6</span></span>
+<span id="cb2-77"><a aria-label="77"></a>      ),</span>
+<span id="cb2-78"><a aria-label="78"></a>      <span class="at">caption.position =</span> <span class="st">"plot"</span></span>
+<span id="cb2-79"><a aria-label="79"></a>    )</span>
+<span id="cb2-80"><a aria-label="80"></a>}</span>
+<span id="cb2-81"><a aria-label="81"></a></span>
+<span id="cb2-82"><a aria-label="82"></a><span class="do">## Use available fonts in ggplot text geoms too!</span></span>
+<span id="cb2-83"><a aria-label="83"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-84"><a aria-label="84"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-85"><a aria-label="85"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-86"><a aria-label="86"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-87"><a aria-label="87"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-88"><a aria-label="88"></a>))</span>
+<span id="cb2-89"><a aria-label="89"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-90"><a aria-label="90"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-91"><a aria-label="91"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-92"><a aria-label="92"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-93"><a aria-label="93"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-94"><a aria-label="94"></a>))</span>
+<span id="cb2-95"><a aria-label="95"></a></span>
+<span id="cb2-96"><a aria-label="96"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"marquee"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-97"><a aria-label="97"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-98"><a aria-label="98"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-99"><a aria-label="99"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-100"><a aria-label="100"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-101"><a aria-label="101"></a>))</span>
+<span id="cb2-102"><a aria-label="102"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-103"><a aria-label="103"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-104"><a aria-label="104"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-105"><a aria-label="105"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-106"><a aria-label="106"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-107"><a aria-label="107"></a>))</span>
+<span id="cb2-108"><a aria-label="108"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-109"><a aria-label="109"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-110"><a aria-label="110"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-111"><a aria-label="111"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-112"><a aria-label="112"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-113"><a aria-label="113"></a>))</span>
+<span id="cb2-114"><a aria-label="114"></a></span>
+<span id="cb2-115"><a aria-label="115"></a><span class="do">## Set the theme</span></span>
+<span id="cb2-116"><a aria-label="116"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb2-117"><a aria-label="117"></a></span>
+<span id="cb2-118"><a aria-label="118"></a><span class="do">## tinytable options</span></span>
+<span id="cb2-119"><a aria-label="119"></a><span class="fu">options</span>(<span class="st">"tinytable_tt_digits"</span> <span class="ot">=</span> <span class="dv">2</span>)</span>
+<span id="cb2-120"><a aria-label="120"></a><span class="fu">options</span>(<span class="st">"tinytable_format_num_fmt"</span> <span class="ot">=</span> <span class="st">"significant_cell"</span>)</span>
+<span id="cb2-121"><a aria-label="121"></a><span class="fu">options</span>(<span class="at">tinytable_html_mathjax =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-122"><a aria-label="122"></a></span>
+<span id="cb2-123"><a aria-label="123"></a></span>
+<span id="cb2-124"><a aria-label="124"></a><span class="do">## Set defaults for flextable</span></span>
+<span id="cb2-125"><a aria-label="125"></a>flextable<span class="sc">::</span><span class="fu">set_flextable_defaults</span>(<span class="at">font.family =</span> <span class="st">"Roboto Condensed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<section id="what-graphs-will-we-see-today" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206678656d6f6a69206a6170616e65736573796d626f6c666f72626567696e6e6572203e7d7d-what-graphs-will-we-see-today" class="slide level3">
 <h3><iconify-icon inline="" icon="fxemoji:japanesesymbolforbeginner" aria-label="Icon japanesesymbolforbeginner from fxemoji Iconify.design set." title="Icon japanesesymbolforbeginner from fxemoji Iconify.design set."></iconify-icon> What graphs will we see today?</h3>
 <table class="caption-top" style="width:100%;">
 <colgroup>
@@ -436,15 +441,13 @@
 </tbody>
 </table>
 </section>
-<section id="what-kind-of-data-variables-will-we-choose" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679207461626c6572207661726961626c65203e7d7d-what-kind-of-data-variables-will-we-choose" class="slide level3">
 <h3><iconify-icon inline="" icon="tabler:variable" aria-label="Icon variable from tabler Iconify.design set." title="Icon variable from tabler Iconify.design set."></iconify-icon> What kind of Data Variables will we choose?</h3>
 <div class="column-page-inset-right">
 <div class="cell">
 <div class="cell-output-display">
-<!-- preamble start -->
-
-    <!-- tinytable mathjax start -->
-    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- tinytable mathjax start -->
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script>
     MathJax = {
       tex: {
@@ -461,19 +464,19 @@
 
     <script>
       // Create table-specific functions using external factory
-      const tableFns_yin941mri09une1prvly = TinyTable.createTableFunctions("tinytable_yin941mri09une1prvly");
+      const tableFns_5jra9tx1cvajs32jssx8 = TinyTable.createTableFunctions("tinytable_5jra9tx1cvajs32jssx8");
       // tinytable span after
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '1', j: 1 }, { i: '1', j: 2 }, { i: '1', j: 3 }, { i: '1', j: 4 }, { i: '1', j: 5 }, { i: '1', j: 6 } ], css_id: 'tinytable_css_rkta19g9x05jn02ib4e5',}, 
-          { positions: [ { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 } ], css_id: 'tinytable_css_t6vzo2b1jphsgas614ie',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '1', j: 2 }, { i: '1', j: 3 }, { i: '1', j: 4 }, { i: '1', j: 5 }, { i: '1', j: 6 } ], css_id: 'tinytable_css_itd65gwf09blwp9qbl2e',}, 
+          { positions: [ { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 } ], css_id: 'tinytable_css_whqbduqp9sst7gl9i9jv',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  tableFns_yin941mri09une1prvly.styleCell(cell.i, cell.j, group.css_id);
+                  tableFns_5jra9tx1cvajs32jssx8.styleCell(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -482,11 +485,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.css">
     <style>
     /* tinytable css entries after */
-    #tinytable_yin941mri09une1prvly td.tinytable_css_rkta19g9x05jn02ib4e5, #tinytable_yin941mri09une1prvly th.tinytable_css_rkta19g9x05jn02ib4e5 {  position: relative; --border-bottom: 1; --border-left: 1; --border-right: 1; --border-top: 1; --line-color-bottom: white; --line-color-left: white; --line-color-right: white; --line-color-top: white; --line-width-bottom: 0.4em; --line-width-left: 0.4em; --line-width-right: 0.4em; --line-width-top: 0.4em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; font-size: 0.75em; color: black; background-color: #ededed }
-    #tinytable_yin941mri09une1prvly td.tinytable_css_t6vzo2b1jphsgas614ie, #tinytable_yin941mri09une1prvly th.tinytable_css_t6vzo2b1jphsgas614ie {  position: relative; --border-bottom: 1; --border-left: 1; --border-right: 1; --border-top: 1; --line-color-bottom: white; --line-color-left: white; --line-color-right: white; --line-color-top: white; --line-width-bottom: 0.4em; --line-width-left: 0.4em; --line-width-right: 0.4em; --line-width-top: 0.4em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; font-size: 0.75em; color: black }
+    #tinytable_5jra9tx1cvajs32jssx8 td.tinytable_css_itd65gwf09blwp9qbl2e, #tinytable_5jra9tx1cvajs32jssx8 th.tinytable_css_itd65gwf09blwp9qbl2e {  position: relative; --border-bottom: 1; --border-left: 1; --border-right: 1; --border-top: 1; --line-color-bottom: white; --line-color-left: white; --line-color-right: white; --line-color-top: white; --line-width-bottom: 0.4em; --line-width-left: 0.4em; --line-width-right: 0.4em; --line-width-top: 0.4em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; font-size: 0.75em; color: black; background-color: #ededed }
+    #tinytable_5jra9tx1cvajs32jssx8 td.tinytable_css_whqbduqp9sst7gl9i9jv, #tinytable_5jra9tx1cvajs32jssx8 th.tinytable_css_whqbduqp9sst7gl9i9jv {  position: relative; --border-bottom: 1; --border-left: 1; --border-right: 1; --border-top: 1; --line-color-bottom: white; --line-color-left: white; --line-color-right: white; --line-color-top: white; --line-width-bottom: 0.4em; --line-width-left: 0.4em; --line-width-right: 0.4em; --line-width-top: 0.4em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; font-size: 0.75em; color: black }
     </style>
     <div class="container">
-      <table class="tinytable" id="tinytable_yin941mri09une1prvly" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="tinytable" id="tinytable_5jra9tx1cvajs32jssx8" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         
         <thead>
               <tr>
@@ -516,7 +519,7 @@
 </div>
 </div>
 </section>
-<section id="inspiration-column-chart" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069636f6e73382069646561203e7d7d-inspiration-column-chart" class="slide level3">
 <h3><iconify-icon inline="" icon="icons8:idea" aria-label="Icon idea from icons8 Iconify.design set." title="Icon idea from icons8 Iconify.design set."></iconify-icon> Inspiration: Column Chart</h3>
 <div id="fig-column-chart-inspiration" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig">
@@ -531,7 +534,7 @@ Figure&nbsp;1: Capital Cities
 <p>How much does the (financial) capital of a country contribute to its GDP? Which would be India’s city? What would be the reduction in percentage? <a href="https://www.youtube.com/watch?v=KfnnvifnpDU">And these Germans are crazy. (Toc, toc, toc, toc!)</a></p>
 <p>Note how the axis variable that defines the bar <code>locations</code> is a …Qual variable!</p>
 </section>
-<section id="ggformula-and-mosaic-api" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206875676569636f6e7320617069203e7d7d-ggformula-and-mosaic-api" class="slide level3">
 <h3><iconify-icon inline="" icon="hugeicons:api" aria-label="Icon api from hugeicons Iconify.design set." title="Icon api from hugeicons Iconify.design set."></iconify-icon> ggformula and mosaic API</h3>
 <ul>
 <li>Recall the <em>API</em>: the programming interface to each of <code>mosaic</code>, <code>ggformula</code>, and <code>ggplot</code>.</li>
@@ -553,7 +556,7 @@ Figure&nbsp;1: Capital Cities
 </div>
 </div>
 </section>
-<section id="ggplot-api" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206875676569636f6e7320617069203e7d7d-ggplot-api" class="slide level3">
 <h3><iconify-icon inline="" icon="hugeicons:api" aria-label="Icon api from hugeicons Iconify.design set." title="Icon api from hugeicons Iconify.design set."></iconify-icon> ggplot API</h3>
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
@@ -577,7 +580,7 @@ Figure&nbsp;1: Capital Cities
 </div>
 </section></section>
 <section>
-<section id="bar-charts-and-histograms" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792069636f6e2d7061726b2d6f75746c696e652063686172742d686973746f6772616d203e7d7d-bar-charts-and-histograms" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="icon-park-outline:chart-histogram" aria-label="Icon chart-histogram from icon-park-outline Iconify.design set." title="Icon chart-histogram from icon-park-outline Iconify.design set."></iconify-icon> Bar Charts and Histograms</h2>
 
 </section>
@@ -594,7 +597,7 @@ Figure&nbsp;1: Capital Cities
 <li>While column charts <em>must</em> show spaces to separate each <em>category</em>.</li>
 </ul>
 </section>
-<section id="how-do-bar-charts-work" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d646920666f6f642d70726f636573736f722d6f75746c696e65203e7d7d-how-do-bar-charts-work" class="slide level3">
 <h3><iconify-icon inline="" icon="mdi:food-processor-outline" aria-label="Icon food-processor-outline from mdi Iconify.design set." title="Icon food-processor-outline from mdi Iconify.design set."></iconify-icon> How do Bar Chart(s) Work?</h3>
 <ul>
 <li>Bar are used to show “counts” and “tallies” with respect to Qual variables: they answer the question <code>How Many?</code>.</li>
@@ -608,25 +611,25 @@ Figure&nbsp;1: Capital Cities
 </ul>
 </section></section>
 <section>
-<section id="case-study-1-chicago-taxi-rides-dataset" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792067726f6d6d65742d69636f6e732074657374203e7d7d-case-study-1-chicago-taxi-rides-dataset" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="grommet-icons:test" aria-label="Icon test from grommet-icons Iconify.design set." title="Icon test from grommet-icons Iconify.design set."></iconify-icon> Case Study-1: Chicago Taxi Rides dataset</h2>
 
 </section>
-<section id="read-data" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c6120722d70726f6a656374203e7d7d-read-data" class="slide level3">
 <h3><iconify-icon inline="" icon="la:r-project" aria-label="Icon r-project from la Iconify.design set." title="Icon r-project from la Iconify.design set."></iconify-icon> Read Data</h3>
 <p>We will first look at at a dataset that speaks about taxi rides in Chicago in the year 2022. This is available on <a href="https://vincentarelbundock.github.io/Rdatasets/articles/data.html">Vincent Arel-Bundock’s superb repository of datasets</a>. Let us read into R <em>directly from the website</em>.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>taxi <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://vincentarelbundock.github.io/Rdatasets/csv/modeldata/taxi.csv"</span>)</span>
-<span id="cb3-2"><a></a></span>
-<span id="cb3-3"><a></a>taxi_modified <span class="ot">&lt;-</span> taxi <span class="sc">%&gt;%</span></span>
-<span id="cb3-4"><a></a>  naniar<span class="sc">::</span><span class="fu">replace_with_na_all</span>(<span class="at">condition =</span> <span class="sc">~</span> .x <span class="sc">%in%</span> common_na_strings) <span class="sc">%&gt;%</span></span>
-<span id="cb3-5"><a></a>  naniar<span class="sc">::</span><span class="fu">replace_with_na_all</span>(<span class="at">condition =</span> <span class="sc">~</span> .x <span class="sc">%in%</span> common_na_numbers) <span class="sc">%&gt;%</span></span>
-<span id="cb3-6"><a></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>(<span class="at">case =</span> <span class="st">"snake"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb3-7"><a></a>  janitor<span class="sc">::</span><span class="fu">remove_empty</span>()</span>
-<span id="cb3-8"><a></a></span>
-<span id="cb3-9"><a></a>taxi_modified</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a aria-label="1"></a>taxi <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://vincentarelbundock.github.io/Rdatasets/csv/modeldata/taxi.csv"</span>)</span>
+<span id="cb3-2"><a aria-label="2"></a></span>
+<span id="cb3-3"><a aria-label="3"></a>taxi_modified <span class="ot">&lt;-</span> taxi <span class="sc">%&gt;%</span></span>
+<span id="cb3-4"><a aria-label="4"></a>  naniar<span class="sc">::</span><span class="fu">replace_with_na_all</span>(<span class="at">condition =</span> <span class="sc">~</span> .x <span class="sc">%in%</span> common_na_strings) <span class="sc">%&gt;%</span></span>
+<span id="cb3-5"><a aria-label="5"></a>  naniar<span class="sc">::</span><span class="fu">replace_with_na_all</span>(<span class="at">condition =</span> <span class="sc">~</span> .x <span class="sc">%in%</span> common_na_numbers) <span class="sc">%&gt;%</span></span>
+<span id="cb3-6"><a aria-label="6"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>(<span class="at">case =</span> <span class="st">"snake"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-7"><a aria-label="7"></a>  janitor<span class="sc">::</span><span class="fu">remove_empty</span>()</span>
+<span id="cb3-8"><a aria-label="8"></a></span>
+<span id="cb3-9"><a aria-label="9"></a>taxi_modified</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div data-pagedtable="false">
@@ -637,16 +640,16 @@ Figure&nbsp;1: Capital Cities
 </div>
 </div>
 <p>The data has automatically been read into the <code>webr</code> session, so you can continue on to the next code chunk!</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1"><a></a>#| context: setup</span>
-<span id="cb4-2"><a></a>taxi &lt;- read.csv("https://vincentarelbundock.github.io/Rdatasets/csv/modeldata/taxi.csv") </span>
-<span id="cb4-3"><a></a></span>
-<span id="cb4-4"><a></a>taxi_modified &lt;- taxi %&gt;% </span>
-<span id="cb4-5"><a></a>  naniar::replace_with_na_all(condition = ~.x %in% common_na_strings) %&gt;%</span>
-<span id="cb4-6"><a></a>  naniar::replace_with_na_all(condition = ~.x %in% common_na_numbers) %&gt;%</span>
-<span id="cb4-7"><a></a>  janitor::clean_names(case = "snake") %&gt;% </span>
-<span id="cb4-8"><a></a>  janitor::remove_empty()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource {webr-r} number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1"><a aria-label="1"></a>#| context: setup</span>
+<span id="cb4-2"><a aria-label="2"></a>taxi &lt;- read.csv("https://vincentarelbundock.github.io/Rdatasets/csv/modeldata/taxi.csv") </span>
+<span id="cb4-3"><a aria-label="3"></a></span>
+<span id="cb4-4"><a aria-label="4"></a>taxi_modified &lt;- taxi %&gt;% </span>
+<span id="cb4-5"><a aria-label="5"></a>  naniar::replace_with_na_all(condition = ~.x %in% common_na_strings) %&gt;%</span>
+<span id="cb4-6"><a aria-label="6"></a>  naniar::replace_with_na_all(condition = ~.x %in% common_na_numbers) %&gt;%</span>
+<span id="cb4-7"><a aria-label="7"></a>  janitor::clean_names(case = "snake") %&gt;% </span>
+<span id="cb4-8"><a aria-label="8"></a>  janitor::remove_empty()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="examine-the-data" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792066696c652d69636f6e7320696e666c757864617461203e7d7d-examine-the-data" class="slide level3">
 <h3><iconify-icon inline="" icon="file-icons:influxdata" aria-label="Icon influxdata from file-icons Iconify.design set." title="Icon influxdata from file-icons Iconify.design set."></iconify-icon> Examine the Data</h3>
 <p>As per our Workflow, we will look at the data using all the three methods we have seen.</p>
 <div class="panel-tabset nav-pills" style="background: whitesmoke; ">
@@ -654,7 +657,7 @@ Figure&nbsp;1: Capital Cities
 <div class="tab-content nav-pills" style="background: whitesmoke; ">
 <div id="tabset-1-1">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>dplyr<span class="sc">::</span><span class="fu">glimpse</span>(taxi)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a aria-label="1"></a>dplyr<span class="sc">::</span><span class="fu">glimpse</span>(taxi)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 10,000
 Columns: 8
@@ -671,7 +674,7 @@ $ hour     &lt;dbl&gt; 16, 8, 18, 8, 21, 23, 12, 6, 12, 14, 18, 11, 12, 19, 17, 
 </div>
 <div id="tabset-1-2">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>skimr<span class="sc">::</span><span class="fu">skim</span>(taxi_modified) <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a aria-label="1"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(taxi_modified) <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -683,8 +686,8 @@ $ hour     &lt;dbl&gt; 16, 8, 18, 8, 21, 23, 12, 6, 12, 14, 18, 11, 12, 19, 17, 
 </div>
 <div id="tabset-1-3">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>taxi_inspect <span class="ot">&lt;-</span> mosaic<span class="sc">::</span><span class="fu">inspect</span>(taxi_modified)</span>
-<span id="cb8-2"><a></a>taxi_inspect<span class="sc">$</span>categorical</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a aria-label="1"></a>taxi_inspect <span class="ot">&lt;-</span> mosaic<span class="sc">::</span><span class="fu">inspect</span>(taxi_modified)</span>
+<span id="cb8-2"><a aria-label="2"></a>taxi_inspect<span class="sc">$</span>categorical</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -692,7 +695,7 @@ $ hour     &lt;dbl&gt; 16, 8, 18, 8, 21, 23, 12, 6, 12, 14, 18, 11, 12, 19, 17, 
   </script>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>taxi_inspect<span class="sc">$</span>quantitative</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a aria-label="1"></a>taxi_inspect<span class="sc">$</span>quantitative</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -705,7 +708,7 @@ $ hour     &lt;dbl&gt; 16, 8, 18, 8, 21, 23, 12, 6, 12, 14, 18, 11, 12, 19, 17, 
 </div>
 </div>
 </section>
-<section id="data-dictionary" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e652064696374696f6e6172792d6c616e67756167652d626f6f6b2d736f6c6964203e7d7d-data-dictionary" class="slide level3">
 <h3><iconify-icon inline="" icon="streamline:dictionary-language-book-solid" aria-label="Icon dictionary-language-book-solid from streamline Iconify.design set." title="Icon dictionary-language-book-solid from streamline Iconify.design set."></iconify-icon> Data Dictionary</h3>
 <div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
@@ -753,55 +756,55 @@ $ hour     &lt;dbl&gt; 16, 8, 18, 8, 21, 23, 12, 6, 12, 14, 18, 11, 12, 19, 17, 
 <li>There are no missing values for any variable, all are complete with 10K entries.</li>
 </ul>
 </section>
-<section id="data-munging" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e20636c65616e203e7d7d-data-munging" class="slide level3">
 <h3><iconify-icon inline="" icon="carbon:clean" aria-label="Icon clean from carbon Iconify.design set." title="Icon clean from carbon Iconify.design set."></iconify-icon> Data Munging</h3>
 <p>We will convert the <code>tip</code>, <code>company</code>, <code>dow</code>, <code>local</code>, <code>hour</code>, and <code>month</code> variables into factors beforehand.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="do">## Convert `dow`, `local`, `month`, and `hour` into ordered factors</span></span>
-<span id="cb10-2"><a></a>taxi_modified <span class="ot">&lt;-</span> taxi_modified <span class="sc">%&gt;%</span></span>
-<span id="cb10-3"><a></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
-<span id="cb10-4"><a></a>    <span class="do">## Variable "tip"</span></span>
-<span id="cb10-5"><a></a>    <span class="at">tip =</span> base<span class="sc">::</span><span class="fu">factor</span>(tip,</span>
-<span id="cb10-6"><a></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"yes"</span>, <span class="st">"no"</span>),</span>
-<span id="cb10-7"><a></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"yes"</span>, <span class="st">"no"</span>),</span>
-<span id="cb10-8"><a></a>      <span class="at">ordered =</span> <span class="cn">TRUE</span></span>
-<span id="cb10-9"><a></a>    ),</span>
-<span id="cb10-10"><a></a></span>
-<span id="cb10-11"><a></a>    <span class="do">## Variable "company"</span></span>
-<span id="cb10-12"><a></a>    <span class="at">company =</span> base<span class="sc">::</span><span class="fu">factor</span>(company), <span class="co"># Any order is OK.</span></span>
-<span id="cb10-13"><a></a></span>
-<span id="cb10-14"><a></a>    <span class="do">## Variable "dow"</span></span>
-<span id="cb10-15"><a></a>    <span class="at">dow =</span> base<span class="sc">::</span><span class="fu">factor</span>(dow,</span>
-<span id="cb10-16"><a></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Mon"</span>, <span class="st">"Tue"</span>, <span class="st">"Wed"</span>, <span class="st">"Thu"</span>, <span class="st">"Fri"</span>, <span class="st">"Sat"</span>, <span class="st">"Sun"</span>),</span>
-<span id="cb10-17"><a></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Mon"</span>, <span class="st">"Tue"</span>, <span class="st">"Wed"</span>, <span class="st">"Thu"</span>, <span class="st">"Fri"</span>, <span class="st">"Sat"</span>, <span class="st">"Sun"</span>),</span>
-<span id="cb10-18"><a></a>      <span class="at">ordered =</span> <span class="cn">TRUE</span></span>
-<span id="cb10-19"><a></a>    ),</span>
-<span id="cb10-20"><a></a></span>
-<span id="cb10-21"><a></a>    <span class="do">## Variable "local"</span></span>
-<span id="cb10-22"><a></a>    <span class="at">local =</span> base<span class="sc">::</span><span class="fu">factor</span>(local,</span>
-<span id="cb10-23"><a></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"yes"</span>, <span class="st">"no"</span>),</span>
-<span id="cb10-24"><a></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"yes"</span>, <span class="st">"no"</span>),</span>
-<span id="cb10-25"><a></a>      <span class="at">ordered =</span> <span class="cn">TRUE</span></span>
-<span id="cb10-26"><a></a>    ),</span>
-<span id="cb10-27"><a></a></span>
-<span id="cb10-28"><a></a>    <span class="do">## Variable "month"</span></span>
-<span id="cb10-29"><a></a>    <span class="at">month =</span> base<span class="sc">::</span><span class="fu">factor</span>(month,</span>
-<span id="cb10-30"><a></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Jan"</span>, <span class="st">"Feb"</span>, <span class="st">"Mar"</span>, <span class="st">"Apr"</span>),</span>
-<span id="cb10-31"><a></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Jan"</span>, <span class="st">"Feb"</span>, <span class="st">"Mar"</span>, <span class="st">"Apr"</span>),</span>
-<span id="cb10-32"><a></a>      <span class="at">ordered =</span> <span class="cn">TRUE</span></span>
-<span id="cb10-33"><a></a>    ),</span>
-<span id="cb10-34"><a></a></span>
-<span id="cb10-35"><a></a>    <span class="do">## Variable "hour"</span></span>
-<span id="cb10-36"><a></a>    <span class="at">hour =</span> base<span class="sc">::</span><span class="fu">factor</span>(hour,</span>
-<span id="cb10-37"><a></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">23</span>), <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">23</span>),</span>
-<span id="cb10-38"><a></a>      <span class="at">ordered =</span> <span class="cn">TRUE</span></span>
-<span id="cb10-39"><a></a>    )</span>
-<span id="cb10-40"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb10-41"><a></a>  dplyr<span class="sc">::</span><span class="fu">relocate</span>(<span class="fu">where</span>(is.factor), <span class="at">.after =</span> rownames) <span class="co"># Move all factors to the left</span></span>
-<span id="cb10-42"><a></a></span>
-<span id="cb10-43"><a></a>taxi_modified <span class="sc">%&gt;%</span> <span class="fu">glimpse</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a aria-label="1"></a><span class="do">## Convert `dow`, `local`, `month`, and `hour` into ordered factors</span></span>
+<span id="cb10-2"><a aria-label="2"></a>taxi_modified <span class="ot">&lt;-</span> taxi_modified <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a aria-label="3"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb10-4"><a aria-label="4"></a>    <span class="do">## Variable "tip"</span></span>
+<span id="cb10-5"><a aria-label="5"></a>    <span class="at">tip =</span> base<span class="sc">::</span><span class="fu">factor</span>(tip,</span>
+<span id="cb10-6"><a aria-label="6"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"yes"</span>, <span class="st">"no"</span>),</span>
+<span id="cb10-7"><a aria-label="7"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"yes"</span>, <span class="st">"no"</span>),</span>
+<span id="cb10-8"><a aria-label="8"></a>      <span class="at">ordered =</span> <span class="cn">TRUE</span></span>
+<span id="cb10-9"><a aria-label="9"></a>    ),</span>
+<span id="cb10-10"><a aria-label="10"></a></span>
+<span id="cb10-11"><a aria-label="11"></a>    <span class="do">## Variable "company"</span></span>
+<span id="cb10-12"><a aria-label="12"></a>    <span class="at">company =</span> base<span class="sc">::</span><span class="fu">factor</span>(company), <span class="co"># Any order is OK.</span></span>
+<span id="cb10-13"><a aria-label="13"></a></span>
+<span id="cb10-14"><a aria-label="14"></a>    <span class="do">## Variable "dow"</span></span>
+<span id="cb10-15"><a aria-label="15"></a>    <span class="at">dow =</span> base<span class="sc">::</span><span class="fu">factor</span>(dow,</span>
+<span id="cb10-16"><a aria-label="16"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Mon"</span>, <span class="st">"Tue"</span>, <span class="st">"Wed"</span>, <span class="st">"Thu"</span>, <span class="st">"Fri"</span>, <span class="st">"Sat"</span>, <span class="st">"Sun"</span>),</span>
+<span id="cb10-17"><a aria-label="17"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Mon"</span>, <span class="st">"Tue"</span>, <span class="st">"Wed"</span>, <span class="st">"Thu"</span>, <span class="st">"Fri"</span>, <span class="st">"Sat"</span>, <span class="st">"Sun"</span>),</span>
+<span id="cb10-18"><a aria-label="18"></a>      <span class="at">ordered =</span> <span class="cn">TRUE</span></span>
+<span id="cb10-19"><a aria-label="19"></a>    ),</span>
+<span id="cb10-20"><a aria-label="20"></a></span>
+<span id="cb10-21"><a aria-label="21"></a>    <span class="do">## Variable "local"</span></span>
+<span id="cb10-22"><a aria-label="22"></a>    <span class="at">local =</span> base<span class="sc">::</span><span class="fu">factor</span>(local,</span>
+<span id="cb10-23"><a aria-label="23"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"yes"</span>, <span class="st">"no"</span>),</span>
+<span id="cb10-24"><a aria-label="24"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"yes"</span>, <span class="st">"no"</span>),</span>
+<span id="cb10-25"><a aria-label="25"></a>      <span class="at">ordered =</span> <span class="cn">TRUE</span></span>
+<span id="cb10-26"><a aria-label="26"></a>    ),</span>
+<span id="cb10-27"><a aria-label="27"></a></span>
+<span id="cb10-28"><a aria-label="28"></a>    <span class="do">## Variable "month"</span></span>
+<span id="cb10-29"><a aria-label="29"></a>    <span class="at">month =</span> base<span class="sc">::</span><span class="fu">factor</span>(month,</span>
+<span id="cb10-30"><a aria-label="30"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Jan"</span>, <span class="st">"Feb"</span>, <span class="st">"Mar"</span>, <span class="st">"Apr"</span>),</span>
+<span id="cb10-31"><a aria-label="31"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Jan"</span>, <span class="st">"Feb"</span>, <span class="st">"Mar"</span>, <span class="st">"Apr"</span>),</span>
+<span id="cb10-32"><a aria-label="32"></a>      <span class="at">ordered =</span> <span class="cn">TRUE</span></span>
+<span id="cb10-33"><a aria-label="33"></a>    ),</span>
+<span id="cb10-34"><a aria-label="34"></a></span>
+<span id="cb10-35"><a aria-label="35"></a>    <span class="do">## Variable "hour"</span></span>
+<span id="cb10-36"><a aria-label="36"></a>    <span class="at">hour =</span> base<span class="sc">::</span><span class="fu">factor</span>(hour,</span>
+<span id="cb10-37"><a aria-label="37"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">23</span>), <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">23</span>),</span>
+<span id="cb10-38"><a aria-label="38"></a>      <span class="at">ordered =</span> <span class="cn">TRUE</span></span>
+<span id="cb10-39"><a aria-label="39"></a>    )</span>
+<span id="cb10-40"><a aria-label="40"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb10-41"><a aria-label="41"></a>  dplyr<span class="sc">::</span><span class="fu">relocate</span>(<span class="fu">where</span>(is.factor), <span class="at">.after =</span> rownames) <span class="co"># Move all factors to the left</span></span>
+<span id="cb10-42"><a aria-label="42"></a></span>
+<span id="cb10-43"><a aria-label="43"></a>taxi_modified <span class="sc">%&gt;%</span> <span class="fu">glimpse</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 10,000
@@ -818,7 +821,7 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 </div>
 <p>Looks clean and good.</p>
 </section>
-<section id="hypothesis-and-research-questions" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920206d6174657269616c2d73796d626f6c73206c61622d7265736561726368203e7d7d-hypothesis-and-research-questions" class="slide level3">
 <h3><iconify-icon inline="" icon="material-symbols:lab-research" aria-label="Icon lab-research from material-symbols Iconify.design set." title="Icon lab-research from material-symbols Iconify.design set."></iconify-icon> Hypothesis and Research Questions</h3>
 <ul>
 <li>It is a good practice in Exploratory Data Analysis <span style="background-color:yellow;">to surmise the Experiment that lead to the gathering of this dataset</span></li>
@@ -841,13 +844,13 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 </ol>
 <p>Try and think of more Questions!</p>
 </section></section>
-<section id="plotting-barcharts" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920696320626173656c696e652d6261722d6368617274203e7d7d-plotting-barcharts" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="ic:baseline-bar-chart" aria-label="Icon baseline-bar-chart from ic Iconify.design set." title="Icon baseline-bar-chart from ic Iconify.design set."></iconify-icon> Plotting Barcharts</h2>
 <p>Let’s plot some bar graphs: recall that for bar charts, we need to choose <strong>Qual</strong> variables to count with! In each case, we will state a Hypothesis/Question and try to answer it with a chart.</p>
 </section>
 
 <section>
-<section id="question-1-do-more-people-tip-than-not" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920656c207175657374696f6e2d7369676e203e7d7d-question-1-do-more-people-tip-than-not" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="el:question-sign" aria-label="Icon question-sign from el Iconify.design set." title="Icon question-sign from el Iconify.design set."></iconify-icon> Question-1: Do more people <code>tip</code> than not?</h2>
 
 </section>
@@ -856,10 +859,10 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb12-2"><a></a></span>
-<span id="cb12-3"><a></a><span class="fu">gf_bar</span>(<span class="sc">~</span>tip, <span class="at">data =</span> taxi_modified) <span class="sc">%&gt;%</span></span>
-<span id="cb12-4"><a></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Plot 1A: Counts of Tips"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb12-2"><a aria-label="2"></a></span>
+<span id="cb12-3"><a aria-label="3"></a><span class="fu">gf_bar</span>(<span class="sc">~</span>tip, <span class="at">data =</span> taxi_modified) <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a aria-label="4"></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Plot 1A: Counts of Tips"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -875,11 +878,11 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb13-2"><a></a></span>
-<span id="cb13-3"><a></a><span class="fu">ggplot</span>(taxi_modified) <span class="sc">+</span></span>
-<span id="cb13-4"><a></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> tip)) <span class="sc">+</span></span>
-<span id="cb13-5"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Plot 1A: Counts of Tips"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb13-2"><a aria-label="2"></a></span>
+<span id="cb13-3"><a aria-label="3"></a><span class="fu">ggplot</span>(taxi_modified) <span class="sc">+</span></span>
+<span id="cb13-4"><a aria-label="4"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> tip)) <span class="sc">+</span></span>
+<span id="cb13-5"><a aria-label="5"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Plot 1A: Counts of Tips"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -898,7 +901,7 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 </ul>
 </section></section>
 <section>
-<section id="question-2-does-the-tip-depend-upon-whether-the-trip-is-local-or-not" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920656c207175657374696f6e2d7369676e203e7d7d-question-2-does-the-tip-depend-upon-whether-the-trip-is-local-or-not" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="el:question-sign" aria-label="Icon question-sign from el Iconify.design set." title="Icon question-sign from el Iconify.design set."></iconify-icon> Question-2: Does the <code>tip</code> depend upon whether the trip is <code>local</code> or not?</h2>
 
 </section>
@@ -911,15 +914,15 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb14-2"><a></a></span>
-<span id="cb14-3"><a></a>taxi_modified <span class="sc">%&gt;%</span></span>
-<span id="cb14-4"><a></a>  <span class="fu">gf_bar</span>(<span class="sc">~</span>local,</span>
-<span id="cb14-5"><a></a>    <span class="at">fill =</span> <span class="sc">~</span>tip,</span>
-<span id="cb14-6"><a></a>    <span class="at">position =</span> <span class="st">"dodge"</span></span>
-<span id="cb14-7"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb14-8"><a></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Plot 2A: Dodged Bar Chart"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb14-9"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb14-2"><a aria-label="2"></a></span>
+<span id="cb14-3"><a aria-label="3"></a>taxi_modified <span class="sc">%&gt;%</span></span>
+<span id="cb14-4"><a aria-label="4"></a>  <span class="fu">gf_bar</span>(<span class="sc">~</span>local,</span>
+<span id="cb14-5"><a aria-label="5"></a>    <span class="at">fill =</span> <span class="sc">~</span>tip,</span>
+<span id="cb14-6"><a aria-label="6"></a>    <span class="at">position =</span> <span class="st">"dodge"</span></span>
+<span id="cb14-7"><a aria-label="7"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb14-8"><a aria-label="8"></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Plot 2A: Dodged Bar Chart"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-9"><a aria-label="9"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -937,18 +940,18 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb15-2"><a></a></span>
-<span id="cb15-3"><a></a>taxi_modified <span class="sc">%&gt;%</span></span>
-<span id="cb15-4"><a></a>  <span class="fu">gf_bar</span>(<span class="sc">~</span>local,</span>
-<span id="cb15-5"><a></a>    <span class="at">fill =</span> <span class="sc">~</span>tip,</span>
-<span id="cb15-6"><a></a>    <span class="at">position =</span> <span class="st">"stack"</span></span>
-<span id="cb15-7"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb15-8"><a></a>  <span class="fu">gf_labs</span>(</span>
-<span id="cb15-9"><a></a>    <span class="at">title =</span> <span class="st">"Plot 2B: Stacked Bar Chart"</span>,</span>
-<span id="cb15-10"><a></a>    <span class="at">subtitle =</span> <span class="st">"Can we spot per group differences in proportions??"</span></span>
-<span id="cb15-11"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb15-12"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb15-2"><a aria-label="2"></a></span>
+<span id="cb15-3"><a aria-label="3"></a>taxi_modified <span class="sc">%&gt;%</span></span>
+<span id="cb15-4"><a aria-label="4"></a>  <span class="fu">gf_bar</span>(<span class="sc">~</span>local,</span>
+<span id="cb15-5"><a aria-label="5"></a>    <span class="at">fill =</span> <span class="sc">~</span>tip,</span>
+<span id="cb15-6"><a aria-label="6"></a>    <span class="at">position =</span> <span class="st">"stack"</span></span>
+<span id="cb15-7"><a aria-label="7"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb15-8"><a aria-label="8"></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb15-9"><a aria-label="9"></a>    <span class="at">title =</span> <span class="st">"Plot 2B: Stacked Bar Chart"</span>,</span>
+<span id="cb15-10"><a aria-label="10"></a>    <span class="at">subtitle =</span> <span class="st">"Can we spot per group differences in proportions??"</span></span>
+<span id="cb15-11"><a aria-label="11"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb15-12"><a aria-label="12"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -966,19 +969,19 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb16-2"><a></a></span>
-<span id="cb16-3"><a></a><span class="do">## Showing "per capita" percentages</span></span>
-<span id="cb16-4"><a></a>taxi_modified <span class="sc">%&gt;%</span></span>
-<span id="cb16-5"><a></a>  <span class="fu">gf_bar</span>(<span class="sc">~</span>local,</span>
-<span id="cb16-6"><a></a>    <span class="at">fill =</span> <span class="sc">~</span>tip,</span>
-<span id="cb16-7"><a></a>    <span class="at">position =</span> <span class="st">"fill"</span></span>
-<span id="cb16-8"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb16-9"><a></a>  <span class="fu">gf_labs</span>(</span>
-<span id="cb16-10"><a></a>    <span class="at">title =</span> <span class="st">"Plot 2C: Filled Bar Chart"</span>,</span>
-<span id="cb16-11"><a></a>    <span class="at">subtitle =</span> <span class="st">"Shows Per group differences in Proportions!"</span></span>
-<span id="cb16-12"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb16-13"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb16-2"><a aria-label="2"></a></span>
+<span id="cb16-3"><a aria-label="3"></a><span class="do">## Showing "per capita" percentages</span></span>
+<span id="cb16-4"><a aria-label="4"></a>taxi_modified <span class="sc">%&gt;%</span></span>
+<span id="cb16-5"><a aria-label="5"></a>  <span class="fu">gf_bar</span>(<span class="sc">~</span>local,</span>
+<span id="cb16-6"><a aria-label="6"></a>    <span class="at">fill =</span> <span class="sc">~</span>tip,</span>
+<span id="cb16-7"><a aria-label="7"></a>    <span class="at">position =</span> <span class="st">"fill"</span></span>
+<span id="cb16-8"><a aria-label="8"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb16-9"><a aria-label="9"></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb16-10"><a aria-label="10"></a>    <span class="at">title =</span> <span class="st">"Plot 2C: Filled Bar Chart"</span>,</span>
+<span id="cb16-11"><a aria-label="11"></a>    <span class="at">subtitle =</span> <span class="st">"Shows Per group differences in Proportions!"</span></span>
+<span id="cb16-12"><a aria-label="12"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb16-13"><a aria-label="13"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -996,20 +999,20 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb17-2"><a></a></span>
-<span id="cb17-3"><a></a><span class="do">## Showing "per capita" percentages</span></span>
-<span id="cb17-4"><a></a><span class="do">## Better labelling of Y-axis</span></span>
-<span id="cb17-5"><a></a>taxi_modified <span class="sc">%&gt;%</span></span>
-<span id="cb17-6"><a></a>  <span class="fu">gf_props</span>(<span class="sc">~</span>local,</span>
-<span id="cb17-7"><a></a>    <span class="at">fill =</span> <span class="sc">~</span>tip,</span>
-<span id="cb17-8"><a></a>    <span class="at">position =</span> <span class="st">"fill"</span></span>
-<span id="cb17-9"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb17-10"><a></a>  <span class="fu">gf_labs</span>(</span>
-<span id="cb17-11"><a></a>    <span class="at">title =</span> <span class="st">"Plot 2D: Filled Bar Chart"</span>,</span>
-<span id="cb17-12"><a></a>    <span class="at">subtitle =</span> <span class="st">"Shows Per group differences in Proportions!"</span></span>
-<span id="cb17-13"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb17-14"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb17-2"><a aria-label="2"></a></span>
+<span id="cb17-3"><a aria-label="3"></a><span class="do">## Showing "per capita" percentages</span></span>
+<span id="cb17-4"><a aria-label="4"></a><span class="do">## Better labelling of Y-axis</span></span>
+<span id="cb17-5"><a aria-label="5"></a>taxi_modified <span class="sc">%&gt;%</span></span>
+<span id="cb17-6"><a aria-label="6"></a>  <span class="fu">gf_props</span>(<span class="sc">~</span>local,</span>
+<span id="cb17-7"><a aria-label="7"></a>    <span class="at">fill =</span> <span class="sc">~</span>tip,</span>
+<span id="cb17-8"><a aria-label="8"></a>    <span class="at">position =</span> <span class="st">"fill"</span></span>
+<span id="cb17-9"><a aria-label="9"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb17-10"><a aria-label="10"></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb17-11"><a aria-label="11"></a>    <span class="at">title =</span> <span class="st">"Plot 2D: Filled Bar Chart"</span>,</span>
+<span id="cb17-12"><a aria-label="12"></a>    <span class="at">subtitle =</span> <span class="st">"Shows Per group differences in Proportions!"</span></span>
+<span id="cb17-13"><a aria-label="13"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb17-14"><a aria-label="14"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -1034,41 +1037,41 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 <div id="tabset-3-1">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb18-2"><a></a></span>
-<span id="cb18-3"><a></a>taxi_modified <span class="sc">%&gt;%</span></span>
-<span id="cb18-4"><a></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb18-5"><a></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> local, <span class="at">fill =</span> tip), <span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
-<span id="cb18-6"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Plot 2A:Dodged Bar Chart"</span>) <span class="sc">+</span></span>
-<span id="cb18-7"><a></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span>
-<span id="cb18-8"><a></a><span class="do">##</span></span>
-<span id="cb18-9"><a></a>taxi_modified <span class="sc">%&gt;%</span></span>
-<span id="cb18-10"><a></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb18-11"><a></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> local, <span class="at">fill =</span> tip), <span class="at">position =</span> <span class="st">"stack"</span>) <span class="sc">+</span></span>
-<span id="cb18-12"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb18-13"><a></a>    <span class="at">title =</span> <span class="st">"Plot 2B: Stacked Bar Chart"</span>,</span>
-<span id="cb18-14"><a></a>    <span class="at">subtitle =</span> <span class="st">"Can we spot per group differences in proportions??"</span></span>
-<span id="cb18-15"><a></a>  ) <span class="sc">+</span></span>
-<span id="cb18-16"><a></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span>
-<span id="cb18-17"><a></a><span class="do">## Showing "per capita" percentages</span></span>
-<span id="cb18-18"><a></a>taxi_modified <span class="sc">%&gt;%</span></span>
-<span id="cb18-19"><a></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb18-20"><a></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> local, <span class="at">fill =</span> tip), <span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
-<span id="cb18-21"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Plot 2C: Filled Bar Chart"</span>, <span class="at">subtitle =</span> <span class="st">"Shows Per group differences in Proportions!"</span>) <span class="sc">+</span></span>
-<span id="cb18-22"><a></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span>
-<span id="cb18-23"><a></a><span class="do">## Showing "per capita" percentages</span></span>
-<span id="cb18-24"><a></a><span class="do">## Better labelling of Y-axis</span></span>
-<span id="cb18-25"><a></a>taxi_modified <span class="sc">%&gt;%</span></span>
-<span id="cb18-26"><a></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb18-27"><a></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> local, <span class="at">fill =</span> tip), <span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
-<span id="cb18-28"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb18-29"><a></a>    <span class="at">title =</span> <span class="st">"Plot 2D: Filled Bar Chart"</span>,</span>
-<span id="cb18-30"><a></a>    <span class="at">subtitle =</span> <span class="st">"Shows Per group differences in Proportions!"</span>,</span>
-<span id="cb18-31"><a></a>    <span class="at">y =</span> <span class="st">"Proportion"</span></span>
-<span id="cb18-32"><a></a>  ) <span class="sc">+</span></span>
-<span id="cb18-33"><a></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb18-2"><a aria-label="2"></a></span>
+<span id="cb18-3"><a aria-label="3"></a>taxi_modified <span class="sc">%&gt;%</span></span>
+<span id="cb18-4"><a aria-label="4"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb18-5"><a aria-label="5"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> local, <span class="at">fill =</span> tip), <span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb18-6"><a aria-label="6"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Plot 2A:Dodged Bar Chart"</span>) <span class="sc">+</span></span>
+<span id="cb18-7"><a aria-label="7"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span>
+<span id="cb18-8"><a aria-label="8"></a><span class="do">##</span></span>
+<span id="cb18-9"><a aria-label="9"></a>taxi_modified <span class="sc">%&gt;%</span></span>
+<span id="cb18-10"><a aria-label="10"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb18-11"><a aria-label="11"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> local, <span class="at">fill =</span> tip), <span class="at">position =</span> <span class="st">"stack"</span>) <span class="sc">+</span></span>
+<span id="cb18-12"><a aria-label="12"></a>  <span class="fu">labs</span>(</span>
+<span id="cb18-13"><a aria-label="13"></a>    <span class="at">title =</span> <span class="st">"Plot 2B: Stacked Bar Chart"</span>,</span>
+<span id="cb18-14"><a aria-label="14"></a>    <span class="at">subtitle =</span> <span class="st">"Can we spot per group differences in proportions??"</span></span>
+<span id="cb18-15"><a aria-label="15"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-16"><a aria-label="16"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span>
+<span id="cb18-17"><a aria-label="17"></a><span class="do">## Showing "per capita" percentages</span></span>
+<span id="cb18-18"><a aria-label="18"></a>taxi_modified <span class="sc">%&gt;%</span></span>
+<span id="cb18-19"><a aria-label="19"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb18-20"><a aria-label="20"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> local, <span class="at">fill =</span> tip), <span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb18-21"><a aria-label="21"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Plot 2C: Filled Bar Chart"</span>, <span class="at">subtitle =</span> <span class="st">"Shows Per group differences in Proportions!"</span>) <span class="sc">+</span></span>
+<span id="cb18-22"><a aria-label="22"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span>
+<span id="cb18-23"><a aria-label="23"></a><span class="do">## Showing "per capita" percentages</span></span>
+<span id="cb18-24"><a aria-label="24"></a><span class="do">## Better labelling of Y-axis</span></span>
+<span id="cb18-25"><a aria-label="25"></a>taxi_modified <span class="sc">%&gt;%</span></span>
+<span id="cb18-26"><a aria-label="26"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb18-27"><a aria-label="27"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> local, <span class="at">fill =</span> tip), <span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb18-28"><a aria-label="28"></a>  <span class="fu">labs</span>(</span>
+<span id="cb18-29"><a aria-label="29"></a>    <span class="at">title =</span> <span class="st">"Plot 2D: Filled Bar Chart"</span>,</span>
+<span id="cb18-30"><a aria-label="30"></a>    <span class="at">subtitle =</span> <span class="st">"Shows Per group differences in Proportions!"</span>,</span>
+<span id="cb18-31"><a aria-label="31"></a>    <span class="at">y =</span> <span class="st">"Proportion"</span></span>
+<span id="cb18-32"><a aria-label="32"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-33"><a aria-label="33"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell quarto-layout-panel" data-layout-ncol="2" data-layout-align="center">
+<div class="cell quarto-layout-panel" data-layout-align="center" data-layout-ncol="2">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
@@ -1116,7 +1119,7 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 </ul>
 </section></section>
 <section>
-<section id="question-3-do-some-cab-company-ies-get-more-tips-than-others" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920656c207175657374696f6e2d7369676e203e7d7d-question-3-do-some-cab-company-ies-get-more-tips-than-others" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="el:question-sign" aria-label="Icon question-sign from el Iconify.design set." title="Icon question-sign from el Iconify.design set."></iconify-icon> Question-3: Do some cab <code>company</code>-ies get more <code>tips</code> than others?</h2>
 
 </section>
@@ -1129,16 +1132,16 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb19-2"><a></a></span>
-<span id="cb19-3"><a></a>taxi_modified <span class="sc">%&gt;%</span></span>
-<span id="cb19-4"><a></a>  <span class="fu">gf_bar</span>(<span class="sc">~</span>company, <span class="at">fill =</span> <span class="sc">~</span>tip, <span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb19-5"><a></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Plot 3A: Dodged Bar Chart"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb19-6"><a></a>  <span class="fu">gf_theme</span>(<span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(</span>
-<span id="cb19-7"><a></a>    <span class="at">size =</span> <span class="dv">6</span>,</span>
-<span id="cb19-8"><a></a>    <span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="fl">0.5</span></span>
-<span id="cb19-9"><a></a>  ))) <span class="sc">%&gt;%</span></span>
-<span id="cb19-10"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb19-2"><a aria-label="2"></a></span>
+<span id="cb19-3"><a aria-label="3"></a>taxi_modified <span class="sc">%&gt;%</span></span>
+<span id="cb19-4"><a aria-label="4"></a>  <span class="fu">gf_bar</span>(<span class="sc">~</span>company, <span class="at">fill =</span> <span class="sc">~</span>tip, <span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb19-5"><a aria-label="5"></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Plot 3A: Dodged Bar Chart"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb19-6"><a aria-label="6"></a>  <span class="fu">gf_theme</span>(<span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(</span>
+<span id="cb19-7"><a aria-label="7"></a>    <span class="at">size =</span> <span class="dv">6</span>,</span>
+<span id="cb19-8"><a aria-label="8"></a>    <span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="fl">0.5</span></span>
+<span id="cb19-9"><a aria-label="9"></a>  ))) <span class="sc">%&gt;%</span></span>
+<span id="cb19-10"><a aria-label="10"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -1156,16 +1159,16 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb20-2"><a></a></span>
-<span id="cb20-3"><a></a>taxi_modified <span class="sc">%&gt;%</span></span>
-<span id="cb20-4"><a></a>  <span class="fu">gf_bar</span>(<span class="sc">~</span>company, <span class="at">fill =</span> <span class="sc">~</span>tip, <span class="at">position =</span> <span class="st">"stack"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb20-5"><a></a>  <span class="fu">gf_labs</span>(</span>
-<span id="cb20-6"><a></a>    <span class="at">title =</span> <span class="st">"Plot 3B: Stacked Bar Chart"</span>,</span>
-<span id="cb20-7"><a></a>    <span class="at">subtitle =</span> <span class="st">"Can we spot per group differences in proportions??"</span></span>
-<span id="cb20-8"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb20-9"><a></a>  <span class="fu">gf_theme</span>(<span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">6</span>, <span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb20-10"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb20-2"><a aria-label="2"></a></span>
+<span id="cb20-3"><a aria-label="3"></a>taxi_modified <span class="sc">%&gt;%</span></span>
+<span id="cb20-4"><a aria-label="4"></a>  <span class="fu">gf_bar</span>(<span class="sc">~</span>company, <span class="at">fill =</span> <span class="sc">~</span>tip, <span class="at">position =</span> <span class="st">"stack"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-5"><a aria-label="5"></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb20-6"><a aria-label="6"></a>    <span class="at">title =</span> <span class="st">"Plot 3B: Stacked Bar Chart"</span>,</span>
+<span id="cb20-7"><a aria-label="7"></a>    <span class="at">subtitle =</span> <span class="st">"Can we spot per group differences in proportions??"</span></span>
+<span id="cb20-8"><a aria-label="8"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-9"><a aria-label="9"></a>  <span class="fu">gf_theme</span>(<span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">6</span>, <span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb20-10"><a aria-label="10"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -1183,17 +1186,17 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb21-2"><a></a></span>
-<span id="cb21-3"><a></a><span class="do">## Showing "per capita" percentages</span></span>
-<span id="cb21-4"><a></a>taxi_modified <span class="sc">%&gt;%</span></span>
-<span id="cb21-5"><a></a>  <span class="fu">gf_percents</span>(<span class="sc">~</span>company, <span class="at">fill =</span> <span class="sc">~</span>tip, <span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb21-6"><a></a>  <span class="fu">gf_labs</span>(</span>
-<span id="cb21-7"><a></a>    <span class="at">title =</span> <span class="st">"Plot 3C: Filled Bar Chart"</span>,</span>
-<span id="cb21-8"><a></a>    <span class="at">subtitle =</span> <span class="st">"Shows Per group differences in Proportions!"</span></span>
-<span id="cb21-9"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb21-10"><a></a>  <span class="fu">gf_theme</span>(<span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">6</span>, <span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb21-11"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb21-2"><a aria-label="2"></a></span>
+<span id="cb21-3"><a aria-label="3"></a><span class="do">## Showing "per capita" percentages</span></span>
+<span id="cb21-4"><a aria-label="4"></a>taxi_modified <span class="sc">%&gt;%</span></span>
+<span id="cb21-5"><a aria-label="5"></a>  <span class="fu">gf_percents</span>(<span class="sc">~</span>company, <span class="at">fill =</span> <span class="sc">~</span>tip, <span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-6"><a aria-label="6"></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb21-7"><a aria-label="7"></a>    <span class="at">title =</span> <span class="st">"Plot 3C: Filled Bar Chart"</span>,</span>
+<span id="cb21-8"><a aria-label="8"></a>    <span class="at">subtitle =</span> <span class="st">"Shows Per group differences in Proportions!"</span></span>
+<span id="cb21-9"><a aria-label="9"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb21-10"><a aria-label="10"></a>  <span class="fu">gf_theme</span>(<span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">6</span>, <span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb21-11"><a aria-label="11"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -1211,18 +1214,18 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb22-2"><a></a></span>
-<span id="cb22-3"><a></a><span class="do">## Showing "per capita" percentages</span></span>
-<span id="cb22-4"><a></a><span class="do">## Better labelling of Y-axis</span></span>
-<span id="cb22-5"><a></a>taxi_modified <span class="sc">%&gt;%</span></span>
-<span id="cb22-6"><a></a>  <span class="fu">gf_props</span>(<span class="sc">~</span>company, <span class="at">fill =</span> <span class="sc">~</span>tip, <span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb22-7"><a></a>  <span class="fu">gf_labs</span>(</span>
-<span id="cb22-8"><a></a>    <span class="at">title =</span> <span class="st">"Plot 3D: Filled Bar Chart"</span>,</span>
-<span id="cb22-9"><a></a>    <span class="at">subtitle =</span> <span class="st">"Shows Per group differences in Proportions!"</span></span>
-<span id="cb22-10"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb22-11"><a></a>  <span class="fu">gf_theme</span>(<span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">6</span>, <span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb22-12"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb22-2"><a aria-label="2"></a></span>
+<span id="cb22-3"><a aria-label="3"></a><span class="do">## Showing "per capita" percentages</span></span>
+<span id="cb22-4"><a aria-label="4"></a><span class="do">## Better labelling of Y-axis</span></span>
+<span id="cb22-5"><a aria-label="5"></a>taxi_modified <span class="sc">%&gt;%</span></span>
+<span id="cb22-6"><a aria-label="6"></a>  <span class="fu">gf_props</span>(<span class="sc">~</span>company, <span class="at">fill =</span> <span class="sc">~</span>tip, <span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb22-7"><a aria-label="7"></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb22-8"><a aria-label="8"></a>    <span class="at">title =</span> <span class="st">"Plot 3D: Filled Bar Chart"</span>,</span>
+<span id="cb22-9"><a aria-label="9"></a>    <span class="at">subtitle =</span> <span class="st">"Shows Per group differences in Proportions!"</span></span>
+<span id="cb22-10"><a aria-label="10"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb22-11"><a aria-label="11"></a>  <span class="fu">gf_theme</span>(<span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">6</span>, <span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb22-12"><a aria-label="12"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -1247,46 +1250,46 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 <div id="tabset-5-1">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb23-2"><a></a></span>
-<span id="cb23-3"><a></a>taxi_modified <span class="sc">%&gt;%</span></span>
-<span id="cb23-4"><a></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb23-5"><a></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> company, <span class="at">fill =</span> tip), <span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
-<span id="cb23-6"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Plot 3A: Dodged Bar Chart"</span>) <span class="sc">+</span></span>
-<span id="cb23-7"><a></a>  <span class="fu">theme</span>(<span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">6</span>, <span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))) <span class="sc">+</span></span>
-<span id="cb23-8"><a></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span>
-<span id="cb23-9"><a></a><span class="do">##</span></span>
-<span id="cb23-10"><a></a>taxi_modified <span class="sc">%&gt;%</span></span>
-<span id="cb23-11"><a></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb23-12"><a></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> company, <span class="at">fill =</span> tip), <span class="at">position =</span> <span class="st">"stack"</span>) <span class="sc">+</span></span>
-<span id="cb23-13"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb23-14"><a></a>    <span class="at">title =</span> <span class="st">"Plot 3B: Stacked Bar Chart"</span>,</span>
-<span id="cb23-15"><a></a>    <span class="at">subtitle =</span> <span class="st">"Can we spot per group differences in proportions??"</span></span>
-<span id="cb23-16"><a></a>  ) <span class="sc">+</span></span>
-<span id="cb23-17"><a></a>  <span class="fu">theme</span>(<span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">6</span>, <span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))) <span class="sc">+</span></span>
-<span id="cb23-18"><a></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span>
-<span id="cb23-19"><a></a><span class="do">## Showing "per capita" percentages</span></span>
-<span id="cb23-20"><a></a>taxi_modified <span class="sc">%&gt;%</span></span>
-<span id="cb23-21"><a></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb23-22"><a></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> company, <span class="at">fill =</span> tip), <span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
-<span id="cb23-23"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb23-24"><a></a>    <span class="at">title =</span> <span class="st">"Plot 3C: Filled Bar Chart"</span>,</span>
-<span id="cb23-25"><a></a>    <span class="at">subtitle =</span> <span class="st">"Shows Per group differences in Proportions!"</span></span>
-<span id="cb23-26"><a></a>  ) <span class="sc">+</span></span>
-<span id="cb23-27"><a></a>  <span class="fu">theme</span>(<span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">6</span>, <span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))) <span class="sc">+</span></span>
-<span id="cb23-28"><a></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span>
-<span id="cb23-29"><a></a><span class="do">## Showing "per capita" percentages</span></span>
-<span id="cb23-30"><a></a><span class="do">## Better labelling of Y-axis</span></span>
-<span id="cb23-31"><a></a>taxi_modified <span class="sc">%&gt;%</span></span>
-<span id="cb23-32"><a></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb23-33"><a></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> company, <span class="at">fill =</span> tip), <span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
-<span id="cb23-34"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb23-35"><a></a>    <span class="at">title =</span> <span class="st">"Plot 3D: Filled Bar Chart"</span>,</span>
-<span id="cb23-36"><a></a>    <span class="at">subtitle =</span> <span class="st">"Shows Per group differences in Proportions!"</span>,</span>
-<span id="cb23-37"><a></a>    <span class="at">y =</span> <span class="st">"Proportions"</span></span>
-<span id="cb23-38"><a></a>  ) <span class="sc">+</span></span>
-<span id="cb23-39"><a></a>  <span class="fu">theme</span>(<span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">6</span>, <span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))) <span class="sc">+</span></span>
-<span id="cb23-40"><a></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb23-2"><a aria-label="2"></a></span>
+<span id="cb23-3"><a aria-label="3"></a>taxi_modified <span class="sc">%&gt;%</span></span>
+<span id="cb23-4"><a aria-label="4"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb23-5"><a aria-label="5"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> company, <span class="at">fill =</span> tip), <span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb23-6"><a aria-label="6"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Plot 3A: Dodged Bar Chart"</span>) <span class="sc">+</span></span>
+<span id="cb23-7"><a aria-label="7"></a>  <span class="fu">theme</span>(<span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">6</span>, <span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))) <span class="sc">+</span></span>
+<span id="cb23-8"><a aria-label="8"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span>
+<span id="cb23-9"><a aria-label="9"></a><span class="do">##</span></span>
+<span id="cb23-10"><a aria-label="10"></a>taxi_modified <span class="sc">%&gt;%</span></span>
+<span id="cb23-11"><a aria-label="11"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb23-12"><a aria-label="12"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> company, <span class="at">fill =</span> tip), <span class="at">position =</span> <span class="st">"stack"</span>) <span class="sc">+</span></span>
+<span id="cb23-13"><a aria-label="13"></a>  <span class="fu">labs</span>(</span>
+<span id="cb23-14"><a aria-label="14"></a>    <span class="at">title =</span> <span class="st">"Plot 3B: Stacked Bar Chart"</span>,</span>
+<span id="cb23-15"><a aria-label="15"></a>    <span class="at">subtitle =</span> <span class="st">"Can we spot per group differences in proportions??"</span></span>
+<span id="cb23-16"><a aria-label="16"></a>  ) <span class="sc">+</span></span>
+<span id="cb23-17"><a aria-label="17"></a>  <span class="fu">theme</span>(<span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">6</span>, <span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))) <span class="sc">+</span></span>
+<span id="cb23-18"><a aria-label="18"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span>
+<span id="cb23-19"><a aria-label="19"></a><span class="do">## Showing "per capita" percentages</span></span>
+<span id="cb23-20"><a aria-label="20"></a>taxi_modified <span class="sc">%&gt;%</span></span>
+<span id="cb23-21"><a aria-label="21"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb23-22"><a aria-label="22"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> company, <span class="at">fill =</span> tip), <span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb23-23"><a aria-label="23"></a>  <span class="fu">labs</span>(</span>
+<span id="cb23-24"><a aria-label="24"></a>    <span class="at">title =</span> <span class="st">"Plot 3C: Filled Bar Chart"</span>,</span>
+<span id="cb23-25"><a aria-label="25"></a>    <span class="at">subtitle =</span> <span class="st">"Shows Per group differences in Proportions!"</span></span>
+<span id="cb23-26"><a aria-label="26"></a>  ) <span class="sc">+</span></span>
+<span id="cb23-27"><a aria-label="27"></a>  <span class="fu">theme</span>(<span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">6</span>, <span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))) <span class="sc">+</span></span>
+<span id="cb23-28"><a aria-label="28"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span>
+<span id="cb23-29"><a aria-label="29"></a><span class="do">## Showing "per capita" percentages</span></span>
+<span id="cb23-30"><a aria-label="30"></a><span class="do">## Better labelling of Y-axis</span></span>
+<span id="cb23-31"><a aria-label="31"></a>taxi_modified <span class="sc">%&gt;%</span></span>
+<span id="cb23-32"><a aria-label="32"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb23-33"><a aria-label="33"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> company, <span class="at">fill =</span> tip), <span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb23-34"><a aria-label="34"></a>  <span class="fu">labs</span>(</span>
+<span id="cb23-35"><a aria-label="35"></a>    <span class="at">title =</span> <span class="st">"Plot 3D: Filled Bar Chart"</span>,</span>
+<span id="cb23-36"><a aria-label="36"></a>    <span class="at">subtitle =</span> <span class="st">"Shows Per group differences in Proportions!"</span>,</span>
+<span id="cb23-37"><a aria-label="37"></a>    <span class="at">y =</span> <span class="st">"Proportions"</span></span>
+<span id="cb23-38"><a aria-label="38"></a>  ) <span class="sc">+</span></span>
+<span id="cb23-39"><a aria-label="39"></a>  <span class="fu">theme</span>(<span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">6</span>, <span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))) <span class="sc">+</span></span>
+<span id="cb23-40"><a aria-label="40"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
@@ -1320,7 +1323,7 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 </ul>
 </section></section>
 <section>
-<section id="question-4-does-a-tip-depend-upon-the-distance-hour-of-day-and-dow-and-month" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920656c207175657374696f6e2d7369676e203e7d7d-question-4-does-a-tip-depend-upon-the-distance-hour-of-day-and-dow-and-month" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="el:question-sign" aria-label="Icon question-sign from el Iconify.design set." title="Icon question-sign from el Iconify.design set."></iconify-icon> Question-4: Does a <code>tip</code> depend upon the <code>distance</code>, <code>hour</code> of day, and <code>dow</code> and <code>month</code>?</h2>
 
 </section>
@@ -1333,11 +1336,11 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb24-2"><a></a></span>
-<span id="cb24-3"><a></a><span class="fu">gf_bar</span>(<span class="sc">~</span>hour, <span class="at">fill =</span> <span class="sc">~</span>tip, <span class="at">data =</span> taxi_modified) <span class="sc">%&gt;%</span></span>
-<span id="cb24-4"><a></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Plot 4A: Counts of Tips by Hour"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb24-5"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb24-2"><a aria-label="2"></a></span>
+<span id="cb24-3"><a aria-label="3"></a><span class="fu">gf_bar</span>(<span class="sc">~</span>hour, <span class="at">fill =</span> <span class="sc">~</span>tip, <span class="at">data =</span> taxi_modified) <span class="sc">%&gt;%</span></span>
+<span id="cb24-4"><a aria-label="4"></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Plot 4A: Counts of Tips by Hour"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb24-5"><a aria-label="5"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -1355,11 +1358,11 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb25-2"><a></a></span>
-<span id="cb25-3"><a></a><span class="fu">gf_bar</span>(<span class="sc">~</span>dow, <span class="at">fill =</span> <span class="sc">~</span>tip, <span class="at">data =</span> taxi_modified) <span class="sc">%&gt;%</span></span>
-<span id="cb25-4"><a></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Plot 4B: Counts of Tips by Day of Week"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb25-5"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb25-2"><a aria-label="2"></a></span>
+<span id="cb25-3"><a aria-label="3"></a><span class="fu">gf_bar</span>(<span class="sc">~</span>dow, <span class="at">fill =</span> <span class="sc">~</span>tip, <span class="at">data =</span> taxi_modified) <span class="sc">%&gt;%</span></span>
+<span id="cb25-4"><a aria-label="4"></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Plot 4B: Counts of Tips by Day of Week"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb25-5"><a aria-label="5"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -1377,11 +1380,11 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb26-2"><a></a></span>
-<span id="cb26-3"><a></a><span class="fu">gf_bar</span>(<span class="sc">~</span>month, <span class="at">fill =</span> <span class="sc">~</span>tip, <span class="at">data =</span> taxi_modified) <span class="sc">%&gt;%</span></span>
-<span id="cb26-4"><a></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Plot 4C: Counts of Tips by Month"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb26-5"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb26-2"><a aria-label="2"></a></span>
+<span id="cb26-3"><a aria-label="3"></a><span class="fu">gf_bar</span>(<span class="sc">~</span>month, <span class="at">fill =</span> <span class="sc">~</span>tip, <span class="at">data =</span> taxi_modified) <span class="sc">%&gt;%</span></span>
+<span id="cb26-4"><a aria-label="4"></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Plot 4C: Counts of Tips by Month"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-5"><a aria-label="5"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -1399,11 +1402,11 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb27-2"><a></a></span>
-<span id="cb27-3"><a></a><span class="fu">gf_bar</span>(<span class="sc">~</span> month <span class="sc">|</span> dow, <span class="at">fill =</span> <span class="sc">~</span>tip, <span class="at">data =</span> taxi_modified) <span class="sc">%&gt;%</span></span>
-<span id="cb27-4"><a></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Plot 4D: Counts of Tips by Day of Week and Month"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb27-5"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb27-2"><a aria-label="2"></a></span>
+<span id="cb27-3"><a aria-label="3"></a><span class="fu">gf_bar</span>(<span class="sc">~</span> month <span class="sc">|</span> dow, <span class="at">fill =</span> <span class="sc">~</span>tip, <span class="at">data =</span> taxi_modified) <span class="sc">%&gt;%</span></span>
+<span id="cb27-4"><a aria-label="4"></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Plot 4D: Counts of Tips by Day of Week and Month"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb27-5"><a aria-label="5"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -1421,15 +1424,15 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb28-2"><a></a></span>
-<span id="cb28-3"><a></a><span class="do">## This may be too busy a graph...</span></span>
-<span id="cb28-4"><a></a><span class="fu">gf_bar</span>(<span class="sc">~</span> dow <span class="sc">|</span> hour, <span class="at">fill =</span> <span class="sc">~</span>tip, <span class="at">data =</span> taxi_modified) <span class="sc">%&gt;%</span></span>
-<span id="cb28-5"><a></a>  <span class="fu">gf_labs</span>(</span>
-<span id="cb28-6"><a></a>    <span class="at">title =</span> <span class="st">"Plot 4E: Counts of Tips by Hour and Day of Week"</span>,</span>
-<span id="cb28-7"><a></a>    <span class="at">subtitle =</span> <span class="st">"Is this plot arrangement easy to grasp?"</span></span>
-<span id="cb28-8"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb28-9"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb28-2"><a aria-label="2"></a></span>
+<span id="cb28-3"><a aria-label="3"></a><span class="do">## This may be too busy a graph...</span></span>
+<span id="cb28-4"><a aria-label="4"></a><span class="fu">gf_bar</span>(<span class="sc">~</span> dow <span class="sc">|</span> hour, <span class="at">fill =</span> <span class="sc">~</span>tip, <span class="at">data =</span> taxi_modified) <span class="sc">%&gt;%</span></span>
+<span id="cb28-5"><a aria-label="5"></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb28-6"><a aria-label="6"></a>    <span class="at">title =</span> <span class="st">"Plot 4E: Counts of Tips by Hour and Day of Week"</span>,</span>
+<span id="cb28-7"><a aria-label="7"></a>    <span class="at">subtitle =</span> <span class="st">"Is this plot arrangement easy to grasp?"</span></span>
+<span id="cb28-8"><a aria-label="8"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb28-9"><a aria-label="9"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -1447,15 +1450,15 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb29-2"><a></a></span>
-<span id="cb29-3"><a></a><span class="do">## This is better!</span></span>
-<span id="cb29-4"><a></a><span class="fu">gf_bar</span>(<span class="sc">~</span> hour <span class="sc">|</span> dow, <span class="at">fill =</span> <span class="sc">~</span>tip, <span class="at">data =</span> taxi_modified) <span class="sc">%&gt;%</span></span>
-<span id="cb29-5"><a></a>  <span class="fu">gf_labs</span>(</span>
-<span id="cb29-6"><a></a>    <span class="at">title =</span> <span class="st">"Plot 4F: Counts of Tips by Hour and Day of Week"</span>,</span>
-<span id="cb29-7"><a></a>    <span class="at">subtitle =</span> <span class="st">"Facetted by Day of Week"</span></span>
-<span id="cb29-8"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb29-9"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb29-2"><a aria-label="2"></a></span>
+<span id="cb29-3"><a aria-label="3"></a><span class="do">## This is better!</span></span>
+<span id="cb29-4"><a aria-label="4"></a><span class="fu">gf_bar</span>(<span class="sc">~</span> hour <span class="sc">|</span> dow, <span class="at">fill =</span> <span class="sc">~</span>tip, <span class="at">data =</span> taxi_modified) <span class="sc">%&gt;%</span></span>
+<span id="cb29-5"><a aria-label="5"></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb29-6"><a aria-label="6"></a>    <span class="at">title =</span> <span class="st">"Plot 4F: Counts of Tips by Hour and Day of Week"</span>,</span>
+<span id="cb29-7"><a aria-label="7"></a>    <span class="at">subtitle =</span> <span class="st">"Facetted by Day of Week"</span></span>
+<span id="cb29-8"><a aria-label="8"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb29-9"><a aria-label="9"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -1480,47 +1483,47 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 <div id="tabset-7-1">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb30-2"><a></a></span>
-<span id="cb30-3"><a></a><span class="fu">gf_bar</span>(<span class="sc">~</span>hour, <span class="at">fill =</span> <span class="sc">~</span>tip, <span class="at">data =</span> taxi_modified) <span class="sc">%&gt;%</span></span>
-<span id="cb30-4"><a></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Plot 4A: Counts of Tips by Hour"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb30-5"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span>
-<span id="cb30-6"><a></a><span class="do">##</span></span>
-<span id="cb30-7"><a></a><span class="fu">ggplot</span>(taxi_modified) <span class="sc">+</span></span>
-<span id="cb30-8"><a></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> dow, <span class="at">fill =</span> tip)) <span class="sc">+</span></span>
-<span id="cb30-9"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Plot 4B: Counts of Tips by Day of Week"</span>) <span class="sc">+</span></span>
-<span id="cb30-10"><a></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span>
-<span id="cb30-11"><a></a><span class="do">##</span></span>
-<span id="cb30-12"><a></a><span class="fu">ggplot</span>(taxi_modified) <span class="sc">+</span></span>
-<span id="cb30-13"><a></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> month, <span class="at">fill =</span> tip)) <span class="sc">+</span></span>
-<span id="cb30-14"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Plot 4C: Counts of Tips by Month"</span>) <span class="sc">+</span></span>
-<span id="cb30-15"><a></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span>
-<span id="cb30-16"><a></a><span class="do">##</span></span>
-<span id="cb30-17"><a></a><span class="fu">ggplot</span>(taxi_modified) <span class="sc">+</span></span>
-<span id="cb30-18"><a></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> month, <span class="at">fill =</span> tip)) <span class="sc">+</span></span>
-<span id="cb30-19"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dow) <span class="sc">+</span></span>
-<span id="cb30-20"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Plot 4D: Counts of Tips by Day of Week and Month"</span>) <span class="sc">+</span></span>
-<span id="cb30-21"><a></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span>
-<span id="cb30-22"><a></a><span class="do">##</span></span>
-<span id="cb30-23"><a></a><span class="fu">ggplot</span>(taxi_modified) <span class="sc">+</span></span>
-<span id="cb30-24"><a></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> dow, <span class="at">fill =</span> tip)) <span class="sc">+</span></span>
-<span id="cb30-25"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>hour) <span class="sc">+</span></span>
-<span id="cb30-26"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb30-27"><a></a>    <span class="at">title =</span> <span class="st">"Plot 4E: Counts of Tips by Hour and Day of Week"</span>,</span>
-<span id="cb30-28"><a></a>    <span class="at">subtitle =</span> <span class="st">"Is this plot arrangement easy to grasp?"</span></span>
-<span id="cb30-29"><a></a>  ) <span class="sc">+</span></span>
-<span id="cb30-30"><a></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span>
-<span id="cb30-31"><a></a><span class="do">##</span></span>
-<span id="cb30-32"><a></a><span class="fu">ggplot</span>(taxi_modified) <span class="sc">+</span></span>
-<span id="cb30-33"><a></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> hour, <span class="at">fill =</span> tip)) <span class="sc">+</span></span>
-<span id="cb30-34"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dow) <span class="sc">+</span></span>
-<span id="cb30-35"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb30-36"><a></a>    <span class="at">title =</span> <span class="st">"Plot 4F: Counts of Tips by Hour and Day of Week"</span>,</span>
-<span id="cb30-37"><a></a>    <span class="at">subtitle =</span> <span class="st">"Swapped the Facets"</span></span>
-<span id="cb30-38"><a></a>  ) <span class="sc">+</span></span>
-<span id="cb30-39"><a></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb30-2"><a aria-label="2"></a></span>
+<span id="cb30-3"><a aria-label="3"></a><span class="fu">gf_bar</span>(<span class="sc">~</span>hour, <span class="at">fill =</span> <span class="sc">~</span>tip, <span class="at">data =</span> taxi_modified) <span class="sc">%&gt;%</span></span>
+<span id="cb30-4"><a aria-label="4"></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Plot 4A: Counts of Tips by Hour"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb30-5"><a aria-label="5"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span>
+<span id="cb30-6"><a aria-label="6"></a><span class="do">##</span></span>
+<span id="cb30-7"><a aria-label="7"></a><span class="fu">ggplot</span>(taxi_modified) <span class="sc">+</span></span>
+<span id="cb30-8"><a aria-label="8"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> dow, <span class="at">fill =</span> tip)) <span class="sc">+</span></span>
+<span id="cb30-9"><a aria-label="9"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Plot 4B: Counts of Tips by Day of Week"</span>) <span class="sc">+</span></span>
+<span id="cb30-10"><a aria-label="10"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span>
+<span id="cb30-11"><a aria-label="11"></a><span class="do">##</span></span>
+<span id="cb30-12"><a aria-label="12"></a><span class="fu">ggplot</span>(taxi_modified) <span class="sc">+</span></span>
+<span id="cb30-13"><a aria-label="13"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> month, <span class="at">fill =</span> tip)) <span class="sc">+</span></span>
+<span id="cb30-14"><a aria-label="14"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Plot 4C: Counts of Tips by Month"</span>) <span class="sc">+</span></span>
+<span id="cb30-15"><a aria-label="15"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span>
+<span id="cb30-16"><a aria-label="16"></a><span class="do">##</span></span>
+<span id="cb30-17"><a aria-label="17"></a><span class="fu">ggplot</span>(taxi_modified) <span class="sc">+</span></span>
+<span id="cb30-18"><a aria-label="18"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> month, <span class="at">fill =</span> tip)) <span class="sc">+</span></span>
+<span id="cb30-19"><a aria-label="19"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dow) <span class="sc">+</span></span>
+<span id="cb30-20"><a aria-label="20"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Plot 4D: Counts of Tips by Day of Week and Month"</span>) <span class="sc">+</span></span>
+<span id="cb30-21"><a aria-label="21"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span>
+<span id="cb30-22"><a aria-label="22"></a><span class="do">##</span></span>
+<span id="cb30-23"><a aria-label="23"></a><span class="fu">ggplot</span>(taxi_modified) <span class="sc">+</span></span>
+<span id="cb30-24"><a aria-label="24"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> dow, <span class="at">fill =</span> tip)) <span class="sc">+</span></span>
+<span id="cb30-25"><a aria-label="25"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>hour) <span class="sc">+</span></span>
+<span id="cb30-26"><a aria-label="26"></a>  <span class="fu">labs</span>(</span>
+<span id="cb30-27"><a aria-label="27"></a>    <span class="at">title =</span> <span class="st">"Plot 4E: Counts of Tips by Hour and Day of Week"</span>,</span>
+<span id="cb30-28"><a aria-label="28"></a>    <span class="at">subtitle =</span> <span class="st">"Is this plot arrangement easy to grasp?"</span></span>
+<span id="cb30-29"><a aria-label="29"></a>  ) <span class="sc">+</span></span>
+<span id="cb30-30"><a aria-label="30"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span>
+<span id="cb30-31"><a aria-label="31"></a><span class="do">##</span></span>
+<span id="cb30-32"><a aria-label="32"></a><span class="fu">ggplot</span>(taxi_modified) <span class="sc">+</span></span>
+<span id="cb30-33"><a aria-label="33"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> hour, <span class="at">fill =</span> tip)) <span class="sc">+</span></span>
+<span id="cb30-34"><a aria-label="34"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dow) <span class="sc">+</span></span>
+<span id="cb30-35"><a aria-label="35"></a>  <span class="fu">labs</span>(</span>
+<span id="cb30-36"><a aria-label="36"></a>    <span class="at">title =</span> <span class="st">"Plot 4F: Counts of Tips by Hour and Day of Week"</span>,</span>
+<span id="cb30-37"><a aria-label="37"></a>    <span class="at">subtitle =</span> <span class="st">"Swapped the Facets"</span></span>
+<span id="cb30-38"><a aria-label="38"></a>  ) <span class="sc">+</span></span>
+<span id="cb30-39"><a aria-label="39"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell quarto-layout-panel" data-layout-ncol="2" data-layout-nrow="2">
+<div class="cell quarto-layout-panel" data-layout-nrow="2" data-layout-ncol="2">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <p><a href="index_files/figure-html/bar-tip-others-ggplot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-27"><img data-src="index_files/figure-html/bar-tip-others-ggplot-1.png" width="672"></a></p>
@@ -1561,12 +1564,12 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 </ul>
 </section></section>
 <section>
-<section id="bar-plot-extras" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d64692073697a652d65787472612d6c617267652073697a653d3278203e7d7d-bar-plot-extras" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="mdi:size-extra-large" style="font-size: 2em;" aria-label="Icon size-extra-large from mdi Iconify.design set." title="Icon size-extra-large from mdi Iconify.design set."></iconify-icon> Bar Plot Extras</h2>
 
 </section>
-<section id="gf-bar-and-gf-col" class="slide level3">
-<h3>gf-bar and gf-col</h3>
+<section id="gf_bar-and-gf_col" class="slide level3">
+<h3>gf_bar and gf_col</h3>
 <ul>
 <li>Note also that <code>gf_bar/geom_bar</code> takes only ONE variable (for the x-axis)</li>
 <li>Whereas <code>gf_col/geom_col</code> needs both X and Y variables since it simply plots columns.</li>
@@ -1584,17 +1587,17 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb31-2"><a></a></span>
-<span id="cb31-3"><a></a><span class="fu">gf_props</span>(<span class="sc">~</span>substance,</span>
-<span id="cb31-4"><a></a>  <span class="at">data =</span> mosaicData<span class="sc">::</span>HELPrct, <span class="at">fill =</span> <span class="sc">~</span>sex,</span>
-<span id="cb31-5"><a></a>  <span class="at">position =</span> <span class="st">"dodge"</span></span>
-<span id="cb31-6"><a></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb31-7"><a></a>  <span class="fu">gf_labs</span>(</span>
-<span id="cb31-8"><a></a>    <span class="at">title =</span> <span class="st">"Plotting Proportions using gf_props"</span>,</span>
-<span id="cb31-9"><a></a>    <span class="at">subtitle =</span> <span class="st">"Option = dodge"</span></span>
-<span id="cb31-10"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb31-11"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb31-2"><a aria-label="2"></a></span>
+<span id="cb31-3"><a aria-label="3"></a><span class="fu">gf_props</span>(<span class="sc">~</span>substance,</span>
+<span id="cb31-4"><a aria-label="4"></a>  <span class="at">data =</span> mosaicData<span class="sc">::</span>HELPrct, <span class="at">fill =</span> <span class="sc">~</span>sex,</span>
+<span id="cb31-5"><a aria-label="5"></a>  <span class="at">position =</span> <span class="st">"dodge"</span></span>
+<span id="cb31-6"><a aria-label="6"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb31-7"><a aria-label="7"></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb31-8"><a aria-label="8"></a>    <span class="at">title =</span> <span class="st">"Plotting Proportions using gf_props"</span>,</span>
+<span id="cb31-9"><a aria-label="9"></a>    <span class="at">subtitle =</span> <span class="st">"Option = dodge"</span></span>
+<span id="cb31-10"><a aria-label="10"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb31-11"><a aria-label="11"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -1612,17 +1615,17 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb32-2"><a></a></span>
-<span id="cb32-3"><a></a><span class="fu">gf_props</span>(<span class="sc">~</span>substance,</span>
-<span id="cb32-4"><a></a>  <span class="at">data =</span> mosaicData<span class="sc">::</span>HELPrct, <span class="at">fill =</span> <span class="sc">~</span>sex,</span>
-<span id="cb32-5"><a></a>  <span class="at">position =</span> <span class="st">"fill"</span></span>
-<span id="cb32-6"><a></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb32-7"><a></a>  <span class="fu">gf_labs</span>(</span>
-<span id="cb32-8"><a></a>    <span class="at">title =</span> <span class="st">"Plotting Proportions using gf_props"</span>,</span>
-<span id="cb32-9"><a></a>    <span class="at">subtitle =</span> <span class="st">"Option = fill"</span></span>
-<span id="cb32-10"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb32-11"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb32-2"><a aria-label="2"></a></span>
+<span id="cb32-3"><a aria-label="3"></a><span class="fu">gf_props</span>(<span class="sc">~</span>substance,</span>
+<span id="cb32-4"><a aria-label="4"></a>  <span class="at">data =</span> mosaicData<span class="sc">::</span>HELPrct, <span class="at">fill =</span> <span class="sc">~</span>sex,</span>
+<span id="cb32-5"><a aria-label="5"></a>  <span class="at">position =</span> <span class="st">"fill"</span></span>
+<span id="cb32-6"><a aria-label="6"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb32-7"><a aria-label="7"></a>  <span class="fu">gf_labs</span>(</span>
+<span id="cb32-8"><a aria-label="8"></a>    <span class="at">title =</span> <span class="st">"Plotting Proportions using gf_props"</span>,</span>
+<span id="cb32-9"><a aria-label="9"></a>    <span class="at">subtitle =</span> <span class="st">"Option = fill"</span></span>
+<span id="cb32-10"><a aria-label="10"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb32-11"><a aria-label="11"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -1640,19 +1643,19 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb33-2"><a></a></span>
-<span id="cb33-3"><a></a><span class="fu">gf_percents</span>(<span class="sc">~</span>substance,</span>
-<span id="cb33-4"><a></a>  <span class="at">data =</span> mosaicData<span class="sc">::</span>HELPrct, <span class="at">fill =</span> <span class="sc">~</span>sex,</span>
-<span id="cb33-5"><a></a>  <span class="at">position =</span> <span class="st">"dodge"</span></span>
-<span id="cb33-6"><a></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb33-7"><a></a>  <span class="fu">gf_refine</span>(</span>
-<span id="cb33-8"><a></a>    <span class="fu">scale_y_continuous</span>(</span>
-<span id="cb33-9"><a></a>      <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_percent</span>(<span class="at">scale =</span> <span class="dv">1</span>)</span>
-<span id="cb33-10"><a></a>    )</span>
-<span id="cb33-11"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb33-12"><a></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Plotting Percentages using gf_percents"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb33-13"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb33-2"><a aria-label="2"></a></span>
+<span id="cb33-3"><a aria-label="3"></a><span class="fu">gf_percents</span>(<span class="sc">~</span>substance,</span>
+<span id="cb33-4"><a aria-label="4"></a>  <span class="at">data =</span> mosaicData<span class="sc">::</span>HELPrct, <span class="at">fill =</span> <span class="sc">~</span>sex,</span>
+<span id="cb33-5"><a aria-label="5"></a>  <span class="at">position =</span> <span class="st">"dodge"</span></span>
+<span id="cb33-6"><a aria-label="6"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-7"><a aria-label="7"></a>  <span class="fu">gf_refine</span>(</span>
+<span id="cb33-8"><a aria-label="8"></a>    <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb33-9"><a aria-label="9"></a>      <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_percent</span>(<span class="at">scale =</span> <span class="dv">1</span>)</span>
+<span id="cb33-10"><a aria-label="10"></a>    )</span>
+<span id="cb33-11"><a aria-label="11"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb33-12"><a aria-label="12"></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Plotting Percentages using gf_percents"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-13"><a aria-label="13"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -1669,7 +1672,7 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 </div>
 </div>
 </section></section>
-<section id="are-the-differences-in-proportion-significant" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e7420696d706f7274616e742d31322d726567756c6172203e7d7d-are-the-differences-in-proportion-significant" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="fluent:important-12-regular" aria-label="Icon important-12-regular from fluent Iconify.design set." title="Icon important-12-regular from fluent Iconify.design set."></iconify-icon> Are the Differences in Proportion Significant?</h2>
 <ul>
 <li>When we see situations such as this, where data has one or more Qual variables that are <em>binary</em>(Yes/No)..</li>
@@ -1680,7 +1683,7 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 </ul>
 </section>
 
-<section id="your-turn" class="title-slide slide level2 center scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a6920706572736f6e203e7d7d-your-turn" class="title-slide slide level2 center scrollable">
 <h2><iconify-icon inline="" icon="openmoji:person" aria-label="Icon person from openmoji Iconify.design set." title="Icon person from openmoji Iconify.design set."></iconify-icon> Your Turn</h2>
 <ol type="1">
 <li>Click on the Dataset Icon, and unzip that archive. Try to make Bar plots with each of them, using one or more Qual variables. <a href="../../../../../materials/Data/qdd-data.zip"><i class="fa-solid fa-database"></i> Datasets</a></li>
@@ -1754,7 +1757,7 @@ $ distance &lt;dbl&gt; 17.19, 0.88, 18.11, 20.70, 12.23, 0.94, 17.47, 17.67, 1.8
 </section>
 
 <section>
-<section id="wait-but-why" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="mingcute:thought-line" aria-label="Icon thought-line from mingcute Iconify.design set." title="Icon thought-line from mingcute Iconify.design set."></iconify-icon> Wait, But Why?</h2>
 <ul>
 <li>Always <del>count your chickens</del> count your data before you model or infer!</li>
@@ -1786,7 +1789,7 @@ Figure&nbsp;2: Zipf’s Law
 <li>Or the method how they cracked the code to the treasure in <a href="https://www.youtube.com/watch?v=hsKVFeywcRY">this story.</a></li>
 </ul>
 </section></section>
-<section id="conclusion" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusion</h2>
 <ul>
 <li>Qualitative data variables can be plotted as <strong>counts</strong>, using Bar Charts</li>
@@ -1799,7 +1802,7 @@ Figure&nbsp;2: Zipf’s Law
 </ul>
 </section>
 
-<section id="ai-generated-summary-and-podcast" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920656f732d69636f6e73206169203e7d7d-ai-generated-summary-and-podcast" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="eos-icons:ai" aria-label="Icon ai from eos-icons Iconify.design set." title="Icon ai from eos-icons Iconify.design set."></iconify-icon> AI Generated Summary and Podcast</h2>
 <ul>
 <li>This text excerpt focuses on bar charts and histograms as visualization tools for qualitative and quantitative data, respectively. - It walks the reader through the creation of bar charts using the R programming language, illustrating the concept through a case study using the Chicago taxi rides dataset.</li>
@@ -1815,13 +1818,13 @@ Figure&nbsp;2: Zipf’s Law
 </center>
 </section>
 
-<section id="references" class="title-slide slide level2 smaller scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d6c7472203e7d7d-references" class="title-slide slide level2 smaller scrollable">
 <h2><iconify-icon inline="" icon="ooui:references-ltr" aria-label="Icon references-ltr from ooui Iconify.design set." title="Icon references-ltr from ooui Iconify.design set."></iconify-icon> References</h2>
 <ol type="1">
 <li>Daniel Kaplan and Randall Pruim. <em>ggformula: Formula Interface for ggplot2 (full version)</em>. <a href="https://www.mosaic-web.org/ggformula/articles/pkgdown/ggformula-long.html" class="uri">https://www.mosaic-web.org/ggformula/articles/pkgdown/ggformula-long.html</a></li>
 <li>Winston Chang (2024). <em>R Graphics Cookbook</em>. <a href="https://r-graphics.org" class="uri">https://r-graphics.org</a></li>
 </ol>
-<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" data-entry-spacing="0" role="list">
+<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" role="list">
 <p><iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -1837,27 +1840,27 @@ Figure&nbsp;2: Zipf’s Law
 <tr class="odd">
 <td style="text-align: left;">ggformula</td>
 <td style="text-align: left;">1.0.1</td>
-<td style="text-align: left;"><span class="citation" data-cites="ggformula">Kaplan and Pruim (<a href="#/references" role="doc-biblioref" onclick="">2026</a>)</span></td>
+<td style="text-align: left;"><span class="citation" data-cites="ggformula">Kaplan and Pruim (<a href="#/b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d6c7472203e7d7d-references" role="doc-biblioref" onclick="">2026</a>)</span></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">mosaic</td>
 <td style="text-align: left;">1.10.2</td>
-<td style="text-align: left;"><span class="citation" data-cites="mosaic">Pruim, Kaplan, and Horton (<a href="#/references" role="doc-biblioref" onclick="">2017</a>)</span></td>
+<td style="text-align: left;"><span class="citation" data-cites="mosaic">Pruim et al. (<a href="#/b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d6c7472203e7d7d-references" role="doc-biblioref" onclick="">2017</a>)</span></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">tidyplots</td>
 <td style="text-align: left;">0.4.0</td>
-<td style="text-align: left;"><span class="citation" data-cites="tidyplots">Engler (<a href="#/references" role="doc-biblioref" onclick="">2025</a>)</span></td>
+<td style="text-align: left;"><span class="citation" data-cites="tidyplots">Engler (<a href="#/b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d6c7472203e7d7d-references" role="doc-biblioref" onclick="">2025</a>)</span></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">tidyverse</td>
 <td style="text-align: left;">2.0.0</td>
-<td style="text-align: left;"><span class="citation" data-cites="tidyverse">Wickham et al. (<a href="#/references" role="doc-biblioref" onclick="">2019</a>)</span></td>
+<td style="text-align: left;"><span class="citation" data-cites="tidyverse">Wickham et al. (<a href="#/b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d6c7472203e7d7d-references" role="doc-biblioref" onclick="">2019</a>)</span></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">tinyplot</td>
-<td style="text-align: left;">0.6.1</td>
-<td style="text-align: left;"><span class="citation" data-cites="tinyplot">McDermott, Arel-Bundock, and Zeileis (<a href="#/references" role="doc-biblioref" onclick="">2026</a>)</span></td>
+<td style="text-align: left;">0.7.0</td>
+<td style="text-align: left;"><span class="citation" data-cites="tinyplot">McDermott et al. (<a href="#/b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d6c7472203e7d7d-references" role="doc-biblioref" onclick="">2026</a>)</span></td>
 </tr>
 </tbody>
 </table>
@@ -1876,7 +1879,7 @@ McDermott, Grant, Vincent Arel-Bundock, and Achim Zeileis. 2026. <em><span class
 Pruim, Randall, Daniel T Kaplan, and Nicholas J Horton. 2017. <span>“The Mosaic Package: Helping Students to <span>‘<span class="nocase">Think with Data</span>’</span> Using r.”</span> <em>The R Journal</em> 9 (1): 77–102. <a href="https://journal.r-project.org/articles/RJ-2017-024/index.html">https://journal.r-project.org/articles/RJ-2017-024/index.html</a>.
 </div>
 <div id="ref-tidyverse" class="csl-entry" role="listitem">
-Wickham, Hadley, Mara Averick, Jennifer Bryan, Winston Chang, Lucy D’Agostino McGowan, Romain François, Garrett Grolemund, et al. 2019. <span>“Welcome to the <span class="nocase">tidyverse</span>.”</span> <em>Journal of Open Source Software</em> 4 (43): 1686. <a href="https://doi.org/10.21105/joss.01686">https://doi.org/10.21105/joss.01686</a>.
+Wickham, Hadley, Mara Averick, Jennifer Bryan, et al. 2019. <span>“Welcome to the <span class="nocase">tidyverse</span>.”</span> <em>Journal of Open Source Software</em> 4 (43): 1686. <a href="https://doi.org/10.21105/joss.01686">https://doi.org/10.21105/joss.01686</a>.
 </div>
 </div>
 
@@ -1918,7 +1921,6 @@ Wickham, Hadley, Mara Averick, Jennifer Bryan, Winston Chang, Lucy D’Agostino 
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
 'jumpToSlide': true,
-'view': "scroll",
 'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
 'chalkboard': {"buttons":true},
 'smaller': true,
@@ -2062,6 +2064,13 @@ Wickham, Hadley, Mara Averick, Jennifer Bryan, Winston Chang, Lucy D’Agostino 
         // devices. It is advisable to set this to a lower number than
         // viewDistance in order to save resources.
         mobileViewDistance: 2,
+
+        // Enable scroll view
+        view: 'scroll',
+        scrollProgress: 'auto',
+        scrollActivationWidth: 0,
+        scrollSnap: 'mandatory',
+        scrollLayout: 'full',
 
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be

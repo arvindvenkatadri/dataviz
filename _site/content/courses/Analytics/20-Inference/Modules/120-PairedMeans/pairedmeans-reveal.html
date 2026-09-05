@@ -7,12 +7,12 @@
 <script src="../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-795e9e8eca1e12b12abcb09a27409631.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-12757e4b7af482b2d9c5bd8860d2b707.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script src="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.8.27">
+  <meta name="generator" content="quarto-1.10.18">
 
   <meta name="dcterms.date" content="2022-11-10">
   <title>The Mad Hatter's Guide to Data Viz and Stats in R – Inference for Comparing Two Paired Means</title>
@@ -22,10 +22,16 @@
   <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/reveal.css">
   <style>
-    code{white-space: pre-wrap;}
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
@@ -101,7 +107,6 @@
     div.csl-bib-body { }
     div.csl-entry {
       clear: both;
-      margin-bottom: 0em;
     }
     .hanging-indent div.csl-entry {
       margin-left:2em;
@@ -118,7 +123,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/theme/quarto-180c62c9bcf69a0506044dd7f3253a18.css">
+  <link rel="stylesheet" href="../../../../../../site_libs/revealjs/dist/theme/quarto-7d27a531335543ee0379719666959585.css">
   <link href="../../../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -220,7 +225,7 @@
   <script src="../../../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 <meta property="og:title" content="Inference for Comparing Two Paired Means – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:description" content="Means from repeated measurements">
-<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
+<meta property="og:site_name" content="The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta name="twitter:title" content="Inference for Comparing Two Paired Means – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta name="twitter:description" content="Means from repeated measurements">
 <meta name="twitter:card" content="summary">
@@ -239,158 +244,158 @@
   <p class="date">2022-11-10</p>
 </section>
 <section>
-<section id="setting-up-r-packages" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R Packages</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a></a><span class="fu">library</span>(mosaic)</span>
-<span id="cb1-3"><a></a><span class="fu">library</span>(broom) <span class="co"># Tidy Test data</span></span>
-<span id="cb1-4"><a></a><span class="fu">library</span>(resampledata3) <span class="co"># Datasets from Chihara and Hesterberg's book</span></span>
-<span id="cb1-5"><a></a><span class="fu">library</span>(gt) <span class="co"># for tables</span></span>
-<span id="cb1-6"><a></a><span class="do">##</span></span>
-<span id="cb1-7"><a></a><span class="fu">library</span>(visStatistics) <span class="co"># All-in-one Stats test package</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a aria-label="1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a aria-label="2"></a><span class="fu">library</span>(mosaic)</span>
+<span id="cb1-3"><a aria-label="3"></a><span class="fu">library</span>(broom) <span class="co"># Tidy Test data</span></span>
+<span id="cb1-4"><a aria-label="4"></a><span class="fu">library</span>(resampledata3) <span class="co"># Datasets from Chihara and Hesterberg's book</span></span>
+<span id="cb1-5"><a aria-label="5"></a><span class="fu">library</span>(gt) <span class="co"># for tables</span></span>
+<span id="cb1-6"><a aria-label="6"></a><span class="do">##</span></span>
+<span id="cb1-7"><a aria-label="7"></a><span class="fu">library</span>(visStatistics) <span class="co"># All-in-one Stats test package</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <h4 id="plot-fonts-and-theme">Plot Fonts and Theme</h4>
 <div class="cell" data-messages="false">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">library</span>(systemfonts)</span>
-<span id="cb2-2"><a></a><span class="fu">library</span>(showtext)</span>
-<span id="cb2-3"><a></a><span class="do">## Clean the slate</span></span>
-<span id="cb2-4"><a></a>systemfonts<span class="sc">::</span><span class="fu">clear_local_fonts</span>()</span>
-<span id="cb2-5"><a></a>systemfonts<span class="sc">::</span><span class="fu">clear_registry</span>()</span>
-<span id="cb2-6"><a></a><span class="do">##</span></span>
-<span id="cb2-7"><a></a><span class="fu">showtext_opts</span>(<span class="at">dpi =</span> <span class="dv">96</span>) <span class="co"># set DPI for showtext</span></span>
-<span id="cb2-8"><a></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
-<span id="cb2-9"><a></a>  <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-10"><a></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/Alegreya-Regular.ttf"</span>,</span>
-<span id="cb2-11"><a></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/Alegreya-Bold.ttf"</span>,</span>
-<span id="cb2-12"><a></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/Alegreya-Italic.ttf"</span>,</span>
-<span id="cb2-13"><a></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/Alegreya-BoldItalic.ttf"</span></span>
-<span id="cb2-14"><a></a>)</span>
-<span id="cb2-15"><a></a></span>
-<span id="cb2-16"><a></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
-<span id="cb2-17"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-18"><a></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Regular.ttf"</span>,</span>
-<span id="cb2-19"><a></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Bold.ttf"</span>,</span>
-<span id="cb2-20"><a></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Italic.ttf"</span>,</span>
-<span id="cb2-21"><a></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-BoldItalic.ttf"</span></span>
-<span id="cb2-22"><a></a>)</span>
-<span id="cb2-23"><a></a><span class="fu">showtext_auto</span>(<span class="at">enable =</span> <span class="cn">TRUE</span>) <span class="co"># enable showtext</span></span>
-<span id="cb2-24"><a></a><span class="do">##</span></span>
-<span id="cb2-25"><a></a>theme_custom <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb2-26"><a></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">10</span>) <span class="sc">+</span></span>
-<span id="cb2-27"><a></a></span>
-<span id="cb2-28"><a></a>    <span class="co"># theme(panel.widths = unit(11, "cm"),</span></span>
-<span id="cb2-29"><a></a>    <span class="co">#       panel.heights = unit(6.79, "cm")) + # Golden Ratio</span></span>
-<span id="cb2-30"><a></a></span>
-<span id="cb2-31"><a></a>    <span class="fu">theme</span>(</span>
-<span id="cb2-32"><a></a>      <span class="at">plot.margin =</span> <span class="fu">margin_auto</span>(<span class="at">t =</span> <span class="dv">1</span>, <span class="at">r =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="dv">1</span>, <span class="at">l =</span> <span class="dv">1</span>, <span class="at">unit =</span> <span class="st">"cm"</span>),</span>
-<span id="cb2-33"><a></a>      <span class="at">plot.background =</span> <span class="fu">element_rect</span>(</span>
-<span id="cb2-34"><a></a>        <span class="at">fill =</span> <span class="st">"bisque"</span>,</span>
-<span id="cb2-35"><a></a>        <span class="at">colour =</span> <span class="st">"black"</span>,</span>
-<span id="cb2-36"><a></a>        <span class="at">linewidth =</span> <span class="dv">1</span></span>
-<span id="cb2-37"><a></a>      )</span>
-<span id="cb2-38"><a></a>    ) <span class="sc">+</span></span>
-<span id="cb2-39"><a></a></span>
-<span id="cb2-40"><a></a>    <span class="fu">theme_sub_axis</span>(</span>
-<span id="cb2-41"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-42"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-43"><a></a>        <span class="at">size =</span> <span class="dv">10</span></span>
-<span id="cb2-44"><a></a>      ),</span>
-<span id="cb2-45"><a></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-46"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-47"><a></a>        <span class="at">size =</span> <span class="dv">8</span></span>
-<span id="cb2-48"><a></a>      )</span>
-<span id="cb2-49"><a></a>    ) <span class="sc">+</span></span>
-<span id="cb2-50"><a></a></span>
-<span id="cb2-51"><a></a>    <span class="fu">theme_sub_legend</span>(</span>
-<span id="cb2-52"><a></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-53"><a></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-54"><a></a>        <span class="at">size =</span> <span class="dv">6</span></span>
-<span id="cb2-55"><a></a>      ),</span>
-<span id="cb2-56"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-57"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-58"><a></a>        <span class="at">size =</span> <span class="dv">8</span></span>
-<span id="cb2-59"><a></a>      )</span>
-<span id="cb2-60"><a></a>    ) <span class="sc">+</span></span>
-<span id="cb2-61"><a></a></span>
-<span id="cb2-62"><a></a>    <span class="fu">theme_sub_plot</span>(</span>
-<span id="cb2-63"><a></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-64"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-65"><a></a>        <span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span></span>
-<span id="cb2-66"><a></a>      ),</span>
-<span id="cb2-67"><a></a>      <span class="at">title.position =</span> <span class="st">"plot"</span>,</span>
-<span id="cb2-68"><a></a>      <span class="at">subtitle =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-69"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-70"><a></a>        <span class="at">size =</span> <span class="dv">10</span></span>
-<span id="cb2-71"><a></a>      ),</span>
-<span id="cb2-72"><a></a>      <span class="at">caption =</span> <span class="fu">element_text</span>(</span>
-<span id="cb2-73"><a></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
-<span id="cb2-74"><a></a>        <span class="at">size =</span> <span class="dv">6</span></span>
-<span id="cb2-75"><a></a>      ),</span>
-<span id="cb2-76"><a></a>      <span class="at">caption.position =</span> <span class="st">"plot"</span></span>
-<span id="cb2-77"><a></a>    )</span>
-<span id="cb2-78"><a></a>}</span>
-<span id="cb2-79"><a></a></span>
-<span id="cb2-80"><a></a><span class="do">## Use available fonts in ggplot text geoms too!</span></span>
-<span id="cb2-81"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-82"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-83"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-84"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-85"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-86"><a></a>))</span>
-<span id="cb2-87"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-88"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-89"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-90"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-91"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-92"><a></a>))</span>
-<span id="cb2-93"><a></a></span>
-<span id="cb2-94"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"marquee"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-95"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-96"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-97"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-98"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-99"><a></a>))</span>
-<span id="cb2-100"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-101"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-102"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-103"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-104"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-105"><a></a>))</span>
-<span id="cb2-106"><a></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
-<span id="cb2-107"><a></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
-<span id="cb2-108"><a></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
-<span id="cb2-109"><a></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb2-110"><a></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
-<span id="cb2-111"><a></a>))</span>
-<span id="cb2-112"><a></a></span>
-<span id="cb2-113"><a></a><span class="do">## Set the theme</span></span>
-<span id="cb2-114"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb2-115"><a></a></span>
-<span id="cb2-116"><a></a><span class="do">## tinytable options</span></span>
-<span id="cb2-117"><a></a><span class="fu">options</span>(<span class="st">"tinytable_tt_digits"</span> <span class="ot">=</span> <span class="dv">2</span>)</span>
-<span id="cb2-118"><a></a><span class="fu">options</span>(<span class="st">"tinytable_format_num_fmt"</span> <span class="ot">=</span> <span class="st">"significant_cell"</span>)</span>
-<span id="cb2-119"><a></a><span class="fu">options</span>(<span class="at">tinytable_html_mathjax =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-120"><a></a></span>
-<span id="cb2-121"><a></a></span>
-<span id="cb2-122"><a></a><span class="do">## Set defaults for flextable</span></span>
-<span id="cb2-123"><a></a>flextable<span class="sc">::</span><span class="fu">set_flextable_defaults</span>(<span class="at">font.family =</span> <span class="st">"Roboto Condensed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a aria-label="1"></a><span class="fu">library</span>(systemfonts)</span>
+<span id="cb2-2"><a aria-label="2"></a><span class="fu">library</span>(showtext)</span>
+<span id="cb2-3"><a aria-label="3"></a><span class="do">## Clean the slate</span></span>
+<span id="cb2-4"><a aria-label="4"></a>systemfonts<span class="sc">::</span><span class="fu">clear_local_fonts</span>()</span>
+<span id="cb2-5"><a aria-label="5"></a>systemfonts<span class="sc">::</span><span class="fu">clear_registry</span>()</span>
+<span id="cb2-6"><a aria-label="6"></a><span class="do">##</span></span>
+<span id="cb2-7"><a aria-label="7"></a><span class="fu">showtext_opts</span>(<span class="at">dpi =</span> <span class="dv">96</span>) <span class="co"># set DPI for showtext</span></span>
+<span id="cb2-8"><a aria-label="8"></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
+<span id="cb2-9"><a aria-label="9"></a>  <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-10"><a aria-label="10"></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/Alegreya-Regular.ttf"</span>,</span>
+<span id="cb2-11"><a aria-label="11"></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/Alegreya-Bold.ttf"</span>,</span>
+<span id="cb2-12"><a aria-label="12"></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/Alegreya-Italic.ttf"</span>,</span>
+<span id="cb2-13"><a aria-label="13"></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/Alegreya-BoldItalic.ttf"</span></span>
+<span id="cb2-14"><a aria-label="14"></a>)</span>
+<span id="cb2-15"><a aria-label="15"></a></span>
+<span id="cb2-16"><a aria-label="16"></a>sysfonts<span class="sc">::</span><span class="fu">font_add</span>(</span>
+<span id="cb2-17"><a aria-label="17"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-18"><a aria-label="18"></a>  <span class="at">regular =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Regular.ttf"</span>,</span>
+<span id="cb2-19"><a aria-label="19"></a>  <span class="at">bold =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Bold.ttf"</span>,</span>
+<span id="cb2-20"><a aria-label="20"></a>  <span class="at">italic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-Italic.ttf"</span>,</span>
+<span id="cb2-21"><a aria-label="21"></a>  <span class="at">bolditalic =</span> <span class="st">"../../../../../../fonts/RobotoCondensed-BoldItalic.ttf"</span></span>
+<span id="cb2-22"><a aria-label="22"></a>)</span>
+<span id="cb2-23"><a aria-label="23"></a><span class="fu">showtext_auto</span>(<span class="at">enable =</span> <span class="cn">TRUE</span>) <span class="co"># enable showtext</span></span>
+<span id="cb2-24"><a aria-label="24"></a><span class="do">##</span></span>
+<span id="cb2-25"><a aria-label="25"></a>theme_custom <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb2-26"><a aria-label="26"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">10</span>) <span class="sc">+</span></span>
+<span id="cb2-27"><a aria-label="27"></a></span>
+<span id="cb2-28"><a aria-label="28"></a>    <span class="co"># theme(panel.widths = unit(11, "cm"),</span></span>
+<span id="cb2-29"><a aria-label="29"></a>    <span class="co">#       panel.heights = unit(6.79, "cm")) + # Golden Ratio</span></span>
+<span id="cb2-30"><a aria-label="30"></a></span>
+<span id="cb2-31"><a aria-label="31"></a>    <span class="fu">theme</span>(</span>
+<span id="cb2-32"><a aria-label="32"></a>      <span class="at">plot.margin =</span> <span class="fu">margin_auto</span>(<span class="at">t =</span> <span class="dv">1</span>, <span class="at">r =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="dv">1</span>, <span class="at">l =</span> <span class="dv">1</span>, <span class="at">unit =</span> <span class="st">"cm"</span>),</span>
+<span id="cb2-33"><a aria-label="33"></a>      <span class="at">plot.background =</span> <span class="fu">element_rect</span>(</span>
+<span id="cb2-34"><a aria-label="34"></a>        <span class="at">fill =</span> <span class="st">"bisque"</span>,</span>
+<span id="cb2-35"><a aria-label="35"></a>        <span class="at">colour =</span> <span class="st">"black"</span>,</span>
+<span id="cb2-36"><a aria-label="36"></a>        <span class="at">linewidth =</span> <span class="dv">1</span></span>
+<span id="cb2-37"><a aria-label="37"></a>      )</span>
+<span id="cb2-38"><a aria-label="38"></a>    ) <span class="sc">+</span></span>
+<span id="cb2-39"><a aria-label="39"></a></span>
+<span id="cb2-40"><a aria-label="40"></a>    <span class="fu">theme_sub_axis</span>(</span>
+<span id="cb2-41"><a aria-label="41"></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-42"><a aria-label="42"></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-43"><a aria-label="43"></a>        <span class="at">size =</span> <span class="dv">10</span></span>
+<span id="cb2-44"><a aria-label="44"></a>      ),</span>
+<span id="cb2-45"><a aria-label="45"></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-46"><a aria-label="46"></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-47"><a aria-label="47"></a>        <span class="at">size =</span> <span class="dv">8</span></span>
+<span id="cb2-48"><a aria-label="48"></a>      )</span>
+<span id="cb2-49"><a aria-label="49"></a>    ) <span class="sc">+</span></span>
+<span id="cb2-50"><a aria-label="50"></a></span>
+<span id="cb2-51"><a aria-label="51"></a>    <span class="fu">theme_sub_legend</span>(</span>
+<span id="cb2-52"><a aria-label="52"></a>      <span class="at">text =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-53"><a aria-label="53"></a>        <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-54"><a aria-label="54"></a>        <span class="at">size =</span> <span class="dv">6</span></span>
+<span id="cb2-55"><a aria-label="55"></a>      ),</span>
+<span id="cb2-56"><a aria-label="56"></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-57"><a aria-label="57"></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-58"><a aria-label="58"></a>        <span class="at">size =</span> <span class="dv">8</span></span>
+<span id="cb2-59"><a aria-label="59"></a>      )</span>
+<span id="cb2-60"><a aria-label="60"></a>    ) <span class="sc">+</span></span>
+<span id="cb2-61"><a aria-label="61"></a></span>
+<span id="cb2-62"><a aria-label="62"></a>    <span class="fu">theme_sub_plot</span>(</span>
+<span id="cb2-63"><a aria-label="63"></a>      <span class="at">title =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-64"><a aria-label="64"></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-65"><a aria-label="65"></a>        <span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span></span>
+<span id="cb2-66"><a aria-label="66"></a>      ),</span>
+<span id="cb2-67"><a aria-label="67"></a>      <span class="at">title.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb2-68"><a aria-label="68"></a>      <span class="at">subtitle =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-69"><a aria-label="69"></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-70"><a aria-label="70"></a>        <span class="at">size =</span> <span class="dv">10</span></span>
+<span id="cb2-71"><a aria-label="71"></a>      ),</span>
+<span id="cb2-72"><a aria-label="72"></a>      <span class="at">caption =</span> <span class="fu">element_text</span>(</span>
+<span id="cb2-73"><a aria-label="73"></a>        <span class="at">family =</span> <span class="st">"Alegreya"</span>,</span>
+<span id="cb2-74"><a aria-label="74"></a>        <span class="at">size =</span> <span class="dv">6</span></span>
+<span id="cb2-75"><a aria-label="75"></a>      ),</span>
+<span id="cb2-76"><a aria-label="76"></a>      <span class="at">caption.position =</span> <span class="st">"plot"</span></span>
+<span id="cb2-77"><a aria-label="77"></a>    )</span>
+<span id="cb2-78"><a aria-label="78"></a>}</span>
+<span id="cb2-79"><a aria-label="79"></a></span>
+<span id="cb2-80"><a aria-label="80"></a><span class="do">## Use available fonts in ggplot text geoms too!</span></span>
+<span id="cb2-81"><a aria-label="81"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-82"><a aria-label="82"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-83"><a aria-label="83"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-84"><a aria-label="84"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-85"><a aria-label="85"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-86"><a aria-label="86"></a>))</span>
+<span id="cb2-87"><a aria-label="87"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-88"><a aria-label="88"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-89"><a aria-label="89"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-90"><a aria-label="90"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-91"><a aria-label="91"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-92"><a aria-label="92"></a>))</span>
+<span id="cb2-93"><a aria-label="93"></a></span>
+<span id="cb2-94"><a aria-label="94"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"marquee"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-95"><a aria-label="95"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-96"><a aria-label="96"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-97"><a aria-label="97"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-98"><a aria-label="98"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-99"><a aria-label="99"></a>))</span>
+<span id="cb2-100"><a aria-label="100"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"text_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-101"><a aria-label="101"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-102"><a aria-label="102"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-103"><a aria-label="103"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-104"><a aria-label="104"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-105"><a aria-label="105"></a>))</span>
+<span id="cb2-106"><a aria-label="106"></a>ggplot2<span class="sc">::</span><span class="fu">update_geom_defaults</span>(<span class="at">geom =</span> <span class="st">"label_repel"</span>, <span class="at">new =</span> <span class="fu">list</span>(</span>
+<span id="cb2-107"><a aria-label="107"></a>  <span class="at">family =</span> <span class="st">"Roboto Condensed"</span>,</span>
+<span id="cb2-108"><a aria-label="108"></a>  <span class="at">face =</span> <span class="st">"plain"</span>,</span>
+<span id="cb2-109"><a aria-label="109"></a>  <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb2-110"><a aria-label="110"></a>  <span class="at">color =</span> <span class="st">"#2b2b2b"</span></span>
+<span id="cb2-111"><a aria-label="111"></a>))</span>
+<span id="cb2-112"><a aria-label="112"></a></span>
+<span id="cb2-113"><a aria-label="113"></a><span class="do">## Set the theme</span></span>
+<span id="cb2-114"><a aria-label="114"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb2-115"><a aria-label="115"></a></span>
+<span id="cb2-116"><a aria-label="116"></a><span class="do">## tinytable options</span></span>
+<span id="cb2-117"><a aria-label="117"></a><span class="fu">options</span>(<span class="st">"tinytable_tt_digits"</span> <span class="ot">=</span> <span class="dv">2</span>)</span>
+<span id="cb2-118"><a aria-label="118"></a><span class="fu">options</span>(<span class="st">"tinytable_format_num_fmt"</span> <span class="ot">=</span> <span class="st">"significant_cell"</span>)</span>
+<span id="cb2-119"><a aria-label="119"></a><span class="fu">options</span>(<span class="at">tinytable_html_mathjax =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-120"><a aria-label="120"></a></span>
+<span id="cb2-121"><a aria-label="121"></a></span>
+<span id="cb2-122"><a aria-label="122"></a><span class="do">## Set defaults for flextable</span></span>
+<span id="cb2-123"><a aria-label="123"></a>flextable<span class="sc">::</span><span class="fu">set_flextable_defaults</span>(<span class="at">font.family =</span> <span class="st">"Roboto Condensed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div></section>
 <section>
-<section id="introduction-to-inference-for-paired-data" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction-to-inference-for-paired-data" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="openmoji:japanese-symbol-for-beginner" aria-label="Icon japanese-symbol-for-beginner from openmoji Iconify.design set." title="Icon japanese-symbol-for-beginner from openmoji Iconify.design set."></iconify-icon> Introduction to Inference for Paired Data</h2>
 
 </section>
-<section id="what-is-paired-data" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e7420706169722d32342d66696c6c6564203e7d7d-what-is-paired-data" class="slide level3">
 <h3><iconify-icon inline="" icon="fluent:pair-24-filled" aria-label="Icon pair-24-filled from fluent Iconify.design set." title="Icon pair-24-filled from fluent Iconify.design set."></iconify-icon> What is Paired Data?</h3>
 <p>Sometimes the data is collected on the same set of individual categories, e.g.&nbsp;scores by <em>the same</em> sport persons in two separate tournaments, or sales of <em>identical items</em> in two separate locations of a chain store. Or say the number of customers in the morning and in the evening, at a set of store locations. In this case we treat the two sets of observations as <strong>paired</strong>, since they correspond to the same set of observable entities (Qual !!) . This is how some experiments give us paired data.</p>
 <p>We would naturally be interested in the differences in <strong>means</strong> across these two sets, which exploits this paired nature. In this module, we will examine tests for this purpose.</p>
 </section>
-<section id="workflow-for-inference-for-paired-means" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-workflow-for-inference-for-paired-means" class="slide level3">
 <h3><iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> Workflow for Inference for Paired Means</h3>
 <div class="cell" data-reveal="true" data-layout-align="default">
 <div class="cell-output-display">
@@ -414,18 +419,18 @@
 <p>We will now use a couple to case studies to traverse all the possible pathways in the Workflow above.</p>
 </section></section>
 <section>
-<section id="case-study-1-results-from-a-diving-championship" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792070616a616d61732069737375652d747970652d746573742d63617365203e7d7d-case-study-1-results-from-a-diving-championship" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="pajamas:issue-type-test-case" aria-label="Icon issue-type-test-case from pajamas Iconify.design set." title="Icon issue-type-test-case from pajamas Iconify.design set."></iconify-icon> Case Study #1: Results from a Diving Championship</h2>
 <p>Here we have swimming records across a Semi-Final and a Final:</p>
 </section>
-<section id="inspecting-and-charting-data" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e2063686172742d3364203e7d7d-inspecting-and-charting-data" class="slide level3">
 <h3><iconify-icon inline="" icon="carbon:chart-3d" aria-label="Icon chart-3d from carbon Iconify.design set." title="Icon chart-3d from carbon Iconify.design set."></iconify-icon> Inspecting and Charting Data</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">data</span>(<span class="st">"Diving2017"</span>, <span class="at">package =</span> <span class="st">"resampledata3"</span>)</span>
-<span id="cb3-2"><a></a>Diving2017</span>
-<span id="cb3-3"><a></a>Diving2017_inspect <span class="ot">&lt;-</span> <span class="fu">inspect</span>(Diving2017)</span>
-<span id="cb3-4"><a></a>Diving2017_inspect<span class="sc">$</span>categorical</span>
-<span id="cb3-5"><a></a>Diving2017_inspect<span class="sc">$</span>quantitative</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a aria-label="1"></a><span class="fu">data</span>(<span class="st">"Diving2017"</span>, <span class="at">package =</span> <span class="st">"resampledata3"</span>)</span>
+<span id="cb3-2"><a aria-label="2"></a>Diving2017</span>
+<span id="cb3-3"><a aria-label="3"></a>Diving2017_inspect <span class="ot">&lt;-</span> <span class="fu">inspect</span>(Diving2017)</span>
+<span id="cb3-4"><a aria-label="4"></a>Diving2017_inspect<span class="sc">$</span>categorical</span>
+<span id="cb3-5"><a aria-label="5"></a>Diving2017_inspect<span class="sc">$</span>quantitative</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -447,13 +452,13 @@
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>Diving2017_long <span class="ot">&lt;-</span> Diving2017 <span class="sc">%&gt;%</span></span>
-<span id="cb4-2"><a></a>  <span class="fu">pivot_longer</span>(</span>
-<span id="cb4-3"><a></a>    <span class="at">cols =</span> <span class="fu">c</span>(Final, Semifinal),</span>
-<span id="cb4-4"><a></a>    <span class="at">names_to =</span> <span class="st">"race"</span>,</span>
-<span id="cb4-5"><a></a>    <span class="at">values_to =</span> <span class="st">"scores"</span></span>
-<span id="cb4-6"><a></a>  )</span>
-<span id="cb4-7"><a></a>Diving2017_long</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a aria-label="1"></a>Diving2017_long <span class="ot">&lt;-</span> Diving2017 <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a aria-label="2"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb4-3"><a aria-label="3"></a>    <span class="at">cols =</span> <span class="fu">c</span>(Final, Semifinal),</span>
+<span id="cb4-4"><a aria-label="4"></a>    <span class="at">names_to =</span> <span class="st">"race"</span>,</span>
+<span id="cb4-5"><a aria-label="5"></a>    <span class="at">values_to =</span> <span class="st">"scores"</span></span>
+<span id="cb4-6"><a aria-label="6"></a>  )</span>
+<span id="cb4-7"><a aria-label="7"></a>Diving2017_long</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -470,18 +475,18 @@
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb5-2"><a></a></span>
-<span id="cb5-3"><a></a>Diving2017_long <span class="sc">%&gt;%</span></span>
-<span id="cb5-4"><a></a>  <span class="fu">gf_density</span>(<span class="sc">~</span>scores,</span>
-<span id="cb5-5"><a></a>    <span class="at">fill =</span> <span class="sc">~</span>race,</span>
-<span id="cb5-6"><a></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
-<span id="cb5-7"><a></a>    <span class="at">title =</span> <span class="st">"Diving Scores"</span></span>
-<span id="cb5-8"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb5-9"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb5-10"><a></a>  <span class="fu">gf_facet_grid</span>(<span class="sc">~</span>race) <span class="sc">%&gt;%</span></span>
-<span id="cb5-11"><a></a>  <span class="fu">gf_fitdistr</span>(<span class="at">dist =</span> <span class="st">"dnorm"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb5-12"><a></a>  <span class="fu">gf_theme</span>(<span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)) <span class="co"># No Need!!</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb5-2"><a aria-label="2"></a></span>
+<span id="cb5-3"><a aria-label="3"></a>Diving2017_long <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a aria-label="4"></a>  <span class="fu">gf_density</span>(<span class="sc">~</span>scores,</span>
+<span id="cb5-5"><a aria-label="5"></a>    <span class="at">fill =</span> <span class="sc">~</span>race,</span>
+<span id="cb5-6"><a aria-label="6"></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
+<span id="cb5-7"><a aria-label="7"></a>    <span class="at">title =</span> <span class="st">"Diving Scores"</span></span>
+<span id="cb5-8"><a aria-label="8"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb5-9"><a aria-label="9"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-10"><a aria-label="10"></a>  <span class="fu">gf_facet_grid</span>(<span class="sc">~</span>race) <span class="sc">%&gt;%</span></span>
+<span id="cb5-11"><a aria-label="11"></a>  <span class="fu">gf_fitdistr</span>(<span class="at">dist =</span> <span class="st">"dnorm"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-12"><a aria-label="12"></a>  <span class="fu">gf_theme</span>(<span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)) <span class="co"># No Need!!</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -497,19 +502,19 @@
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb6-2"><a></a></span>
-<span id="cb6-3"><a></a>Diving2017_long <span class="sc">%&gt;%</span></span>
-<span id="cb6-4"><a></a>  <span class="fu">gf_col</span>(</span>
-<span id="cb6-5"><a></a>    <span class="fu">fct_reorder</span>(Name, scores) <span class="sc">~</span> scores,</span>
-<span id="cb6-6"><a></a>    <span class="at">fill =</span> <span class="sc">~</span>race,</span>
-<span id="cb6-7"><a></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
-<span id="cb6-8"><a></a>    <span class="at">position =</span> <span class="st">"dodge"</span>,</span>
-<span id="cb6-9"><a></a>    <span class="at">xlab =</span> <span class="st">"Scores"</span>,</span>
-<span id="cb6-10"><a></a>    <span class="at">ylab =</span> <span class="st">"Name"</span>,</span>
-<span id="cb6-11"><a></a>    <span class="at">title =</span> <span class="st">"Diving Scores"</span></span>
-<span id="cb6-12"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb6-13"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb6-2"><a aria-label="2"></a></span>
+<span id="cb6-3"><a aria-label="3"></a>Diving2017_long <span class="sc">%&gt;%</span></span>
+<span id="cb6-4"><a aria-label="4"></a>  <span class="fu">gf_col</span>(</span>
+<span id="cb6-5"><a aria-label="5"></a>    <span class="fu">fct_reorder</span>(Name, scores) <span class="sc">~</span> scores,</span>
+<span id="cb6-6"><a aria-label="6"></a>    <span class="at">fill =</span> <span class="sc">~</span>race,</span>
+<span id="cb6-7"><a aria-label="7"></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
+<span id="cb6-8"><a aria-label="8"></a>    <span class="at">position =</span> <span class="st">"dodge"</span>,</span>
+<span id="cb6-9"><a aria-label="9"></a>    <span class="at">xlab =</span> <span class="st">"Scores"</span>,</span>
+<span id="cb6-10"><a aria-label="10"></a>    <span class="at">ylab =</span> <span class="st">"Name"</span>,</span>
+<span id="cb6-11"><a aria-label="11"></a>    <span class="at">title =</span> <span class="st">"Diving Scores"</span></span>
+<span id="cb6-12"><a aria-label="12"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-13"><a aria-label="13"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -525,19 +530,19 @@
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb7-2"><a></a></span>
-<span id="cb7-3"><a></a>Diving2017_long <span class="sc">%&gt;%</span></span>
-<span id="cb7-4"><a></a>  <span class="fu">gf_boxplot</span>(</span>
-<span id="cb7-5"><a></a>    scores <span class="sc">~</span> race,</span>
-<span id="cb7-6"><a></a>    <span class="at">fill =</span> <span class="sc">~</span>race,</span>
-<span id="cb7-7"><a></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
-<span id="cb7-8"><a></a>    <span class="at">xlab =</span> <span class="st">"Race"</span>,</span>
-<span id="cb7-9"><a></a>    <span class="at">ylab =</span> <span class="st">"Scores"</span>,</span>
-<span id="cb7-10"><a></a>    <span class="at">title =</span> <span class="st">"Diving Scores"</span>, <span class="at">orientation =</span> <span class="st">"x"</span></span>
-<span id="cb7-11"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb7-12"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb7-13"><a></a>  <span class="fu">gf_theme</span>(<span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)) <span class="co"># No Need</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb7-2"><a aria-label="2"></a></span>
+<span id="cb7-3"><a aria-label="3"></a>Diving2017_long <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a aria-label="4"></a>  <span class="fu">gf_boxplot</span>(</span>
+<span id="cb7-5"><a aria-label="5"></a>    scores <span class="sc">~</span> race,</span>
+<span id="cb7-6"><a aria-label="6"></a>    <span class="at">fill =</span> <span class="sc">~</span>race,</span>
+<span id="cb7-7"><a aria-label="7"></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
+<span id="cb7-8"><a aria-label="8"></a>    <span class="at">xlab =</span> <span class="st">"Race"</span>,</span>
+<span id="cb7-9"><a aria-label="9"></a>    <span class="at">ylab =</span> <span class="st">"Scores"</span>,</span>
+<span id="cb7-10"><a aria-label="10"></a>    <span class="at">title =</span> <span class="st">"Diving Scores"</span>, <span class="at">orientation =</span> <span class="st">"x"</span></span>
+<span id="cb7-11"><a aria-label="11"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb7-12"><a aria-label="12"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-13"><a aria-label="13"></a>  <span class="fu">gf_theme</span>(<span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)) <span class="co"># No Need</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -559,14 +564,14 @@
 <li>Although the two <em>medians</em> appear to be different, the box plots overlap considerably. So one cannot visually conclude that the two sets of race timings have different <em>means</em>.</li>
 </ul>
 </section>
-<section id="a.-check-for-normality" class="slide level3">
+<section id="a.-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d64692063686172742d62656c6c2d63757276652073697a653d3278203e7d7d-check-for-normality" class="slide level3">
 <h3>A. <iconify-icon inline="" icon="mdi:chart-bell-curve" style="font-size: 2em;" aria-label="Icon chart-bell-curve from mdi Iconify.design set." title="Icon chart-bell-curve from mdi Iconify.design set."></iconify-icon> Check for Normality</h3>
 <p>Let us also complete a check for normality: the <code>shapiro.wilk</code> test checks whether a Quant variable is from a normal distribution; the NULL hypothesis is that the data <em>are</em> from a normal distribution.</p>
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="fu">shapiro.test</span>(Diving2017<span class="sc">$</span>Final)</span>
-<span id="cb8-2"><a></a><span class="fu">shapiro.test</span>(Diving2017<span class="sc">$</span>Semifinal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a aria-label="1"></a><span class="fu">shapiro.test</span>(Diving2017<span class="sc">$</span>Final)</span>
+<span id="cb8-2"><a aria-label="2"></a><span class="fu">shapiro.test</span>(Diving2017<span class="sc">$</span>Semifinal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -591,15 +596,15 @@ W = 0.86554, p-value = 0.05738</code></pre>
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb11-2"><a></a></span>
-<span id="cb11-3"><a></a>Diving2017_long <span class="sc">%&gt;%</span></span>
-<span id="cb11-4"><a></a>  <span class="fu">gf_qq</span>(<span class="sc">~</span> scores <span class="sc">|</span> race, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">colour =</span> <span class="sc">~</span>race) <span class="sc">%&gt;%</span></span>
-<span id="cb11-5"><a></a>  <span class="fu">gf_qqline</span>(</span>
-<span id="cb11-6"><a></a>    <span class="at">ylab =</span> <span class="st">"scores"</span>, <span class="at">colour =</span> <span class="sc">~</span>race,</span>
-<span id="cb11-7"><a></a>    <span class="at">xlab =</span> <span class="st">"theoretical normal"</span>, <span class="at">title =</span> <span class="st">"Q-Q Plots for Paired Race Data"</span></span>
-<span id="cb11-8"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb11-9"><a></a>  <span class="fu">gf_theme</span>(<span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb11-2"><a aria-label="2"></a></span>
+<span id="cb11-3"><a aria-label="3"></a>Diving2017_long <span class="sc">%&gt;%</span></span>
+<span id="cb11-4"><a aria-label="4"></a>  <span class="fu">gf_qq</span>(<span class="sc">~</span> scores <span class="sc">|</span> race, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">colour =</span> <span class="sc">~</span>race) <span class="sc">%&gt;%</span></span>
+<span id="cb11-5"><a aria-label="5"></a>  <span class="fu">gf_qqline</span>(</span>
+<span id="cb11-6"><a aria-label="6"></a>    <span class="at">ylab =</span> <span class="st">"scores"</span>, <span class="at">colour =</span> <span class="sc">~</span>race,</span>
+<span id="cb11-7"><a aria-label="7"></a>    <span class="at">xlab =</span> <span class="st">"theoretical normal"</span>, <span class="at">title =</span> <span class="st">"Q-Q Plots for Paired Race Data"</span></span>
+<span id="cb11-8"><a aria-label="8"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-9"><a aria-label="9"></a>  <span class="fu">gf_theme</span>(<span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -614,17 +619,17 @@ W = 0.86554, p-value = 0.05738</code></pre>
 </div></div>
 <p>We see in the QQ-plots that the <code>Final</code> scores are closer to the straight line than the <code>Semifinal</code> scores. But it is perhaps still hard to accept the data as normally distributed…hmm.</p>
 </section>
-<section id="b.-check-for-variances" class="slide level3">
+<section id="b.-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d6469207369676d612d6c6f7765722073697a653d3278203e7d7d-check-for-variances" class="slide level3">
 <h3>B. <iconify-icon inline="" icon="mdi:sigma-lower" style="font-size: 2em;" aria-label="Icon sigma-lower from mdi Iconify.design set." title="Icon sigma-lower from mdi Iconify.design set."></iconify-icon> Check for Variances</h3>
 <p>Let us check if the two variables have similar variances: the <code>var.test</code> does this for us, with a NULL hypothesis that the variances are not significantly different:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="fu">var.test</span>(scores <span class="sc">~</span> race,</span>
-<span id="cb12-2"><a></a>  <span class="at">data =</span> Diving2017_long,</span>
-<span id="cb12-3"><a></a>  <span class="at">ratio =</span> <span class="dv">1</span>, <span class="co"># What we believe</span></span>
-<span id="cb12-4"><a></a>  <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb12-5"><a></a>  <span class="at">conf.level =</span> <span class="fl">0.95</span></span>
-<span id="cb12-6"><a></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb12-7"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a aria-label="1"></a><span class="fu">var.test</span>(scores <span class="sc">~</span> race,</span>
+<span id="cb12-2"><a aria-label="2"></a>  <span class="at">data =</span> Diving2017_long,</span>
+<span id="cb12-3"><a aria-label="3"></a>  <span class="at">ratio =</span> <span class="dv">1</span>, <span class="co"># What we believe</span></span>
+<span id="cb12-4"><a aria-label="4"></a>  <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb12-5"><a aria-label="5"></a>  <span class="at">conf.level =</span> <span class="fl">0.95</span></span>
+<span id="cb12-6"><a aria-label="6"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-7"><a aria-label="7"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -654,7 +659,7 @@ W = 0.86554, p-value = 0.05738</code></pre>
 </div>
 </div>
 </section>
-<section id="hypothesis" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792061636164656d69636f6e73206879706f746865736973203e7d7d-hypothesis" class="slide level3">
 <h3><iconify-icon inline="" icon="academicons:hypothesis" aria-label="Icon hypothesis from academicons Iconify.design set." title="Icon hypothesis from academicons Iconify.design set."></iconify-icon> Hypothesis</h3>
 <p>Based on the graph, how would we formulate our Hypothesis? We wish to infer whether there is any change in performance between the <strong>population of swimmers</strong> who might have participated in these two races. So accordingly:</p>
 <p><span class="math display">\[
@@ -664,27 +669,27 @@ H_0: \mu_{semifinal} = \mu_{final}\\
 H_a: \mu_{semifinal} \ne \mu_{final}\
 \]</span></p>
 </section>
-<section id="observed-and-test-statistic" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792061636164656d69636f6e73206879706f746865736973203e7d7d-observed-and-test-statistic" class="slide level3">
 <h3><iconify-icon inline="" icon="academicons:hypothesis" aria-label="Icon hypothesis from academicons Iconify.design set." title="Icon hypothesis from academicons Iconify.design set."></iconify-icon> Observed and Test Statistic</h3>
 <p>What would be the <strong>test statistic</strong> we would use? The <strong>difference in means</strong>. Is the observed difference in the means between the two groups of scores non-zero? We use the <code>diffmean</code> function, with the argument <code>only.2 = FALSE</code> to allow for <em>paired data</em>:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>obs_diff_swim <span class="ot">&lt;-</span> <span class="fu">diffmean</span>(scores <span class="sc">~</span> race,</span>
-<span id="cb13-2"><a></a>  <span class="at">data =</span> Diving2017_long,</span>
-<span id="cb13-3"><a></a>  <span class="at">only.2 =</span> <span class="cn">FALSE</span></span>
-<span id="cb13-4"><a></a>) <span class="co"># paired data</span></span>
-<span id="cb13-5"><a></a></span>
-<span id="cb13-6"><a></a><span class="co"># Can use this also</span></span>
-<span id="cb13-7"><a></a><span class="co"># formula method is better for permutation test!</span></span>
-<span id="cb13-8"><a></a><span class="co"># obs_diff_swim &lt;- mean(~ (Final - Semifinal), data = Diving2017)</span></span>
-<span id="cb13-9"><a></a></span>
-<span id="cb13-10"><a></a>obs_diff_swim</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a aria-label="1"></a>obs_diff_swim <span class="ot">&lt;-</span> <span class="fu">diffmean</span>(scores <span class="sc">~</span> race,</span>
+<span id="cb13-2"><a aria-label="2"></a>  <span class="at">data =</span> Diving2017_long,</span>
+<span id="cb13-3"><a aria-label="3"></a>  <span class="at">only.2 =</span> <span class="cn">FALSE</span></span>
+<span id="cb13-4"><a aria-label="4"></a>) <span class="co"># paired data</span></span>
+<span id="cb13-5"><a aria-label="5"></a></span>
+<span id="cb13-6"><a aria-label="6"></a><span class="co"># Can use this also</span></span>
+<span id="cb13-7"><a aria-label="7"></a><span class="co"># formula method is better for permutation test!</span></span>
+<span id="cb13-8"><a aria-label="8"></a><span class="co"># obs_diff_swim &lt;- mean(~ (Final - Semifinal), data = Diving2017)</span></span>
+<span id="cb13-9"><a aria-label="9"></a></span>
+<span id="cb13-10"><a aria-label="10"></a>obs_diff_swim</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>diffmean 
  -11.975 </code></pre>
 </div>
 </div>
 </section>
-<section id="inference" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c3220696e736967687473203e7d7d-inference" class="slide level3">
 <h3><iconify-icon inline="" icon="fluent-mdl2:insights" aria-label="Icon insights from fluent-mdl2 Iconify.design set." title="Icon insights from fluent-mdl2 Iconify.design set."></iconify-icon> Inference</h3>
 <div class="panel-tabset nav-pills" style="background: whitesmoke;">
 <ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1"><em>Paired</em> t.test</a></li><li><a href="#tabset-1-2"><em>Paired</em> Wilcoxon test</a></li><li><a href="#tabset-1-3">Linear Model Method</a></li><li><a href="#tabset-1-4">Permutation Tests</a></li></ul>
@@ -700,11 +705,11 @@ H_0: \mu_{final} - \mu_{semifinal} = 0;
 H_a: \mu_{final} - \mu_{semifinal} \ne 0;\\
 \]</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>mosaic<span class="sc">::</span><span class="fu">t.test</span>(</span>
-<span id="cb15-2"><a></a>  <span class="at">x =</span> Diving2017<span class="sc">$</span>Semifinal,</span>
-<span id="cb15-3"><a></a>  <span class="at">y =</span> Diving2017<span class="sc">$</span>Final,</span>
-<span id="cb15-4"><a></a>  <span class="at">paired =</span> <span class="cn">TRUE</span>, <span class="at">var.equal =</span> <span class="cn">FALSE</span></span>
-<span id="cb15-5"><a></a>) <span class="sc">%&gt;%</span> broom<span class="sc">::</span><span class="fu">tidy</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a aria-label="1"></a>mosaic<span class="sc">::</span><span class="fu">t.test</span>(</span>
+<span id="cb15-2"><a aria-label="2"></a>  <span class="at">x =</span> Diving2017<span class="sc">$</span>Semifinal,</span>
+<span id="cb15-3"><a aria-label="3"></a>  <span class="at">y =</span> Diving2017<span class="sc">$</span>Final,</span>
+<span id="cb15-4"><a aria-label="4"></a>  <span class="at">paired =</span> <span class="cn">TRUE</span>, <span class="at">var.equal =</span> <span class="cn">FALSE</span></span>
+<span id="cb15-5"><a aria-label="5"></a>) <span class="sc">%&gt;%</span> broom<span class="sc">::</span><span class="fu">tidy</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -725,16 +730,16 @@ H_0: \mu_{final} - \mu_{semifinal} = 0;
 H_a: \mu_{final} - \mu_{semifinal} \ne 0;\\
 \]</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a><span class="fu">wilcox.test</span>(</span>
-<span id="cb16-2"><a></a>  <span class="at">x =</span> Diving2017<span class="sc">$</span>Semifinal,</span>
-<span id="cb16-3"><a></a>  <span class="at">y =</span> Diving2017<span class="sc">$</span>Final,</span>
-<span id="cb16-4"><a></a>  <span class="at">mu =</span> <span class="dv">0</span>, <span class="co"># belief</span></span>
-<span id="cb16-5"><a></a>  <span class="at">alternative =</span> <span class="st">"two.sided"</span>, <span class="co"># difference either way</span></span>
-<span id="cb16-6"><a></a>  <span class="at">paired =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb16-7"><a></a>  <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb16-8"><a></a>  <span class="at">conf.level =</span> <span class="fl">0.95</span></span>
-<span id="cb16-9"><a></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb16-10"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a aria-label="1"></a><span class="fu">wilcox.test</span>(</span>
+<span id="cb16-2"><a aria-label="2"></a>  <span class="at">x =</span> Diving2017<span class="sc">$</span>Semifinal,</span>
+<span id="cb16-3"><a aria-label="3"></a>  <span class="at">y =</span> Diving2017<span class="sc">$</span>Final,</span>
+<span id="cb16-4"><a aria-label="4"></a>  <span class="at">mu =</span> <span class="dv">0</span>, <span class="co"># belief</span></span>
+<span id="cb16-5"><a aria-label="5"></a>  <span class="at">alternative =</span> <span class="st">"two.sided"</span>, <span class="co"># difference either way</span></span>
+<span id="cb16-6"><a aria-label="6"></a>  <span class="at">paired =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb16-7"><a aria-label="7"></a>  <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb16-8"><a aria-label="8"></a>  <span class="at">conf.level =</span> <span class="fl">0.95</span></span>
+<span id="cb16-9"><a aria-label="9"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-10"><a aria-label="10"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -761,18 +766,18 @@ H_0: \beta_0 = 0;\\
 H_a: \beta_0 \ne 0\\
 \]</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">lm</span>(Semifinal <span class="sc">-</span> Final <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> Diving2017) <span class="sc">%&gt;%</span></span>
-<span id="cb17-2"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span>
-<span id="cb17-3"><a></a></span>
-<span id="cb17-4"><a></a><span class="co"># Create a sign-rank function</span></span>
-<span id="cb17-5"><a></a>signed_rank <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb17-6"><a></a>  <span class="fu">sign</span>(x) <span class="sc">*</span> <span class="fu">rank</span>(<span class="fu">abs</span>(x))</span>
-<span id="cb17-7"><a></a>}</span>
-<span id="cb17-8"><a></a></span>
-<span id="cb17-9"><a></a><span class="fu">lm</span>(<span class="fu">signed_rank</span>(Semifinal <span class="sc">-</span> Final) <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb17-10"><a></a>  <span class="at">data =</span> Diving2017</span>
-<span id="cb17-11"><a></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb17-12"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a aria-label="1"></a><span class="fu">lm</span>(Semifinal <span class="sc">-</span> Final <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> Diving2017) <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a aria-label="2"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span>
+<span id="cb17-3"><a aria-label="3"></a></span>
+<span id="cb17-4"><a aria-label="4"></a><span class="co"># Create a sign-rank function</span></span>
+<span id="cb17-5"><a aria-label="5"></a>signed_rank <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb17-6"><a aria-label="6"></a>  <span class="fu">sign</span>(x) <span class="sc">*</span> <span class="fu">rank</span>(<span class="fu">abs</span>(x))</span>
+<span id="cb17-7"><a aria-label="7"></a>}</span>
+<span id="cb17-8"><a aria-label="8"></a></span>
+<span id="cb17-9"><a aria-label="9"></a><span class="fu">lm</span>(<span class="fu">signed_rank</span>(Semifinal <span class="sc">-</span> Final) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb17-10"><a aria-label="10"></a>  <span class="at">data =</span> Diving2017</span>
+<span id="cb17-11"><a aria-label="11"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb17-12"><a aria-label="12"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -791,21 +796,21 @@ H_a: \beta_0 \ne 0\\
 <p>For the specific data at hand, we need to shuffle the records between <code>Semifinal</code> and <code>Final</code> on <strong>a per Swimmer basis</strong> (paired data!!) and take the <code>test statistic</code> (difference between the two swim records for <em>each</em> swimmer). Another way to look at this is to take the differences between <code>Semifinal</code> and <code>Final</code> scores and <em>shuffle the differences to either polarity</em>. We will follow this method in the code below:</p>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>polarity <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">6</span>), <span class="fu">rep</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">6</span>))</span>
-<span id="cb18-2"><a></a><span class="co"># 12 +/- 1s,</span></span>
-<span id="cb18-3"><a></a><span class="co"># 6 each to make sure there is equal probability</span></span>
-<span id="cb18-4"><a></a>polarity</span>
-<span id="cb18-5"><a></a><span class="do">##</span></span>
-<span id="cb18-6"><a></a>null_dist_swim <span class="ot">&lt;-</span> <span class="fu">do</span>(<span class="dv">4999</span>) <span class="sc">*</span></span>
-<span id="cb18-7"><a></a>  <span class="fu">mean</span>(</span>
-<span id="cb18-8"><a></a>    <span class="at">data =</span> Diving2017,</span>
-<span id="cb18-9"><a></a>    <span class="sc">~</span> (Final <span class="sc">-</span> Semifinal) <span class="sc">*</span> <span class="co"># take (pairwise) differences</span></span>
-<span id="cb18-10"><a></a>      mosaic<span class="sc">::</span><span class="fu">resample</span>(polarity, <span class="co"># Swap polarity randomly</span></span>
-<span id="cb18-11"><a></a>        <span class="at">replace =</span> <span class="cn">TRUE</span></span>
-<span id="cb18-12"><a></a>      )</span>
-<span id="cb18-13"><a></a>  )</span>
-<span id="cb18-14"><a></a><span class="do">##</span></span>
-<span id="cb18-15"><a></a>null_dist_swim</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a aria-label="1"></a>polarity <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">6</span>), <span class="fu">rep</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">6</span>))</span>
+<span id="cb18-2"><a aria-label="2"></a><span class="co"># 12 +/- 1s,</span></span>
+<span id="cb18-3"><a aria-label="3"></a><span class="co"># 6 each to make sure there is equal probability</span></span>
+<span id="cb18-4"><a aria-label="4"></a>polarity</span>
+<span id="cb18-5"><a aria-label="5"></a><span class="do">##</span></span>
+<span id="cb18-6"><a aria-label="6"></a>null_dist_swim <span class="ot">&lt;-</span> <span class="fu">do</span>(<span class="dv">4999</span>) <span class="sc">*</span></span>
+<span id="cb18-7"><a aria-label="7"></a>  <span class="fu">mean</span>(</span>
+<span id="cb18-8"><a aria-label="8"></a>    <span class="at">data =</span> Diving2017,</span>
+<span id="cb18-9"><a aria-label="9"></a>    <span class="sc">~</span> (Final <span class="sc">-</span> Semifinal) <span class="sc">*</span> <span class="co"># take (pairwise) differences</span></span>
+<span id="cb18-10"><a aria-label="10"></a>      mosaic<span class="sc">::</span><span class="fu">resample</span>(polarity, <span class="co"># Swap polarity randomly</span></span>
+<span id="cb18-11"><a aria-label="11"></a>        <span class="at">replace =</span> <span class="cn">TRUE</span></span>
+<span id="cb18-12"><a aria-label="12"></a>      )</span>
+<span id="cb18-13"><a aria-label="13"></a>  )</span>
+<span id="cb18-14"><a aria-label="14"></a><span class="do">##</span></span>
+<span id="cb18-15"><a aria-label="15"></a>null_dist_swim</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
@@ -824,29 +829,29 @@ H_a: \beta_0 \ne 0\\
 <p>Let us plot the NULL distribution and compare it with the actual <code>observed differences</code> in the race times:</p>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb20-2"><a></a></span>
-<span id="cb20-3"><a></a><span class="fu">gf_histogram</span>(<span class="at">data =</span> null_dist_swim, <span class="sc">~</span>mean) <span class="sc">%&gt;%</span></span>
-<span id="cb20-4"><a></a>  <span class="fu">gf_vline</span>(</span>
-<span id="cb20-5"><a></a>    <span class="at">xintercept =</span> obs_diff_swim,</span>
-<span id="cb20-6"><a></a>    <span class="at">colour =</span> <span class="st">"red"</span>,</span>
-<span id="cb20-7"><a></a>    <span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">title =</span> <span class="st">"Null Distribution by Permutation"</span>,</span>
-<span id="cb20-8"><a></a>    <span class="at">subtitle =</span> <span class="st">"Histogram"</span></span>
-<span id="cb20-9"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb20-10"><a></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="st">"Difference in Means"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb20-11"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)))</span>
-<span id="cb20-12"><a></a><span class="do">###</span></span>
-<span id="cb20-13"><a></a><span class="fu">gf_ecdf</span>(<span class="at">data =</span> null_dist_swim, <span class="sc">~</span>mean, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb20-14"><a></a>  <span class="fu">gf_vline</span>(</span>
-<span id="cb20-15"><a></a>    <span class="at">xintercept =</span> obs_diff_swim,</span>
-<span id="cb20-16"><a></a>    <span class="at">colour =</span> <span class="st">"red"</span>,</span>
-<span id="cb20-17"><a></a>    <span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">title =</span> <span class="st">"Null Distribution by Permutation"</span>,</span>
-<span id="cb20-18"><a></a>    <span class="at">subtitle =</span> <span class="st">"Cumulative Density"</span></span>
-<span id="cb20-19"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb20-20"><a></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="st">"Difference in Means"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb20-21"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)))</span>
-<span id="cb20-22"><a></a><span class="do">###</span></span>
-<span id="cb20-23"><a></a><span class="fu">prop1</span>(<span class="sc">~</span> mean <span class="sc">&lt;=</span> obs_diff_swim, <span class="at">data =</span> null_dist_swim)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb20-2"><a aria-label="2"></a></span>
+<span id="cb20-3"><a aria-label="3"></a><span class="fu">gf_histogram</span>(<span class="at">data =</span> null_dist_swim, <span class="sc">~</span>mean) <span class="sc">%&gt;%</span></span>
+<span id="cb20-4"><a aria-label="4"></a>  <span class="fu">gf_vline</span>(</span>
+<span id="cb20-5"><a aria-label="5"></a>    <span class="at">xintercept =</span> obs_diff_swim,</span>
+<span id="cb20-6"><a aria-label="6"></a>    <span class="at">colour =</span> <span class="st">"red"</span>,</span>
+<span id="cb20-7"><a aria-label="7"></a>    <span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">title =</span> <span class="st">"Null Distribution by Permutation"</span>,</span>
+<span id="cb20-8"><a aria-label="8"></a>    <span class="at">subtitle =</span> <span class="st">"Histogram"</span></span>
+<span id="cb20-9"><a aria-label="9"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-10"><a aria-label="10"></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="st">"Difference in Means"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-11"><a aria-label="11"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)))</span>
+<span id="cb20-12"><a aria-label="12"></a><span class="do">###</span></span>
+<span id="cb20-13"><a aria-label="13"></a><span class="fu">gf_ecdf</span>(<span class="at">data =</span> null_dist_swim, <span class="sc">~</span>mean, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-14"><a aria-label="14"></a>  <span class="fu">gf_vline</span>(</span>
+<span id="cb20-15"><a aria-label="15"></a>    <span class="at">xintercept =</span> obs_diff_swim,</span>
+<span id="cb20-16"><a aria-label="16"></a>    <span class="at">colour =</span> <span class="st">"red"</span>,</span>
+<span id="cb20-17"><a aria-label="17"></a>    <span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">title =</span> <span class="st">"Null Distribution by Permutation"</span>,</span>
+<span id="cb20-18"><a aria-label="18"></a>    <span class="at">subtitle =</span> <span class="st">"Cumulative Density"</span></span>
+<span id="cb20-19"><a aria-label="19"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-20"><a aria-label="20"></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="st">"Difference in Means"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-21"><a aria-label="21"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)))</span>
+<span id="cb20-22"><a aria-label="22"></a><span class="do">###</span></span>
+<span id="cb20-23"><a aria-label="23"></a><span class="fu">prop1</span>(<span class="sc">~</span> mean <span class="sc">&lt;=</span> obs_diff_swim, <span class="at">data =</span> null_dist_swim)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
@@ -875,51 +880,51 @@ H_a: \beta_0 \ne 0\\
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>mosaic<span class="sc">::</span><span class="fu">t.test</span>(</span>
-<span id="cb22-2"><a></a>  <span class="at">x =</span> Diving2017<span class="sc">$</span>Semifinal,</span>
-<span id="cb22-3"><a></a>  <span class="at">y =</span> Diving2017<span class="sc">$</span>Final,</span>
-<span id="cb22-4"><a></a>  <span class="at">paired =</span> <span class="cn">TRUE</span></span>
-<span id="cb22-5"><a></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb22-6"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb22-7"><a></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb22-8"><a></a>  <span class="fu">tab_style</span>(</span>
-<span id="cb22-9"><a></a>    <span class="at">style =</span> <span class="fu">list</span>(<span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"cyan"</span>), <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>)),</span>
-<span id="cb22-10"><a></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">columns =</span> p.value)</span>
-<span id="cb22-11"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb22-12"><a></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"t.test"</span>)</span>
-<span id="cb22-13"><a></a></span>
-<span id="cb22-14"><a></a><span class="fu">lm</span>(Semifinal <span class="sc">-</span> Final <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> Diving2017) <span class="sc">%&gt;%</span></span>
-<span id="cb22-15"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb22-16"><a></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb22-17"><a></a>  <span class="fu">tab_style</span>(</span>
-<span id="cb22-18"><a></a>    <span class="at">style =</span> <span class="fu">list</span>(<span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"cyan"</span>), <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>)),</span>
-<span id="cb22-19"><a></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">columns =</span> p.value)</span>
-<span id="cb22-20"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb22-21"><a></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Linear Model"</span>)</span>
-<span id="cb22-22"><a></a></span>
-<span id="cb22-23"><a></a><span class="fu">wilcox.test</span>(</span>
-<span id="cb22-24"><a></a>  <span class="at">x =</span> Diving2017<span class="sc">$</span>Semifinal,</span>
-<span id="cb22-25"><a></a>  <span class="at">y =</span> Diving2017<span class="sc">$</span>Final,</span>
-<span id="cb22-26"><a></a>  <span class="at">paired =</span> <span class="cn">TRUE</span></span>
-<span id="cb22-27"><a></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb22-28"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb22-29"><a></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb22-30"><a></a>  <span class="fu">tab_style</span>(</span>
-<span id="cb22-31"><a></a>    <span class="at">style =</span> <span class="fu">list</span>(<span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"palegreen"</span>), <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>)),</span>
-<span id="cb22-32"><a></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">columns =</span> p.value)</span>
-<span id="cb22-33"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb22-34"><a></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Wilcoxon test"</span>)</span>
-<span id="cb22-35"><a></a></span>
-<span id="cb22-36"><a></a><span class="fu">lm</span>(<span class="fu">signed_rank</span>(Semifinal <span class="sc">-</span> Final) <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb22-37"><a></a>  <span class="at">data =</span> Diving2017</span>
-<span id="cb22-38"><a></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb22-39"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb22-40"><a></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb22-41"><a></a>  <span class="fu">tab_style</span>(</span>
-<span id="cb22-42"><a></a>    <span class="at">style =</span> <span class="fu">list</span>(<span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"palegreen"</span>), <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>)),</span>
-<span id="cb22-43"><a></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">columns =</span> p.value)</span>
-<span id="cb22-44"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb22-45"><a></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Linear Model with sign.rank"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a aria-label="1"></a>mosaic<span class="sc">::</span><span class="fu">t.test</span>(</span>
+<span id="cb22-2"><a aria-label="2"></a>  <span class="at">x =</span> Diving2017<span class="sc">$</span>Semifinal,</span>
+<span id="cb22-3"><a aria-label="3"></a>  <span class="at">y =</span> Diving2017<span class="sc">$</span>Final,</span>
+<span id="cb22-4"><a aria-label="4"></a>  <span class="at">paired =</span> <span class="cn">TRUE</span></span>
+<span id="cb22-5"><a aria-label="5"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb22-6"><a aria-label="6"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb22-7"><a aria-label="7"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb22-8"><a aria-label="8"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb22-9"><a aria-label="9"></a>    <span class="at">style =</span> <span class="fu">list</span>(<span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"cyan"</span>), <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>)),</span>
+<span id="cb22-10"><a aria-label="10"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">columns =</span> p.value)</span>
+<span id="cb22-11"><a aria-label="11"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb22-12"><a aria-label="12"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"t.test"</span>)</span>
+<span id="cb22-13"><a aria-label="13"></a></span>
+<span id="cb22-14"><a aria-label="14"></a><span class="fu">lm</span>(Semifinal <span class="sc">-</span> Final <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> Diving2017) <span class="sc">%&gt;%</span></span>
+<span id="cb22-15"><a aria-label="15"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb22-16"><a aria-label="16"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb22-17"><a aria-label="17"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb22-18"><a aria-label="18"></a>    <span class="at">style =</span> <span class="fu">list</span>(<span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"cyan"</span>), <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>)),</span>
+<span id="cb22-19"><a aria-label="19"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">columns =</span> p.value)</span>
+<span id="cb22-20"><a aria-label="20"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb22-21"><a aria-label="21"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Linear Model"</span>)</span>
+<span id="cb22-22"><a aria-label="22"></a></span>
+<span id="cb22-23"><a aria-label="23"></a><span class="fu">wilcox.test</span>(</span>
+<span id="cb22-24"><a aria-label="24"></a>  <span class="at">x =</span> Diving2017<span class="sc">$</span>Semifinal,</span>
+<span id="cb22-25"><a aria-label="25"></a>  <span class="at">y =</span> Diving2017<span class="sc">$</span>Final,</span>
+<span id="cb22-26"><a aria-label="26"></a>  <span class="at">paired =</span> <span class="cn">TRUE</span></span>
+<span id="cb22-27"><a aria-label="27"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb22-28"><a aria-label="28"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb22-29"><a aria-label="29"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb22-30"><a aria-label="30"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb22-31"><a aria-label="31"></a>    <span class="at">style =</span> <span class="fu">list</span>(<span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"palegreen"</span>), <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>)),</span>
+<span id="cb22-32"><a aria-label="32"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">columns =</span> p.value)</span>
+<span id="cb22-33"><a aria-label="33"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb22-34"><a aria-label="34"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Wilcoxon test"</span>)</span>
+<span id="cb22-35"><a aria-label="35"></a></span>
+<span id="cb22-36"><a aria-label="36"></a><span class="fu">lm</span>(<span class="fu">signed_rank</span>(Semifinal <span class="sc">-</span> Final) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb22-37"><a aria-label="37"></a>  <span class="at">data =</span> Diving2017</span>
+<span id="cb22-38"><a aria-label="38"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb22-39"><a aria-label="39"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb22-40"><a aria-label="40"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb22-41"><a aria-label="41"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb22-42"><a aria-label="42"></a>    <span class="at">style =</span> <span class="fu">list</span>(<span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"palegreen"</span>), <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>)),</span>
+<span id="cb22-43"><a aria-label="43"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">columns =</span> p.value)</span>
+<span id="cb22-44"><a aria-label="44"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb22-45"><a aria-label="45"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Linear Model with sign.rank"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="nxqdrllgui" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -2839,7 +2844,7 @@ H_a: \beta_0 \ne 0\\
 <p>The linear model and the <code>t.test</code> are nearly identical in performance; the p.values are the same. The same is also true of the <code>wilcox.test</code> and the linear model with sign-rank data differences. This is of course not surprising!</p>
 </section></section>
 <section>
-<section id="case-study-2-walmart-vs-target" class="title-slide slide level2 center scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792070616a616d61732069737375652d747970652d746573742d63617365203e7d7d-case-study-2-walmart-vs-target" class="title-slide slide level2 center scrollable">
 <h2><iconify-icon inline="" icon="pajamas:issue-type-test-case" aria-label="Icon issue-type-test-case from pajamas Iconify.design set." title="Icon issue-type-test-case from pajamas Iconify.design set."></iconify-icon> Case Study #2: Walmart vs Target</h2>
 <p>Is there a difference in the price of Groceries sold by the two retailers Target and Walmart? The data set <code>Groceries</code> contains a sample of grocery items and their prices advertised on their respective web sites on one specific day. We will:</p>
 <ol type="a">
@@ -2850,16 +2855,16 @@ H_a: \beta_0 \ne 0\\
 <li>Redo the hypothesis test without this observation. Would we reach the same conclusion?</li>
 </ol>
 </section>
-<section id="inspecting-and-charting-data-1" class="slide level3 scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920636172626f6e2063686172742d3364203e7d7d-inspecting-and-charting-data-1" class="slide level3 scrollable">
 <h3><iconify-icon inline="" icon="carbon:chart-3d" aria-label="Icon chart-3d from carbon Iconify.design set." title="Icon chart-3d from carbon Iconify.design set."></iconify-icon> Inspecting and Charting Data</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a><span class="fu">data</span>(<span class="st">"Groceries"</span>)</span>
-<span id="cb23-2"><a></a>Groceries <span class="ot">&lt;-</span> Groceries <span class="sc">%&gt;%</span></span>
-<span id="cb23-3"><a></a>  <span class="fu">mutate</span>(<span class="at">Product =</span> stringr<span class="sc">::</span><span class="fu">str_squish</span>(Product)) <span class="co"># Knock off extra spaces</span></span>
-<span id="cb23-4"><a></a><span class="fu">glimpse</span>(Groceries)</span>
-<span id="cb23-5"><a></a>Groceries_inspect <span class="ot">&lt;-</span> <span class="fu">inspect</span>(Groceries)</span>
-<span id="cb23-6"><a></a>Groceries_inspect<span class="sc">$</span>categorical</span>
-<span id="cb23-7"><a></a>Groceries_inspect<span class="sc">$</span>quantitative</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a aria-label="1"></a><span class="fu">data</span>(<span class="st">"Groceries"</span>)</span>
+<span id="cb23-2"><a aria-label="2"></a>Groceries <span class="ot">&lt;-</span> Groceries <span class="sc">%&gt;%</span></span>
+<span id="cb23-3"><a aria-label="3"></a>  <span class="fu">mutate</span>(<span class="at">Product =</span> stringr<span class="sc">::</span><span class="fu">str_squish</span>(Product)) <span class="co"># Knock off extra spaces</span></span>
+<span id="cb23-4"><a aria-label="4"></a><span class="fu">glimpse</span>(Groceries)</span>
+<span id="cb23-5"><a aria-label="5"></a>Groceries_inspect <span class="ot">&lt;-</span> <span class="fu">inspect</span>(Groceries)</span>
+<span id="cb23-6"><a aria-label="6"></a>Groceries_inspect<span class="sc">$</span>categorical</span>
+<span id="cb23-7"><a aria-label="7"></a>Groceries_inspect<span class="sc">$</span>quantitative</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 30
 Columns: 4
@@ -2884,14 +2889,14 @@ $ Walmart &lt;dbl&gt; 2.78, 6.01, 2.98, 2.68, 2.98, 1.98, 2.50, 4.79, 1.28, 2.98
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>Groceries_long <span class="ot">&lt;-</span> Groceries <span class="sc">%&gt;%</span></span>
-<span id="cb25-2"><a></a>  <span class="fu">pivot_longer</span>(</span>
-<span id="cb25-3"><a></a>    <span class="at">cols =</span> <span class="fu">c</span>(Walmart, Target),</span>
-<span id="cb25-4"><a></a>    <span class="at">names_to =</span> <span class="st">"store"</span>,</span>
-<span id="cb25-5"><a></a>    <span class="at">values_to =</span> <span class="st">"prices"</span></span>
-<span id="cb25-6"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb25-7"><a></a>  <span class="fu">mutate</span>(<span class="at">store =</span> <span class="fu">as_factor</span>(store))</span>
-<span id="cb25-8"><a></a>Groceries_long</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a aria-label="1"></a>Groceries_long <span class="ot">&lt;-</span> Groceries <span class="sc">%&gt;%</span></span>
+<span id="cb25-2"><a aria-label="2"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb25-3"><a aria-label="3"></a>    <span class="at">cols =</span> <span class="fu">c</span>(Walmart, Target),</span>
+<span id="cb25-4"><a aria-label="4"></a>    <span class="at">names_to =</span> <span class="st">"store"</span>,</span>
+<span id="cb25-5"><a aria-label="5"></a>    <span class="at">values_to =</span> <span class="st">"prices"</span></span>
+<span id="cb25-6"><a aria-label="6"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb25-7"><a aria-label="7"></a>  <span class="fu">mutate</span>(<span class="at">store =</span> <span class="fu">as_factor</span>(store))</span>
+<span id="cb25-8"><a aria-label="8"></a>Groceries_long</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div data-pagedtable="false">
@@ -2905,18 +2910,18 @@ $ Walmart &lt;dbl&gt; 2.78, 6.01, 2.98, 2.68, 2.98, 1.98, 2.50, 4.79, 1.28, 2.98
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb26-2"><a></a></span>
-<span id="cb26-3"><a></a>Groceries_long <span class="sc">%&gt;%</span></span>
-<span id="cb26-4"><a></a>  <span class="fu">gf_dhistogram</span>(<span class="sc">~</span>prices,</span>
-<span id="cb26-5"><a></a>    <span class="at">fill =</span> <span class="sc">~</span>store,</span>
-<span id="cb26-6"><a></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
-<span id="cb26-7"><a></a>    <span class="at">title =</span> <span class="st">"Grocery Costs"</span></span>
-<span id="cb26-8"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb26-9"><a></a>  <span class="fu">gf_facet_grid</span>(<span class="sc">~</span>store) <span class="sc">%&gt;%</span></span>
-<span id="cb26-10"><a></a>  <span class="fu">gf_fitdistr</span>(<span class="at">dist =</span> <span class="st">"dnorm"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb26-11"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb26-12"><a></a>  <span class="fu">gf_theme</span>(<span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb26-2"><a aria-label="2"></a></span>
+<span id="cb26-3"><a aria-label="3"></a>Groceries_long <span class="sc">%&gt;%</span></span>
+<span id="cb26-4"><a aria-label="4"></a>  <span class="fu">gf_dhistogram</span>(<span class="sc">~</span>prices,</span>
+<span id="cb26-5"><a aria-label="5"></a>    <span class="at">fill =</span> <span class="sc">~</span>store,</span>
+<span id="cb26-6"><a aria-label="6"></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
+<span id="cb26-7"><a aria-label="7"></a>    <span class="at">title =</span> <span class="st">"Grocery Costs"</span></span>
+<span id="cb26-8"><a aria-label="8"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb26-9"><a aria-label="9"></a>  <span class="fu">gf_facet_grid</span>(<span class="sc">~</span>store) <span class="sc">%&gt;%</span></span>
+<span id="cb26-10"><a aria-label="10"></a>  <span class="fu">gf_fitdistr</span>(<span class="at">dist =</span> <span class="st">"dnorm"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-11"><a aria-label="11"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb26-12"><a aria-label="12"></a>  <span class="fu">gf_theme</span>(<span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -2932,18 +2937,18 @@ $ Walmart &lt;dbl&gt; 2.78, 6.01, 2.98, 2.68, 2.98, 1.98, 2.50, 4.79, 1.28, 2.98
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb27-2"><a></a></span>
-<span id="cb27-3"><a></a>Groceries_long <span class="sc">%&gt;%</span></span>
-<span id="cb27-4"><a></a>  <span class="fu">gf_density</span>(<span class="sc">~</span>prices,</span>
-<span id="cb27-5"><a></a>    <span class="at">fill =</span> <span class="sc">~</span>store,</span>
-<span id="cb27-6"><a></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
-<span id="cb27-7"><a></a>    <span class="at">title =</span> <span class="st">"Grocery Costs"</span></span>
-<span id="cb27-8"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb27-9"><a></a>  <span class="fu">gf_facet_grid</span>(<span class="sc">~</span>store) <span class="sc">%&gt;%</span></span>
-<span id="cb27-10"><a></a>  <span class="fu">gf_fitdistr</span>(<span class="at">dist =</span> <span class="st">"dnorm"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb27-11"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb27-12"><a></a>  <span class="fu">gf_theme</span>(<span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb27-2"><a aria-label="2"></a></span>
+<span id="cb27-3"><a aria-label="3"></a>Groceries_long <span class="sc">%&gt;%</span></span>
+<span id="cb27-4"><a aria-label="4"></a>  <span class="fu">gf_density</span>(<span class="sc">~</span>prices,</span>
+<span id="cb27-5"><a aria-label="5"></a>    <span class="at">fill =</span> <span class="sc">~</span>store,</span>
+<span id="cb27-6"><a aria-label="6"></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
+<span id="cb27-7"><a aria-label="7"></a>    <span class="at">title =</span> <span class="st">"Grocery Costs"</span></span>
+<span id="cb27-8"><a aria-label="8"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb27-9"><a aria-label="9"></a>  <span class="fu">gf_facet_grid</span>(<span class="sc">~</span>store) <span class="sc">%&gt;%</span></span>
+<span id="cb27-10"><a aria-label="10"></a>  <span class="fu">gf_fitdistr</span>(<span class="at">dist =</span> <span class="st">"dnorm"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb27-11"><a aria-label="11"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb27-12"><a aria-label="12"></a>  <span class="fu">gf_theme</span>(<span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -2961,13 +2966,13 @@ $ Walmart &lt;dbl&gt; 2.78, 6.01, 2.98, 2.68, 2.98, 1.98, 2.50, 4.79, 1.28, 2.98
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb28-2"><a></a></span>
-<span id="cb28-3"><a></a>Groceries_long <span class="sc">%&gt;%</span></span>
-<span id="cb28-4"><a></a>  <span class="fu">gf_boxplot</span>(prices <span class="sc">~</span> store,</span>
-<span id="cb28-5"><a></a>    <span class="at">fill =</span> <span class="sc">~</span>store</span>
-<span id="cb28-6"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb28-7"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb28-2"><a aria-label="2"></a></span>
+<span id="cb28-3"><a aria-label="3"></a>Groceries_long <span class="sc">%&gt;%</span></span>
+<span id="cb28-4"><a aria-label="4"></a>  <span class="fu">gf_boxplot</span>(prices <span class="sc">~</span> store,</span>
+<span id="cb28-5"><a aria-label="5"></a>    <span class="at">fill =</span> <span class="sc">~</span>store</span>
+<span id="cb28-6"><a aria-label="6"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb28-7"><a aria-label="7"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -2983,28 +2988,28 @@ $ Walmart &lt;dbl&gt; 2.78, 6.01, 2.98, 2.68, 2.98, 1.98, 2.50, 4.79, 1.28, 2.98
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb29-2"><a></a></span>
-<span id="cb29-3"><a></a>Groceries_long <span class="sc">%&gt;%</span></span>
-<span id="cb29-4"><a></a>  <span class="fu">gf_col</span>(<span class="fu">fct_reorder</span>(Product, prices) <span class="sc">~</span> prices,</span>
-<span id="cb29-5"><a></a>    <span class="at">fill =</span> <span class="sc">~</span>store,</span>
-<span id="cb29-6"><a></a>    <span class="co"># alpha = 0.5,</span></span>
-<span id="cb29-7"><a></a>    <span class="at">position =</span> <span class="st">"dodge"</span>,</span>
-<span id="cb29-8"><a></a>    <span class="at">xlab =</span> <span class="st">"Prices"</span>,</span>
-<span id="cb29-9"><a></a>    <span class="at">ylab =</span> <span class="st">""</span>,</span>
-<span id="cb29-10"><a></a>    <span class="at">title =</span> <span class="st">"Groceries Costs"</span></span>
-<span id="cb29-11"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb29-12"><a></a>  <span class="fu">gf_col</span>(</span>
-<span id="cb29-13"><a></a>    <span class="at">data =</span></span>
-<span id="cb29-14"><a></a>      Groceries_long <span class="sc">%&gt;%</span></span>
-<span id="cb29-15"><a></a>        <span class="fu">filter</span>(</span>
-<span id="cb29-16"><a></a>          Product <span class="sc">==</span> <span class="st">"Quaker Oats Life Cereal Original"</span></span>
-<span id="cb29-17"><a></a>        ),</span>
-<span id="cb29-18"><a></a>    <span class="fu">fct_reorder</span>(Product, prices) <span class="sc">~</span> prices,</span>
-<span id="cb29-19"><a></a>    <span class="at">fill =</span> <span class="sc">~</span>store,</span>
-<span id="cb29-20"><a></a>    <span class="at">position =</span> <span class="st">"dodge"</span></span>
-<span id="cb29-21"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb29-22"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">name =</span> <span class="st">"Store"</span>, <span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb29-2"><a aria-label="2"></a></span>
+<span id="cb29-3"><a aria-label="3"></a>Groceries_long <span class="sc">%&gt;%</span></span>
+<span id="cb29-4"><a aria-label="4"></a>  <span class="fu">gf_col</span>(<span class="fu">fct_reorder</span>(Product, prices) <span class="sc">~</span> prices,</span>
+<span id="cb29-5"><a aria-label="5"></a>    <span class="at">fill =</span> <span class="sc">~</span>store,</span>
+<span id="cb29-6"><a aria-label="6"></a>    <span class="co"># alpha = 0.5,</span></span>
+<span id="cb29-7"><a aria-label="7"></a>    <span class="at">position =</span> <span class="st">"dodge"</span>,</span>
+<span id="cb29-8"><a aria-label="8"></a>    <span class="at">xlab =</span> <span class="st">"Prices"</span>,</span>
+<span id="cb29-9"><a aria-label="9"></a>    <span class="at">ylab =</span> <span class="st">""</span>,</span>
+<span id="cb29-10"><a aria-label="10"></a>    <span class="at">title =</span> <span class="st">"Groceries Costs"</span></span>
+<span id="cb29-11"><a aria-label="11"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb29-12"><a aria-label="12"></a>  <span class="fu">gf_col</span>(</span>
+<span id="cb29-13"><a aria-label="13"></a>    <span class="at">data =</span></span>
+<span id="cb29-14"><a aria-label="14"></a>      Groceries_long <span class="sc">%&gt;%</span></span>
+<span id="cb29-15"><a aria-label="15"></a>        <span class="fu">filter</span>(</span>
+<span id="cb29-16"><a aria-label="16"></a>          Product <span class="sc">==</span> <span class="st">"Quaker Oats Life Cereal Original"</span></span>
+<span id="cb29-17"><a aria-label="17"></a>        ),</span>
+<span id="cb29-18"><a aria-label="18"></a>    <span class="fu">fct_reorder</span>(Product, prices) <span class="sc">~</span> prices,</span>
+<span id="cb29-19"><a aria-label="19"></a>    <span class="at">fill =</span> <span class="sc">~</span>store,</span>
+<span id="cb29-20"><a aria-label="20"></a>    <span class="at">position =</span> <span class="st">"dodge"</span></span>
+<span id="cb29-21"><a aria-label="21"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb29-22"><a aria-label="22"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_fill_brewer</span>(<span class="at">name =</span> <span class="st">"Store"</span>, <span class="at">palette =</span> <span class="st">"Set1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -3030,13 +3035,13 @@ $ Walmart &lt;dbl&gt; 2.78, 6.01, 2.98, 2.68, 2.98, 1.98, 2.50, 4.79, 1.28, 2.98
 </div>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a>obs_diff_price <span class="ot">&lt;-</span> <span class="fu">diffmean</span>(prices <span class="sc">~</span> store,</span>
-<span id="cb30-2"><a></a>  <span class="at">data =</span> Groceries_long,</span>
-<span id="cb30-3"><a></a>  <span class="at">only.2 =</span> <span class="cn">FALSE</span></span>
-<span id="cb30-4"><a></a>)</span>
-<span id="cb30-5"><a></a><span class="co"># Can also use</span></span>
-<span id="cb30-6"><a></a><span class="co"># obs_diff_price &lt;-  mean( ~ Walmart - Target, data = Groceries)</span></span>
-<span id="cb30-7"><a></a>obs_diff_price</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a aria-label="1"></a>obs_diff_price <span class="ot">&lt;-</span> <span class="fu">diffmean</span>(prices <span class="sc">~</span> store,</span>
+<span id="cb30-2"><a aria-label="2"></a>  <span class="at">data =</span> Groceries_long,</span>
+<span id="cb30-3"><a aria-label="3"></a>  <span class="at">only.2 =</span> <span class="cn">FALSE</span></span>
+<span id="cb30-4"><a aria-label="4"></a>)</span>
+<span id="cb30-5"><a aria-label="5"></a><span class="co"># Can also use</span></span>
+<span id="cb30-6"><a aria-label="6"></a><span class="co"># obs_diff_price &lt;-  mean( ~ Walmart - Target, data = Groceries)</span></span>
+<span id="cb30-7"><a aria-label="7"></a>obs_diff_price</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell quarto-layout-panel" data-layout="[[75,25]]">
 <div class="quarto-layout-row">
 <div class="cell-output cell-output-stdout quarto-layout-cell" style="flex-basis: 75.0%;justify-content: flex-start;">
@@ -3046,7 +3051,7 @@ $ Walmart &lt;dbl&gt; 2.78, 6.01, 2.98, 2.68, 2.98, 1.98, 2.50, 4.79, 1.28, 2.98
 </div>
 </div>
 <aside><ol class="aside-footnotes"><li id="fn1"><p><a href="https://raw.githubusercontent.com/gadenbuie/tidyexplain/main/images/tidyr-pivoting.gif" class="uri">https://raw.githubusercontent.com/gadenbuie/tidyexplain/main/images/tidyr-pivoting.gif</a></p></li></ol></aside></section>
-<section id="hypothesis-1" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792061636164656d69636f6e73206879706f746865736973203e7d7d-hypothesis-1" class="slide level3">
 <h3><iconify-icon inline="" icon="academicons:hypothesis" aria-label="Icon hypothesis from academicons Iconify.design set." title="Icon hypothesis from academicons Iconify.design set."></iconify-icon> Hypothesis</h3>
 <p>Based on the graph, how would we formulate our Hypothesis? We wish to infer whether there is any change in prices, <strong>per product</strong> between the two Store chains. So accordingly:</p>
 <p><span class="math display">\[
@@ -3060,13 +3065,13 @@ H_a: \mu_{Walmart} \ne \mu_{Target}\
 <h3>Testing for Assumptions on the Data</h3>
 <p>There are a few checks we need to make of our data, to decide what test procedure to use.</p>
 </section>
-<section id="a.-check-for-normality-1" class="slide level3">
+<section id="a.-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d64692063686172742d62656c6c2d63757276652073697a653d3278203e7d7d-check-for-normality-1" class="slide level3">
 <h3>A. <iconify-icon inline="" icon="mdi:chart-bell-curve" style="font-size: 2em;" aria-label="Icon chart-bell-curve from mdi Iconify.design set." title="Icon chart-bell-curve from mdi Iconify.design set."></iconify-icon> Check for Normality</h3>
 <div class="columns">
 <div class="column" style="width:55%;">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a><span class="fu">shapiro.test</span>(Groceries<span class="sc">$</span>Walmart)</span>
-<span id="cb32-2"><a></a><span class="fu">shapiro.test</span>(Groceries<span class="sc">$</span>Target)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a aria-label="1"></a><span class="fu">shapiro.test</span>(Groceries<span class="sc">$</span>Walmart)</span>
+<span id="cb32-2"><a aria-label="2"></a><span class="fu">shapiro.test</span>(Groceries<span class="sc">$</span>Target)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column" style="width:45%;">
 <div class="cell">
@@ -3088,11 +3093,11 @@ W = 0.79722, p-value = 5.836e-05</code></pre>
 </div></div>
 <p>For both tests, we see that the <code>p.value</code> is very small, indicating that the data are unlikely to be normally distributed. This means we cannot apply a standard <code>paired t.test</code> and need to use the non-parametric <code>wilcox.test</code>, that does not rely on the assumption of normality.</p>
 </section>
-<section id="b.-check-for-variances-1" class="slide level3">
+<section id="b.-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d6469207369676d612d6c6f7765722073697a653d3278203e7d7d-check-for-variances-1" class="slide level3">
 <h3>B. <iconify-icon inline="" icon="mdi:sigma-lower" style="font-size: 2em;" aria-label="Icon sigma-lower from mdi Iconify.design set." title="Icon sigma-lower from mdi Iconify.design set."></iconify-icon> Check for Variances</h3>
 <p>Let us check if the two variables have similar variances:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a><span class="fu">var.test</span>(Groceries<span class="sc">$</span>Walmart, Groceries<span class="sc">$</span>Target)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a aria-label="1"></a><span class="fu">var.test</span>(Groceries<span class="sc">$</span>Walmart, Groceries<span class="sc">$</span>Target)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     F test to compare two variances
@@ -3109,7 +3114,7 @@ ratio of variances
 </div>
 <p>It appears from the <span class="math inline">\(p.value = 0.9\)</span> and the <span class="math inline">\(Confidence Interval = [0.4629, 2.0432]\)</span>, which includes <span class="math inline">\(1\)</span>, that we cannot reject the NULL Hypothesis that the variances are not significantly different. ( Remember: this test looks at the <strong>ratio</strong> of the two variances, and the NULL Hypothesis is that this ratio is <span class="math inline">\(1\)</span> ).</p>
 </section>
-<section id="inference-1" class="slide level3">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c3220696e736967687473203e7d7d-inference-1" class="slide level3">
 <h3><iconify-icon inline="" icon="fluent-mdl2:insights" aria-label="Icon insights from fluent-mdl2 Iconify.design set." title="Icon insights from fluent-mdl2 Iconify.design set."></iconify-icon> Inference</h3>
 <div class="panel-tabset nav-pills" style="background: whitesmoke;">
 <ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">Using <em>paired</em> t.test</a></li><li><a href="#tabset-2-2">Using non-parametric <em>paired</em> Wilcoxon test</a></li><li><a href="#tabset-2-3">Using the Linear Model Method</a></li><li><a href="#tabset-2-4">Permutation Tests</a></li></ul>
@@ -3117,8 +3122,8 @@ ratio of variances
 <div id="tabset-2-1">
 <p>Well, the variables are <em>not</em> normally distributed, so a standard <code>t.test</code> is not advised, even if the variances are similar. We can still try:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a></a>mosaic<span class="sc">::</span><span class="fu">t_test</span>(Groceries<span class="sc">$</span>Walmart, Groceries<span class="sc">$</span>Target, <span class="at">paired =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb37-2"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a aria-label="1"></a>mosaic<span class="sc">::</span><span class="fu">t_test</span>(Groceries<span class="sc">$</span>Walmart, Groceries<span class="sc">$</span>Target, <span class="at">paired =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb37-2"><a aria-label="2"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -3132,15 +3137,15 @@ ratio of variances
 <div id="tabset-2-2">
 <p>However, we have seen that the data variables are <em>not</em> normally distributed. So a Wilcoxon Test, using signed-ranks, is indicated: (recall the model!)</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a><span class="co"># For stability reasons, it may be advisable to use rounded data or to set digits.rank = 7, say,</span></span>
-<span id="cb38-2"><a></a><span class="co"># such that determination of ties does not depend on very small numeric differences (see the example).</span></span>
-<span id="cb38-3"><a></a></span>
-<span id="cb38-4"><a></a><span class="fu">wilcox.test</span>(Groceries<span class="sc">$</span>Walmart, Groceries<span class="sc">$</span>Target,</span>
-<span id="cb38-5"><a></a>  <span class="at">data =</span> Groceries_long,</span>
-<span id="cb38-6"><a></a>  <span class="at">digits.rank =</span> <span class="dv">7</span>, <span class="at">paired =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb38-7"><a></a>  <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span></span>
-<span id="cb38-8"><a></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb38-9"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a aria-label="1"></a><span class="co"># For stability reasons, it may be advisable to use rounded data or to set digits.rank = 7, say,</span></span>
+<span id="cb38-2"><a aria-label="2"></a><span class="co"># such that determination of ties does not depend on very small numeric differences (see the example).</span></span>
+<span id="cb38-3"><a aria-label="3"></a></span>
+<span id="cb38-4"><a aria-label="4"></a><span class="fu">wilcox.test</span>(Groceries<span class="sc">$</span>Walmart, Groceries<span class="sc">$</span>Target,</span>
+<span id="cb38-5"><a aria-label="5"></a>  <span class="at">data =</span> Groceries_long,</span>
+<span id="cb38-6"><a aria-label="6"></a>  <span class="at">digits.rank =</span> <span class="dv">7</span>, <span class="at">paired =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb38-7"><a aria-label="7"></a>  <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span></span>
+<span id="cb38-8"><a aria-label="8"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb38-9"><a aria-label="9"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -3154,18 +3159,18 @@ ratio of variances
 <div id="tabset-2-3">
 <p>As before we can do the linear model for both the original data and the sign.rank data. The <code>test statistic</code> is again the difference between thetwo variables:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a><span class="fu">lm</span>(Target <span class="sc">-</span> Walmart <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> Groceries) <span class="sc">%&gt;%</span></span>
-<span id="cb39-2"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span>
-<span id="cb39-3"><a></a></span>
-<span id="cb39-4"><a></a><span class="co"># Create a sign-rank function</span></span>
-<span id="cb39-5"><a></a>signed_rank <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb39-6"><a></a>  <span class="fu">sign</span>(x) <span class="sc">*</span> <span class="fu">rank</span>(<span class="fu">abs</span>(x))</span>
-<span id="cb39-7"><a></a>}</span>
-<span id="cb39-8"><a></a></span>
-<span id="cb39-9"><a></a><span class="fu">lm</span>(<span class="fu">signed_rank</span>(Target <span class="sc">-</span> Walmart) <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb39-10"><a></a>  <span class="at">data =</span> Groceries</span>
-<span id="cb39-11"><a></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb39-12"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a aria-label="1"></a><span class="fu">lm</span>(Target <span class="sc">-</span> Walmart <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> Groceries) <span class="sc">%&gt;%</span></span>
+<span id="cb39-2"><a aria-label="2"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span>
+<span id="cb39-3"><a aria-label="3"></a></span>
+<span id="cb39-4"><a aria-label="4"></a><span class="co"># Create a sign-rank function</span></span>
+<span id="cb39-5"><a aria-label="5"></a>signed_rank <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb39-6"><a aria-label="6"></a>  <span class="fu">sign</span>(x) <span class="sc">*</span> <span class="fu">rank</span>(<span class="fu">abs</span>(x))</span>
+<span id="cb39-7"><a aria-label="7"></a>}</span>
+<span id="cb39-8"><a aria-label="8"></a></span>
+<span id="cb39-9"><a aria-label="9"></a><span class="fu">lm</span>(<span class="fu">signed_rank</span>(Target <span class="sc">-</span> Walmart) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb39-10"><a aria-label="10"></a>  <span class="at">data =</span> Groceries</span>
+<span id="cb39-11"><a aria-label="11"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb39-12"><a aria-label="12"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -3185,15 +3190,15 @@ ratio of variances
 <div class="columns">
 <div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a></a>polarity <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">15</span>), <span class="fu">rep</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">15</span>))</span>
-<span id="cb40-2"><a></a><span class="do">##</span></span>
-<span id="cb40-3"><a></a>null_dist_price <span class="ot">&lt;-</span> <span class="fu">do</span>(<span class="dv">4999</span>) <span class="sc">*</span></span>
-<span id="cb40-4"><a></a>  <span class="fu">mean</span>(</span>
-<span id="cb40-5"><a></a>    <span class="at">data =</span> Groceries,</span>
-<span id="cb40-6"><a></a>    <span class="sc">~</span> (Target <span class="sc">-</span> Walmart) <span class="sc">*</span></span>
-<span id="cb40-7"><a></a>      <span class="fu">resample</span>(polarity, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb40-8"><a></a>  )</span>
-<span id="cb40-9"><a></a>null_dist_price</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a aria-label="1"></a>polarity <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">15</span>), <span class="fu">rep</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">15</span>))</span>
+<span id="cb40-2"><a aria-label="2"></a><span class="do">##</span></span>
+<span id="cb40-3"><a aria-label="3"></a>null_dist_price <span class="ot">&lt;-</span> <span class="fu">do</span>(<span class="dv">4999</span>) <span class="sc">*</span></span>
+<span id="cb40-4"><a aria-label="4"></a>  <span class="fu">mean</span>(</span>
+<span id="cb40-5"><a aria-label="5"></a>    <span class="at">data =</span> Groceries,</span>
+<span id="cb40-6"><a aria-label="6"></a>    <span class="sc">~</span> (Target <span class="sc">-</span> Walmart) <span class="sc">*</span></span>
+<span id="cb40-7"><a aria-label="7"></a>      <span class="fu">resample</span>(polarity, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb40-8"><a aria-label="8"></a>  )</span>
+<span id="cb40-9"><a aria-label="9"></a>null_dist_price</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column">
 <div class="cell">
@@ -3208,21 +3213,21 @@ ratio of variances
 </div></div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb41-2"><a></a><span class="fu">gf_histogram</span>(<span class="at">data =</span> null_dist_price, <span class="sc">~</span>mean) <span class="sc">%&gt;%</span></span>
-<span id="cb41-3"><a></a>  <span class="fu">gf_vline</span>(<span class="at">xintercept =</span> obs_diff_price, <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb41-4"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)))</span>
-<span id="cb41-5"><a></a><span class="do">###</span></span>
-<span id="cb41-6"><a></a><span class="fu">gf_ecdf</span>(<span class="at">data =</span> null_dist_price, <span class="sc">~</span>mean, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb41-7"><a></a>  <span class="fu">gf_vline</span>(</span>
-<span id="cb41-8"><a></a>    <span class="at">xintercept =</span> obs_diff_price,</span>
-<span id="cb41-9"><a></a>    <span class="at">colour =</span> <span class="st">"red"</span>,</span>
-<span id="cb41-10"><a></a>    <span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">title =</span> <span class="st">"Null Distribution by Permutation"</span>,</span>
-<span id="cb41-11"><a></a>    <span class="at">subtitle =</span> <span class="st">"Cumulative Density"</span></span>
-<span id="cb41-12"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb41-13"><a></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="st">"Difference in Means"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb41-14"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)))</span>
-<span id="cb41-15"><a></a><span class="fu">prop1</span>(<span class="sc">~</span> mean <span class="sc">&lt;=</span> obs_diff_price, <span class="at">data =</span> null_dist_price)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb41-2"><a aria-label="2"></a><span class="fu">gf_histogram</span>(<span class="at">data =</span> null_dist_price, <span class="sc">~</span>mean) <span class="sc">%&gt;%</span></span>
+<span id="cb41-3"><a aria-label="3"></a>  <span class="fu">gf_vline</span>(<span class="at">xintercept =</span> obs_diff_price, <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb41-4"><a aria-label="4"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)))</span>
+<span id="cb41-5"><a aria-label="5"></a><span class="do">###</span></span>
+<span id="cb41-6"><a aria-label="6"></a><span class="fu">gf_ecdf</span>(<span class="at">data =</span> null_dist_price, <span class="sc">~</span>mean, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb41-7"><a aria-label="7"></a>  <span class="fu">gf_vline</span>(</span>
+<span id="cb41-8"><a aria-label="8"></a>    <span class="at">xintercept =</span> obs_diff_price,</span>
+<span id="cb41-9"><a aria-label="9"></a>    <span class="at">colour =</span> <span class="st">"red"</span>,</span>
+<span id="cb41-10"><a aria-label="10"></a>    <span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">title =</span> <span class="st">"Null Distribution by Permutation"</span>,</span>
+<span id="cb41-11"><a aria-label="11"></a>    <span class="at">subtitle =</span> <span class="st">"Cumulative Density"</span></span>
+<span id="cb41-12"><a aria-label="12"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb41-13"><a aria-label="13"></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="st">"Difference in Means"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb41-14"><a aria-label="14"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)))</span>
+<span id="cb41-15"><a aria-label="15"></a><span class="fu">prop1</span>(<span class="sc">~</span> mean <span class="sc">&lt;=</span> obs_diff_price, <span class="at">data =</span> null_dist_price)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
@@ -3251,60 +3256,60 @@ ratio of variances
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a></a>mosaic<span class="sc">::</span><span class="fu">t_test</span>(Groceries<span class="sc">$</span>Walmart, Groceries<span class="sc">$</span>Target, <span class="at">paired =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb43-2"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb43-3"><a></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb43-4"><a></a>  <span class="fu">tab_style</span>(</span>
-<span id="cb43-5"><a></a>    <span class="at">style =</span> <span class="fu">list</span>(</span>
-<span id="cb43-6"><a></a>      <span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"cyan"</span>),</span>
-<span id="cb43-7"><a></a>      <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>)</span>
-<span id="cb43-8"><a></a>    ),</span>
-<span id="cb43-9"><a></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">columns =</span> p.value)</span>
-<span id="cb43-10"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb43-11"><a></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"t.test"</span>)</span>
-<span id="cb43-12"><a></a><span class="do">###</span></span>
-<span id="cb43-13"><a></a><span class="fu">lm</span>(Target <span class="sc">-</span> Walmart <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> Groceries) <span class="sc">%&gt;%</span></span>
-<span id="cb43-14"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb43-15"><a></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb43-16"><a></a>  <span class="fu">tab_style</span>(</span>
-<span id="cb43-17"><a></a>    <span class="at">style =</span> <span class="fu">list</span>(</span>
-<span id="cb43-18"><a></a>      <span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"cyan"</span>),</span>
-<span id="cb43-19"><a></a>      <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>)</span>
-<span id="cb43-20"><a></a>    ),</span>
-<span id="cb43-21"><a></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">columns =</span> p.value)</span>
-<span id="cb43-22"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb43-23"><a></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Linear Model"</span>)</span>
-<span id="cb43-24"><a></a><span class="do">###</span></span>
-<span id="cb43-25"><a></a><span class="fu">wilcox.test</span>(Groceries<span class="sc">$</span>Walmart, Groceries<span class="sc">$</span>Target,</span>
-<span id="cb43-26"><a></a>  <span class="at">digits.rank =</span> <span class="dv">7</span>,</span>
-<span id="cb43-27"><a></a>  <span class="at">paired =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb43-28"><a></a>  <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb43-29"><a></a>  <span class="at">conf.level =</span> <span class="fl">0.95</span></span>
-<span id="cb43-30"><a></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb43-31"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb43-32"><a></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb43-33"><a></a>  <span class="fu">tab_style</span>(</span>
-<span id="cb43-34"><a></a>    <span class="at">style =</span> <span class="fu">list</span>(</span>
-<span id="cb43-35"><a></a>      <span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"palegreen"</span>),</span>
-<span id="cb43-36"><a></a>      <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>)</span>
-<span id="cb43-37"><a></a>    ),</span>
-<span id="cb43-38"><a></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">columns =</span> p.value)</span>
-<span id="cb43-39"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb43-40"><a></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Wilcoxon Test"</span>)</span>
-<span id="cb43-41"><a></a><span class="do">###</span></span>
-<span id="cb43-42"><a></a><span class="fu">lm</span>(<span class="fu">signed_rank</span>(Target <span class="sc">-</span> Walmart) <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb43-43"><a></a>  <span class="at">data =</span> Groceries</span>
-<span id="cb43-44"><a></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb43-45"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb43-46"><a></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb43-47"><a></a>  <span class="fu">tab_style</span>(</span>
-<span id="cb43-48"><a></a>    <span class="at">style =</span> <span class="fu">list</span>(</span>
-<span id="cb43-49"><a></a>      <span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"palegreen"</span>),</span>
-<span id="cb43-50"><a></a>      <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>)</span>
-<span id="cb43-51"><a></a>    ),</span>
-<span id="cb43-52"><a></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">columns =</span> p.value)</span>
-<span id="cb43-53"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb43-54"><a></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Linear Model with Sign.Ranks"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a aria-label="1"></a>mosaic<span class="sc">::</span><span class="fu">t_test</span>(Groceries<span class="sc">$</span>Walmart, Groceries<span class="sc">$</span>Target, <span class="at">paired =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb43-2"><a aria-label="2"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb43-3"><a aria-label="3"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb43-4"><a aria-label="4"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb43-5"><a aria-label="5"></a>    <span class="at">style =</span> <span class="fu">list</span>(</span>
+<span id="cb43-6"><a aria-label="6"></a>      <span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"cyan"</span>),</span>
+<span id="cb43-7"><a aria-label="7"></a>      <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>)</span>
+<span id="cb43-8"><a aria-label="8"></a>    ),</span>
+<span id="cb43-9"><a aria-label="9"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">columns =</span> p.value)</span>
+<span id="cb43-10"><a aria-label="10"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb43-11"><a aria-label="11"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"t.test"</span>)</span>
+<span id="cb43-12"><a aria-label="12"></a><span class="do">###</span></span>
+<span id="cb43-13"><a aria-label="13"></a><span class="fu">lm</span>(Target <span class="sc">-</span> Walmart <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> Groceries) <span class="sc">%&gt;%</span></span>
+<span id="cb43-14"><a aria-label="14"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb43-15"><a aria-label="15"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb43-16"><a aria-label="16"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb43-17"><a aria-label="17"></a>    <span class="at">style =</span> <span class="fu">list</span>(</span>
+<span id="cb43-18"><a aria-label="18"></a>      <span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"cyan"</span>),</span>
+<span id="cb43-19"><a aria-label="19"></a>      <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>)</span>
+<span id="cb43-20"><a aria-label="20"></a>    ),</span>
+<span id="cb43-21"><a aria-label="21"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">columns =</span> p.value)</span>
+<span id="cb43-22"><a aria-label="22"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb43-23"><a aria-label="23"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Linear Model"</span>)</span>
+<span id="cb43-24"><a aria-label="24"></a><span class="do">###</span></span>
+<span id="cb43-25"><a aria-label="25"></a><span class="fu">wilcox.test</span>(Groceries<span class="sc">$</span>Walmart, Groceries<span class="sc">$</span>Target,</span>
+<span id="cb43-26"><a aria-label="26"></a>  <span class="at">digits.rank =</span> <span class="dv">7</span>,</span>
+<span id="cb43-27"><a aria-label="27"></a>  <span class="at">paired =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb43-28"><a aria-label="28"></a>  <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb43-29"><a aria-label="29"></a>  <span class="at">conf.level =</span> <span class="fl">0.95</span></span>
+<span id="cb43-30"><a aria-label="30"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb43-31"><a aria-label="31"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb43-32"><a aria-label="32"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb43-33"><a aria-label="33"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb43-34"><a aria-label="34"></a>    <span class="at">style =</span> <span class="fu">list</span>(</span>
+<span id="cb43-35"><a aria-label="35"></a>      <span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"palegreen"</span>),</span>
+<span id="cb43-36"><a aria-label="36"></a>      <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>)</span>
+<span id="cb43-37"><a aria-label="37"></a>    ),</span>
+<span id="cb43-38"><a aria-label="38"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">columns =</span> p.value)</span>
+<span id="cb43-39"><a aria-label="39"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb43-40"><a aria-label="40"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Wilcoxon Test"</span>)</span>
+<span id="cb43-41"><a aria-label="41"></a><span class="do">###</span></span>
+<span id="cb43-42"><a aria-label="42"></a><span class="fu">lm</span>(<span class="fu">signed_rank</span>(Target <span class="sc">-</span> Walmart) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb43-43"><a aria-label="43"></a>  <span class="at">data =</span> Groceries</span>
+<span id="cb43-44"><a aria-label="44"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb43-45"><a aria-label="45"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb43-46"><a aria-label="46"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb43-47"><a aria-label="47"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb43-48"><a aria-label="48"></a>    <span class="at">style =</span> <span class="fu">list</span>(</span>
+<span id="cb43-49"><a aria-label="49"></a>      <span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"palegreen"</span>),</span>
+<span id="cb43-50"><a aria-label="50"></a>      <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>)</span>
+<span id="cb43-51"><a aria-label="51"></a>    ),</span>
+<span id="cb43-52"><a aria-label="52"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">columns =</span> p.value)</span>
+<span id="cb43-53"><a aria-label="53"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb43-54"><a aria-label="54"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Linear Model with Sign.Ranks"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="uxyudfxrju" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -5230,23 +5235,23 @@ ratio of variances
 <p>Clearly, the parametric tests do not detect a significant difference in prices, whereas the non-parametric tests do.</p>
 <p>Suppose we knock off the <code>Quaker Cereal</code> data item…(note the spaces in the product name)</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a></a>Groceries_less <span class="ot">&lt;-</span> Groceries <span class="sc">%&gt;%</span></span>
-<span id="cb44-2"><a></a>  <span class="fu">filter</span>(Product <span class="sc">!=</span> <span class="st">"Quaker Oats Life Cereal Original"</span>)</span>
-<span id="cb44-3"><a></a><span class="do">##</span></span>
-<span id="cb44-4"><a></a>Groceries_less_long <span class="ot">&lt;-</span> Groceries_less <span class="sc">%&gt;%</span></span>
-<span id="cb44-5"><a></a>  <span class="fu">pivot_longer</span>(</span>
-<span id="cb44-6"><a></a>    <span class="at">cols =</span> <span class="fu">c</span>(Target, Walmart),</span>
-<span id="cb44-7"><a></a>    <span class="at">names_to =</span> <span class="st">"store"</span>,</span>
-<span id="cb44-8"><a></a>    <span class="at">values_to =</span> <span class="st">"prices"</span></span>
-<span id="cb44-9"><a></a>  )</span>
-<span id="cb44-10"><a></a><span class="do">##</span></span>
-<span id="cb44-11"><a></a><span class="fu">wilcox.test</span>(Groceries_less<span class="sc">$</span>Walmart,</span>
-<span id="cb44-12"><a></a>  Groceries_less<span class="sc">$</span>Target,</span>
-<span id="cb44-13"><a></a>  <span class="at">paired =</span> <span class="cn">TRUE</span>, <span class="at">digits.rank =</span> <span class="dv">7</span>,</span>
-<span id="cb44-14"><a></a>  <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb44-15"><a></a>  <span class="at">conf.level =</span> <span class="fl">0.95</span></span>
-<span id="cb44-16"><a></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb44-17"><a></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a aria-label="1"></a>Groceries_less <span class="ot">&lt;-</span> Groceries <span class="sc">%&gt;%</span></span>
+<span id="cb44-2"><a aria-label="2"></a>  <span class="fu">filter</span>(Product <span class="sc">!=</span> <span class="st">"Quaker Oats Life Cereal Original"</span>)</span>
+<span id="cb44-3"><a aria-label="3"></a><span class="do">##</span></span>
+<span id="cb44-4"><a aria-label="4"></a>Groceries_less_long <span class="ot">&lt;-</span> Groceries_less <span class="sc">%&gt;%</span></span>
+<span id="cb44-5"><a aria-label="5"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb44-6"><a aria-label="6"></a>    <span class="at">cols =</span> <span class="fu">c</span>(Target, Walmart),</span>
+<span id="cb44-7"><a aria-label="7"></a>    <span class="at">names_to =</span> <span class="st">"store"</span>,</span>
+<span id="cb44-8"><a aria-label="8"></a>    <span class="at">values_to =</span> <span class="st">"prices"</span></span>
+<span id="cb44-9"><a aria-label="9"></a>  )</span>
+<span id="cb44-10"><a aria-label="10"></a><span class="do">##</span></span>
+<span id="cb44-11"><a aria-label="11"></a><span class="fu">wilcox.test</span>(Groceries_less<span class="sc">$</span>Walmart,</span>
+<span id="cb44-12"><a aria-label="12"></a>  Groceries_less<span class="sc">$</span>Target,</span>
+<span id="cb44-13"><a aria-label="13"></a>  <span class="at">paired =</span> <span class="cn">TRUE</span>, <span class="at">digits.rank =</span> <span class="dv">7</span>,</span>
+<span id="cb44-14"><a aria-label="14"></a>  <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb44-15"><a aria-label="15"></a>  <span class="at">conf.level =</span> <span class="fl">0.95</span></span>
+<span id="cb44-16"><a aria-label="16"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb44-17"><a aria-label="17"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -5256,44 +5261,44 @@ ratio of variances
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a></a>obs_diff_price_less <span class="ot">&lt;-</span></span>
-<span id="cb45-2"><a></a>  <span class="fu">mean</span>(<span class="sc">~</span> (Target <span class="sc">-</span> Walmart), <span class="at">data =</span> Groceries_less)</span>
-<span id="cb45-3"><a></a>obs_diff_price_less</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a aria-label="1"></a>obs_diff_price_less <span class="ot">&lt;-</span></span>
+<span id="cb45-2"><a aria-label="2"></a>  <span class="fu">mean</span>(<span class="sc">~</span> (Target <span class="sc">-</span> Walmart), <span class="at">data =</span> Groceries_less)</span>
+<span id="cb45-3"><a aria-label="3"></a>obs_diff_price_less</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.1558621</code></pre>
 </div>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
-<span id="cb47-2"><a></a></span>
-<span id="cb47-3"><a></a><span class="fu">set.seed</span>(<span class="dv">12345</span>)</span>
-<span id="cb47-4"><a></a>polarity_less <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">15</span>), <span class="fu">rep</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">14</span>))</span>
-<span id="cb47-5"><a></a><span class="co"># Due to resampling this small bias makes no difference</span></span>
-<span id="cb47-6"><a></a>null_dist_price_less <span class="ot">&lt;-</span></span>
-<span id="cb47-7"><a></a>  <span class="fu">do</span>(<span class="dv">9999</span>) <span class="sc">*</span> <span class="fu">mean</span>(</span>
-<span id="cb47-8"><a></a>    <span class="at">data =</span> Groceries_less,</span>
-<span id="cb47-9"><a></a>    <span class="sc">~</span> (Target <span class="sc">-</span> Walmart) <span class="sc">*</span> <span class="fu">resample</span>(polarity_less, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb47-10"><a></a>  )</span>
-<span id="cb47-11"><a></a><span class="do">##</span></span>
-<span id="cb47-12"><a></a><span class="fu">gf_histogram</span>(<span class="at">data =</span> null_dist_price_less, <span class="sc">~</span>mean) <span class="sc">%&gt;%</span></span>
-<span id="cb47-13"><a></a>  <span class="fu">gf_vline</span>(</span>
-<span id="cb47-14"><a></a>    <span class="at">xintercept =</span> obs_diff_price_less,</span>
-<span id="cb47-15"><a></a>    <span class="at">colour =</span> <span class="st">"red"</span></span>
-<span id="cb47-16"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb47-17"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)))</span>
-<span id="cb47-18"><a></a><span class="do">##</span></span>
-<span id="cb47-19"><a></a><span class="do">###</span></span>
-<span id="cb47-20"><a></a><span class="fu">gf_ecdf</span>(<span class="at">data =</span> null_dist_price_less, <span class="sc">~</span>mean, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb47-21"><a></a>  <span class="fu">gf_vline</span>(</span>
-<span id="cb47-22"><a></a>    <span class="at">xintercept =</span> obs_diff_price_less,</span>
-<span id="cb47-23"><a></a>    <span class="at">colour =</span> <span class="st">"red"</span>,</span>
-<span id="cb47-24"><a></a>    <span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">title =</span> <span class="st">"Null Distribution by Permutation"</span>,</span>
-<span id="cb47-25"><a></a>    <span class="at">subtitle =</span> <span class="st">"Cumulative Density"</span></span>
-<span id="cb47-26"><a></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb47-27"><a></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="st">"Difference in Means"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb47-28"><a></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)))</span>
-<span id="cb47-29"><a></a><span class="fu">mean</span>(null_dist_price_less <span class="sc">&gt;=</span> obs_diff_price_less)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a aria-label="1"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(<span class="at">new =</span> <span class="fu">theme_custom</span>())</span>
+<span id="cb47-2"><a aria-label="2"></a></span>
+<span id="cb47-3"><a aria-label="3"></a><span class="fu">set.seed</span>(<span class="dv">12345</span>)</span>
+<span id="cb47-4"><a aria-label="4"></a>polarity_less <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">15</span>), <span class="fu">rep</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">14</span>))</span>
+<span id="cb47-5"><a aria-label="5"></a><span class="co"># Due to resampling this small bias makes no difference</span></span>
+<span id="cb47-6"><a aria-label="6"></a>null_dist_price_less <span class="ot">&lt;-</span></span>
+<span id="cb47-7"><a aria-label="7"></a>  <span class="fu">do</span>(<span class="dv">9999</span>) <span class="sc">*</span> <span class="fu">mean</span>(</span>
+<span id="cb47-8"><a aria-label="8"></a>    <span class="at">data =</span> Groceries_less,</span>
+<span id="cb47-9"><a aria-label="9"></a>    <span class="sc">~</span> (Target <span class="sc">-</span> Walmart) <span class="sc">*</span> <span class="fu">resample</span>(polarity_less, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb47-10"><a aria-label="10"></a>  )</span>
+<span id="cb47-11"><a aria-label="11"></a><span class="do">##</span></span>
+<span id="cb47-12"><a aria-label="12"></a><span class="fu">gf_histogram</span>(<span class="at">data =</span> null_dist_price_less, <span class="sc">~</span>mean) <span class="sc">%&gt;%</span></span>
+<span id="cb47-13"><a aria-label="13"></a>  <span class="fu">gf_vline</span>(</span>
+<span id="cb47-14"><a aria-label="14"></a>    <span class="at">xintercept =</span> obs_diff_price_less,</span>
+<span id="cb47-15"><a aria-label="15"></a>    <span class="at">colour =</span> <span class="st">"red"</span></span>
+<span id="cb47-16"><a aria-label="16"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb47-17"><a aria-label="17"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)))</span>
+<span id="cb47-18"><a aria-label="18"></a><span class="do">##</span></span>
+<span id="cb47-19"><a aria-label="19"></a><span class="do">###</span></span>
+<span id="cb47-20"><a aria-label="20"></a><span class="fu">gf_ecdf</span>(<span class="at">data =</span> null_dist_price_less, <span class="sc">~</span>mean, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb47-21"><a aria-label="21"></a>  <span class="fu">gf_vline</span>(</span>
+<span id="cb47-22"><a aria-label="22"></a>    <span class="at">xintercept =</span> obs_diff_price_less,</span>
+<span id="cb47-23"><a aria-label="23"></a>    <span class="at">colour =</span> <span class="st">"red"</span>,</span>
+<span id="cb47-24"><a aria-label="24"></a>    <span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">title =</span> <span class="st">"Null Distribution by Permutation"</span>,</span>
+<span id="cb47-25"><a aria-label="25"></a>    <span class="at">subtitle =</span> <span class="st">"Cumulative Density"</span></span>
+<span id="cb47-26"><a aria-label="26"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb47-27"><a aria-label="27"></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="st">"Difference in Means"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb47-28"><a aria-label="28"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)))</span>
+<span id="cb47-29"><a aria-label="29"></a><span class="fu">mean</span>(null_dist_price_less <span class="sc">&gt;=</span> obs_diff_price_less)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
@@ -5313,18 +5318,18 @@ ratio of variances
 <p>We see that removing the Quaker Oats product item from the data <strong>does</strong> give a significant difference in mean prices !!! That one price difference was in <em>the opposite direction compared to the general trend in differences</em>, so when it was removed, we obtained a truer picture of price differences.</p>
 <p>Try to do a regular parametric t.test with this reduced data!</p>
 </section></section>
-<section id="wait-but-why" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="mingcute:thought-line" aria-label="Icon thought-line from mingcute Iconify.design set." title="Icon thought-line from mingcute Iconify.design set."></iconify-icon> Wait, But Why?</h2>
 <p><code>Paired</code> data is a special case of dependent data, where the observations are paired in some way. This can be due to repeated measures on the same subjects, or matched subjects in a case-control study. The paired t-test and the Wilcoxon signed-rank test are both designed for paired data, and take into account the fact that the observations are not independent.</p>
 <p>Can you think of an underlying experiment where the data may be paired?</p>
 </section>
 
-<section id="conclusion" class="title-slide slide level2 center">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion" class="title-slide slide level2 center">
 <h2><iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusion</h2>
 <p>We have learnt how to perform inference for paired-means. We have looked at the conditions that make the regular <code>t.test</code> possible, and learnt what to do if the conditions of normality and equal variance are not met. We have also looked at how these tests can be understood as manifestations of the <em>linear model</em>, with data and sign-ranked data. It should also be fairly clear now that we can test for the equivalence of two paired means, using a very simple permutation tests. Given computing power, we can always mechanize this test very quickly to get our results. And that performing this test yields reliable results without having to rely on any assumption relating to underlying distributions and so on.</p>
 </section>
 
-<section id="your-turn" class="title-slide slide level2 center scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a6920706572736f6e203e7d7d-your-turn" class="title-slide slide level2 center scrollable">
 <h2><iconify-icon inline="" icon="openmoji:person" aria-label="Icon person from openmoji Iconify.design set." title="Icon person from openmoji Iconify.design set."></iconify-icon> Your Turn</h2>
 <ol type="1">
 <li><p>Try the datasets in the <code>openintro</code> package. Use <code>data(package = "openintro")</code> in your Console to list out the data packages. Then simply type the name of the dataset in a Quarto chunk ( e.g.&nbsp;<code>babynames</code>) to read it.</p></li>
@@ -5334,7 +5339,7 @@ ratio of variances
 </section>
 
 <section>
-<section id="references" class="title-slide slide level2 center scrollable">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d6c7472203e7d7d-references" class="title-slide slide level2 center scrollable">
 <h2><iconify-icon inline="" icon="ooui:references-ltr" aria-label="Icon references-ltr from ooui Iconify.design set." title="Icon references-ltr from ooui Iconify.design set."></iconify-icon> References</h2>
 <ol type="1">
 <li>Paired Independence test with the package <code>infer</code>: <a href="https://infer.netlify.app/articles/paired" class="uri">https://infer.netlify.app/articles/paired</a></li>
@@ -5343,8 +5348,8 @@ ratio of variances
 <li><a href="https://statsandr.com/blog/wilcoxon-test-in-r-how-to-compare-2-groups-under-the-non-normality-assumption/" class="uri">https://statsandr.com/blog/wilcoxon-test-in-r-how-to-compare-2-groups-under-the-non-normality-assumption/</a></li>
 </ol>
 </section>
-<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" data-entry-spacing="0" role="list">
-<h6 id="r-package-citations"><iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
+<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" role="list">
+<h6 id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c7563696465207061636b6167652d636865636b203e7d7d-r-package-citations"><iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
 <div class="cell">
 <div class="cell-output-display">
 <table class="caption-top">
@@ -5373,21 +5378,21 @@ ratio of variances
 </tr>
 <tr class="even">
 <td style="text-align: left;">openintro</td>
-<td style="text-align: left;">2.5.0</td>
-<td style="text-align: left;"><span class="citation" data-cites="openintro">Çetinkaya-Rundel et al. (<a href="" role="doc-biblioref" onclick="return false;">2024</a>)</span></td>
+<td style="text-align: left;">2.5.1</td>
+<td style="text-align: left;"><span class="citation" data-cites="openintro">Çetinkaya-Rundel et al. (<a href="" role="doc-biblioref" onclick="return false;">2026</a>)</span></td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <div id="ref-openintro" class="csl-entry" role="listitem">
-Çetinkaya-Rundel, Mine, David Diez, Andrew Bray, Albert Y. Kim, Ben Baumer, Chester Ismay, Nick Paterno, and Christopher Barr. 2024. <em><span class="nocase">openintro</span>: Datasets and Supplemental Functions from <span>“<span>OpenIntro</span>”</span> Textbooks and Labs</em>. <a href="https://doi.org/10.32614/CRAN.package.openintro">https://doi.org/10.32614/CRAN.package.openintro</a>.
+Çetinkaya-Rundel, Mine, David Diez, Andrew Bray, et al. 2026. <em><span class="nocase">openintro</span>: Datasets and Supplemental Functions from <span>“<span>OpenIntro</span>”</span> Textbooks and Labs</em>. <a href="https://doi.org/10.32614/CRAN.package.openintro">https://doi.org/10.32614/CRAN.package.openintro</a>.
 </div>
 <div id="ref-infer" class="csl-entry" role="listitem">
 Couch, Simon P., Andrew P. Bray, Chester Ismay, Evgeni Chasnovski, Benjamin S. Baumer, and Mine Çetinkaya-Rundel. 2021. <span>“<span class="nocase">infer</span>: An <span>R</span> Package for Tidyverse-Friendly Statistical Inference.”</span> <em>Journal of Open Source Software</em> 6 (65): 3661. <a href="https://doi.org/10.21105/joss.03661">https://doi.org/10.21105/joss.03661</a>.
 </div>
 <div id="ref-gt" class="csl-entry" role="listitem">
-Iannone, Richard, Joe Cheng, Barret Schloerke, Shannon Haughton, Ellis Hughes, Alexandra Lauer, Romain François, JooYoung Seo, Ken Brevoort, and Olivier Roy. 2026. <em><span class="nocase">gt</span>: Easily Create Presentation-Ready Display Tables</em>. <a href="https://doi.org/10.32614/CRAN.package.gt">https://doi.org/10.32614/CRAN.package.gt</a>.
+Iannone, Richard, Joe Cheng, Barret Schloerke, et al. 2026. <em><span class="nocase">gt</span>: Easily Create Presentation-Ready Display Tables</em>. <a href="https://doi.org/10.32614/CRAN.package.gt">https://doi.org/10.32614/CRAN.package.gt</a>.
 </div>
 <div id="ref-MKinfer" class="csl-entry" role="listitem">
 Kohl, Matthias. 2025. <em><span>MKinfer: Inferential Statistics</span></em>. <a href="https://github.com/stamats/MKinfer">https://github.com/stamats/MKinfer</a>.
@@ -5432,7 +5437,6 @@ Kohl, Matthias. 2025. <em><span>MKinfer: Inferential Statistics</span></em>. <a 
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
 'jumpToSlide': true,
-'view': "scroll",
 'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
 'chalkboard': {"buttons":true},
 'smaller': true,
@@ -5576,6 +5580,13 @@ Kohl, Matthias. 2025. <em><span>MKinfer: Inferential Statistics</span></em>. <a 
         // devices. It is advisable to set this to a lower number than
         // viewDistance in order to save resources.
         mobileViewDistance: 2,
+
+        // Enable scroll view
+        view: 'scroll',
+        scrollProgress: 'auto',
+        scrollActivationWidth: 0,
+        scrollSnap: 'mandatory',
+        scrollLayout: 'full',
 
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be

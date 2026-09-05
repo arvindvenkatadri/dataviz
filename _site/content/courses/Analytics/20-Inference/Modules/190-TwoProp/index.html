@@ -2,15 +2,21 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.10.18">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="dcterms.date" content="2022-11-10">
 <title>Inference Test for Two Proportions – The Mad Hatter’s Guide to Data Viz and Stats in R</title>
 <style>
-code{white-space: pre-wrap;}
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -57,7 +63,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
-  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -87,15 +92,14 @@ div.csl-indent {
 <link href="../../../../../../content/materials/icon-park-twotone--concept-sharing.svg" rel="icon" type="image/svg+xml">
 <script src="../../../../../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../../../../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../../../../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-795e9e8eca1e12b12abcb09a27409631.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-12757e4b7af482b2d9c5bd8860d2b707.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../../../../site_libs/bootstrap/bootstrap-f98024d38ba10b6a495c0c63f82dd59d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../../../site_libs/bootstrap/bootstrap-399a7021ca91a6069b26050344c551bc.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="../../../../../../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.css" rel="stylesheet">
 <script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script src="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
@@ -129,7 +133,21 @@ div.csl-indent {
   }
 }</script><style>html{ scroll-behavior: smooth; }</style>
 <link href="../../../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="../../../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+<script src="../../../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script><script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script><script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+<script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -162,7 +180,7 @@ window.Quarto = {
 <meta property="og:title" content="Inference Test for Two Proportions – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:description" content="Inference Test for Two Proportions">
 <meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/20-Inference/Modules/190-TwoProp/preview.jpg">
-<meta property="og:site_name" content="The Mad Hatter's Guide to Data Viz and Stats in R">
+<meta property="og:site_name" content="The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta property="og:image:alt" content="From The Internet Archive">
 <meta name="twitter:title" content="Inference Test for Two Proportions – The Mad Hatter’s Guide to Data Viz and Stats in R">
 <meta name="twitter:description" content="Inference Test for Two Proportions">
@@ -770,14 +788,14 @@ window.Quarto = {
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#setting-up-r-packages" id="toc-setting-up-r-packages" class="nav-link active" data-scroll-target="#setting-up-r-packages"><span class="header-section-number">1</span> <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R packages</a></li>
+<li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="nav-link active" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages"><span class="header-section-number">1</span> <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R packages</a></li>
   <li>
-<a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction"><span class="header-section-number">2</span> <iconify-icon inline="" icon="openmoji:japanese-symbol-for-beginner" aria-label="Icon japanese-symbol-for-beginner from openmoji Iconify.design set." title="Icon japanese-symbol-for-beginner from openmoji Iconify.design set."></iconify-icon> Introduction</a>
+<a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction"><span class="header-section-number">2</span> <iconify-icon inline="" icon="openmoji:japanese-symbol-for-beginner" aria-label="Icon japanese-symbol-for-beginner from openmoji Iconify.design set." title="Icon japanese-symbol-for-beginner from openmoji Iconify.design set."></iconify-icon> Introduction</a>
   <ul class="collapse">
-<li><a href="#the-clt-for-two-proportions" id="toc-the-clt-for-two-proportions" class="nav-link" data-scroll-target="#the-clt-for-two-proportions"><span class="header-section-number">2.1</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> The CLT for Two Proportions</a></li>
+<li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-the-clt-for-two-proportions" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-the-clt-for-two-proportions" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-the-clt-for-two-proportions"><span class="header-section-number">2.1</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> The CLT for Two Proportions</a></li>
   </ul>
 </li>
-  <li><a href="#case-study-1-gss2002-dataset" id="toc-case-study-1-gss2002-dataset" class="nav-link" data-scroll-target="#case-study-1-gss2002-dataset"><span class="header-section-number">3</span> <iconify-icon inline="" icon="grommet-icons:test" aria-label="Icon test from grommet-icons Iconify.design set." title="Icon test from grommet-icons Iconify.design set."></iconify-icon><iconify-icon inline="" icon="lucide:ratio" aria-label="Icon ratio from lucide Iconify.design set." title="Icon ratio from lucide Iconify.design set."></iconify-icon> Case Study-1: <code>GSS2002</code> dataset</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792067726f6d6d65742d69636f6e732074657374203e7d7d-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c756369646520726174696f203e7d7d-case-study-1-gss2002-dataset" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792067726f6d6d65742d69636f6e732074657374203e7d7d-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c756369646520726174696f203e7d7d-case-study-1-gss2002-dataset" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792067726f6d6d65742d69636f6e732074657374203e7d7d-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c756369646520726174696f203e7d7d-case-study-1-gss2002-dataset"><span class="header-section-number">3</span> <iconify-icon inline="" icon="grommet-icons:test" aria-label="Icon test from grommet-icons Iconify.design set." title="Icon test from grommet-icons Iconify.design set."></iconify-icon><iconify-icon inline="" icon="lucide:ratio" aria-label="Icon ratio from lucide Iconify.design set." title="Icon ratio from lucide Iconify.design set."></iconify-icon> Case Study-1: <code>GSS2002</code> dataset</a></li>
   <li>
 <a href="#data-munging" id="toc-data-munging" class="nav-link" data-scroll-target="#data-munging"><span class="header-section-number">4</span> Data Munging</a>
   <ul class="collapse">
@@ -787,11 +805,11 @@ window.Quarto = {
   <li><a href="#hypotheses-definition" id="toc-hypotheses-definition" class="nav-link" data-scroll-target="#hypotheses-definition"><span class="header-section-number">5</span> Hypotheses Definition</a></li>
   <li><a href="#inference-for-two-proportions" id="toc-inference-for-two-proportions" class="nav-link" data-scroll-target="#inference-for-two-proportions"><span class="header-section-number">6</span> Inference for Two Proportions</a></li>
   <li><a href="#permutation-test-for-education" id="toc-permutation-test-for-education" class="nav-link" data-scroll-target="#permutation-test-for-education"><span class="header-section-number">7</span> Permutation Test for <code>Education</code></a></li>
-  <li><a href="#inference-for-proportions-case-study-2-tbd-dataset" id="toc-inference-for-proportions-case-study-2-tbd-dataset" class="nav-link" data-scroll-target="#inference-for-proportions-case-study-2-tbd-dataset"><span class="header-section-number">8</span> <iconify-icon inline="" icon="grommet-icons:test" aria-label="Icon test from grommet-icons Iconify.design set." title="Icon test from grommet-icons Iconify.design set."></iconify-icon><iconify-icon inline="" icon="lucide:ratio" aria-label="Icon ratio from lucide Iconify.design set." title="Icon ratio from lucide Iconify.design set."></iconify-icon> Inference for Proportions Case Study-2: TBD dataset</a></li>
-  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">9</span> <iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusion</a></li>
-  <li><a href="#wait-but-why" id="toc-wait-but-why" class="nav-link" data-scroll-target="#wait-but-why"><span class="header-section-number">10</span> <iconify-icon inline="" icon="mingcute:thought-line" aria-label="Icon thought-line from mingcute Iconify.design set." title="Icon thought-line from mingcute Iconify.design set."></iconify-icon> Wait, But Why?</a></li>
-  <li><a href="#your-turn" id="toc-your-turn" class="nav-link" data-scroll-target="#your-turn"><span class="header-section-number">11</span> <iconify-icon inline="" icon="bi:person-up" aria-label="Icon person-up from bi Iconify.design set." title="Icon person-up from bi Iconify.design set."></iconify-icon> Your Turn</a></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">12</span> <iconify-icon inline="" icon="ooui:references-rtl" aria-label="Icon references-rtl from ooui Iconify.design set." title="Icon references-rtl from ooui Iconify.design set."></iconify-icon> References</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792067726f6d6d65742d69636f6e732074657374203e7d7d-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c756369646520726174696f203e7d7d-inference-for-proportions-case-study-2-tbd-dataset" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792067726f6d6d65742d69636f6e732074657374203e7d7d-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c756369646520726174696f203e7d7d-inference-for-proportions-case-study-2-tbd-dataset" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792067726f6d6d65742d69636f6e732074657374203e7d7d-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c756369646520726174696f203e7d7d-inference-for-proportions-case-study-2-tbd-dataset"><span class="header-section-number">8</span> <iconify-icon inline="" icon="grommet-icons:test" aria-label="Icon test from grommet-icons Iconify.design set." title="Icon test from grommet-icons Iconify.design set."></iconify-icon><iconify-icon inline="" icon="lucide:ratio" aria-label="Icon ratio from lucide Iconify.design set." title="Icon ratio from lucide Iconify.design set."></iconify-icon> Inference for Proportions Case Study-2: TBD dataset</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion"><span class="header-section-number">9</span> <iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusion</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why"><span class="header-section-number">10</span> <iconify-icon inline="" icon="mingcute:thought-line" aria-label="Icon thought-line from mingcute Iconify.design set." title="Icon thought-line from mingcute Iconify.design set."></iconify-icon> Wait, But Why?</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920626920706572736f6e2d7570203e7d7d-your-turn" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920626920706572736f6e2d7570203e7d7d-your-turn" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920626920706572736f6e2d7570203e7d7d-your-turn"><span class="header-section-number">11</span> <iconify-icon inline="" icon="bi:person-up" aria-label="Icon person-up from bi Iconify.design set." title="Icon person-up from bi Iconify.design set."></iconify-icon> Your Turn</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d72746c203e7d7d-references" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d72746c203e7d7d-references" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d72746c203e7d7d-references"><span class="header-section-number">12</span> <iconify-icon inline="" icon="ooui:references-rtl" aria-label="Icon references-rtl from ooui Iconify.design set." title="Icon references-rtl from ooui Iconify.design set."></iconify-icon> References</a></li>
   </ul><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="counts-reveal.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></nav>
     </div>
 <!-- main -->
@@ -821,7 +839,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">August 2, 2026</p>
+      <p class="date-modified">September 5, 2026</p>
     </div>
   </div>
     
@@ -835,7 +853,7 @@ window.Quarto = {
 </div>
 
 
-</header><section id="setting-up-r-packages" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="setting-up-r-packages">
+</header><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206e6f746f2d7631207061636b616765203e7d7d-setting-up-r-packages">
 <span class="header-section-number">1</span> <iconify-icon inline="" icon="noto-v1:package" aria-label="Icon package from noto-v1 Iconify.design set." title="Icon package from noto-v1 Iconify.design set."></iconify-icon> Setting up R packages</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
@@ -846,7 +864,7 @@ window.Quarto = {
 <span><span class="co">### Dataset from Chihara and Hesterberg's book (Second Edition)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rudeboybert/resampledata">resampledata</a></span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<section id="extra-pedagogical-packages" class="level4"><h4 class="anchored" data-anchor-id="extra-pedagogical-packages">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e6520676c6f62616c2d6c6561726e696e67203e7d7d-extra-pedagogical-packages" class="level4"><h4 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792073747265616d6c696e6520676c6f62616c2d6c6561726e696e67203e7d7d-extra-pedagogical-packages">
 <iconify-icon inline="" icon="streamline:global-learning" aria-label="Icon global-learning from streamline Iconify.design set." title="Icon global-learning from streamline Iconify.design set."></iconify-icon> Extra Pedagogical Packages</h4>
 <div class="cell">
 <details class="code-fold"><summary>Show the Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://agricolamz.github.io/checkdown/">checkdown</a></span><span class="op">)</span></span>
@@ -865,7 +883,7 @@ window.Quarto = {
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bgreenwell/statlingua">statlingua</a></span><span class="op">)</span> <span class="co"># LLM-driven plain English statistical explanations</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-</section><section id="plot-fonts-and-theme" class="level4"><h4 class="anchored" data-anchor-id="plot-fonts-and-theme">
+</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679207673636f64652d69636f6e7320666f6c6465722d747970652d7468656d653e7d7d-plot-fonts-and-theme" class="level4"><h4 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679207673636f64652d69636f6e7320666f6c6465722d747970652d7468656d653e7d7d-plot-fonts-and-theme">
 <iconify-icon inline="" icon="vscode-icons:folder-type-theme" aria-label="Icon folder-type-theme from vscode-icons Iconify.design set." title="Icon folder-type-theme from vscode-icons Iconify.design set."></iconify-icon> Plot Fonts and Theme</h4>
 <div class="cell" data-messages="false">
 <details class="code-fold"><summary>Show the Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-lib/systemfonts">systemfonts</a></span><span class="op">)</span></span>
@@ -993,7 +1011,7 @@ window.Quarto = {
 <span><span class="fu">flextable</span><span class="fu">::</span><span class="fu"><a href="https://davidgohel.github.io/flextable/reference/set_flextable_defaults.html">set_flextable_defaults</a></span><span class="op">(</span>font.family <span class="op">=</span> <span class="st">"Roboto Condensed"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-</section></section><section id="introduction" class="level2" data-number="2"><h2 data-number="2" class="anchored" data-anchor-id="introduction">
+</section></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction" class="level2" data-number="2"><h2 data-number="2" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f70656e6d6f6a69206a6170616e6573652d73796d626f6c2d666f722d626567696e6e6572203e7d7d-introduction">
 <span class="header-section-number">2</span> <iconify-icon inline="" icon="openmoji:japanese-symbol-for-beginner" aria-label="Icon japanese-symbol-for-beginner from openmoji Iconify.design set." title="Icon japanese-symbol-for-beginner from openmoji Iconify.design set."></iconify-icon> Introduction</h2>
 <p>Many experiments gather qualitative data across different segments of a population, for example, opinion about a topic among people who belong to different income groups, or who live in different parts of a city. This should remind us of the <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/45-SurveyData/index.html">Likert Plots</a> that we plotted earlier. In this case the two variables, dependent and independent, are both Qualitative, and we can calculate <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/40-CatData/index.html">counts and proportions</a>.</p>
 <p>How does one Qual variable affect the other? How do counts/proportions of the <code>dependent variable</code> vary with the <code>levels</code> of the <code>independent</code> variable? This is our task for this module.</p>
@@ -1008,28 +1026,28 @@ Figure&nbsp;1: Breast Feeding
 </div>
 <p>Clearly, we can see differences in <span class="black bg-pink">counts/proportions of women who breast-fed their babies for three months or more</span>, <strong><em>based on</em></strong> whether they were <span class="black bg-green">“printers wives” or “farmers’ wives”</span>!</p>
 <p>Is there a doctor in the <a href="https://www.imdb.com/title/tt0412142/">House</a>?</p>
-<section id="the-clt-for-two-proportions" class="level3" data-number="2.1"><h3 data-number="2.1" class="anchored" data-anchor-id="the-clt-for-two-proportions">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-the-clt-for-two-proportions" class="level3" data-number="2.1"><h3 data-number="2.1" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c61742d636f6c6f722d69636f6e7320776f726b666c6f77203e7d7d-the-clt-for-two-proportions">
 <span class="header-section-number">2.1</span> <iconify-icon inline="" icon="flat-color-icons:workflow" aria-label="Icon workflow from flat-color-icons Iconify.design set." title="Icon workflow from flat-color-icons Iconify.design set."></iconify-icon> The CLT for Two Proportions</h3>
-<p>We first need to establish some model assumptions prior to making our analysis. As before, we wish to see if the CLT applies here, and if so, in what form. The difference between two proportions <span class="math inline">\(\hat{p_1}-\hat{p_2}\)</span> can be modeled using a normal distribution when:</p>
+<p>We first need to establish some model assumptions prior to making our analysis. As before, we wish to see if the CLT applies here, and if so, in what form. The difference between two proportions <span class="math inline">\hat{p_1}-\hat{p_2}</span> can be modeled using a normal distribution when:</p>
 <ul>
 <li>
 <strong>Independence (extended)</strong>: The data are independent within and between the two groups. Generally this is satisfied if the data come from two independent random samples or if the data come from a randomized experiment.</li>
 <li>
 <strong>Success-failure condition</strong>: The success-failure condition holds for both groups, where we check successes and failures in each group separately. That is, we should have at least 10 successes and 10 failures in each of the two groups.</li>
 </ul>
-<p>When these conditions are satisfied, the standard error of <span class="math inline">\(\hat{p_1}-\hat{p_2}\)</span> is well-approximated by:</p>
-<p><span id="eq-se-two-proportions"><span class="math display">\[
+<p>When these conditions are satisfied, the standard error of <span class="math inline">\hat{p_1}-\hat{p_2}</span> is well-approximated by:</p>
+<p><span id="eq-se-two-proportions"><span class="math display">
 SE(\hat{p_1}-\hat{p_2}) = \sqrt{\frac{\hat{p_1}*(1-\hat{p_1})}{n_1}} + \sqrt{\frac{\hat{p_2}*(1-\hat{p_2})}{n_2}}
-\tag{1}\]</span></span></p>
-<p>where <span class="math inline">\(\hat{p_1}\)</span> and <span class="math inline">\(\hat{p_2}\)</span> represent the sample proportions, and <span class="math inline">\(n_1\)</span> and <span class="math inline">\(n_2\)</span> represent the sample sizes.</p>
+\tag{1}</span></span></p>
+<p>where <span class="math inline">\hat{p_1}</span> and <span class="math inline">\hat{p_2}</span> represent the sample proportions, and <span class="math inline">n_1</span> and <span class="math inline">n_2</span> represent the sample sizes.</p>
 <p>We can represent the Confidence Intervals as:</p>
-<p><span id="eq-ci-two-proportions"><span class="math display">\[
+<p><span id="eq-ci-two-proportions"><span class="math display">
 \begin{eqnarray}
 CI(p_1 - p_2) &amp;=&amp; (\hat{p_1} - \hat{p_2}) \pm 1.96 * SE(\hat{p_1}-\hat{p_2})\\
 &amp;=&amp; (\hat{p_1} - \hat{p_2}) \pm 1.96 * \left(\sqrt{\frac{\hat{p_1}*(1-\hat{p_1})}{n_1}} + \sqrt{\frac{\hat{p_2}*(1-\hat{p_2})}{n_2}}\right)
 \end{eqnarray}
-\tag{2}\]</span></span></p>
-</section></section><section id="case-study-1-gss2002-dataset" class="level2" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="case-study-1-gss2002-dataset">
+\tag{2}</span></span></p>
+</section></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792067726f6d6d65742d69636f6e732074657374203e7d7d-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c756369646520726174696f203e7d7d-case-study-1-gss2002-dataset" class="level2" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792067726f6d6d65742d69636f6e732074657374203e7d7d-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c756369646520726174696f203e7d7d-case-study-1-gss2002-dataset">
 <span class="header-section-number">3</span> <iconify-icon inline="" icon="grommet-icons:test" aria-label="Icon test from grommet-icons Iconify.design set." title="Icon test from grommet-icons Iconify.design set."></iconify-icon><iconify-icon inline="" icon="lucide:ratio" aria-label="Icon ratio from lucide Iconify.design set." title="Icon ratio from lucide Iconify.design set."></iconify-icon> Case Study-1: <code>GSS2002</code> dataset</h2>
 <p>We saw how we could perform inference for a single proportion. We can extend this idea to <em>multiple proportions</em> too.</p>
 <p>Let us try a dataset with Qualitative / Categorical data. This is the <code>General Social Survey GSS dataset</code> from the <a href="https://github.com/rudeboybert/resampledata"><code>resampledata</code> package</a>, and we have people with different levels of <code>Education</code> stating their opinion on the <code>Death Penalty</code>. We want to know if these two Categorical variables have a correlation, i.e.&nbsp;can the opinions in favour of the <code>Death Penalty</code> be explained by the <code>Education</code> level?</p>
@@ -1205,6 +1223,7 @@ Figure&nbsp;2: vcd Mosaic Plot of Death Penalty by Education
 --- Named components ---
  [1] "statistic"    "parameter"    "p.value"      "method"       "data.name"   
  [6] "observed"     "expected"     "residuals"    "stdres"       "mosaic_stats"
+[11] "effect_size" 
 
 --- Contents ---
 
@@ -1253,7 +1272,17 @@ $mosaic_stats:
              Education  HS Bachelors Left HS Graduate Jr Col
 DeathPenalty                                                
 Favor                  511       135     117       64     71
-Oppose                 200        71      72       50     16</code></pre>
+Oppose                 200        71      72       50     16
+
+$effect_size:
+$name
+[1] "Cramer's V"
+
+$estimate
+[1] 0.1339498
+
+$effect_size_method
+[1] "Cramer's V for contingency table"</code></pre>
 </div>
 <div id="fig-visstat1" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-visstat1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -1341,8 +1370,8 @@ Table&nbsp;2: visStatistics Tables output for Chi-Square Test
 </section></section><section id="hypotheses-definition" class="level2" data-number="5"><h2 data-number="5" class="anchored" data-anchor-id="hypotheses-definition">
 <span class="header-section-number">5</span> Hypotheses Definition</h2>
 <p>What would our Hypotheses be relating to the <em>proportions</em> of votes for or against the <code>DeathPenalty</code>?</p>
-<p><span class="math inline">\(H_0: \text{Education does not affect votes for Death Penalty}\\\)</span></p>
-<p><span class="math inline">\(H_a: \text{Education affects votes for Death Penalty}\\\)</span></p>
+<p><span class="math inline">H_0: \text{Education does not affect votes for Death Penalty}\\</span></p>
+<p><span class="math inline">H_a: \text{Education affects votes for Death Penalty}\\</span></p>
 </section><section id="inference-for-two-proportions" class="level2 page-columns page-full" data-number="6"><h2 data-number="6" class="anchored" data-anchor-id="inference-for-two-proportions">
 <span class="header-section-number">6</span> Inference for Two Proportions</h2>
 <p>We are now ready to perform our statistical inference. We will use the standard <code>Pearson chi-square test</code>, and develop and intuition for it. We will then do a permutation test to have an alternative method to complete the same task.</p>
@@ -1406,7 +1435,7 @@ key:
 <pre data-code-line-numbers=""><code>[1] 9.487729</code></pre>
 </div>
 </div>
-<p>We see that our observed <span class="math inline">\(X^2_{obs} = 23.45\)</span>; the critical value <span class="math inline">\(X^2_{crit} = 9.48\)</span>, which is much smaller! The <code>p-value</code> is <span class="math inline">\(0.0001029\)</span>, very low as we would expect, indicating that the NULL Hypothesis should be rejected in favour of the alternate hypothesis, that proportions of <code>DeathPenalty</code> (opinion) are affected by <code>Education</code>.</p>
+<p>We see that our observed <span class="math inline">X^2_{obs} = 23.45</span>; the critical value <span class="math inline">X^2_{crit} = 9.48</span>, which is much smaller! The <code>p-value</code> is <span class="math inline">0.0001029</span>, very low as we would expect, indicating that the NULL Hypothesis should be rejected in favour of the alternate hypothesis, that proportions of <code>DeathPenalty</code> (opinion) are affected by <code>Education</code>.</p>
 <p>As always, <em>we analyze our plots, and plot our analysis</em>. Here is a plot for this test:</p>
 <div class="cell" data-layout-align="center">
 <details class="code-fold"><summary>Show the Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html">theme_set</a></span><span class="op">(</span>new <span class="op">=</span> <span class="fu">theme_custom</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
@@ -1496,7 +1525,7 @@ key:
     &lt;Pearson residual&gt;</code></pre>
 </div>
 </div>
-<p>As per the <code>key</code> above, this is actually <span style="background-color:yellow;"><strong>four 2-row tables interleaved together into one</strong></span>. The <em>first</em> row is the <code>Observed</code> counts, the <em>second</em> row is the <code>Expected</code> counts, if the two variables were independent. The <em>last</em> row is the <code>Pearson Residuals</code> or <code>z-score</code> per cell, which we will explain shortly. The <em>third</em> row is the <code>Contribution</code> of each cell to the overall Chi-Square statistic, given by <span class="math inline">\(z.score^2\)</span>.</p>
+<p>As per the <code>key</code> above, this is actually <span style="background-color:yellow;"><strong>four 2-row tables interleaved together into one</strong></span>. The <em>first</em> row is the <code>Observed</code> counts, the <em>second</em> row is the <code>Expected</code> counts, if the two variables were independent. The <em>last</em> row is the <code>Pearson Residuals</code> or <code>z-score</code> per cell, which we will explain shortly. The <em>third</em> row is the <code>Contribution</code> of each cell to the overall Chi-Square statistic, given by <span class="math inline">z.score^2</span>.</p>
 <p>Let us plot these tables and develop first a visual intuition, and then a mathematical one. If we pull apart the four tables, here are the mosaic plots for the <em>actual</em> and <em>expected</em> Contingency Tables, along with the <em>association</em> plot showing the differences, as we did when plotting <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/40-CatData/index.html#coloured-tiles-actual-and-expected-contingency-tables">Proportions</a>:</p>
 <div class="page-columns page-full">
 <details class="code-fold"><summary>Show the Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30" data-code-line-numbers=""><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Flipping the Contingency Table for Exposition</span></span>
@@ -1643,10 +1672,8 @@ Figure&nbsp;5: Mosaic Plots of Actual, Expected and Differences in Contingency T
 </details><div id="tbl-all-tables" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-tbl-subcap="[&quot;Observed&quot;,&quot;Expected&quot;,&quot;Pearson Residuals&quot;,&quot;Squared Residual Contribution to Chi-Square Statistic&quot;]">
 <figure class="quarto-float quarto-float-tbl figure"><div aria-describedby="tbl-all-tables-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<!-- preamble start -->
-
-    <!-- tinytable mathjax start -->
-    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script><script>
+<!-- tinytable mathjax start -->
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script><script>
     MathJax = {
       tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']]
@@ -1657,36 +1684,36 @@ Figure&nbsp;5: Mosaic Plots of Actual, Expected and Differences in Contingency T
     };
     </script><!-- tinytable mathjax end --><script src="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.js"></script><script>
       // Create table-specific functions using external factory
-      const tableFns_o4jpsjlahkc5qm37iyjf = TinyTable.createTableFunctions("tinytable_o4jpsjlahkc5qm37iyjf");
+      const tableFns_rv2l89be5jb0dt2nx8mh = TinyTable.createTableFunctions("tinytable_rv2l89be5jb0dt2nx8mh");
       // tinytable span after
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '1', j: 7 }, { i: '2', j: 7 } ], css_id: 'tinytable_css_ihiydi0dkdc5486i4y9v',}, 
-          { positions: [ { i: '1', j: 2 }, { i: '2', j: 5 } ], css_id: 'tinytable_css_4ccfyxqtwoo67lqj3hzw',}, 
-          { positions: [ { i: '3', j: 1 }, { i: '3', j: 2 }, { i: '3', j: 3 }, { i: '3', j: 4 }, { i: '3', j: 5 }, { i: '3', j: 6 }, { i: '3', j: 7 } ], css_id: 'tinytable_css_ylmq9s9hjlnjpxffs59h',}, 
-          { positions: [ { i: '1', j: 1 }, { i: '2', j: 1 }, { i: '2', j: 2 }, { i: '1', j: 3 }, { i: '2', j: 3 }, { i: '1', j: 4 }, { i: '2', j: 4 }, { i: '1', j: 5 }, { i: '1', j: 6 }, { i: '2', j: 6 } ], css_id: 'tinytable_css_54xp6n5939lj38y0l3ku',}, 
-          { positions: [ { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 }, { i: '0', j: 7 } ], css_id: 'tinytable_css_uagekb9c4ydnmqrci2lx',}, 
+          { positions: [ { i: '1', j: 7 }, { i: '2', j: 7 } ], css_id: 'tinytable_css_m6byfrawhkxjgzzc781j',}, 
+          { positions: [ { i: '1', j: 2 }, { i: '2', j: 5 } ], css_id: 'tinytable_css_scjtppsqq789m986x84m',}, 
+          { positions: [ { i: '3', j: 1 }, { i: '3', j: 2 }, { i: '3', j: 3 }, { i: '3', j: 4 }, { i: '3', j: 5 }, { i: '3', j: 6 }, { i: '3', j: 7 } ], css_id: 'tinytable_css_gdqz265erol20e26wq4j',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '2', j: 1 }, { i: '2', j: 2 }, { i: '1', j: 3 }, { i: '2', j: 3 }, { i: '1', j: 4 }, { i: '2', j: 4 }, { i: '1', j: 5 }, { i: '1', j: 6 }, { i: '2', j: 6 } ], css_id: 'tinytable_css_qtn1ota33xivsdch0tmn',}, 
+          { positions: [ { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 }, { i: '0', j: 7 } ], css_id: 'tinytable_css_pd5c2vpemfgtdts40tg5',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  tableFns_o4jpsjlahkc5qm37iyjf.styleCell(cell.i, cell.j, group.css_id);
+                  tableFns_rv2l89be5jb0dt2nx8mh.styleCell(cell.i, cell.j, group.css_id);
               });
           });
       });
     </script><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.css">
 <style>
     /* tinytable css entries after */
-    #tinytable_o4jpsjlahkc5qm37iyjf td.tinytable_css_ihiydi0dkdc5486i4y9v, #tinytable_o4jpsjlahkc5qm37iyjf th.tinytable_css_ihiydi0dkdc5486i4y9v { font-weight: bold; color: black; background-color: #98FB98 }
-    #tinytable_o4jpsjlahkc5qm37iyjf td.tinytable_css_4ccfyxqtwoo67lqj3hzw, #tinytable_o4jpsjlahkc5qm37iyjf th.tinytable_css_4ccfyxqtwoo67lqj3hzw { font-weight: bold; color: black; background-color: #FFFF00 }
-    #tinytable_o4jpsjlahkc5qm37iyjf td.tinytable_css_ylmq9s9hjlnjpxffs59h, #tinytable_o4jpsjlahkc5qm37iyjf th.tinytable_css_ylmq9s9hjlnjpxffs59h {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.08em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; font-weight: bold; color: black; background-color: #98FB98 }
-    #tinytable_o4jpsjlahkc5qm37iyjf td.tinytable_css_54xp6n5939lj38y0l3ku, #tinytable_o4jpsjlahkc5qm37iyjf th.tinytable_css_54xp6n5939lj38y0l3ku { color: #333333 }
-    #tinytable_o4jpsjlahkc5qm37iyjf td.tinytable_css_uagekb9c4ydnmqrci2lx, #tinytable_o4jpsjlahkc5qm37iyjf th.tinytable_css_uagekb9c4ydnmqrci2lx {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.08em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; color: #333333 }
+    #tinytable_rv2l89be5jb0dt2nx8mh td.tinytable_css_m6byfrawhkxjgzzc781j, #tinytable_rv2l89be5jb0dt2nx8mh th.tinytable_css_m6byfrawhkxjgzzc781j { font-weight: bold; color: black; background-color: #98FB98 }
+    #tinytable_rv2l89be5jb0dt2nx8mh td.tinytable_css_scjtppsqq789m986x84m, #tinytable_rv2l89be5jb0dt2nx8mh th.tinytable_css_scjtppsqq789m986x84m { font-weight: bold; color: black; background-color: #FFFF00 }
+    #tinytable_rv2l89be5jb0dt2nx8mh td.tinytable_css_gdqz265erol20e26wq4j, #tinytable_rv2l89be5jb0dt2nx8mh th.tinytable_css_gdqz265erol20e26wq4j {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.08em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; font-weight: bold; color: black; background-color: #98FB98 }
+    #tinytable_rv2l89be5jb0dt2nx8mh td.tinytable_css_qtn1ota33xivsdch0tmn, #tinytable_rv2l89be5jb0dt2nx8mh th.tinytable_css_qtn1ota33xivsdch0tmn { color: #333333 }
+    #tinytable_rv2l89be5jb0dt2nx8mh td.tinytable_css_pd5c2vpemfgtdts40tg5, #tinytable_rv2l89be5jb0dt2nx8mh th.tinytable_css_pd5c2vpemfgtdts40tg5 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.08em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; color: #333333 }
     </style>
 <div class="container">
-      <table class="tinytable" id="tinytable_o4jpsjlahkc5qm37iyjf" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="tinytable" id="tinytable_rv2l89be5jb0dt2nx8mh" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
 <caption>Observed</caption>
         <thead><tr>
 <th scope="col" data-row="0" data-col="1">DeathPenalty</th>
@@ -1731,10 +1758,8 @@ Figure&nbsp;5: Mosaic Plots of Actual, Expected and Differences in Contingency T
 <!-- hack to avoid NA insertion in last line -->
 </div>
 <div class="cell-output-display">
-<!-- preamble start -->
-
-    <!-- tinytable mathjax start -->
-    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script><script>
+<!-- tinytable mathjax start -->
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script><script>
     MathJax = {
       tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']]
@@ -1745,36 +1770,36 @@ Figure&nbsp;5: Mosaic Plots of Actual, Expected and Differences in Contingency T
     };
     </script><!-- tinytable mathjax end --><script src="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.js"></script><script>
       // Create table-specific functions using external factory
-      const tableFns_phzfq66bgmrokpdvnpqm = TinyTable.createTableFunctions("tinytable_phzfq66bgmrokpdvnpqm");
+      const tableFns_htay2gh4byfm2u5zsfa0 = TinyTable.createTableFunctions("tinytable_htay2gh4byfm2u5zsfa0");
       // tinytable span after
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '1', j: 7 }, { i: '2', j: 7 } ], css_id: 'tinytable_css_6bas4hi3rjtszol32ba3',}, 
-          { positions: [ { i: '1', j: 2 }, { i: '2', j: 5 } ], css_id: 'tinytable_css_mcirweb6qm4iuqi82gyk',}, 
-          { positions: [ { i: '3', j: 1 }, { i: '3', j: 2 }, { i: '3', j: 3 }, { i: '3', j: 4 }, { i: '3', j: 5 }, { i: '3', j: 6 }, { i: '3', j: 7 } ], css_id: 'tinytable_css_ugzd7724wtw3zvk6repr',}, 
-          { positions: [ { i: '1', j: 1 }, { i: '2', j: 1 }, { i: '2', j: 2 }, { i: '1', j: 3 }, { i: '2', j: 3 }, { i: '1', j: 4 }, { i: '2', j: 4 }, { i: '1', j: 5 }, { i: '1', j: 6 }, { i: '2', j: 6 } ], css_id: 'tinytable_css_4cbvl7xbcpt0ik6skj64',}, 
-          { positions: [ { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 }, { i: '0', j: 7 } ], css_id: 'tinytable_css_h731314rsnxtmrc35a2q',}, 
+          { positions: [ { i: '1', j: 7 }, { i: '2', j: 7 } ], css_id: 'tinytable_css_zww57vq58plxrdxn4xbo',}, 
+          { positions: [ { i: '1', j: 2 }, { i: '2', j: 5 } ], css_id: 'tinytable_css_n1w5i4n7pwcecz8tltur',}, 
+          { positions: [ { i: '3', j: 1 }, { i: '3', j: 2 }, { i: '3', j: 3 }, { i: '3', j: 4 }, { i: '3', j: 5 }, { i: '3', j: 6 }, { i: '3', j: 7 } ], css_id: 'tinytable_css_dnjhub0r9y6x90lnzsbt',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '2', j: 1 }, { i: '2', j: 2 }, { i: '1', j: 3 }, { i: '2', j: 3 }, { i: '1', j: 4 }, { i: '2', j: 4 }, { i: '1', j: 5 }, { i: '1', j: 6 }, { i: '2', j: 6 } ], css_id: 'tinytable_css_e8dkrmktxr1ro6yabpxk',}, 
+          { positions: [ { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 }, { i: '0', j: 7 } ], css_id: 'tinytable_css_ubpqoi0ujtwzlzh3liz2',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  tableFns_phzfq66bgmrokpdvnpqm.styleCell(cell.i, cell.j, group.css_id);
+                  tableFns_htay2gh4byfm2u5zsfa0.styleCell(cell.i, cell.j, group.css_id);
               });
           });
       });
     </script><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.css">
 <style>
     /* tinytable css entries after */
-    #tinytable_phzfq66bgmrokpdvnpqm td.tinytable_css_6bas4hi3rjtszol32ba3, #tinytable_phzfq66bgmrokpdvnpqm th.tinytable_css_6bas4hi3rjtszol32ba3 { font-weight: bold; color: black; background-color: #98FB98 }
-    #tinytable_phzfq66bgmrokpdvnpqm td.tinytable_css_mcirweb6qm4iuqi82gyk, #tinytable_phzfq66bgmrokpdvnpqm th.tinytable_css_mcirweb6qm4iuqi82gyk { font-weight: bold; color: black; background-color: #FFFF00 }
-    #tinytable_phzfq66bgmrokpdvnpqm td.tinytable_css_ugzd7724wtw3zvk6repr, #tinytable_phzfq66bgmrokpdvnpqm th.tinytable_css_ugzd7724wtw3zvk6repr {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.08em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; font-weight: bold; color: black; background-color: #98FB98 }
-    #tinytable_phzfq66bgmrokpdvnpqm td.tinytable_css_4cbvl7xbcpt0ik6skj64, #tinytable_phzfq66bgmrokpdvnpqm th.tinytable_css_4cbvl7xbcpt0ik6skj64 { color: #333333 }
-    #tinytable_phzfq66bgmrokpdvnpqm td.tinytable_css_h731314rsnxtmrc35a2q, #tinytable_phzfq66bgmrokpdvnpqm th.tinytable_css_h731314rsnxtmrc35a2q {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.08em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; color: #333333 }
+    #tinytable_htay2gh4byfm2u5zsfa0 td.tinytable_css_zww57vq58plxrdxn4xbo, #tinytable_htay2gh4byfm2u5zsfa0 th.tinytable_css_zww57vq58plxrdxn4xbo { font-weight: bold; color: black; background-color: #98FB98 }
+    #tinytable_htay2gh4byfm2u5zsfa0 td.tinytable_css_n1w5i4n7pwcecz8tltur, #tinytable_htay2gh4byfm2u5zsfa0 th.tinytable_css_n1w5i4n7pwcecz8tltur { font-weight: bold; color: black; background-color: #FFFF00 }
+    #tinytable_htay2gh4byfm2u5zsfa0 td.tinytable_css_dnjhub0r9y6x90lnzsbt, #tinytable_htay2gh4byfm2u5zsfa0 th.tinytable_css_dnjhub0r9y6x90lnzsbt {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.08em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; font-weight: bold; color: black; background-color: #98FB98 }
+    #tinytable_htay2gh4byfm2u5zsfa0 td.tinytable_css_e8dkrmktxr1ro6yabpxk, #tinytable_htay2gh4byfm2u5zsfa0 th.tinytable_css_e8dkrmktxr1ro6yabpxk { color: #333333 }
+    #tinytable_htay2gh4byfm2u5zsfa0 td.tinytable_css_ubpqoi0ujtwzlzh3liz2, #tinytable_htay2gh4byfm2u5zsfa0 th.tinytable_css_ubpqoi0ujtwzlzh3liz2 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.08em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; color: #333333 }
     </style>
 <div class="container">
-      <table class="tinytable" id="tinytable_phzfq66bgmrokpdvnpqm" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="tinytable" id="tinytable_htay2gh4byfm2u5zsfa0" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
 <caption>Expected</caption>
         <thead><tr>
 <th scope="col" data-row="0" data-col="1">DeathPenalty</th>
@@ -1819,10 +1844,8 @@ Figure&nbsp;5: Mosaic Plots of Actual, Expected and Differences in Contingency T
 <!-- hack to avoid NA insertion in last line -->
 </div>
 <div class="cell-output-display">
-<!-- preamble start -->
-
-    <!-- tinytable mathjax start -->
-    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script><script>
+<!-- tinytable mathjax start -->
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script><script>
     MathJax = {
       tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']]
@@ -1833,36 +1856,36 @@ Figure&nbsp;5: Mosaic Plots of Actual, Expected and Differences in Contingency T
     };
     </script><!-- tinytable mathjax end --><script src="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.js"></script><script>
       // Create table-specific functions using external factory
-      const tableFns_46o4rc694b8tm26wk5n6 = TinyTable.createTableFunctions("tinytable_46o4rc694b8tm26wk5n6");
+      const tableFns_ke2nsxokluyu92grj5h9 = TinyTable.createTableFunctions("tinytable_ke2nsxokluyu92grj5h9");
       // tinytable span after
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '1', j: 7 }, { i: '2', j: 7 } ], css_id: 'tinytable_css_xfn3aqbnvxfnj3j75qp3',}, 
-          { positions: [ { i: '1', j: 2 }, { i: '2', j: 5 } ], css_id: 'tinytable_css_jiezpb19j5wnf0uwsspx',}, 
-          { positions: [ { i: '3', j: 1 }, { i: '3', j: 2 }, { i: '3', j: 3 }, { i: '3', j: 4 }, { i: '3', j: 5 }, { i: '3', j: 6 }, { i: '3', j: 7 } ], css_id: 'tinytable_css_q94qai94ha41fvoj92fz',}, 
-          { positions: [ { i: '1', j: 1 }, { i: '2', j: 1 }, { i: '2', j: 2 }, { i: '1', j: 3 }, { i: '2', j: 3 }, { i: '1', j: 4 }, { i: '2', j: 4 }, { i: '1', j: 5 }, { i: '1', j: 6 }, { i: '2', j: 6 } ], css_id: 'tinytable_css_in5thxpmpnq8fyv9j76t',}, 
-          { positions: [ { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 }, { i: '0', j: 7 } ], css_id: 'tinytable_css_86y1qn4jzowebvlfxunj',}, 
+          { positions: [ { i: '1', j: 7 }, { i: '2', j: 7 } ], css_id: 'tinytable_css_pu0ug2qaj5isdtoa7sfb',}, 
+          { positions: [ { i: '1', j: 2 }, { i: '2', j: 5 } ], css_id: 'tinytable_css_9196sj4l64m69ap40feq',}, 
+          { positions: [ { i: '3', j: 1 }, { i: '3', j: 2 }, { i: '3', j: 3 }, { i: '3', j: 4 }, { i: '3', j: 5 }, { i: '3', j: 6 }, { i: '3', j: 7 } ], css_id: 'tinytable_css_cm8u0l30x67w0pjn2ak6',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '2', j: 1 }, { i: '2', j: 2 }, { i: '1', j: 3 }, { i: '2', j: 3 }, { i: '1', j: 4 }, { i: '2', j: 4 }, { i: '1', j: 5 }, { i: '1', j: 6 }, { i: '2', j: 6 } ], css_id: 'tinytable_css_r8kkit0mdcqegbbk0yhd',}, 
+          { positions: [ { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 }, { i: '0', j: 7 } ], css_id: 'tinytable_css_fwi11nyyzy3kcg25iliu',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  tableFns_46o4rc694b8tm26wk5n6.styleCell(cell.i, cell.j, group.css_id);
+                  tableFns_ke2nsxokluyu92grj5h9.styleCell(cell.i, cell.j, group.css_id);
               });
           });
       });
     </script><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.css">
 <style>
     /* tinytable css entries after */
-    #tinytable_46o4rc694b8tm26wk5n6 td.tinytable_css_xfn3aqbnvxfnj3j75qp3, #tinytable_46o4rc694b8tm26wk5n6 th.tinytable_css_xfn3aqbnvxfnj3j75qp3 { font-weight: bold; color: black; background-color: #98FB98 }
-    #tinytable_46o4rc694b8tm26wk5n6 td.tinytable_css_jiezpb19j5wnf0uwsspx, #tinytable_46o4rc694b8tm26wk5n6 th.tinytable_css_jiezpb19j5wnf0uwsspx { font-weight: bold; color: black; background-color: #FFFF00 }
-    #tinytable_46o4rc694b8tm26wk5n6 td.tinytable_css_q94qai94ha41fvoj92fz, #tinytable_46o4rc694b8tm26wk5n6 th.tinytable_css_q94qai94ha41fvoj92fz {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.08em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; font-weight: bold; color: black; background-color: #98FB98 }
-    #tinytable_46o4rc694b8tm26wk5n6 td.tinytable_css_in5thxpmpnq8fyv9j76t, #tinytable_46o4rc694b8tm26wk5n6 th.tinytable_css_in5thxpmpnq8fyv9j76t { color: #333333 }
-    #tinytable_46o4rc694b8tm26wk5n6 td.tinytable_css_86y1qn4jzowebvlfxunj, #tinytable_46o4rc694b8tm26wk5n6 th.tinytable_css_86y1qn4jzowebvlfxunj {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.08em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; color: #333333 }
+    #tinytable_ke2nsxokluyu92grj5h9 td.tinytable_css_pu0ug2qaj5isdtoa7sfb, #tinytable_ke2nsxokluyu92grj5h9 th.tinytable_css_pu0ug2qaj5isdtoa7sfb { font-weight: bold; color: black; background-color: #98FB98 }
+    #tinytable_ke2nsxokluyu92grj5h9 td.tinytable_css_9196sj4l64m69ap40feq, #tinytable_ke2nsxokluyu92grj5h9 th.tinytable_css_9196sj4l64m69ap40feq { font-weight: bold; color: black; background-color: #FFFF00 }
+    #tinytable_ke2nsxokluyu92grj5h9 td.tinytable_css_cm8u0l30x67w0pjn2ak6, #tinytable_ke2nsxokluyu92grj5h9 th.tinytable_css_cm8u0l30x67w0pjn2ak6 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.08em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; font-weight: bold; color: black; background-color: #98FB98 }
+    #tinytable_ke2nsxokluyu92grj5h9 td.tinytable_css_r8kkit0mdcqegbbk0yhd, #tinytable_ke2nsxokluyu92grj5h9 th.tinytable_css_r8kkit0mdcqegbbk0yhd { color: #333333 }
+    #tinytable_ke2nsxokluyu92grj5h9 td.tinytable_css_fwi11nyyzy3kcg25iliu, #tinytable_ke2nsxokluyu92grj5h9 th.tinytable_css_fwi11nyyzy3kcg25iliu {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.08em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; color: #333333 }
     </style>
 <div class="container">
-      <table class="tinytable" id="tinytable_46o4rc694b8tm26wk5n6" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="tinytable" id="tinytable_ke2nsxokluyu92grj5h9" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
 <caption>Pearson Residuals</caption>
         <thead><tr>
 <th scope="col" data-row="0" data-col="1">DeathPenalty</th>
@@ -1907,10 +1930,8 @@ Figure&nbsp;5: Mosaic Plots of Actual, Expected and Differences in Contingency T
 <!-- hack to avoid NA insertion in last line -->
 </div>
 <div class="cell-output-display">
-<!-- preamble start -->
-
-    <!-- tinytable mathjax start -->
-    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script><script>
+<!-- tinytable mathjax start -->
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script><script>
     MathJax = {
       tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']]
@@ -1921,36 +1942,36 @@ Figure&nbsp;5: Mosaic Plots of Actual, Expected and Differences in Contingency T
     };
     </script><!-- tinytable mathjax end --><script src="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.js"></script><script>
       // Create table-specific functions using external factory
-      const tableFns_n6e8lc7lluii21u2o49c = TinyTable.createTableFunctions("tinytable_n6e8lc7lluii21u2o49c");
+      const tableFns_aw37ncjgtbqogqn0am9t = TinyTable.createTableFunctions("tinytable_aw37ncjgtbqogqn0am9t");
       // tinytable span after
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '2', j: 5 } ], css_id: 'tinytable_css_u0nat6zfowik3hp1nnny',}, 
-          { positions: [ { i: '1', j: 2 } ], css_id: 'tinytable_css_mrpbssbcyrw9cxr433lb',}, 
-          { positions: [ { i: '2', j: 1 }, { i: '2', j: 2 }, { i: '2', j: 3 }, { i: '2', j: 4 }, { i: '2', j: 6 } ], css_id: 'tinytable_css_eml5rvw9vy7o0a69txno',}, 
-          { positions: [ { i: '1', j: 1 }, { i: '1', j: 3 }, { i: '1', j: 4 }, { i: '1', j: 5 }, { i: '1', j: 6 } ], css_id: 'tinytable_css_7j5hm0eaam5evfy7b1an',}, 
-          { positions: [ { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 } ], css_id: 'tinytable_css_rbb7gidis2ds2tdmkht9',}, 
+          { positions: [ { i: '2', j: 5 } ], css_id: 'tinytable_css_46oujutm0pgl0mqo89l8',}, 
+          { positions: [ { i: '1', j: 2 } ], css_id: 'tinytable_css_j8i7lmp4iop6572xkwkg',}, 
+          { positions: [ { i: '2', j: 1 }, { i: '2', j: 2 }, { i: '2', j: 3 }, { i: '2', j: 4 }, { i: '2', j: 6 } ], css_id: 'tinytable_css_0qgahtz1orgpt3o1im6h',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '1', j: 3 }, { i: '1', j: 4 }, { i: '1', j: 5 }, { i: '1', j: 6 } ], css_id: 'tinytable_css_vnvew1p70qqh6c5zvip3',}, 
+          { positions: [ { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 } ], css_id: 'tinytable_css_l97kxqhzusbutpi1sxqj',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  tableFns_n6e8lc7lluii21u2o49c.styleCell(cell.i, cell.j, group.css_id);
+                  tableFns_aw37ncjgtbqogqn0am9t.styleCell(cell.i, cell.j, group.css_id);
               });
           });
       });
     </script><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.css">
 <style>
     /* tinytable css entries after */
-    #tinytable_n6e8lc7lluii21u2o49c td.tinytable_css_u0nat6zfowik3hp1nnny, #tinytable_n6e8lc7lluii21u2o49c th.tinytable_css_u0nat6zfowik3hp1nnny {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.08em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; font-weight: bold; color: black; background-color: #FFFF00 }
-    #tinytable_n6e8lc7lluii21u2o49c td.tinytable_css_mrpbssbcyrw9cxr433lb, #tinytable_n6e8lc7lluii21u2o49c th.tinytable_css_mrpbssbcyrw9cxr433lb { font-weight: bold; color: black; background-color: #FFFF00 }
-    #tinytable_n6e8lc7lluii21u2o49c td.tinytable_css_eml5rvw9vy7o0a69txno, #tinytable_n6e8lc7lluii21u2o49c th.tinytable_css_eml5rvw9vy7o0a69txno {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.08em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; color: #333333 }
-    #tinytable_n6e8lc7lluii21u2o49c td.tinytable_css_7j5hm0eaam5evfy7b1an, #tinytable_n6e8lc7lluii21u2o49c th.tinytable_css_7j5hm0eaam5evfy7b1an { color: #333333 }
-    #tinytable_n6e8lc7lluii21u2o49c td.tinytable_css_rbb7gidis2ds2tdmkht9, #tinytable_n6e8lc7lluii21u2o49c th.tinytable_css_rbb7gidis2ds2tdmkht9 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.08em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; color: #333333 }
+    #tinytable_aw37ncjgtbqogqn0am9t td.tinytable_css_46oujutm0pgl0mqo89l8, #tinytable_aw37ncjgtbqogqn0am9t th.tinytable_css_46oujutm0pgl0mqo89l8 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.08em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; font-weight: bold; color: black; background-color: #FFFF00 }
+    #tinytable_aw37ncjgtbqogqn0am9t td.tinytable_css_j8i7lmp4iop6572xkwkg, #tinytable_aw37ncjgtbqogqn0am9t th.tinytable_css_j8i7lmp4iop6572xkwkg { font-weight: bold; color: black; background-color: #FFFF00 }
+    #tinytable_aw37ncjgtbqogqn0am9t td.tinytable_css_0qgahtz1orgpt3o1im6h, #tinytable_aw37ncjgtbqogqn0am9t th.tinytable_css_0qgahtz1orgpt3o1im6h {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.08em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; color: #333333 }
+    #tinytable_aw37ncjgtbqogqn0am9t td.tinytable_css_vnvew1p70qqh6c5zvip3, #tinytable_aw37ncjgtbqogqn0am9t th.tinytable_css_vnvew1p70qqh6c5zvip3 { color: #333333 }
+    #tinytable_aw37ncjgtbqogqn0am9t td.tinytable_css_l97kxqhzusbutpi1sxqj, #tinytable_aw37ncjgtbqogqn0am9t th.tinytable_css_l97kxqhzusbutpi1sxqj {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.08em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; color: #333333 }
     </style>
 <div class="container">
-      <table class="tinytable" id="tinytable_n6e8lc7lluii21u2o49c" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="tinytable" id="tinytable_aw37ncjgtbqogqn0am9t" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
 <caption>Contribution to Chi-Square Statistic</caption>
         <thead><tr>
 <th scope="col" data-row="0" data-col="1">DeathPenalty</th>
@@ -1990,7 +2011,7 @@ Table&nbsp;3: All Contingency Tables
 </div>
 <section id="a.-expected-counts" class="level5"><h5 class="anchored" data-anchor-id="a.-expected-counts">A. Expected Counts</h5>
 <p>How would we calculate the <code>Expected</code> table? The numbers that we might <strong><em>expect</em></strong> (under independence) in each cell there is the <em>probability of an entry landing in that square</em> times <em>the total number of entries</em>:</p>
-<p><span class="math display">\[
+<p><span class="math display">
 \begin{align}
 \text{Expected Value[1,1]}
 &amp;= p_{row_1} * p_{col_1} * Total~Scores\\\
@@ -1998,7 +2019,7 @@ Table&nbsp;3: All Contingency Tables
 &amp;= \frac{898}{1307} * \frac{189}{1307} * 1307\\\
 &amp;= 130
 \end{align}
-\]</span></p>
+</span></p>
 <p>Proceeding in this way for all the 15 entries in the Contingency Table, we get the “Expected” Contingency Table. <span style="background-color:yellow;">Remember <strong><em>expect</em></strong> is another way of saying <strong><em>mean</em></strong> !!</span></p>
 </section><section id="b.-pearson-residuals" class="level5"><h5 class="anchored" data-anchor-id="b.-pearson-residuals">B. Pearson Residuals</h5>
 <p>Now, <span class="bg-light-red black">the <strong>Pearson Residual</strong> in each cell is equivalent to the <code>z-score</code> of that cell</span>. Recall the <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/22-Quantities/index.html#z-scores">z-score</a> idea: we subtract the mean and divide by the std. deviation to get the <code>z-score</code>.</p>
@@ -2006,31 +2027,31 @@ Table&nbsp;3: All Contingency Tables
 <li><p>To get a <code>z-score</code>, we need the value, the <code>mean</code>, and <code>sd</code>.</p></li>
 <li><p>Now, the mean is the <code>Expected</code> value, as stated, and the <code>value</code> is the <code>Actual</code> value.</p></li>
 <li>
-<p>What of the <code>sd</code>? In the Contingency Table, we have <strong>counts</strong> which are usually modeled as an (integer-valued) <em>Poisson distribution</em>, for which <strong>mean and variance are identical</strong>. And <span class="math inline">\(sd = \sqrt{variance}\)</span>. Thus we get the <code>z-scores</code> aka <strong><em>Pearson Residuals</em></strong> as:</p>
-<p><span id="eq-pearson-residuals"><span class="math display">\[
+<p>What of the <code>sd</code>? In the Contingency Table, we have <strong>counts</strong> which are usually modeled as an (integer-valued) <em>Poisson distribution</em>, for which <strong>mean and variance are identical</strong>. And <span class="math inline">sd = \sqrt{variance}</span>. Thus we get the <code>z-scores</code> aka <strong><em>Pearson Residuals</em></strong> as:</p>
+<p><span id="eq-pearson-residuals"><span class="math display">
 r_{i,j} = \frac{(Actual - Expected)}{\sqrt{\displaystyle Expected}}
-  \tag{3}\]</span></span></p>
+  \tag{3}</span></span></p>
 </li>
 <li>
 <p>The sum of all the squared Pearson residuals is the chi-square statistic, χ2, upon which the inferential analysis follows. We square them because we want to measure the <em>magnitude</em> of the difference, not the direction ( + or - ):</p>
-<p><span id="eq-chi-square-statistic"><span class="math display">\[
+<p><span id="eq-chi-square-statistic"><span class="math display">
 χ2 = \sum_{i=1}^R\sum_{j=1}^C{r_{i,j}^2}
-  \tag{4}\]</span></span></p>
-<p>where R and C are number of rows and columns in the Contingency Table, the levels in the two Qual variables. So for cell-location [1,1], its contribution to χ2 would be: <span class="math inline">\((117-130)^2/130 = -1.13\)</span>. Do try to compute all of these and the <span class="math inline">\(X^2\)</span> statistic by hand !!</p>
+  \tag{4}</span></span></p>
+<p>where R and C are number of rows and columns in the Contingency Table, the levels in the two Qual variables. So for cell-location [1,1], its contribution to χ2 would be: <span class="math inline">(117-130)^2/130 = -1.13</span>. Do try to compute all of these and the <span class="math inline">X^2</span> statistic by hand !!</p>
 </li>
-<li><p>How did this <span class="math inline">\(X^2\)</span> distribution come from? Here is a lovely, brief explanation from this <a href="https://stats.stackexchange.com/a/303548">StackOverflow Post</a>:</p></li>
+<li><p>How did this <span class="math inline">X^2</span> distribution come from? Here is a lovely, brief explanation from this <a href="https://stats.stackexchange.com/a/303548">StackOverflow Post</a>:</p></li>
 </ol>
 <blockquote class="blockquote">
 <ul>
 <li>In a Contingency Table the Null Hypothesis states that the variables in the rows and the variable in the columns are independent.<br>
 </li>
-<li>The (each) cell counts <span class="math inline">\(E_{ij}\)</span> are assumed to be <span class="bg-light-red black">Poisson distributed</span> with mean = <span class="math inline">\(E_{ij}\)</span> and as they are Poisson, their variance is also <span class="math inline">\(E_{ij}\)</span>.<br>
+<li>The (each) cell counts <span class="math inline">E_{ij}</span> are assumed to be <span class="bg-light-red black">Poisson distributed</span> with mean = <span class="math inline">E_{ij}</span> and as they are Poisson, their variance is also <span class="math inline">E_{ij}</span>.<br>
 </li>
-<li>Asymptotically (when cell counts are large) the Poisson distribution approaches the <span class="bg-light-red black">normal distribution</span>, with mean = <span class="math inline">\(E_{ij}\)</span> and <em>standard deviation</em> with <span class="math inline">\(\sqrt{E_{ij}}\)</span> so, asymptotically <span class="math inline">\(\large{\frac{(X_{ij} - E_{ij})}{\sqrt{E_{ij}}}}\)</span> is approximately standard normal <span class="math inline">\(N(0,1)\)</span>.<br>
+<li>Asymptotically (when cell counts are large) the Poisson distribution approaches the <span class="bg-light-red black">normal distribution</span>, with mean = <span class="math inline">E_{ij}</span> and <em>standard deviation</em> with <span class="math inline">\sqrt{E_{ij}}</span> so, asymptotically <span class="math inline">\large{\frac{(X_{ij} - E_{ij})}{\sqrt{E_{ij}}}}</span> is approximately standard normal <span class="math inline">N(0,1)</span>.<br>
 </li>
-<li>If you square standard normal variables and sum these squares then the result is a chi-square random variable so <span class="math inline">\(\sum_{i,j}\left(\frac{(X_{ij}-E_{ij})}{\sqrt{E_{ij}}}\right)^2\)</span> has a (asymptotically) a <span class="bg-light-red black">chi-square distribution</span>.<br>
+<li>If you square standard normal variables and sum these squares then the result is a chi-square random variable so <span class="math inline">\sum_{i,j}\left(\frac{(X_{ij}-E_{ij})}{\sqrt{E_{ij}}}\right)^2</span> has a (asymptotically) a <span class="bg-light-red black">chi-square distribution</span>.<br>
 </li>
-<li>Asymptotics must hold and that is why most textbooks state that the result of the test is valid when all expected cell counts <span class="math inline">\(E_{ij}\)</span> are larger than 5, but that is just a rule of thumb that makes the approximation ‘’good enough’’.</li>
+<li>Asymptotics must hold and that is why most textbooks state that the result of the test is valid when all expected cell counts <span class="math inline">E_{ij}</span> are larger than 5, but that is just a rule of thumb that makes the approximation ‘’good enough’’.</li>
 </ul>
 </blockquote>
 <div id="fig-normal-chisquare" class="quarto-layout-panel">
@@ -2062,7 +2083,7 @@ r_{i,j} = \frac{(Actual - Expected)}{\sqrt{\displaystyle Expected}}
 Figure&nbsp;6: Normal to Chi-Square variable transformation
 </figcaption></figure>
 </div>
-<p>Hence, after all this calculation, we have the <span class="math inline">\(X^2\)</span> statistic, which we can compare with the critical value, and make our inference.</p>
+<p>Hence, after all this calculation, we have the <span class="math inline">X^2</span> statistic, which we can compare with the critical value, and make our inference.</p>
 </section>
 </div>
 </div>
@@ -2372,7 +2393,7 @@ Figure&nbsp;8
 </div>
 </div>
 </div>
-<p>We see that the artificial data can hardly ever (<span class="math inline">\(p = 0.0022\)</span>) mimic what the real world experiment is showing. Hence we had good reason to reject our NULL Hypothesis that there is no bias.</p>
+<p>We see that the artificial data can hardly ever (<span class="math inline">p = 0.0022</span>) mimic what the real world experiment is showing. Hence we had good reason to reject our NULL Hypothesis that there is no bias.</p>
 </div>
 <div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
 <p>We should now repeat the test with permutations on <code>Education</code>:</p>
@@ -2426,22 +2447,22 @@ Figure&nbsp;8
     2e-04 </code></pre>
 </div>
 </div>
-<p>The <code>p-value</code> is well below our threshold of <span class="math inline">\(0.05\)</span>, so we would conclude that <code>Education</code> has a significant effect on <code>DeathPenalty</code> opinion!</p>
+<p>The <code>p-value</code> is well below our threshold of <span class="math inline">0.05</span>, so we would conclude that <code>Education</code> has a significant effect on <code>DeathPenalty</code> opinion!</p>
 </div>
 </div>
 </div>
-</section><section id="inference-for-proportions-case-study-2-tbd-dataset" class="level2" data-number="8"><h2 data-number="8" class="anchored" data-anchor-id="inference-for-proportions-case-study-2-tbd-dataset">
+</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792067726f6d6d65742d69636f6e732074657374203e7d7d-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c756369646520726174696f203e7d7d-inference-for-proportions-case-study-2-tbd-dataset" class="level2" data-number="8"><h2 data-number="8" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e6966792067726f6d6d65742d69636f6e732074657374203e7d7d-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c756369646520726174696f203e7d7d-inference-for-proportions-case-study-2-tbd-dataset">
 <span class="header-section-number">8</span> <iconify-icon inline="" icon="grommet-icons:test" aria-label="Icon test from grommet-icons Iconify.design set." title="Icon test from grommet-icons Iconify.design set."></iconify-icon><iconify-icon inline="" icon="lucide:ratio" aria-label="Icon ratio from lucide Iconify.design set." title="Icon ratio from lucide Iconify.design set."></iconify-icon> Inference for Proportions Case Study-2: TBD dataset</h2>
 <p>To be Written Up. Yes, but when, Arvind?</p>
-</section><section id="conclusion" class="level2" data-number="9"><h2 data-number="9" class="anchored" data-anchor-id="conclusion">
+</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion" class="level2" data-number="9"><h2 data-number="9" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920666c75656e742d6d646c32206465636973696f6e2d736f6c6964203e7d7d-conclusion">
 <span class="header-section-number">9</span> <iconify-icon inline="" icon="fluent-mdl2:decision-solid" aria-label="Icon decision-solid from fluent-mdl2 Iconify.design set." title="Icon decision-solid from fluent-mdl2 Iconify.design set."></iconify-icon> Conclusion</h2>
-<p>In our basic <span class="math inline">\(X^2\)</span> test, we calculate the test statistic of <span class="math inline">\(X^2\)</span> and look up a <em>theoretical</em> null distribution for that statistic, and see how unlikely our observed value is.</p>
-<p>Why would a permutation test be a good idea here? With a permutation test, there are <em>no assumptions</em> of the null distribution: this is computed based on real data. We note in passing that, in this case, since the number of <code>cases</code> in each cell of the Contingency Table are fairly high ( &gt;= 5) the resulting NULL distribution is of the <span class="math inline">\(X^2\)</span> variety.</p>
-</section><section id="wait-but-why" class="level2" data-number="10"><h2 data-number="10" class="anchored" data-anchor-id="wait-but-why">
+<p>In our basic <span class="math inline">X^2</span> test, we calculate the test statistic of <span class="math inline">X^2</span> and look up a <em>theoretical</em> null distribution for that statistic, and see how unlikely our observed value is.</p>
+<p>Why would a permutation test be a good idea here? With a permutation test, there are <em>no assumptions</em> of the null distribution: this is computed based on real data. We note in passing that, in this case, since the number of <code>cases</code> in each cell of the Contingency Table are fairly high ( &gt;= 5) the resulting NULL distribution is of the <span class="math inline">X^2</span> variety.</p>
+</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why" class="level2" data-number="10"><h2 data-number="10" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206d696e67637574652074686f756768742d6c696e65203e7d7d-wait-but-why">
 <span class="header-section-number">10</span> <iconify-icon inline="" icon="mingcute:thought-line" aria-label="Icon thought-line from mingcute Iconify.design set." title="Icon thought-line from mingcute Iconify.design set."></iconify-icon> Wait, But Why?</h2>
-<p>The <span class="math inline">\(X^2\)</span> test is a very powerful tool for testing the independence of two categorical variables. It is widely used in various fields, including social sciences, biology, and market research. The test is based on the comparison of observed frequencies in a contingency table with expected frequencies under the assumption of independence.</p>
-<p>When performing research for a design project, peasants, you are likely to have only several Qual variables, and you will want to see if there is a relationship between them. The <span class="math inline">\(X^2\)</span> test is a great way to do that. It allows you to test the independence of two categorical variables, which can help you understand the relationships between different factors in your design project.</p>
-</section><section id="your-turn" class="level2" data-number="11"><h2 data-number="11" class="anchored" data-anchor-id="your-turn">
+<p>The <span class="math inline">X^2</span> test is a very powerful tool for testing the independence of two categorical variables. It is widely used in various fields, including social sciences, biology, and market research. The test is based on the comparison of observed frequencies in a contingency table with expected frequencies under the assumption of independence.</p>
+<p>When performing research for a design project, peasants, you are likely to have only several Qual variables, and you will want to see if there is a relationship between them. The <span class="math inline">X^2</span> test is a great way to do that. It allows you to test the independence of two categorical variables, which can help you understand the relationships between different factors in your design project.</p>
+</section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920626920706572736f6e2d7570203e7d7d-your-turn" class="level2" data-number="11"><h2 data-number="11" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e69667920626920706572736f6e2d7570203e7d7d-your-turn">
 <span class="header-section-number">11</span> <iconify-icon inline="" icon="bi:person-up" aria-label="Icon person-up from bi Iconify.design set." title="Icon person-up from bi Iconify.design set."></iconify-icon> Your Turn</h2>
 <ol type="1">
 <li>
@@ -2467,7 +2488,7 @@ Figure&nbsp;8
 </ul>
 </li>
 <li><p>Can you show that people who wear ethnic are more likely to be considered dull? Find a dataset to prove or disprove this hypothesis!</p></li>
-</ol></section><section id="references" class="level2" data-number="12"><h2 data-number="12" class="anchored" data-anchor-id="references">
+</ol></section><section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d72746c203e7d7d-references" class="level2" data-number="12"><h2 data-number="12" class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206f6f7569207265666572656e6365732d72746c203e7d7d-references">
 <span class="header-section-number">12</span> <iconify-icon inline="" icon="ooui:references-rtl" aria-label="Icon references-rtl from ooui Iconify.design set." title="Icon references-rtl from ooui Iconify.design set."></iconify-icon> References</h2>
 <ol type="1">
 <li>
@@ -2478,7 +2499,7 @@ Figure&nbsp;8
 </li>
 <li>Exploring the underlying theory of the chi-square test through simulation - part 2 <a href="https://www.rdatagen.net/post/a-little-intuition-and-simulation-behind-the-chi-square-test-of-independence-part-2/" class="uri">https://www.rdatagen.net/post/a-little-intuition-and-simulation-behind-the-chi-square-test-of-independence-part-2/</a><br>
 </li>
-<li>An Online <span class="math inline">\(\Xi^2\)</span>-test calculator. <a href="https://www.statology.org/chi-square-test-of-independence-calculator/" class="uri">https://www.statology.org/chi-square-test-of-independence-calculator/</a>
+<li>An Online <span class="math inline">\Xi^2</span>-test calculator. <a href="https://www.statology.org/chi-square-test-of-independence-calculator/" class="uri">https://www.statology.org/chi-square-test-of-independence-calculator/</a>
 </li>
 <li><a href="https://saylordotorg.github.io/text_introductory-statistics/s13-04-comparison-of-two-population-p.html" class="uri">https://saylordotorg.github.io/text_introductory-statistics/s13-04-comparison-of-two-population-p.html</a></li>
 <li>
@@ -2487,8 +2508,8 @@ Figure&nbsp;8
 <li>Eberly College of Science, Penn State Univ. <em>STAT 415:Introduction to Mathematical Statistics. Chapter 9.4.</em><a href="https://online.stat.psu.edu/stat415/lesson/9/9.4" class="uri">https://online.stat.psu.edu/stat415/lesson/9/9.4</a>
 </li>
 </ol>
-<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" data-entry-spacing="0" role="list">
-<section id="r-package-citations" class="level6"><h6 class="anchored" data-anchor-id="r-package-citations">
+<div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 60%;" role="list">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c7563696465207061636b6167652d636865636b203e7d7d-r-package-citations" class="level6"><h6 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2069636f6e696679206c7563696465207061636b6167652d636865636b203e7d7d-r-package-citations">
 <iconify-icon inline="" icon="lucide:package-check" aria-label="Icon package-check from lucide Iconify.design set." title="Icon package-check from lucide Iconify.design set."></iconify-icon> R Package Citations</h6>
 <div class="cell">
 <div class="cell-output-display">
@@ -2503,7 +2524,7 @@ Figure&nbsp;8
 <td style="text-align: left;">ggmosaic</td>
 <td style="text-align: left;">0.4.0</td>
 <td style="text-align: left;">
-<span class="citation" data-cites="ggmosaic2023a">Jeppson, Hofmann, and Cook (<a href="#ref-ggmosaic2023a" role="doc-biblioref">2023</a>)</span>; <span class="citation" data-cites="ggmosaic2023b">Jeppson and Hofmann (<a href="#ref-ggmosaic2023b" role="doc-biblioref">2023</a>)</span>
+<span class="citation" data-cites="ggmosaic2023a">Jeppson et al. (<a href="#ref-ggmosaic2023a" role="doc-biblioref">2023</a>)</span>; <span class="citation" data-cites="ggmosaic2023b">Jeppson and Hofmann (<a href="#ref-ggmosaic2023b" role="doc-biblioref">2023</a>)</span>
 </td>
 </tr>
 <tr class="even">
@@ -2514,13 +2535,13 @@ Figure&nbsp;8
 <tr class="odd">
 <td style="text-align: left;">scales</td>
 <td style="text-align: left;">1.4.0</td>
-<td style="text-align: left;"><span class="citation" data-cites="scales">Wickham, Pedersen, and Seidel (<a href="#ref-scales" role="doc-biblioref">2025</a>)</span></td>
+<td style="text-align: left;"><span class="citation" data-cites="scales">Wickham et al. (<a href="#ref-scales" role="doc-biblioref">2025</a>)</span></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">vcd</td>
-<td style="text-align: left;">1.4.13</td>
+<td style="text-align: left;">1.4.14</td>
 <td style="text-align: left;">
-<span class="citation" data-cites="vcd2006">Meyer, Zeileis, and Hornik (<a href="#ref-vcd2006" role="doc-biblioref">2006</a>)</span>; <span class="citation" data-cites="vcd2007">Zeileis, Meyer, and Hornik (<a href="#ref-vcd2007" role="doc-biblioref">2007</a>)</span>; <span class="citation" data-cites="vcd2024">Meyer et al. (<a href="#ref-vcd2024" role="doc-biblioref">2024</a>)</span>
+<span class="citation" data-cites="vcd2006">Meyer et al. (<a href="#ref-vcd2006" role="doc-biblioref">2006</a>)</span>; <span class="citation" data-cites="vcd2007">Zeileis et al. (<a href="#ref-vcd2007" role="doc-biblioref">2007</a>)</span>; <span class="citation" data-cites="vcd2026">Meyer et al. (<a href="#ref-vcd2026" role="doc-biblioref">2026</a>)</span>
 </td>
 </tr>
 </tbody>
@@ -2539,8 +2560,8 @@ Jeppson, Haley, Heike Hofmann, and Dianne H. Cook. 2023. <em><span class="nocase
 <div id="ref-vcd2006" class="csl-entry" role="listitem">
 Meyer, David, Achim Zeileis, and Kurt Hornik. 2006. <span>“The Strucplot Framework: Visualizing Multi-Way Contingency Tables with Vcd.”</span> <em>Journal of Statistical Software</em> 17 (3): 1–48. <a href="https://doi.org/10.18637/jss.v017.i03">https://doi.org/10.18637/jss.v017.i03</a>.
 </div>
-<div id="ref-vcd2024" class="csl-entry" role="listitem">
-Meyer, David, Achim Zeileis, Kurt Hornik, and Michael Friendly. 2024. <em><span class="nocase">vcd</span>: Visualizing Categorical Data</em>. <a href="https://doi.org/10.32614/CRAN.package.vcd">https://doi.org/10.32614/CRAN.package.vcd</a>.
+<div id="ref-vcd2026" class="csl-entry" role="listitem">
+Meyer, David, Achim Zeileis, Kurt Hornik, and Michael Friendly. 2026. <em><span class="nocase">vcd</span>: Visualizing Categorical Data</em>. <a href="https://doi.org/10.32614/CRAN.package.vcd">https://doi.org/10.32614/CRAN.package.vcd</a>.
 </div>
 <div id="ref-scales" class="csl-entry" role="listitem">
 Wickham, Hadley, Thomas Lin Pedersen, and Dana Seidel. 2025. <em><span class="nocase">scales</span>: Scale Functions for Visualization</em>. <a href="https://doi.org/10.32614/CRAN.package.scales">https://doi.org/10.32614/CRAN.package.scales</a>.
@@ -2561,8 +2582,7 @@ Zeileis, Achim, David Meyer, and Kurt Hornik. 2007. <span>“Residual-Based Shad
   abstract = {Inference Test for Two Proportions}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-2022" class="csl-entry quarto-appendix-citeas" role="listitem">
-<span>“Inference Test for Two Proportions.”</span> 2022. November 10,
-2022. <a href="https://madhatterguide.netlify.app/content/courses/Analytics/20-Inference/Modules/190-TwoProp/">https://madhatterguide.netlify.app/content/courses/Analytics/20-Inference/Modules/190-TwoProp/</a>.
+<span>“Inference Test for Two Proportions.”</span> 2022. November 10. <a href="https://madhatterguide.netlify.app/content/courses/Analytics/20-Inference/Modules/190-TwoProp/">https://madhatterguide.netlify.app/content/courses/Analytics/20-Inference/Modules/190-TwoProp/</a>.
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
