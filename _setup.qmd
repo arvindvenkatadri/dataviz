@@ -1,11 +1,223 @@
-#| include: false
+---
+# Course-wide knitr / Quarto defaults.
+# Pages should include this file and then load only the packages that lesson needs.
+knitr:
+  opts_chunk:
+    echo: true
+    warning: false
+    message: false
+    fig-align: center
+    fig-width: 8
+    fig-asp: 0.618
+    dpi: 96
+    out-width: "100%"
+    # ragg is fine for points/lines; fonts are registered with systemfonts below
+    # so ggrepel can see the same families. Do not pair ragg with showtext-only fonts.
+    fig-format: png
+---
 
 ```{r}
-w <- 5
-h <- w * 0.62
+#| label: course-setup
+#| include: false
 
-knitr::opts_chunk$set(
-  fig.width = w,
-  fig.height = h
+# ---------------------------------------------------------------------------
+# Paths: requires execute-dir: project in _quarto.yml
+# ---------------------------------------------------------------------------
+if (!requireNamespace("here", quietly = TRUE)) {
+  install.packages("here")
+}
+library(here)
+
+# ---------------------------------------------------------------------------
+# Core packages used on almost every page
+# ---------------------------------------------------------------------------
+suppressPackageStartupMessages({
+  library(ggplot2)
+  library(ggformula)
+  library(ggrepel)
+  library(showtext)
+  library(systemfonts)
+  library(sysfonts)
+})
+
+# Optional companions — load if installed, do not fail the render if missing
+.load_if <- function(pkg) {
+  if (requireNamespace(pkg, quietly = TRUE)) {
+    suppressPackageStartupMessages(library(pkg, character.only = TRUE))
+    TRUE
+  } else {
+    FALSE
+  }
+}
+
+.load_if("tidyverse")
+.load_if("scales")
+.load_if("ragg")
+.has_tinytable <- .load_if("tinytable")
+.has_flextable <- .load_if("flextable")
+
+# ---------------------------------------------------------------------------
+# Fonts
+# Prefer local files in <project>/fonts so renders work offline.
+# Fall back to Google Fonts if a face is missing.
+# ---------------------------------------------------------------------------
+.font_file <- function(...) {
+  path <- here::here("fonts", ...)
+  if (file.exists(path)) path else NULL
+}
+
+.register_face <- function(family, regular, bold = NULL, italic = NULL, bolditalic = NULL,
+                           google = family) {
+  local_ok <- !is.null(regular) && file.exists(regular)
+  if (local_ok) {
+    sysfonts::font_add(
+      family = family,
+      regular = regular,
+      bold = if (!is.null(bold) && file.exists(bold)) bold else NULL,
+      italic = if (!is.null(italic) && file.exists(italic)) italic else NULL,
+      bolditalic = if (!is.null(bolditalic) && file.exists(bolditalic)) bolditalic else NULL
+    )
+    # ggrepel + ragg read fonts from systemfonts, not from showtext
+    try(systemfonts::register_font(
+      name = family,
+      plain = regular,
+      bold = if (!is.null(bold) && file.exists(bold)) bold else regular,
+      italic = if (!is.null(italic) && file.exists(italic)) italic else regular,
+      bolditalic = if (!is.null(bolditalic) && file.exists(bolditalic)) bolditalic else regular
+    ), silent = TRUE)
+    return(invisible("local"))
+  }
+  tryCatch(
+    sysfonts::font_add_google(name = google, family = family),
+    error = function(e) {
+      warning("Could not register font family '", family, "': ", conditionMessage(e))
+    }
+  )
+  invisible("google")
+}
+
+showtext::showtext_opts(dpi = 96)
+
+.register_face(
+  family = "Alegreya",
+  regular    = .font_file("Alegreya-Regular.ttf"),
+  bold       = .font_file("Alegreya-Bold.ttf"),
+  italic     = .font_file("Alegreya-Italic.ttf"),
+  bolditalic = .font_file("Alegreya-BoldItalic.ttf"),
+  google     = "Alegreya"
 )
-```
+
+.register_face(
+  family = "Roboto Condensed",
+  regular    = .font_file("RobotoCondensed-Regular.ttf"),
+  bold       = .font_file("RobotoCondensed-Bold.ttf"),
+  italic     = .font_file("RobotoCondensed-Italic.ttf"),
+  bolditalic = .font_file("RobotoCondensed-BoldItalic.ttf"),
+  google     = "Roboto Condensed"
+)
+
+showtext::showtext_auto(enable = TRUE)
+
+# ---------------------------------------------------------------------------
+# House ggplot2 theme (your previous theme_custom)
+# ---------------------------------------------------------------------------
+theme_madhatter <- function(base_size = 10, exhibit = TRUE) {
+  th <- ggplot2::theme_bw(base_size = base_size) +
+    ggplot2::theme(
+      plot.margin = ggplot2::margin(t = 1, r = 2, b = 1, l = 1, unit = "cm"),
+      axis.title = ggplot2::element_text(
+        family = "Roboto Condensed",
+        size = 10
+      ),
+      axis.text = ggplot2::element_text(
+        family = "Roboto Condensed",
+        size = 8
+      ),
+      legend.text = ggplot2::element_text(
+        family = "Roboto Condensed",
+        size = 6
+      ),
+      legend.title = ggplot2::element_text(
+        family = "Alegreya",
+        size = 8
+      ),
+      plot.title = ggplot2::element_text(
+        family = "Alegreya",
+        size = 14,
+        face = "bold"
+      ),
+      plot.title.position = "plot",
+      plot.subtitle = ggplot2::element_text(
+        family = "Alegreya",
+        size = 10
+      ),
+      plot.caption = ggplot2::element_text(
+        family = "Alegreya",
+        size = 6
+      ),
+      plot.caption.position = "plot"
+    )
+
+  if (isTRUE(exhibit)) {
+    th <- th + ggplot2::theme(
+      plot.background = ggplot2::element_rect(
+        fill = "bisque",
+        colour = "black",
+        linewidth = 1
+      )
+    )
+  }
+
+  th
+}
+
+# Quiet variant for student-facing “final” charts (no bisque frame)
+theme_madhatter_plain <- function(base_size = 10) {
+  theme_madhatter(base_size = base_size, exhibit = FALSE)
+}
+
+ggplot2::theme_set(theme_madhatter())
+
+# Geom defaults use fontface + colour. `face` / `color` are ignored or
+# break ggrepel (GeomTextRepel does not have a `face` parameter).
+.text_defaults <- list(
+  family = "Roboto Condensed",
+  fontface = "plain",
+  size = 3.5,
+  colour = "#2b2b2b"
+)
+
+ggplot2::update_geom_defaults("text", .text_defaults)
+ggplot2::update_geom_defaults("label", .text_defaults)
+ggplot2::update_geom_defaults("text_repel", .text_defaults)
+ggplot2::update_geom_defaults("label_repel", .text_defaults)
+
+if (requireNamespace("marquee", quietly = TRUE)) {
+  suppressPackageStartupMessages(library(marquee))
+  ggplot2::update_geom_defaults("marquee", .text_defaults)
+}
+
+# ---------------------------------------------------------------------------
+# Tables
+# ---------------------------------------------------------------------------
+if (.has_tinytable) {
+  options(
+    tinytable_tt_digits = 2,
+    tinytable_format_num_fmt = "significant_cell",
+    tinytable_html_mathjax = TRUE
+  )
+}
+
+if (.has_flextable) {
+  flextable::set_flextable_defaults(font.family = "Roboto Condensed")
+}
+
+# ---------------------------------------------------------------------------
+# Helpers pages can call without re-copying theme code
+# ---------------------------------------------------------------------------
+madhatter_set_theme <- function(exhibit = TRUE) {
+  ggplot2::theme_set(
+    if (exhibit) theme_madhatter() else theme_madhatter_plain()
+  )
+  invisible(NULL)
+}

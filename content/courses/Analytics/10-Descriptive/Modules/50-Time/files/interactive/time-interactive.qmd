@@ -1,8 +1,7 @@
 ---
 title: "\U0001F554 Time Series"
-author: Arvind V
 date: 15/Dec/2022
-date-modified: "`r Sys.Date()`"
+date-modified: today
 abstract: Events, Trends, Seasons, and Changes over Time
 subtitle: Time Series
 order: 50
@@ -20,6 +19,8 @@ citation: true
 
 ## {{< iconify noto-v1 package >}} Setting up R Packages
 
+{{< include /_setup.qmd >}}
+
 ```{r}
 #| label: setup
 #| message: false
@@ -29,7 +30,7 @@ library(mosaic)
 library(ggformula) # Our Formula based graphing package
 
 # Wrangling
-library(lubridate)  # Deal with dates. Part of the tidyverse anyway!
+# library(lubridate)  # Deals with dates. Part of the tidyverse anyway!
 
 library(fpp3) # Robert Hyndman's textbook package, Loads all the core time series packages, see messages
 
@@ -43,13 +44,12 @@ library(timetk) # Visualizing, Wrangling and Modelling Time Series by Matt Danch
 # Modelling
 library(sweep) # New (07/2023) package to bring broom-like features to time series models
 
-# devtools::install_github("FinYang/tsdl")
+# pak::pak("FinYang/tsdl")
 library(tsdl) # Time Series Data Library from Rob Hyndman
 
 
 ```
 
-#### Plot Fonts and Theme
 
 ```{r}
 #| label: plot-theme
@@ -58,6 +58,8 @@ library(tsdl) # Time Series Data Library from Rob Hyndman
 #| code-fold: true
 #| messages: false
 #| warning: false
+#| include: false
+#| 
 
 library(systemfonts)
 library(showtext)
@@ -166,41 +168,6 @@ options(tinytable_html_mathjax = TRUE)
 flextable::set_flextable_defaults(font.family = "Roboto Condensed")
 
 ```
-
-
-
-### `mosaic` and `ggformula` command template
-
-Note the standard method for all commands from the `mosaic` and
-`ggformula` packages: `goal( y ~ x | z, data = _____)`
-
-With `ggformula`, one can create any graph/chart using:
-`gf_***(y ~ x | z, data = _____)`
-
-In practice, we often use: `dataframe %>%  gf_***(y ~ x | z)` which has
-cool benefits such as "autocompletion" of variable names, as we shall
-see. The "\*\*\*" indicates what kind of graph you desire: histogram,
-bar, scatter, density; the "\_\_\_" is the name of your dataset that you
-want to plot with.
-:::
-
-::: callout-tip
-### `ggplot` command template
-
-The `ggplot`2 template is used to identify the dataframe, identify the x
-and y axis, and define visualized layers:
-
-`ggplot(data = ---, mapping = aes(x = ---, y = ---)) + geom_----()`
-
-Note: ---- is meant to imply text you supply. e.g. function names, data
-frame names, variable names.
-
-It is helpful to see the argument mapping, above. In practice, rather
-than typing the formal arguments, code is typically shorthanded to this:
-
-`dataframe %>%  ggplot(aes(xvar, yvar)) + geom_----()`
-:::
-
 
 
 ## {{< iconify openmoji japanese-symbol-for-beginner >}} Introduction

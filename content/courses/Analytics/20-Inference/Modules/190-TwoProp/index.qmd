@@ -20,7 +20,8 @@ editor:
   markdown: 
     wrap: 72
 format: 
-  html: default
+  html: 
+    html-math-method: katex
   revealjs: 
     theme: default
     output-file: counts-reveal.html
@@ -43,11 +44,14 @@ format:
 
 ## {{< iconify noto-v1 package >}} Setting up R packages
 
+{{< include /_setup.qmd >}}
+
 ```{r}
 #| label: setup
 #| include: true
 #| message: true
 #| warning: false
+#| 
 library(tidyverse)
 library(mosaic)
 library(vcd)
@@ -59,11 +63,10 @@ library(resampledata)
 
 ```
 
-#### {{< iconify streamline global-learning >}} Extra Pedagogical Packages
 
 ```{r}
 #| label: Extra-Pedagogical-Packages
-#| code-fold: true
+#| echo: false
 #| message: false
 
 library(checkdown)
@@ -83,7 +86,6 @@ library(statlingua) # LLM-driven plain English statistical explanations
 
 ```
 
-#### {{< iconify vscode-icons folder-type-theme>}} Plot Fonts and Theme
 
 ```{r}
 #| label: plot-theme-ggplot4
@@ -91,6 +93,7 @@ library(statlingua) # LLM-driven plain English statistical explanations
 #| code-fold: true
 #| messages: false
 #| warning: false
+#| include: false
 #| 
 library(systemfonts)
 library(showtext)
@@ -189,7 +192,7 @@ ggplot2::theme_set(new = theme_custom())
 ## tinytable options
 options("tinytable_tt_digits" = 2)
 options("tinytable_format_num_fmt" = "significant_cell")
-options(tinytable_html_mathjax = TRUE)
+#options(tinytable_html_mathjax = TRUE)
 
 
 ## Set defaults for flextable
@@ -245,21 +248,23 @@ in what form. The difference between two proportions $\hat{p_1}-\hat{p_2}$ can b
 When these conditions are satisfied, the standard error of
 $\hat{p_1}-\hat{p_2}$ is well-approximated by:
 
+
 $$
 SE(\hat{p_1}-\hat{p_2}) = \sqrt{\frac{\hat{p_1}*(1-\hat{p_1})}{n_1}} + \sqrt{\frac{\hat{p_2}*(1-\hat{p_2})}{n_2}}
-$${#eq-se-two-proportions}
+$$ {#eq-se-two-proportions}
 
-where $\hat{p_1}$ and $\hat{p_2}$ represent the sample proportions, and
-$n_1$ and $n_2$ represent the sample sizes.
+where $\hat{p_1}$ and $\hat{p_2}$ represent the sample proportions, and $n_1$ and $n_2$ represent the sample sizes.
 
 We can represent the Confidence Intervals as:
 
 $$
-\begin{eqnarray}
-CI(p_1 - p_2) &=& (\hat{p_1} - \hat{p_2}) \pm 1.96 * SE(\hat{p_1}-\hat{p_2})\\
-&=& (\hat{p_1} - \hat{p_2}) \pm 1.96 * \left(\sqrt{\frac{\hat{p_1}*(1-\hat{p_1})}{n_1}} + \sqrt{\frac{\hat{p_2}*(1-\hat{p_2})}{n_2}}\right)
-\end{eqnarray}
+CI(p_1 - p_2) = (\hat{p_1} - \hat{p_2}) \pm 1.96 * SE(\hat{p_1}-\hat{p_2})\\
+$$
+$$
+CI(p_1 - p_2) = (\hat{p_1} - \hat{p_2}) \pm 1.96 * \left(\sqrt{\frac{\hat{p_1}*(1-\hat{p_1})}{n_1}} + \sqrt{\frac{\hat{p_2}*(1-\hat{p_2})}{n_2}}\right)
 $${#eq-ci-two-proportions}
+
+
 
 ## {{< iconify grommet-icons test >}} {{< iconify lucide ratio >}} Case Study-1: `GSS2002` dataset
 
