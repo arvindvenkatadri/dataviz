@@ -1,6 +1,6 @@
 ---
 title: "Fonts in ggplot"
-subtitle: "Using fonts from your machine and from Google"
+subtitle: "Using fonts in ggplot and on your website"
 date: 2025/8/02
 date-modified: today
 order: 20
@@ -10,6 +10,9 @@ fig-align: center
 
 ---
 
+## {{< iconify noto-v1 package >}} Setting up R Packages
+
+
 ```{r}
 #| label: setup
 #| echo: true
@@ -17,166 +20,140 @@ fig-align: center
 #| warning: false
 #| 
 library(tidyverse)   
+library(ggformula)
 library(sysfonts)    ## use custom fonts (need to be installed on your OS)  
 library(systemfonts) # Thomas Pederson's recent font management package
 library(showtext)    ## add google fonts to plots
-library(scico)       ## Colour palette
 library(ggtext)      ## add improved text rendering to ggplot2
-library(gfonts)      ## Use Google Fonts offline
+##
 library(ggrepel)     ## Text-repelled labels
 library(marquee)     ## Annotations with fonts in ggplot
 
 ```
 
-## {{< iconify noto-v1 package >}} Setting up R Packages
 
 We may have been using `ggplot2` for a while now, but there is always more to learn about the aesthetics of our plots. In this module, we will explore how to use different fonts and themes to make our plots look more polished and professional. 
 
-We may also want to use fonts on our websites and we will look at using packages like `sysfonts` . `gfonts`, and `showtext` to add custom fonts to our plots and websites. For instance you may want your website to look this: [Project Peasants](https://project-peasants.netlify.app) !!
+We may also want to use fonts on our websites and we will look at using packages like `sysfonts` and `showtext` to add custom fonts to our plots and websites. For instance you may want your website to look this: [Project Peasants](https://project-peasants.netlify.app) !!
 
 ## Using Preferred Fonts
 
-We may prefer specific fonts for **our plots**, and we may also want to use these fonts on our websites. There are (atleast) two ways in which one can use fonts in R: 
+We may prefer specific fonts for **our plots**, and we may also want to use these fonts on our websites. There are (atleast) two steps to using fonts in R: 
 
-- **Live Downloading of Fonts**: Downloading fonts from Google **within the R session**, using the `showtext` package. 
-- **Using Locally Installed Fonts**: Using fonts that are already installed/downloaded on your computer, also using the `sysfonts` package. 
+1. Setting up the Fonts
+1. Using them in ggplot and on your website. 
 
-::: callout-note
-### New Package `systemfonts`
-There is also a more recent, and comprehensive package called `systemfonts` We will postpone this for a later presentation (mainly because I am still figuring it out. `r emoji::emoji("sweat_smile")` )
-:::
+Let us look at both these steps!
 
+### Option 1: Live-loading Fonts from Google
 
-::: callout-important
-### GDPR Compliance
-Using fonts that are already installed on your computer, or hosted on your webserver, is [**GDPR compliant**](https://gdpr-info.eu/). Using fonts *directly* from Google may not be, as it may involve sending data to Google servers every time your website is loaded by a visitor.
-:::
+The easiest way to get fonts is **live downloading of fonts** from Google using the `sysfonts` package. These are then easily added within the R session using the `showtext` package. 
 
+Head off view to [Google Fonts](https://fonts.google.com/) and select the fonts you might want to work with. 
 
-### Live-loading Fonts from Google
+Let us add a handful of fonts to our R session. We will use the `sysfonts::font_add_google()` function from the `sysfonts` package to download Google fonts into our session. These fonts will then be included into our session using `showtext::showtext_auto()`.
 
-We will want to add a few new fonts from Google to our graphs. The best way (currently) is to use the `sysfonts` package (which we loaded above) to bring into our work fonts from Google. To view and select the fonts you might want to work with, spend some time looking over [Google Fonts](https://fonts.google.com/). 
-
-Let us add a handful of fonts to our R session. We will use the `font_add_google()` function from the `sysfonts` package to download Google fonts into our session. These fonts will then be included into our session using `showtext_auto()`.
-
-This needs to be included in each Quarto document on your website. 
-
+A typical code chunk to do this could look like: 
 
 ```{{r}}
-#| label: download-google-fonts
-#| cache: true
+#| label: live-download-google-fonts
 
 ## Clean the slate
 systemfonts::clear_local_fonts()
 systemfonts::clear_registry()
-##
-sysfonts::font_add_google(name = "Gochi Hand", family = "GochiHand")
-font_add_google("Schoolbell", "Schoolbell")
-font_add_google("Roboto Condensed", "RobotoCondensed")
-font_add_google("Noto Sans", "Noto")
-font_add_google("Jura", "Jura")
-font_add_google("Ibarra Real Nova", "Ibarra")
-font_add_google("Open Sans", "Open")
-font_add_google("Anton", "Anton")
-font_add_google("Tangerine", "Tangerine")
-font_add_google("Fraunces", "Fraunces")
 
-```
+# Add three Google Fonts
+# Arguments: font family name, Google Font name
+font_add_google("Roboto Condensed", "Roboto Condensed")
+font_add_google("Lato", "Lato")
+font_add_google("Alegreya", "Alegreya")
 
-```{{r}}
-#| label: enable-showtext
-
+## Enable these fonts
 showtext_auto() # set these fonts as default for the session
+
+## Optional Check, comment out this line in production code
 sysfonts::font_families() # check which fonts are available in the session
 
 ```
 
 Ensure that you use the right `name` for the font family, as shown above. It is text-sensitive. The `family` is up to you to choose. Using similar names for `name` and `family` is a good idea, as shown above.
 
+### Option 2: Adding local fonts from your computer
 
-## Adding local fonts from your computer
-
-Using Google fonts as shown above means that every time someone loads your website on their browser, the browser goes off to Google to download the fonts on the fly. As mentioned above, this will typically make your website non-compliant with GDPR. 
+Using Google fonts as shown above means that every time someone loads your website on their browser, the browser goes off to Google to download the fonts on the fly. This will typically make your website non-compliant with GDPR (see below). 
 
 One solution is to download fonts *a priori* from Google, or from elsewhere, and then import them into your session. The `sysfonts::font_add()` function allows us to do this. You will need to provide the path to the font files on your computer. That is our next step.
 
-Now, you need to import these fonts into ***each Quarto document*** individually ( This website has done that for every document !! ) Think of it as a theme for your document. You will need to provide the path to the font files on your computer. The `../` sequence navigates up one folder level. Adjust the path as needed, to go right from your Quarto document folder up to project `root` and then down to the `fonts` folder.
+Let's assume we have gone off to [Google Fonts](https://fonts.google.com/) and downloaded the following fonts :`Alegreya`,`Anton`, `Roboto Condensed`, `Schoolbell`, `Tangerine`, and `Ibarra Real Nova`.
 
-Let's assume we have gone off to [Google Fonts](https://fonts.google.com/) and downloaded the following fonts to our `fonts` folder: `Alegreya`,`Anton`, `Roboto Condensed`, `Schoolbell`, `Tangerine`, and `Ibarra Real Nova`.
+These font files are placed at `<project root>/fonts/`, i.e. a `fonts` folder at the root our our project. 
 
-My directory tree structure is:
+A code chunk to add these fonts to our R session as follows, using the `{{here}}` package:
 
-- Project root
-  - fonts
-    - Alegreya-Regular.ttf ( for example)
-    
-  - content
-    - courses
-      - Analytics
-        - 50-Arts
-          - Modules
-            - 20-Fonts
-              - index.qmd ( This file )
-        
-Now, we can add these fonts to our R session as follows:
-```{r}
+```{{r}}
 #| label: add-local-fonts
-#| echo: true
-#| 
+
+
 ## Clean the slate
 systemfonts::clear_local_fonts()
 systemfonts::clear_registry()
 ##
-showtext_opts(dpi = 96) #set DPI for showtext
-sysfonts::font_add(family = "Alegreya",
-  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
-  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
-  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
-  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
+showtext_opts(dpi = 96) # set DPI for showtext
 
-sysfonts::font_add(family = "Anton",
-  regular = "../../../../../../fonts/Anton-Regular.ttf") # Only one style is available
+# First Add the Fonts
+sysfonts::font_add(
+  family = "Alegreya",
+  regular = here::here("fonts", "Alegreya-Regular.ttf"),
+  bold = here::here("fonts", "Alegreya-Bold.ttf"),
+  italic = here::here("fonts", "Alegreya-Italic.ttf"),
+  bolditalic = here::here("fonts", "Alegreya-BoldItalic.ttf")
+)
+sysfonts::font_add(
+  family = "Anton",
+  regular = here::here("fonts", "Anton-Regular.ttf")
+) # Only one style is available
+sysfonts::font_add(
+  family = "RobotoCondensed",
+  regular = here::here("fonts", "RobotoCondensed-Regular.ttf"),
+  bold = here::here("fonts", "RobotoCondensed-Bold.ttf"),
+  italic = here::here("fonts", "RobotoCondensed-Italic.ttf"),
+  bolditalic = here::here("fonts", "RobotoCondensed-BoldItalic.ttf")
+)
+sysfonts::font_add(
+  family = "IbarraNova",
+  regular = here::here("fonts", "IbarraRealNova-Regular.ttf"),
+  bold = here::here("fonts", "IbarraRealNova-Bold.ttf"),
+  italic = here::here("fonts", "IbarraRealNova-Italic.ttf"),
+  bolditalic = here::here("fonts", "IbarraRealNova-BoldItalic.ttf")
+)
+sysfonts::font_add(
+  family = "Tangerine",
+  regular = here::here("fonts", "Tangerine-Regular.ttf"),
+  bold = here::here("fonts", "Tangerine-Bold.ttf")
+) # only these two are available
+sysfonts::font_add(
+  family = "Schoolbell",
+  regular = here::here("fonts", "Schoolbell-Regular.ttf")
+) # Only regular is available
 
-sysfonts::font_add(family = "RobotoCondensed", 
-  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
-  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
-  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
-  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
-
-sysfonts::font_add(family = "IbarraNova", 
-  regular = "../../../../../../fonts/IbarraRealNova-Regular.ttf",
-  bold = "../../../../../../fonts/IbarraRealNova-Bold.ttf",
-  italic = "../../../../../../fonts/IbarraRealNova-Italic.ttf",
-  bolditalic = "../../../../../../fonts/IbarraRealNova-BoldItalic.ttf")
-
-sysfonts::font_add(family = "Tangerine", 
-  regular = "../../../../../../fonts/Tangerine-Regular.ttf",
-  bold = "../../../../../../fonts/Tangerine-Bold.ttf") # only these two are available
-
-sysfonts::font_add(family = "Schoolbell", 
-  regular = "../../../../../../fonts/Schoolbell-Regular.ttf") # Only regular is available
-
+## Enable these fonts
 showtext_auto() # set these fonts as default for the session
 
-```
-
-Let check of the fonts are now available in the session:
-
-```{r}
-#| label: check-available-fonts
+## Optional Check, comment out this line in production code
 sysfonts::font_families() # check which fonts are available in the session
 
 ```
 
+A couple of things worth knowing about the `{here}` package in R:
 
-After running the chunks above in your session, you can check which fonts are available in your session by typing `sysfonts::font_families()` in your console, as shown above. We see that apart from the R-default `sans`, `serif`, and `mono` fonts, we have added the several fonts to our session. 
+- `here::here("fonts", "Alegreya-Regular.ttf")` **builds a path from your project root** (wherever here finds a `.Rproj`, `.here` file, or `.git` folder), not from the current script's location. So the fonts folder should just be `<project root>/fonts/`.
+- If your fonts folder isn't actually at the project root, adjust the first argument(s) accordingly, e.g. `here::here("assets", "fonts", "Alegreya-Regular.ttf")` if it's nested under `assets/` for example.
+- If you don't already have a .here marker or RStudio project file at the root you want here to anchor to, run `here::set_here()` once from that directory, or just open the project as an RStudio Project (.Rproj), which `{here}` will detect automatically.
+
 
 ## Plot Theme using Desired fonts
 
-Now that we have the fonts downloaded, we can use them in our plots. We will use the `theme_xxxx()` function to set a default theme for our plots, and then we will modify the theme elements to use our desired fonts.
-Let us set some `ggplot2` theme aspects now!! Here is a handy picture showing ( most of ) the theme-able aspects of a ggplot plot. 
-
-For more info, type `?theme` in your console.
+Now that we have the fonts installed, either way, one more step remains: we need to set our ggplot theme to use these fonts. What are these `theme` elements?
 
 ```{r}
 #| label: fig-ggplot-theme-elements
@@ -194,13 +171,13 @@ So now that we understand the elements of the themes, let us set our ggplot them
 
 First we set the fonts for the ***non-graphical*** elements in ggplot, such as `title`, `subtitle`, `axis title`, and `legend title` for example:
 
-```{r}
+```{{r}}
 #| label: set-ggplot2-theme
 #| 
 
 theme_custom <- function(){ 
 
-    theme_bw(base_size = 10) + 
+    theme_bw(base_size = 10) + # Base Theme, Black-White
     
     theme_sub_axis(title = element_text(family = "Roboto Condensed", 
                                        size = 8),
@@ -209,15 +186,15 @@ theme_custom <- function(){
     
     theme_sub_legend(text = element_text(family = "Roboto Condensed", 
                                          size = 6),
-                     title = element_text(family = "Alegreya", 
+                     title = element_text(family = "Montserrat", 
                                           size = 8)) + 
     
-    theme_sub_plot(title = element_text(family = "Alegreya", 
+    theme_sub_plot(title = element_text(family = "Montserrat", 
                                         size = 14, face = "bold"),
                    title.position = "plot",
-                   subtitle = element_text(family = "Alegreya", 
+                   subtitle = element_text(family = "Montserrat", 
                                            size = 10),
-                   caption = element_text(family = "Alegreya", 
+                   caption = element_text(family = "Montserrat", 
                                           size = 6),
                    caption.position = "plot")
     
@@ -239,11 +216,12 @@ Using `showtext(auto)` as shown above allows us to modify the ***non-graph*** el
 
 :::
 
-```{r}
+```{{r}}
 #| label: set-geom-default-font
+#| 
 
 
-## Use available fonts in ggplot text and other geoms too!
+## Use available fonts in ggplot label and text within the ggplot geoms 
 ggplot2::update_geom_defaults(geom = "text", new = list(
   family = "Roboto Condensed",
   face = "plain",
@@ -259,53 +237,129 @@ ggplot2::update_geom_defaults(geom = "label", new = list(
 )
 )
 
-ggplot2::update_geom_defaults(geom = "marquee", new = list(
+```
+
+## Final Step: Using the Fonts!!
+
+Where do we put all these code chunks floating around??!!!
+
+Quarto now has a feature that includes a`_setup.qmd` at the root of your Project. These code chunks, preferable in **one single code chunk**, can be pasted into this file, and this file invoked at the start of each new document using:
+
+`{{< include /_setup.qmd >}}`
+
+A sample `setup.qmd` format, with quite some detail, is embedded below:
+
+```{{r}}
+
+#| label: setup-site
+#| include: false
+#| cache: false
+
+# Install/load packages if needed
+if (!requireNamespace("showtext", quietly = TRUE)) {
+  install.packages("showtext")
+}
+if (!requireNamespace("ggplot2", quietly = TRUE)) {
+  install.packages("ggplot2")
+}
+
+library(showtext)
+library(ggplot2)
+
+# Add three Google Fonts
+# Arguments: font family name, Google Font name
+font_add_google("Roboto Condensed", "Roboto Condensed")
+font_add_google("Lato", "Lato")
+font_add_google("Alegreya", "Alegreya")
+
+# Tell R to use showtext for all subsequent plots
+showtext_auto()
+
+# Optional: set DPI for raster devices (adjust if you need high-res PNGs)
+showtext_opts(dpi = 300)
+
+# Set a site-wide ggplot theme using the loaded fonts
+ggplot2::theme_set(
+  ggplot2::theme_bw(
+    base_size = 14,
+    base_family = "Roboto Condensed"
+  )
+)
+
+## Set the ggplot theme
+theme_madhatter <- function(base_size = 10, exhibit = TRUE) {
+  th <- ggplot2::theme_bw(base_size = base_size) +
+    ggplot2::theme(
+      plot.margin = ggplot2::margin(t = 1, r = 2, b = 1, l = 1, unit = "cm"),
+      axis.title = ggplot2::element_text(
+        family = "Roboto Condensed",
+        size = 10
+      ),
+      axis.text = ggplot2::element_text(
+        family = "Roboto Condensed",
+        size = 8
+      ),
+      legend.text = ggplot2::element_text(
+        family = "Roboto Condensed",
+        size = 6
+      ),
+      legend.title = ggplot2::element_text(
+        family = "Alegreya",
+        size = 8
+      ),
+      plot.title = ggplot2::element_text(
+        family = "Alegreya",
+        size = 14,
+        face = "bold"
+      ),
+      plot.title.position = "plot",
+      plot.subtitle = ggplot2::element_text(
+        family = "Alegreya",
+        size = 10
+      ),
+      plot.caption = ggplot2::element_text(
+        family = "Alegreya",
+        size = 6
+      ),
+      plot.caption.position = "plot"
+    )}
+
+## Set the theme for all plots
+ggplot2::theme_set(theme_madhatter())
+
+## Update the fonts for geoms as well!
+ggplot2::update_geom_defaults(geom = "text", new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
   color = "#2b2b2b"
 )
 )
-ggplot2::update_geom_defaults(geom = "text_repel", new = list(
+ggplot2::update_geom_defaults(geom = "label", new = list(
   family = "Roboto Condensed",
   face = "plain",
   size = 3.5,
   color = "#2b2b2b"
 )
 )
-ggplot2::update_geom_defaults(geom = "label_repel", new = list(
-  family = "Roboto Condensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-
-# Repeat for any new text-using geom etc.
-# These may use package-specific commands, as with `flextable` and `tinytable`
-
-## Set defaults for flextable
-flextable::set_flextable_defaults(font.family = "Roboto Condensed")
-
-## tinytable options
-options("tinytable_tt_digits" = 2)
-options("tinytable_format_num_fmt" = "significant_cell")
-options(tinytable_html_mathjax = TRUE)
 
 ```
 
+NOTE: this code chunk is **all** that is in the file `_setup.qmd`. There is nothing else, no YAML header, no sections, no text. Just one code chunk. 
 
-## Data
+## Does it all work??
 
-We will work with a **familiar** dataset, so that we can concentrate on the chart aesthetics, without having to spend time getting used to the data: the `penguins` dataset again, ~~from the `palmerpenguins` package~~ now part of the R installation!
+Let us quickly see the results of using this `_setup.qmd`. We will compare a plain, basic plot, with one achieved after invoking `_setup.qmd`. 
 
-As always, we will start with a **table** of the data:
+#### Data
+
+We will work with a **familiar** dataset, so that we can concentrate on the chart aesthetics, without having to spend time getting used to the data: the `penguins` dataset again, now part of the R installation!
 
 ```{r}
 #| label: tbl-read-penguins-data
 #| tbl-cap: "Penguins Dataset"
 #| message: false
-#| 
+#| echo: false
 #| 
 data(penguins, package = "datasets")
 penguins <- penguins %>% drop_na() # remove data containing missing data
@@ -323,130 +377,52 @@ penguins %>%
 ```
 
 
-## Basic Plot
+#### Basic Plot
 
 A basic scatter plot first, which we will decorate with fonts:
 
 ```{r}
 #| label: fig-basic-scatter-plot
 #| fig.cap: "Scatter plot of bill depth versus bill length, colored by body mass."
+#| code-fold: true
+#| 
 
-## Set the theme
-ggplot2::theme_set(new = theme_custom())
-
-p1 <- ggplot(penguins, aes(x = bill_len, y = bill_dep)) +
-  geom_point(aes(color = body_mass), alpha = .6, size = 3.5) + 
+penguins %>% drop_na() %>% 
+  gf_point(body_mass ~ flipper_len, colour = ~ species, size = 2) %>% 
+  gf_labs(title = "My Penguin Plot", x = "Flipper Length", y = "Body Mass (gms)") %>% 
+  gf_refine(annotate(geom = "text", label = "Important\n Points", x = 220, y = 3500, size = 5),
+            annotate(geom = "rect", xmin = 200, xmax = 210, ymin = 3000, ymax = 5700, alpha = .2),
+            annotate('curve',x = 220, y = 3200,yend = 3000,xend = 205,
+    linewidth = 1, curvature = -0.5, arrow = arrow(length = unit(0.5, 'cm')))) %>%
   
-  ## custom colors from the scico package
-  scico::scale_colour_scico(palette = "glasgow", direction = -1)+
-  
-  ## custom labels
-  labs(
+  ## Labels and Title
+  gf_labs(
     title = 'Bill Dimensions of Brush-Tailed Penguins (Pygoscelis)',
     subtitle = 'A scatter plot of bill depth versus bill length.',
     caption = 'Data: Gorman, Williams & Fraser (2014) PLoS ONE',
     x = 'Bill Length (mm)', 
     y = 'Bill Depth (mm)',
     color = 'Body mass (g)'
-  )
-
-p1
-
-```
-
-We see that the ggplot theme uses the fonts that we have assigned to the different elements in the graph. 
-
-## Using `{marquee}`
-To be written up when I know it better.
-
-
-
-## Using `{ggtext}`
-
-From [Claus Wilke's website](https://wilkelab.org/ggtext/) → www.wilkelab.org/ggtext
-
-> The `ggtext` package provides simple Markdown and HTML rendering for ggplot2. Under the hood, the package uses the `gridtext` package for the actual rendering, and consequently it is limited to the feature set provided by `gridtext`.  
-Support is provided for Markdown both in theme elements (plot titles, subtitles, captions, axis labels, legends, etc.) and in geoms (similar to `geom_text()`). In both cases, there are two alternatives, one for creating simple text labels and one for creating text boxes with word wrapping.
-
-NOTE: on some machines, the ggtext package may not work as expected. In this case, please do as follows, using your Console:
-
-- remove gridtext: `remove.packages(gridtext)`.   
-- Install development version of `gridtext`: `remotes::install_github("wilkelab/gridtext")`
-
-### `element_markdown()`
-
-We can use our familiar markdown syntax right inside the titles and captions of the plot. `element_markdown()` is a theming command made available by the `ggtext` package. 
-
-`element_markdown()` → formatted text elements, e.g. titles, caption, axis text, striptext
-
-```{r}
-#| label: ggtext-element-markdown
-#| 
-## Set the theme
-ggplot2::theme_set(new = theme_custom())
-
-p1 + 
-  
-  ## New code starts here: Two Step Procedure with ggtext
-  ## 1. Markdown formatting of labels and title, using asterisks
-  labs(
-    title = 'Bill Dimensions of Brush-Tailed Penguins (*Pygoscelis*)',
-    subtitle = 'A scatter plot of bill depth versus bill length.',
-    caption = 'Data: Gorman, Williams & Fraser (2014) *PLoS ONE*',
-    x = '**Bill Length** (mm)', 
-    y = '**Bill Depth** (mm)',
-    color = 'Body mass (g)'
-  ) +
-   
-  ## 2. Add theme related commands from ggtext
-  ## render respective text elements
-  theme(
-    plot.title = ggtext::element_markdown(),
-    plot.caption = ggtext::element_markdown(),
-    axis.title.x = ggtext::element_markdown(),
-    axis.title.y = ggtext::element_markdown()
-  )
-
+  ) %>%
+  gf_theme(new = theme_bw())
 
 ```
 
-### `element_markdown()` in combination with HTML
-
-This allows us to change fonts and font-effects in titles, labels, and captions:
-
+We see that the ggplot theme uses the basic fonts from the `theme_bw()`. And Here below, is the same chart achieved with the new theme, which was set using the `_setup.qmd()` from above:
 
 ```{r}
-## use HTML syntax to change text color
-p1 + 
-  labs(title = 'Bill Dimensions of Brush-Tailed Penguins <i style="color:#28A87D;">Pygoscelis</i>') +
-  theme(
-    plot.title = ggtext::element_markdown(),
-    plot.caption = ggtext::element_markdown(),
-    axis.title.x = ggtext::element_markdown(),
-    axis.title.y = ggtext::element_markdown(),
-    plot.margin = margin(t = 10, r = 10, b = 10, l = 10)) 
-  
-## use HTML syntax to change font and text size
-## 
-p1 + 
- labs(title = 'Bill Dimensions of Brush-Tailed Penguins <b style="font-size:32pt;font-family:Tangerine;">Pygoscelis</b>') +
-  theme(
-    plot.title = ggtext::element_markdown(),
-    plot.caption = ggtext::element_markdown(),
-    axis.title.x = ggtext::element_markdown(),
-    axis.title.y = ggtext::element_markdown(),
-    plot.margin = margin(t = 10, r = 10, b = 10, l = 10)) 
+#| label: fig-themed-ggplot
+#| fig-cap: PLot themed with setup.qmd
+#| echo: false
 
+knitr::include_graphics("https://project-peasants.netlify.app/classwork/day1/index_files/figure-html/unnamed-chunk-2-1.png")
 ```
 
 ## Wait, but Why?
 
 - Using appropriate fonts in our plots can make them more readable and visually appealing.
 - They may be mandated for publication in some journals, and for publications by organizations.
-- Using `sysfonts` , `gfonts`, and `showtext` allows us to use a wide variety of fonts from Google, making it easy to customize our plots.
-- Using `ggtext` allows us to add formatted text elements to our plots, making them more informative and visually appealing.
-- Note that downloading fonts from Google may not be GDPR compliant, so it is better to use locally installed fonts if possible.
-- `gfonts` allows us to programmatically download Google fonts *a priori*, and use them locally, making our websites GDPR compliant.
+- Using `sysfonts` , and `showtext` allows us to use a wide variety of fonts from Google, making it easy to customize our plots.
 
 ## Conclusions
 
@@ -475,3 +451,15 @@ cite_packages(
 ```
 
 :::
+
+::: callout-note
+### New Package `systemfonts`
+There is also a more recent, and comprehensive package called `systemfonts` We will postpone this for a later presentation (mainly because I am still figuring it out. `r emoji::emoji("sweat_smile")` )
+:::
+
+
+::: callout-important
+### GDPR Compliance
+Using fonts that are already installed on your computer, or hosted on your webserver, is [**GDPR compliant**](https://gdpr-info.eu/). Using fonts *directly* from Google may not be, as it may involve sending data to Google servers every time your website is loaded by a visitor.
+:::
+

@@ -1,0 +1,135 @@
+---
+title: "Setup Example"
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup-fonts-and-theme
+#| include: false
+
+# ---- Packages ----
+library(ggplot2)
+library(sysfonts)
+library(showtext)
+
+# ---- Load Google Fonts ----
+# Text font (body / axis text)
+sysfonts::font_add_google("Inter", "inter")
+
+# Monospace font (code, optional in plots)
+sysfonts::font_add_google("JetBrains Mono", "jetbrains")
+
+# Serif font for plot titles (optional, but nice contrast)
+sysfonts::font_add_google("Merriweather", "merriweather")
+
+# Enable showtext for all subsequent plots
+showtext::showtext_auto()
+
+# ---- Base sizes ----
+base_size      <- 12   # body text in plot
+title_size     <- 16   # plot title
+subtitle_size  <- 13   # plot subtitle
+caption_size   <- 11   # caption
+axis_text_size <- 12   # axis tick labels
+
+# ---- Custom ggplot theme ----
+theme_custom <- function() {
+  theme_minimal(base_size = base_size, base_family = "inter") +
+    theme(
+      # Text elements
+      text = element_text(family = "inter", colour = "#222222"),
+
+      # Titles
+      plot.title = element_text(
+        family = "merriweather",
+        face = "bold",
+        size = title_size,
+        colour = "#111111",
+        hjust = 0,
+        margin = margin(b = 6)
+      ),
+      plot.subtitle = element_text(
+        family = "inter",
+        size = subtitle_size,
+        colour = "#555555",
+        hjust = 0,
+        margin = margin(b = 6)
+      ),
+      plot.caption = element_text(
+        family = "inter",
+        size = caption_size,
+        colour = "#777777",
+        hjust = 1
+      ),
+      plot.tag = element_text(
+        family = "inter",
+        face = "bold",
+        size = 12,
+        colour = "#333333"
+      ),
+
+      # Axis titles
+      axis.title = element_text(
+        family = "inter",
+        face = "bold",
+        size = axis_text_size,
+        colour = "#333333"
+      ),
+      axis.title.x = element_text(margin = margin(t = 6)),
+      axis.title.y = element_text(margin = margin(r = 6)),
+
+      # Axis tick labels
+      axis.text = element_text(
+        family = "inter",
+        size = axis_text_size,
+        colour = "#444444"
+      ),
+      axis.text.x = element_text(margin = margin(t = 3)),
+      axis.text.y = element_text(margin = margin(r = 3)),
+
+      # Legend
+      legend.title = element_text(
+        family = "inter",
+        face = "bold",
+        size = axis_text_size,
+        colour = "#333333"
+      ),
+      legend.text = element_text(
+        family = "inter",
+        size = axis_text_size,
+        colour = "#444444"
+      ),
+      legend.position = "right",
+      legend.box.margin = margin(6, 6, 6, 6),
+
+      # Panel and grid
+      panel.grid.major = element_line(colour = "#eeeeee", linewidth = 0.4),
+      panel.grid.minor = element_line(colour = "#f6f6f6", linewidth = 0.3),
+      panel.border = element_blank(),
+      plot.background = element_rect(fill = "transparent", colour = NA),
+      panel.background = element_rect(fill = "transparent", colour = NA),
+
+      # Strip text (facets)
+      strip.text = element_text(
+        family = "inter",
+        face = "bold",
+        size = 11,
+        colour = "#222222"
+      ),
+      strip.background = element_rect(fill = "#fafafa", colour = NA)
+    )
+}
+
+# ---- Set as default theme ----
+theme_set(theme_custom())
+
+# Optional: set default figure dimensions for the site
+knitr::opts_chunk$set(
+  fig.width = 7,
+  fig.height = 5,
+  dpi = 300
+)
+```
