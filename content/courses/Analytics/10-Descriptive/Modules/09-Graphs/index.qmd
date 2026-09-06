@@ -307,9 +307,43 @@ knitr::include_graphics("../../../../../materials/images/tidydata.jpg")
 -   Each **observation** or **case** is a row.
 -   Each **observations** contains *one value* for each variable.
 
-## {{< iconify material-symbols auto-graph >}} What is a Data Visualization?
+## {{< iconify material-symbols auto-graph >}} Becoming Kandinsky with a laptop
 
-### {{< iconify carbon chart-network >}} Data Viz = Data + Geometry
+How would an Art + Design student look at a Data Visualization? Like a painting, or an art work!! 
+
+Look at these paintings from [Kandinsky](https://artsandculture.google.com/story/QgUxxeY10_VADg). 
+What's the first thing you would notice? From a *cultural standpoint*: the shapes, colours, textures...all things geometrical are the first thing you would notice. 
+
+Kandinsky used geometric shapes to convey ideas like *emotions*, *relationships*, *movement*, *tension*, *harmony*, *chaos*, *balance*, *contrast* and so on. These ideas are what we find encoded in data, in Qual and Quant variables!! 
+
+So how do we become Kandinsky-with-a-laptop?
+
+::: {#fig-kandinsky-1 layout-ncol=3}
+
+ ![Fixed Points](https://www.wassilykandinsky.net/images/works/342.jpg?version=7){#fig-fixed-points}
+ 
+![Composition VIII](https://www.wassilykandinsky.net/images/works/50.jpg?version=7){#fig-composition-viii}
+
+![Small Worlds XI](https://www.wassilykandinsky.net/images/works/48.jpg?version=7){#fig-small-worlds-xi}
+
+Famous Paintings by Kandinsky (Set#1)
+:::
+
+
+::: {#fig-kandinsky-2 layout-ncol=3}
+
+ ![Composition IV](https://www.wassilykandinsky.net/images/works/114.jpg?version=7){#fig-composition-4}
+ 
+![Above and Left](https://www.wassilykandinsky.net/images/works/568.jpg?version=7){#fig-above-left}
+
+![Thirty](https://www.wassilykandinsky.net/images/works/273.jpg?version=7){#fig-thirty}
+
+Famous Paintings by Kandinsky (Set#2)
+:::
+
+## {{< iconify carbon chart-network >}} Data Viz = Data + Geometry
+
+So first: 
 
 -   How many *geometric things* do we know?
 -   Shapes? Lines? Axes? Curves? Angles? Patterns? Textures? Colours?
@@ -346,7 +380,7 @@ knitr::include_graphics("../../../../../materials/images/common-aesthetics-1.png
     Visualization.]{style="background: yellow;"}
 :::
 
-### Mapping Examples
+### {{< iconify material-symbols function >}} Mapping Examples
 
 -   `length` or `height` of a `bar` can be made proportional to the`age`
     or `income` of a person
@@ -379,20 +413,36 @@ knitr::include_graphics("../../../../../materials/images/common-aesthetics-1.png
 
 ### A Data Visualization Example
 
+::: {layout-ncol=2}
+
 ```{r}
-#| code-fold: true
+#| label: fig-data-viz-1
+#| fig-cap: "Data Table"
+#| echo: false
+#| warning: false
 #| message: false
-#| warning: true
-#| fig-cap: "Data Vis Components and Features"
-#| label: fig-data-vis-r
-#| fig.showtext: true
-#| out-width: "75%"
+#| 
 set.seed(1947)
-diamonds %>% 
-  slice_sample(n = 150, weight_by = cut) %>% 
+df <- diamonds %>% 
+  slice_sample(n = 150, weight_by = cut) %>%
+  select(cut, carat, price) |> 
+  arrange(cut)
+df
+
+```
+
+
+```{r}
+#| label: fig-data-viz-2
+#| fig-cap: "Chart with Data Mapping"
+#| echo: false
+#| warning: false
+#| message: false
+#| 
+df %>% 
   gf_point(price ~ carat, colour = ~ cut, 
            shape = ~ cut, 
-           size = 2, data = .) %>% 
+           size = 4, data = .) %>%
   gf_labs(title = "Plot Title = DIAMONDS ARE FOREVER", 
           subtitle = "Plot Subtitle = AND A GIRL'S BEST FRIEND",
           caption = "Plot Caption = From the diamonds dataset",
@@ -408,7 +458,7 @@ diamonds %>%
   gf_annotate('text', x = 1.0, y = 16000, 
                      label = 'Annotation = These DIAMONDS are\n Super Affordable!!',
                      fontface = 'bold', 
-                     size = 2) %>% 
+                     size = 4) %>% 
   gf_annotate('curve',x = 0.9, 
     y = 14500,
     yend = 8000,
@@ -427,6 +477,8 @@ diamonds %>%
     col = 'black')
 
 ```
+Data Viz = Data + Geometry
+:::
 
 ### What were the Components?
 
