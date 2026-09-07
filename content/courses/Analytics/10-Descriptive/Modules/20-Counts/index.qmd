@@ -198,7 +198,7 @@ ggplot2::update_geom_defaults(geom = "label_repel", new = list(
 )
 
 ## Set the theme
-ggplot2::theme_set(new = theme_custom())
+
 
 ## tinytable options
 options("tinytable_tt_digits" = 2)
@@ -526,7 +526,6 @@ choose **Qual** variables to count with! In each case, we will state a Hypothesi
 #| code-fold: true
 #| out-width: "75%"
 #| fig-align: "center"
-ggplot2::theme_set(new = theme_custom())
 
 gf_bar(~ tip, data = taxi_modified) %>%
   gf_labs(title = "Plot 1A: Counts of Tips")
@@ -541,8 +540,6 @@ gf_bar(~ tip, data = taxi_modified) %>%
 #| code-fold: true
 #| out-width: "75%"
 #| fig-align: "center"
-
-ggplot2::theme_set(new = theme_custom())
 
 ggplot(taxi_modified)  + 
   geom_bar(aes(x = tip)) + 
@@ -588,8 +585,6 @@ ggplot(taxi_modified)  +
 #| label: ggformula21
 #| eval: false
 
-ggplot2::theme_set(new = theme_custom())
-
 taxi_modified %>% 
   gf_bar(~ local, fill = ~ tip, 
   position = "dodge") %>% 
@@ -614,7 +609,7 @@ taxi_modified %>%
 #| label: ggformula22
 #| eval: false
 
-ggplot2::theme_set(new = theme_custom())
+
 
 taxi_modified %>% 
   gf_bar(~ local, fill = ~ tip, 
@@ -642,7 +637,7 @@ taxi_modified %>%
 #| label: ggformula23
 #| eval: false
 
-ggplot2::theme_set(new = theme_custom())
+
 
 ## Showing "per capita" percentages
 taxi_modified %>% 
@@ -673,16 +668,17 @@ taxi_modified %>%
 #| label: ggformula24
 #| eval: false
 
-ggplot2::theme_set(new = theme_custom())
+
 
 ## Showing "per capita" percentages
-## Better labelling of Y-axis 
+## Better labelling of Y-axis in percentages
 taxi_modified %>% 
-  gf_props(~ local, fill = ~ tip, 
+  gf_percents(~ local, fill = ~ tip, 
   position = "fill") %>% 
   gf_labs(title = "Plot 2D: Filled Bar Chart",
           subtitle = "Shows Per group differences in Proportions!") %>% 
-  gf_refine(scale_fill_brewer(palette = "Set1"))
+  gf_refine(scale_fill_brewer(palette = "Set1"),
+            scale_y_continuous(labels = scales::percent))
 
 ```
 :::
@@ -711,7 +707,7 @@ taxi_modified %>%
 #| code-fold: true
 #| out-width: "75%"
 #| fig-align: "center"
-ggplot2::theme_set(new = theme_custom())
+
 
 taxi_modified %>%
   ggplot() +
@@ -741,7 +737,8 @@ taxi_modified %>%
   labs(title = "Plot 2D: Filled Bar Chart", 
        subtitle = "Shows Per group differences in Proportions!",
        y = "Proportion") + 
-  scale_fill_brewer(palette = "Set1")
+  scale_fill_brewer(palette = "Set1") +
+  scale_y_continuous(labels = scales::percent)
 
 ```
 :::
@@ -799,7 +796,7 @@ taxi_modified %>%
 #| label: ggformula31
 #| eval: false
 
-ggplot2::theme_set(new = theme_custom())
+
 
 taxi_modified %>% 
   gf_bar(~ company, fill = ~ tip, position = "dodge") %>% 
@@ -826,7 +823,7 @@ taxi_modified %>%
 #| label: ggformula32
 #| eval: false
 
-ggplot2::theme_set(new = theme_custom())
+
 
 taxi_modified %>% 
   gf_bar(~ company, fill = ~ tip, position = "stack") %>% 
@@ -852,7 +849,7 @@ taxi_modified %>%
 #| label: ggformula33
 #| eval: false
 
-ggplot2::theme_set(new = theme_custom())
+
 
 ## Showing "per capita" percentages
 taxi_modified %>% 
@@ -878,7 +875,7 @@ taxi_modified %>%
 ```{r}
 #| label: ggformula34
 #| eval: false
-ggplot2::theme_set(new = theme_custom())
+
 
 ## Showing "per capita" percentages
 ## Better labelling of Y-axis
@@ -886,7 +883,9 @@ taxi_modified %>%
   gf_props(~ company, fill = ~ tip, position = "fill") %>% 
   gf_labs(title = "Plot 3D: Filled Bar Chart",
           subtitle = "Shows Per group differences in Proportions!") %>% 
-  gf_theme(theme(axis.text.x = element_text(size = 6, angle = 45, hjust = 1))) %>% gf_refine(scale_fill_brewer(palette = "Set1")) 
+  gf_theme(theme(axis.text.x = element_text(size = 6, angle = 45, hjust = 1))) %>% 
+  gf_refine(scale_fill_brewer(palette = "Set1"),
+            scale_y_continuous(labels = scales::percent))
 
 ```
 :::
@@ -910,7 +909,7 @@ taxi_modified %>%
 ```{r}
 #| layout-ncol: 2
 #| code-fold: true
-ggplot2::theme_set(new = theme_custom())
+
 
 taxi_modified %>% 
   ggplot() + 
@@ -939,7 +938,8 @@ taxi_modified %>%
   labs(title = "Plot 3D: Filled Bar Chart",
        subtitle = "Shows Per group differences in Proportions!",
        y = "Proportions") +
-  theme(theme(axis.text.x = element_text(size = 6, angle = 45, hjust = 1))) + scale_fill_brewer(palette = "Set1")
+  theme(theme(axis.text.x = element_text(size = 6, angle = 45, hjust = 1))) + scale_fill_brewer(palette = "Set1") + 
+      scale_y_continuous(labels = scales::percent)
 
 ```
 
@@ -973,7 +973,9 @@ taxi_modified %>%
   gf_props(~ company, fill = ~ tip, position = "fill") %>% 
   gf_labs(title = "Plot 3D: Filled Bar Chart",
           subtitle = "Shows Per group differences in Proportions!") %>% 
-  gf_theme(theme(axis.text.x = element_text(size = 6, angle = 45, hjust = 1))) %>% gf_refine(scale_fill_brewer(palette = "Set1"))
+  gf_theme(theme(axis.text.x = element_text(size = 6, angle = 45, hjust = 1))) %>% 
+  gf_refine(scale_fill_brewer(palette = "Set1"),
+            scale_y_continuous(labels = scales::percent))
 
 ```
 :::
@@ -1000,7 +1002,7 @@ taxi_modified %>%
 ```{r}
 #| label: bar-tip-others-ggformula41
 #| eval: false
-ggplot2::theme_set(new = theme_custom())
+
 
 gf_bar(~ hour, fill = ~ tip, data = taxi_modified) %>%
   gf_labs(title = "Plot 4A: Counts of Tips by Hour") %>% gf_refine(scale_fill_brewer(palette = "Set1"))
@@ -1026,7 +1028,7 @@ gf_bar(~ hour, fill = ~ tip, data = taxi_modified) %>%
 #| label: bar-tip-others-ggformula42
 #| eval: false
 
-ggplot2::theme_set(new = theme_custom())
+
 
 gf_bar(~ dow, fill = ~ tip, data = taxi_modified) %>%
   gf_labs(title = "Plot 4B: Counts of Tips by Day of Week") %>% gf_refine(scale_fill_brewer(palette = "Set1"))
@@ -1052,7 +1054,7 @@ gf_bar(~ dow, fill = ~ tip, data = taxi_modified) %>%
 #| label: bar-tip-others-ggformula43
 #| eval: false
 
-ggplot2::theme_set(new = theme_custom())
+
 
 gf_bar(~ month, fill = ~ tip, data = taxi_modified) %>%
   gf_labs(title = "Plot 4C: Counts of Tips by Month") %>% gf_refine(scale_fill_brewer(palette = "Set1"))
@@ -1078,7 +1080,7 @@ gf_bar(~ month, fill = ~ tip, data = taxi_modified) %>%
 #| label: bar-tip-others-ggformula44
 #| eval: false
 
-ggplot2::theme_set(new = theme_custom())
+
 
 gf_bar(~ month | dow, fill = ~ tip, data = taxi_modified) %>%
   gf_labs(title = "Plot 4D: Counts of Tips by Day of Week and Month") %>% gf_refine(scale_fill_brewer(palette = "Set1"))
@@ -1104,7 +1106,7 @@ gf_bar(~ month | dow, fill = ~ tip, data = taxi_modified) %>%
 #| label: bar-tip-others-ggformula45
 #| eval: false
 
-ggplot2::theme_set(new = theme_custom())
+
 
 ## This may be too busy a graph...
 gf_bar(~ dow | hour, fill = ~ tip, data = taxi_modified) %>%
@@ -1132,7 +1134,7 @@ gf_bar(~ dow | hour, fill = ~ tip, data = taxi_modified) %>%
 #| label: bar-tip-others-ggformula46
 #| eval: false
 
-ggplot2::theme_set(new = theme_custom())
+
 
 ## This is better!
 gf_bar(~ hour | dow, fill = ~ tip, data = taxi_modified) %>%
@@ -1165,7 +1167,7 @@ gf_bar(~ hour | dow, fill = ~ tip, data = taxi_modified) %>%
 #| layout-nrow: 2
 #| code-fold: true
 
-ggplot2::theme_set(new = theme_custom())
+
 
 gf_bar(~ hour, fill = ~ tip, data = taxi_modified) %>%
   gf_labs(title = "Plot 4A: Counts of Tips by Hour") %>% gf_refine(scale_fill_brewer(palette = "Set1"))
@@ -1266,7 +1268,7 @@ gf_bar(~ hour | dow, fill = ~ tip, data = taxi) %>%
 ```{r}
 #| label: props-chart-1
 #| eval: false
-ggplot2::theme_set(new = theme_custom())
+
 
 gf_props(~ substance,
   data = mosaicData::HELPrct, fill = ~ sex,
@@ -1296,7 +1298,7 @@ gf_props(~ substance,
 #| label: props-chart-2
 #| eval: false
 
-ggplot2::theme_set(new = theme_custom())
+
 
 gf_props(~ substance,
   data = mosaicData::HELPrct, fill = ~ sex,
@@ -1326,7 +1328,7 @@ gf_props(~ substance,
 ```{r}
 #| label: percents-chart
 #| eval: false
-ggplot2::theme_set(new = theme_custom())
+
 
 gf_percents(~ substance,
   data = mosaicData::HELPrct, fill = ~ sex,
