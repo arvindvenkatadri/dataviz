@@ -1,0 +1,1907 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Arvind V.">
+
+<title>10-Day Studio Index – The Mad Hatter’s Guide to Data Viz and Stats in R</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./content/materials/icon-park-twotone--concept-sharing.svg" rel="icon" type="image/svg+xml">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-12757e4b7af482b2d9c5bd8860d2b707.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-399a7021ca91a6069b26050344c551bc.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.css" rel="stylesheet">
+<script src="site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
+<link href="site_libs/quarto-contrib/tachyons-4.12.0/tachyons.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+<link rel="stylesheet" href="css/fira.css">
+<link rel="stylesheet" href="css/roboto-condensed.css">
+<link rel="stylesheet" href="css/vollkorn.css">
+<link rel="stylesheet" href="css/fraunces.css">
+<link rel="stylesheet" href="css/styles.css">
+<meta property="og:title" content="10-Day Studio Index – The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta property="og:description" content="Brick by Brick — The Mad Hatter’s Guide">
+<meta property="og:site_name" content="The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta name="twitter:title" content="10-Day Studio Index – The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta name="twitter:description" content="Brick by Brick — The Mad Hatter’s Guide">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">The Mad Hatter’s Guide to Data Viz and Stats in R</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/arvindvenkatadri/dataviz"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/arvind_v"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/arvindvenkatadri"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="mailto:arvind.venkatadri@gmail.com"> <i class="bi bi-envelope" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">10-Day Studio Index</li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./content/materials/images/1book25.jpg" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none">
+      <img src="./content/materials/images/1book25.jpg" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none">
+      </a>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./content/courses/Analytics/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Viz and Stats</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./content/courses/Analytics/05-Tools/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tools</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/05-Tools/10-Intro-to-R/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa-brands:r-project"></iconify-icon> Introduction to R and RStudio</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./content/courses/Analytics/500-DataKits/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Kits</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/500-DataKits/Modules/Healthcare/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa-brands:r-project"></iconify-icon> Healthcare Data Kits</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./content/courses/Analytics/10-Descriptive/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Descriptions</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/10-Descriptive/Modules/05-NatureData/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icon-park-twotone:data-user" width="1.2em" height="1.2em"></iconify-icon> Data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/10-Descriptive/Modules/06-Inspect/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="grommet-icons:inspect" width="1.2em" height="1.2em"></iconify-icon> Inspect Data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/10-Descriptive/Modules/09-Graphs/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="carbon:chart-3d" width="1.2em" height="1.2em"></iconify-icon> Graphs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/10-Descriptive/Modules/10-FavStats/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="carbon:summary-kpi" width="1.2em" height="1.2em"></iconify-icon> Summaries</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/10-Descriptive/Modules/20-Counts/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="eos-icons:counting" width="1.2em" height="1.2em"></iconify-icon> Counts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/10-Descriptive/Modules/22-Quantities/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fluent-mdl2:quantity" width="1.2em" height="1.2em"></iconify-icon> Quantities</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/10-Descriptive/Modules/24-Groups/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="lucide:group" width="1.2em" height="1.2em"></iconify-icon> Groups</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/10-Descriptive/Modules/26-Distributions/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="clarity:bell-curve-line" width="1.2em" height="1.2em"></iconify-icon> Distributions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/10-Descriptive/Modules/28-Violins/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="material-symbols:light-group-rounded" width="1.2em" height="1.2em"></iconify-icon> Groups and Distributions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/10-Descriptive/Modules/30-Change/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icon-park-outline:change" width="1.2em" height="1.2em"></iconify-icon> Change</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/10-Descriptive/Modules/40-CatData/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icon-park-outline:proportional-scaling"></iconify-icon> Proportions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/10-Descriptive/Modules/60-PartWhole/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="ic:round-pie-chart-outline"></iconify-icon> Hierarchy</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/10-Descriptive/Modules/70-EvolutionFlow/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="carbon:sankey-diagram"></iconify-icon> Evolution and Flow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/10-Descriptive/Modules/80-Ranking/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="ph:ranking-bold" width="1.2em" height="1.2em"></iconify-icon> Ratings and Rankings</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/10-Descriptive/Modules/45-SurveyData/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="wpf:survey" width="1.2em" height="1.2em"></iconify-icon> Surveys</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/10-Descriptive/Modules/50-Time/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fluent-mdl2:hour-glass" width="1.2em" height="1.2em"></iconify-icon> Time</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./content/courses/Analytics/10-Descriptive/Modules/90-Space/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Space</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth3 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/95-Intro/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> Introduction to Maps</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/10-Data/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> What is Vector Data?</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/15-Static/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> The Grammar of Maps</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/20-Leaflet/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> Interactive Maps with leaflet</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/10-Descriptive/Modules/100-Networks/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="bx:network-chart" width="1.2em" height="1.2em"></iconify-icon> Networks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/10-Descriptive/Modules/180-RefMat/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="eos-icons:miscellaneous"></iconify-icon> Miscellaneous Graphing Tools, and References</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./content/courses/Analytics/20-Inference/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inference</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/20-Inference/Modules/10-Intro/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Basics of Statistical Inference</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/20-Inference/Modules/20-SampProb/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🎲 Samples, Populations, Statistics, and Inference</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/20-Inference/Modules/60-SimTest/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Basics of Randomization Tests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/20-Inference/Modules/100-OneMean/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inference for a Single Mean</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/20-Inference/Modules/110-TwoMeans/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inference for Two Independent Means</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/20-Inference/Modules/120-PairedMeans/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inference for Comparing Two Paired Means</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/20-Inference/Modules/130-ThreeMeansOrMore/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Comparing Multiple Means with ANOVA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/20-Inference/Modules/150-Correlation/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inference for Correlation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/20-Inference/Modules/180-OneProp/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Testing a Single Proportion</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/20-Inference/Modules/190-TwoProp/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inference Test for Two Proportions</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./content/courses/Analytics/30-Modelling/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modelling</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/30-Modelling/Modules/20-LinReg/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modelling with Linear Regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/30-Modelling/Modules/30-LogReg/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modelling with Logistic Regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/30-Modelling/Modules/50-ModelTimeSeries/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🕔 Modelling and Predicting Time Series</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./content/courses/Analytics/40-Workflow/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Workflow</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/40-Workflow/Modules/200-EDA-Workflow/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="guidance:falling-rocks" width="1.2em" height="1.2em"></iconify-icon><iconify-icon icon="game-icons:falling" width="1.2em" height="1.2em"></iconify-icon> Facing the Abyss</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/40-Workflow/Modules/30-BlogSite/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="entypo:publish" width="1.2rem" height="1.2rem"></iconify-icon> I Publish, therefore I Am</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/40-Workflow/Modules/40-DataShapingCleaning/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="twemoji:carpentry-saw" width="1.2rem" height="1.2rem"></iconify-icon> Data Carpentry</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./content/courses/Analytics/50-Arts/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Arts</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/50-Arts/Modules/10-Colour/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Colours</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/50-Arts/Modules/20-Fonts/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fonts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/50-Arts/Modules/50-Annotations1/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Annotations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/50-Arts/Modules/60-Annotations2/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">More Annotations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/50-Arts/Modules/70-Highlighting/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Highlighting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/50-Arts/Modules/80-Scales/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Scales</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./content/courses/Analytics/60-AI-tools/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">AI Tools</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/60-AI-tools/Modules/10-LLMs/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using gander and ellmer</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/60-AI-tools/Modules/20-Github-Pilot/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using Github Copilot and other AI tools to generate R code</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/60-AI-tools/Modules/30-Explain/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using LLMs to Explain Stat models</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./content/courses/Analytics/70-CaseStudies/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Case Studies</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/70-CaseStudies/Modules/05-Demo/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="healthicons:elderly-outline" width="1.2em" height="1.2em"></iconify-icon> Demo:Product Packaging and Elderly People</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/70-CaseStudies/Modules/10-IkeaFurniture/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="simple-icons:ikea" width="1.2em" height="1.2em"></iconify-icon> Ikea Furniture</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/70-CaseStudies/Modules/20-MovieProfits/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="noto:movie-camera" width="1.2em" height="1.2em"></iconify-icon> Movie Profits</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/70-CaseStudies/Modules/30-GenderWorkplace/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icons8:gender" width="1.2em" height="1.2em"></iconify-icon> Gender at the Work Place</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/70-CaseStudies/Modules/40-Heptathlon/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icon-park-outline:sport" width="1.2em" height="1.2em"></iconify-icon> Heptathlon</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/70-CaseStudies/Modules/60-SchoolScores/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="ic:twotone-school" width="1.2em" height="1.2em"></iconify-icon> School Scores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/70-CaseStudies/Modules/80-ChildrensGames/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa6-solid:children"></iconify-icon> <iconify-icon icon="icon-park-solid:play-basketball"></iconify-icon> Children’s Games</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/70-CaseStudies/Modules/90-ValentinesDay/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="mingcute:hand-heart-line"></iconify-icon> Valentine’s Day Spending</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/70-CaseStudies/Modules/100-WomenLiveMen/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="noto:mage-light-skin-tone"></iconify-icon> Women Live Longer?</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/70-CaseStudies/Modules/110-ChildrenHearingLoss/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa6-solid:ear-deaf"></iconify-icon> <iconify-icon icon="fa-regular:sad-tear"></iconify-icon> Hearing Loss in Children</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/70-CaseStudies/Modules/200-CaliforniaTransitPayments/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="openmoji:california-flag"></iconify-icon> <iconify-icon icon="material-symbols:transit-ticket-outline-sharp"></iconify-icon> California Transit Payments</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/70-CaseStudies/Modules/250-Seaweed/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="iconoir:sea-waves"></iconify-icon> <iconify-icon icon="mdi:weed"></iconify-icon> Seaweed Nutrients</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/70-CaseStudies/Modules/300-Coffee/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa:coffee"></iconify-icon> Coffee Flavours</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/70-CaseStudies/Modules/350-LegionnairesDisease/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa6-solid:disease"></iconify-icon> Legionnaire’s Disease in the USA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/70-CaseStudies/Modules/400-AntarcticSeaIce/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="iconoir:sea-waves"></iconify-icon> <iconify-icon icon="openmoji:floating-ice"></iconify-icon> Antarctic Sea ice</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/70-CaseStudies/Modules/450-CholeraInLondon/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="simple-icons:transportforlondon"></iconify-icon> <iconify-icon icon="hugeicons:water-pump"></iconify-icon> William Farr’s Observations on Cholera in London</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./content/courses/Analytics/1000-Projects/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Projects</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./content/courses/Analytics/1000-Projects/Modules/300-NoFreeHunch/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="game-icons:sherlock-holmes" width="1.2em" height="1.2em"></iconify-icon> No Free Hunch</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#how-to-use-this-page" id="toc-how-to-use-this-page" class="nav-link" data-scroll-target="#how-to-use-this-page"><span class="header-section-number">2</span> How to use this page</a></li>
+  <li><a href="#day-1-what-data-even-is" id="toc-day-1-what-data-even-is" class="nav-link" data-scroll-target="#day-1-what-data-even-is"><span class="header-section-number">3</span> Day 1 — What data even is</a></li>
+  <li><a href="#day-2-look-then-summarise" id="toc-day-2-look-then-summarise" class="nav-link" data-scroll-target="#day-2-look-then-summarise"><span class="header-section-number">4</span> Day 2 — Look, then summarise</a></li>
+  <li><a href="#day-3-groups-amounts-and-compared-to-what" id="toc-day-3-groups-amounts-and-compared-to-what" class="nav-link" data-scroll-target="#day-3-groups-amounts-and-compared-to-what"><span class="header-section-number">5</span> Day 3 — Groups, amounts, and “compared to what?”</a></li>
+  <li><a href="#day-4-shape-change-share" id="toc-day-4-shape-change-share" class="nav-link" data-scroll-target="#day-4-shape-change-share"><span class="header-section-number">6</span> Day 4 — Shape, change, share</a></li>
+  <li><a href="#day-5-artful-stuff-the-creepers" id="toc-day-5-artful-stuff-the-creepers" class="nav-link" data-scroll-target="#day-5-artful-stuff-the-creepers"><span class="header-section-number">7</span> Day 5 — Artful stuff (the creepers)</a></li>
+  <li><a href="#day-6-space-the-city-is-a-drawing" id="toc-day-6-space-the-city-is-a-drawing" class="nav-link" data-scroll-target="#day-6-space-the-city-is-a-drawing"><span class="header-section-number">8</span> Day 6 — Space (the city is a drawing)</a></li>
+  <li><a href="#day-7-no-free-hunch-morning-field-afternoon-claim" id="toc-day-7-no-free-hunch-morning-field-afternoon-claim" class="nav-link" data-scroll-target="#day-7-no-free-hunch-morning-field-afternoon-claim"><span class="header-section-number">9</span> Day 7 — No free hunch (morning field, afternoon claim)</a>
+  <ul class="collapse">
+  <li><a href="#morning-design-the-hunt-bricks" id="toc-morning-design-the-hunt-bricks" class="nav-link" data-scroll-target="#morning-design-the-hunt-bricks"><span class="header-section-number">9.1</span> Morning — design the hunt (bricks)</a></li>
+  <li><a href="#afternoon-the-card-do-not-repeat-anova-at-every-table" id="toc-afternoon-the-card-do-not-repeat-anova-at-every-table" class="nav-link" data-scroll-target="#afternoon-the-card-do-not-repeat-anova-at-every-table"><span class="header-section-number">9.2</span> Afternoon — the card (do not repeat ANOVA at every table)</a></li>
+  </ul></li>
+  <li><a href="#day-8-workflow-as-craft" id="toc-day-8-workflow-as-craft" class="nav-link" data-scroll-target="#day-8-workflow-as-craft"><span class="header-section-number">10</span> Day 8 — Workflow as craft</a></li>
+  <li><a href="#day-9-compose-the-wall" id="toc-day-9-compose-the-wall" class="nav-link" data-scroll-target="#day-9-compose-the-wall"><span class="header-section-number">11</span> Day 9 — Compose the wall</a></li>
+  <li><a href="#day-10-publish-and-stand-behind-it" id="toc-day-10-publish-and-stand-behind-it" class="nav-link" data-scroll-target="#day-10-publish-and-stand-behind-it"><span class="header-section-number">12</span> Day 10 — Publish and stand behind it</a></li>
+  <li><a href="#steal-this-strip" id="toc-steal-this-strip" class="nav-link" data-scroll-target="#steal-this-strip"><span class="header-section-number">13</span> Steal-this strip</a></li>
+  <li><a href="#honest-times-for-space" id="toc-honest-times-for-space" class="nav-link" data-scroll-target="#honest-times-for-space"><span class="header-section-number">14</span> Honest times for Space</a></li>
+  <li><a href="#end-of-studio-checklist-the-wall" id="toc-end-of-studio-checklist-the-wall" class="nav-link" data-scroll-target="#end-of-studio-checklist-the-wall"><span class="header-section-number">15</span> End-of-studio checklist (the wall)</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">10-Day Studio Index</h1>
+<p class="subtitle lead">Brick by Brick — The Mad Hatter’s Guide</p>
+</div>
+
+
+
+<div class="quarto-title-meta column-body">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Arvind V. </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
+<p>This R-based Studio is 10 FULL days of studio work. I intend to use a “Brick by Brick” approach, where a new concept, or a piece of code, are introduced for say 15 minutes max, and the students get to play while I walk around the class to meet them at individual group tables to clarify doubts. Any discovery made by the students is immediately announced and braodcast to all groups. The students use these “bricks” to create their own metaphorical R based Analysis / Viz wall, complete with creepers and Rick-Morty colour palettes, all using RStudio and Quarto + Github and Netlify.</p>
+</section>
+<section id="how-to-use-this-page" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> How to use this page</h1>
+<p>Each <strong>brick</strong> is at most <strong>15 minutes of introduction</strong> from me. Then they play. While I walk the tables.</p>
+<p>A discovery at one table is announced to the room and becomes a brick for everyone.</p>
+<p>By the end of Day 10, each group has one Quarto site on GitHub + Netlify: an analysis / viz wall, with creepers, a palette that is <em>theirs</em>, and at least one claim they can defend.</p>
+<p><strong>Rule of the wall:</strong> a brick that does not appear in <em>their</em> question, <em>their</em> data, or <em>their</em> map does not count.</p>
+<p>My Literary asides and calling them “peasants” stay. They are part of my rhythm.</p>
+<hr>
+</section>
+<section id="day-1-what-data-even-is" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Day 1 — What data even is</h1>
+<p><strong>Wall by evening:</strong> one Quarto page, one dataset they chose or were handed, variables named as Quant / Qual.</p>
+<table class="table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Brick</th>
+<th>15-minute target</th>
+<th>Make</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Tools on the bench</td>
+<td>RStudio + Quarto file opens, one chunk runs, they know ⌘/Ctrl + Enter</td>
+<td>Render <code>hello.qmd</code> with their names as the title</td>
+</tr>
+<tr class="even">
+<td>Sushi groups</td>
+<td>A “characteristic” reorganises the room; they can say what <em>moved</em></td>
+<td>Write 5 lines: what grouped you, what would have grouped you differently</td>
+</tr>
+<tr class="odd">
+<td>Kandinsky nouns</td>
+<td>Concrete vs abstract; which abstracts are measurable</td>
+<td>List 8 abstract nouns from the room; circle the ones that could become variables</td>
+</tr>
+<tr class="even">
+<td>Nature of data</td>
+<td>Experiment vs observation; a row is a case</td>
+<td>On their dataset, point to one row and say what the <em>case</em> is</td>
+</tr>
+<tr class="odd">
+<td>Variable types</td>
+<td>How many / what kind / who → Ratio, Interval, Ordinal, Nominal</td>
+<td>Tag every column in their table as Quant or Qual (and subtype)</td>
+</tr>
+<tr class="even">
+<td>Tidy data</td>
+<td>Column = variable, row = case, cell = value</td>
+<td>Sketch the tidy shape of a messy table from their phones (timetable, expenses, Swiggy)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Steal-this cue:</strong> first peasant who notices that a number (BirthOrder, Year, PIN) is still Qual.</p>
+<hr>
+</section>
+<section id="day-2-look-then-summarise" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Day 2 — Look, then summarise</h1>
+<p><strong>Wall by evening:</strong> two plots + one summary table on the Quarto page. Git repo exists, even if ugly.</p>
+<table class="table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Brick</th>
+<th>15-minute target</th>
+<th>Make</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Inspect</td>
+<td><code>glimpse</code>, <code>head</code>, missingness, “what would I ask this table?”</td>
+<td>Three questions the data <em>could</em> answer; one it cannot</td>
+</tr>
+<tr class="even">
+<td>Grammar of a graph</td>
+<td>Aesthetic ↔︎ variable; geom as metaphor</td>
+<td>Same two variables, two different geoms; say which metaphor is honest</td>
+</tr>
+<tr class="odd">
+<td>First scatter / bar</td>
+<td>One working <code>gf_</code> / <code>ggplot</code> from their data</td>
+<td>Plot that answers <em>one</em> of yesterday’s questions</td>
+</tr>
+<tr class="even">
+<td>Favstats</td>
+<td>Mean, median, sd as <em>descriptions</em>, not verdicts</td>
+<td>One sentence: “typical X is …, but …”</td>
+</tr>
+<tr class="odd">
+<td>Counts</td>
+<td>Tables of Qual variables; a bar that is a count</td>
+<td>A count bar with readable labels, not default <code>Var1</code></td>
+</tr>
+<tr class="even">
+<td>Git born</td>
+<td><code>git init</code> / GitHub repo / first commit</td>
+<td>Push the Quarto page. Broken is allowed.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Steal-this cue:</strong> first group that puts units in the axis title without being told.</p>
+<hr>
+</section>
+<section id="day-3-groups-amounts-and-compared-to-what" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Day 3 — Groups, amounts, and “compared to what?”</h1>
+<p><strong>Wall by evening:</strong> a grouped comparison. Netlify URL live (can be ugly).</p>
+<table class="table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Brick</th>
+<th>15-minute target</th>
+<th>Make</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Quantities</td>
+<td>A number that means amount; a plot that respects scale</td>
+<td>One plot of a Quant vs a Qual they care about</td>
+</tr>
+<tr class="even">
+<td>Groups</td>
+<td>Split-apply-combine as a design move, not a slogan</td>
+<td>Same plot, faceted or filled by a group that changes the story</td>
+</tr>
+<tr class="odd">
+<td>Colour = Qual</td>
+<td>Default qualitative scale; legend that can be read</td>
+<td>Recolour yesterday’s plot by a <em>categorical</em> variable</td>
+</tr>
+<tr class="even">
+<td>Colour = Quant</td>
+<td>Sequential vs diverging; when a midpoint matters</td>
+<td>Recolour the <em>same</em> plot by a continuous variable; caption why the scale type changed</td>
+</tr>
+<tr class="odd">
+<td>Netlify</td>
+<td>Drag-and-drop or Git-connected deploy</td>
+<td>Paste the live URL at the top of the Quarto page</td>
+</tr>
+<tr class="even">
+<td>Caption as claim</td>
+<td>Title + subtitle + caption do rhetorical work</td>
+<td>Rewrite the title so it is a sentence, not a variable name</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Steal-this cue:</strong> first peasant who refuses a rainbow scale on ordered data.</p>
+<hr>
+</section>
+<section id="day-4-shape-change-share" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Day 4 — Shape, change, share</h1>
+<p><strong>Wall by evening:</strong> one distribution, one change-over-time <em>or</em> one part-to-whole. Palette decision written down.</p>
+<table class="table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Brick</th>
+<th>15-minute target</th>
+<th>Make</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Distributions</td>
+<td>Histogram / density / box as different lies</td>
+<td>Two distribution geoms of the same variable; which lie do they prefer and why</td>
+</tr>
+<tr class="even">
+<td>Violins &amp; groups</td>
+<td>Shape <em>and</em> group on one canvas</td>
+<td>A grouped violin or box that would survive a critique</td>
+</tr>
+<tr class="odd">
+<td>Change</td>
+<td>Time is not a category by accident</td>
+<td>One line or area that makes a <em>when</em> visible</td>
+</tr>
+<tr class="even">
+<td>Proportions</td>
+<td>Stack, dodge, waffle, mosaic — pick one on purpose</td>
+<td>A part-to-whole of a Qual they collected or found</td>
+</tr>
+<tr class="odd">
+<td>Surveys</td>
+<td>Likert as ordinal, not a fake mean unless they argue</td>
+<td>One survey-style plot; defend or refuse the mean</td>
+</tr>
+<tr class="even">
+<td>Palette contract</td>
+<td>Name the palette and why it belongs on <em>this</em> wall</td>
+<td>Apply one non-default palette (Wes, Dutch Masters, GoT, Rick &amp; Morty, their own) and write two lines of justification</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Steal-this cue:</strong> first group that annotates a single peak instead of colouring everything.</p>
+<hr>
+</section>
+<section id="day-5-artful-stuff-the-creepers" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Day 5 — Artful stuff (the creepers)</h1>
+<p><strong>Wall by evening:</strong> the page looks designed: type, annotation, highlight, scale. Creepers allowed.</p>
+<table class="table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Brick</th>
+<th>15-minute target</th>
+<th>Make</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Colour with intent</td>
+<td>Brewer / paletteer; qual vs seq vs div again, now as craft</td>
+<td>Swap palette; keep accessibility in the caption (can a colour-blind peasant read this?)</td>
+</tr>
+<tr class="even">
+<td>Fonts in ggplot</td>
+<td>One display face, one text face; <code>showtext</code> if needed</td>
+<td>Title in one family, axis in another — no ransom-note third font</td>
+</tr>
+<tr class="odd">
+<td>Annotate</td>
+<td><code>annotate</code>, labels, a box around the thing that matters</td>
+<td>One sentence <em>on the plot</em>, not only in the Quarto prose</td>
+</tr>
+<tr class="even">
+<td>Highlight</td>
+<td>Grey the field, colour the point of argument</td>
+<td>A “this, not that” version of an earlier chart</td>
+</tr>
+<tr class="odd">
+<td>Scales</td>
+<td>Axis limits, log or not, % and ₹</td>
+<td>Fix one dishonest default scale from Days 2–4</td>
+</tr>
+<tr class="even">
+<td>Patchwork</td>
+<td>Two plots as one argument</td>
+<td>A two-panel figure with a shared title that is the claim</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Steal-this cue:</strong> first peasant who uses annotation instead of a third colour.</p>
+<hr>
+</section>
+<section id="day-6-space-the-city-is-a-drawing" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Day 6 — Space (the city is a drawing)</h1>
+<p><strong>Wall by evening:</strong> one static map and one leaflet of <em>their</em> place. Listing times on the site are a lie; the labs are the quarry.</p>
+<table class="table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Brick</th>
+<th>15-minute target</th>
+<th>Make</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Map as mark</td>
+<td>Choropleth vs cartogram vs symbol — what is the mark doing?</td>
+<td>Point at an example and name the mark</td>
+</tr>
+<tr class="even">
+<td>Bounding box</td>
+<td>Klokan <em>or</em> <code>getbb("…, Bangalore")</code></td>
+<td>A bbox for a place they can walk to</td>
+</tr>
+<tr class="odd">
+<td>OSM tags</td>
+<td>One key–value family (amenity <em>or</em> highway <em>or</em> natural)</td>
+<td>Download <em>one</em> layer; write <code>.gpkg</code>; do not hammer OSM</td>
+</tr>
+<tr class="even">
+<td>Points / lines / polygons</td>
+<td><code>pluck</code> the geometry they actually need</td>
+<td>Plot that one layer; caption the geometry type</td>
+</tr>
+<tr class="odd">
+<td>Grammar of a static map</td>
+<td><code>ggplot</code> + <code>geom_sf</code> <em>or</em> <code>tmap</code> — roads + one more layer</td>
+<td>A dressed static map (no default grey soup)</td>
+</tr>
+<tr class="even">
+<td>Leaflet brick</td>
+<td>Marker vs popup vs label; pixel radius vs metres</td>
+<td>Interactive map with <em>their</em> points and one honest popup</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Optional late brick (only if a table asks):</strong> contours, or Rapid Editor so they add a missing bench to OSM.</p>
+<p><strong>Steal-this cue:</strong> first group that maps something they verified with their feet.</p>
+<hr>
+</section>
+<section id="day-7-no-free-hunch-morning-field-afternoon-claim" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Day 7 — No free hunch (morning field, afternoon claim)</h1>
+<p><strong>Wall by evening:</strong> a written hunch, a sample, a plot, a test that matches the question, a sentence they will stand behind.</p>
+<section id="morning-design-the-hunt-bricks" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="morning-design-the-hunt-bricks"><span class="header-section-number">9.1</span> Morning — design the hunt (bricks)</h2>
+<table class="table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Brick</th>
+<th>15-minute target</th>
+<th>Make</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hunch as a sentence</td>
+<td>Not a vibe. A claim that could be false</td>
+<td>Write the hunch on the wall in one line</td>
+</tr>
+<tr class="even">
+<td>Question type</td>
+<td>Mean difference / several means / proportion / association</td>
+<td>Circle the type; do not pick the test yet</td>
+</tr>
+<tr class="odd">
+<td>Sample</td>
+<td>Who, how many, how they will not cheat the sample</td>
+<td>A 6-line protocol: population, sample, question, recording sheet</td>
+</tr>
+<tr class="even">
+<td>Ethics brick</td>
+<td>Consent, no names on the site, subgroups large enough</td>
+<td>One line in the Quarto: how people were asked</td>
+</tr>
+</tbody>
+</table>
+<p>Then they collect. You walk. You do not lecture.</p>
+</section>
+<section id="afternoon-the-card-do-not-repeat-anova-at-every-table" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="afternoon-the-card-do-not-repeat-anova-at-every-table"><span class="header-section-number">9.2</span> Afternoon — the card (do not repeat ANOVA at every table)</h2>
+<p><strong>Hunch → question type → test</strong></p>
+<table class="table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>If the hunch is…</th>
+<th>Question type</th>
+<th>Reach for</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Group A’s typical value differs from Group B</td>
+<td>Two means</td>
+<td>Two-sample test + a plot of both distributions</td>
+</tr>
+<tr class="even">
+<td>Three or more groups differ (B.Des / B.Voc / B.Cra, three shows, …)</td>
+<td>Several means</td>
+<td>ANOVA + a grouped plot; then “which pairs?” only if they ask</td>
+</tr>
+<tr class="odd">
+<td>More than half of peasants think X</td>
+<td>One proportion</td>
+<td><code>prop.test</code> against 0.5 (or the rate they named)</td>
+</tr>
+<tr class="even">
+<td>Two groups have different <em>rates</em> (Art vs Design, tattoo yes/no by gender)</td>
+<td>Two proportions</td>
+<td><code>prop.test</code> on a 2×2</td>
+</tr>
+<tr class="odd">
+<td>Category vs category (pronouns × college, …)</td>
+<td>Association</td>
+<td>Chi-square + a mosaic or stacked bar</td>
+</tr>
+<tr class="even">
+<td>“Looks bigger” with no group</td>
+<td>Stop</td>
+<td>That is EDA. Do not p-value a vibe</td>
+</tr>
+</tbody>
+</table>
+<table class="table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Brick</th>
+<th>15-minute target</th>
+<th>Make</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Match the card</td>
+<td>They can point at the row of the card that is theirs</td>
+<td>Write “we used ___ because the question was ___”</td>
+</tr>
+<tr class="even">
+<td>Plot before p</td>
+<td>The figure should make the test unsurprising</td>
+<td>The comparison plot <em>above</em> the p-value</td>
+</tr>
+<tr class="odd">
+<td>Uncertainty</td>
+<td>A interval or a plain-language “this could still be noise”</td>
+<td>One sentence that a parent could read</td>
+</tr>
+<tr class="even">
+<td>Broadcast</td>
+<td>First correct <em>mismatch</em> (“wrong test”) is announced</td>
+<td>The mismatch becomes a sticky note on the card</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Steal-this cue:</strong> first peasant who changes the hunch after seeing the sample, and says so.</p>
+<hr>
+</section>
+</section>
+<section id="day-8-workflow-as-craft" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Day 8 — Workflow as craft</h1>
+<p><strong>Wall by evening:</strong> the site has a structure: Welcome, Data, Viz, Claim, Map. Commits that a stranger could follow.</p>
+<table class="table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Brick</th>
+<th>15-minute target</th>
+<th>Make</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Quarto as document</td>
+<td>YAML, sections, <code>embed</code> of figures, one bibliography item</td>
+<td>A contents list that is the wall’s rooms</td>
+</tr>
+<tr class="even">
+<td>Code that can be replayed</td>
+<td>Seed, data path, “run from here” notes (especially OSM)</td>
+<td>A chunk a classmate can run without you</td>
+</tr>
+<tr class="odd">
+<td>Git as history</td>
+<td>Commit messages that say <em>why</em></td>
+<td>Five commits that are not all <code>update</code></td>
+</tr>
+<tr class="even">
+<td>AI as apprentice</td>
+<td>Prompt in English (or Kannada, Tamil, …) for <em>one</em> stuck brick</td>
+<td>Paste the prompt and the chunk they kept; they must understand it</td>
+</tr>
+<tr class="odd">
+<td>Refactor</td>
+<td>Kill one duplicate plot; keep the one that argues</td>
+<td>Before / after in the repo</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Steal-this cue:</strong> first group whose commit message is a claim, not a file name.</p>
+<hr>
+</section>
+<section id="day-9-compose-the-wall" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> Day 9 — Compose the wall</h1>
+<p><strong>No new concept unless a table is stuck.</strong> You introduce a brick only on demand (facets, <code>ggrepel</code>, a better map tile, a pairwise test).</p>
+<table class="table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Brick</th>
+<th>15-minute target</th>
+<th>Make</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>The question, again</td>
+<td>One question at the top of the site</td>
+<td>Delete pages that do not serve it</td>
+</tr>
+<tr class="even">
+<td>Argument order</td>
+<td>Data → see → claim → map or test as needed</td>
+<td>Reorder sections so a critic can walk them</td>
+</tr>
+<tr class="odd">
+<td>Creepers</td>
+<td>Ornament that still points</td>
+<td>One decorative layer that would be missed if removed — or remove it</td>
+</tr>
+<tr class="even">
+<td>Accessibility pass</td>
+<td>Contrast, alt text, colour not the only channel</td>
+<td>A version that works in greyscale <em>or</em> a second encoding</td>
+</tr>
+<tr class="odd">
+<td>Critique brick</td>
+<td>10 minutes per group, claim first, syntax last</td>
+<td>Three notes from another group, one of which they accept</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Steal-this cue:</strong> a palette, annotation, or OSM tag from another table, credited on the page.</p>
+<hr>
+</section>
+<section id="day-10-publish-and-stand-behind-it" class="level1" data-number="12">
+<h1 data-number="12"><span class="header-section-number">12</span> Day 10 — Publish and stand behind it</h1>
+<table class="table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Brick</th>
+<th>15-minute target</th>
+<th>Make</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Netlify final</td>
+<td>Custom name, working links, rendered Quarto</td>
+<td>Live URL on the board</td>
+</tr>
+<tr class="even">
+<td>The 90-second defence</td>
+<td>Hunch or question, what they did, what they will not claim</td>
+<td>Spoken, no slides required</td>
+</tr>
+<tr class="odd">
+<td>Known limits</td>
+<td>Sample, missingness, the test they did <em>not</em> run</td>
+<td>A Limits section of 5–8 lines</td>
+</tr>
+<tr class="even">
+<td>Gift to the next batch</td>
+<td>One steal-this</td>
+<td>A palette snippet, a map tag, or an annotation trick, with their names</td>
+</tr>
+<tr class="odd">
+<td>Close</td>
+<td>What brick they will reuse in a studio that is not this one</td>
+<td>One line in the README</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="steal-this-strip" class="level1" data-number="13">
+<h1 data-number="13"><span class="header-section-number">13</span> Steal-this strip</h1>
+<p><em>(Pin discoveries here as the days happen. Previous batches seed the first row.)</em></p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Day</th>
+<th>Who</th>
+<th>Brick they invented</th>
+<th>Where it lives</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>3</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr class="even">
+<td>7</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="honest-times-for-space" class="level1" data-number="14">
+<h1 data-number="14"><span class="header-section-number">14</span> Honest times for Space</h1>
+<p>The course listing understates the quarry. Use these as <em>studio</em> times, not reading times:</p>
+<table class="table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Page</th>
+<th>What it is</th>
+<th>Studio use</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Space (hub)</td>
+<td>Door, not a lesson</td>
+<td>2 minutes: “we are going in here”</td>
+</tr>
+<tr class="even">
+<td>Introduction to Maps</td>
+<td>Marks: choropleth / cartogram / symbol</td>
+<td>1 brick</td>
+</tr>
+<tr class="odd">
+<td>What is Vector Data?</td>
+<td>Slides + CRS pointers</td>
+<td>1 brick or homework</td>
+</tr>
+<tr class="even">
+<td>The Grammar of Maps</td>
+<td>The quarry</td>
+<td>4–5 bricks across Day 6, not one sitting</td>
+</tr>
+<tr class="odd">
+<td>Interactive Maps with leaflet</td>
+<td>Second quarry</td>
+<td>2 bricks</td>
+</tr>
+<tr class="even">
+<td>Contour Maps</td>
+<td>Optional ledge</td>
+<td>Only if a table walks up to it</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="end-of-studio-checklist-the-wall" class="level1" data-number="15">
+<h1 data-number="15"><span class="header-section-number">15</span> End-of-studio checklist (the wall)</h1>
+<ul class="task-list">
+<li><label><input type="checkbox">Live Netlify site<br>
+</label></li>
+<li><label><input type="checkbox">Named question or hunch<br>
+</label></li>
+<li><label><input type="checkbox">Tidy data documented<br>
+</label></li>
+<li><label><input type="checkbox">At least three plots that argue, one of them annotated<br>
+</label></li>
+<li><label><input type="checkbox">A palette contract<br>
+</label></li>
+<li><label><input type="checkbox">A map of a place they could walk to <strong>or</strong> a clear reason there is no map<br>
+</label></li>
+<li><label><input type="checkbox">A test that matches the card, or an explicit “EDA only”<br>
+</label></li>
+<li><label><input type="checkbox">Limits<br>
+</label></li>
+<li><label><input type="checkbox">One gift in the steal-this strip</label></li>
+</ul>
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/madhatterguide\.netlify\.app");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>License: <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</a></p>
+</div>   
+    <div class="nav-footer-center">
+<p>Website made with ❤️ and <a href="https://quarto.org/">Quarto</a>, by Arvind V.</p>
+</div>
+    <div class="nav-footer-right">
+<p>Hosted by Netlify <a href="https://www.netlify.com"><iconify-icon inline="" icon="simple-icons:netlify" aria-label="Icon netlify from simple-icons Iconify.design set." title="Icon netlify from simple-icons Iconify.design set."></iconify-icon></a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<script src="site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.js" defer="true"></script>
+</body></html>
