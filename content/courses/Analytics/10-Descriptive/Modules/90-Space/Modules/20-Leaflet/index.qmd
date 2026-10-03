@@ -49,6 +49,7 @@ library(osmdata) # Import OSM Vector Data into R
 # pak::pak("datadotworld/data.world-r")
 library(data.world)
 
+
 ```
 
 ```{r}
@@ -404,11 +405,6 @@ available here at
 #| label: getting-tibble-data
 #| 
 
-#library(devtools)
-# devtools::install_github("datadotworld/data.world-r", build_vignettes = TRUE)
-
-library(data.world)
-
 india_airports <-
   read_csv("https://query.data.world/s/ahtyvnm2ybylf65syp4rsb5tulxe6a") %>% 
   slice(-1) %>% # Drop the first row which contains labels
@@ -691,15 +687,11 @@ We will concentrate on using `sf` data into `leaflet`. We may explore
 Let us download College buildings, parks, and the cycling lanes in
 Amsterdam, Netherlands, and plot these in `{leaflet}`.
 
-```{r}
-#| label: data-amsterdam
-#| cache: true
-#| 
-library(osmdata)
-# Option 1
-# Gives too large a bbox
-bbox <- osmdata::getbb("Amsterdam, Netherlands")
-#bbox
+```{{r}}
+# This code is for reference
+# Run these commands ONCE in your Console
+# Or run this chunk manually one time
+# Re-run ONLY if you change your bounding box
 
 # Setting bbox manually is better
 amsterdam_coords <- matrix(c(4.85,4.95,52.325,52.375), 
@@ -708,27 +700,27 @@ amsterdam_coords <- matrix(c(4.85,4.95,52.325,52.375),
                            dimnames = list(c('x','y'),c('min','max')))
 amsterdam_coords
 
-colleges <- amsterdam_coords %>% 
+amst_colleges <- amsterdam_coords %>% 
   osmdata::opq() %>% 
   osmdata::add_osm_feature(key = "amenity",
                            value = "college") %>% 
   osmdata_sf() %>% 
   purrr::pluck("osm_polygons")
 
-parks <- amsterdam_coords %>% 
+amst_parks <- amsterdam_coords %>% 
   osmdata::opq() %>% 
   osmdata::add_osm_feature(key = "landuse", value = "grass") %>% 
   osmdata_sf() %>% 
   purrr::pluck("osm_polygons")
 
-roads <- amsterdam_coords %>% 
+amst_roads <- amsterdam_coords %>% 
   osmdata::opq() %>% 
   osmdata::add_osm_feature(key = "highway",
                            value = "primary") %>% 
   osmdata_sf() %>% 
   purrr::pluck("osm_lines")
 
-cyclelanes <- amsterdam_coords %>% 
+amst_cyclelanes <- amsterdam_coords %>% 
   osmdata::opq() %>% 
   osmdata::add_osm_feature(key = "cycleway")  %>% 
   osmdata_sf() %>% 
@@ -736,20 +728,56 @@ cyclelanes <- amsterdam_coords %>%
 
 ```
 
-We have `r nrow(colleges)` colleges, `r nrow(parks)` parks,
-`r nrow(roads)` roads, and `r nrow(cyclelanes)` cycle lanes in our data.
+Save this data so that we can plot with it without repeatedly downloading it and hitting the OSM data server:
+
+```{{r}}
+# This code is for reference
+# Run these commands ONCE in your Console
+# Or manually run this chunk once
+
+sf::st_write(amst_colleges, dsn = "./gpkg-data/amst_colleges.gpkg", 
+         append = FALSE, quiet = FALSE, driver = "GPKG")
+
+sf::st_write(amst_parks, 
+         dsn = "./gpkg-data/amst_parks.gpkg", 
+         append = FALSE, 
+         quiet = FALSE, driver = "GPKG")
+
+sf::st_write(amst_roads, dsn = "./gpkg-data/amst_roads.gpkg", 
+         append = FALSE,quiet = FALSE)
+
+sf::st_write(amst_cyclelanes, dsn = "./gpkg-data/amst_cycle_lanes.gpkg", 
+         append = FALSE,quiet = FALSE)
+
+```
+
+Let us now read back the saved Data:
+
+```{r}
+#| label: read-saved-gpkg-data
+#| 
+amst_colleges <- sf::st_read("./gpkg-data/amst_colleges.gpkg")
+amst_parks <- sf::st_read("./gpkg-data/amst_parks.gpkg")
+amst_roads <- sf::st_read("./gpkg-data/amst_roads.gpkg")
+amst_cycle_lanes <- sf::st_read("./gpkg-data/amst_cycle_lanes.gpkg")
+
+```
+
+We have `r nrow(amst_colleges)` colleges, `r nrow(amst_parks)` parks,
+`r nrow(amst_roads)` roads, and `r nrow(amst_cycle_lanes)` cycle lanes in our data.
 
 ```{r}
 #| label: fig-amsterdam
 #| fig-cap: Amsterdam Colleges and Cycling Lanes
+#| eval: false
 #| 
 leaflet() %>% 
   addTiles() %>% 
-  addPolygons(data = colleges, color = "yellow", 
-              popup = ~ colleges$name) %>% 
-  addPolygons(data = parks, color = "seagreen", popup = parks$name) %>% 
-  addPolylines(data = roads, color = "red") %>% 
-  addPolylines(data = cyclelanes, color = "purple")
+  addPolygons(data = amst_colleges, color = "yellow", 
+              popup = ~ amst_colleges$name) %>% 
+  addPolygons(data = amst_parks, color = "seagreen", popup = parks$name) %>% 
+  addPolylines(data = amst_roads, color = "red") %>% 
+  addPolylines(data = amst_cycle_lanes, color = "purple")
 
 ```
 
