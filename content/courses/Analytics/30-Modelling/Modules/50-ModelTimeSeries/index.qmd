@@ -1,7 +1,7 @@
 ---
-title: "\U0001F554 Modelling and Predicting Time Series"
+title: "\U0001F554 Time Series"
 date: 19/Nov/2022
-date-modified: "`r Sys.Date()`"
+date-modified: today
 author: Arvind V. 
 order: 50
 abstract: We will look at the basic models for Time Series
@@ -17,6 +17,8 @@ editor:
 ---
 
 ## {{< iconify noto-v1 package >}} Setup the Packages
+
+{{< include /_setup.qmd >}}
 
 ```{r}
 #| label:  setup
@@ -37,7 +39,14 @@ library(prophet)
 
 ```
 
-#### Plot Fonts and Theme
+```{r}
+#| include: false
+knitr::knit_engines$set(nomnoml = function(options) {
+  code <- paste(options$code, collapse = "\n")
+  knitr::knit_print(nomnoml::nomnoml(code))
+})
+```
+
 
 ```{r}
 #| label: plot-theme-ggplot4
@@ -45,6 +54,7 @@ library(prophet)
 #| code-fold: true
 #| messages: false
 #| warning: false
+#| echo: false
 #| 
 library(systemfonts)
 library(showtext)
@@ -269,7 +279,13 @@ library(nomnoml)
 
 ```
 
-```{nomnoml}
+```{r}
+#| echo: false
+#| 
+nomnoml::nomnoml("
+#direction: right
+#.component: fill=#fff7ed stroke=#ea580c
+#.model: fill=#f0fdf4 stroke=#16a34a
 [<start>st]->[<input>input]
 [<input> input]->[<package> Time  Series|Decomposition]
 [<package> Time  Series|Decomposition]->[<component> Mean/Level]
@@ -327,6 +343,7 @@ library(nomnoml)
 
 // Final Output
 [<end> Output]->[<receiver> Forecast]
+")
 
 ```
 
@@ -403,9 +420,98 @@ that model to forecast a few periods into the future.
 
 Mathematically an ARIMA model can be shown as follows:
 
-```{nomnoml}
+```{r}
+#| label: fig-arima-delay-line
+#| fig-cap: "Signal-flow representation of an ARIMA(p, d, q) model with explicit one-step delay blocks, AR and MA weights, and adders."
+#| echo: false
+#| 
+nomnoml::nomnoml("
+#direction: right
+#edges: rounded
+#fontSize: 13
+#lineWidth: 1.8
+#.input: fill=#eef2ff stroke=#4f46e5
+#.delay: fill=#f8fafc stroke=#334155 dashed
+#.weight: fill=#fff7ed stroke=#ea580c
+#.adder: fill=#fefce8 stroke=#ca8a04
+#.noise: fill=#fdf2f8 stroke=#db2777
+#.output: fill=#f0fdf4 stroke=#16a34a
+
+[<input> y_t]
+[<delay> z^-1]
+[<input> y_t-1]
+[<delay> z^-1]
+[<input> y_t-2]
+
+[<noise> ε_t]
+[<delay> z^-1]
+  [<noise> ε_t-1]
+  [<delay> z^-1]
+  [<noise> ε_t-2]
+
+  [<weight> φ1]
+  [<weight> φ2]
+  [<weight> θ1]
+  [<weight> θ2]
+
+  [<adder> Σ AR]
+  [<adder> Σ MA]
+  [<adder> +]
+  [<output> y_t]
+
+  [y_t] -> [z^-1]
+  [z^-1] -> [y_t-1]
+  [y_t-1] -> [z^-1]
+  [z^-1] -> [y_t-2]
+
+  [y_t-1] -> [φ1]
+  [y_t-2] -> [φ2]
+  [φ1] -> [Σ AR]
+  [φ2] -> [Σ AR]
+
+  [ε_t] -> [z^-1]
+  [z^-1] -> [ε_t-1]
+  [ε_t-1] -> [z^-1]
+  [z^-1] -> [ε_t-2]
+
+  [ε_t-1] -> [θ1]
+  [ε_t-2] -> [θ2]
+  [θ1] -> [Σ MA]
+  [θ2] -> [Σ MA]
+
+  [Σ AR] -> [+]
+  [Σ MA] -> [+]
+  [ε_t] -> [+]
+  [+] -> [y_t]
+  ",
+  width = 1000,
+  height = 560
+)
+```
 
 
+```{r}
+#| label: fig-arima
+#| fig-cap: "Structure of an ARIMA(p, d, q) model."
+#| echo: false
+#| eval: false
+#| 
+nomnoml::nomnoml("
+#direction: right
+#.component: fill=#fff7ed stroke=#ea580c
+#.model: fill=#f0fdf4 stroke=#16a34a
+
+[<component> AR(p)\\nPast values]
+[<component> I(d)\\nDifferencing]
+[<component> MA(q)\\nPast errors]
+[<model> ARIMA(p, d, q)]
+[Forecast]
+
+[AR(p)\\nPast values] -> [ARIMA(p, d, q)]
+[I(d)\\nDifferencing] -> [ARIMA(p, d, q)]
+[MA(q)\\nPast errors] -> [ARIMA(p, d, q)]
+[ARIMA(p, d, q)] -> [Forecast]
+")
 ```
 
 We will use the familiar Walmart Sales dataset, and try to predict
