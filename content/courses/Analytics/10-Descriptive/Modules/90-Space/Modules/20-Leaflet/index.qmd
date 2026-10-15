@@ -10,6 +10,9 @@ code-fold: true
 freeze: auto
 bibliography: 
   - grateful-refs.bib
+toc: true
+toc-depth: 2
+
 ---
 
 ## Introduction
@@ -39,15 +42,16 @@ we will work with raster data in `{leaflet}`. (Hah! When??)
 #| code-fold: false
 
 library(tidyverse)
+library(sf)
 library(leaflet)
-library(leaflet.extras)
-library(leaflet.providers)
+library(leaflet.providers) # Base Map tile providers
+library(leaflet.extras) # leaflet frills and thrills
 
 # Data
 library(osmdata) # Import OSM Vector Data into R
 
 # pak::pak("datadotworld/data.world-r")
-library(data.world)
+library(data.world) # For India Airports Data
 
 
 ```
@@ -84,7 +88,132 @@ m
 
 Click on the map to zoom in; Shift+Click to zoom out. `leaflet` by default uses [Open Street
 Map](https://www.openstreetmap.org/ "Click to go to OSM") as its base
-map. We can use other base maps too, as we will see later.
+map. We can use other base maps too, as we will see below.
+
+## Base Map Options
+
+`{{leaflet}}` allows the use of different free map-tile services, using the `addProviderTiles()` function. The list of available providers is available at [Leaflet Providers](https://leaflet-extras.github.io/leaflet-providers/preview/). Here is a table of some providers that can quickly be used without any elaborate setting up of API tokens:
+
+| Provider name         | Style / use                   |
+| --------------------- | ----------------------------- | 
+| addTiles()            | Standard OpenStreetMap        |
+| "OpenStreetMap"       | Standard OpenStreetMap        | 
+| "OpenStreetMap.HOT"   | Humanitarian OSM style        | 
+| "Esri.WorldStreetMap" | Familiar street map           | 
+| "Esri.WorldTopoMap"   | Topographic reference map     | 
+| "Esri.WorldImagery"   | Satellite imagery             | 
+| "Esri.NatGeoWorldMap" | National Geographic-style map | 
+| "OpenTopoMap"         | Detailed topographic map      |
+| "CyclOSM"             | Cycling-oriented OSM style    |
+
+```{r}
+library(leafsync) # For latticeView of all maps here
+# 1. OpenStreetMap --------------------------------------------------------
+
+map_osm <- leaflet() |>
+  setView(lng = 77.5946, lat = 12.9716, zoom = 11) |>
+  addTiles() |>
+  addCircleMarkers(
+    lng = 77.5946,
+    lat = 12.9716,
+    radius = 4,
+    color = "black",
+    fillOpacity = 1,
+    label = "Bangalore centre"
+  )
+
+
+# 2. Esri World Street Map ------------------------------------------------
+
+map_esri_street <- leaflet() |>
+  setView(lng = 77.5946, lat = 12.9716, zoom = 11) |>
+  addProviderTiles("Esri.WorldStreetMap") |>
+  addCircleMarkers(
+    lng = 77.5946,
+    lat = 12.9716,
+    radius = 4,
+    color = "black",
+    fillOpacity = 1,
+    label = "Bangalore centre"
+  )
+
+
+# 3. Esri World Topographic Map -------------------------------------------
+
+map_esri_topo <- leaflet() |>
+  setView(lng = 77.5946, lat = 12.9716, zoom = 11) |>
+  addProviderTiles("Esri.WorldTopoMap") |>
+  addCircleMarkers(
+    lng = 77.5946,
+    lat = 12.9716,
+    radius = 4,
+    color = "black",
+    fillOpacity = 1,
+    label = "Bangalore centre"
+  )
+
+
+# 4. Esri World Imagery ---------------------------------------------------
+
+map_esri_imagery <- leaflet() |>
+  setView(lng = 77.5946, lat = 12.9716, zoom = 11) |>
+  addProviderTiles("Esri.WorldImagery") |>
+  addCircleMarkers(
+    lng = 77.5946,
+    lat = 12.9716,
+    radius = 4,
+    color = "black",
+    fillOpacity = 1,
+    label = "Bangalore centre"
+  )
+
+
+# 5. Esri Gray Canvas -----------------------------------------------------
+
+map_esri_gray <- leaflet() |>
+  setView(lng = 77.5946, lat = 12.9716, zoom = 11) |>
+  addProviderTiles("Esri.WorldGrayCanvas") |>
+  addCircleMarkers(
+    lng = 77.5946,
+    lat = 12.9716,
+    radius = 4,
+    color = "black",
+    fillOpacity = 1,
+    label = "Bangalore centre"
+  )
+
+
+# 6. OpenTopoMap ----------------------------------------------------------
+
+map_opentopo <- leaflet() |>
+  setView(lng = 77.5946, lat = 12.9716, zoom = 11) |>
+  addProviderTiles("OpenTopoMap") |>
+  addCircleMarkers(
+    lng = 77.5946,
+    lat = 12.9716,
+    radius = 4,
+    color = "black",
+    fillOpacity = 1,
+    label = "Bangalore centre"
+  )
+
+
+# Display as small facets --------------------------------------------------
+
+latticeView(
+  map_osm,
+  map_esri_street,
+  map_esri_topo,
+  map_esri_imagery,
+  map_esri_gray,
+  map_opentopo,
+  ncol = 3,
+  sync = "all",
+  sync.cursor = TRUE
+)
+
+```
+
 
 ## Add Shapes to a Map
 
@@ -144,8 +273,7 @@ m %>%
     ## else we will not be able to find where it is, 
     ## since there is no Marker
     
-    options = popupOptions(closeButton = FALSE)
-  ) 
+    options = popupOptions(closeOnClick = FALSE))
 
 ```
 <br>
@@ -177,9 +305,9 @@ m %>%
     lat = 12.972442,
     
     # Here is the Label defn.
-    label = "The birthplace of Rvind",
+    label = "Label Text: The birthplace of Rvind",
     labelOptions = labelOptions(noHide = TRUE, # Label always visible
-                                textOnly = F, 
+                                textOnly = FALSE, # Label bgnd visible
                                 textsize = 20),
     
     # And here is the popup defn.
@@ -314,6 +442,10 @@ fixed.i.e. literal text and numbers. In the following we will also see
 how external geospatial data columns can be used instead of these
 literals.
 
+### Using `mapedit`
+
+One difficulty above would have been the creating of the literal sets of vectors for the shapes of interest. The `{{mapedit}}` package allows us to create these data vectors byclicking on a map and saving it directly as data obejects to be passed to `leaflet`. 
+
 ::: callout-important
 ### The `mapedit` package
 
@@ -326,9 +458,10 @@ object.
 
 ## Using `leaflet` with External Geospatial Data
 
-On to something more complex. We want to plot an external
-**user-defined** set of locations on a `leaflet` map. `leaflet` takes in
-geographical data in many ways and we will explore most of them. We know of course, that external data can be of different geometries: POINT/MULTIPOINT; LINE/MULTILINE; POLYGON/MULTIPOLYGON and so on.
+So far, we plotted some quick shapes and popups on to our maps. On to something more complex. 
+
+We want to plot an external, and perhaps larget set of 
+**user-defined** locations on a `leaflet` map. `leaflet` takes in geographical data in many ways and we will explore most of them. We know of course, that external data can be of **different geometries**: POINT/MULTIPOINT; LINE/MULTILINE; POLYGON/MULTIPOLYGON and so on.
 
 ### POINT Data Sources for `leaflet`
 
@@ -346,10 +479,10 @@ Point data for markers can come from a variety of sources:
     `lon/lng/long/longitude` (case insensitive).\
 -   **Package `sf`**: POINT,`sfc_POINT`, and `sf` objects (from the`sf`
     package); only X and Y dimensions will be considered\
--   **Package `sp`**: SpatialPoints or `SpatialPointsDataFrame` objects
-    (from the `sp` package)\
+-   ~~**Package `sp`**: SpatialPoints or `SpatialPointsDataFrame` objects (from the `sp` package)\ ~~
 
 ::: callout-warning
+
 ### Not using `sp`
 
 We will not consider the use of `sp` related data structures for
@@ -357,11 +490,17 @@ plotting POINTs in `leaflet` since `sp` is being phased out in favour of
 the more modern package `sf`.
 :::
 
+::: {.content-hidden}
+
 #### Points using Two-Column Matrices
 
 We can first quickly try providing `lon` and `lat` info in a two column
-matrix. This can be useful to plot a bunch of points recorded on a mobile
-phone app, for example. 
+matrix. This can be useful to plot a bunch of points recorded on a mobile phone app, for example. 
+
+`leaflet` allows
+the use of [ionicons](http://ionicons.com/),
+[glyphicons](https://icons.getbootstrap.com/#icons), and
+[FontAwesomeIcons](http://fontawesome.io/icons/) as markers on maps. 
 
 ```{r}
 #| label: fig-matrix-point-data
@@ -379,10 +518,12 @@ leaflet(data = mysore5) %>%
   addAwesomeMarkers(icon = awesomeIcons(
   icon = 'music',
   iconColor = 'black',
-  library = 'fa'),
+  library = 'fa'), # FontAwesome Icons. Try "glyphicon" or "ion"
   popup = "Carnatic Music !!")
 
 ```
+:::
+
 
 #### Points using simple Data Frames
 
@@ -449,8 +590,7 @@ leaflet(data = india_airports) %>%
   setView(lat = 18, lng = 77, zoom = 4) %>% 
   
   # Add NatGeo style base map
-  addProviderTiles(providers$Esri.NatGeoWorldMap) %>% # ESRI Basemap
-  
+  addProviderTiles("Esri.WorldTopoMap") %>%
   # Add Markers for each airport
   addCircleMarkers(lng = ~lon, lat = ~lat,
                    # Optional, variables stated for clarity
@@ -466,12 +606,7 @@ leaflet(data = india_airports) %>%
 ```
 
 <br>
-We can also change the icon for each airport. `leaflet` allows
-the use of [ionicons](http://ionicons.com/),
-[glyphicons](https://icons.getbootstrap.com/#icons), and
-[FontAwesomeIcons](http://fontawesome.io/icons/).
-
-Here is the IATA icon: download and save it and make sure this code below has the proper path to this .png file!
+We can also change the icon for each airport. Here is the IATA icon: download and save it and make sure this code below has the proper path to this .png file!
 
 ![IATA Logo](../../images/iata-logo-transp.png){#fig-iata-logo}
 
@@ -507,7 +642,7 @@ iata_icon <- makeIcon(
 # Create the Leaflet map
 leaflet(data = india_airports) %>%
   setView(lat = 18, lng = 77, zoom = 4) %>%
-  addProviderTiles(providers$Esri.NatGeoWorldMap) %>%
+  addProviderTiles("Esri.NatGeoWorldMap") %>%
   addMarkers(
     icon = iata_icon,
     popup = popup
@@ -515,8 +650,7 @@ leaflet(data = india_airports) %>%
 ```
 
 It is possible to create a `list` of icons, so that different Markers
-can have different icons. There are some ideas about this at [Using Leaflet Markers
-\@JLA-Data.net](https://www.jla-data.net/eng/leaflet-markers-in-r/)
+can have different icons. There are some ideas about this at [Using Leaflet Markers\@JLA-Data.net](https://www.jla-data.net/eng/leaflet-markers-in-r/)
 
 
 #### Points using `sf` objects
@@ -530,11 +664,13 @@ The `tmap` package has a data set of all World metro cities, titled
 `metro`. We will plot these on the map and also scale the markers in
 proportion to one of the **feature attributes**, `pop2030`. The `popup`
 will be the name of the metro city. We will also use the
-`CartoDB.Positron` base map.
+`CartoDB.Positron` base map in our map.
 
 Note that the `metro` data set has a POINT geometry, as needed!
 
-```{r,message=FALSE}
+```{r}
+#| message: false
+#| 
 data(metro, package = "tmap")
 metro
 
@@ -542,7 +678,7 @@ leaflet(data = metro) %>%
   setView(lat = 18, lng = 77, zoom = 4) %>% 
   
   # Add CartoDB.Positron
-  addProviderTiles(providers$CartoDB.Positron) %>% # CartoDB Basemap
+  addProviderTiles(providers$Esri.NatGeoWorldMap) %>% # Another Way
   
   # Add Markers for each airport
   addCircleMarkers(radius = ~ sqrt(pop2030)/350,
@@ -561,10 +697,15 @@ say OSM data <https://www.openstreetmap.org/#map=16/12.9766/77.5888>.
 Let us get hold of restaurants data in Malleswaram, Bangalore from OSM
 data:
 
-```{r}
+```{{r}}
 #| label: tbl-malleswaram-restaurant-data
 #| tbl-cap: Malleswaram Restaurants
 #|   
+# This code is for reference
+# Run these commands ONCE in your Console
+# Or run this chunk manually one time
+# Re-run ONLY if you change your bounding box
+
 
 bbox <- osmdata::getbb("Malleswaram, Bengaluru")
 bbox %>% as_tibble() %>% cbind("Coords" = c("Lon", "Lat"))
@@ -579,18 +720,32 @@ locations <-
 
 locations %>% head()
 
+malleswaram_restaurants <- st_write(dsn = "./gpkg-data/malleswaram_restaurants.gpkg", locations, append = FALSE, quiet = FALSE, driver = "GPKG")
+
 ```
 
+Now let us plot these, using `fontawesome`]() icons for the markers. The `awesomeIcons()` function allows us to specify the icon, its colour, and other attributes.
+
+::: callout-note
+## Icons on `leaflet` maps
+`leaflet` allows
+the use of [ionicons](http://ionicons.com/),
+[glyphicons](https://icons.getbootstrap.com/#icons), and
+[FontAwesomeIcons](http://fontawesome.io/icons/) as markers on maps. 
+
+:::
 
 ```{r}
 #| label: fig-mallewaram-restaurant-data
 #| fig-cap: Malleswaram Restaurants
 #| 
 
-leaflet(data = locations, 
+malleswaram_restaurants <- sf::st_read("./gpkg-data/malleswaram_restaurants.gpkg")
+
+leaflet(data = malleswaram_restaurants, 
         options = leafletOptions(minZoom = 12)) %>% 
   
-  addProviderTiles(providers$CartoDB.Voyager) %>% 
+  addProviderTiles(providers$OpenTopoMap) %>% 
   
   # Regular `leaflet` code
   addAwesomeMarkers(icon = awesomeIcons(icon = "fa-coffee", 
@@ -598,8 +753,9 @@ leaflet(data = locations,
                                         markerColor = "blue",
                                         iconColor = "black",
                                         iconRotate = TRUE),
-                     popup = paste("Name: ", locations$name,"<br>",
-                           "Food: ", locations$cuisine)) 
+                     popup = paste("Name: ",
+                                   malleswaram_restaurants$name,"<br>",
+                           "Food: ", malleswaram_restaurants$cuisine)) 
 
 
 ```
@@ -769,17 +925,19 @@ We have `r nrow(amst_colleges)` colleges, `r nrow(amst_parks)` parks,
 ```{r}
 #| label: fig-amsterdam
 #| fig-cap: Amsterdam Colleges and Cycling Lanes
-#| eval: false
 #| 
 leaflet() %>% 
   addTiles() %>% 
   addPolygons(data = amst_colleges, color = "yellow", 
               popup = ~ amst_colleges$name) %>% 
-  addPolygons(data = amst_parks, color = "seagreen", popup = parks$name) %>% 
+  addPolygons(data = amst_parks, color = "seagreen", popup = amst_parks$name) %>% 
   addPolylines(data = amst_roads, color = "red") %>% 
   addPolylines(data = amst_cycle_lanes, color = "purple")
 
 ```
+
+Note how leaflet automatically uses the sf object’s geometry column to draw the lines/multi-lines and polygons. 
+
 
 ## Using Raster Data in `leaflet`\[Work in Progress!\]
 
