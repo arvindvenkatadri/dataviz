@@ -200,8 +200,18 @@ if (!requireNamespace("ggplot2", quietly = TRUE)) {
   install.packages("ggplot2")
 }
 
+if (!requireNamespace("systemfonts", quietly = TRUE)) {
+  install.packages("systemfonts")
+}
+
 library(showtext)
 library(ggplot2)
+library(systemfonts)
+
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+
 
 # Add three Google Fonts
 # Arguments: font family name, Google Font name
@@ -224,42 +234,30 @@ ggplot2::theme_set(
 )
 
 ## Set the ggplot theme
-theme_madhatter <- function(base_size = 10, exhibit = TRUE) {
-  th <- ggplot2::theme_bw(base_size = base_size) +
-    ggplot2::theme(
-      plot.margin = ggplot2::margin(t = 1, r = 2, b = 1, l = 1, unit = "cm"),
-      axis.title = ggplot2::element_text(
-        family = "Roboto Condensed",
-        size = 10
-      ),
-      axis.text = ggplot2::element_text(
-        family = "Roboto Condensed",
-        size = 8
-      ),
-      legend.text = ggplot2::element_text(
-        family = "Roboto Condensed",
-        size = 6
-      ),
-      legend.title = ggplot2::element_text(
-        family = "Alegreya",
-        size = 8
-      ),
-      plot.title = ggplot2::element_text(
-        family = "Alegreya",
-        size = 14,
-        face = "bold"
-      ),
-      plot.title.position = "plot",
-      plot.subtitle = ggplot2::element_text(
-        family = "Alegreya",
-        size = 10
-      ),
-      plot.caption = ggplot2::element_text(
-        family = "Alegreya",
-        size = 6
-      ),
-      plot.caption.position = "plot"
-    )}
+theme_madhatter <- function(){ 
+
+    theme_bw(base_size = 10) + # Base Theme, Black-White
+    
+    theme_sub_axis(title = element_text(family = "Roboto Condensed", 
+                                       size = 8),
+                   text = element_text(family = "Roboto Condensed", 
+                                       size = 6)) + 
+    
+    theme_sub_legend(text = element_text(family = "Roboto Condensed", 
+                                         size = 6),
+                     title = element_text(family = "Alegreya", 
+                                          size = 8)) + 
+    
+    theme_sub_plot(title = element_text(family = "Alegreya", 
+                                        size = 14, face = "bold"),
+                   title.position = "plot",
+                   subtitle = element_text(family = "Montserrat", 
+                                           size = 10),
+                   caption = element_text(family = "Alegreya", 
+                                          size = 6),
+                   caption.position = "plot")
+    
+}
 
 ## Set the theme for all plots
 ggplot2::theme_set(theme_madhatter())
