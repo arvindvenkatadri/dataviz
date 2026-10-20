@@ -1,0 +1,98 @@
+```{r}
+#| label: wall-setup
+#| include: false
+#|
+
+# Install/load packages if needed
+if (!requireNamespace("showtext", quietly = TRUE)) {
+  install.packages("showtext")
+}
+if (!requireNamespace("ggplot2", quietly = TRUE)) {
+  install.packages("ggplot2")
+}
+
+if (!requireNamespace("systemfonts", quietly = TRUE)) {
+  install.packages("systemfonts")
+}
+
+library(showtext)
+library(ggplot2)
+library(systemfonts)
+
+## Clean the slate
+systemfonts::clear_local_fonts()
+systemfonts::clear_registry()
+
+
+# Add three Google Fonts
+# Arguments: font family name, Google Font name
+font_add_google("Roboto Condensed", "Roboto Condensed")
+font_add_google("Lato", "Lato")
+font_add_google("Alegreya", "Alegreya")
+font_add_google("Montserrat", "Montserrat")
+font_add_google("Tangerine", "Tangerine")
+
+
+# Tell R to use showtext for all subsequent plots
+showtext_auto()
+
+# Optional: set DPI for raster devices (adjust if you need high-res PNGs)
+showtext_opts(dpi = 300)
+
+# Set a site-wide ggplot theme using the loaded fonts
+ggplot2::theme_set(
+  ggplot2::theme_bw(
+    base_size = 14,
+    base_family = "Roboto Condensed"
+  )
+)
+
+## Set the ggplot theme
+theme_madhatter <- function(){ 
+
+    theme_bw(base_size = 10) + # Base Theme, Black-White
+    
+    theme_sub_axis(title = element_text(family = "Roboto Condensed", 
+                                       size = 8),
+                   text = element_text(family = "Roboto Condensed", 
+                                       size = 6)) + 
+    
+    theme_sub_legend(text = element_text(family = "Roboto Condensed", 
+                                         size = 6),
+                     title = element_text(family = "Alegreya", 
+                                          size = 10)) + 
+    
+    theme_sub_plot(title = element_text(family = "Alegreya", 
+                                        size = 14, face = "bold"),
+                   title.position = "plot",
+                   subtitle = element_text(family = "Montserrat", 
+                                           size = 10),
+                   caption = element_text(family = "Alegreya", 
+                                          size = 6),
+                   caption.position = "plot")
+    
+}
+
+## Set the theme for all plots
+ggplot2::theme_set(theme_madhatter())
+
+## Update the fonts for geoms as well!
+## Use available fonts in ggplot label and text within the ggplot geoms 
+ggplot2::update_geom_defaults(geom = "text", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 8/ggplot2::.pt, # Converting 8 points to "mm" default
+  color = "#2b2b2b"
+)
+)
+ggplot2::update_geom_defaults(geom = "label", new = list(
+  family = "Roboto Condensed",
+  face = "plain",
+  size = 8/ggplot2::.pt, # Converting 8 points to "mm" default
+  color = "#2b2b2b"
+)
+)
+
+
+```
+

@@ -347,14 +347,34 @@ penguins %>% drop_na() %>%
 
 We see that the ggplot theme uses the basic fonts from the `theme_grey()`, ***the default theme in `ggplot`***. And here below, is the same chart achieved with our new theme, which was set using the `_setup.qmd()` from above. This is from the [Project Peasants Website](https://project-peasants.netlify.app/classwork/day1/index.html) which uses the `_setup.qmd` file to set the fonts for all plots on the website.)
 
-{{< include /_setup.qmd >}}
+{{< include /_wallsetup.qmd >}}
 
 ```{r}
 #| label: fig-themed-ggplot
 #| fig-cap: "Plot themed with _setup.qmd"
-#| echo: false
+#| code-fold: true
 
-knitr::include_graphics("https://project-peasants.netlify.app/classwork/day1/index_files/figure-html/unnamed-chunk-2-1.png")
+## No change in the code compared to previous chunk!
+## Just stated `{{< include _setup.qmd >}} just before this chunk. 
+
+penguins %>% drop_na() %>% 
+  gf_point(body_mass ~ flipper_len, colour = ~ species, size = 2) %>% 
+  gf_labs(title = "My Penguin Plot", x = "Flipper Length", y = "Body Mass (gms)") %>% 
+  gf_refine(annotate(geom = "text", label = "Important\n Points", x = 220, y = 3500),
+            annotate(geom = "rect", xmin = 200, xmax = 210, ymin = 3000, ymax = 5700, alpha = .2),
+            annotate('curve',x = 220, y = 3200,yend = 3000,xend = 205,
+    linewidth = 1, curvature = -0.5, arrow = arrow(length = unit(0.5, 'cm')))) %>%
+  
+  ## Labels and Title
+  gf_labs(
+    title = 'Bill Dimensions of Brush-Tailed Penguins (Pygoscelis)',
+    subtitle = 'A scatter plot of bill depth versus bill length.',
+    caption = 'Data: Gorman, Williams & Fraser (2014) PLoS ONE',
+    x = 'Bill Length (mm)', 
+    y = 'Bill Depth (mm)',
+    color = 'Body mass (g)'
+  )
+
 ```
 
 ## Wait, but Why?
@@ -384,10 +404,11 @@ Let's assume we have gone off to [Google Fonts](https://fonts.google.com/) and d
 
 These font files are placed at `<project root>/fonts/`, i.e. a `fonts` folder at the root our our project. 
 
-A code chunk to add these fonts to our R session as follows, using the `{{here}}` package: this code chunk can of course be pasted into the `_setup.qmd` as before, which can be invoked in each Quarto also as before. 
+A code chunk to add these fonts to our R session as follows, using the `{{here}}` package to take in the ***file paths to your local font files***: this code chunk can of course be pasted into the `_setup.qmd` as before, which can be invoked in each Quarto also as before. 
 
 ```{{r}}
 #| label: add-local-fonts
+#| include: false
 
 
 ## Clean the slate
@@ -396,7 +417,7 @@ systemfonts::clear_registry()
 ##
 showtext_opts(dpi = 96) # set DPI for showtext
 
-# First Add the Fonts
+# First Add the Fonts (Downloaded Already!)
 sysfonts::font_add(
   family = "Alegreya",
   regular = here::here("fonts", "Alegreya-Regular.ttf"),
@@ -444,7 +465,7 @@ A couple of things worth knowing about the `{here}` package in R:
 
 - `here::here("fonts", "Alegreya-Regular.ttf")` **builds a path from your project root** (wherever here finds a `.Rproj`, `.here` file, or `.git` folder), not from the current script's location. So the fonts folder should just be `<project root>/fonts/`.
 - If your fonts folder isn't actually at the project root, adjust the first argument(s) accordingly, e.g. `here::here("assets", "fonts", "Alegreya-Regular.ttf")` if it's nested under `assets/` for example.
-- If you don't already have a .here marker or RStudio project file at the root you want here to anchor to, run `here::set_here()` once from that directory, or just open the project as an RStudio Project (.Rproj), which `{here}` will detect automatically.
+- If you don't already have a `.here` marker or RStudio project file at the `root` you want here to anchor to, run `here::set_here()` once from that directory, or just open the project as an RStudio Project (.Rproj), which `{here}` will detect automatically.
 
 
 

@@ -1,0 +1,322 @@
+---
+title: "Font Effects in Charts"
+subtitle: "Bold, Italic, and Beautiful"
+date: 2025/Oct/20
+date-modified: today
+order: 30
+bibliography: 
+  - grateful-refs.bib
+fig-align: center
+
+---
+
+## {{< iconify noto-v1 package >}} Setting up R Packages
+
+```{r}
+#| label: setup
+#| echo: true
+#| message: false
+#| warning: false
+#| 
+library(tidyverse)   
+library(ggformula)
+library(sysfonts)    ## use custom fonts (need to be installed on your OS)  
+library(systemfonts) # Thomas Pederson's recent font management package
+library(showtext)    ## add google fonts to plots
+library(ggtext)      ## add improved text rendering to ggplot2
+##
+library(ggrepel)     ## Text-repelled labels
+library(marquee)     ## Annotations with fonts in ggplot
+
+```
+
+## Introduction
+
+We have used a `_setup.qmd` at our Project `root` to enable ggplot/ggformula themes, with fonts. 
+
+We are now ready to use `markdown` effects in ggplot titles, text, and other places. We will use the `{{ggtext}}` package by Claus Wilke to achieve these effects, and `{{marqee}}` package by Thomas Lin Pedersen. 
+
+#### Data
+
+We will work with a **familiar** dataset, so that we can concentrate on the chart aesthetics, without having to spend time getting used to the data: the `penguins` dataset again, now part of the R installation!
+
+```{r}
+#| label: tbl-read-penguins-data
+#| tbl-cap: "Penguins Dataset"
+#| message: false
+#| echo: false
+#| 
+data(penguins, package = "datasets")
+penguins <- penguins %>% drop_na() # remove data containing missing data
+
+## Create a nicely formatted table
+## uses `kableExtra` package
+## 
+penguins %>% 
+  kableExtra::kbl(caption = "Penguins Dataset") %>%
+  kableExtra::kable_paper(full_width = FALSE,
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    position = "center") %>%
+  kableExtra::scroll_box(height = "350px")
+
+```
+#### Basic Plot
+
+{{< include /_wallsetup.qmd >}}
+
+A basic scatter plot first, which we will decorate with font **effects**: ( We will use our `_setup.qmd` right from the outset here. )
+
+```{r}
+#| label: fig-basic-scatter-plot
+#| fig.cap: "Vanilla Scatter plot with _setup.qmd"
+#| code-fold: true
+#| 
+
+p1 <- penguins %>% drop_na() %>% 
+  gf_point(body_mass ~ flipper_len, colour = ~ species, size = 2) %>% 
+  gf_labs(title = "My Penguin Plot", x = "Flipper Length", y = "Body Mass (gms)") %>% 
+  gf_refine(annotate(geom = "text", label = "Important\n Points", x = 220, y = 3500),
+            annotate(geom = "rect", xmin = 200, xmax = 210, ymin = 3000, ymax = 5700, alpha = .2),
+            annotate('curve',x = 220, y = 3200,yend = 3000,xend = 205,
+    linewidth = 1, curvature = -0.5, arrow = arrow(length = unit(0.5, 'cm')))) %>%
+  
+  ## Labels and Title
+  gf_labs(
+    title = 'Weight vs Flipper Dimensions of Brush-Tailed Penguins (Pygoscelis)',
+    subtitle = 'A scatter plot of Body Mass versus Flipper length.',
+    caption = 'Data: Gorman, Williams & Fraser (2014) PLoS ONE',
+    x = 'Flipper Length (mm)',
+    y = 'Body Mass (gm)', 
+    color = 'Species'
+  )
+
+p1
+```
+
+## Using `{ggtext}`
+
+From [Claus Wilke's website](https://wilkelab.org/ggtext/) → www.wilkelab.org/ggtext
+
+> The `ggtext` package provides simple Markdown and HTML rendering for ggplot2. Under the hood, the package uses the `gridtext` package for the actual rendering, and consequently it is limited to the feature set provided by `gridtext`.  
+Support is provided for Markdown both in theme elements (plot titles, subtitles, captions, axis labels, legends, etc.) and in geoms (similar to `geom_text()`). In both cases, there are two alternatives, one for creating simple text labels and one for creating text boxes with word wrapping.
+
+::: callout-important
+### `{{gridtext}}` package issues
+NOTE: on some machines, the ggtext package may not work as expected. In this case, please do as follows, using your Console:
+
+- remove gridtext: `remove.packages(gridtext)`.   
+- Install development version of `gridtext`: `remotes::install_github("wilkelab/gridtext")`
+:::
+
+### `element_markdown()`
+
+We can use our familiar markdown syntax right inside the titles and captions of the plot. `element_markdown()` is a theming command made available by the `ggtext` package. 
+
+`element_markdown()` → formatted text elements, e.g. titles, caption, axis text, striptext
+
+```{r}
+#| label: fig-ggtext-element-markdown-1
+#| fig-cap: "Markdown usage in ggplot2 titles and labels"
+#| code-fold: true
+
+p2 <- p1 |>  
+  
+  ## New code starts here: Two Step Procedure with ggtext
+  ## 1. Markdown formatting of labels and title, using asterisks
+  gf_labs(
+    title = 'Weight vs Flipper Dimensions of Brush-Tailed Penguins (*Pygoscelis*)',
+    subtitle = 'A scatter plot of Body Mass versus Flipper length.',
+    caption = 'Data: Gorman, Williams & Fraser (2014) *PLoS ONE*',
+    x = '**Flipper Length** (mm)', 
+    y = '**Body Mass** (gm)',
+    color = 'Species'
+  ) |> 
+   
+  ## 2. Add theme related commands from ggtext
+  ## render respective text elements
+  gf_refine(theme(
+    plot.title = ggtext::element_markdown(),
+    plot.caption = ggtext::element_markdown(),
+    axis.title.x = ggtext::element_markdown(),
+    axis.title.y = ggtext::element_markdown(),
+    legend.title = ggtext::element_markdown(face = "bold") # Works
+  ))
+
+p2
+
+```
+
+### `element_markdown()` in combination with HTML
+
+This allows us to change fonts and font-effects in titles, labels, and captions:
+
+
+```{r}
+#| label: fig-ggtext-element-markdown-2
+#| code-fold: true
+#| fig-cap: "HTML usage in ggplot2 titles and labels"
+#| 
+## use HTML syntax to change text color
+p2 |> 
+  gf_labs(title = 'Bill Dimensions of Brush-Tailed Penguins <i style="color:#28A87D;">Pygoscelis</i>') |> 
+  gf_theme(
+    plot.title = ggtext::element_markdown(),
+    plot.caption = ggtext::element_markdown(),
+    axis.title.x = ggtext::element_markdown(),
+    axis.title.y = ggtext::element_markdown(),
+    plot.margin = margin(t = 10, r = 10, b = 10, l = 10)) #trbl
+
+```
+
+```{r}
+#| label: fig-ggtext-element-markdown-3
+#| code-fold: true
+#| fig-cap: "HTML usage in ggplot2 titles and labels"
+#| 
+## use HTML syntax to change font and text size
+## 
+p2 |> 
+ gf_labs(title = 'Bill Dimensions of Brush-Tailed Penguins <b style="font-size:32pt;font-family:Tangerine;color:#28A87D;">Pygoscelis</b>') |> gf_theme(
+    plot.title = ggtext::element_textbox_simple(
+      fill = "yellow",
+      padding = margin(4, 2, 4, 2, "pt"), #trbl
+      halign = 0
+      ),
+    plot.caption = ggtext::element_markdown(),
+    axis.title.x = ggtext::element_markdown(),
+    axis.title.y = ggtext::element_markdown(),
+    plot.margin = margin(t = 10, r = 10, b = 10, l = 10)) #trbl
+
+```
+
+
+
+## Using `{{marquee}}`
+
+`{{marquee}}` is stated to be a future-proof, full-Markdown supporting too for font effects in ggplot and text. It sets up the use of ( at least ) three very useful functions:
+
+- `geom_marquee()` and `geom_marquee_repel()`: a ggplot geometry for text effects;
+
+> It supersedes both `geom_text()` and `geom_label()` in its capabilities, and even if you don’t need to plot rich text, the styling of `geom_marquee()` is much more capable.
+
+- `element_marquee()`: much like what we saw with `{{ggtext}}` `(element_marquee(
+  family = NULL,
+  colour = NULL,
+  size = NULL,
+  hjust = NULL,
+  vjust = NULL,
+  angle = NULL,
+  lineheight = NULL,
+  color = NULL,
+  margin = NULL,
+  style = NULL,
+  width = NULL,
+  inherit.blank = FALSE
+))`
+
+- `marquee_grob()`: which allows us to create an aribitrary `grob` (*graphical object*) with rich text, which can be used in any ggplot2 annotation.
+
+
+Let us try a few examples to see its capabilities. For full understanding, head off the to the `{{marquee}}` reference webpage. We will once again decorate our original *vanilla plots* with `{{marquee}}` elements.
+
+
+< TO BE WRITTEN UP>
+
+
+::: {.content-hidden}
+
+
+```{r}
+#| label: fig-decorating-with-marquee-2
+#| code-fold: true
+#| fig-cap: "Flexing with the marquee package"
+
+penguins |> drop_na() |> ggplot() + 
+  geom_point(aes(y = body_mass, x= flipper_len, colour = species), size = 2, alpha = 0.3) +  
+  
+  geom_marquee(x = 220, y = 6000, color = "black", label = "Fat Guys",
+                  size = 4,
+                  size.unit = "mm", family = "Roboto Condensed") +
+  
+  ## Plotting Big guys again
+  geom_point(data = penguins |> 
+                    group_by(species) |> 
+                    dplyr::top_n(1,wt = body_mass), 
+             aes(y = body_mass, x= flipper_len, fill = species), 
+             shape = 21, colour = "black",
+             size = 4) + 
+  ## Labels
+  labs(
+    title = "{.magenta **Heavier**} penguins tend to have {.red **larger**} flippers!",
+    subtitle = "Within their respective {.dodgerblue **species**}",
+    x = "{.red **Flipper Length** (mm)}",
+    y = "{.magenta **Body Mass** (gms)}",
+    caption = "What a weird plot, Arvind.."
+  ) +
+  ## Scale for more confusion
+  scale_fill_brewer(palette = "Accent") + 
+
+  ## Theme
+  theme(
+    plot.title = element_marquee(family = "Alegreya", colour = "magenta"),
+    plot.subtitle = element_marquee(),
+    axis.title.x = element_marquee(),
+    axis.title.y = element_marquee(),
+    legend.title = element_marquee(colour = "dodgerblue")
+  )
+
+```
+
+```{r}
+p1 + 
+  theme(plot.title = element_marquee())
+```
+
+:::
+
+
+
+## Wait, but Why?
+
+- Using appropriate fonts in our plots can make them more readable and visually appealing.
+- Font Effects may be useful to draw attention to very specific parts of a complex plot. 
+
+
+## Conclusions
+
+In this module, we have learned how to use custom fonts in our ggplot2 plots using the `showtext` package.
+
+
+## References
+
+1. Thomas Lin Pedersen. <https://www.tidyverse.org/blog/2025/05/fonts-in-r/>
+1. The `marquee` package in R. <https://marquee.r-lib.org/>
+1. John MacFarlane. *The CommonMark Markdown Spec.* <https://spec.commonmark.org/0.31.2/>
+1. Winston Chang. *R Cookbook* (2nd Edition). O'Reilly Media, 2019. <http://www.cookbook-r.com/Graphs/Fonts/>
+
+::: {#refs style="font-size: 60%;"}
+###### {{< iconify lucide package-check >}} R Package Citations
+
+```{r}
+#| echo: false
+library(grateful)
+#scan_packages()
+cite_packages(
+  output = "table",
+  out.dir = ".",
+  out.format = "html",
+  pkgs = c("sysfonts", "showtext", "marquee")
+) %>%
+  knitr::kable(format = "simple")
+
+```
+:::
+
+
+::: callout-note
+
+### New Package `systemfonts`
+There is also a more recent, and comprehensive package called `systemfonts` We will postpone this for a later presentation (mainly because I am still figuring it out. `r emoji::emoji("sweat_smile")` )
+
+:::
+
