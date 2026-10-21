@@ -65,7 +65,7 @@ gss_wages
 
 ```
 
-## Basic Plot
+### Basic Plots
 
 Let us create a basic scatter plot of `realrinc` vs `year` and colour by `gender`, and another boxplot of `realrinc` by `gender`:
 
@@ -77,6 +77,8 @@ Let us create a basic scatter plot of `realrinc` vs `year` and colour by `gender
 #| - "Scatter Plot"
 #| - "Box Plot"
 #| layout-ncol: 2
+#| code-fold: true
+#| 
 
 
 p1 <- gf_point(data = gss_wages, realrinc ~ year, 
@@ -97,42 +99,54 @@ p2
 
 ```
 
-Let us now change the y-axis to show income in thousands of dollars. We will use the `scales` package for this.
+Note the somewhat unwieldy y-axes in the plots! Let us now change the y-axis to show income in thousands of dollars. We will use the `scales` package for this.
 
 ```{r}
-#| label: fig-dollar-scale
+#| label: fig-dollar-scale-1
 #| fig-cap: "Dollar Scale with Automatic Breaks"
 #| fig-subcap: 
 #| - "Scatter Plot"
 #| - "Box Plot"
 #| layout-ncol: 2
+#| code-fold: true
 #| 
 p1 %>% 
-  gf_refine(scale_y_continuous(labels = scales::label_currency(scale = 0.001, suffix = "K")))
+  gf_refine(scale_y_continuous(labels = scales::label_currency(scale = 0.001, suffix = "K"))) |> 
+  gf_labs(subtitle = "Note Dollar Currency Scale on y-axis")
+
 
 
 p2 %>% 
-  gf_refine(scale_y_continuous(labels = scales::label_currency(scale = 0.001, suffix = "K")))
+  gf_refine(scale_y_continuous(labels = scales::label_currency(scale = 0.001, suffix = "K"))) |> 
+  gf_labs(subtitle = "Note Dollar Currency Scale on y-axis")
+
 
 ```
+
 The `scale` function `label_currency` has several arguments that can be used to customize the display of currency values. Here we have used `scale = 0.001` to convert the values to thousands and `suffix = "K"` to add a "K" suffix to the labels.
 
-We may yet be dissatisfied with this plot and wish to change the y-axis to a logarithmic scale. This is useful when the data spans several orders of magnitude, as is often the case with income data. We will also, for demonstration purposes, setup an excessively detailed y-scale with far too many breaks!!
+[Note that the y-axis scale is `linear`!!]{style="background-color:yellow;"} We may yet be dissatisfied with this plot and wish to change the y-axis to a `logarithmic scale.` This is useful when the data spans several orders of magnitude, as is often the case with man-made variables such as income data. We will also, for demonstration purposes, setup an excessively detailed y-scale with far too many breaks and remedy that in the other plot!!
 
 ```{r}
 #| label: fig-log-scale
-#| fig-cap: "Logarithmic Scale with (Excessively ) Detailed Breaks"
+#| fig-cap: "Logarithmic Dollar Scale with (Excessively ) Detailed Breaks"
 #| fig-subcap: 
-#| - "Scatter Plot"
-#| - "Box Plot"
+#| - "Scatter Plot (Excessive Breaks)"
+#| - "Box Plot (Fewer Breaks )"
 #| layout-ncol: 2
 
-p1 %>% 
-  gf_refine(scale_y_log10(labels = scales::label_currency(scale = 0.001, 
-                                                          suffix = "K"),
-            breaks = scales::breaks_log(n = 20, base = 10)))
-p2 %>% 
-  gf_refine(scale_y_log10(labels = scales::label_currency(scale = 0.001, suffix = "K"), breaks = scales::breaks_log(n = 20, base = 10)))
+p1 %>%
+  gf_refine(scale_y_log10(
+    labels = scales::label_currency(scale = 0.001, suffix = "K"),
+    breaks = scales::breaks_log(n = 20, base = 10)
+  )) |> 
+  gf_labs(subtitle = "Note Log Scale on y-axis")
+p2 %>%
+  gf_refine(scale_y_log10(
+    labels = scales::label_currency(scale = 0.001, suffix = "K", ),
+    breaks = scales::breaks_log(n = 5, base = 10)
+  )) |> 
+  gf_labs(subtitle = "Note Log Scale on y-axis")
 
 ```
 
@@ -153,7 +167,7 @@ gapminder
 There are several variables, most of them "man-made", which tend to vary over several orders of magnitude. Let us see how we can depict those. 
 
 ```{r}
-#| label: fig-gapminder-base-plot
+#| label: fig-gapminder-base-plot-1
 #| fig-cap: "Basic Gapminder Plot"
 #| fig-subcap:
 #| - "Scatter Plot"
@@ -175,8 +189,108 @@ p2 <- gf_boxplot(data = gapminder, gdpPercap ~ continent,
 p2
 
 ```
+Let us convert the y-axis to show a scale in USD. 
 
-Bas? Itna hi?
+```{r}
+#| label: fig-dollar-scale-2
+#| fig-cap: "Dollar Scale with Automatic Breaks"
+#| code-fold: true
+#| fig-subcap: 
+#| - "Scatter Plot"
+#| - "Box Plot"
+#| layout-ncol: 2
+#| 
+p1 %>% 
+  gf_refine(scale_y_continuous(labels = scales::label_currency(scale = 0.001, suffix = "K"))) |> 
+  gf_labs(subtitle = "Note Dollar Currency Scale on y-axis")
+
+
+p2 %>% 
+  gf_refine(scale_y_continuous(labels = scales::label_currency(scale = 0.001, suffix = "K"))) |> 
+  gf_labs(subtitle = "Note Dollar Currency Scale on y-axis")
+
+
+```
+Note that the Y-axis is still linear here. No transformation applied!
+
+And population?
+
+```{r}
+#| label: fig-gapminder-base-plot-2
+#| fig-cap: "Basic Gapminder Plot"
+#| code-fold: true
+#| layout-ncol: 2
+#| fig-subcap:
+#| - "Scatter Plot"
+#| - "Box Plot"
+
+p1 <- gf_point(data = gapminder, pop ~ year, 
+              color = ~ continent, 
+              alpha = 0.8, size = 1) %>% 
+  
+  gf_labs(y = "Population", x = "Year", 
+          title = "Gapminder Dataset") %>% 
+
+  gf_refine(scale_color_brewer(palette = "Set1"))
+p1
+#####
+p2 <- gf_boxplot(data = gapminder, pop ~ continent, 
+              color = ~continent, fill = ~ continent, 
+              alpha = 0.8, orientation = "x") %>% 
+  
+  gf_labs(y = "Population", x = "Continent", 
+          title = "Gapminder Dataset") %>% 
+
+  gf_refine(scale_color_brewer(palette = "Set1"))
+
+p2
+
+```
+
+Hmmm....can we plot the y-axis in **multiples**? Like, 1X, 2X.....10X....100X? We wish to implement scales for data that have [geometric progression](https://mathematics.laerd.com/maths/geometric-progression-intro.php), where the variable of interest spans several **multiples**, i.e. $\frac{max_y}{min_y} \gg 1000$. for example.
+
+```{r}
+#| label: fig-geometric-scale
+#| fig-cap: "Ratiometric Scale"
+#| code-fold: true
+#| fig-subcap: 
+#| - "Scatter Plot"
+#| - "Box Plot"
+#| layout-ncol: 2
+#|
+unit <- 1e7  # 1X = 10 million
+
+p1 %>% 
+  gf_refine(
+    scale_x_continuous(breaks = seq(1950, 2010, 10)),
+    scale_y_continuous(
+  name   = "Population (X = 10 million)",
+  transform = "log10",
+  breaks = c(0.1, 0.5, 1, 5, 10, 50, 100) * unit,
+  labels = scales::label_number(scale = 1 / unit, 
+                                suffix = "X"),
+  expand = expansion(mult = c(0.25, 0.25)))) |> 
+  gf_labs(subtitle = "Note the log scale on the y-axis")
+
+p2 %>% 
+  gf_refine(
+  scale_y_continuous(
+  name   = "Population (X = 10 million)",
+  transform = "log10",
+  breaks = c(0.1, 0.5, 1, 5, 10, 50, 100) * unit,
+  labels = scales::label_number(scale = 1 / unit, 
+                                suffix = "X"),
+  expand = expansion(mult = c(0.25, 0.25)))) |> 
+  gf_labs(subtitle = "Note the log scale on the y-axis")
+
+
+```
+
+Try commenting our the `transform = "log10"` in the code above and see how the graphs change!
+
+
+For a complex use of the `{{scales}}` package, [where we use **more than one y-axis**]{style="background-color:yellow;"}, head off to this Case Study: [Legionnaire’s Disease in the USA](../../../70-CaseStudies/Modules/350-LegionnairesDisease/). Try to understand the code there and replicate!!
+
 
 ## References
 
@@ -193,7 +307,7 @@ cite_packages(
   output = "table",
   out.dir = ".",
   out.format = "html",
-  pkgs = c("gghighlight", "scales", "ggtext", "ggfocus")
+  pkgs = c("scales")
 ) %>%
   knitr::kable(format = "simple")
 
