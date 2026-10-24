@@ -13,6 +13,7 @@ library(tidyverse)
 library(mosaic)
 library(skimr)
 library(ggformula)
+library(ggprism)
 
 ```
 
@@ -202,7 +203,8 @@ In hearing tests on people with varying levels of OME infection in their childho
 
 ```{r}
 #| label: data-munging
-#| echo: false
+#| code-fold: true
+#| 
 ome %>% 
   mutate(success_rate = Correct/Trials) %>% 
   mutate(ID = as_factor(ID), 
@@ -217,9 +219,10 @@ ome_modified
 
 ```{r}
 #| label: plot-ome-data
-#| echo: false
+#| code-fold: true
+#| 
 ome_modified %>% 
-    gf_boxplot(success_rate ~ OME) %>% 
+  gf_boxplot(success_rate ~ OME, fill = ~ OME, alpha = 0.5) %>% 
   gf_facet_grid(~ Noise) %>% 
   gf_hline(yintercept = 0.75, linewidth = 1, linetype = "dotted",colour = ~ "grey") %>% 
   gf_labs(title = "Hearing Test for Children with (OME) Disease",,
@@ -227,7 +230,8 @@ ome_modified %>%
           x = "Incidence of OME Disease over Childhood",
           y = "Successful Detection Score\n(over multiple trials)",
           caption = "Dataset from R package MASS by Venables and Ripley") %>% 
-  gf_refine(scale_fill_grey(na.value = "grey90")) %>% 
+  gf_refine(scale_fill_brewer(palette = "Set1", na.value = "grey90"),
+            scale_x_discrete(guide = "prism_bracket")) %>% 
   gf_theme(theme_custom())
   
 ```

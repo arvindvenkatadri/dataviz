@@ -1,9 +1,13 @@
 ---
 title: <iconify-icon icon="icons8:gender" width="1.2em" height="1.2em"></iconify-icon> Gender at the Work Place
 order: 30
+code-tools: true
 ---
 
 ## Setting up R Packages
+
+{{< include ../../../../../../_setup.qmd >}}
+
 
 ```{r}
 #| label: setup
@@ -33,101 +37,7 @@ library(glue)
 
 #### Plot Fonts and Theme
 
-```{r}
-#| label: plot-theme
-#| echo: true
-#| cache: false
-#| code-fold: true
-#| messages: false
-#| warning: false
-
-library(systemfonts)
-library(showtext)
-## Clean the slate
-systemfonts::clear_local_fonts()
-systemfonts::clear_registry()
-##
-showtext_opts(dpi = 96) #set DPI for showtext
-sysfonts::font_add(family = "Alegreya",
-  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
-  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
-  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
-  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
-
-sysfonts::font_add(family = "Roboto Condensed", 
-  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
-  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
-  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
-  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
-showtext_auto(enable = TRUE) #enable showtext
-##
-theme_custom <- function(){ 
-    font <- "Alegreya"   #assign font family up front
-    '%+replace%' <- ggplot2::'%+replace%' # nolint
-    
-    theme_classic(base_size = 14, base_family = font) %+replace%    #replace elements we want to change
-    
-    theme(
-      text = element_text(family = font),  #set base font family
-      
-      #text elements
-      plot.title = element_text(                 #title
-                   family = font,          #set font family
-                   size = 24,                    #set font size
-                   face = 'bold',                #bold typeface
-                   hjust = 0,                    #left align
-                   margin = margin(t = 5, r = 0, b = 5, l = 0)), #margin
-      plot.title.position = "plot", 
-      
-      plot.subtitle = element_text(              #subtitle
-                   family = font,          #font family
-                   size = 14,                   #font size
-                   hjust = 0,                   #left align
-                   margin = margin(t = 5, r = 0, b = 10, l = 0)), #margin
-      
-      plot.caption = element_text(               #caption
-                   family = font,          #font family
-                   size = 9,                     #font size
-                   hjust = 1),                   #right align
-      
-      plot.caption.position = "plot",            #right align
-      
-      axis.title = element_text(                 #axis titles
-                   family = "Roboto Condensed",  #font family
-                   size = 12),                   #font size
-      
-      axis.text = element_text(                  #axis text
-                   family = "Roboto Condensed",  #font family
-                   size = 9),                    #font size
-      
-      axis.text.x = element_text(                #margin for axis text
-                    margin = margin(5, b = 10))
-      
-      #since the legend often requires manual tweaking 
-      #based on plot content, don't define it here
-    )
-}
-
-## Use available fonts in ggplot text geoms too!
-ggplot2::update_geom_defaults(geom = "text",new = list(
-  family = "Roboto Condensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-ggplot2::update_geom_defaults(geom = "label", new = list(
-  family = "Roboto Condensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-
-## Set the theme
-ggplot2::theme_set(new = theme_custom())
-
-```
+Use `_setup.qmd` to set these up. 
 
 ## Introduction
 
@@ -142,8 +52,8 @@ This is a dataset pertaining to gender and compensation at the workplace, modifi
 
 library(tidytuesdayR)
 jobs_gender <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-03-05/jobs_gender.csv")
-dim(jobs_gender)
-jobs_gender
+glimpse(jobs_gender)
+skim(jobs_gender)
 ```
 
 
@@ -152,6 +62,11 @@ jobs_gender
 #| echo: false
 
 jobs_gender %>% count(major_category)
+jobs_gender %>% gf_histogram_interactive( ~ workers_male)
+jobs_gender %>% gf_histogram_interactive(~ workers_female)
+jobs_gender %>% gf_histogram_interactive(~ total_earnings_male)
+jobs_gender %>% gf_histogram_interactive(~ total_earnings_female)
+
 ```
 
 ## Download the Modified data
@@ -198,13 +113,12 @@ Write in.
 ## Plot the Data
 
 ```{r}
-#| echo: false
-jobs_gender %>%
-  #filter(year == 2016) %>%
-  #filter(major_category == "Healthcare Practitioners and Technical") %>%
-  group_by(major_category) %>% 
-  summarise(median_salary = median())
-  arrange(desc(wage_percent_of_male)) %>%
+#| code-fold: true
+#| 
+
+jobs_gender |> 
+  filter(year == 2016) |> 
+  filter(major_category == "Healthcare Practitioners and Technical") %>%
   ggplot(aes(workers_female / total_workers,
              total_earnings,
              size = total_workers,
@@ -214,11 +128,10 @@ jobs_gender %>%
   labs(title = "Salaries and Gender Proportion in the Workforce",
        size = "Total # of workers",
        x = "% of workforce reported as female",
-       y = "Total Salary in the occupation") +
+       y = "Total Salary in the occupation (Healthcare") +
   scale_x_continuous(labels = percent_format()) +
   scale_y_continuous(labels = dollar_format()) +
-  expand_limits(y = 0) + 
-  theme_custom()
+  expand_limits(y = 0) 
 
 ```
 
