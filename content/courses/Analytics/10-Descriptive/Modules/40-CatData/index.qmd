@@ -39,7 +39,6 @@ editor:
 #| label: setup
 #| include: true
 #| message: false
-#| warning: false
 
 library(tidyverse)
 library(mosaic) # Our trusted friend
@@ -55,6 +54,7 @@ library(tinytable) # Elegant Tables for our data
 ###
 library(vcd) # Michael Friendly's package, Visualizing Categorical 
 library(vcdExtra) # Categorical Data Sets
+library(grid) # to set fonts and themes in vcd plots
 library(resampledata) # More datasets
 library(visStatistics) # Comprehensive all-in-one stats viz/test package
 # library(pak)
@@ -88,122 +88,6 @@ library(embedr) # Embed multimedia in HTML files
 ```
 
 
-```{r}
-#| label: plot-theme-ggplot4
-#| cache: false
-#| code-fold: true
-#| messages: false
-#| warning: false
-#| eval: false
-#| include: false
-#| 
-library(systemfonts)
-library(showtext)
-
-## Clean the slate
-systemfonts::clear_local_fonts()
-systemfonts::clear_registry()
-##
-showtext_opts(dpi = 96) #set DPI for showtext
-sysfonts::font_add(family = "Alegreya",
-  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
-  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
-  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
-  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
-
-sysfonts::font_add(family = "Roboto Condensed", 
-  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
-  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
-  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
-  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
-showtext_auto(enable = TRUE) #enable showtext
-##
-theme_custom <- function(){ 
-
-    theme_bw(base_size = 10) + 
-    
-    # theme(panel.widths = unit(11, "cm"), 
-    #       panel.heights = unit(6.79, "cm")) + # Golden Ratio
-    
-    theme(plot.margin = margin_auto(t = 1, r = 2, b = 1, l = 1, unit = "cm"),
-          plot.background = element_rect(fill = "bisque",
-                                         colour = "black",
-                                         linewidth = 1)) + 
-            
-    theme_sub_axis(title = element_text(family = "Roboto Condensed", 
-                                       size = 10),
-                   text = element_text(family = "Roboto Condensed", 
-                                       size = 8)) + 
-    
-    theme_sub_legend(text = element_text(family = "Roboto Condensed", 
-                                         size = 6),
-                     title = element_text(family = "Alegreya", 
-                                          size = 8)) + 
-    
-    theme_sub_plot(title = element_text(family = "Alegreya", 
-                                        size = 14, face = "bold"),
-                   title.position = "plot",
-                   subtitle = element_text(family = "Alegreya", 
-                                           size = 10),
-                   caption = element_text(family = "Alegreya", 
-                                          size = 6),
-                   caption.position = "plot") 
-    
-}
-
-## Use available fonts in ggplot text geoms too!
-ggplot2::update_geom_defaults(geom = "text", new = list(
-  family = "Roboto Condensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-ggplot2::update_geom_defaults(geom = "label", new = list(
-  family = "Roboto Condensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-
-ggplot2::update_geom_defaults(geom = "marquee", new = list(
-  family = "Roboto Condensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-ggplot2::update_geom_defaults(geom = "text_repel", new = list(
-  family = "Roboto Condensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-ggplot2::update_geom_defaults(geom = "label_repel", new = list(
-  family = "Roboto Condensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-
-## Set the theme
-ggplot2::theme_set(new = theme_custom())
-
-## tinytable options
-options("tinytable_tt_digits" = 2)
-options("tinytable_format_num_fmt" = "significant_cell")
-options(tinytable_html_mathjax = TRUE)
-
-
-## Set defaults for flextable
-flextable::set_flextable_defaults(font.family = "Roboto Condensed")
-
-```
-
-
 ## {{< iconify fe beginner >}} What graphs will we see today?
 
 | Variable #1 | Variable #2 |       Chart Names       |                                            Chart Shape                                            |
@@ -216,7 +100,7 @@ flextable::set_flextable_defaults(font.family = "Roboto Condensed")
 ```{r}
 #| message: false
 #| echo: false
-#| warning: false
+
 read_csv("../../../../../materials/Data/pronouns.csv") %>% 
   filter(No == "3") %>% 
   tt(theme = "striped", caption = "Which Variables?") %>%  
@@ -482,6 +366,7 @@ Converting these (multiple) tables into a data frame or tibble:
 ```{r}
 #| label: tables-to-data-frame
 #| layout-ncol: 2
+#| 
 ## Convert the two tables into a data frame
 HairEyeColor %>% 
   as_tibble() 
@@ -733,12 +618,49 @@ data](../05-NatureData/index.qmd#what-are-data-types).
 
 Let us take the `GSS2002` dataset, and create a Contingency Table out of it. We will use the `Education` and `DeathPenalty` variables, which are both Qualitative. The `GSS2002` dataset is a part of the `{{resampledata}}` package, and contains data from the General Social Survey (GSS) for the year 2002.
 
+::: callout-note
+##### Plot Themes and Fonts
+
+`vcd` does not follow or use the `ggplot` graphics system; it uses a package called `{{grid}}` to create its graphics. We will set a theme for our work here with `{{vcd}}`, as follows:
+
+```{r}
+#| label: vcd_theme
+#| code-fold: true
+#| 
+vcd_theme <- list(
+  
+  main = grid::gpar(
+    fontfamily = "Alegreya", 
+    fontface = "bold", 
+    fontsize = 16),
+  
+  labels = grid::gpar(
+    fontfamily = "Roboto Condensed", 
+    fontsize = 11),
+  
+  border = grid::gpar(
+    col = "grey30", 
+    lwd = 1.0),
+  
+  varnames = grid::gpar(
+    fontfamily = "Roboto Condensed",
+    fontface = "bold",
+    fontsize = 12
+  )
+)
+
+
+# grid::get.gpar()
+```
+:::
+
+
 
 ```{r}
 #| label: tbl-gss2002-data
 #| tbl-cap: "GSS 2002 Data"
 #| code-fold: true
-#| warning: false
+#| 
 
 data("GSS2002", package = "resampledata")
 GSS2002 %>% head() 
@@ -750,7 +672,6 @@ GSS2002 %>% head()
 #| label: tbl-gss2002-ct
 #| tbl-cap: "GSS 2002 Contingency Table"
 #| code-fold: true
-#| warning: false
 #| 
 gss_table <- vcd::structable(Education ~ DeathPenalty, data = GSS2002)
 gss_table %>% addmargins() %>% 
@@ -779,17 +700,51 @@ process as shown below:\
 #| - "Step#1: Education"
 #| - "Step#2: DeathPenalty"
 #| echo: false
-#| warning: false
 #| layout-nrow: 1
+#| 
 
-vcd::structable(Education ~ 0, data = GSS2002) %>% vcd::mosaic(
-  gp = shading_Friendly,
-  main = "GSS2002 Education Mosaic Chart Step#1",legend = FALSE)
+vcd::structable(Education ~ 0, data = GSS2002) |> 
+  
+  vcd::mosaic(
+  direction = "v", # try "h"
+  shade = FALSE, # Shading requires a two-way table at min
+  main = "GSS2002 Education Mosaic Chart Step#1",legend = FALSE,
+  
+  ## Apply plot theme 
+  gp_main = vcd_theme$main,
+  gp_labels = vcd_theme$labels,
+  gp_border = vcd_theme$border, 
+  
+  labeling = labeling_border(
+                varnames = c("F", "F"), # Remove variable name labels
+                rot_labels = c(90,0,0,0), #t,r,b,l
+                just_labels = c("left", 
+                                "left", 
+                                "left", 
+                                "right"))) # How?
 
-vcd::structable(DeathPenalty ~ Education, data = GSS2002) %>% 
-vcd::mosaic(
-  gp = shading_hsv, direction = "v",
-  main = "GSS2002 Education Mosaic Chart Step#2", legend = FALSE)
+
+vcd::structable(DeathPenalty ~ Education, data = GSS2002) |> 
+  vcd::mosaic(
+  direction = "v",
+  main = "GSS2002 Education Mosaic Chart Step#2", 
+  legend = FALSE,
+  
+  ## Apply plot theme
+  gp = shading_max,
+  gp_main = vcd_theme$main,
+  gp_labels = vcd_theme$labels,
+  gp_border = vcd_theme$border, 
+  
+  labeling = labeling_border(
+                varnames = c("F", "F"), # Remove variable name labels
+                rot_labels = c(90,0,0,0), #t,r,b,l
+                just_labels = c("left", 
+                                "left", 
+                                "left", 
+                                "right"))) # How?
+
+
   
 ```
 
@@ -826,9 +781,16 @@ arthritis_table <- vcd::structable(Improved ~ Treatment,
 arthritis_table
 
 vcd::mosaic(arthritis_table, 
-            gp = shading_max, direction = "v",
+            direction = "v",
             main = "Arthritis Treatment Dataset",
-labeling = labeling_border(
+            
+  ## Apply plot theme
+  gp = shading_max,
+  gp_main = vcd_theme$main,
+  gp_labels = vcd_theme$labels,
+  gp_border = vcd_theme$border, 
+  
+  labeling = labeling_border(
                 varnames = c("F", "F"), # Remove variable name labels
                 rot_labels = c(90,0,0,0), #t,r,b,l
                 just_labels = c("left", 
@@ -856,7 +818,15 @@ nhanes_ct <- vcd::structable(data = NHANES, Race1 ~ Education)
 nhanes_ct
 vcd::mosaic(nhanes_ct, 
             gp = shading_max, direction = "v",
-            main = "",
+            main = "Does Education vary with Race?",
+            gp_main = gpar(fontfamily = "mono",
+                      fontface = "bold",
+                      fontsize = 16),
+            gp_labels = gpar(fontfamily = "Roboto Condensed",
+                        fontsize = 16),
+           gp_shading = gpar(col = "grey20"),
+            gp_border = gpar(col = "grey20", lwd = 0.4),
+           
 labeling = labeling_border(
                 varnames = c("F", "F"),
                 rot_labels = c(90,0,0,0), # Rotation, t,r,b,l
@@ -880,6 +850,7 @@ Based on this mosaic chart, we can say that `White` people have had more `Colleg
 #|  - "Bar Chart"
 #|  - "Mosaic Chart"
 #| layout-ncol: 2
+#| 
 
 # Plots the Bar Chart and Mosaic Chart
 # visstat cannot take "ordinal" variables ;-O
@@ -897,6 +868,7 @@ visstat(Arthritis$Improved, Arthritis$Treatment)
 #|  - "Bar Chart"
 #|  - "Mosaic Chart"
 #| layout-ncol: 2
+#| 
 
 # Plots the Bar Chart and Mosaic Chart
 visstat(GSS2002$DeathPenalty, GSS2002$Education)
@@ -911,6 +883,7 @@ visstat(GSS2002$DeathPenalty, GSS2002$Education)
 #|  - "Bar Chart"
 #|  - "Mosaic Chart"
 #| layout-ncol: 2
+#| 
 
 # Plots the Bar Chart and Mosaic Chart
 visstat(NHANES$Race1, NHANES$Education)
@@ -994,7 +967,7 @@ post](https://stackoverflow.com/questions/19233365/how-to-create-a-marimekko-mos
 #| fig-height: 6
 #| fig-asp: 0.816
 #| message: false
-#| warning: false
+#| 
 
 # Reference
 # https://stackoverflow.com/questions/19233365/how-to-create-a-marimekko-mosaic-plot-in-ggplot2
