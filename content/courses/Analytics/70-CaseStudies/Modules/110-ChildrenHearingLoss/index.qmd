@@ -5,10 +5,13 @@ order: 110
 
 ## Setting up R Packages
 
+{{< include /_setup_claude_made.qmd >}}
+
 ```{r}
 #| label: setup
 #| message: false
 #| warning: false
+#| 
 library(tidyverse)
 library(mosaic)
 library(skimr)
@@ -21,6 +24,7 @@ library(ggprism)
 ```{r}
 #| label: pedagogical-packages
 #| echo: false
+#| 
 library(downloadthis)
 library(glue)
 ##
@@ -44,20 +48,9 @@ library(glue)
 ```
 
 
-#### Plot Fonts and Theme
+### Plot Fonts and Theme
 
-```{r}
-#| label: plot-theme
-#| echo: true
-#| cache: false
-#| code-fold: true
-#| messages: false
-#| warning: false
-source(here::here("R", "theme-hatter.R"))  # fonts, geom/table defaults, themes
-theme_custom <- theme_hatter_alegreya  # same design this page used to define locally
-ggplot2::theme_set(new = theme_custom())
-```
-
+Use `_setup.qmd` to set these up.
 
 ## Introduction
 
@@ -71,6 +64,7 @@ This dataset is available on Vincent Arel-Bundock's dataset repository and is a 
 #| label: read-data
 #| echo: true
 #| message: false
+#| 
 ome <- read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/MASS/OME.csv")
 glimpse(ome)
 ome
@@ -128,7 +122,9 @@ ome %>%
          OME = base::factor(OME, levels = c("low", "high", "NA"), ordered = TRUE), 
          Noise = base::factor(Noise, labels = c("Test Signal is Noise-like", "Test Signal is Distinct"), levels = c("coherent", "incoherent")),
          Loud = as_factor(Loud)) -> ome_modified
+
 ome_modified
+
 ```
 
 ## Plot the Data
@@ -147,8 +143,8 @@ ome_modified %>%
           y = "Successful Detection Score\n(over multiple trials)",
           caption = "Dataset from R package MASS by Venables and Ripley") %>% 
   gf_refine(scale_fill_brewer(palette = "Set1", na.value = "grey90"),
-            scale_x_discrete(guide = "prism_bracket")) %>% 
-  gf_theme(theme_custom())
+            scale_x_discrete(guide = "prism_bracket"))
+
   
 ```
 

@@ -37,7 +37,7 @@ is to stand out of their light."]{.f5 .f4-m .f3-l .lh-copy .measure
 
 ## {{< iconify noto-v1 package >}} Setting up R Packages
 
-{{< include /_setup.qmd >}}
+{{< include /_setup_claude_made.qmd >}}
 
 ```{r}
 #| label: setup
@@ -75,122 +75,6 @@ library(marquee)
 library(grid)
 
 ```
-
-
-
-```{r}
-#| label: plot-theme-ggplot4
-#| cache: false
-#| code-fold: true
-#| messages: false
-#| warning: false
-#| include: false
-#| 
-library(systemfonts)
-library(showtext)
-## Clean the slate
-systemfonts::clear_local_fonts()
-systemfonts::clear_registry()
-##
-showtext_opts(dpi = 96) #set DPI for showtext
-sysfonts::font_add(family = "Alegreya",
-  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
-  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
-  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
-  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
-
-sysfonts::font_add(family = "Roboto Condensed", 
-  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
-  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
-  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
-  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
-showtext_auto(enable = TRUE) #enable showtext
-##
-theme_custom <- function(){ 
-
-    theme_bw(base_size = 10) + 
-    
-    theme(panel.widths = unit(11, "cm"), 
-          panel.heights = unit(6.79, "cm")) + # Golden Ratio
-    
-    theme(plot.margin = margin_auto(t = 1, r = 2, b = 1, l = 1, unit = "cm"),
-          plot.background = element_rect(fill = "bisque",
-                                         colour = "black",
-                                         linewidth = 1)) + 
-            
-    theme_sub_axis(title = element_text(family = "Roboto Condensed", 
-                                       size = 10),
-                   text = element_text(family = "Roboto Condensed", 
-                                       size = 8)) + 
-    
-    theme_sub_legend(text = element_text(family = "Roboto Condensed", 
-                                         size = 6),
-                     title = element_text(family = "Alegreya", 
-                                          size = 8)) + 
-    
-    theme_sub_plot(title = element_text(family = "Alegreya", 
-                                        size = 14, face = "bold"),
-                   title.position = "plot",
-                   subtitle = element_text(family = "Alegreya", 
-                                           size = 10),
-                   caption = element_text(family = "Alegreya", 
-                                          size = 6),
-                   caption.position = "plot") 
-    
-}
-
-## Use available fonts in ggplot text geoms too!
-ggplot2::update_geom_defaults(geom = "text", new = list(
-  family = "Roboto Condensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-ggplot2::update_geom_defaults(geom = "label", new = list(
-  family = "Roboto Condensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-
-ggplot2::update_geom_defaults(geom = "marquee", new = list(
-  family = "Roboto Condensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-ggplot2::update_geom_defaults(geom = "text_repel", new = list(
-  family = "Roboto Condensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-ggplot2::update_geom_defaults(geom = "label_repel", new = list(
-  family = "Roboto Condensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-
-## Set the theme
-ggplot2::theme_set(new = theme_custom())
-
-## tinytable options
-options("tinytable_tt_digits" = 2)
-options("tinytable_format_num_fmt" = "significant_cell")
-options(tinytable_html_mathjax = TRUE)
-
-
-## Set defaults for flextable
-flextable::set_flextable_defaults(font.family = "Roboto Condensed")
-
-```
-
 
 
 ## {{< iconify clarity group-solid >}} What is a Population?
@@ -406,7 +290,7 @@ A Single Sample of size 50.
 #| code-fold: true
 #| 
 # Plotting the histogram of this sample
-ggplot2::theme_set(new = theme_custom())
+
 sample_50 %>% 
   gf_histogram(~ Height, bins = 10) %>% 
   
@@ -484,7 +368,6 @@ dim(sample_50_500)
 #|  - Sample Means 
 #|  - Sample SDs
 #| code-fold: true
-ggplot2::theme_set(new = theme_custom())
 
 sample_50_500 %>%
   gf_point(index ~ sample_mean, color = "purple",
@@ -557,7 +440,6 @@ WHY? Because we want to see how the sample-means are distributed around the popu
 #| fig-subcap: 
 #|  - Sample Means Distribution
 #|  - Sample Means Distribution overlaid with Population Distribution
-ggplot2::theme_set(new = theme_custom())
 
 sample_50_500 %>% 
   gf_dhistogram(~ sample_mean, bins = 30, xlab = "Sample Means only") %>% 
@@ -680,8 +562,6 @@ Means of 1000 samples of size 64
 #| eval: false
 #| echo: false
 
-ggplot2::theme_set(new = theme_custom())
-
 # Now let's create separate Q-Q plots for the different sample sizes.
 p1 <- gf_qq( ~ mean, data = samples_08_1000,
              title = "N = 8", 
@@ -724,7 +604,7 @@ Let us plot their individual histograms to compare them:
 #| layout-ncol: 2
 #| layout-nrow: 2
 #| code-fold: true
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 # Let us overlay their individual histograms to compare them:
 p5 <- gf_dhistogram(~ mean,
@@ -791,7 +671,6 @@ And if we overlay these histograms on top of one another:
 #| code-fold: true
 #| message: false
 #| warning: false
-ggplot2::theme_set(new = theme_custom())
 
 gf_dhistogram(~ mean,
               data = samples_08_1000,
@@ -934,7 +813,7 @@ Taking the square root gives us an average error, which we would call, of course
 ```{r}
 #| label: showing-variance-calculation
 #| echo: false
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 sample_50 %>% 
   rowid_to_column() %>% 
@@ -1194,7 +1073,6 @@ How do these vary with sample size $n$?
 #| fig-cap: Confidence Intervals for varying sample sizes
 #| code-fold: true
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 tbl_1 <- get_ci(samples_08_1000, level = 0.95)
 tbl_2 <- get_ci(samples_16_1000, level = 0.95)
@@ -1235,7 +1113,6 @@ So finally, [we can *pretend* that our sample is also distributed normally (i.e 
 #| results: hold
 #| code-fold: true
 #| layout-nrow: 1
-ggplot2::theme_set(new = theme_custom())
 
 mean_sample_16 = mean(~ Height, data = sample_16) # Single Sample
 sd_sample_16 = sd(~ Height, data = sample_16) # Single Sample

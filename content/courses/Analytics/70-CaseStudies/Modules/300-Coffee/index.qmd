@@ -6,6 +6,8 @@ order: 300
 
 ## Setting up R Packages
 
+{{< include /_setup_claude_made.qmd >}}
+
 ```{r}
 #| label: setup
 #| message: false
@@ -47,20 +49,7 @@ library(glue)
 
 #### Plot Fonts and Theme
 
-```{r}
-#| label: plot-theme
-#| echo: true
-#| cache: false
-#| code-fold: true
-#| messages: false
-#| warning: false
-source(here::here("R", "theme-hatter.R"))  # fonts, geom/table defaults, themes
-theme_custom <- theme_hatter_alegreya  # same design this page used to define locally
-ggplot2::theme_set(new = theme_custom())
-```
-
-
-
+Use the `_setup.qmd` file to set up themes and fonts. 
 
 ## Introduction
 
@@ -203,6 +192,8 @@ coffee_select %>%
 top_5_by_points
 
 ```
+
+
 ::: callout-note
 ### Breadcrumb 4
 Where did all that coffee go???
@@ -224,7 +215,10 @@ top_5_by_points %>%
   select(country_of_origin,contains("rank")) -> top_5_by_ranks
 
 top_5_by_ranks
+
 ```
+
+
 ::: callout-note
 ### Breadcrumb 5
 What just happened? How did we convert those `mean` numbers to ranks?
@@ -239,12 +233,16 @@ top_5_by_ranks %>%
   pivot_longer(cols = contains("rank"), 
                names_to = "coffee_parameter", 
                values_to = "ranks") %>% arrange(coffee_parameter) -> coffee_bump
+
 coffee_bump
 ```
 
 ## Plot the Data
 ```{r}
-#| echo: false
+#| label: fig-coffee-bump
+#| fig-cap: " Coffee Origins and Ratings"
+#| code-fold: true
+#| 
 coffee_bump %>% 
 ggplot(aes(x = coffee_parameter, y = ranks, 
            colour = country_of_origin, fill = country_of_origin,

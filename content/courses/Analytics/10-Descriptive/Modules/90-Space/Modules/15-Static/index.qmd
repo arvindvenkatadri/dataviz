@@ -66,7 +66,7 @@ All jargon words will be capitalized and in **bold** font.
 
 ## {{< iconify noto-v1 package >}} Setting up R Packages
 
-{{< include /_setup.qmd >}}
+{{< include /_setup_claude_made.qmd >}}
 
 ```{r}
 #| label: setup
@@ -105,126 +105,6 @@ library(epoxy)
 library(grateful)
 
 ```
-
-
-
-```{r}
-#| label: plot-theme
-#| echo: false
-#| eval: false
-#| cache: false
-#| code-fold: true
-#| messages: false
-#| warning: false
-#| tidy: false
-#| include: false
-#| 
-library(systemfonts)
-library(showtext)
-library(ggrepel)
-library(marquee)
-## Clean the slate
-systemfonts::clear_local_fonts()
-systemfonts::clear_registry()
-##
-showtext_opts(dpi = 96) #set DPI for showtext
-sysfonts::font_add(family = "Alegreya",
-  regular = "../../../../../../../../fonts/Alegreya-Regular.ttf",
-  bold = "../../../../../../../../fonts/Alegreya-Bold.ttf",
-  italic = "../../../../../../../../fonts/Alegreya-Italic.ttf",
-  bolditalic = "../../../../../../../../fonts/Alegreya-BoldItalic.ttf")
-
-sysfonts::font_add(family = "Roboto Condensed", 
-  regular = "../../../../../../../../fonts/RobotoCondensed-Regular.ttf",
-  bold = "../../../../../../../../fonts/RobotoCondensed-Bold.ttf",
-  italic = "../../../../../../../../fonts/RobotoCondensed-Italic.ttf",
-  bolditalic = "../../../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
-
-showtext_auto(enable = TRUE) #enable showtext
-
-theme_custom <- function(){ 
-
-    theme_bw(base_size = 10) + 
-    
-        theme(plot.margin = margin_auto(t = 1, r = 2, b = 1, l = 1, 
-                                        unit = "cm"),
-          plot.background = element_rect(fill = "bisque",
-                                         colour = "black",
-                                         linewidth = 1)) + 
-    
-    theme_sub_axis(text = element_text(family = "Roboto Condensed", 
-                                       size = 6),
-                   title = element_text(family = "Roboto Condensed", 
-                                       size = 8)) + 
-    
-    theme_sub_legend(text = element_text(family = "Roboto Condensed", 
-                                         size = 6),
-                     title = element_text(family = "Alegreya", 
-                                          size = 8)) + 
-    
-    theme_sub_plot(title = element_text(family = "Alegreya", 
-                                        size = 14, face = "bold"),
-                   title.position = "plot",
-                   subtitle = element_text(family = "Alegreya", 
-                                           size = 10),
-                   caption = element_text(family = "Alegreya", 
-                                          size = 6),
-                   caption.position = "plot")
-    
-}
-
-## Use available fonts in ggplot text geoms too!
-ggplot2::update_geom_defaults(geom = "text", new = list(
-  family = "Roboto Condensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-ggplot2::update_geom_defaults(geom = "label", new = list(
-  family = "Roboto Condensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-
-ggplot2::update_geom_defaults(geom = "marquee", new = list(
-  family = "Roboto Condensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-ggplot2::update_geom_defaults(geom = "text_repel", new = list(
-  family = "Roboto Condensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-ggplot2::update_geom_defaults(geom = "label_repel", new = list(
-  family = "Roboto Condensed",
-  face = "plain",
-  size = 3.5,
-  color = "#2b2b2b"
-)
-)
-
-## Set the theme
-ggplot2::theme_set(new = theme_custom())
-
-## tinytable options
-options("tinytable_tt_digits" = 2)
-options("tinytable_format_num_fmt" = "significant_cell")
-options(tinytable_html_mathjax = TRUE)
-
-
-## Set defaults for flextable
-flextable::set_flextable_defaults(font.family = "Roboto Condensed")
-
-```
-
 
 
 ## Introduction to Maps in R
@@ -474,6 +354,7 @@ Let us now read back the saved Data:
 
 ```{r}
 #| label: resume-from-here
+#| 
 buildings <- sf::st_read("./gpkg-data/buildings.gpkg")
 greenery <- sf::st_read("./gpkg-data/greenery.gpkg")
 trees <- sf::st_read("./gpkg-data/trees.gpkg")
@@ -486,6 +367,7 @@ data set?
 
 ```{r}
 #| label: Kitne-aadmi-thay?
+#| 
 # How many buildings?
 nrow(buildings)
 buildings$geom
@@ -548,6 +430,7 @@ First we will plot with `{ggplot2}` and `geom_sf()` : recall that our data is st
 ```{r}
 #| label: using-ggplot-1
 #| tidy: false
+#| 
 ggplot() +
   geom_sf(data = buildings, fill = "gold", color = "grey", 
           linewidth = 0.025) +    # POLYGONS

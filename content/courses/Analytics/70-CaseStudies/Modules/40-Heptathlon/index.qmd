@@ -5,6 +5,8 @@ order: 40
 
 ## Setting up R Packages
 
+{{< include /_setup_claude_made.qmd >}}
+
 ```{r}
 #| label: setup
 #| message: false
@@ -34,17 +36,7 @@ library(glue)
 
 #### Plot Fonts and Theme
 
-```{r}
-#| label: plot-theme
-#| echo: true
-#| cache: false
-#| code-fold: true
-#| messages: false
-#| warning: false
-source(here::here("R", "theme-hatter.R"))  # fonts, geom/table defaults, themes
-theme_custom <- theme_hatter_alegreya  # same design this page used to define locally
-ggplot2::theme_set(new = theme_custom())
-```
+Use `_setup.qmd` to set these up. 
 
 ## Introduction
 
@@ -120,6 +112,7 @@ Write in.
 ```{r}
 #| label: corr-matrix
 #| echo: false
+#| 
 hurdles_corr <- heptathlon %>%
   rownames_to_column(var = "name") %>% 
   dplyr::select(where(is.numeric)) %>% 
@@ -169,8 +162,7 @@ hurdles_corr %>%
     scale_colour_gradient2("Correlation",low = "grey80", high = "grey0"),
     scale_linewidth_continuous("significance",
                                        range = c(0.2,4))) %>% 
-  gf_refine(guides(linewidth = guide_legend(reverse = TRUE))) %>% 
-  gf_theme(theme = theme_custom())
+  gf_refine(guides(linewidth = guide_legend(reverse = TRUE))) 
 
 ```
 

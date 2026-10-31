@@ -5,6 +5,8 @@ order: 530
 
 ## Setting up R Packages
 
+{{< include /_setup_claude_made.qmd >}}
+
 ```{r}
 #| label: setup
 #| message: false
@@ -42,23 +44,10 @@ library(glue)
 #   
 ```
 
-```{r}
-#| label: Plot-Sizing-and-theming
-#| echo: false
-#| message: false
-#| results: hide
-# https://stackoverflow.com/questions/74491138/ggplot-custom-fonts-not-working-in-quarto
-# Chunk options
-knitr::opts_chunk$set(
- fig.width = 7,
- fig.asp = 0.618, # Golden Ratio
- #out.width = "80%",
- fig.align = "center"
-)
-source(here::here("R", "theme-hatter.R"))  # fonts, geom/table defaults, themes
-theme_custom <- theme_hatter_roboto  # same design this page used to define locally
-theme_set(new = theme_custom())
-```
+#### Plot Fonts and Theme
+
+Use the `_setup.qmd` file at project root to set up themes and fonts.
+
 
 ## Introduction
 
@@ -203,24 +192,20 @@ Write in! Look at the graph below and "reverse-engineer" the Research Question!
 ## Plot the Data
     
 ```{r}
-#| label: plot-data
-#| echo: false
+#| label: fig-bike-traffic-seattle
+#| fig-cap: Seasonal Variations in Bicycle Traffic
+#| code-fold: true
+#| 
 
 df_bikes_month %>% 
   gf_tile(month ~ hour | type_of_day ~ crossing, fill = ~ diff) %>% 
-  gf_refine(scale_fill_fermenter("Difference", type = "div", palette = "RdBu")) %>% 
+  gf_refine(scale_fill_fermenter("Difference", 
+                                 type = "div", palette = "RdBu", guide = guide_colourbar(barwidth = unit(0.2, "cm"),
+                          barheight = unit(4, "cm")))) %>% 
   gf_labs(title = "Bicycle Traffic in Seattle",
           subtitle = "Difference between Daily Traffic and Yearly Average", caption = "TidyTuesday Week 14, 2019",
-          y = "Month", x = "Hour of Day") %>% 
-  gf_theme(strip.text = element_text(face = "plain", size = 10, angle = 0),
-          panel.spacing.x = unit(10, "pt"), 
-          axis.text.x = element_text(family = "Roboto Mono", size = 8),
-          axis.text.y = element_text(size = 5.5),
-          axis.title.x = element_text(size = 12),
-          legend.title = element_text(size = 9.5),
-          legend.text = element_text(family = "Roboto Mono", size = 8),
-          legend.position = "bottom",
-          strip.text.x.top = element_text(size = 6))
+          y = "Month", x = "Hour of Day") 
+
 
 ```
 

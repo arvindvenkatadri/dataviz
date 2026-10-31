@@ -1,7 +1,7 @@
 ---
 title: "Tutorial: Multiple Linear Regression with Forward Selection"
-date: 13/May/2023
-date-modified: "`r Sys.Date()`"
+date: 03/May/2023
+date-modified: today
 categories: 
   - Linear Regression
   - Quantitative Predictor
@@ -16,6 +16,8 @@ citation: true
 ---
 
 ## {{< iconify noto-v1 package >}} Setting up R Packages
+
+{{< include /_setup_claude_made.qmd >}}
 
 ```{r}
 #| label: setup
@@ -48,21 +50,6 @@ library(TeachHist)
 library(TeachingDemos)
 library(grateful)
 
-```
-
-#### Plot Fonts and Theme
-
-```{r}
-#| label: plot-theme
-#| echo: true
-#| cache: false
-#| code-fold: true
-#| messages: false
-#| warning: false
-library(tidyverse)
-source(here::here("R", "theme-hatter.R"))  # fonts, geom/table defaults, themes
-theme_custom <- theme_hatter_alegreya  # same design this page used to define locally
-ggplot2::theme_set(new = theme_custom())
 ```
 
 ## {{< iconify openmoji japanese-symbol-for-beginner >}} Introduction
@@ -123,7 +110,7 @@ inspect(Hitters)
 We should examine scatter plots and Correlations of `Salary` against these variables. Let us select a few sets of Quantitative and Qualitative features, along with the target variable `Salary` and do a pairs-plots with them:
 
 ```{r}
-#| label: pairs plots 1
+#| label: pairs-plot-1
 #| message: false
 #| warning: false
 #| column: screen-inset-shaded
@@ -205,7 +192,6 @@ all_corrs %>%
   gf_point(estimate ~ reorder(predictor, estimate), size = 2) %>%
   gf_labs(title = "Correlation Scores with Target Variable", 
           x = NULL, y = "Correlation with Salary") %>%
-  #gf_theme(theme = my_theme()) %>%
   gf_refine(
     scale_colour_distiller("Correlation", type = "div",
                            palette = "RdBu"),
@@ -269,6 +255,8 @@ We will now set up individual models for each predictor and look at the
 ```{r}
 #| label: Round1-All-individual-models-at-once
 #| layout-nrow: 1
+#| code-fold: true
+#| 
 
 names <- names(Hitters %>%
   select(where(is.numeric), 
@@ -329,9 +317,11 @@ Hitters_model_set %>%
   gf_point(r.squared ~ reorder(predictor_name, r.squared), 
            size = 3.5, 
            color = "black",
+           title = "Models Arranged in Increased order of R.squared",
+           subtitle = "Round #1",
            ylab = "R.Squared",
            xlab = "Params in the Linear Model", data = .) %>%
-  #gf_theme(my_theme()) %>% 
+  
   gf_refine(theme(axis.text.x = element_text(angle = 30,
                                              hjust = 1)))
 
@@ -385,6 +375,8 @@ model.
 #| label: Round 2
 #| warning: false
 #| layout-nrow: 1
+#| code-fold: true
+#| 
 
 # Preliminaries
 names <- names(Hitters %>%
@@ -452,9 +444,10 @@ Hitters_model_set
 Hitters_model_set %>% 
   gf_point(r.squared ~ reorder(predictor_name, r.squared), 
                                size = 3.5,
+                      title = "Models Arranged in Increased order of R.squared",
+           subtitle = "Round #2",
                                ylab = "R.Squared",
                                xlab = "Param in the Linear Model") %>%
-  #gf_theme(my_theme()) %>% 
   gf_refine(theme(axis.text.x = element_text(angle = 30, 
                                              hjust = 1)))
 
@@ -466,8 +459,8 @@ Hitters_model_set %>%
 
 ```{r}
 #| layout-nrow: 1
+#| 
 # Which is the winning Predictor?
-# 
 winner <- Hitters_model_set %>% 
   arrange(desc(r.squared)) %>% 
   select(predictor_name) %>% 
@@ -498,10 +491,11 @@ Let us quickly see how this model might look. We know that with simple
 regression, we obtain a straight line as our model. Here, with two (or
 more) predictors, we should obtain a ....(hyper)plane! Play with the interactive plot below!
 
-```{r,}
-#| echo: false
+```{r}
 #| message: false
 #| warning: false
+#| code-fold: true
+#| 
 library(plotly)
 library(modelr)
 
@@ -571,6 +565,7 @@ Type `help(rehelper)` in your Console.
 ```{r}
 #| layout-ncol: 2
 #| column: page-inset-right
+#| 
 library(reghelper)
 
 big_model <- build_model(
@@ -600,6 +595,8 @@ We can clean it up a wee bit:
 ```{r}
 #| label: clean-helper-summary
 #| column: page-inset-right
+#| code-fold: true
+#| 
 library(gt)
 # big_model has 4 parts: formulas, residuals, coefficients, overall
 
@@ -633,6 +630,7 @@ Slightly weird that the NULL model of `Salary~1` does not show an `r.squared` va
 
 ```{r}
 #| echo: false
+#| 
 #scan_packages()
 cite_packages(
   output = "table",

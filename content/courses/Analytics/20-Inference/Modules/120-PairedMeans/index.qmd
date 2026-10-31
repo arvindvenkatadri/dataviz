@@ -41,7 +41,8 @@ format:
 
 ## {{< iconify noto-v1 package >}} Setting up R Packages
 
-{{< include /_setup.qmd >}}
+{{< include /_setup_claude_made.qmd >}}
+
 
 ```{r}
 #| label: setup
@@ -71,20 +72,6 @@ library(MKdescr)
 library(ggrepel)
 library(marquee)
 
-```
-
-
-```{r}
-#| label: plot-theme-ggplot4
-#| cache: false
-#| code-fold: true
-#| messages: false
-#| warning: false
-#| include: false
-#| 
-source(here::here("R", "theme-hatter.R"))  # fonts, geom/table defaults, themes
-theme_custom <- theme_hatter_exhibit  # same design this page used to define locally
-ggplot2::theme_set(new = theme_custom())
 ```
 
 
@@ -177,7 +164,7 @@ Next, histograms and densities of the two variables at hand:
 ```{r}
 #| label: diving-density-1
 #| eval: false
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 Diving2017_long %>%
   gf_density( ~ scores,
@@ -208,7 +195,7 @@ gf_theme(theme(legend.position = "none")) # No Need!!
 ```{r}
 #| label: diving-col-1
 #| eval: false
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 Diving2017_long %>%
   gf_col(
@@ -240,7 +227,7 @@ Diving2017_long %>%
 ```{r}
 #| label: diving-boxplot-1
 #| eval: false
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 Diving2017_long %>%
   gf_boxplot(
@@ -318,7 +305,7 @@ data generated with the same means and standard deviations:
 ```{r}
 #| label: diving-qq-plots
 #| eval: false
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 Diving2017_long %>% 
   gf_qq(~ scores | race, size = 2, colour = ~ race) %>% 
@@ -541,7 +528,6 @@ Let us plot the NULL distribution and compare it with the actual
 #| layout-ncol: 2
 #| code-fold: true
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 gf_histogram(data = null_dist_swim, ~ mean) %>%
   gf_vline(xintercept = obs_diff_swim, 
@@ -685,7 +671,7 @@ Let us plot histograms/densities of the two variables that we wish to compare. W
 ```{r}
 #| label: Grocery-histograms-1
 #| eval: false
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 Groceries_long %>%
   gf_dhistogram( ~ prices,
@@ -696,6 +682,7 @@ Groceries_long %>%
   gf_fitdistr(dist = "dnorm") %>% 
   gf_refine(scale_fill_brewer(palette = "Set1")) %>% 
 gf_theme(theme(legend.position = "none"))
+
 ```
 :::
 :::{.column }
@@ -711,7 +698,7 @@ gf_theme(theme(legend.position = "none"))
 ```{r}
 #| label: Grocery-density-1
 #| eval: false
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 Groceries_long %>%
   gf_density( ~ prices,
@@ -742,13 +729,14 @@ How about price differences, what we are interested in?
 ```{r}
 #| label: Grocery-boxplot-1
 #| eval: false
-ggplot2::theme_set(new = theme_custom())
-
+#| 
 Groceries_long %>% 
   gf_boxplot(prices ~ store, 
              fill = ~ store) %>% 
   gf_refine(scale_fill_brewer(palette = "Set1")) 
+
 ```
+
 :::
 :::{.column }
 ```{r}
@@ -763,7 +751,7 @@ Groceries_long %>%
 ```{r}
 #| label: Grocery-colplot-1
 #| eval: false
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 Groceries_long %>%
   gf_col(fct_reorder(Product, prices) ~ prices,
@@ -964,7 +952,8 @@ null_dist_price
 #| code-fold: true
 #| layout-ncol: 2
 #| 
-ggplot2::theme_set(new = theme_custom())
+
+
 gf_histogram(data = null_dist_price, ~ mean) %>% 
   gf_vline(xintercept = obs_diff_price, colour = "red") %>% 
   gf_refine(scale_y_continuous(expand = c(0, 0)))
@@ -1074,8 +1063,7 @@ obs_diff_price_less
 #| label: grocery-permutation-test-less
 #| layout-ncol: 2
 #| code-fold: true
-
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 set.seed(12345)
 polarity_less <- c(rep(1, 15), rep(-1, 14))

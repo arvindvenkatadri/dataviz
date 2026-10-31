@@ -43,7 +43,7 @@ format:
 
 ## {{< iconify noto-v1 package >}} Setting up R Packages
 
-{{< include /_setup.qmd >}}
+{{< include /_setup_claude_made.qmd >}}
 
 ```{r}
 #| label: setup
@@ -73,21 +73,6 @@ library(ggrepel)
 library(marquee)
 
 ```
-
-
-```{r}
-#| label: plot-theme-ggplot4
-#| cache: false
-#| code-fold: true
-#| messages: false
-#| warning: false
-#| include: false
-#| 
-source(here::here("R", "theme-hatter.R"))  # fonts, geom/table defaults, themes
-theme_custom <- theme_hatter_exhibit  # same design this page used to define locally
-ggplot2::theme_set(new = theme_custom())
-```
-
 
 
 ## {{< iconify openmoji japanese-symbol-for-beginner >}} Introduction
@@ -134,9 +119,11 @@ such as 0 and 1, or +1 and -1. Could we try the same way for a
 
 $$
 Y_i = \beta_0 + \beta_1*X_i + \epsilon_i\\ \nonumber
-$$ $$
+$$ 
+$$
 where\\\
 $$
+
 
 $$
 \begin{align}
@@ -149,8 +136,10 @@ Sadly this seems to not work for categorical dependent variables using a
 simple linear model as before. Consider the Credit Card `Default` data
 from the package `ISLR`.
 
+
 ```{r}
 #| echo: false
+#| 
 data(Default, package = "ISLR")
 ###
 default_modified <- 
@@ -164,6 +153,7 @@ default_modified
 
 ```
 
+
 We see `balance` and `income` are quantitative **predictors**; `student`
 is a qualitative predictor, and `default` is a qualitative **target**
 variable. If we naively use a linear model equation as
@@ -176,7 +166,7 @@ variable. If we naively use a linear model equation as
 #| fig-cap: "Naive Linear Model"
 #| echo: false
 #| warning: false
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 lm_mod <- lm(default ~ balance, data = default_modified)
 default_modified %>%
@@ -211,9 +201,12 @@ Let us state what we might desire of our model: despite this setback, we would s
 $$
     Y_i = \beta_0 + \beta_1*X_i + \epsilon_i\\ \nonumber
 $$ 
+
+
 $$
     where\\\
 $$ 
+    
     
 $$
     \begin{align}
@@ -244,7 +237,7 @@ What can we try? In dummy encoding our target variable, we found a range of \[0,
 #| label: fig-variance-plot
 #| fig-cap: "Variance vs Mean for Binomial Distribution"
 #| echo: false
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 n <- 1
 gf_fun(p *(1 - p) *n ~ p, xlim = c(0, 1), linewidth = 1) %>% 
@@ -374,7 +367,7 @@ with the probability curve earlier.
 #| fig-subcap: 
 #|   - "Odds"
 #|   - "Log Odds"
-ggplot2::theme_set(new = theme_custom())
+#|   
 
 gf_fun(p / (1 - p) ~ p, xlim = c(0.01, 0.9), linewidth = 1) %>% 
   gf_labs(
@@ -458,9 +451,9 @@ function of the weighted sum of predictors and is limited to the range
 #|   - "naive linear regression model"
 #|   - "logistic regression model"
 #|   - "log odds gives linear models"
+#|   
 
 library(latex2exp)
-ggplot2::theme_set(new = theme_custom())
 
 default_modified %>%
   gf_point(default ~ balance, colour = ~ default, size = 2,
@@ -640,6 +633,7 @@ website.](https://vincentarelbundock.github.io/Rdatasets/articles/data.html)
 
 ```{r}
 #| label: read-data
+#| 
 cancer <- read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/dslabs/brca.csv") %>% 
   janitor::clean_names()
 glimpse(cancer)
@@ -663,6 +657,7 @@ regression model.
 ```{r}
 #| label: data-munging
 #| code-fold: true
+#| 
 cancer_modified <- cancer %>%
   rename(
     "diagnosis" = y,
@@ -699,7 +694,7 @@ dataset:
 #| fig-cap: "Pairs Plot for Cancer Data"
 #| code-fold: true
 #| message: false
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 cancer_modified %>% 
   select(diagnosis, radius_mean, concave_points_mean) %>% 
@@ -785,7 +780,7 @@ $exp(\hat{\beta_1}) =  2.809$. We can plot the model as shown below:
 #| fig-cap: "Simple Model plot"
 #| warning: false
 #| code-fold: true
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 qthresh <- c(0.2, 0.5, 0.8)
 beta01 <- coef(cancer_fit_1)[1]
@@ -829,7 +824,7 @@ $q$.
 #| label: emi-tanaka-1
 #| eval: false
 #| echo: false
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 ggplot(cancer_modified, aes(radius_mean, diagnosis_malignant)) +
   geom_point(aes(color = diagnosis, shape = diagnosis), alpha = 0.5, size = 3) + 
@@ -894,7 +889,7 @@ several constant values of threshold probability $q$.
 #| label: fig-model-plot-2
 #| fig-cap: "Complex Model plot"
 #| code-fold: true
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 beta02 <- coef(cancer_fit_2)[1]
 beta12 <- coef(cancer_fit_2)[2]
@@ -1004,7 +999,6 @@ beta1_sample = coef(glm_sample_model)[2]
 #| label: fig-multiple-models
 #| fig-cap: "Multiple Models"
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 colors <- RColorBrewer::brewer.pal(3, "Set1")
 cancer_modified_sample %>% 
@@ -1043,7 +1037,6 @@ the predicted probability for each point.
 #| code-fold: true
 #| layout-ncol: 2
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 plot_dat <- cancer_modified_sample %>% 
   mutate(
@@ -1171,7 +1164,7 @@ We now need to find the (global) **maximum** of this quantity and determine the 
 ```{r}
 #| label: newton-raphson
 #| echo: false
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 my_fun_exp = expression(0.005 * (x - 2)^3 + 5)
 my_fun_slope_exp = D(my_fun_exp, "x")
@@ -1276,9 +1269,7 @@ gf_fun(my_fun(x) ~ x, xlim = c(1, 20), linewidth = 2) %>%
             annotate(geom = "text", label = "Iter #3", 
                      x = x3 - 1, 
                      y = y3 + 1.5, color = "seagreen"))
-# 
-# %>% 
-#   gf_refine(coord_equal())
+
 ```
 
 

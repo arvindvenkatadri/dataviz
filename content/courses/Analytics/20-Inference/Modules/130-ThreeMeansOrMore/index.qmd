@@ -35,7 +35,8 @@ format:
 
 ## {{< iconify noto-v1 package >}} Setting up R Packages
 
-{{< include /_setup.qmd >}}
+{{< include /_setup_claude_made.qmd >}}
+
 
 ```{r}
 #| label: setup
@@ -80,21 +81,6 @@ library(ellmer) # Access LLMs from R
 library(statlingua) # LLM-driven plain English statistical explanations
 
 ```
-
-
-```{r}
-#| label: plot-theme-ggplot4
-#| cache: false
-#| code-fold: true
-#| messages: false
-#| warning: false
-#| include: false
-#| 
-source(here::here("R", "theme-hatter.R"))  # fonts, geom/table defaults, themes
-theme_custom <- theme_hatter_exhibit  # same design this page used to define locally
-ggplot2::theme_set(new = theme_custom())
-```
-
 
 
 ## {{< iconify openmoji japanese-symbol-for-beginner >}} Introduction
@@ -199,7 +185,6 @@ Let us plot jitter-plots, boxplots, and histograms of Hatching Time:
 #| label: Frogs-Scatter
 #| eval: false
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 gf_jitter(Time ~ TempFac, color = ~ TempFac, width = 0.2,
          data = frogs_long, size = 3, alpha = 0.5) %>%
@@ -229,9 +214,7 @@ gf_jitter(Time ~ TempFac, color = ~ TempFac, width = 0.2,
 ```{r}
 #| label: Frogs-Boxplot
 #| eval: false
-
-
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 gf_boxplot(data = frogs_long,
            Time ~ TempFac,
@@ -266,9 +249,7 @@ gf_boxplot(data = frogs_long,
 ```{r}
 #| label: Frogs-Histogram
 #| eval: false
-
-
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 gf_histogram(~ Time, fill = ~ TempFac,
   data = frogs_long, alpha = 0.5) %>%
@@ -330,7 +311,6 @@ This creates an *ANOVA model object*, called `frogs_anova`; the output is still 
 #| label: ANOVA-Table-and-Pairwise
 #| eval: false
 #| 
-ggplot2::theme_set(new = theme_custom())
 # Create a "pairwise" list object
 frogs_supernova <- 
   supernova::pairwise(frogs_anova,
@@ -386,8 +366,6 @@ Consider a data set with a single Quant and a single Qual variable. The Qual var
 #| warning: false
 #| echo: false
 #| 
-ggplot2::theme_set(new = theme_custom())
-
 set.seed(42) # for replication
 toydata <- tibble(
   index = 1:40,
@@ -522,7 +500,6 @@ Now that we understand what `aov()` is doing, let us hand-calculate the numbers 
 #| code-fold: true
 #| layout-ncol: 2
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 frogs_plot <- frogs_long %>% 
   arrange(TempFac) %>% 
@@ -749,7 +726,7 @@ The `F_crit` value can also be seen in a plot[^4],[^5]:
 ```{r}
 #| eval: false
 #| echo: false
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 gf_dist("f", df1 = df_SSA, df2 = df_SSE,
         fill = ~ (x <= F_crit), geom = "area") %>% 
@@ -768,7 +745,6 @@ gf_dist("f", df1 = df_SSA, df2 = df_SSE,
 #| code-fold: true
 #| fig-align: "center"
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 mosaic::xpf(q = F_crit, 
             df1 = df_SSA, df2 = df_SSE, method = "gg",
@@ -949,7 +925,6 @@ We can also check the residuals post-model:
 #| layout-ncol: 2
 #| code-fold: true
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 frogs_anova$residuals %>% 
   as_tibble() %>% 
@@ -1047,7 +1022,6 @@ The simplest way to find the actual `effect sizes` detected by an ANOVA test is 
 #| label: Frogs-Supernova-Pairwise
 #| eval: false
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 frogs_supernova <- 
   supernova::pairwise(frogs_anova,
@@ -1096,7 +1070,8 @@ Observe that the `std.error` for the intercept is $0.257$ while that for `TempFa
 We can easily plot bar-chart with error bars for the effect size:
 
 ```{r}
-ggplot2::theme_set(new = theme_custom())
+#| label: fig-Frogs-Effect-Size
+#| code-fold: true
 
 tidy_anova %>% 
   mutate(hi = estimate + std.error,
@@ -1128,7 +1103,6 @@ If we want an "absolute value" plot for effect size, it needs just a little bit 
 
 ```{r}
 # Merging group averages with `std.error`
-ggplot2::theme_set(new = theme_custom())
 
 frogs_long %>% 
   group_by(TempFac) %>% 
@@ -1181,7 +1155,6 @@ There is a very neat package called `ggstatsplot`[^6] that allows us to plot ver
 #| message: false
 #| code-fold: true
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 library(ggstatsplot)
 frogs_long %>%
@@ -1248,8 +1221,7 @@ null_dist_infer %>%
   shade_p_value(obs_stat = observed_infer$stat, direction = "right") + 
   scale_x_continuous(trans = "log10", expand = c(0,0)) +
   coord_cartesian(xlim = c(0.2,500), clip = "off") + 
-  annotation_logticks(outside = FALSE) + 
-  theme_custom()
+  annotation_logticks(outside = FALSE) 
 
 ```
 

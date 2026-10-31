@@ -40,7 +40,7 @@ format:
 
 ## {{< iconify noto-v1 package >}} Setting up R packages
 
-{{< include /_setup.qmd >}}
+{{< include /_setup_claude_made.qmd >}}
 
 ```{r}
 #| label: setup
@@ -85,21 +85,6 @@ library(ellmer) # Access LLMs from R
 library(statlingua) # LLM-driven plain English statistical explanations
 
 ```
-
-```{r}
-#| label: plot-theme-ggplot4
-#| cache: false
-#| code-fold: true
-#| messages: false
-#| warning: false
-#| include: false
-#| 
-source(here::here("R", "theme-hatter.R"))  # fonts, geom/table defaults, themes
-theme_custom <- theme_hatter_exhibit  # same design this page used to define locally
-ggplot2::theme_set(new = theme_custom())
-```
-
-
 
 ## {{< iconify openmoji japanese-symbol-for-beginner >}} Introduction
 
@@ -159,6 +144,7 @@ We will be analyzing the same dataset called the *Youth Risk Behavior Surveillan
 
 ```{r}
 #| label: read_yrbss
+#| 
 data(yrbss, package = "openintro")
 yrbss
 ```
@@ -181,6 +167,7 @@ For our first Research Question, we will choose the column `helmet_12m`: Remembe
 
 ```{r}
 #| label: no_helmet_text
+#| 
 yrbss %>% 
   group_by(helmet_12m) %>% count()
 
@@ -218,7 +205,6 @@ We can quickly plot this, just for the sake of visual understanding of the propo
 #| label: plot-no-helmet-text
 #| eval: false
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 no_helmet_text %>% drop_na() %>% 
   gf_bar(~ text_ind) %>% 
@@ -348,7 +334,7 @@ summary
 #| layout: [[20],[80]]
 #| echo: false
 #| warning: false
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 obs_difference <-
   diff(mean(candidate_selected ~ evaluator, data = data))
@@ -491,7 +477,9 @@ data_shuffled %>%
 #| eval: false
 
 library(patchwork)
-p1 + p2 + plot_annotation(tag_levels = "A") + plot_layout(widths = unit(c(7, 10), c('cm', 'cm')))
+p1 + p2 + 
+  plot_annotation(tag_levels = "A") + 
+  plot_layout(widths = unit(c(7, 10), c('cm', 'cm')))
 
 ```
 
@@ -501,7 +489,7 @@ We can now check out our Hypothesis that there is *no* bias. We can shuffle the 
 
 ```{r}
 #| layout: [[60, -10, 30]]
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 null_dist <- do(4999) * diff(mean(
   candidate_selected ~ shuffle(evaluator), 
@@ -538,6 +526,7 @@ no_helmet_text %>%
   generate(reps = 999, type = "bootstrap") %>%
   calculate(stat = "prop") %>%
   get_ci(level = 0.95)
+
 ```
 
 Note that since the goal is to construct an interval estimate for a proportion, it's necessary to both include the `success` argument within `specify`, which accounts for the proportion of non-helmet wearers than have consistently texted while driving the past 30 days, in this example, and that `stat` within `calculate` is here "prop", signaling that we are trying to do some sort of inference on a proportion.

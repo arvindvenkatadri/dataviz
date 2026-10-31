@@ -9,7 +9,8 @@ bibliography:
 ---
 ## {{< iconify noto-v1 package >}} Setting up R Packages
 
-{{< include /_setup.qmd >}}
+{{< include /_setup_claude_made.qmd >}}
+
 
 ```{r}
 #| label: setup
@@ -101,6 +102,9 @@ p2
 
 Note the somewhat unwieldy y-axes in the plots! Let us now change the y-axis to show income in thousands of dollars. We will use the `scales` package for this.
 
+
+### Dollar Currency Scales
+
 ```{r}
 #| label: fig-dollar-scale-1
 #| fig-cap: "Dollar Scale with Automatic Breaks"
@@ -125,6 +129,8 @@ p2 %>%
 
 The `scale` function `label_currency` has several arguments that can be used to customize the display of currency values. Here we have used `scale = 0.001` to convert the values to thousands and `suffix = "K"` to add a "K" suffix to the labels.
 
+### Dollar Currency, Log-transformed scale
+
 [Note that the y-axis scale is `linear`!!]{style="background-color:yellow;"} We may yet be dissatisfied with this plot and wish to change the y-axis to a `logarithmic scale.` This is useful when the data spans several orders of magnitude, as is often the case with man-made variables such as income data. We will also, for demonstration purposes, setup an excessively detailed y-scale with far too many breaks and remedy that in the other plot!!
 
 ```{r}
@@ -134,6 +140,8 @@ The `scale` function `label_currency` has several arguments that can be used to 
 #| - "Scatter Plot (Excessive Breaks)"
 #| - "Box Plot (Fewer Breaks )"
 #| layout-ncol: 2
+#| code-fold: true
+#| 
 
 p1 %>%
   gf_refine(scale_y_log10(
@@ -172,23 +180,29 @@ There are several variables, most of them "man-made", which tend to vary over se
 #| fig-subcap:
 #| - "Scatter Plot"
 #| - "Box Plot"
+#| code-fold: true
+#| 
 
-p1 <- gf_point(data = gapminder, gdpPercap ~ year, 
+p3 <- gf_point(data = gapminder, gdpPercap ~ year, 
               color = ~ continent, alpha = 0.8, size = 1) %>% 
   gf_labs(y = "GDP per Capita", x = "Year", title = "Gapminder Dataset") %>% 
 
   gf_refine(scale_color_brewer(palette = "Set1"))
-p1
-p2 <- gf_boxplot(data = gapminder, gdpPercap ~ continent, 
+p3
+p4 <- gf_boxplot(data = gapminder, gdpPercap ~ continent, 
               color = ~continent, fill = ~ continent, 
               alpha = 0.8, orientation = "x") %>% 
   gf_labs(y = "GDP per Capita", x = "Continent", title = "Gapminder Dataset") %>% 
 
   gf_refine(scale_color_brewer(palette = "Set1"))
 
-p2
+p4
 
 ```
+
+
+### Dollar Scale Again
+
 Let us convert the y-axis to show a scale in USD. 
 
 ```{r}
@@ -200,18 +214,20 @@ Let us convert the y-axis to show a scale in USD.
 #| - "Box Plot"
 #| layout-ncol: 2
 #| 
-p1 %>% 
+p3 %>% 
   gf_refine(scale_y_continuous(labels = scales::label_currency(scale = 0.001, suffix = "K"))) |> 
   gf_labs(subtitle = "Note Dollar Currency Scale on y-axis")
 
 
-p2 %>% 
+p4 %>% 
   gf_refine(scale_y_continuous(labels = scales::label_currency(scale = 0.001, suffix = "K"))) |> 
   gf_labs(subtitle = "Note Dollar Currency Scale on y-axis")
 
 
 ```
 Note that the Y-axis is still linear here. No transformation applied!
+
+### Scales with Multiples
 
 And population?
 
@@ -288,6 +304,7 @@ p2 %>%
 
 Try commenting our the `transform = "log10"` in the code above and see how the graphs change!
 
+## More than one scale / axis even?
 
 For a complex use of the `{{scales}}` package, [where we use **more than one y-axis**]{style="background-color:yellow;"}, head off to this Case Study: [Legionnaire’s Disease in the USA](../../../70-CaseStudies/Modules/350-LegionnairesDisease/). Try to understand the code there and replicate!!
 

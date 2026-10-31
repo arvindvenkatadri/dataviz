@@ -1,8 +1,7 @@
 ---
 title: "Tutorial: Multiple Linear Regression with Backward Selection"
-author: "Arvind V."
 date: 03/May/2023
-date-modified: "`r Sys.Date()`"
+date-modified: today
 categories: 
   - Linear Regression
   - Quantitative Predictor
@@ -17,6 +16,8 @@ citation: true
 ---
 
 ## {{< iconify noto-v1 package >}} Setting up R Packages
+
+{{< include /_setup_claude_made.qmd >}}
 
 ```{r}
 #| label: setup
@@ -44,26 +45,7 @@ library(grateful)
 
 ```
 
-#### Plot Fonts and Theme
 
-```{r}
-#| label: plot-theme
-#| echo: true
-#| cache: false
-#| code-fold: true
-#| messages: false
-#| warning: false
-library(tidyverse)
-source(here::here("R", "theme-hatter.R"))  # fonts, geom/table defaults, themes
-theme_custom <- theme_hatter_alegreya  # same design this page used to define locally
-ggplot2::theme_set(new = theme_custom())
-```
-
-
-In this tutorial, we will use the Boston housing dataset. Our research
-question is:
-
-::: callout-note
 ## Research Question
 
 How do we predict the price of a house in Boston, based on other
@@ -124,9 +106,9 @@ We can use `purrr` to evaluate all pair-wise correlations in one shot:
 
 ```{r}
 #| label: corrtest plots
+#| code-fold: true
+#| 
 
-ggplot2::theme_set(new = theme_custom())
-##
 all_corrs <- housing %>% 
   select(where(is.numeric)) %>% 
   
@@ -174,6 +156,7 @@ numerical predictor features in the dataset.
 
 ```{r}
 #| label: maximal model
+#| 
 housing_numeric <- housing %>% select(where(is.numeric), 
                                       
                     # remove medv
@@ -294,7 +277,7 @@ housing_models_tidy
 ```{r}
 #| label: Plot-of-r.squared-vs-No-of-Predictors
 #| code-fold: true
-ggplot2::theme_set(new = theme_custom())
+#| 
 ##
 housing_models_tidy %>%
   gf_line(
@@ -329,7 +312,7 @@ complexity from 15 predictors to say 4! Filtering the set of models for just the
 ```{r}
 #| label: Final-Model
 #| code-fold: true
-ggplot2::theme_set(new = theme_custom())
+#| 
 ##
 housing_model_final <- 
   housing_model_set %>% 
@@ -365,6 +348,7 @@ And plotting this model, we have:
 ```{r}
 #| label: Final-Model-Plot
 #| code-fold: true
+#| 
   
 housing_model_final %>%  
   # And plot the model
@@ -387,6 +371,8 @@ Let us use `broom::augment` to calculate residuals and predictions to
 arrive at a quick set of diagnostic plots.
 
 ```{r}
+#| code-fold: true
+#| 
 housing_model_final_augment <- 
   housing_model_set %>% 
   filter(keep_vars == 4) %>% 
@@ -410,8 +396,9 @@ housing_model_final_augment
 #| message: false
 #| warning: false
 #| results: hold
-ggplot2::theme_set(new = theme_custom())
-##
+#| code-fold: true
+#| 
+
 housing_model_final_augment %>% 
   gf_point(.resid ~ .fitted, title = "Residuals vs Fitted") %>%
   gf_smooth() 
@@ -467,6 +454,7 @@ Learning. Chapter 3. Linear Regression.*
 
 ```{r}
 #| echo: false
+#| 
 #scan_packages()
 cite_packages(
   output = "table",

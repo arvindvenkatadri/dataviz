@@ -1,0 +1,75 @@
+---
+# Course-wide knitr / Quarto defaults.
+# Pages should include this file and then load only the packages that lesson needs.
+knitr:
+  opts_chunk:
+    echo: true
+    warning: false
+    message: false
+    fig-align: center
+    fig-width: 6
+    fig-asp: 0.618
+    dpi: 96
+    out-width: "75%"
+    # ragg is fine for points/lines; fonts are registered with systemfonts below
+    # so ggrepel can see the same families. Do not pair ragg with showtext-only fonts.
+    dev: "ragg_png"
+---
+
+```{r}
+#| label: claude_made_setup
+#| echo: false
+#| warning: false
+#| message: false
+
+library(systemfonts)
+library(ggplot2)
+##
+systemfonts::require_font("Alegreya")
+systemfonts::require_font("Roboto Condensed")
+
+theme_madhatter <- function(base_size = 10, paper = "bisque") {
+  ggplot2::theme_bw(base_size = base_size,
+           base_family = "Roboto Condensed",
+           header_family = "Alegreya",
+           paper = paper) +
+    ggplot2::theme(
+      plot.margin = ggplot2::margin(t = 0.5, r = 0.5, b = 0.5, l = 0.5, unit = "cm"),
+      axis.title = ggplot2::element_text(
+        family = "Roboto Condensed",
+        size = 10
+      ),
+      axis.text = ggplot2::element_text(
+        family = "Roboto Condensed",
+        size = 8
+      ),
+      legend.text = ggplot2::element_text(
+        family = "Roboto Condensed",
+        size = 8
+      ),
+      legend.title = ggplot2::element_text(
+        family = "Alegreya",
+        size = 10
+      ),
+      plot.title = ggplot2::element_text(
+        family = "Alegreya",
+        size = 16,
+        face = "bold"
+      ),
+      plot.title.position = "plot",
+      plot.subtitle = ggplot2::element_text(
+        family = "Alegreya",
+        size = 12
+      ),
+      plot.caption = ggplot2::element_text(
+        family = "Alegreya",
+        size = 8
+      ),
+      plot.caption.position = "plot"
+    )
+  
+}
+ggplot2::theme_set(theme_madhatter())
+
+```
+

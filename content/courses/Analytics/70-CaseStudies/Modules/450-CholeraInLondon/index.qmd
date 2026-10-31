@@ -6,6 +6,8 @@ order: 450
 
 ## Setting up R Packages
 
+{{< include /_setup_claude_made.qmd >}}
+
 ```{r}
 #| label: setup
 #| message: false
@@ -45,18 +47,7 @@ library(glue)
 
 #### Plot Fonts and Theme
 
-```{r}
-#| label: plot-theme
-#| echo: true
-#| cache: false
-#| code-fold: true
-#| messages: false
-#| warning: false
-source(here::here("R", "theme-hatter.R"))  # fonts, geom/table defaults, themes
-theme_custom <- theme_hatter_alegreya  # same design this page used to define locally
-ggplot2::theme_set(new = theme_custom())
-```
-
+Use the `_setup.qmd` file at project root to set up themes and fonts.
 
 ## Introduction
 
@@ -113,8 +104,10 @@ Write in! Look at the charts below!
 ## Plot the Data
 
 ```{r}
-#| label: pairs-plot
+#| label: fig-pairs-plot
+#| fig-cap: "Pairwise Correlations in William Farr's Dataset"
 #| echo: false
+#| 
 Cholera %>% 
   select(cholera_drate, poor_rate, elevation, pop_dens, persons_house, #water
          ) %>% 
@@ -133,14 +126,14 @@ Cholera %>%
   
   title = "Plot 1: William Farr's Cholera Data",
   subtitle = "Correlation Plot"
-) +
-  
-  theme_bw()
+) 
+
 ```
 
 ```{r}
 #| echo: false
 #| layout-ncol: 2
+#| 
 Cholera %>% 
   gf_point(cholera_drate ~ elevation, size = 3) %>% 
   gf_smooth(method = "lm",colour = "grey") %>% 
@@ -149,19 +142,18 @@ Cholera %>%
           title = "Plot 2: Cholera Deaths vs Elevation above Thames High Water Mark") %>% 
   gf_refine(scale_y_continuous(limits = c(0, 250)),
             scale_colour_grey("Water Supply"),
-            scale_shape("Water Supply")) %>% 
-  gf_theme(theme = theme_custom())
+            scale_shape("Water Supply")) 
 
 Cholera %>% 
   gf_point(cholera_drate ~ elevation, shape = ~ water, color = ~ water, size = 3) %>% 
   gf_smooth(method = "lm") %>% 
   gf_labs(x ="Elevation above high water mark (ft)",
               y ="Deaths from cholera in 1849 per 10,000",
-          title = "Plot 3: Cholera Deaths/n vs/nElevation above Thames High Water Mark") %>% 
+          title = "Plot 3: Cholera Deaths vs Elevation above Thames High Water Mark") %>% 
   gf_refine(scale_y_continuous(limits = c(0, 250)),
             scale_colour_brewer(name = "Water Supply", palette = "Set1"),
-            scale_shape("Water Supply")) %>% 
-  gf_theme(theme = theme_custom())
+            scale_shape("Water Supply")) 
+
 
 
 ```

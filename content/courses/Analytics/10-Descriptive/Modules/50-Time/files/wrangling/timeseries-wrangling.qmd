@@ -21,7 +21,7 @@ editor:
 
 ## {{< iconify noto-v1 package >}} Setting up R Packages
 
-{{< include /_setup.qmd >}}
+{{< include /_setup_claude_made.qmd >}}
 
 ```{r}
 #| label: setup
@@ -37,23 +37,6 @@ library(timetk)
 # Datasets
 library(tsibbledata)
 
-```
-
-
-```{r}
-#| label: plot-theme
-#| echo: true
-#| cache: false
-#| code-fold: true
-#| messages: false
-#| warning: false
-#| include: false
-#| 
-library(marquee)
-library(ggrepel)
-source(here::here("R", "theme-hatter.R"))  # fonts, geom/table defaults, themes
-theme_custom <- theme_hatter_exhibit  # same design this page used to define locally
-ggplot2::theme_set(new = theme_custom())
 ```
 
 
@@ -270,8 +253,6 @@ Let us try a basic plot with both `tsibble` vs `timetk` packages.
 #| results: hold
 #| 
 #column: body-outset-right
-# Set graph theme
-theme_set(new = theme_custom())
 #
 births_tsibble %>%
   gf_line(births ~ index, 
@@ -323,9 +304,6 @@ Here we plot Monthly Aggregates with both `ggformula` and `timetk`:
 #| label: Per-month-aggregation
 #| eval: false
 
-# Set graph theme
-theme_set(new = theme_custom())
-##
 births_tsibble %>% 
   tsibble::index_by(month_index = ~ tsibble::yearmonth(.)) %>% 
   dplyr::summarise(mean_births = mean(births, na.rm = TRUE)) %>% 
@@ -422,8 +400,6 @@ Let us try getting *annual aggregates*.
 ```{r}
 #| label: annual-aggregation
 #| eval: false
-# Set graph theme
-theme_set(new = theme_custom())
 
 births_tsibble %>% 
   tsibble::index_by(year_index = ~ lubridate::year(.)) %>% 
@@ -593,9 +569,6 @@ Over month, quarter or year?
 #| label: Monthly-boxplots
 #| eval: false
 
-# Set graph theme
-theme_set(new = theme_custom())
-
 births_tsibble %>%
   index_by(month_index = ~ yearmonth(.)) %>%
   # 15 years
@@ -688,9 +661,6 @@ much from.
 #| label: Quarterly-boxplots
 #| eval: false
 
-# Set graph theme
-theme_set(new = theme_custom())
-
 births_tsibble %>%
   index_by(qrtr_index = ~ yearquarter(.)) %>% # 60 quarters over 15 years
   # No need to summarise, since we want boxplots per year / month
@@ -763,9 +733,6 @@ quarter...
 ```{r}
 #| label: annual-boxplots
 #| eval: false
-
-# Set graph theme
-theme_set(new = theme_custom())
 
 births_tsibble %>% 
   index_by(year_index = ~ lubridate::year(.)) %>% # 15 years, 15 groups
@@ -1074,9 +1041,6 @@ towards filtering, summaries, and averages.
 #| label: Basic-PBS-plot-ggformula
 #| eval: false
 
-# Set graph theme
-theme_set(new = theme_custom())
-
 PBS %>%
   gf_point(Cost ~ Month, data = .) %>%
   gf_line(title = "PBS Costs vs time", 
@@ -1131,9 +1095,6 @@ operations.
 ```{r}
 #| label: PBS-Costs-filtered-ggformula
 #| eval: false
-
-# Set graph theme
-theme_set(new = theme_custom())
 
 # Costs variable for a specific combo of Qual variables(keys)
 PBS %>% 
@@ -1240,8 +1201,7 @@ PBS_month
 ```{r}
 #| label: summary-month-plot
 #| eval: false
-# Set graph theme
-theme_set(new = theme_custom())
+
 PBS_month %>% 
   mutate(Month_Date = as_date(Month_Date)) %>%
   gf_line(mean_Cost ~ Month_Date) %>%
@@ -1340,8 +1300,6 @@ PBS_quarter
 ```{r}
 #| label: PBS-quarterly-plot
 #| eval: false
-# Set graph theme
-theme_set(new = theme_custom())
 #
 PBS_quarter %>% 
   gf_line(mean_Cost ~ Quarter_Date) %>%
@@ -1429,8 +1387,6 @@ PBS_year
 ```{r}
 #| label: PBS-annual-plot
 #| eval: false
-# Set graph theme
-theme_set(new = theme_custom())
 #
 PBS_year %>% 
   gf_line(mean_Cost ~ Year_Date) %>%
@@ -1499,9 +1455,6 @@ earlier.)
 #| eval: false
 #| message: false
 
-# Set graph theme
-theme_set(new = theme_custom())
-
 PBS %>% 
   mutate(Month_Date = lubridate::as_date(Month)) %>%
 ##
@@ -1565,8 +1518,6 @@ PBS %>%
 #| label: Summary-over-quarters-with-timetk
 #| eval: false
 #| message: false
-# Set graph theme
-theme_set(new = theme_custom())
 
 PBS %>% 
   mutate(Month_Date = lubridate::as_date(Month)) %>%
@@ -1632,8 +1583,7 @@ PBS %>%
 ```{r}
 #| label: Summary-over-years-with-timetk
 #| eval: false
-# Set graph theme
-theme_set(new = theme_custom())
+
 PBS %>% 
   mutate(Month_Date = lubridate::as_date(Month)) %>%
   as_tibble() %>%

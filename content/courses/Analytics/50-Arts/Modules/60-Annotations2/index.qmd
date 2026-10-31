@@ -10,7 +10,7 @@ bibliography:
 
 ## {{< iconify noto-v1 package >}} Setting up R Packages
 
-{{< include /_setup.qmd >}}
+{{< include /_setup_claude_made.qmd >}}
 
 ```{r}
 #| label: setup
@@ -50,64 +50,6 @@ Annotations help to draw attention to specific parts or the graph, specific area
 
 We have already seen the `annotate()` command from `{{ggplot2}}` first ( and the new `gf_annotate()` from `ggformula`). Here we will look at some of the intrigung features from the `ggforce` package. 
 
-### Fonts and Themes
-
-As we learnt in the [Fonts Module](../20-Fonts/index.qmd), let us set the ggplot theme with fonts for both the chart defining elements **and** our annotations. I am going to use local fonts from my machine, that I have downloaded from Google Fonts earlier and saved in a `fonts` folder at the root of my project.
-
-```{r}
-#| label: add-local-fonts
-#| code-fold: true
-#| 
-## Clean the slate
-systemfonts::clear_local_fonts()
-systemfonts::clear_registry()
-##
-showtext_opts(dpi = 96) #set DPI for showtext
-sysfonts::font_add(family = "Alegreya",
-  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
-  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
-  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
-  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
-
-sysfonts::font_add(family = "Anton",
-  regular = "../../../../../../fonts/Anton-Regular.ttf") # Only one style is available
-
-sysfonts::font_add(family = "RobotoCondensed", 
-  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
-  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
-  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
-  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
-
-sysfonts::font_add(family = "IbarraNova", 
-  regular = "../../../../../../fonts/IbarraRealNova-Regular.ttf",
-  bold = "../../../../../../fonts/IbarraRealNova-Bold.ttf",
-  italic = "../../../../../../fonts/IbarraRealNova-Italic.ttf",
-  bolditalic = "../../../../../../fonts/IbarraRealNova-BoldItalic.ttf")
-
-sysfonts::font_add(family = "Tangerine", 
-  regular = "../../../../../../fonts/Tangerine-Regular.ttf",
-  bold = "../../../../../../fonts/Tangerine-Bold.ttf") # only these two are available
-
-sysfonts::font_add(family = "Schoolbell", 
-  regular = "../../../../../../fonts/Schoolbell-Regular.ttf") # Only regular is available
-
-showtext_auto() # set these fonts as default for the session
-sysfonts::font_families() # check which fonts are available in the session
-
-```
-
-
-```{r}
-#| label: set-ggplot2-theme
-#| code-fold: true
-#| 
-source(here::here("R", "theme-hatter.R"))  # fonts, geom/table defaults, themes
-theme_custom <- theme_hatter_compact  # same design this page used to define locally
-ggplot2::theme_set(new = theme_custom())
-```
-
-
-
 ## Data
 
 We will again work with a **familiar** dataset, so that we can concentrate on the chart aesthetics, without having to spend time getting used to the data: the `penguins` dataset again, ~~from the `palmerpenguins` package~~ now part of the R installation!. 
@@ -138,8 +80,10 @@ A basic scatter plot, which we will use to highlight and draw attention to speci
 
 
 ```{r}
-#| label: basic-ggformula-plot
+#| label: fig-basic-plot
+#| fig-cap: "Basic Plot"
 #| code-fold: true
+#| 
 
 p1 <- gf_point(data = penguins, bill_dep ~ bill_len, 
               color = ~ body_mass, alpha = 0.8, size = 3.5) %>% 
@@ -179,67 +123,17 @@ From [Thomas Lin Pedersen's website](www.ggforce.data-imaginist.com) → www.ggf
 > `{{ggforce}}` is a package aimed at providing missing functionality to `{{ggplot2}}` through the extension system introduced with `{{ggplot2}}` v2.0.0. Broadly speaking `{{ggplot2}}` has been aimed primarily at explorative data visualization in order to investigate the data at hand, and less at providing utilities for composing custom plots a la `D3.js`. `{{ggforce}}` is mainly an attempt to address these “shortcoming” (design choices might be a better description). The goal is to provide a repository of geoms, stats, etc. that are as well documented and implemented as the official ones found in `{{ggplot2}}`.
 
 
-
 We will start with the basic plot, with the fonts, labels and `{{ggtext}}` related work done up to now: First, let us update the theme to use the `{{ggtext}}` options, and then we will add the `{{ggforce}}` annotations.
 
-```{r}
-#| eval: false
-#| echo: false
-## Existing theme
-theme_set(theme_classic(base_size = 14, 
-                        base_family = "roboto-condensed"))
-
-## modify plot elements globally (for all following plots)
-theme_update(
-  axis.ticks = element_line(color = "grey92"),
-  axis.ticks.length = unit(.5, "lines"),
-  panel.grid.minor = element_blank(),
-  legend.title = element_text(size = 12, family = "ibarra"),
-  legend.text = element_text(color = "grey30"),
-  
-## theme updates here
-  plot.title = ggtext::element_markdown(),
-  plot.caption = ggtext::element_markdown(),
-  axis.title.x = ggtext::element_markdown(),
-  axis.title.y = ggtext::element_markdown()
-)
-
-```
-
-
-
-
-```{r}
-#| eval: false
-#| echo: false
-## plot that we will annotate with ggforce afterwards
-p3 <- ggplot(penguins, aes(x = bill_len, y = bill_dep, 
-                           colour = body_mass)) + 
-  geom_point(size = 3.5) + 
-  coord_cartesian(xlim = c(25, 65), ylim = c(10, 25)) +
-  
-  # Add colours
-  scico::scale_color_scico(palette = "bamako", direction = -1) +
-  rcartocolor::scale_fill_carto_d(palette = "Bold") +
-  
-  # Add labels
-  labs(
-    title = "Bill Dimensions of Brush-Tailed Penguins (*Pygoscelis*)",
-    subtitle = 'A scatter plot of bill depth versus bill length.',
-    caption = "Data: Gorman, Williams & Fraser (2014) *PLoS ONE*",
-    x = "**Bill Length** (mm)", 
-    y = "**Bill Depth** (mm)",
-    color = "Body mass (g)",
-    fill = "Species"
-  )
-p3
-
-```
 
 ### Using ellipses
+
 ```{r}
-#| label: ellipses
-## ellipsoids for all groups
+#| label: fig-annotation-ellipses
+#| fig-cap: "Annotating with Ellipses"
+#| code-fold: true
+#| 
+## ellipsoids for all subsets
 p1 +
   # penguins data is inherited automatically
   # Can use other data also if needed
@@ -261,8 +155,14 @@ p1 +
 
 ### Highlighting one group
 
+`{{ggforce}}` allows a curious syntax to highlight a specific group, using the `filter` argument in the `aes()` function. This allows us to focus on a specific species of penguin, for example, the Gentoo penguin, while still displaying the other data points in the background.
+
 #### Add an Ellipse
 ```{r}
+#| label: fig-highlighting-one-group
+#| fig-cap: "Highlighting One Group"
+#| code-fold: true
+#| 
 
 ## ellipsoids for specific subset
 p1 +
@@ -281,7 +181,12 @@ p1 +
 
 
 #### Adding Circles
+
 ```{r}
+#| label: fig-circle-annotation
+#| fig-cap: "Annotating with Circles"
+#| code-fold: true
+#| 
 
 ## circles
 p1 +
@@ -299,8 +204,12 @@ p1 +
 
 
 #### Adding Rectangles
-```{r}
 
+```{r}
+#| label: fig-rect-annotation
+#| fig-cap: "Annotating with Rectangles"
+#| code-fold: true
+#| 
 ## rectangles
 p1 +
   ggforce::geom_mark_rect(
@@ -318,7 +227,12 @@ p1 +
 
 
 #### Adding a Convex Hull
+
 ```{r}
+#| label: fig-convexhull-annotation
+#| fig-cap: "Annotating with a Convex Hull"
+#| code-fold: true
+#| 
 library(concaveman)
 ## hull
 p1 +
@@ -335,6 +249,10 @@ p1 +
 
 ```
 
+## Conclusions
+
+In this module, we have learned how to use add annotations to our plots, so that specific groups of points can be highlighted. 
+
 
 ::: {#refs style="font-size: 60%;"}
 ###### {{< iconify lucide package-check >}} R Package Citations
@@ -346,7 +264,7 @@ cite_packages(
   output = "table",
   out.dir = ".",
   out.format = "html",
-  pkgs = c("ggtext", "sysfonts", "showtext")
+  pkgs = c("ggtext", "ggforce")
 ) %>%
   knitr::kable(format = "simple")
 

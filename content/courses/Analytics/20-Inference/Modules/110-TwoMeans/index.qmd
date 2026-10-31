@@ -53,7 +53,8 @@ which any human being can fight, and never stop fighting.]{.f5 .f4-m
 
 ## {{< iconify noto-v1 package >}} Setting up R Packages
 
-{{< include /_setup.qmd >}}
+{{< include /_setup_claude_made.qmd >}}
+
 
 ```{r}
 #| label: setup
@@ -99,21 +100,6 @@ library(ggrepel)
 library(marquee)
 
 ```
-
-
-```{r}
-#| label: plot-theme-ggplot4
-#| cache: false
-#| code-fold: true
-#| messages: false
-#| warning: false
-#| include: false
-#| 
-source(here::here("R", "theme-hatter.R"))  # fonts, geom/table defaults, themes
-theme_custom <- theme_hatter_exhibit  # same design this page used to define locally
-ggplot2::theme_set(new = theme_custom())
-```
-
 
 
 ## {{< iconify openmoji japanese-symbol-for-beginner >}} Introduction
@@ -225,9 +211,6 @@ MathAnxiety %>%
 #| message: false
 #| warning: false
 
-# Set graph theme
-theme_set(new = theme_custom())
-
 # https://www.statology.org/r-geom_path-each-group-consists-of-only-one-observation/
 MathAnxiety %>%
   gf_density(
@@ -296,9 +279,6 @@ also look at Q-Q plots for both variables:
 #| warning: false
 #| code-fold: true
 
-# Set graph theme
-theme_set(new = theme_custom())
-#
 MathAnxiety %>%
   gf_density( ~ AMAS,
               fill = ~ Gender,
@@ -500,11 +480,6 @@ library(glue)
 library(latex2exp)
 # https://www.statology.org/r-geom_path-each-group-consists-of-only-one-observation/
 
-
-# Set graph theme
-theme_set(new = theme_custom())
-#
-
 MathAnxiety %>% 
   gf_jitter(rank(AMAS) ~ Gender, color = ~ Gender, 
             show.legend = FALSE,
@@ -572,7 +547,6 @@ library(ggtext)
 library(glue)
 library(latex2exp)
 # https://www.statology.org/r-geom_path-each-group-consists-of-only-one-observation/
-ggplot2::theme_set(new = theme_custom())
 
 MathAnxiety %>% 
   gf_jitter(rank(AMAS) ~ Gender, color = ~ Gender, 
@@ -648,7 +622,6 @@ null_dist_amas
 #| layout-ncol: 2
 #| code-fold: true
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 gf_histogram(data = null_dist_amas, ~ diffmean, bins = 25) %>%
   gf_vline(xintercept = obs_diff_amas, 
@@ -762,7 +735,6 @@ How can we visualize this? We are going to have to construct a **difference data
 #| warning: false
 #| code-fold: true
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 boys_scores <- boys_AMAS %>% rename("boys" = AMAS)
 girls_scores <- boys_AMAS %>% rename("girls" = AMAS)
@@ -820,8 +792,7 @@ xqnorm(p = c(0.025, 0.975),
             label = "95% Confidence Interval", 
             colour = "purple") %>% 
   gf_labs(title = "Visualizing the t-test for Math Anxiety Scores",
-       subtitle = "Difference in Means, Confidence Intervals, and Test Statistic") %>% 
-  gf_theme(theme_custom())
+       subtitle = "Difference in Means, Confidence Intervals, and Test Statistic") 
 
 ```
 We see that the difference between means is `r t` times the std_error! At a distance of $1.96$ (either way) the probability of this data happening by chance already drops to $2.5 \%$ !! At this distance of `r t`, we would have negligible probability of this data occurring by chance!
@@ -1040,7 +1011,6 @@ yrbss_select_gender <- yrbss %>%
 #| message: false
 #| code-fold: true
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 yrbss_select_gender %>%
   gf_density( ~ weight,
@@ -1132,7 +1102,6 @@ Let us plot frequency distribution and Q-Q plots[^5] for both variables.
 #| layout-ncol: 2
 #| code-fold: true
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 male_student_weights <- yrbss_select_gender %>% 
   filter(gender == "male") %>% 
@@ -1320,7 +1289,6 @@ the `test statistic` (difference in means) each time.
 #| layout-ncol: 2
 #| layout-nrow: 2
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 null_dist_weight <- 
   do(4999) * diffmean(data = yrbss_select_gender, 
@@ -1463,9 +1431,7 @@ We can make distribution plots for `weight` by `physical_3plus`:
 #| warning: false
 #| code-fold: true
 #| 
-ggplot2::theme_set(new = theme_custom())
 
-###
 gf_density(~ weight,
           fill = ~ physical_3plus, colour = ~ physical_3plus,
           data = yrbss_select_phy, alpha = 0.3, 
@@ -1494,7 +1460,8 @@ yrbss_select_phy %>%
     annotate(x = 0.65, y = 60, geom = "text", label = "Mean Weights\n No Exercise"),
     annotate(x = 2.35, y = 60, geom = "text", label = "Mean Weights\nWith Exercise"),
     annotate(x = 1.5, y = 100, geom = "label", label = "Slope indicates\n differences in mean", fill = "moccasin"),
-    scale_colour_viridis_d(name = "Days of Exercise >=3", option = "turbo")) %>%  gf_theme(theme(legend.position = "none", axis.line.x = element_line(linewidth = 1)))
+    scale_colour_viridis_d(name = "Days of Exercise >=3", option = "turbo")) %>%  
+  gf_theme(theme(legend.position = "none", axis.line.x = element_line(linewidth = 1)))
 
 ```
 
@@ -1537,7 +1504,6 @@ cannot do a `shapiro.test`:
 #| results: hold
 #| code-fold: true
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 yrbss_select_phy %>%
   gf_density( ~ weight,
@@ -1789,7 +1755,6 @@ We can visualize this null distribution with the following code:
 #| fig-cap: Null Distribution of Difference in Weights Means
 #| code-fold: true
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 null_dist %>% 
   visualise() + # Note this plus sign! 
@@ -1853,7 +1818,6 @@ that with the `obs`erved `diff`rence and compute the `p-value` and
 #| fig-cap: Null Distribution of Difference in Weights Means
 #| code-fold: true
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 gf_histogram(~ diffmean, data = null_dist_mosaic) %>% 
   gf_vline(xintercept = obs_diff_mosaic, 

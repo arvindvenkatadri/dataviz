@@ -58,7 +58,7 @@ despair::motivate()
 
 ## {{< iconify noto-v1 package >}} Setting up R packages
 
-{{< include /_setup.qmd >}}
+{{< include /_setup_claude_made.qmd >}}
 
 ```{r}
 #| label: setup
@@ -97,19 +97,6 @@ library(ellmer)
 
 ```
 
-
-```{r}
-#| label: plot-theme-ggplot4
-#| cache: false
-#| code-fold: true
-#| messages: false
-#| warning: false
-#| include: false
-#| 
-source(here::here("R", "theme-hatter.R"))  # fonts, geom/table defaults, themes
-theme_custom <- theme_hatter_exhibit  # same design this page used to define locally
-ggplot2::theme_set(new = theme_custom())
-```
 
 
 ## {{< iconify fxemoji japanesesymbolforbeginner >}} Introduction
@@ -191,9 +178,7 @@ mydata
 ```{r}
 #| label: fig-charting-data-1
 #| eval: false
-
-## Set Plot theme
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 mydata %>% 
   gf_density(~ y) %>% 
@@ -338,9 +323,8 @@ xqnorm(p = c(0.025, 0.975),  mean = sample_mean, sd = sample_se,
 
 
   gf_labs(title = "Confidence Interval Estimation",
-        subtitle = "Sample-Mean-Distribution is plotted as theoretical Gaussian Bell Curve") %>% 
-  gf_theme(theme_custom())
- 
+        subtitle = "Sample-Mean-Distribution is plotted as theoretical Gaussian Bell Curve")
+
 ```
 :::
 
@@ -433,7 +417,6 @@ We see that the means here that **chances** that the randomly generated means ca
 #| results: hold
 #| code-fold: true
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 # Calculate exact mean
 obs_mean <- mean( ~ y, data = mydata)
@@ -481,7 +464,6 @@ Let us try the bootstrap test now: Here we *simulate samples, similar to the one
 #| results: hold
 #| code-fold: true
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 ## Resample with replacement from the one sample of 50
 ## Calculate the mean each time
@@ -579,7 +561,6 @@ How can we visualize this?
 #| warning: false
 #| code-fold: true
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 mosaic::xqnorm(p = c(0.025, 0.975), 
                mean = sample_mean, sd = sample_se,
@@ -641,8 +622,7 @@ xqnorm(p = c(0.025, 0.975),
             scale_x_continuous(limits = c(-2.5, 7.5),
                 breaks = c(-2.5, 0, 2.5, 5, 7.5, sample_mean),
                 labels = scales::number_format(accuracy = 0.01,
-                                 decimal.mark = "."))) %>%
-   gf_theme(theme_custom())
+                                 decimal.mark = "."))) 
 
 ```
 
@@ -677,7 +657,6 @@ In *general*, the Teacher in this class is overly generous with grades [[unlike 
 ```{r}
 #| label: fig-charting-data-2
 #| eval: false
-ggplot2::theme_set(new = theme_custom())
 
 exam_grades %>% 
   gf_density(~ course_grade) %>% 
@@ -787,7 +766,6 @@ Note that we have computed whether the average `course_grade` is generally **dif
 #| code-fold: true
 #| results: hold
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 # Calculate exact mean
 obs_mean_grade = mean(~course_grade, data = exam_grades)
@@ -851,7 +829,6 @@ And let us now do the bootstrap test:
 #| fig-cap: "Bootstrap Test for One Mean"
 #| results: hold
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 null_grade_bs <- mosaic::do(4999) * 
   mean( ~ sample(course_grade,
@@ -941,7 +918,6 @@ Now let us plot the figure with all these calculations:
 #| 
 ## Let's plot this
 ## Sample Data
-ggplot2::theme_set(new = theme_custom())
 
 mosaic::xqnorm(p = c(0.025, 0.975), 
                mean = obs_mean_2, sd = sample_se_2,

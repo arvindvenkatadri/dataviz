@@ -52,7 +52,7 @@ format:
 
 ## {{< iconify noto-v1 package >}} Setting up R Packages
 
-{{< include /_setup.qmd >}}
+{{< include /_setup_claude_made.qmd >}}
 
 ```{r}
 #| label: setup
@@ -89,22 +89,6 @@ library(ggrepel)
 library(marquee)
 
 ```
-
-
-
-```{r}
-#| label: plot-theme-ggplot4
-#| cache: false
-#| code-fold: true
-#| messages: false
-#| warning: false
-#| include: false
-#| 
-source(here::here("R", "theme-hatter.R"))  # fonts, geom/table defaults, themes
-theme_custom <- theme_hatter_exhibit  # same design this page used to define locally
-ggplot2::theme_set(new = theme_custom())
-```
-
 
 ## {{< iconify openmoji japanese-symbol-for-beginner >}} Introduction
 
@@ -343,7 +327,6 @@ with the target variable `cmedv` and do a pairs-plots with them:
 #| code-fold: true
 #| layout-ncol: 2
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 housing %>%
   # Target variable cmedv
@@ -438,6 +421,7 @@ correlations with the target variable.
 #| label: fig-error-bar-plot
 #| fig-cap: "Correlation of Quantitative Predictors with Target Variable cmedv"
 #| code-fold: true
+#| 
 correlation::correlation(housing %>% 
                            select(where(is.numeric))) %>%
   filter(Parameter1 == "cmedv") %>% 
@@ -473,7 +457,6 @@ these:
 #| fig-cap: "Correlation Tests of All Quantitative Predictors vs Target Variable"
 #| code-fold: true
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 all_corrs <- housing %>% 
   select(where(is.numeric)) %>% 
@@ -509,7 +492,6 @@ all_corrs %>%
   # Plot points(smallest geom) last!
   gf_point(estimate ~ reorder(predictor, estimate)) %>%
   gf_labs(x = "Predictors", y = "Correlation with cmedv") %>%
-  #gf_theme(theme_minimal()) %>% 
   
   # tilt the x-axis labels for readability
   gf_theme(theme(axis.text.x = element_text(angle = 45, hjust = 1))) %>%
@@ -655,8 +637,8 @@ over-plotted.
 #| code-fold: true
 #| warning: false
 #| 
-ggplot2::theme_set(new = theme_custom())
-set.seed(44) # for reproducibility
+
+set.seed(1947) # for reproducibility
 
 housing_lm_augment %>% 
   slice_sample(n = 20) %>% 
@@ -737,8 +719,6 @@ intercepts ) that we can try as candidates for the best fit line:
 #| layout-ncol: 3
 #| 
 
-ggplot2::theme_set(new = theme_custom())
-
 set.seed(1234)
 housing_sample <- housing_lm_augment %>% 
   slice_sample(n = 15)
@@ -808,7 +788,6 @@ we decide?
 #| layout-ncol: 3
 #| warning: false
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 housing_sample %>% 
   gf_hline(yintercept =  ~ mean_cmedv_sample,
@@ -816,7 +795,7 @@ housing_sample %>%
   gf_segment(
     color = "springgreen3", linewidth = 2,
     mean_cmedv_sample + cmedv ~ rm + rm,
-    title = "Fig A: Price vs \nAverage no. of Rooms",
+    title = "Fig A: Price vs Average no. of Rooms",
     subtitle = "NULL Hypothesis",
     ylab = "cmedv (Median Price)",
     xlab = "rm (Avg. No. of Rooms)") %>%
@@ -830,7 +809,7 @@ housing_sample  %>%
   gf_segment(
     .fitted + cmedv ~ rm + rm,
     color = "orangered1", linewidth = 2,
-    title = "Fig B: Price vs \nAverage no. of Rooms",
+    title = "Fig B: Price vs Average no. of Rooms",
     subtitle = "Alternative Hypothesis",
     ylab = "cmedv (Median Price)",
     xlab = "rm (Avg. No. of Rooms)") %>%
@@ -849,7 +828,7 @@ housing_sample  %>%
   gf_segment(
     .fitted + mean_cmedv_sample ~ rm + rm,
     color = "grey50", linewidth = 2,
-    title = "Fig C: Price vs \nAverage no. of Rooms",
+    title = "Fig C: Price vs Average no. of Rooms",
     subtitle = "Residual Error after Modelling",
     ylab = "cmedv (Median Price)",
     xlab = "rm (Avg. No. of Rooms)") %>%
@@ -896,7 +875,6 @@ function of varying slope, we get:
 #| code-fold: true
 #| warning: false
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 sim_model <- tibble(b = slope + seq(-5,5),
                   a = intercept,
@@ -1163,21 +1141,18 @@ Plotting this is simple too:
 #| message: false
 #| code-fold: true
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 housing_lm_tidy %>%
   gf_col(estimate ~ term, fill = ~ term, width = 0.25) %>% 
   gf_hline(yintercept = 0) %>% 
   gf_errorbar(conf.low + conf.high ~ term, 
               width = 0.1, 
-              title = "Model Bar Plot for Estimates with Confidence Intervals") %>% 
-  gf_theme(theme = theme_custom())
+              title = "Model Bar Plot for Estimates with Confidence Intervals") 
 ##
 housing_lm_tidy %>% 
   gf_pointrange(estimate + conf.low + conf.high ~ term,
                 title = "Model Point-Range Plot for Estimates with Confidence Intervals") %>% 
-  gf_hline(yintercept = 0) %>% 
-  gf_theme(theme = theme_custom())
+  gf_hline(yintercept = 0) 
 
 ```
 
@@ -1215,7 +1190,6 @@ variation in their range:
 #| warning: false
 #| code-fold: true
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 housing_lm_augment %>% 
   gf_point(.resid ~ .fitted, title = "Residuals vs Fitted") %>%
@@ -1267,7 +1241,7 @@ plot very comprehensive statistical graphs. Let us quickly do this:
 
 ```{r}
 #| message: false
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 library(ggstatsplot)
 housing_lm %>%
@@ -1317,7 +1291,9 @@ continue to use `ggformula`.
 #| - "Residuals vs Leverage"
 #| layout-ncol: 2
 #| layout-nrow: 2
+#| 
 plot(housing_lm)
+
 ```
 :::
 :::
@@ -1331,7 +1307,7 @@ packages](https://exts.ggplot2.tidyverse.org/gallery/) named `{{lindia}}` also h
 #| label: fig-using-lindia-package
 #| fig-cap: "Using the lindia package for Model Diagnostics"
 #| message: false
-ggplot2::theme_set(new = theme_bw())
+#| 
 
 library(lindia)
 gg_diagnose(housing_lm, 

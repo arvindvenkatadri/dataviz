@@ -10,7 +10,7 @@ bibliography:
 
 ## {{< iconify noto-v1 package >}} Setting up R Packages
 
-{{< include /_setup.qmd >}}
+{{< include /_setup_claude_made.qmd >}}
 
 ```{r}
 #| label: setup
@@ -52,70 +52,6 @@ Annotations help to draw attention to specific parts or the graph, specific area
 
 We will use the `annotate()` command from `ggplot2` first ( and the new `gf_annotate()` from `ggformula`), and then look at the features offered by the `ggtext` package. 
 
-### Fonts and Themes
-
-As we learnt in the [Fonts Module](../20-Fonts/index.qmd), let us set the ggplot theme with fonts for both the chart defining elements **and** our annotations. I am going to use local fonts from my machine, that I have downloaded from Google Fonts earlier and saved in a `fonts` folder at the root of my project.
-
-```{r}
-#| label: add-local-fonts
-#| code-fold: true
-#| 
-## Clean the slate
-systemfonts::clear_local_fonts()
-systemfonts::clear_registry()
-##
-showtext_opts(dpi = 96) #set DPI for showtext
-sysfonts::font_add(family = "Alegreya",
-  regular = "../../../../../../fonts/Alegreya-Regular.ttf",
-  bold = "../../../../../../fonts/Alegreya-Bold.ttf",
-  italic = "../../../../../../fonts/Alegreya-Italic.ttf",
-  bolditalic = "../../../../../../fonts/Alegreya-BoldItalic.ttf")
-
-sysfonts::font_add(family = "Anton",
-  regular = "../../../../../../fonts/Anton-Regular.ttf") # Only one style is available
-
-sysfonts::font_add(family = "RobotoCondensed", 
-  regular = "../../../../../../fonts/RobotoCondensed-Regular.ttf",
-  bold = "../../../../../../fonts/RobotoCondensed-Bold.ttf",
-  italic = "../../../../../../fonts/RobotoCondensed-Italic.ttf",
-  bolditalic = "../../../../../../fonts/RobotoCondensed-BoldItalic.ttf")
-
-sysfonts::font_add(family = "IbarraNova", 
-  regular = "../../../../../../fonts/IbarraRealNova-Regular.ttf",
-  bold = "../../../../../../fonts/IbarraRealNova-Bold.ttf",
-  italic = "../../../../../../fonts/IbarraRealNova-Italic.ttf",
-  bolditalic = "../../../../../../fonts/IbarraRealNova-BoldItalic.ttf")
-
-sysfonts::font_add(family = "Tangerine", 
-  regular = "../../../../../../fonts/Tangerine-Regular.ttf",
-  bold = "../../../../../../fonts/Tangerine-Bold.ttf") # only these two are available
-
-sysfonts::font_add(family = "Schoolbell", 
-  regular = "../../../../../../fonts/Schoolbell-Regular.ttf") # Only regular is available
-
-showtext_auto() # set these fonts as default for the session
-
-```
-
-Let check of the fonts are now available in the session:
-```{r}
-#| label: check-available-fonts
-sysfonts::font_families() # check which fonts are available in the session
-
-```
-
-Let us set the ggplot theme, and update the fonts for use in the `geoms` as well: 
-
-```{r}
-#| label: set-ggplot2-theme
-#| code-fold: true
-#| 
-source(here::here("R", "theme-hatter.R"))  # fonts, geom/table defaults, themes
-theme_custom <- theme_hatter_compact  # same design this page used to define locally
-ggplot2::theme_set(new = theme_custom())
-```
-
-
 ## Data
 
 We will again work with a **familiar** dataset, so that we can concentrate on the chart aesthetics, without having to spend time getting used to the data: the `penguins` dataset again, ~~from the `palmerpenguins` package~~ now part of the R installation!. 
@@ -125,6 +61,7 @@ As always, we will start with a **table** of the data:
 ```{r}
 #| label: read-penguins-data
 #| message: false
+#| 
 
 penguins <- penguins %>% drop_na() # remove data containing missing data
 
@@ -208,9 +145,7 @@ Let us use `annotate()` / `gf_annotate()` to highlight a portion of the graph. W
 ```{r}
 #| label: fig-annotate-ggformula
 #| fig-cap: "Using `gf_annotate()`"
-
-## Set the theme
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 p1 %>% 
   gf_annotate(geom = "rect", xmin = 45, xmax = 55, ymin = 15, ymax = 20, colour = "black", fill = "grey", alpha = 0.2) %>% 
@@ -235,9 +170,7 @@ p1 %>%
 ```{r}
 #| label: fig-annotate-ggplot
 #| fig-cap: "Using `annotate()`"
-
-## Set the theme
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 p1 + 
   annotate(geom = "rect", xmin = 45, xmax = 55, ymin = 15, ymax = 20, colour = "black", fill = "grey50", alpha = 0.2) + 
@@ -369,8 +302,6 @@ Another basic plot :
 #| label: fig-basic-ggplot2-plot
 #| fig-cap: "Basic ggplot2 scatter plot #2"
 #| 
-## Set the theme
-ggplot2::theme_set(new = theme_custom())
 
 p2 <- ggplot(data = penguins, 
              aes(y = bill_dep, x = bill_len, 
@@ -444,8 +375,7 @@ p2 +
     plot.title = ggtext::element_markdown(),
     plot.caption = ggtext::element_markdown(),
     axis.title.x = ggtext::element_markdown(),
-    axis.title.y = ggtext::element_markdown(),
-    plot.margin = margin(25, 6, 15, 6)
+    axis.title.y = ggtext::element_markdown()
   )
 
 
@@ -457,6 +387,8 @@ p2 +
 `element_textbox()` and `element_textbox_simple()` → formatted text boxes with word wrapping
 
 ```{r}
+#| code-fold: true
+#| 
 ggplot(penguins, aes(x = bill_len, y = bill_dep)) +
   geom_point(aes(color = species), alpha = .6, size = 3.5) +
   
@@ -529,8 +461,7 @@ ggplot(penguins, aes(x = bill_len, y = bill_dep)) +
       r = grid::unit(8, "pt")
     ),
     axis.title.x = ggtext::element_markdown(),
-    axis.title.y = ggtext::element_markdown(),
-    plot.margin = margin(25, 6, 15, 6)
+    axis.title.y = ggtext::element_markdown()
   ) -> p4
 
 p4
@@ -540,6 +471,8 @@ p4
 `geom_textbox()` → formatted text boxes with word wrapping  
 
 ```{r}
+#| code-fold: true
+#| 
 p4 +
   ## add textbox with long paragraphs
   ggtext::geom_textbox(

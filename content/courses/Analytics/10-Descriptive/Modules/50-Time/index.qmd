@@ -57,7 +57,8 @@ format:
 
 ## {{< iconify noto-v1 package >}} Setting up R Packages
 
-{{< include /_setup.qmd >}}
+{{< include /_setup_claude_made.qmd >}}
+
 
 ```{r}
 #| label: setup
@@ -136,21 +137,6 @@ library(downloadthis)
 #   )
 #    
 ```
-
-
-```{r}
-#| label: plot-theme-ggplot4
-#| cache: false
-#| code-fold: true
-#| messages: false
-#| warning: false
-#| include: false
-#| 
-source(here::here("R", "theme-hatter.R"))  # fonts, geom/table defaults, themes
-theme_custom <- theme_hatter_exhibit  # same design this page used to define locally
-ggplot2::theme_set(new = theme_custom())
-```
-
 
 ## {{< iconify fxemoji japanesesymbolforbeginner >}} What graphs will we see today?
 
@@ -496,7 +482,6 @@ births over time, colouring by `day_of_week`, for example:
 ```{r}
 #| label: using-ggformula-1
 #| eval: false
-ggplot2::theme_set(new = theme_custom())
 
 # grouping by day_of_week
 births_2000_2014 %>% 
@@ -544,7 +529,6 @@ month** in each year and plot that:
 #| layout-ncol: 2
 #| code-fold: true
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 births_2000_2014_monthly <- births_2000_2014 %>% 
   
@@ -572,7 +556,7 @@ births_2000_2014_monthly %>%
            title = "Summaries of Monthly Births over the years") %>% 
   
 ## palette for 12 colours
-  gf_theme(scale_colour_brewer(palette = "Paired")) 
+  gf_refine(scale_colour_brewer(palette = "Paired")) 
 
 
 ```
@@ -592,7 +576,6 @@ instead of month:
 #| layout-ncol: 2
 #| code-fold: true
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 births_2000_2014_weekly <- births_2000_2014 %>% 
   mutate(day_of_week = base::factor(day_of_week,
@@ -611,7 +594,7 @@ births_2000_2014_weekly %>%
           data = .) %>% 
   gf_point(size = 2, title = "Births over the Years by Day of Week") %>% 
   # palette for 12 colours
-  gf_theme(scale_colour_brewer(palette = "Paired")) 
+  gf_refine(scale_colour_brewer(palette = "Paired")) 
 
 
 ```
@@ -625,7 +608,6 @@ can plot births over time, colouring by `day_of_week`, for example:
 ```{r}
 #| label: using ggplot
 #| layout-ncol: 2
-ggplot2::theme_set(new = theme_custom())
 
 # grouping by day_of_week
 births_2000_2014 %>% 
@@ -655,7 +637,6 @@ births_2000_2014 %>%
 #| label: using-tibble-data-3b
 #| message: false
 #| layout-ncol: 2
-ggplot2::theme_set(new = theme_custom())
 
 births_2000_2014_monthly <- births_2000_2014 %>% 
   
@@ -688,7 +669,6 @@ births_2000_2014_monthly %>%
 #| message: false
 #| warning: false
 #| layout-ncol: 2
-ggplot2::theme_set(new = theme_custom())
 
 births_2000_2014_weekly <- births_2000_2014 %>% 
   mutate(day_of_week = base::factor(day_of_week,
@@ -725,7 +705,6 @@ Instead of looking at multiple overlapping time series graphs, we could split th
 ```{r}
 #| label: gghighlight-1
 #| eval: false
-ggplot2::theme_set(new = theme_custom())
 
 births_2000_2014_monthly
 ###
@@ -761,7 +740,6 @@ births_2000_2014_monthly %>% ggplot() +
 ```{r}
 #| label: gghighlight-2
 #| eval: false
-ggplot2::theme_set(new = theme_custom())
 
 births_2000_2014_weekly
 ###
@@ -838,7 +816,6 @@ this with `ggformula/ggplot` as we have done before, and with now with
 ```{r}
 #| eval: false
 #| include: false
-ggplot2::theme_set(new = theme_custom())
 
 births_tibble_timeseries %>%
   gf_line(births ~ date)
@@ -853,7 +830,6 @@ births_tibble_timeseries %>%
 ```{r}
 #| label: time-series-timetk
 #| eval: false
-ggplot2::theme_set(new = theme_custom())
 
 births_tibble_timeseries %>%
   timetk::plot_time_series(
@@ -971,7 +947,6 @@ Let us simply plot `Cost` over time:
 ```{r}
 #| label:  PBS-Cost-ggformula
 #| eval: false
-ggplot2::theme_set(new = theme_custom())
 
 PBS %>%
   gf_point(Cost ~ Month, data = .) %>% 
@@ -992,7 +967,6 @@ PBS %>%
 
 ```{r}
 #| label:  PBS-Cost-ggplot
-ggplot2::theme_set(new = theme_custom())
 
 PBS %>% 
   ggplot(aes(Month, Cost)) + 
@@ -1005,7 +979,6 @@ PBS %>%
 ### Using timetk
 
 ```{r}
-ggplot2::theme_set(new = theme_custom())
 
 PBS %>%
   timetk::plot_time_series(.date_var = Month, .value = Cost, 
@@ -1032,7 +1005,6 @@ number of births (low, fine, high) and use that to create a heatmap:
 #| label:  births-heat-map
 #| eval: false
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 births_2000_2014 %>%
   mutate(birthrate = case_when(births >= 10000 ~ "high",

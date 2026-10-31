@@ -10,7 +10,8 @@ citation: true
 
 ## {{< iconify noto-v1 package >}} Setting up R Packages
 
-{{< include /_setup.qmd >}}
+{{< include /_setup_claude_made.qmd >}}
+
 
 ```{r}
 #| label: setup
@@ -44,20 +45,6 @@ library(grateful)
 library(ggrepel)
 library(marquee)
 
-```
-
-
-```{r}
-#| label: plot-theme-ggplot4
-#| cache: false
-#| code-fold: true
-#| messages: false
-#| warning: false
-#| include: false
-#| 
-source(here::here("R", "theme-hatter.R"))  # fonts, geom/table defaults, themes
-theme_custom <- theme_hatter_exhibit  # same design this page used to define locally
-ggplot2::theme_set(new = theme_custom())
 ```
 
 
@@ -160,9 +147,6 @@ numerical column:
 
 ```{r feasts-basic-plot}
 
-# Set graph theme
-# theme_set(new = theme_custom())
-#
 feasts::autoplot(walmart_tsibble, .vars = Weekly_Sales)
 
 ```
@@ -319,9 +303,6 @@ We can do this for **all** `Dept`s using `fable` and `fabletools`:
 ```{r}
 #| label:  Decomposing_trends
 
-# Set graph theme
-theme_set(new = theme_custom())
-##
 walmart_decomposed <- 
   walmart_tsibble %>% 
   
@@ -407,9 +388,6 @@ flights_delay_ts
 ```{r}
 #| layout-ncol: 2
 
-# Set graph theme
-theme_set(new = theme_custom())
-#
 mean_arr_delays_by_carrier <- 
   flights_delay_ts %>%
   group_by(carrier) %>% 
@@ -533,9 +511,6 @@ each origin across airlines!**
 
 ```{r}
 
-# Set graph theme
-theme_set(new = theme_custom())
-##
 flights_delay_ts %>%
   mutate(total_delay = arr_delay + dep_delay,
          month = lubridate::month(time_hour, 
@@ -598,9 +573,7 @@ aggregated by month**
 
 ### Using tsibble + ggformula
 ```{r}
-# Set graph theme
-theme_set(new = theme_custom())
-##
+
 avg_delays_month <- flights_delay_ts %>% 
   group_by(origin) %>% 
   mutate(total_delay = arr_delay + dep_delay) %>% 
@@ -697,9 +670,6 @@ fabletools::components(births_STL_yearly)
 #| fig-column: screen-inset
 #| column: screen-inset
 
-# Set graph theme
-theme_set(new = theme_custom())
-##
 feasts::autoplot(components(births_STL_yearly))
 
 ```

@@ -44,7 +44,7 @@ format:
 
 ## {{< iconify noto-v1 package >}} Setting up R packages
 
-{{< include /_setup.qmd >}}
+{{< include /_setup_claude_made.qmd >}}
 
 ```{r}
 #| label: setup
@@ -85,21 +85,6 @@ library(ellmer) # Access LLMs from R
 library(statlingua) # LLM-driven plain English statistical explanations
 
 ```
-
-
-```{r}
-#| label: plot-theme-ggplot4
-#| cache: false
-#| code-fold: true
-#| messages: false
-#| warning: false
-#| include: false
-#| 
-source(here::here("R", "theme-hatter.R"))  # fonts, geom/table defaults, themes
-theme_custom <- theme_hatter_exhibit  # same design this page used to define locally
-ggplot2::theme_set(new = theme_custom())
-```
-
 
 ## {{< iconify openmoji japanese-symbol-for-beginner >}} Introduction
 
@@ -237,6 +222,7 @@ We can now set up a
 ```{r}
 #| label: tbl-vcd-contingency-table
 #| tbl-cap: "Contingency Table of Education vs Death Penalty"
+#| 
 
 contingency_table <- vcd::structable(Education ~ DeathPenalty,
   data = GSS2002_modified)
@@ -347,7 +333,7 @@ We will therefore continue to use the outputs from `vcd`.
 
 ```{r mosaic-plot,warning=FALSE}
 #| eval: false
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 library(ggmosaic)
 ggplot(data = gss2002) +
@@ -368,7 +354,7 @@ Table into a tibble:
 #| eval: false
 #| warning: false
 #| message: false
-ggplot2::theme_set(new = theme_custom())
+#| 
 
 # https://stackoverflow.com/questions/19233365/how-to-create-a-marimekko-mosaic-plot-in-ggplot2
 gss_summary <- gss2002 %>%
@@ -483,7 +469,6 @@ As always, *we analyze our plots, and plot our analysis*. Here is a plot for thi
 #| out-height: "50%"
 #| fig-align: center
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 mosaic::xqchisq(p = 0.95, df = 4, 
                return = c("plot"), verbose = F,
@@ -748,7 +733,6 @@ Post](https://stats.stackexchange.com/a/303548):
 #| - Normal Density
 #| - Squared Normal = Chi-Square
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 df <- tibble(x = rnorm(500, mean = 0, sd = 2), 
              y = x^2)
@@ -837,7 +821,6 @@ summary
 #| code-fold: true
 #| warning: false
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 obs_difference <-
   diff(mean(candidate_selected ~ evaluator, data = data))
@@ -868,9 +851,7 @@ p0 <- data %>%
   ) +
   
   # Very important to have scales = "free" !!
-  facet_wrap( ~ evaluator, ncol = 1, scales = "free") +
-  
-  ggplot2::theme_void(base_family = "Alegreya", base_size = 14) + 
+  facet_wrap( ~ evaluator, ncol = 1, scales = "free") + 
   theme(
     legend.position = "top",
     strip.background = element_blank(),
@@ -908,6 +889,7 @@ How would that pooled shuffled set of evaluations look like?
 ```{r}
 #| label: fig-Shuffle-the-data-once
 #| code-fold: true
+#| 
 set.seed(1947)
 data_shuffled <- data %>%
   
@@ -934,7 +916,6 @@ data_shuffled %>%
 #| layout: [[45,-10, 45]]
 #| warning: false
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 data_shuffled %>% 
       group_by(evaluator, candidate_selected) %>% 
@@ -944,9 +925,7 @@ data_shuffled %>%
       geom_point(shape = 21,size = 8) + 
       scale_fill_manual(name = NULL,
                         values = c("orangered", "dodgerblue"),
-                        labels = c("Rejected","Selected")) +  
-      ggplot2::theme_void(base_family = "Alegreya", base_size = 14) + 
-      facet_wrap(~ evaluator, ncol = 1, scales = "free") +
+                        labels = c("Rejected","Selected")) +  facet_wrap(~ evaluator, ncol = 1, scales = "free") +
       expand_limits(y = c(0,28)) +
       ggbrace::stat_brace(aes(label = evaluator),
                           rotate = 90,
@@ -987,7 +966,6 @@ data_shuffled %>%
                       labelrotate = 0,
                       labelsize = 4,
                       inherit.aes = TRUE) +
-  ggplot2::theme_void(base_family = "Alegreya", base_size = 14) + 
   theme(legend.position = "top", 
                        strip.background = element_blank(),
                        strip.text.x = element_blank(),
@@ -1023,7 +1001,6 @@ observed figure from Mother Nature.
 #| out-height: "75%"
 #| fig-align: center
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 null_dist <- do(4999) * diff(mean(
   candidate_selected ~ shuffle(evaluator), 
@@ -1058,7 +1035,6 @@ We should now repeat the test with permutations on `Education`:
 #| out-height: "75%"
 #| fig-align: center
 #| 
-ggplot2::theme_set(new = theme_custom())
 
 set.seed(42)
 null_chisq <- do(4999) * 

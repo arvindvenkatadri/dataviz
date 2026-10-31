@@ -12,13 +12,14 @@ bibliography:
 
 ## {{< iconify noto-v1 package >}} Setting up R Packages
 
-{{< include /_setup.qmd >}}
+{{< include /_setup_claude_made.qmd >}}
 
 ```{r}
 #| label: setup
 #| message: false
 #| warning: false
 #| fig-directory: "03-figs"
+#| 
 
 library(tidyverse) # Manage data
 library(ggformula) # ggplot2 with a formula interface
@@ -48,6 +49,7 @@ library(reactable) # Interactive tables ( for choosing palettes)
 #| label: Themes and Extra Packages
 #| echo: false
 #| message: false
+#| 
 library(checkdown)
 library(epoxy)
 library(explore) # fake data generation
@@ -59,22 +61,6 @@ library(marquee)
 # pak::pak("mccarthy-m-g/embedr")
 library(embedr) # Embed multimedia in HTML files
 
-```
-
-
-```{r}
-#| label: plot-theme-ggplot4
-#| cache: false
-#| code-fold: true
-#| messages: false
-#| warning: false
-#| include: false
-#| 
-library(ggrepel)
-library(marquee)
-source(here::here("R", "theme-hatter.R"))  # fonts, geom/table defaults, themes
-theme_custom <- theme_hatter_compact  # same design this page used to define locally
-ggplot2::theme_set(new = theme_custom())
 ```
 
 
@@ -134,6 +120,7 @@ Fill and colour scales in ggplot2 can use the same palettes. Some shapes such as
 #| echo: false
 #| fig.cap: "Shapes in ggplot2."
 #| fig-height: 4
+#| 
 ## A look at all 25 symbols
 df <- data.frame(x = 1:5,
                  y = rep(rev(seq(0, 24, by = 5)), each = 5),
@@ -152,6 +139,7 @@ All symbols have a foreground colour, so if we add `color = "navy"`, they all ar
 #| echo: false
 #| fig.cap: "Shapes in ggplot2 have the colour aesthetic."
 #| fig-height: 4
+#| 
 s + geom_point(aes(shape = z), size = 4, colour = "blue")  + scale_shape_identity()
 
 ```
@@ -163,6 +151,7 @@ While all symbols have a foreground colour, symbols `21-25` also take a backgrou
 #| label: fig-shapes-colour-fill
 #| echo: false
 #| fig.cap: "Some Shapes in ggplot2 also have the fill aesthetic."
+#| 
 s + geom_point(aes(shape = z), size = 4, colour = "blue", fill = "orchid")  + scale_shape_identity()
 
 ```
@@ -200,6 +189,7 @@ We will create simple base plots in `{{ggplot2}}` and see how we may alter the c
 
 ```{r}
 #| label: penguins-names
+#| 
 names(penguins)
 
 ```
@@ -208,6 +198,7 @@ names(penguins)
 ```{r}
 #| label: fig-penguins-default-plots
 #| fig-cap: "Default colours in ggplot2 for discrete and continuous variables"
+#| 
 
 p1 <- penguins %>% 
   drop_na() %>% 
@@ -271,6 +262,7 @@ Let us just assure ourselves of the "default-ness" of `{{ggplot2}}` colours, whe
 #| fig-subcap: 
 #|   - "P1: Discrete/Qual Colour Palette"
 #|   - "P2: Continuous/Quant Colour Palette"
+#|   
 
 p10 <- p1 %>% 
   gf_refine(scale_color_discrete()) 
@@ -296,6 +288,7 @@ Let us examine the palettes available in the `{{RColorBrewer}}` package.
 #| fig-height: 8
 #| results: hold
 #| code-fold: true
+#| 
 
 RColorBrewer::brewer.pal.info %>% reactable::reactable(data = ., filterable = TRUE, minRows = 5,searchable = TRUE,resizable = TRUE, striped = TRUE, compact = TRUE, bordered = TRUE, highlight = TRUE, showSortable = TRUE, showSortIcon = TRUE) 
 RColorBrewer::display.brewer.all(type = "all")
@@ -339,6 +332,7 @@ NOTE: In order to access some palettes in `{{paletteer}}`, you may be asked to i
 #| label: tbl-paletteer-palettes
 #| tbl-cap: "Discrete Colour Palettes in paletteer"
 #| code-fold: true
+#| 
 
 # What discrete palettes are there in paletteer?
 palettes_d_names %>% reactable::reactable(data = ., filterable = TRUE, minRows = 5,searchable = TRUE,resizable = TRUE, striped = TRUE, compact = TRUE, bordered = TRUE, highlight = TRUE, showSortable = TRUE, showSortIcon = TRUE) 
@@ -350,6 +344,7 @@ palettes_d_names %>% reactable::reactable(data = ., filterable = TRUE, minRows =
 #| label: tbl-paletteer-palettes-2
 #| tbl-cap: "Continuous Colour Palettes in paletteer"
 #| code-fold: true
+#| 
 
 # What continuous palettes are there in paletteer?
 palettes_c_names %>% reactable::reactable(data = ., filterable = TRUE, minRows = 5,searchable = TRUE,resizable = TRUE, striped = TRUE, compact = TRUE, bordered = TRUE, highlight = TRUE, showSortable = TRUE, showSortIcon = TRUE) 
@@ -368,6 +363,7 @@ Dynamic palettes are available for both discrete and continuous variables in `pa
 #| label: tbl-paletteer-palettes-3
 #| tbl-cap: "Dynamic Palettes in paletteer"
 #| code-fold: true
+#| 
 
 # What dynamic palettes are there in paletteer?
 palettes_dynamic_names %>% reactable::reactable(data = ., filterable = TRUE, minRows = 5,searchable = TRUE,resizable = TRUE, striped = TRUE, compact = TRUE, bordered = TRUE, highlight = TRUE, showSortable = TRUE, showSortIcon = TRUE) 
@@ -378,6 +374,7 @@ palettes_dynamic_names %>% reactable::reactable(data = ., filterable = TRUE, min
 ```{r}
 #| label: paletteer_discrete_palettes
 #| code-fold: true
+#| 
 p12 <- p1 +
   scale_colour_paletteer_d("ggthemes_ptol::qualitative", 
                            dynamic = TRUE) +
@@ -435,6 +432,7 @@ Creates a pallete containing *continuous* shades between two colours:
 #| warning: false
 #| message: false
 #| code-fold: true
+#| 
 p2 +
     scale_color_gradient(
       low = "dodgerblue", # Play with this setting
@@ -453,6 +451,7 @@ Sometimes we want a palette this way: a *midpoint* colour, and colours for the t
 #| label: Continuous_Three_Colour_Gradients
 #| warning: false
 #| code-fold: true
+#| 
 
 colour_midpoint <- mean(penguins$bill_len, 
                          na.rm = TRUE) # remove missing values
@@ -480,6 +479,7 @@ p2 +
 ```{r}
 #| label: Continuous-n-Colour-Gradients-grDevices
 #| code-fold: true
+#| 
 # grDevices Palettes
 p2 +
   scale_colour_gradientn(
@@ -500,6 +500,7 @@ Let us look at the [`wesanderson` package](https://github.com/karthik/wesanderso
 
 ```{r}
 #| echo: false
+#| 
 len <- length(wes_palettes)
 names <- names(wes_palettes)
 lengths <- purrr::map_int(wes_palettes, length)
@@ -515,6 +516,7 @@ tibble(
 ```{r}
 #| label: Continuous_n_Colour_Gradients_wesanderson
 #| code-fold: true
+#| 
 
 p2 +
     scale_colour_gradientn(
@@ -533,6 +535,7 @@ p2 +
 ```{r}
 #| label: Discrete_wesanderson
 #| code-fold: true
+#| 
 p1 +
   scale_colour_discrete(type = wes_palette(name = "GrandBudapest1",
                                            n = 3)) +
@@ -563,8 +566,7 @@ With some complex charts, such as an [alluvial chart](../../../10-Descriptive/Mo
 ```{r}
 library(vcdExtra)
 library(ggalluvial)
-options(rgl.useNULL = TRUE)
-rgl::rgl.useNULL()
+data(Titanicp, package = "vcdExtra")
 Titanicp %>% 
   ggplot(aes(axis1 = pclass, axis3 = survived, axis2 = sex)) + 
   geom_alluvium(aes(fill = survived), alpha = 0.5) + # first fill
@@ -601,6 +603,7 @@ Titanicp %>%
   labs(title = "My Improved Titanic Plot", subtitle = "Rose is Evil", caption = "Made with ggalluvial") 
 
 ```
+
 Here we have reset the `fill` scale midway, added a new palette for each `fill`, and disabled the `legend` for the second fill ( stratum).
 
 
