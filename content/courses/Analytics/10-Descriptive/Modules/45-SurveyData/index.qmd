@@ -65,9 +65,9 @@ library(tidyverse)
 library(mosaic) # Our trusted friend
 library(skimr)
 #
-library(ggstats) # Likert Scale Plots
 library(labelled) # Creating Labelled Data for Likert Plots
 library(sjPlot) #Another package for Likert Plots
+library(ggstats) # Likert Scale Plots
 
 ## Making Tables
 library(kableExtra) # html styled tables
@@ -140,6 +140,62 @@ As seen, we can use Likert Scale based questionnaire for a variety of aspects in
 
 How does this data look like, and how does one plot it? Let us consider a fictitious example, followed by a real world dataset.
 
+```{r}
+#| label: fig-likert-dummy
+#| warning: false
+#| eval: false
+#| echo: false
+#| 
+
+## Use Dummy Data Creating from ggstats help vignette
+likert_levels <- c(
+  "Strongly disagree",
+  "Disagree",
+  "Neither agree nor disagree",
+  "Agree",
+  "Strongly agree"
+)
+set.seed(1947)
+df <-
+  tibble(
+    q1 = sample(likert_levels, 150, replace = TRUE),
+    q2 = sample(likert_levels, 150, replace = TRUE, prob = 5:1),
+    q3 = sample(likert_levels, 150, replace = TRUE, prob = 1:5),
+    q4 = sample(likert_levels, 150, replace = TRUE, prob = 1:5),
+    q5 = sample(c(likert_levels, NA), 150, replace = TRUE),
+    q6 = sample(likert_levels, 150, replace = TRUE, prob = c(1, 0, 1, 1, 0))
+  ) |>
+  mutate(across(everything(), ~ factor(.x, levels = likert_levels)))
+
+likert_levels_dk <- c(
+  "Strongly disagree",
+  "Disagree",
+  "Neither agree nor disagree",
+  "Agree",
+  "Strongly agree",
+  "Don't know"
+)
+df_dk <-
+  tibble(
+    q1 = sample(likert_levels_dk, 150, replace = TRUE),
+    q2 = sample(likert_levels_dk, 150, replace = TRUE, prob = 6:1),
+    q3 = sample(likert_levels_dk, 150, replace = TRUE, prob = 1:6),
+    q4 = sample(likert_levels_dk, 150, replace = TRUE, prob = 1:6),
+    q5 = sample(c(likert_levels_dk, NA), 150, replace = TRUE),
+    q6 = sample(
+      likert_levels_dk, 150,
+      replace = TRUE, prob = c(1, 0, 1, 1, 0, 1)
+    )
+  ) |>
+  mutate(across(everything(), ~ factor(.x, levels = likert_levels_dk)))
+
+## Now plot this:
+
+gglikert(df) + labs(title = "Demo Likert Plot", subtitle = "Made from ggstats help file")
+
+
+```
+
 ## {{< iconify grommet-icons test >}} Case Study-1: A fictitious app Survey dataset
 
 ::: callout-note
@@ -209,6 +265,23 @@ for each of the survey questions. Such a plot is called a **Likert
 plot** and it looks like this:
 
 ```{r}
+#| label: theme-diagnostic
+#| eval: false
+#| echo: false
+#| 
+exists("theme_madhatter")
+
+theme_get()$text$family
+theme_get()$geom$paper
+
+theme_set(theme_madhatter())
+
+theme_get()$text$family
+theme_get()$geom$paper
+
+```
+
+```{r}
 #| echo: false
 #| label: fig-QUICK_EZ-app
 #| fig-cap: "Likert Plot for the User Survey for QuickEZ"
@@ -217,13 +290,23 @@ plot** and it looks like this:
 #| 
 
 
-quickez_data %>%
-  gglikert(sort = "asc", width = 0.5, totals_size = 3,
+p <- quickez_data %>%
+  gglikert(sort = "ascending", width = 0.5, totals_size = 3,
            add_labels = T, labels_size = 3,
-           reverse_likert = F, ) +
+           reverse_likert = F) +
   labs(title = "QuickEZ App Survey Results") +
-  geom_vline(xintercept = 0) + 
-  theme(legend.position = "bottom")
+  geom_vline(xintercept = 0)
+p + theme_madhatter()
+
+```
+```{r}
+#| label: gglikert-theme-check
+#| eval: false
+#| echo: false
+#| 
+p$theme
+packageVersion("ggstats")
+packageVersion("ggplot2")
 
 ```
 
@@ -293,7 +376,7 @@ The `cop`ing related variables have responses on the Likert Scale
 labels are actually ( and perhaps usually ) the *questions* in the
 survey.
 
-We can plot this data using the `gglikert` function from package `ggstats`:
+We can plot this data using the `gglikert` function[^5] from package `ggstats`:
 
 ```{r}
 #| echo: false
@@ -311,6 +394,7 @@ efc %>%
     labels = c("never", "sometimes", "often", "always"), 
     palette = "Set3", direction = -1) +
     geom_vline(xintercept = 0) + 
+    theme_madhatter() +
     theme(legend.position = "bottom") 
 
 ```
@@ -353,20 +437,10 @@ variables and the values before plotting. We will use the R package `labelled` t
 
 It is also possible to label the tibble, the columns, and the values in similar fashion using the `sjlabelled` package[^3] and the `labelr` package[^4].
 
-[^1]: Introduction to `labelled`:<https://larmarange.github.io/labelled/articles/intro_labelled.html#using-labelled-with-dplyrmagrittr>
-
-[^2]: Piping Hot Data: Leveraging Labelled Data in R,
-    <https://www.pipinghotdata.com/posts/2020-12-23-leveraging-labelled-data-in-r/>
-
-[^3]: Label Support in
-    R:<https://cran.r-project.org/web/packages/sjlabelled/index.html>
-    
-[^4]: Using the `labelr` package: <https://cran.r-project.org/web/packages/labelr/vignettes/labelr-introduction.html>
-
 ```{r}
 #| echo: false
 #| label: fig-R-usage-survey
-#| fig-cap: "Likert Plot for Do You Use R Survey"
+#| fig-cap: "Likert Plot for Do You Use R? Survey"
 #| fig-align: "center"
 #| out-width: "75%"
 #| 
@@ -412,7 +486,7 @@ str(my_survey_data)
 ##
 my_survey_data %>% 
   gglikert(labels_size = 3, width = 0.5) +
-  labs(title = "Do you use R Survey",
+  labs(title = "Do you use R? A Survey",
        subtitle = "Creating and Using Labelled Data",
        caption = "Using gglikert from ggstats package") + 
   scale_fill_brewer(palette = "Spectral",
@@ -420,6 +494,7 @@ my_survey_data %>%
     labels = c("never", "sometimes", "often", "always"),
       ) +
   geom_vline(xintercept = 0) + 
+  theme_madhatter() + 
   theme(legend.position = "bottom")
 
 ```
@@ -432,13 +507,25 @@ So there we are with Survey data analysis and plots!
 
 There are a few other plots with this type of data, which are useful in
 very specialized circumstances. One example of this is the
-`agreement plot`[^5] which captures the agreement between two (sets) of
+`agreement plot`[^6] which captures the agreement between two (sets) of
 evaluators, on ratings given on a shared ordinal scale to a set of
 items. An example from the field of medical diagnosis is the opinions of
 two specialists on a common set of patients. However, that is for a more
 advanced course!
 
-[^5]: Bangdiwala, S.I., Shankar, V. The agreement chart. BMC Med Res Methodol 13, 97 (2013). https://doi.org/10.1186/1471-2288-13-97
+[^1]: Introduction to `labelled`:<https://larmarange.github.io/labelled/articles/intro_labelled.html#using-labelled-with-dplyrmagrittr>
+
+[^2]: Piping Hot Data: Leveraging Labelled Data in R,
+    <https://www.pipinghotdata.com/posts/2020-12-23-leveraging-labelled-data-in-r/>
+
+[^3]: Label Support in
+    R:<https://cran.r-project.org/web/packages/sjlabelled/index.html>
+    
+[^4]: Using the `labelr` package: <https://cran.r-project.org/web/packages/labelr/vignettes/labelr-introduction.html>
+
+[^5]: Using the `ggstats` package: There seems to be an internal ggplot theme that is forced by `ggstats::gglikert`. This prevents my global/site-wide `_setup.qmd` from kicking in and I have to apply it locally here. 
+
+[^6]: Bangdiwala, S.I., Shankar, V. The agreement chart. BMC Med Res Methodol 13, 97 (2013). https://doi.org/10.1186/1471-2288-13-97
 
 ## {{< iconify mingcute thought-line >}} Wait, But Why?
 
