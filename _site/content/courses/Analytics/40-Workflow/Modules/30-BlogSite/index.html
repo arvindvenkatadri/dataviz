@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="dcterms.date" content="2024-06-23">
+<title> I Publish, therefore I Am – The Mad Hatter's Guide to Data Viz and Stats in R</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+<script src="../../../../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../../../../">
+<link href="../../../../../../content/courses/Analytics/40-Workflow/Modules/40-DataShapingCleaning/index.html" rel="next">
+<link href="../../../../../../content/courses/Analytics/40-Workflow/Modules/200-EDA-Workflow/index.html" rel="prev">
+<link href="../../../../../../content/materials/icon-park-twotone--concept-sharing.svg" rel="icon" type="image/svg+xml">
+<script src="../../../../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting-12757e4b7af482b2d9c5bd8860d2b707.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../../../../site_libs/bootstrap/bootstrap-33e633d2a9e5093507fd4bb078e98b08.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../../../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.css" rel="stylesheet">
+<script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
+<script src="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<link href="../../../../../../site_libs/quarto-contrib/tachyons-4.12.0/tachyons.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><style>html{ scroll-behavior: smooth; }</style>
+<link href="../../../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><link rel="stylesheet" href="../../../../../../css/fira.css">
+<link rel="stylesheet" href="../../../../../../css/roboto-condensed.css">
+<link rel="stylesheet" href="../../../../../../css/vollkorn.css">
+<link rel="stylesheet" href="../../../../../../css/fraunces.css">
+<link rel="stylesheet" href="../../../../../../css/styles.css">
+<meta property="og:title" content=" I Publish, therefore I Am – The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta property="og:description" content="Putting it all out there on the web">
+<meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/40-Workflow/Modules/30-BlogSite/preview.jpg">
+<meta property="og:site_name" content="The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta property="og:image:alt" content="Image by rawpixel.com">
+<meta name="twitter:title" content=" I Publish, therefore I Am – The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta name="twitter:description" content="Putting it all out there on the web">
+<meta name="twitter:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/40-Workflow/Modules/30-BlogSite/preview.jpg">
+<meta name="twitter:image:alt" content="Image by rawpixel.com">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../../../../index.html">
+    <span class="navbar-title">The Mad Hatter’s Guide to Data Viz and Stats in R</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/arvindvenkatadri/dataviz"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/arvind_v"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/arvindvenkatadri"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="mailto:arvind.venkatadri@gmail.com"> <i class="bi bi-envelope" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+</div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/listing.html">Data Viz and Stats</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/40-Workflow/listing.html">Workflow</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/40-Workflow/Modules/30-BlogSite/index.html"><iconify-icon icon="entypo:publish" width="1.2rem" height="1.2rem"></iconify-icon> I Publish, therefore I Am</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+      <a href="../../../../../../index.html" class="sidebar-logo-link">
+      <img src="../../../../../../content/materials/images/1book25.jpg" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none"><img src="../../../../../../content/materials/images/1book25.jpg" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none"></a>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../content/courses/Analytics/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Viz and Stats</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../content/courses/Analytics/05-Tools/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tools</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/05-Tools/10-Intro-to-R/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa-brands:r-project"></iconify-icon> Introduction to R and RStudio</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../content/courses/Analytics/500-DataKits/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Studio Flow and Data Kits</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/500-DataKits/Modules/WallAndPanel/12-day-studio-index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">12-Day Studio Index</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/500-DataKits/Modules/Healthcare/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa-brands:r-project"></iconify-icon> Healthcare Data Kits</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../content/courses/Analytics/10-Descriptive/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visualization</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/05-NatureData/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icon-park-twotone:data-user" width="1.2em" height="1.2em"></iconify-icon> Data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/06-Inspect/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="grommet-icons:inspect" width="1.2em" height="1.2em"></iconify-icon> Inspect Data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/09-Graphs/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="carbon:chart-3d" width="1.2em" height="1.2em"></iconify-icon> Graphs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/10-FavStats/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="carbon:summary-kpi" width="1.2em" height="1.2em"></iconify-icon> Summaries</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/20-Counts/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="eos-icons:counting" width="1.2em" height="1.2em"></iconify-icon> Counts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/22-Quantities/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fluent-mdl2:quantity" width="1.2em" height="1.2em"></iconify-icon> Quantities</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/24-Groups/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="lucide:group" width="1.2em" height="1.2em"></iconify-icon> Groups</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/26-Distributions/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="clarity:bell-curve-line" width="1.2em" height="1.2em"></iconify-icon> Distributions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/28-Violins/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="material-symbols:light-group-rounded" width="1.2em" height="1.2em"></iconify-icon> Groups and Distributions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/30-Change/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icon-park-outline:change" width="1.2em" height="1.2em"></iconify-icon> Change</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/40-CatData/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icon-park-outline:proportional-scaling"></iconify-icon> Proportions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/60-PartWhole/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="ic:round-pie-chart-outline"></iconify-icon> Hierarchy</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/70-EvolutionFlow/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="carbon:sankey-diagram"></iconify-icon> Evolution and Flow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/80-Ranking/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="ph:ranking-bold" width="1.2em" height="1.2em"></iconify-icon> Ratings and Rankings</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/45-SurveyData/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="wpf:survey" width="1.2em" height="1.2em"></iconify-icon> Surveys</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/50-Time/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fluent-mdl2:hour-glass" width="1.2em" height="1.2em"></iconify-icon> Time</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Space</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth3 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/95-Intro/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> Introduction to Maps</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/10-Data/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> What is Vector Data?</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/15-Static/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> The Grammar of Maps</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/20-Leaflet/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> Interactive Maps with leaflet</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/100-Networks/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="bx:network-chart" width="1.2em" height="1.2em"></iconify-icon> Networks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/10-Descriptive/Modules/180-RefMat/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="eos-icons:miscellaneous"></iconify-icon> Miscellaneous Graphing Tools, and References</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../content/courses/Analytics/20-Inference/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inference</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/20-Inference/Modules/10-Intro/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Basics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/20-Inference/Modules/20-SampProb/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🎲 Samples</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/20-Inference/Modules/60-SimTest/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Randomization</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/20-Inference/Modules/100-OneMean/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">One Mean</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/20-Inference/Modules/110-TwoMeans/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Two Independent Means</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/20-Inference/Modules/120-PairedMeans/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Two Paired Means</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/20-Inference/Modules/130-ThreeMeansOrMore/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Multiple Means (ANOVA)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/20-Inference/Modules/150-Correlation/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Correlation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/20-Inference/Modules/180-OneProp/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">One Proportion</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/20-Inference/Modules/190-TwoProp/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Two Proportions</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../content/courses/Analytics/30-Modelling/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modelling</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/30-Modelling/Modules/20-LinReg/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linear Regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/30-Modelling/Modules/30-LogReg/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logistic Regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/30-Modelling/Modules/50-ModelTimeSeries/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🕔 Time Series</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../content/courses/Analytics/40-Workflow/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Workflow</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth2 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/40-Workflow/Modules/200-EDA-Workflow/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="guidance:falling-rocks" width="1.2em" height="1.2em"></iconify-icon><iconify-icon icon="game-icons:falling" width="1.2em" height="1.2em"></iconify-icon> Facing the Abyss</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/40-Workflow/Modules/30-BlogSite/index.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><iconify-icon icon="entypo:publish" width="1.2rem" height="1.2rem"></iconify-icon> I Publish, therefore I Am</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/40-Workflow/Modules/40-DataShapingCleaning/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="twemoji:carpentry-saw" width="1.2rem" height="1.2rem"></iconify-icon> Data Carpentry</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../content/courses/Analytics/50-Arts/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Arts</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/50-Arts/Modules/10-Colour/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Colours</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/50-Arts/Modules/20-Fonts/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fonts for Charts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/50-Arts/Modules/30-MoreFonts/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Font Effects in Charts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/50-Arts/Modules/40-Branding/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Branding and Typography</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/50-Arts/Modules/50-Annotations1/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Annotations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/50-Arts/Modules/60-Annotations2/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">More Annotations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/50-Arts/Modules/70-Highlighting/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Highlighting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/50-Arts/Modules/80-Scales/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Scales</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../content/courses/Analytics/60-AI-tools/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">AI Tools</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/60-AI-tools/Modules/10-LLMs/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using gander and ellmer</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/60-AI-tools/Modules/20-Github-Pilot/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using Github Copilot and other AI tools to generate R code</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/60-AI-tools/Modules/30-Explain/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using LLMs to Explain Stat models</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../content/courses/Analytics/70-CaseStudies/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Case Studies</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/05-Demo/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="healthicons:elderly-outline" width="1.2em" height="1.2em"></iconify-icon> Demo:Product Packaging and Elderly People</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/10-IkeaFurniture/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="simple-icons:ikea" width="1.2em" height="1.2em"></iconify-icon> Ikea Furniture</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/20-MovieProfits/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="noto:movie-camera" width="1.2em" height="1.2em"></iconify-icon> Movie Profits</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/30-GenderWorkplace/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icons8:gender" width="1.2em" height="1.2em"></iconify-icon> Gender at the Work Place</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/40-Heptathlon/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icon-park-outline:sport" width="1.2em" height="1.2em"></iconify-icon> Heptathlon</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/60-SchoolScores/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="ic:twotone-school" width="1.2em" height="1.2em"></iconify-icon> School Scores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/80-ChildrensGames/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa6-solid:children"></iconify-icon><iconify-icon icon="icon-park-solid:play-basketball"></iconify-icon> Children's Games</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/90-ValentinesDay/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="mingcute:hand-heart-line"></iconify-icon> Valentine’s Day Spending</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/100-WomenLiveMen/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="noto:mage-light-skin-tone"></iconify-icon> Women Live Longer?</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/110-ChildrenHearingLoss/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa6-solid:ear-deaf"></iconify-icon><iconify-icon icon="fa-regular:sad-tear"></iconify-icon> Hearing Loss in Children</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/200-CaliforniaTransitPayments/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="openmoji:california-flag"></iconify-icon><iconify-icon icon="material-symbols:transit-ticket-outline-sharp"></iconify-icon> California Transit Payments</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/250-Seaweed/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="iconoir:sea-waves"></iconify-icon><iconify-icon icon="mdi:weed"></iconify-icon> Seaweed Nutrients</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/300-Coffee/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa:coffee"></iconify-icon> Coffee Flavours</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/350-LegionnairesDisease/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa6-solid:disease"></iconify-icon> Legionnaire’s Disease in the USA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/400-AntarcticSeaIce/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="iconoir:sea-waves"></iconify-icon><iconify-icon icon="openmoji:floating-ice"></iconify-icon>  Antarctic Sea ice</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/70-CaseStudies/Modules/450-CholeraInLondon/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="simple-icons:transportforlondon"></iconify-icon><iconify-icon icon="hugeicons:water-pump"></iconify-icon>  William Farr's Observations on Cholera in London</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../../../../content/courses/Analytics/1000-Projects/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Projects</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../../content/courses/Analytics/1000-Projects/Modules/300-NoFreeHunch/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="game-icons:sherlock-holmes" width="1.2em" height="1.2em"></iconify-icon> No Free Hunch</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#setting-up-git-and-github" id="toc-setting-up-git-and-github" class="nav-link active" data-scroll-target="#setting-up-git-and-github"><span class="header-section-number">1</span> Setting up Git and GitHub</a></li>
+  <li><a href="#linking-rstudio-and-github-one-time-only" id="toc-linking-rstudio-and-github-one-time-only" class="nav-link" data-scroll-target="#linking-rstudio-and-github-one-time-only"><span class="header-section-number">2</span> Linking RStudio and GitHub (One Time Only)</a></li>
+  <li><a href="#creating-your-blog-project-in-rstudio-one-time-only" id="toc-creating-your-blog-project-in-rstudio-one-time-only" class="nav-link" data-scroll-target="#creating-your-blog-project-in-rstudio-one-time-only"><span class="header-section-number">3</span> Creating your Blog Project in RStudio (One Time Only)</a></li>
+  <li><a href="#making-your-blog-ready-to-publish-now-and-every-time-you-have-new-content" id="toc-making-your-blog-ready-to-publish-now-and-every-time-you-have-new-content" class="nav-link" data-scroll-target="#making-your-blog-ready-to-publish-now-and-every-time-you-have-new-content"><span class="header-section-number">4</span> Making your Blog ready to publish (Now, and every time you have new content)</a></li>
+  <li><a href="#pushing-to-github-for-the-first-time" id="toc-pushing-to-github-for-the-first-time" class="nav-link" data-scroll-target="#pushing-to-github-for-the-first-time"><span class="header-section-number">5</span> Pushing to GitHub for the First Time</a></li>
+  <li><a href="#connecting-to-netlify" id="toc-connecting-to-netlify" class="nav-link" data-scroll-target="#connecting-to-netlify"><span class="header-section-number">6</span> Connecting to Netlify</a></li>
+  <li><a href="#adding-content-and-updating" id="toc-adding-content-and-updating" class="nav-link" data-scroll-target="#adding-content-and-updating"><span class="header-section-number">7</span> Adding Content and Updating</a></li>
+  <li><a href="#workflow-diagram" id="toc-workflow-diagram" class="nav-link" data-scroll-target="#workflow-diagram"><span class="header-section-number">8</span> Workflow Diagram</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">9</span> References</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/listing.html">Data Viz and Stats</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/40-Workflow/listing.html">Workflow</a></li><li class="breadcrumb-item"><a href="../../../../../../content/courses/Analytics/40-Workflow/Modules/30-BlogSite/index.html"><iconify-icon icon="entypo:publish" width="1.2rem" height="1.2rem"></iconify-icon> I Publish, therefore I Am</a></li></ol></nav><div class="quarto-title">
+<h1 class="title">
+<iconify-icon icon="entypo:publish" width="1.2rem" height="1.2rem"></iconify-icon> I Publish, therefore I Am</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Quarto</div>
+    <div class="quarto-category">Netlify</div>
+    <div class="quarto-category">Github</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta column-body">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 23, 2024</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">November 2, 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+<div>
+  <div class="abstract">
+    <div class="block-title">Abstract</div>
+    Putting it all out there on the web
+  </div>
+</div>
+
+
+</header><div class="pa4">
+<div class="athelas ml0 mt0 pl4 black-90 bl bw2 b--blue">
+<p><span class="f5 f4-m f3-l lh-copy measure mt0">“Most institutions demand unqualified faith; but the institution of science makes skepticism a virtue.”</span></p>
+<p><span class="f6 ttu tracked fs-normal">— Robert King Merton, sociologist (4 Jul 1910-2003)</span></p>
+</div>
+</div>
+<section id="setting-up-git-and-github" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="setting-up-git-and-github">
+<span class="header-section-number">1</span> Setting up Git and GitHub</h2>
+<ol type="1">
+<li><p>Windows: Head off <a href="https://gitforwindows.org" class="uri">https://gitforwindows.org</a> and download and install the <code>git</code> app.</p></li>
+<li><p>MacOS: In a terminal type: <code>xcode-select --install</code>. This will also install <code>git</code>.</p></li>
+<li><p>Head off to <a href="https://github.com" class="uri">https://github.com</a> and register for an account. Make a note of your <code>emailID</code> and the <code>password</code> used.</p></li>
+<li><p>Setup 2FA Authentication for GitHub based on instructions here: <a href="https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa" class="uri">https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa</a></p></li>
+</ol></section><section id="linking-rstudio-and-github-one-time-only" class="level2" data-number="2"><h2 data-number="2" class="anchored" data-anchor-id="linking-rstudio-and-github-one-time-only">
+<span class="header-section-number">2</span> Linking RStudio and GitHub (One Time Only)</h2>
+<ol type="1">
+<li>
+<p>In RStudio, in your console:</p>
+<ul>
+<li><code>install.packages(usethis)</code></li>
+<li><code><a href="https://usethis.r-lib.org">library(usethis)</a></code></li>
+<li><code>usethis::use_git_config(user.name = "Your Name", user.email = "Your Email ID used on GitHub")</code></li>
+</ul>
+</li>
+<li>
+<p>Generate a Personal Access Token(PAT) (One Time Only, usually)</p>
+<ul>
+<li>
+<code><a href="https://usethis.r-lib.org/reference/github-token.html">usethis::create_github_token()</a></code><br>
+This will open a browser window and ask you to log in to GitHub. In the popup window, give your token a logical name <strong>you can remember</strong>(e.g.&nbsp;“For my Mac”), and remember why you created it. Check the <code>scopes</code> of the PAT; the defaults are OK. Make sure selecting <code>repo</code>, <code>user</code>, and <code>workflow</code> are checked. <span style="background-color: yellow;"><strong>Save the PAT</strong> in your password manager</span>. Default <code>Expiry</code> is 30days; we can set the PAT to not expire too. (I have.)</li>
+</ul>
+</li>
+<li>
+<p>Let RStudio have your PAT (One Time Only, usually). Once more, in your console:</p>
+<ul>
+<li><code>install.packages("gitcreds")</code></li>
+<li><code><a href="https://gitcreds.r-lib.org/">library(gitcreds)</a></code></li>
+<li>
+<code><a href="https://gitcreds.r-lib.org/reference/gitcreds_get.html">gitcreds::gitcreds_set()</a></code> and paste the PAT when asked.</li>
+</ul>
+</li>
+<li>
+<p>Check if all is OK using one or more of:</p>
+<ul>
+<li><code><a href="https://usethis.r-lib.org/reference/github-token.html">usethis::gh_token_help()</a></code></li>
+<li><code><a href="https://usethis.r-lib.org/reference/git_sitrep.html">usethis::git_sitrep()</a></code></li>
+<li>
+<code><a href="https://gh.r-lib.org/reference/gh_whoami.html">gh::gh_whoami()</a></code>, after <code>install.packages("gh")</code> and <code><a href="https://gh.r-lib.org/">library(gh)</a></code>
+</li>
+</ul>
+</li>
+<li>
+<p>Check in RStudio if has <strong>automatically</strong> detected your Git installation.</p>
+<ul>
+<li><code>Tools -&gt; Global Options -&gt; Git/SVN</code></li>
+</ul>
+</li>
+</ol>
+<div id="fig-RStudio-Git-Executable" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-RStudio-Git-Executable-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../../../../../materials/images/windows-rstudio-git-executable-screenshot.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: RStudio Project Options Window"><img src="../../../../../materials/images/windows-rstudio-git-executable-screenshot.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-RStudio-Git-Executable-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: RStudio Project Options Window
+</figcaption></figure>
+</div>
+<p>The <code>Git Executable</code> field should be like:</p>
+<ul>
+<li>Windows: <code>C:/Program Files/Git/bin/git.exe</code>.</li>
+<li>MacOS:<code>/usr/bin/git</code>
+</li>
+</ul>
+<ol start="5" type="1">
+<li>
+<p>Let RStudio know which project branch to commit/push to GitHub. (Default is “main”)</p>
+<ul>
+<li><code><a href="https://usethis.r-lib.org/reference/git-default-branch.html">usethis::git_default_branch_configure()</a></code></li>
+</ul>
+</li>
+</ol></section><section id="creating-your-blog-project-in-rstudio-one-time-only" class="level2" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="creating-your-blog-project-in-rstudio-one-time-only">
+<span class="header-section-number">3</span> Creating your Blog Project in RStudio (One Time Only)</h2>
+<p>In the upper right corner of RStudio, click on:</p>
+<p><code>Project -&gt; New Project -&gt; New Directory -&gt; Quarto Blog</code></p>
+<div id="fig-New-Quarto-Blog-Project" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-New-Quarto-Blog-Project-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../../../../../materials/images/new-quarto-blog-project.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: New Quarto Blog Project"><img src="../../../../../materials/images/new-quarto-blog-project.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-New-Quarto-Blog-Project-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: New Quarto Blog Project
+</figcaption></figure>
+</div>
+<p>Name your Blog, browse to where you want the Blog Project Folder (default is fine). Check the <code>Create a git repository</code>. Click <code>Create Project</code>.</p>
+<p>RStudio will restart with a new Blog Project. The Files pane should like this:</p>
+<div id="fig-Grand-New-Blog" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-Grand-New-Blog-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../../../../../materials/images/grand-new-blog.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;3: Quarto Blog Contents"><img src="../../../../../materials/images/grand-new-blog.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Grand-New-Blog-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Quarto Blog Contents
+</figcaption></figure>
+</div>
+<p>The <code>posts</code> folder contains dummy blog posts, which you can retain for now and delete once your own content has matured.</p>
+</section><section id="making-your-blog-ready-to-publish-now-and-every-time-you-have-new-content" class="level2" data-number="4"><h2 data-number="4" class="anchored" data-anchor-id="making-your-blog-ready-to-publish-now-and-every-time-you-have-new-content">
+<span class="header-section-number">4</span> Making your Blog ready to publish (Now, and every time you have new content)</h2>
+<ol type="1">
+<li>
+<p>Render all Posts:In your Terminal:</p>
+<ul>
+<li>
+<code>quarto render</code><br>
+This will render all posts and prepare <code>_site</code> and <code>_freeze</code> folders in your Files tab. Check these.</li>
+</ul>
+</li>
+<li>
+<p>Preview all Posts:In your Terminal:</p>
+<ul>
+<li>
+<code>quarto preview</code><br>
+This will pop up your browser and show you a preview of your Blog website. Check the look and feel, the typos.</li>
+</ul>
+</li>
+</ol></section><section id="pushing-to-github-for-the-first-time" class="level2" data-number="5"><h2 data-number="5" class="anchored" data-anchor-id="pushing-to-github-for-the-first-time">
+<span class="header-section-number">5</span> Pushing to GitHub for the First Time</h2>
+<ol type="1">
+<li>
+<p>“Commit” all files: In your Console:</p>
+<ul>
+<li>
+<code><a href="https://usethis.r-lib.org/reference/use_git.html">usethis::use_git()</a></code><br>
+This will throw up a funky set of messages asking if you are ready to <code>commit</code> all files to <code>push</code> to Github. Choose the appropriate reply and enter.</li>
+</ul>
+</li>
+<li>
+<p>Push to New Github Repo: In your Console:</p>
+<ul>
+<li>
+<code><a href="https://usethis.r-lib.org/reference/use_github.html">usethis::use_github()</a></code><br>
+This will create your new repository on Github and <code>push</code> all the committed files there. Your browser will open in Github and show you the contents of your new Blog repository.</li>
+</ul>
+</li>
+</ol>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Can’t use this again?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>As far as I know, this process, though simple, can only be used at start up time. Can’t use this every time you have new content. For that, use the Git pane in RStudio, or a GUI git client such as <a href="https://www.gitkraken.com">Gitkraken</a> (recommended).</p>
+</div>
+</div>
+</section><section id="connecting-to-netlify" class="level2" data-number="6"><h2 data-number="6" class="anchored" data-anchor-id="connecting-to-netlify">
+<span class="header-section-number">6</span> Connecting to Netlify</h2>
+<ol type="1">
+<li><p>Head off to <a href="https://www.netlify.com" class="uri">https://www.netlify.com</a>. Log in there with Github.</p></li>
+<li><p>Click <code>Add new site -&gt; Import from existing project</code></p></li>
+</ol>
+<div id="fig-Netlify-New-Project" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-Netlify-New-Project-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../../../../../materials/images/netlify-new-project-from-template.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;4: Netlify Window"><img src="../../../../../materials/images/netlify-new-project-from-template.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Netlify-New-Project-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Netlify Window
+</figcaption></figure>
+</div>
+<ol start="3" type="1">
+<li><p>Choose <code>Github</code>, then point to your Blog Github repo.</p></li>
+<li><p>Give your Blog site a name: <code>something-idiotic.netlify.app</code>. Check Availability. (Note: <code>netlify.app</code> at the end is not removable, if you want free web-hosting at netlify)</p></li>
+<li><p>Ensure that the branch says <code>main</code>, and that the <code>Publish directory</code> says <code>_site</code>.</p></li>
+<li><p>Hit <code>Deploy</code>. Netlify will ta ke a few minutes and then say the site is deployed. Click on the URL.</p></li>
+<li><p>There!</p></li>
+</ol></section><section id="adding-content-and-updating" class="level2" data-number="7"><h2 data-number="7" class="anchored" data-anchor-id="adding-content-and-updating">
+<span class="header-section-number">7</span> Adding Content and Updating</h2>
+<ol type="1">
+<li><p>Create a new folder inside your <code>posts</code> folder. Name it something like <code>new-post-todays-date</code>. Hyphens only, no underscores.</p></li>
+<li><p>Create a new Quarto Document: <code>File -&gt; New-File -&gt; New Quarto Document</code>. Save it as <code>index.qmd</code> inside your just-created <code>new-post-todays-date</code> folder.</p></li>
+<li><p>Edit / Write up your <code>index.qmd</code> Post. Add pictures, videos, code, visualizations, explanations. Use <a href="https://quarto.org" class="uri">https://quarto.org</a> to find other Markdown constructs ( tabs , asides, marginal content…) and complete your post.</p></li>
+<li><p>In your Terminal, run <code>quarto render</code>to update your <code>_site</code> and <code>_freeze</code> folders.</p></li>
+<li><p>In your Terminal run <code>quarto preview</code> to check if your new post previews properly.</p></li>
+<li><p>In your Git pane, you will see a list of changed files. Click on the <code>Commit</code> button, type in a commit message like <code>Added new post on &lt;date&gt;</code>, and then click <code>Commit</code>.</p></li>
+<li><p>In the Git pane, click on the <code>Push</code> button to push your changes to Github.</p></li>
+<li><p>In your browser, head off to your Github repo and check if the new post is there.</p></li>
+<li><p>In your browser, head off to your Netlify site URL. You should see your new post there, in the list of posts.</p></li>
+<li>
+<p><strong>Using GUI for git commit and push</strong>: Instead of using the Terminal, or the Git pane in Rstudio, there is a better way. This is a GUI, and one can see the files, the history of commits/pushes, the commit messages, revert back to a point in history, make brances…all that visually, without some tough-looking git commands:</p>
+<ul>
+<li>So, install a git client, such as <a href="https://www.gitkraken.com">Gitkraken</a>.</li>
+<li>It offers a ready prompt to log in with Github, accept that, filling in ID and password.</li>
+<li>Open <code>File -&gt;New tab</code> -&gt; <code>Browse for Repo</code> and browse to your Blog project folder (which is what you open in RStudio)</li>
+<li>You will a list of previous commits, and a bunch of new edited / changed files which are default labelled <code>WIP</code>. (Work in Progress, peasants)</li>
+<li>Click on <code>Stage All</code> and type in a <em>memorable</em> <code>commit</code> message in the box below at right.</li>
+<li>The <code>WIP</code> will be replaced by your <code>commit message</code>.</li>
+<li>Once <code>staging</code> is done, hit the <code>Push</code> button on the main tool bar.</li>
+<li>After Gitkraken is done, a brief popup will show stating <code>push</code> was successful.</li>
+<li>Your website should be updated in a few minutes.</li>
+</ul>
+</li>
+</ol>
+<p>Yeah, peasants, you’re welcome as always.</p>
+<div id="fig-Gitkraken-WIP" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-Gitkraken-WIP-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../../../../../materials/images/gitkraken-wip.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;5: Gitkraken Window"><img src="../../../../../materials/images/gitkraken-wip.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Gitkraken-WIP-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Gitkraken Window
+</figcaption></figure>
+</div>
+</section><section id="workflow-diagram" class="level2" data-number="8"><h2 data-number="8" class="anchored" data-anchor-id="workflow-diagram">
+<span class="header-section-number">8</span> Workflow Diagram</h2>
+<p><a href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIGRhdGEtZDItdmVyc2lvbj0idjAuOS4wIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWluWU1pbiBtZWV0IiB2aWV3Qm94PSIwIDAgMTI3NCAxNDkzIj48c3ZnIGNsYXNzPSJkMi0xODQ0NTAxMjUxIGQyLXN2ZyIgd2lkdGg9IjEyNzQiIGhlaWdodD0iMTQ5MyIgdmlld0JveD0iLTg5IC04OSAxMjc0IDE0OTMiPjxyZWN0IHg9Ii04OSIgeT0iLTg5IiB3aWR0aD0iMTI3NCIgaGVpZ2h0PSIxNDkzIiByeD0iMCIgZmlsbD0iI0ZGRkZGRiIgY2xhc3M9IiBmaWxsLU43IiBzdHJva2Utd2lkdGg9IjAiIC8+PHN0eWxlIHR5cGU9InRleHQvY3NzIj48IVtDREFUQVsKLmQyLTE4NDQ1MDEyNTEgLnRleHQgewoJZm9udC1mYW1pbHk6ICJkMi0xODQ0NTAxMjUxLWZvbnQtcmVndWxhciI7Cn0KQGZvbnQtZmFjZSB7Cglmb250LWZhbWlseTogZDItMTg0NDUwMTI1MS1mb250LXJlZ3VsYXI7CglzcmM6IHVybCgiZGF0YTphcHBsaWNhdGlvbi9mb250LXdvZmY7YmFzZTY0LGQwOUdSZ0FCQUFBQUFBcjhBQW9BQUFBQUVTUUFBZ3VGQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFCUFV5OHlBQUFBOUFBQUFHQUFBQUJnWGQvVm8yTnRZWEFBQUFGVUFBQUFmQUFBQUp3QzZ3Sy9aMng1WmdBQUFkQUFBQVRaQUFBR1JEdlRYVVZvWldGa0FBQUdyQUFBQURZQUFBQTJHNFVlMzJob1pXRUFBQWJrQUFBQUpBQUFBQ1FLaEFYWWFHMTBlQUFBQndnQUFBQllBQUFBV0NpWkJHSnNiMk5oQUFBSFlBQUFBQzRBQUFBdUUySVI1bTFoZUhBQUFBZVFBQUFBSUFBQUFDQUFMZ0QyYm1GdFpRQUFCN0FBQUFNckFBQUlGQWJEVlUxd2IzTjBBQUFLM0FBQUFDQUFBQUFnLzlFQU1nQURBZ2tCa0FBRkFBQUNpZ0pZQUFBQVN3S0tBbGdBQUFGZUFESUJJd0FBQWdzRkF3TUVBd0lDQkdBQUF2Y0FBQUFEQUFBQUFBQUFBQUJCUkVKUEFFQUFJUC8vQXU3L0JnQUFBOWdCRVNBQUFaOEFBQUFBQWVZQ2xBQUFBQ0FBQTNpY2JNeFB5Z0VCSElEaFo3NlpiNzQvQm9PeWRpTWxOUmVRbWl6VVJLN2hBSWdjUUhJaUovbkpyUFh1bnNXTFJDcEJJYlBIV0NtVm01aWFxeXpWMWhwYnV3aGFuNmtzMUZZYW03ZkhNeDV4ajF0YzR4TG5PTVV4RHUzMVU0a3ZxY3kzM0k5ZmYvNTFGTHA2K2tvRFF5TmVBQUFBLy84REFQYWdIWmg0bkl4VVgwd2JkUnovL240OWVpMGN0RWYvWE10b1MzdnJkWVVXU3E5M045YlNEdHBDQ3kxL3Jpai9CQ1ZqS3pCRERFWVhsbVVZcDNISjRzTERraVhib29zek1UNmJFSTJQeGdYL3pSZVRhYUxKc29lNnVBZVY5TUdZY1RXOWxvbkdCMS91OTN1NXovZno3L3VEQnBnRndBSytCaHJRZ3dGYXdRTEEwMjdhNi9iNVdGTGlKWWxsTkpJUDBlUXMrbEhaUmlnYklVU1I2QjE4UExpNXRZVm1MdUpyK3krZWVLTlkvSHp4M0RubDdkSWpKWXp1UFFJTWtVb1puOGEzd0FBT2dBWVB4d2tSVWVURFZxdkZyTlg2d3FJb1JEaldvN1dZclZhVWs3ZUdoN2Zrd3NWTTVtSWhPaDFhbTVsWkM4MVFVemRXVjY5UFRsNWZYYjB4bFUxdXl1ZXZYajB2YnlZQkFERE1BZUFPdkEwdHdGUVoxNUZKRTZ0aGFab1BxL0RzM0RmSmxlaEU2b1BGZDg2dDUyVTV2NDYzMmNsVWJvRldIaUtMOGhqTkprNE9SQUFBRUhSV3l1aFhmQXVDS2x1ZlpMWFdRRGlmcnh2WHVUTWtkOENaWVp5NHFnUVowNjkyaGRubitZR01vOWUxNk9yM0M0dlI2REliZEdhN3BhUTczTGJBOVI4Vmx5a2hjTUliaklZOHg5cGIvTTJkZzZId2VEQjRWSFM0SXdHWHY2M3BtREU0MEJ0NUpnd0kyZ0hRRTd3TlpGVVZLN2d0TFAzd0xucHdGNDhNRGUzdjFMZ3lBUGhQdkExdUFGN0RtNnhXaGhkRnlYVG9wbUUxSE9kanRWcFM4OTZWWjlONnM1NW9zalhONStZcEcwWG9XeHZURTVlWFQra05Pb0pzMVMzaGJlV21zQ1lJWnlQb3RISXpjcloyMjM4SlhlR3lISmZsbEZjQVEwK2xqSDdBdTJDQ0RnREdjeEFuNHhONG1xMU84b1VsUWJWSGF6RmIvNWhmank1Sm5mRU9vcEFpTmUwNSs4bVlxOC9wUzNCRDFKdWI0eS9IblcyRlQvZVA5N1g3MDBtbG5la3BISjgrQlJpNksyWDBKZG9ERzdqKzBabHFzRzQxRUluUmFqVnV0VG1JR1ZpTEo1YWxoZE1JS3g4M1RBK3gwU01PMS9oWGlFajA4Wk5VLzhiNHhFYjh3a3F6WFo5L3prS0xaaWZpUnZManFuOU9BSlRBMzlXNnpncVNFS21ueTNvc0Z0N0MwaThNRHFhelRLZXg5VWg3cWxoRWQrSU4rWkZwUFptZ0Z2TkpaUUdnVW9FMEFIeUVkekFIWmdEUWd1VkNMUnNaQUpYd0xsQlZiSjdtVFR4cFluMmtSWjdVZkR0LzU1TzVxL040VjNFaStFejU2WmUxMStyL1ZNcndQZDRGUTgxWm1xZk5CMkkvN1BiTExYcUNKSnQwVnFwUHdHZjJyNWxvaE9JRVVadUZmMGQ3YWc5b3ZocDlWWWI2dGRBc1hiV0pmSHJLS1ZMVGtlczZuakJ3WTRIUnJCem9GbE55b0VkTW9kSVEyOU1iOEVlV0ZwU3ZrVDhWSDFWdTE0KzZudnRvcjZyeTd4a0g2Tm9hTERzV3pnL0xnWkEzNmxYQkRvQTRyM0liNnJuK2h2YkFBRWYrOHkxNCtoUWdRN1NZU0JTanNUT0p4SmxZSXA5UHhNZkdxTmpHaEx3UmkyM0lFeHV4VkxFd3RiSXlWU2dlZUwySTlvQSt4SzIrb3pWaTlvemZ3UmdwczhHVnRLUFNUTGZZbUNHSWNGelpyZmx1cTVSUkdxOERVL2VkRlNTSlZ3dncxUC9IWS8yWlhHUDYwaVYzWjdPVE1wcDdxTGtNYW80M1hMNmNWUGFDdlhvaVRqYXBXS09WTXJxSFNtRCtWNFowZlQwZTVET0ZyaEFYOVZSNWVYTFUwZ0tLS1BkVGNWOFhtbFhhY3NkQ2dNQUdnSGRRNmYvdDlidHZUV1YwTFNTaE0rcEhKM0o2V2tmb0RPVHcyT3ZMUTNxRG50QVpHMU9vcFB6c1NYbzhTUSt5SDdxMW9RWTI1ZldtV2VWSnpVTjRINVZBbzNwSXl6SXFLVzJBS2wvZ0VaRHdEalFCME9xMlYyTTNhMjB1bDgzbWN1RVJoOTNtZE5yc0R2Z0xBQUQvL3dNQU1lQld1d0FBQUFBQkFBQUFBZ3VGbXM3SFpWOFBQUFVBQXdQb0FBQUFBTmhkb0tFQUFBQUEzV1l2TnY0Ni90c0lid1BJQUFBQUF3QUNBQUFBQUFBQUFBRUFBQVBZL3U4QUFBaVkvanIrT2dodkFBRUFBQUFBQUFBQUFBQUFBQUFBQUFBV0FvMEFXUURJQUFBQ21BQTBBamtBV2dJV0FDb0NHQUFjQXhJQUZ3SXJBQzhCOEFBdUFTUUFIZ0QyQUVVQjd3QlNBUDhBVWdNOUFGSUNJd0JTQWg0QUxnRmJBRklCVWdBWUFpQUFTd0xPQUJnQTlnQlNBQUQveVFBQUFDd0FMQUJjQUlRQXlBRGFBUlFCUmdGNkFad0JxQUhDQWQ0Q0VBSXlBbDRDZmdLa0FzWURBQU1NQXlJQUFBQUJBQUFBRmdDTUFBd0FaZ0FIQUFFQUFBQUFBQUFBQUFBQUFBQUFCQUFEZUp5Y2xOOXFHMWNReG4rS0piV2hOQmZGQk9mR25NdTJPQ3MxMkNHeHI5WjFUSllhSzlVcS9RT2xzSmJXa3BDMHUreXU1TGowQVhyZHQraGI1S3JQMFljb3ZTNHpHaW5hdEJBc1FzeTNPalBmZkdmbW13UHM4Zzg3MU9yM2dUK2JQeGl1c2Q4OE5ueVBCODBEd3p0Y05QNHlYTitJYVRCby9HcTR5WmVOcnVHUGVGdi8zZkRISE5aL05ueWZ2ZnE1NFU5NFV0ODEvT21PNDIvRER6ams3UkxYNEJtL0dhNnhSMmI0SHJ2OFpIaUhoeGhucmM1RDJvWWJmTWErNFNiN1FJOHhKVlBHSkF4eFhETm15SnljbUlLUW1Kd3gxOFFNY0FUNFRDbjExNFJJa1dQNHY3OUdoSlRrUk1vNG9zUXhKV1JLUk1ISUdIL1JySlJYV2xIcTVJcWttay9KaUlncnpaZ1FrZUJJR1pLU0VETlJucEtTakdOYXRDam9xOTZNa2dLUGdqRlRQRkp5aHJUb2NNNEZQVWFNS1hDY0s1TW9DMG01cHVTR1NPczdpNURPOUlsSktFelZuSVNCNm5TcUw5YnNnQXNjSFRLTjNXUytxREFjNFBoT3MwV2J4RGkrd3RQL2JrTlp0ZTVLVGNSQyt5azl2R0txT205MGdpUHR1TlQxK1ZaeHlURnVxLzVVbFh5NFJ3TlZKN01lYzhWYzV5L3prenhSa3VEY0hqNmhPaWgwajNDYzZuZEFxQjM1bm9BZUwrbndtcDUrKzNUcDRuTkpqNEFYbXR1aGkrTnJPbHh5cGhtQjR1WFp1VHJta2g5eGZFT2dNY0lkVzMrazUvTDFoc3pjTGRyRkdYS1BHWmx1Z2N4WTdpL09qN2Vhc094UVduRkhvYTdvNng1SnBPeUJkRVgyTEdKb3JzalVGVFB0NWNvYmhmVnZZSTZRMDFKbisrNWN0bUZodTdmYTRsdFMzV0hIM0RUSjVKYUtQalJWN3ozUDNPZy9qNGdCS1ZjYTBTZGxSb3VTVzczYkt5TG1USEdjcVk5ZjZwYVUrT3NjcVhPckxvbVpxWUtBUkhseU12MGJtVzlDMDk2ditON1pXeUtiTjlNZG5heHZ0VTBWWVU0Mlp2UmF1N2M2QzYzTDhjWUVXamJWMUhKa3dzSzh2S2w0WDZLOWl2NVEzVi9vNjVieW1DNnh2cTR5Ly93Lzc4QVRQTm9jY3NRSkk2MGovQWtMZXlQYStrNjBlYzZKOW1CQ3JGSHlhcjdSYmduREVSNVBPZUtJNXp5dGNQcWNjVXFIa3p0b1hHWjFPT1hGZXllYkhHN040b3puRDFYVFZyMk94K3V2WjF2UDYvTTcrUElMRGlvdm95aVhQY2haR05zNy8xOFNNUk10Ym0rekwrNFIzcjhBQUFELy93TUFCMXRNTUFBQUF3QUFBQUFBQVAvT0FESUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQT09Iik7Cn0KLmQyLTE4NDQ1MDEyNTEgLnRleHQtYm9sZCB7Cglmb250LWZhbWlseTogImQyLTE4NDQ1MDEyNTEtZm9udC1ib2xkIjsKfQpAZm9udC1mYWNlIHsKCWZvbnQtZmFtaWx5OiBkMi0xODQ0NTAxMjUxLWZvbnQtYm9sZDsKCXNyYzogdXJsKCJkYXRhOmFwcGxpY2F0aW9uL2ZvbnQtd29mZjtiYXNlNjQsZDA5R1JnQUJBQUFBQUJBa0FBb0FBQUFBR0d3QUFndUZBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJQVXk4eUFBQUE5QUFBQUdBQUFBQmdYeEhYcm1OdFlYQUFBQUZVQUFBQW93QUFBT1FFYndWQloyeDVaZ0FBQWZnQUFBbGtBQUFNc0ZFUlN5Vm9aV0ZrQUFBTFhBQUFBRFlBQUFBMkczOGUxR2hvWldFQUFBdVVBQUFBSkFBQUFDUUtmd1hxYUcxMGVBQUFDN2dBQUFDa0FBQUFyRlRUQnpwc2IyTmhBQUFNWEFBQUFGZ0FBQUJZUTBwR2NHMWhlSEFBQUF5MEFBQUFJQUFBQUNBQVF3RDNibUZ0WlFBQUROUUFBQU12QUFBSUtnandWa0Z3YjNOMEFBQVFCQUFBQUNBQUFBQWcvOUVBTWdBREFpb0N2QUFGQUFBQ2lnSllBQUFBU3dLS0FsZ0FBQUZlQURJQktRQUFBZ3NIQXdNRUF3SUNCR0FBQXZjQUFBQURBQUFBQUFBQUFBQkJSRUpQQUNBQUlQLy9BdTcvQmdBQUE5Z0JFU0FBQVo4QUFBQUFBZkFDbEFBQUFDQUFBM2ljZk01SkxzQmdITWJocDFvMVZkVTgxOHc1SkVJYUlpS1NydDFBSkNJT1pkaUsrUmEyVHZLWGZQYnlMcC9GKzBNbWw2RlMrRWFya2F1dDIzRGdTT2ZFcVRNWGVsZHUzTHFMSVBtK1E1M2o1T2Q2bDY3L1BINlU4UldmOFJIdjhSYXY4UkxQOFJTUDhSRDM2ZTIvWmZZTXlCVUdsWVlNR3pGcVRHVmNiVUpqMHBScE0yYk5tYmRnMFpKbEsxYTExbExacGkzYmR1enlDd0FBLy84REFNQitKNW9BZUp4c1ZuMXNHMmY5L3o3UG5lOGF4M2s1bjgvbmwvajE3RHZiaVozWTU3UHo0dFJKNHpocGF6ZHZUWnB1ZWVtcS90YnUxelROMnBTbVZhWWhzVEhZWExyTlJTc01Oa0JNQWxSQTA0UzBEUUppWWh2VEN2dWpHK01QcG8yQk90QWtGRVpBMDBqTzZDNU9taGIrU0w2bngzZlA4LzE4dnAvdjUvdUFBWVlCOEZGOEJRaW9nUVl3QXdjZ016NG1LRXVTUUtmbGRGcmdpYlNFR0hvWW05WG52aXVGeVhDWWpIaXZlaTdPenFMaURMNnlNWGQzOGVqUmY4MTJkYW5QdlBTeWVnbWRmUmtBVno0RHdIMjRCRFhBQUxDMExJbWlKRkFVd2Nxc0lBbjB6Y2JIR3VxY2RhVEovdG4xNTY5L0kvUjZDTzNMWk9MemN2S1UrakF1YlN3Ky9UUUFBQUZGQUp6QkpXREFBWDR0TnpsaHRYSVdpdWIwUUFtRW5FZ3BTVkVRR0RtaHgrTDd1Ym1lYUNqUmx6c3pNTnVmaWllUytiRUxtZTR4WEhMbHM4MWpEV1RkL3Q2K2cySDBTRVFRdmVya1pITVFBRUdzc29iYjhGVndBaGo4b3Fna1V5azVZZVZwVVJUOEZNVlpySElpbGVZcE5EMzY2Tmo0cGRIc01kOEJlMXBvMmRzOE1SaksyZzZNbWdwZlBUWDN0UkhaUDhPN0VqTjdqaTBFN0ZOSEFFTVJBQmR3Q1l6QTdjaWVFaVE1a2RMeTFoSis4ZGlUSThPWGowU2Iyc2Rpc2JIMkpsektYVjVZZUhMZ2ZHanF3SUhEUWREeUt3S2d2K2g4YXZYaGZKek1DVndSUGExKyt1R0h1TFQ4MVBJR3dCYU9ITDRLbnYrRm93cERFUlNab1NoMDZ2QVQ0NGNlUHpSd3I3ZG9iNDhVamt6ZGJSRk5jMy96MzE4RmsvVE5XTjBMUjQ4dEdJMExTK3JidnRobUh2QUJMZ0doMTRJcGxuRnBZM0Z6SGMvaEVwZzIxMlZXSmxpQm9MbGltWHpsTzYvKzlkdlBGbkJKL1NlcVZkZlZKY1FlKy9FV3BnOXhDUXliMy9pNFlobGhYTnBZWFlZdHpEcDNyUDQ3eTh1aXFDZ3lJeENTWUxWeVhQR3BIL1NRWkgxSkM0WTZYRkovOW5qeTg1MDNOeFpSLzFkU3k1MGZBVlQ1YjlQenN1eFFEeVVJM0xaZVBoZzhsODh2OW84TUx2VmtjcmdrVFEwVmpyYStoMFpQeUJIWTNtTU1sNkFlK0owSzFJU3M3YUtWVVJDS0gvZWZ5V1dWSzg4OU1GTG83Tzd1TE9CU2NQTEE0RFN2L3Z2amo5R1JlRnVicUdFU0ttdllpSzlDUksrUGxMWnFGVkdTb2lURjhIOFZpK2Yxa3loazZYa3djVkNZQ01XaWN2TzRMeU4yM1pkclg0anM5L1pJWXJRamNyQXIzemx2YW92OW4xdjB1end1YzZDK05kK2Fta3kyUktidFRrK1QyODM0YlFmN1UxUHRnTUFPZ0ZsY0FscERJaWcrVG1DdXY0QStld0UzTGk5dnJHcDRFZFFERUY1Y0FoK0FUTWlzMWNyTHFWU2EzZkZFQ01SbVA5UEVJeGVlaWxMMUZHbGtqZmtIOGtiV1NOSjFkUFRTNGtzOXUrb01KRlczcXh1WDFMZms0OG5rY1JuRjFiZmlKeFRsZUFMRk54WlJTQ3dHQWtWUi9UMWdpRlRXME50b0hld2dBUEIrclFIVGV1L1JrazRLeHdqYWVXbE52bm8vL2p3My9GQVpDMkZQVDBCcFBkazVlKytTa2ZRTTdMSUgyUU1aaitsUTlzQmtnMCt5Y2ZlNEF2Tm4xRC9MVGNJWm5qMWtiSGJaZUwybXZaVTFiTVVyWUtsMmlpVFFBaU56dEg2WVRycWsxVVh3YTBhRCtuMTlMdEowdGt5NmN2N01aR3RtZGxKTVRiU0VMU0dUejZ2Z2xXc0ZoMnYzL1lYeEM5bWxmT0dMMFRmTjlUcVBnY29hV2tIcjRMaXpGMisxSWs5UnlONS91bmZ3YzduWVFGTy80Rld5MlRaYmpPME1UcGk2ejQyT0xYYTcrVmxYb2JlbnlEVWM4VHExK21DUUttdG9IYThBQzk0dHJyU3NlVW1SZDdDMEphSlBwazUzelNiRDdYYXF2R1FrSFhsc2s4eHNzMFZJdFpvZXV6QnlibmVUcmZEOWpiNjRRMWl5Mk44MDEvY043TzBIck9mK1I3UU90anVjUktPRzltbXFUZk1VUmNoSjdSVGtHVGl6cDIrdWEyQzZsY1RxdThaOFhFbkZ4Wm12dnlDMStGT20zWXVqSTR2WjdNa2NHNnhKeWI3RERqZnFEQ3V0R2hZRU5nQzBpTi9Rb3FiSDlCMDlvTmtjYzllZVBZSGhQayt5MFZubk1EbmRodytqQjA0Wm5NcEUwa1ROR1F3KzBYMVcvUUlBQWY1S0ZOTm9IVnFoQy9icHpJaEtNcTNvdVZkRFNrN3dNaWRVVGNBdmFRVEptcndzRkVWb0JhK1N4bGE3MmkvcXIzelNPZE0rd0RxOU5rZTRjMFpwOGYxa2lLNUpUcVpkSHJNL1BEeDFUMjU1bjB1U1hDNUpDaWQ2cEtCczk1bWMzVGNjN1MyWkVGa1g4amdUamFRNTE1d1pDcGxPMXZvdEhmc0N4Z1lyYSs3cWswZGk2STFJV0FxSFF1R0lXZzdZK1VhQ3NObWJYSnZjOUdyRjFqVUs4clkyT1VaZ2ROSnBwcmRNTisxUGpPd3R1N3hOSVJ0ZXVYYlkzbnh5V3IyT2ZLbVFuVmVmaDBvRjBnRHdIcjZCUlFnQkFBMWhlQlNnVXFuOHBwS0I5L1gxU0hXOXRIMm1HNjlzKzNoYXBsbEJvcm5leStRM3YvV2puejY3a01VcjZ2eXIxOVUvL0hMZ292WitaUTJaOFFvMDZId3JqTXhzQy92WGhhNHlVMk9nS2JNcGFMcDdQeFkyM3VYTkNKMHkwTnAzQUlRTHJlc2V3OGlhcldoVnZ3MGh2UjE3dGQ3T3g1VmUxcmN2UHJ5LzdQSUcyN1IvcldpMXh4TnREdm5qVzdEYjFPZXJZWXMvdEE2V25XZnM1Ry9KU0hxTDJ3U2kxYXc3ZWh0L20zMmdhNnJoanB2QkxZdW9LZ1paczZkenVkUFo3SHd1TjUrTnhtTFJXRFJhN2VIdXhiSFJjOTNuaXoyOUJhMlZ0YlI2SzRQWWl0YUJCVGNBZnlzN1haYWl4SFBzTGZ2UjRMdjJTbmVkeU15bXZCbUhZVWhNVFRSSExLRVg4ZmZpRHVITFo4ZVhzazc3MEJNb3NHMCtPblowR2EyRCtUWithZkVXY21kQjVKcU10anA3WTFPM0JhMGVTc1FOaGdkSk1weFFQd0FFWEdVTlBZdldRZExyZW10T2ladHphbnN6YlVxNU1XZWhic1NQaTN2OFdZL1A3WW81M0YyaCs4WTdEbm4yT0pLT2pnN1IyeDArWVJJOVUzWW56ekpXMW1nS2RJVDdKeVRicE1VcTJlejF0VUpIckc5NlUvTk1aUTNONDBWdDBocjhvcUlJU2pvdGF5Nnd3ekJoYWloWFlDNmVQeSs0VEhZano2Wk4vei94eGlucW9ZZk92aDRKVXVSSnlyUzVWNmF5aGo1RnEyQzVRNXRNMVNaL043SzM3UFkyaWRieVVpM2gyV2M2T1kyUzZ2dEsyT0ZDZzJwamY3QmwwNS93S2xxdHprSytPZ0hUTzU0SW9YcTNwZWtyeTArMlVVYUtwT3RxMGcrMjF6VFFKRjFEdDM3cC9MVW9YVWVUZEMzZGdsWnZCZ2RGY1o5d1U0K0R3WnRxNDJ0Q1BoVEtDNi9wT1pzcXU5RUdXZ1huVHQ3VDZaMUhFL1Y0eWVwcmNORG1YY0dRa2Y3RmxZRmFzNUhjeGRSa0xsM2oyNGRlb2NnRlpBaTRIT2hQNy9qelFXRkFlRWV0M1QxZXZjdU1WTllRZ1o4QmczWXZUeE9TVEJPMFBtMDN4WGVSTTF3eGNHMmlMSXVpTEgrRUVnOC9yUDcySDRvVVVwU1FwR3oyRkx5TlZyZnVmNzFsdEtvMkFxcjhFSGZBR0w0QnRRRE1qdjJDc1Znd0dJdmhqb2dnUkxRL0FLUjd6enRvRlJwdjA1WldIb29LZU1JTkRpTnJkUEZsYi9GWHU2ZzVncFRDNk84cW03b3JEZjhCQUFELy93TUFZMFdtN1FBQkFBQUFBZ3VGcmpRNWMxOFBQUFVBQVFQb0FBQUFBTmhkb0lRQUFBQUEzV1l2TnY0My9zUUliUVB4QUFFQUF3QUNBQUFBQUFBQUFBRUFBQVBZL3U4QUFBaVkvamYrTndodEFBRUFBQUFBQUFBQUFBQUFBQUFBQUFBcmVKd0V3REZLeEVBVXh2SC8rd0pCSVNoQ0RMR3gwQUZCazdRS1pvclgyRDFRaUlXRnBWNUMwQnZZZXdnYld5K3dUYXE5elRhelAvM3h5QWFVeTA2dmhCNlk5RUdvSWZUSlpDT2hkMEkxb1I5Q0M2RTNRZ09YR2ppclJvNTB6TFV5Ymx1U01sZXFTZlpNcjQ0TDNlUFdjbXRkV1pWd084ZXJGMXd6cmh1U01tN2Z1UDF6YWwrYzZJNjVPcURYSVkwdFBGbUxRL20xcnF4N0FBQUEvLzhEQUZMV0cwOEFBQUFzQUN3QVVBQ0VBTEFBMUFEb0FSZ0JKQUUrQVU0QmNBR1NBYmdCK0FJS0FrUUNmQUt1QXRvRERBTkFBMllEemdQd0Evd0VDQVFnQkR3RWJnU1FCTHdFN0FVTUJVZ0ZiZ1dRQmNnRitBWVlCaVFHT2daWUFBRUFBQUFyQUpBQURBQmpBQWNBQVFBQUFBQUFBQUFBQUFBQUFBQUVBQU40bkp5VXoyNGJaUlRGZjA1czB3ckJBa1ZWdW9tK0JZc2l0V05USlZYYnJDYWtWa1pFY2ZDNElDU0VOTFludHVYeHpNZ3pkaHFlZ0RWdndWdDB4VVB3SElnMXV0ZlhybDBRQlN1S2RXYm0vam5mdWVkK3dBRi9zaytsZWgvNHJaNGFybkJVdnphOHg3MzZoZUY5V3ZVOXcxVWUxWDQzWEdOUVd4aXU4M210WS9najNsWi9NWHlQNCtxUGh1OXpXRzBaL3BpbjFRUERuK3c3L2pEOEtjZThYZUlLUE9kbnd4VU95UTN2Y2NBUGh2ZDVnTldzVkhsQTAzQ056emd5WE9jSTZES21KR0ZNeWhESERXT0d6SmtSVXhBU00yUE1EVEVESEFFK0NhVytUWWtVT1liLytEWWlwR1JHcEJWSGxEZ1NRaElpQ2taVzhTZk55cmpXanRKbnBraTYrWlNNaU9ocHhvU0lGRWZHa0l5VW1JbldLU25KZVVtREJnVjk1WnRUVXVCUk1DYkJJMlBHa0FadFdselNaY1NZQWtkTEt3bXprSXdiU202SnRMK3pDRkdtVDB4S1lhem1wQXlVcDFOK3NXWUhYT0pvazJ2c1p1WExyUXFQY1h5cjJjSk5ZaHhmNHVtLzIyQzIzWGZGSm1LaGVvcUdQUkxsZWFzVEhLbmkwdGZuRzhVbEwzRTc2YlBONU1NYURaU2R6SHBNajduT1grWW5lY0lreGJsRGZFSjFVT2dlNGpqVDU0QlFGZm1PZ0M0WHRIbE5WNTk5T25Ud3VhSkx3Q3ZOYmRQQjhSVnRyampYakVEeDhsdExIWFBGOXppK0p0QVlxUjJiUHFLNVBMMGhOM2NMZDNHR25HTktybHNnTTViemkvUGpuU1lzTzVSdHVhTlFWL1IxanlSUzlrQlVrVDJMR0pvcmNuWEZWTFZjZWFNdy9RYm1DUGxhNm16ZmZaZHRXTmp1cmJiNGpreDMyREUzVGpLNUphTVBUZFY3enpPMyt1Y1JNU0NqcHhGOU1xWTBLTG5UczEwVE1TZkJjYTQrdnRBdEtmSFhPZExuVGwwU00xVUdBYW5XbVpIcmIyUytDWTE3Zjh2M3p1NFMyYnlwN3Voa2ZhcGR1a2psZEdOR3IxVzkxYmZRVkk0M0p0Q3dxV2FXSXhPV3lzdVRpdmNsMnR2aUg2cjdDNzNkTXA1d1JrYkM0Rzgzd0ZNOG1oeHp3aWtqN1NDVlV4WjJPelQxaG1qeWdsTTkvWVJZbytTK2ZLTTZTWVVUUEo1eHdna3ZlUGFlamlzbXpyaTROWmZOM2o3bm5OSG05RCtkWWhuZjVveFg2M2YvM3ZWWFpkclVzemllckorZTd6ekZSLy9EclYvd2VPdSs3T2d0SUp1enNHcnZ0dUtLaUtsd2NZZWJXcmlIZUg4QkFBRC8vd01BOUxkUFVRQUFBd0FBQUFBQUFQL09BRElBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUE9PSIpOwp9Ci5kMi0xODQ0NTAxMjUxIC50ZXh0LWl0YWxpYyB7Cglmb250LWZhbWlseTogImQyLTE4NDQ1MDEyNTEtZm9udC1pdGFsaWMiOwp9CkBmb250LWZhY2UgewoJZm9udC1mYW1pbHk6IGQyLTE4NDQ1MDEyNTEtZm9udC1pdGFsaWM7CglzcmM6IHVybCgiZGF0YTphcHBsaWNhdGlvbi9mb250LXdvZmY7YmFzZTY0LGQwOUdSZ0FCQUFBQUFBMUFBQW9BQUFBQUZSd0FBUmhSQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFCUFV5OHlBQUFBOUFBQUFHQUFBQUJnVzFTVmVHTnRZWEFBQUFGVUFBQUFqZ0FBQUw0RGFBT01aMng1WmdBQUFlUUFBQWJWQUFBSnhLdzF6VnhvWldGa0FBQUl2QUFBQURZQUFBQTJHN1VyMm1ob1pXRUFBQWowQUFBQUpBQUFBQ1FMZUFqRGFHMTBlQUFBQ1JnQUFBQjhBQUFBZkRWNUE1NXNiMk5oQUFBSmxBQUFBRUFBQUFCQUtPQXJYRzFoZUhBQUFBblVBQUFBSUFBQUFDQUFOd0QyYm1GdFpRQUFDZlFBQUFNckFBQUlNZ250VnpOd2IzTjBBQUFOSUFBQUFDQUFBQUFnLzhZQU1nQURBZUVCa0FBRkFBQUNpZ0pZLy9FQVN3S0tBbGdBUkFGZUFESUJJd0FBQWdzRkF3TUVBd2tDQkNBQUFIY0FBQUFEQUFBQUFBQUFBQUJCUkVKUEFBRUFJUC8vQXU3L0JnQUFBOWdCRVNBQUFaTUFBQUFBQWVZQ2xBQUFBQ0FBQTNpY2RNMDlTc01BQUliaEp5Yit4YWp4WDZPREJ4Q3Y0U3JPZ29pSUNCN0E0NGp0Q2RLeEhYcVZ6b1ZlNFN0MGJubkhkM2hRS0JWb1ZIcDBXcVhhdlFlUG5qeDc4ZXJOdTAvZmZoUFd2QTlmZnBMTXNzZzg0NHpTWjVwSmhobmtQMzhyWVZPRnpvMHRwY3FkVzl0MjdOcXpyM2FnY2VqSXNkYUpVMmZPWGJoMDVab2xBQUFBLy84REFOSUVJdDhBQUhpY2ZGVmJiQnRaR2Y3UG1jbE1temlKN2JGbll0ZVhlTTU0Sm5FbWR1eXhQWEVUMjdrNlR1STB0eWFFemEzWmJVdTdoQ28wc0Z1MFczVmIwS3JhQjhoS2ZXR0YxSlVBQ2RRWDFBV2tmWUVYQkFGVWhGQ0ZGbGdlRmtwQUxSSmdoZFd5MnN5Z3NYTnhnc1NMTmZMUitiL0wvMy8vZ1RxUUFQQTFmQThvT0EzTjRBUTNnTWFGS0VyVGRTSlFtcUlRbHRVVmptT2xPMmo3emx2MDRITi9hWHY3UDJxUUhybjkzZkcvWDNpQTcrMnRvOWVXYjkweUZ1OWV1dlNwWjgrTUNQcnRNd0FBQkJsekYvZmdiNEFJVUNmS3FXUU9hd2xlWUdXWmlFM1k3ZUo1TFpIV2RhSnJGTU1nOWFXYlhZdTNwM3VtUFRxbnQrV2VINVpJS1M5bHVQRGR4bDlscEJYYm16Zk8zWHU1b0VmYVc1WHN4UnU5WjFmU0xmWWY5QmxQQW1FQXdFQUFjQ2ZlZ2dad1dRcTBCTzkyTVF3aEZLY2wwcW1rVEFqNThydEwxOGR1bjcrYTdGKzk5R0twZUFsdmpjMVBmU1p1ZklSR3BpWXpHaHpXVWZBV05BSi9WSWZsQ0hXczB2ZVhQbjl0ZG5OMi9ibys5TUxLeGZIaUJieFZtRjI4NWpEK2pIampLWnFiS2FSajFYcUt1WXMrUW1Wd1dReUZJeGMwWGFPSVRoaEdTYVIxL2RDU2QvcEs2dGlLcG1RZE5KZGJ5NStpeVlKVG5wUlVkOEluRGFhQ2NkdmlYT0ZMUzFwYktHdDRpK0ZZWHpUMk8xbU1qQzRuOGxrTEQwSFkzRVVQVVJsOHg5QXFuak9NMjFXeFhHQ1k5eVl2cWhOcktiV1g3K1JrZjlkOE9uTzJOYzJMM2duYjVlV2h6Ym1ZNk9rUzNFTWJnd01GcnlQaENoOXF3UXJlQmpkSXg2cHIrdjhYYzlaSjJlV0pyWDAxNThJbjFTaXRxei9hNno0cEIxZTAvQmlWd1F2aFdyeEtSMElNZjZDRjB0SldoeTJGVCthdmRvNHZkZW45QVZ1ZDhaUFRyWU1SZjBZSStLZS9ibUxLMlU1U0s3WVgxNFkzWnRUb1ZNS25OZVdud2g2SDVnNmljRU5Mb3k4ZW5BTU15SlJRR1pVaENORUtwcUx2anluRGtGckZHc1V3MURHMUQrTHpSUElOdCtYR21qenkrVmgycW1OMEtTN25IQlNYdjh4dFpzaTAyTUhIZmFSZkM4VGVsLzBwUVN6MVhaSFYrYm5CTDN3NllmV1RXcjJNUWgyUlg4dGllMkdocTZlbjJzOGdBSG9QYjRPbk1vMHNxNlhUbFpsa0tjSlpzb25Jc0ZUd3F4TmRkcnA5UnMybFR1Vkt2VFJkOUJXanczajdXWmJFK3J1RGt2RUxwTHBhR3NjalVlTTdwZ2xCQVBnWVA4UXkrQUdBZ1VDeGlxV2F1L0F4M2dhbnBUeVYxRGxMcE51MWIvUG4rcGxYSm00aTVLQVlGdFh6dHJ6RGd6Kzc5eVo3bW5JaTNFUFRoM3p4VTFTR1NKVnZsYTZ3VDVvNXhycFd3RnFlcGVWWitXeThMcllRenFacE9qZVJwZWtSZDFFZHR2UVUrR0xITU5vWmxlSjZtNnIxZHpzQ3JscE5SMTlIbnFFeXROUnlPR21aaGRnK0V6M21XQVhocEdGSE9mNERLa016K0d0bjBlMXF3a3JDcW5vUXNNZVRLK3JZU21KeVZSMWZpWFJPYSttRTlXTzdzamk4T1JldC92WU5iQXdOakF4dURBMFVyTnJtaDZhRy9vbksxVnl4Tll5Yk1CRmxhd056aVJ5dVFyQXN6OWUva1dlbzhGeTBzaXNTY2krSG5jRnZTNE9wUUZlN09FMmlMdTBSZnFjdjJMa2ZydUNWK3doRlJwZTFYRFlpL3kwY090Q2pWZlpTQmJOTzE4bi96UGZ4NlVhaFVBQ0hGNksxKyttTis3VmhmblQvWlRsMnVKNzJKaEE2dnB3cXM0RmVSV1d3MS9SRllPV0RmalRRL2xLbngzM0c3cFZLd1N6YVdWYXpwNGRPNVh1TVI0RE1UOHhkZEJPVlFhbE5aU29wSzdLY1NsYnNxajRzVmdzRTNwbzE1cHZ4WlUrWDBDZEhzdTNkMFl3NnFrYkhmRkZPQzhueGRHc3UyVFZqUzdiSndiWW84U3BCYjY2OW96OHNCZHBjM3M1Z1FIYUt2V3JuVU5qaTNHdnVvZ1c4ZnJoUDB6cEg4bGhqTlpaUU5mdjAzYjRralRJakRTV3AvOHdydHBzWnlpYzJlUnNjOXBndDM5bnNiVVRPVE4zcnIrZU1wMDVuSUZCZnA3UE5WdTF1Y3hmOUErMkE1NmoyVWVLNC9aWDY0REFOUmYrSU9seXlIb1cyODdZQjNSSGtVTnA0ekhtc01VVUxobmVNVk40d0JEMEE2QU8wQTQwQUdxVnhQQzlvYWFzZ3VqTlNrbWlHcGgwUzk3VUpZdy90R0g4bDQwUWFsWkRIOEZidkZnRHd6OUFPaEU3Y1BmcWlDQ1hMQ21FWWxycEtTbmFFRU4xOHh2N2F1QU5qUkRkNTdiZUtmMXh0cXZ6cmIzNEo3UmgvRW9kRWNVaEVnWm92TDZvblJVa3FFdU5EUU9aakFQU2JxZytFVXpSaEgwclhXSUVvKzFpcyt2dkZjNUZUVFN6ZDNObzhON3Y5d3FSNnlsRlAyMFZ1QmVFbjY3emlkclc3MS8vOXIrdDhsT2RWWWRQU0lwaTdjQmZXb2VIQTMwcW9tQUx2VVh4OFM5am00NzJxbi9lb0FNajh3RnlDTFZpM1pwTlYwbW1kMUZ4d05jUXlMT1lEeE8vMVBmZXRxTE5YOHZJZVJRcU1ibFE4TTk4M3Y0SytaLzRRS0FCV0Q3RlNBL3A1L2F1SmhIVUdDK1lGaFBCUHJUT0IwcmhmYmlhLytEWjErWk8zOXZNQWo5Q09kYVp4R2hWY20zZ2U3VlFhZ1dBRWo4TkQvTkRpenRWUXVjRUZpT0R5RXp3dThKNVFDKzlwL1M4QUFBRC8vd01BSlJ6Nm5RQUFBQUFCQUFBQUFSaFJjTkh5Z1Y4UFBQVUFBUVBvQUFBQUFOaGRvTXdBQUFBQTNXWXZOLzY5L3QwSUhRUEpBQUlBQXdBQ0FBQUFBQUFBQUFFQUFBUFkvdThBQUFoQS9yMzl2QWdkQStnQXd2L1JBQUFBQUFBQUFBQUFBQUFmQW5RQUpBRElBQUFDVEFBNUFpWUFJd0lyQUNNQ0dRQW5BYk1BSlFJWEFDY0I0UUFsQWhNQUFRSUxBQjhBN1FBZkFQZ0FMQU1mQUI4Q0RRQWZBZ01BSndJWC8vWUNHUUFuQVZZQUh3R1MvL3dCUlFBOEFoQUFPQUhBQURzQ3d3QkdBYTMvMUFEeUFCY0E4di9oQWVQLzNBRlVBRmdBN1FBZkFBQUFSd0FBQUM0QUxnQmtBSWdBc0FEb0FSWUJUZ0dJQWRBQitnSUdBaWdDYWdLVUFzSUMvQU0yQTFRRGtBTytBK29FQ0FSQ0JHNEVoQVNpQkxBRXZnVE1CT0lBQVFBQUFCOEFqQUFNQUdZQUJ3QUJBQUFBQUFBQUFBQUFBQUFBQUFRQUEzaWNuSlRkYmhwWEZJVS9ZcUJOL3k0cUszSnVySE9aU3M3Z1JuR1V4RmZqT2xaR1JaQXlwRDlTVldtQU1TQmdac1FNT000VDlMcHYwYmZJVlIralQxSDF1dHFiRFdFaXExWlFGR3NOWi8rc3MvYmFCOWpuWC9hb1ZPOENmOVdYaGlzYzFuODJmSWN2NmszRGU1elZQek5jNWFqMnQrRWFnOXBidzNVZTFEcUdQK0ZkOVEvRG4vSzQrcHZodXh4VUx3eC96cVBxdnVFdjl4ei9HUDZLeDd4YjRRbzg1WGZERlE3SUROOWhuMThONzNFUHExbXBjbzlqd3pXKzV0QnduVU9neTVpQ0tXTVNoamd1R1ROa3daeVluSkNZT1dNdWlSbmdDUENaVXVpdkNaRWl4L0RHWHlOQ0N1WkVXbkZFZ1dOS3lKU0luSkZWZkt0WkthKzBvL1NaSzVKdVBnVWpJbnFhTVNFaXdaRXlKQ1VoWnFKMUNnb3ludE9nUVU1ZitXWVU1SGprakpuaWtUSm5TSU0yRnpUcE1tSk1qdU5DS3dtemtKUkxDcTZJdEwrekNGR21UMHhDYnF3V0pBeVVwMU4rc1dZSE5IRzB5VFIydTNLelZPRUl4NCthTGR3a3h2RXRudjUzVzh6S2ZkZHNJcGFxcDJqWVk2bzhyM1NDSTFWYyt2cjhvTGpnT1c0bmZjcE1idGRvb094azFtTjZMSFQrTWovSkV5WUp6aDNnRTZxRFFuY2Z4NWwrQjRTcXlFOEVkSGxKbTlkMDlkdW5Rd2VmRmwwQ1htaHVtdzZPNzJqVDRsd3pBc1dyc3d0MVRJdGZjSHhQb0RGU096WjlSSFA1ZWtObTdoYnU0Z3k1eDR4TXQwQm1MUGNYNThjN1RWaDJLQzI1STFkWDlIV1BKRkwyUUZTUlBZc1ltaXN5ZGNWTXRWeDdJemY5QnVZSU9TMTB0dS9QWlJ1V3RudnJMYjRtMVIxMkxJeVRURzdGNkxhcGVoOTQ1a3IvZVVRTVNPbHBSSitVR1EwS3J2VnVyNGhZTU1WeHJqNStxVnRTNEc5eXBNKzF1aVJtcGd3Q0VxMHpKOU8va2ZrbU5PNzlrdStkdlNXeWVUUGQwY25tVnJ0MGtjckoxb3hlcTNycnM5QlVqcmNtMExDcHBwWWpFNWJLcTV1Szl5WGFLL0VQMWYyNXZtNHBEd20wcmt5eWYrTXJjTXd6VGpobHBGMmtlc0p5Y3lhdmhFU2NxZ0lUWW8yU04vT05hdlVJanhNOG5uRENDYzk0OG9HV2F6Yk8rTGdTbiszK1B1ZWMwZWIwMXR1c1l0dWM4YUpVN2Y4Ny82bHNqL1Uram9lYnI2YzdUL1BCUjdqMkc0NUs3MlpIWHdQWm9LVlZlNzhkTFNKbXdzVWRiR3ZoN3VQOUJ3QUEvLzhEQUhLaFVVQUFBQU1BQVAvMUFBRC96Z0F5QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBPSIpOwp9XV0+PC9zdHlsZT48c3R5bGUgdHlwZT0idGV4dC9jc3MiPjwhW0NEQVRBWy5zaGFwZSB7CiAgc2hhcGUtcmVuZGVyaW5nOiBnZW9tZXRyaWNQcmVjaXNpb247CiAgc3Ryb2tlLWxpbmVqb2luOiByb3VuZDsKfQouY29ubmVjdGlvbiB7CiAgc3Ryb2tlLWxpbmVjYXA6IHJvdW5kOwogIHN0cm9rZS1saW5lam9pbjogcm91bmQ7Cn0KLmJsZW5kIHsKICBtaXgtYmxlbmQtbW9kZTogbXVsdGlwbHk7CiAgb3BhY2l0eTogMC41Owp9CgoJCS5kMi0xODQ0NTAxMjUxIC5maWxsLU4xe2ZpbGw6IzBBMEYyNTt9CgkJLmQyLTE4NDQ1MDEyNTEgLmZpbGwtTjJ7ZmlsbDojNjc2QzdFO30KCQkuZDItMTg0NDUwMTI1MSAuZmlsbC1ON3tmaWxsOiNGRkZGRkY7fQoJCS5kMi0xODQ0NTAxMjUxIC5maWxsLUIxe2ZpbGw6IzAwMDUzNjt9CgkJLmQyLTE4NDQ1MDEyNTEgLmZpbGwtQjJ7ZmlsbDojMEY2NkI3O30KCQkuZDItMTg0NDUwMTI1MSAuZmlsbC1CNHtmaWxsOiM4N0JGRjM7fQoJCS5kMi0xODQ0NTAxMjUxIC5maWxsLUI1e2ZpbGw6I0JDRERGQjt9CgkJLmQyLTE4NDQ1MDEyNTEgLnN0cm9rZS1CMXtzdHJva2U6IzAwMDUzNjt9CgkJLmQyLTE4NDQ1MDEyNTEgLnN0cm9rZS1CMntzdHJva2U6IzBGNjZCNzt9LmFwcGVuZGl4IHRleHQudGV4dHtmaWxsOiMwQTBGMjV9Lm1key0tY29sb3ItZmctZGVmYXVsdDojMEEwRjI1Oy0tY29sb3ItZmctbXV0ZWQ6IzY3NkM3RTstLWNvbG9yLWZnLXN1YnRsZTojOTQ5OUFCOy0tY29sb3ItY2FudmFzLWRlZmF1bHQ6I0ZGRkZGRjstLWNvbG9yLWNhbnZhcy1zdWJ0bGU6I0VFRjFGODstLWNvbG9yLWJvcmRlci1kZWZhdWx0OiMwMDA1MzY7LS1jb2xvci1ib3JkZXItbXV0ZWQ6IzBGNjZCNzstLWNvbG9yLW5ldXRyYWwtbXV0ZWQ6I0VFRjFGODstLWNvbG9yLWFjY2VudC1mZzojMEY2NkI3Oy0tY29sb3ItYWNjZW50LWVtcGhhc2lzOiMwRjY2Qjc7LS1jb2xvci1hdHRlbnRpb24tc3VidGxlOiM2NzZDN0U7LS1jb2xvci1kYW5nZXItZmc6cmVkO30ubGlnaHQtY29kZXtkaXNwbGF5OiBibG9ja30uZGFyay1jb2Rle2Rpc3BsYXk6IG5vbmV9XV0+PC9zdHlsZT48ZyBjbGFzcz0iVDI1bElGUnBiV1U9Ij48ZyBjbGFzcz0ic2hhcGUiID48cmVjdCB4PSIxMiIgeT0iNDgiIHdpZHRoPSI3MTEiIGhlaWdodD0iMTIxOSIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSIjODdCRkYzIiBjbGFzcz0iIHN0cm9rZS1CMSBmaWxsLUI0IiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiAvPjwvZz48dGV4dCB4PSIzNjcuNSIgeT0iODEiIGZpbGw9IiMwQTBGMjUiIGNsYXNzPSJ0ZXh0IGZpbGwtTjEiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjI4cHgiPk9uZSBUaW1lPC90ZXh0PjwvZz48ZyBjbGFzcz0iVWxOMGRXUnBieUJYYjNKclpteHZkdz09Ij48ZyBjbGFzcz0ic2hhcGUiID48cmVjdCB4PSI3NDIiIHk9IjEyIiB3aWR0aD0iMzQyIiBoZWlnaHQ9IjEyOTEiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0iIzg3QkZGMyIgY2xhc3M9IiBzdHJva2UtQjEgZmlsbC1CNCIgc3R5bGU9InN0cm9rZS13aWR0aDoyOyIgLz48L2c+PHRleHQgeD0iOTEzIiB5PSI0NSIgZmlsbD0iIzBBMEYyNSIgY2xhc3M9InRleHQgZmlsbC1OMSIgc3R5bGU9InRleHQtYW5jaG9yOm1pZGRsZTtmb250LXNpemU6MjhweCI+UlN0dWRpbyBXb3JrZmxvdzwvdGV4dD48L2c+PGcgY2xhc3M9IlQyNWxJRlJwYldVdVIybDBhSFZpIj48ZyBjbGFzcz0ic2hhcGUiID48cmVjdCB4PSIxNjAiIHk9Ijk4IiB3aWR0aD0iOTMiIGhlaWdodD0iNjYiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0iI0JDRERGQiIgY2xhc3M9IiBzdHJva2UtQjEgZmlsbC1CNSIgc3R5bGU9InN0cm9rZS13aWR0aDoyOyIgLz48L2c+PHRleHQgeD0iMjA2LjUiIHk9IjEzNi41IiBmaWxsPSIjMEEwRjI1IiBjbGFzcz0idGV4dC1ib2xkIGZpbGwtTjEiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPkdpdGh1YjwvdGV4dD48L2c+PGcgY2xhc3M9IlQyNWxJRlJwYldVdVFXTmpiM1Z1ZEE9PSI+PGcgY2xhc3M9InNoYXBlIiA+PHJlY3QgeD0iOTYiIHk9IjM4MCIgd2lkdGg9IjEwNCIgaGVpZ2h0PSI2NiIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSIjQkNEREZCIiBjbGFzcz0iIHN0cm9rZS1CMSBmaWxsLUI1IiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiAvPjwvZz48dGV4dCB4PSIxNDgiIHk9IjQxOC41IiBmaWxsPSIjMEEwRjI1IiBjbGFzcz0idGV4dC1ib2xkIGZpbGwtTjEiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPkFjY291bnQ8L3RleHQ+PC9nPjxnIGNsYXNzPSJUMjVsSUZScGJXVXVTVzV6ZEdGc2JBPT0iPjxnIGNsYXNzPSJzaGFwZSIgPjxyZWN0IHg9IjIyMCIgeT0iMzgwIiB3aWR0aD0iOTAiIGhlaWdodD0iNjYiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0iI0JDRERGQiIgY2xhc3M9IiBzdHJva2UtQjEgZmlsbC1CNSIgc3R5bGU9InN0cm9rZS13aWR0aDoyOyIgLz48L2c+PHRleHQgeD0iMjY1IiB5PSI0MTguNSIgZmlsbD0iIzBBMEYyNSIgY2xhc3M9InRleHQtYm9sZCBmaWxsLU4xIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5JbnN0YWxsPC90ZXh0PjwvZz48ZyBjbGFzcz0iVDI1bElGUnBiV1V1VWxOMGRXUnBidz09Ij48ZyBjbGFzcz0ic2hhcGUiID48cmVjdCB4PSI5OCIgeT0iNjA3IiB3aWR0aD0iMTAxIiBoZWlnaHQ9IjY2IiBzdHJva2U9IiMwMDA1MzYiIGZpbGw9IiNCQ0RERkIiIGNsYXNzPSIgc3Ryb2tlLUIxIGZpbGwtQjUiIHN0eWxlPSJzdHJva2Utd2lkdGg6MjsiIC8+PC9nPjx0ZXh0IHg9IjE0OC41IiB5PSI2NDUuNSIgZmlsbD0iIzBBMEYyNSIgY2xhc3M9InRleHQtYm9sZCBmaWxsLU4xIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5SU3R1ZGlvPC90ZXh0PjwvZz48ZyBjbGFzcz0iVDI1bElGUnBiV1V1VG1WM0lFSnNiMmNnVUhKdmFtVmpkQT09Ij48ZyBjbGFzcz0ic2hhcGUiID48cmVjdCB4PSI2NiIgeT0iODc5IiB3aWR0aD0iMTY1IiBoZWlnaHQ9IjY2IiBzdHJva2U9IiMwMDA1MzYiIGZpbGw9IiNCQ0RERkIiIGNsYXNzPSIgc3Ryb2tlLUIxIGZpbGwtQjUiIHN0eWxlPSJzdHJva2Utd2lkdGg6MjsiIC8+PC9nPjx0ZXh0IHg9IjE0OC41IiB5PSI5MTcuNSIgZmlsbD0iIzBBMEYyNSIgY2xhc3M9InRleHQtYm9sZCBmaWxsLU4xIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5OZXcgQmxvZyBQcm9qZWN0PC90ZXh0PjwvZz48ZyBjbGFzcz0iVDI1bElGUnBiV1V1VG05MFpTQjBhR1VnUjJsMElGQmhibVZzIj48ZyBjbGFzcz0ic2hhcGUiID48cmVjdCB4PSI2MiIgeT0iMTE1MSIgd2lkdGg9IjE3MyIgaGVpZ2h0PSI2NiIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSIjQkNEREZCIiBjbGFzcz0iIHN0cm9rZS1CMSBmaWxsLUI1IiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiAvPjwvZz48dGV4dCB4PSIxNDguNSIgeT0iMTE4OS41IiBmaWxsPSIjMEEwRjI1IiBjbGFzcz0idGV4dC1ib2xkIGZpbGwtTjEiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPk5vdGUgdGhlIEdpdCBQYW5lbDwvdGV4dD48L2c+PGcgY2xhc3M9IlQyNWxJRlJwYldVdVRtVjBiR2xtZVE9PSI+PGcgY2xhc3M9InNoYXBlIiA+PHJlY3QgeD0iNDU0IiB5PSI5OCIgd2lkdGg9IjkzIiBoZWlnaHQ9IjY2IiBzdHJva2U9IiMwMDA1MzYiIGZpbGw9IiNCQ0RERkIiIGNsYXNzPSIgc3Ryb2tlLUIxIGZpbGwtQjUiIHN0eWxlPSJzdHJva2Utd2lkdGg6MjsiIC8+PC9nPjx0ZXh0IHg9IjUwMC41IiB5PSIxMzYuNSIgZmlsbD0iIzBBMEYyNSIgY2xhc3M9InRleHQtYm9sZCBmaWxsLU4xIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5OZXRsaWZ5PC90ZXh0PjwvZz48ZyBjbGFzcz0iVDI1bElGUnBiV1V1VEc5bmFXNGdkMmwwYUNCSGFYUm9kV0k9Ij48ZyBjbGFzcz0ic2hhcGUiID48cmVjdCB4PSI1MDIiIHk9IjI0NCIgd2lkdGg9IjE3MCIgaGVpZ2h0PSI2NiIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSIjQkNEREZCIiBjbGFzcz0iIHN0cm9rZS1CMSBmaWxsLUI1IiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiAvPjwvZz48dGV4dCB4PSI1ODciIHk9IjI4Mi41IiBmaWxsPSIjMEEwRjI1IiBjbGFzcz0idGV4dC1ib2xkIGZpbGwtTjEiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPkxvZ2luIHdpdGggR2l0aHViPC90ZXh0PjwvZz48ZyBjbGFzcz0iVDI1bElGUnBiV1V1VG1WM0lGZGxZbk5wZEdVPSI+PGcgY2xhc3M9InNoYXBlIiA+PHJlY3QgeD0iMzQ3IiB5PSIyNDQiIHdpZHRoPSIxMzUiIGhlaWdodD0iNjYiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0iI0JDRERGQiIgY2xhc3M9IiBzdHJva2UtQjEgZmlsbC1CNSIgc3R5bGU9InN0cm9rZS13aWR0aDoyOyIgLz48L2c+PHRleHQgeD0iNDE0LjUiIHk9IjI4Mi41IiBmaWxsPSIjMEEwRjI1IiBjbGFzcz0idGV4dC1ib2xkIGZpbGwtTjEiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPk5ldyBXZWJzaXRlPC90ZXh0PjwvZz48ZyBjbGFzcz0iVDI1bElGUnBiV1V1Um5KdmJTQkhhWFJvZFdJZ2NtVndidz09Ij48ZyBjbGFzcz0ic2hhcGUiID48cmVjdCB4PSIzMzAiIHk9IjM4MCIgd2lkdGg9IjE2OSIgaGVpZ2h0PSI2NiIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSIjQkNEREZCIiBjbGFzcz0iIHN0cm9rZS1CMSBmaWxsLUI1IiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiAvPjwvZz48dGV4dCB4PSI0MTQuNSIgeT0iNDE4LjUiIGZpbGw9IiMwQTBGMjUiIGNsYXNzPSJ0ZXh0LWJvbGQgZmlsbC1OMSIgc3R5bGU9InRleHQtYW5jaG9yOm1pZGRsZTtmb250LXNpemU6MTZweCI+RnJvbSBHaXRodWIgcmVwbzwvdGV4dD48L2c+PGcgY2xhc3M9IlQyNWxJRlJwYldVdVEyaHZiM05sSUZKbGNHOD0iPjxnIGNsYXNzPSJzaGFwZSIgPjxyZWN0IHg9IjM0NiIgeT0iNjA3IiB3aWR0aD0iMTM3IiBoZWlnaHQ9IjY2IiBzdHJva2U9IiMwMDA1MzYiIGZpbGw9IiNCQ0RERkIiIGNsYXNzPSIgc3Ryb2tlLUIxIGZpbGwtQjUiIHN0eWxlPSJzdHJva2Utd2lkdGg6MjsiIC8+PC9nPjx0ZXh0IHg9IjQxNC41IiB5PSI2NDUuNSIgZmlsbD0iIzBBMEYyNSIgY2xhc3M9InRleHQtYm9sZCBmaWxsLU4xIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5DaG9vc2UgUmVwbzwvdGV4dD48L2c+PGcgY2xhc3M9IlQyNWxJRlJwYldVdVEyaHZiM05sSUU1aGJXVWdabTl5SUhkbFluTnBkR1U9Ij48ZyBjbGFzcz0ic2hhcGUiID48cmVjdCB4PSIzMDMiIHk9Ijc0MyIgd2lkdGg9IjIyNCIgaGVpZ2h0PSI2NiIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSIjQkNEREZCIiBjbGFzcz0iIHN0cm9rZS1CMSBmaWxsLUI1IiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiAvPjwvZz48dGV4dCB4PSI0MTUiIHk9Ijc4MS41IiBmaWxsPSIjMEEwRjI1IiBjbGFzcz0idGV4dC1ib2xkIGZpbGwtTjEiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPkNob29zZSBOYW1lIGZvciB3ZWJzaXRlPC90ZXh0PjwvZz48ZyBjbGFzcz0iVDI1bElGUnBiV1V1VTNCbFkybG1lU0JtYjJ4a1pYST0iPjxnIGNsYXNzPSJzaGFwZSIgPjxyZWN0IHg9IjM0MyIgeT0iMTAxNSIgd2lkdGg9IjE0NCIgaGVpZ2h0PSI2NiIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSIjQkNEREZCIiBjbGFzcz0iIHN0cm9rZS1CMSBmaWxsLUI1IiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiAvPjwvZz48dGV4dCB4PSI0MTUiIHk9IjEwNTMuNSIgZmlsbD0iIzBBMEYyNSIgY2xhc3M9InRleHQtYm9sZCBmaWxsLU4xIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5TcGVjaWZ5IGZvbGRlcjwvdGV4dD48L2c+PGcgY2xhc3M9IlQyNWxJRlJwYldVdVJHVndiRzk1SVNFaCI+PGcgY2xhc3M9InNoYXBlIiA+PHJlY3QgeD0iMzYwIiB5PSIxMTUxIiB3aWR0aD0iMTEwIiBoZWlnaHQ9IjY2IiBzdHJva2U9IiMwMDA1MzYiIGZpbGw9IiNCQ0RERkIiIGNsYXNzPSIgc3Ryb2tlLUIxIGZpbGwtQjUiIHN0eWxlPSJzdHJva2Utd2lkdGg6MjsiIC8+PC9nPjx0ZXh0IHg9IjQxNSIgeT0iMTE4OS41IiBmaWxsPSIjMEEwRjI1IiBjbGFzcz0idGV4dC1ib2xkIGZpbGwtTjEiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPkRlcGxveSEhITwvdGV4dD48L2c+PGcgY2xhc3M9IlVsTjBkV1JwYnlCWGIzSnJabXh2ZHk1U1UzUjFaR2x2Ij48ZyBjbGFzcz0ic2hhcGUiID48cmVjdCB4PSI5MTMiIHk9IjY3OCIgd2lkdGg9IjEwMSIgaGVpZ2h0PSI2NiIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSIjQkNEREZCIiBjbGFzcz0iIHN0cm9rZS1CMSBmaWxsLUI1IiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiAvPjwvZz48dGV4dCB4PSI5NjMuNSIgeT0iNzE2LjUiIGZpbGw9IiMwQTBGMjUiIGNsYXNzPSJ0ZXh0LWJvbGQgZmlsbC1OMSIgc3R5bGU9InRleHQtYW5jaG9yOm1pZGRsZTtmb250LXNpemU6MTZweCI+UlN0dWRpbzwvdGV4dD48L2c+PGcgY2xhc3M9IlVsTjBkV1JwYnlCWGIzSnJabXh2ZHk1T1pYY2dSbTlzWkdWeSI+PGcgY2xhc3M9InNoYXBlIiA+PHJlY3QgeD0iOTAxIiB5PSI4MTQiIHdpZHRoPSIxMjUiIGhlaWdodD0iNjYiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0iI0JDRERGQiIgY2xhc3M9IiBzdHJva2UtQjEgZmlsbC1CNSIgc3R5bGU9InN0cm9rZS13aWR0aDoyOyIgLz48L2c+PHRleHQgeD0iOTYzLjUiIHk9Ijg1Mi41IiBmaWxsPSIjMEEwRjI1IiBjbGFzcz0idGV4dC1ib2xkIGZpbGwtTjEiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPk5ldyBGb2xkZXI8L3RleHQ+PC9nPjxnIGNsYXNzPSJVbE4wZFdScGJ5QlhiM0pyWm14dmR5NURjbVZoZEdVZ1VHOXpkQT09Ij48ZyBjbGFzcz0ic2hhcGUiID48cmVjdCB4PSI5MDAiIHk9IjEwNDEiIHdpZHRoPSIxMjciIGhlaWdodD0iNjYiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0iI0JDRERGQiIgY2xhc3M9IiBzdHJva2UtQjEgZmlsbC1CNSIgc3R5bGU9InN0cm9rZS13aWR0aDoyOyIgLz48L2c+PHRleHQgeD0iOTYzLjUiIHk9IjEwNzkuNSIgZmlsbD0iIzBBMEYyNSIgY2xhc3M9InRleHQtYm9sZCBmaWxsLU4xIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5DcmVhdGUgUG9zdDwvdGV4dD48L2c+PGcgY2xhc3M9IlVsTjBkV1JwYnlCWGIzSnJabXh2ZHk1VVpYSnRhVzVoYkE9PSI+PGcgY2xhc3M9InNoYXBlIiA+PHJlY3QgeD0iODQ5IiB5PSIxMTg3IiB3aWR0aD0iMTEwIiBoZWlnaHQ9IjY2IiBzdHJva2U9IiMwMDA1MzYiIGZpbGw9IiNCQ0RERkIiIGNsYXNzPSIgc3Ryb2tlLUIxIGZpbGwtQjUiIHN0eWxlPSJzdHJva2Utd2lkdGg6MjsiIC8+PC9nPjx0ZXh0IHg9IjkwNCIgeT0iMTIyNS41IiBmaWxsPSIjMEEwRjI1IiBjbGFzcz0idGV4dC1ib2xkIGZpbGwtTjEiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPlRlcm1pbmFsPC90ZXh0PjwvZz48ZyBjbGFzcz0iVWxOMGRXUnBieUJYYjNKclpteHZkeTVRY21Wd1lYSmxJRk5wZEdVPSI+PGcgY2xhc3M9InNoYXBlIiA+PHJlY3QgeD0iODM4IiB5PSI2MiIgd2lkdGg9IjEzMiIgaGVpZ2h0PSI2NiIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSIjQkNEREZCIiBjbGFzcz0iIHN0cm9rZS1CMSBmaWxsLUI1IiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiAvPjwvZz48dGV4dCB4PSI5MDQiIHk9IjEwMC41IiBmaWxsPSIjMEEwRjI1IiBjbGFzcz0idGV4dC1ib2xkIGZpbGwtTjEiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPlByZXBhcmUgU2l0ZTwvdGV4dD48L2c+PGcgY2xhc3M9IlVsTjBkV1JwYnlCWGIzSnJabXh2ZHk1SGFYUkxjbUZyWlc0PSI+PGcgY2xhc3M9InNoYXBlIiA+PHJlY3QgeD0iOTA1IiB5PSIyMDgiIHdpZHRoPSIxMTciIGhlaWdodD0iNjYiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0iI0JDRERGQiIgY2xhc3M9IiBzdHJva2UtQjEgZmlsbC1CNSIgc3R5bGU9InN0cm9rZS13aWR0aDoyOyIgLz48L2c+PHRleHQgeD0iOTYzLjUiIHk9IjI0Ni41IiBmaWxsPSIjMEEwRjI1IiBjbGFzcz0idGV4dC1ib2xkIGZpbGwtTjEiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPkdpdEtyYWtlbjwvdGV4dD48L2c+PGcgY2xhc3M9IlVsTjBkV1JwYnlCWGIzSnJabXh2ZHk1RWIyNWxJR1p2Y2lCT2IzYz0iPjxnIGNsYXNzPSJzaGFwZSIgPjxyZWN0IHg9Ijg5MyIgeT0iNDM1IiB3aWR0aD0iMTQxIiBoZWlnaHQ9IjY2IiBzdHJva2U9IiMwMDA1MzYiIGZpbGw9IiNCQ0RERkIiIGNsYXNzPSIgc3Ryb2tlLUIxIGZpbGwtQjUiIHN0eWxlPSJzdHJva2Utd2lkdGg6MjsiIC8+PC9nPjx0ZXh0IHg9Ijk2My41IiB5PSI0NzMuNSIgZmlsbD0iIzBBMEYyNSIgY2xhc3M9InRleHQtYm9sZCBmaWxsLU4xIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5Eb25lIGZvciBOb3c8L3RleHQ+PC9nPjxnIGNsYXNzPSJUMjVsSUZScGJXVXVLRWRwZEdoMVlpQXRKbWQwT3lCQlkyTnZkVzUwS1Zzd1hRPT0iPjxtYXJrZXIgaWQ9Im1rLWQyLTE4NDQ1MDEyNTEtMzQ4ODM3ODEzNCIgbWFya2VyV2lkdGg9IjEwIiBtYXJrZXJIZWlnaHQ9IjEyIiByZWZYPSI3IiByZWZZPSI2IiB2aWV3Qm94PSIwIDAgMTAgMTIiIG9yaWVudD0iYXV0byIgbWFya2VyVW5pdHM9InVzZXJTcGFjZU9uVXNlIj4gPHBvbHlnb24gcG9pbnRzPSIwLDAgMTAsNiAwLDEyIiBmaWxsPSIjMDAwNTM2IiBjbGFzcz0iY29ubmVjdGlvbiBmaWxsLUIxIiBzdHJva2Utd2lkdGg9IjIiIC8+IDwvbWFya2VyPjxwYXRoIGQ9Ik0gMTkxLjUgMTY2IEwgMTkxLjUgMTk0IFMgMTkxLjUgMjA0IDE4MS41IDIwNCBMIDE1OC41IDIwNCBTIDE0OC41IDIwNCAxNDguNSAyMTQgTCAxNDguNSAzNzYiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0ibm9uZSIgY2xhc3M9ImNvbm5lY3Rpb24gc3Ryb2tlLUIxIiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiBtYXJrZXItZW5kPSJ1cmwoI21rLWQyLTE4NDQ1MDEyNTEtMzQ4ODM3ODEzNCkiIG1hc2s9InVybCgjZDItMTg0NDUwMTI1MSkiIC8+PHRleHQgeD0iMTQ5IiB5PSIyNTYiIGZpbGw9IiM2NzZDN0UiIGNsYXNzPSJ0ZXh0LWl0YWxpYyBmaWxsLU4yIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5jcmVhdGU8L3RleHQ+PC9nPjxnIGNsYXNzPSJUMjVsSUZScGJXVXVLRWRwZEdoMVlpQXRKbWQwT3lCSmJuTjBZV3hzS1Zzd1hRPT0iPjxwYXRoIGQ9Ik0gMjIyLjUgMTY2IEwgMjIyLjUgMTk0IFMgMjIyLjUgMjA0IDIzMi41IDIwNCBMIDI1NS41IDIwNCBTIDI2NS41IDIwNCAyNjUuNSAyMTQgTCAyNjUuNSAzNzYiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0ibm9uZSIgY2xhc3M9ImNvbm5lY3Rpb24gc3Ryb2tlLUIxIiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiBtYXJrZXItZW5kPSJ1cmwoI21rLWQyLTE4NDQ1MDEyNTEtMzQ4ODM3ODEzNCkiIG1hc2s9InVybCgjZDItMTg0NDUwMTI1MSkiIC8+PHRleHQgeD0iMjY1LjUiIHk9IjI1NiIgZmlsbD0iIzY3NkM3RSIgY2xhc3M9InRleHQtaXRhbGljIGZpbGwtTjIiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPmdpdDwvdGV4dD48L2c+PGcgY2xhc3M9IlQyNWxJRlJwYldVdUtFRmpZMjkxYm5RZ0xTWm5kRHNnVWxOMGRXUnBieWxiTUYwPSI+PHBhdGggZD0iTSAxNDguNSA0NDggTCAxNDguNSA2MDMiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0ibm9uZSIgY2xhc3M9ImNvbm5lY3Rpb24gc3Ryb2tlLUIxIiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiBtYXJrZXItZW5kPSJ1cmwoI21rLWQyLTE4NDQ1MDEyNTEtMzQ4ODM3ODEzNCkiIG1hc2s9InVybCgjZDItMTg0NDUwMTI1MSkiIC8+PHRleHQgeD0iMTQ5IiB5PSI1MzIiIGZpbGw9IiM2NzZDN0UiIGNsYXNzPSJ0ZXh0LWl0YWxpYyBmaWxsLU4yIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij51c2V0aGlzIHNldHVwPC90ZXh0PjwvZz48ZyBjbGFzcz0iVDI1bElGUnBiV1V1S0ZKVGRIVmthVzhnTFNabmREc2dUbVYzSUVKc2IyY2dVSEp2YW1WamRDbGJNRjA9Ij48cGF0aCBkPSJNIDE0OC41IDY3NSBMIDE0OC41IDg3NSIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSJub25lIiBjbGFzcz0iY29ubmVjdGlvbiBzdHJva2UtQjEiIHN0eWxlPSJzdHJva2Utd2lkdGg6MjsiIG1hcmtlci1lbmQ9InVybCgjbWstZDItMTg0NDUwMTI1MS0zNDg4Mzc4MTM0KSIgbWFzaz0idXJsKCNkMi0xODQ0NTAxMjUxKSIgLz48dGV4dCB4PSIxNDkiIHk9Ijc4MiIgZmlsbD0iIzY3NkM3RSIgY2xhc3M9InRleHQtaXRhbGljIGZpbGwtTjIiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPmNyZWF0ZTwvdGV4dD48L2c+PGcgY2xhc3M9IlQyNWxJRlJwYldVdUtFNWxkeUJDYkc5bklGQnliMnBsWTNRZ0xTWm5kRHNnVG05MFpTQjBhR1VnUjJsMElGQmhibVZzS1Zzd1hRPT0iPjxwYXRoIGQ9Ik0gMTQ4LjUgOTQ3IEwgMTQ4LjUgMTE0NyIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSJub25lIiBjbGFzcz0iY29ubmVjdGlvbiBzdHJva2UtQjEiIHN0eWxlPSJzdHJva2Utd2lkdGg6MjsiIG1hcmtlci1lbmQ9InVybCgjbWstZDItMTg0NDUwMTI1MS0zNDg4Mzc4MTM0KSIgbWFzaz0idXJsKCNkMi0xODQ0NTAxMjUxKSIgLz48dGV4dCB4PSIxNDkiIHk9IjEwNTQiIGZpbGw9IiM2NzZDN0UiIGNsYXNzPSJ0ZXh0LWl0YWxpYyBmaWxsLU4yIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5HaXQgUGFuZWw8L3RleHQ+PC9nPjxnIGNsYXNzPSJUMjVsSUZScGJXVXVLRTVsZEd4cFpua2dMU1puZERzZ1RHOW5hVzRnZDJsMGFDQkhhWFJvZFdJcFd6QmQiPjxwYXRoIGQ9Ik0gNTE2Ljc1IDE2NiBMIDUxNi43NSAxOTQgUyA1MTYuNzUgMjA0IDUyNi43NSAyMDQgTCA1NzcuNSAyMDQgUyA1ODcuNSAyMDQgNTg3LjUgMjE0IEwgNTg3LjUgMjQwIiBzdHJva2U9IiMwMDA1MzYiIGZpbGw9Im5vbmUiIGNsYXNzPSJjb25uZWN0aW9uIHN0cm9rZS1CMSIgc3R5bGU9InN0cm9rZS13aWR0aDoyOyIgbWFya2VyLWVuZD0idXJsKCNtay1kMi0xODQ0NTAxMjUxLTM0ODgzNzgxMzQpIiBtYXNrPSJ1cmwoI2QyLTE4NDQ1MDEyNTEpIiAvPjwvZz48ZyBjbGFzcz0iVDI1bElGUnBiV1V1S0U1bGRHeHBabmtnTFNabmREc2dUbVYzSUZkbFluTnBkR1VwV3pCZCI+PHBhdGggZD0iTSA0ODUuNzUgMTY2IEwgNDg1Ljc1IDE5NCBTIDQ4NS43NSAyMDQgNDc1Ljc1IDIwNCBMIDQyNSAyMDQgUyA0MTUgMjA0IDQxNSAyMTQgTCA0MTUgMjQwIiBzdHJva2U9IiMwMDA1MzYiIGZpbGw9Im5vbmUiIGNsYXNzPSJjb25uZWN0aW9uIHN0cm9rZS1CMSIgc3R5bGU9InN0cm9rZS13aWR0aDoyOyIgbWFya2VyLWVuZD0idXJsKCNtay1kMi0xODQ0NTAxMjUxLTM0ODgzNzgxMzQpIiBtYXNrPSJ1cmwoI2QyLTE4NDQ1MDEyNTEpIiAvPjwvZz48ZyBjbGFzcz0iVDI1bElGUnBiV1V1S0U1bGR5QlhaV0p6YVhSbElDMG1aM1E3SUVaeWIyMGdSMmwwYUhWaUlISmxjRzhwV3pCZCI+PHBhdGggZD0iTSA0MTUgMzEyIEwgNDE1IDM3NiIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSJub25lIiBjbGFzcz0iY29ubmVjdGlvbiBzdHJva2UtQjEiIHN0eWxlPSJzdHJva2Utd2lkdGg6MjsiIG1hcmtlci1lbmQ9InVybCgjbWstZDItMTg0NDUwMTI1MS0zNDg4Mzc4MTM0KSIgbWFzaz0idXJsKCNkMi0xODQ0NTAxMjUxKSIgLz48L2c+PGcgY2xhc3M9IlQyNWxJRlJwYldVdUtFWnliMjBnUjJsMGFIVmlJSEpsY0c4Z0xTWm5kRHNnUTJodmIzTmxJRkpsY0c4cFd6QmQiPjxtYXJrZXIgaWQ9Im1rLWQyLTE4NDQ1MDEyNTEtMjE3NzIwNjU2OSIgbWFya2VyV2lkdGg9IjEwIiBtYXJrZXJIZWlnaHQ9IjEyIiByZWZYPSI3IiByZWZZPSI2IiB2aWV3Qm94PSIwIDAgMTAgMTIiIG9yaWVudD0iYXV0byIgbWFya2VyVW5pdHM9InVzZXJTcGFjZU9uVXNlIj4gPHBvbHlnb24gcG9pbnRzPSIwLDAgMTAsNiAwLDEyIiBmaWxsPSIjMEY2NkI3IiBjbGFzcz0iY29ubmVjdGlvbiBmaWxsLUIyIiBzdHJva2Utd2lkdGg9IjIiIC8+IDwvbWFya2VyPjxwYXRoIGQ9Ik0gNDE1IDQ0OCBMIDQxNSA2MDMiIHN0cm9rZT0iIzBGNjZCNyIgZmlsbD0ibm9uZSIgY2xhc3M9ImNvbm5lY3Rpb24gc3Ryb2tlLUIyIiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7c3Ryb2tlLWRhc2hhcnJheTo2LjAwMDAwMCw1LjkxOTM4NDsiIG1hcmtlci1lbmQ9InVybCgjbWstZDItMTg0NDUwMTI1MS0yMTc3MjA2NTY5KSIgbWFzaz0idXJsKCNkMi0xODQ0NTAxMjUxKSIgLz48dGV4dCB4PSI0MTUiIHk9IjUzMiIgZmlsbD0iIzY3NkM3RSIgY2xhc3M9InRleHQtaXRhbGljIGZpbGwtTjIiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPmFjY2VzczwvdGV4dD48L2c+PGcgY2xhc3M9IlQyNWxJRlJwYldVdUtFTm9iMjl6WlNCU1pYQnZJQzBtWjNRN0lFTm9iMjl6WlNCT1lXMWxJR1p2Y2lCM1pXSnphWFJsS1Zzd1hRPT0iPjxwYXRoIGQ9Ik0gNDE1IDY3NSBMIDQxNSA3MzkiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0ibm9uZSIgY2xhc3M9ImNvbm5lY3Rpb24gc3Ryb2tlLUIxIiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiBtYXJrZXItZW5kPSJ1cmwoI21rLWQyLTE4NDQ1MDEyNTEtMzQ4ODM3ODEzNCkiIG1hc2s9InVybCgjZDItMTg0NDUwMTI1MSkiIC8+PC9nPjxnIGNsYXNzPSJUMjVsSUZScGJXVXVLRU5vYjI5elpTQk9ZVzFsSUdadmNpQjNaV0p6YVhSbElDMG1aM1E3SUZOd1pXTnBabmtnWm05c1pHVnlLVnN3WFE9PSI+PHBhdGggZD0iTSA0MTUgODExIEwgNDE1IDEwMTEiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0ibm9uZSIgY2xhc3M9ImNvbm5lY3Rpb24gc3Ryb2tlLUIxIiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiBtYXJrZXItZW5kPSJ1cmwoI21rLWQyLTE4NDQ1MDEyNTEtMzQ4ODM3ODEzNCkiIG1hc2s9InVybCgjZDItMTg0NDUwMTI1MSkiIC8+PHRleHQgeD0iNDE1IiB5PSI5MTgiIGZpbGw9IiM2NzZDN0UiIGNsYXNzPSJ0ZXh0LWl0YWxpYyBmaWxsLU4yIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5cX3NpdGU8L3RleHQ+PC9nPjxnIGNsYXNzPSJUMjVsSUZScGJXVXVLRk53WldOcFpua2dabTlzWkdWeUlDMG1aM1E3SUVSbGNHeHZlU0VoSVNsYk1GMD0iPjxwYXRoIGQ9Ik0gNDE1IDEwODMgTCA0MTUgMTE0NyIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSJub25lIiBjbGFzcz0iY29ubmVjdGlvbiBzdHJva2UtQjEiIHN0eWxlPSJzdHJva2Utd2lkdGg6MjsiIG1hcmtlci1lbmQ9InVybCgjbWstZDItMTg0NDUwMTI1MS0zNDg4Mzc4MTM0KSIgbWFzaz0idXJsKCNkMi0xODQ0NTAxMjUxKSIgLz48L2c+PGcgY2xhc3M9IlVsTjBkV1JwYnlCWGIzSnJabXh2ZHk0b1VsTjBkV1JwYnlBdEptZDBPeUJPWlhjZ1JtOXNaR1Z5S1Zzd1hRPT0iPjxwYXRoIGQ9Ik0gOTY0IDc0NiBMIDk2NCA4MTAiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0ibm9uZSIgY2xhc3M9ImNvbm5lY3Rpb24gc3Ryb2tlLUIxIiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiBtYXJrZXItZW5kPSJ1cmwoI21rLWQyLTE4NDQ1MDEyNTEtMzQ4ODM3ODEzNCkiIG1hc2s9InVybCgjZDItMTg0NDUwMTI1MSkiIC8+PC9nPjxnIGNsYXNzPSJVbE4wZFdScGJ5QlhiM0pyWm14dmR5NG9UbVYzSUVadmJHUmxjaUF0Sm1kME95QkRjbVZoZEdVZ1VHOXpkQ2xiTUYwPSI+PHBhdGggZD0iTSA5NjQgODgyIEwgOTY0IDEwMzciIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0ibm9uZSIgY2xhc3M9ImNvbm5lY3Rpb24gc3Ryb2tlLUIxIiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiBtYXJrZXItZW5kPSJ1cmwoI21rLWQyLTE4NDQ1MDEyNTEtMzQ4ODM3ODEzNCkiIG1hc2s9InVybCgjZDItMTg0NDUwMTI1MSkiIC8+PHRleHQgeD0iOTY0IiB5PSI5NjYiIGZpbGw9IiM2NzZDN0UiIGNsYXNzPSJ0ZXh0LWl0YWxpYyBmaWxsLU4yIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5pbmRleC5xbWQ8L3RleHQ+PC9nPjxnIGNsYXNzPSJVbE4wZFdScGJ5QlhiM0pyWm14dmR5NG9RM0psWVhSbElGQnZjM1FnTFNabmREc2dWR1Z5YldsdVlXd3BXekJkIj48cGF0aCBkPSJNIDkyMi41ODMwMDggMTEwOSBMIDkyMi41ODMwMDggMTE4MyIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSJub25lIiBjbGFzcz0iY29ubmVjdGlvbiBzdHJva2UtQjEiIHN0eWxlPSJzdHJva2Utd2lkdGg6MjsiIG1hcmtlci1lbmQ9InVybCgjbWstZDItMTg0NDUwMTI1MS0zNDg4Mzc4MTM0KSIgbWFzaz0idXJsKCNkMi0xODQ0NTAxMjUxKSIgLz48L2c+PGcgY2xhc3M9IlVsTjBkV1JwYnlCWGIzSnJabXh2ZHk0b1ZHVnliV2x1WVd3Z0xTWm5kRHNnVUhKbGNHRnlaU0JUYVhSbEtWc3dYUT09Ij48cGF0aCBkPSJNIDg4NS45MTYwMTYgMTE4NSBMIDg4NS45MTYwMTYgMTE1NyBTIDg4NS45MTYwMTYgMTE0NyA4NzUuOTE2MDE2IDExNDcgTCA4NTQuNSAxMTQ3IFMgODQ0LjUgMTE0NyA4NDQuNSAxMTM3IEwgODQ0LjUgMTc4IFMgODQ0LjUgMTY4IDg1NC41IDE2OCBMIDg3Mi4yNSAxNjggUyA4ODIuMjUgMTY4IDg4Mi4yNSAxNTggTCA4ODIuMjUgMTMyIiBzdHJva2U9IiMwMDA1MzYiIGZpbGw9Im5vbmUiIGNsYXNzPSJjb25uZWN0aW9uIHN0cm9rZS1CMSIgc3R5bGU9InN0cm9rZS13aWR0aDoyOyIgbWFya2VyLWVuZD0idXJsKCNtay1kMi0xODQ0NTAxMjUxLTM0ODgzNzgxMzQpIiBtYXNrPSJ1cmwoI2QyLTE4NDQ1MDEyNTEpIiAvPjx0ZXh0IHg9Ijg0NSIgeT0iNjU3IiBmaWxsPSIjNjc2QzdFIiBjbGFzcz0idGV4dC1pdGFsaWMgZmlsbC1OMiIgc3R5bGU9InRleHQtYW5jaG9yOm1pZGRsZTtmb250LXNpemU6MTZweCI+PHRzcGFuIHg9Ijg0NSIgZHk9IjAiPnF1YXJ0byByZW5kZXI8L3RzcGFuPjx0c3BhbiB4PSI4NDUiIGR5PSIxOC41Ij4gcXVhcnRvIHByZXZpZXc8L3RzcGFuPjwvdGV4dD48L2c+PGcgY2xhc3M9IlVsTjBkV1JwYnlCWGIzSnJabXh2ZHk0b1VISmxjR0Z5WlNCVGFYUmxJQzBtWjNRN0lFZHBkRXR5WVd0bGJpbGJNRjA9Ij48cGF0aCBkPSJNIDkyNi4yNSAxMzAgTCA5MjYuMjUgMjA0IiBzdHJva2U9IiMwMDA1MzYiIGZpbGw9Im5vbmUiIGNsYXNzPSJjb25uZWN0aW9uIHN0cm9rZS1CMSIgc3R5bGU9InN0cm9rZS13aWR0aDoyOyIgbWFya2VyLWVuZD0idXJsKCNtay1kMi0xODQ0NTAxMjUxLTM0ODgzNzgxMzQpIiBtYXNrPSJ1cmwoI2QyLTE4NDQ1MDEyNTEpIiAvPjwvZz48ZyBjbGFzcz0iVWxOMGRXUnBieUJYYjNKclpteHZkeTRvUjJsMFMzSmhhMlZ1SUMwbVozUTdJRVJ2Ym1VZ1ptOXlJRTV2ZHlsYk1GMD0iPjxwYXRoIGQ9Ik0gOTY0IDI3NiBMIDk2NCA0MzEiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0ibm9uZSIgY2xhc3M9ImNvbm5lY3Rpb24gc3Ryb2tlLUIxIiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiBtYXJrZXItZW5kPSJ1cmwoI21rLWQyLTE4NDQ1MDEyNTEtMzQ4ODM3ODEzNCkiIG1hc2s9InVybCgjZDItMTg0NDUwMTI1MSkiIC8+PHRleHQgeD0iOTY0IiB5PSIzNjAiIGZpbGw9IiM2NzZDN0UiIGNsYXNzPSJ0ZXh0LWl0YWxpYyBmaWxsLU4yIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5zdGFnZSBhbGwsIHB1c2g8L3RleHQ+PC9nPjxnIGNsYXNzPSJVbE4wZFdScGJ5QlhiM0pyWm14dmR5NG9SRzl1WlNCbWIzSWdUbTkzSUMwbVozUTdJRkpUZEhWa2FXOHBXekJkIj48cGF0aCBkPSJNIDk2NCA1MDMgTCA5NjQgNjc0IiBzdHJva2U9IiMwMDA1MzYiIGZpbGw9Im5vbmUiIGNsYXNzPSJjb25uZWN0aW9uIHN0cm9rZS1CMSIgc3R5bGU9InN0cm9rZS13aWR0aDoyOyIgbWFya2VyLWVuZD0idXJsKCNtay1kMi0xODQ0NTAxMjUxLTM0ODgzNzgxMzQpIiBtYXNrPSJ1cmwoI2QyLTE4NDQ1MDEyNTEpIiAvPjx0ZXh0IHg9Ijk2NC41IiB5PSI1OTUiIGZpbGw9IiM2NzZDN0UiIGNsYXNzPSJ0ZXh0LWl0YWxpYyBmaWxsLU4yIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5SaW5zZSBhbmQgUmVwZWF0PC90ZXh0PjwvZz48bWFzayBpZD0iZDItMTg0NDUwMTI1MSIgbWFza1VuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeD0iLTg5IiB5PSItODkiIHdpZHRoPSIxMjc0IiBoZWlnaHQ9IjE0OTMiPgo8cmVjdCB4PSItODkiIHk9Ii04OSIgd2lkdGg9IjEyNzQiIGhlaWdodD0iMTQ5MyIgZmlsbD0id2hpdGUiPjwvcmVjdD4KPHJlY3QgeD0iMTI2IiB5PSIyNDAiIHdpZHRoPSI0NiIgaGVpZ2h0PSIyMSIgZmlsbD0iYmxhY2siPjwvcmVjdD4KPHJlY3QgeD0iMjU0IiB5PSIyNDAiIHdpZHRoPSIyMyIgaGVpZ2h0PSIyMSIgZmlsbD0iYmxhY2siPjwvcmVjdD4KPHJlY3QgeD0iMTA0IiB5PSI1MTYiIHdpZHRoPSI5MCIgaGVpZ2h0PSIyMSIgZmlsbD0iYmxhY2siPjwvcmVjdD4KPHJlY3QgeD0iMTI2IiB5PSI3NjYiIHdpZHRoPSI0NiIgaGVpZ2h0PSIyMSIgZmlsbD0iYmxhY2siPjwvcmVjdD4KPHJlY3QgeD0iMTE3IiB5PSIxMDM4IiB3aWR0aD0iNjQiIGhlaWdodD0iMjEiIGZpbGw9ImJsYWNrIj48L3JlY3Q+CjxyZWN0IHg9IjM5MSIgeT0iNTE2IiB3aWR0aD0iNDgiIGhlaWdodD0iMjEiIGZpbGw9ImJsYWNrIj48L3JlY3Q+CjxyZWN0IHg9IjM5NSIgeT0iOTAyIiB3aWR0aD0iNDAiIGhlaWdodD0iMjEiIGZpbGw9ImJsYWNrIj48L3JlY3Q+CjxyZWN0IHg9IjkyNyIgeT0iOTUwIiB3aWR0aD0iNzQiIGhlaWdodD0iMjEiIGZpbGw9ImJsYWNrIj48L3JlY3Q+CjxyZWN0IHg9Ijc5MSIgeT0iNjQxIiB3aWR0aD0iMTA4IiBoZWlnaHQ9IjM3IiBmaWxsPSJibGFjayI+PC9yZWN0Pgo8cmVjdCB4PSI5MTQiIHk9IjM0NCIgd2lkdGg9IjEwMCIgaGVpZ2h0PSIyMSIgZmlsbD0iYmxhY2siPjwvcmVjdD4KPHJlY3QgeD0iOTA1IiB5PSI1NzkiIHdpZHRoPSIxMTkiIGhlaWdodD0iMjEiIGZpbGw9ImJsYWNrIj48L3JlY3Q+CjwvbWFzaz48L3N2Zz48L3N2Zz4K" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIGRhdGEtZDItdmVyc2lvbj0idjAuOS4wIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWluWU1pbiBtZWV0IiB2aWV3Qm94PSIwIDAgMTI3NCAxNDkzIj48c3ZnIGNsYXNzPSJkMi0xODQ0NTAxMjUxIGQyLXN2ZyIgd2lkdGg9IjEyNzQiIGhlaWdodD0iMTQ5MyIgdmlld0JveD0iLTg5IC04OSAxMjc0IDE0OTMiPjxyZWN0IHg9Ii04OSIgeT0iLTg5IiB3aWR0aD0iMTI3NCIgaGVpZ2h0PSIxNDkzIiByeD0iMCIgZmlsbD0iI0ZGRkZGRiIgY2xhc3M9IiBmaWxsLU43IiBzdHJva2Utd2lkdGg9IjAiIC8+PHN0eWxlIHR5cGU9InRleHQvY3NzIj48IVtDREFUQVsKLmQyLTE4NDQ1MDEyNTEgLnRleHQgewoJZm9udC1mYW1pbHk6ICJkMi0xODQ0NTAxMjUxLWZvbnQtcmVndWxhciI7Cn0KQGZvbnQtZmFjZSB7Cglmb250LWZhbWlseTogZDItMTg0NDUwMTI1MS1mb250LXJlZ3VsYXI7CglzcmM6IHVybCgiZGF0YTphcHBsaWNhdGlvbi9mb250LXdvZmY7YmFzZTY0LGQwOUdSZ0FCQUFBQUFBcjhBQW9BQUFBQUVTUUFBZ3VGQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFCUFV5OHlBQUFBOUFBQUFHQUFBQUJnWGQvVm8yTnRZWEFBQUFGVUFBQUFmQUFBQUp3QzZ3Sy9aMng1WmdBQUFkQUFBQVRaQUFBR1JEdlRYVVZvWldGa0FBQUdyQUFBQURZQUFBQTJHNFVlMzJob1pXRUFBQWJrQUFBQUpBQUFBQ1FLaEFYWWFHMTBlQUFBQndnQUFBQllBQUFBV0NpWkJHSnNiMk5oQUFBSFlBQUFBQzRBQUFBdUUySVI1bTFoZUhBQUFBZVFBQUFBSUFBQUFDQUFMZ0QyYm1GdFpRQUFCN0FBQUFNckFBQUlGQWJEVlUxd2IzTjBBQUFLM0FBQUFDQUFBQUFnLzlFQU1nQURBZ2tCa0FBRkFBQUNpZ0pZQUFBQVN3S0tBbGdBQUFGZUFESUJJd0FBQWdzRkF3TUVBd0lDQkdBQUF2Y0FBQUFEQUFBQUFBQUFBQUJCUkVKUEFFQUFJUC8vQXU3L0JnQUFBOWdCRVNBQUFaOEFBQUFBQWVZQ2xBQUFBQ0FBQTNpY2JNeFB5Z0VCSElEaFo3NlpiNzQvQm9PeWRpTWxOUmVRbWl6VVJLN2hBSWdjUUhJaUovbkpyUFh1bnNXTFJDcEJJYlBIV0NtVm01aWFxeXpWMWhwYnV3aGFuNmtzMUZZYW03ZkhNeDV4ajF0YzR4TG5PTVV4RHUzMVU0a3ZxY3kzM0k5ZmYvNTFGTHA2K2tvRFF5TmVBQUFBLy84REFQYWdIWmg0bkl4VVgwd2JkUnovL240OWVpMGN0RWYvWE10b1MzdnJkWVVXU3E5M045YlNEdHBDQ3kxL3Jpai9CQ1ZqS3pCRERFWVhsbVVZcDNISjRzTERraVhib29zek1UNmJFSTJQeGdYL3pSZVRhYUxKc29lNnVBZVY5TUdZY1RXOWxvbkdCMS91OTN1NXovZno3L3VEQnBnRndBSytCaHJRZ3dGYXdRTEEwMjdhNi9iNVdGTGlKWWxsTkpJUDBlUXMrbEhaUmlnYklVU1I2QjE4UExpNXRZVm1MdUpyK3krZWVLTlkvSHp4M0RubDdkSWpKWXp1UFFJTWtVb1puOGEzd0FBT2dBWVB4d2tSVWVURFZxdkZyTlg2d3FJb1JEaldvN1dZclZhVWs3ZUdoN2Zrd3NWTTVtSWhPaDFhbTVsWkM4MVFVemRXVjY5UFRsNWZYYjB4bFUxdXl1ZXZYajB2YnlZQkFERE1BZUFPdkEwdHdGUVoxNUZKRTZ0aGFab1BxL0RzM0RmSmxlaEU2b1BGZDg2dDUyVTV2NDYzMmNsVWJvRldIaUtMOGhqTkprNE9SQUFBRUhSV3l1aFhmQXVDS2x1ZlpMWFdRRGlmcnh2WHVUTWtkOENaWVp5NHFnUVowNjkyaGRubitZR01vOWUxNk9yM0M0dlI2REliZEdhN3BhUTczTGJBOVI4Vmx5a2hjTUliaklZOHg5cGIvTTJkZzZId2VEQjRWSFM0SXdHWHY2M3BtREU0MEJ0NUpnd0kyZ0hRRTd3TlpGVVZLN2d0TFAzd0xucHdGNDhNRGUzdjFMZ3lBUGhQdkExdUFGN0RtNnhXaGhkRnlYVG9wbUUxSE9kanRWcFM4OTZWWjlONnM1NW9zalhONStZcEcwWG9XeHZURTVlWFQra05Pb0pzMVMzaGJlV21zQ1lJWnlQb3RISXpjcloyMjM4SlhlR3lISmZsbEZjQVEwK2xqSDdBdTJDQ0RnREdjeEFuNHhONG1xMU84b1VsUWJWSGF6RmIvNWhmank1Sm5mRU9vcEFpTmUwNSs4bVlxOC9wUzNCRDFKdWI0eS9IblcyRlQvZVA5N1g3MDBtbG5la3BISjgrQlJpNksyWDBKZG9ERzdqKzBabHFzRzQxRUluUmFqVnV0VG1JR1ZpTEo1YWxoZE1JS3g4M1RBK3gwU01PMS9oWGlFajA4Wk5VLzhiNHhFYjh3a3F6WFo5L3prS0xaaWZpUnZManFuOU9BSlRBMzlXNnpncVNFS21ueTNvc0Z0N0MwaThNRHFhelRLZXg5VWg3cWxoRWQrSU4rWkZwUFptZ0Z2TkpaUUdnVW9FMEFIeUVkekFIWmdEUWd1VkNMUnNaQUpYd0xsQlZiSjdtVFR4cFluMmtSWjdVZkR0LzU1TzVxL040VjNFaStFejU2WmUxMStyL1ZNcndQZDRGUTgxWm1xZk5CMkkvN1BiTExYcUNKSnQwVnFwUHdHZjJyNWxvaE9JRVVadUZmMGQ3YWc5b3ZocDlWWWI2dGRBc1hiV0pmSHJLS1ZMVGtlczZuakJ3WTRIUnJCem9GbE55b0VkTW9kSVEyOU1iOEVlV0ZwU3ZrVDhWSDFWdTE0KzZudnRvcjZyeTd4a0g2Tm9hTERzV3pnL0xnWkEzNmxYQkRvQTRyM0liNnJuK2h2YkFBRWYrOHkxNCtoUWdRN1NZU0JTanNUT0p4SmxZSXA5UHhNZkdxTmpHaEx3UmkyM0lFeHV4VkxFd3RiSXlWU2dlZUwySTlvQSt4SzIrb3pWaTlvemZ3UmdwczhHVnRLUFNUTGZZbUNHSWNGelpyZmx1cTVSUkdxOERVL2VkRlNTSlZ3dncxUC9IWS8yWlhHUDYwaVYzWjdPVE1wcDdxTGtNYW80M1hMNmNWUGFDdlhvaVRqYXBXS09WTXJxSFNtRCtWNFowZlQwZTVET0ZyaEFYOVZSNWVYTFUwZ0tLS1BkVGNWOFhtbFhhY3NkQ2dNQUdnSGRRNmYvdDlidHZUV1YwTFNTaE0rcEhKM0o2V2tmb0RPVHcyT3ZMUTNxRG50QVpHMU9vcFB6c1NYbzhTUSt5SDdxMW9RWTI1ZldtV2VWSnpVTjRINVZBbzNwSXl6SXFLVzJBS2wvZ0VaRHdEalFCME9xMlYyTTNhMjB1bDgzbWN1RVJoOTNtZE5yc0R2Z0xBQUQvL3dNQU1lQld1d0FBQUFBQkFBQUFBZ3VGbXM3SFpWOFBQUFVBQXdQb0FBQUFBTmhkb0tFQUFBQUEzV1l2TnY0Ni90c0lid1BJQUFBQUF3QUNBQUFBQUFBQUFBRUFBQVBZL3U4QUFBaVkvanIrT2dodkFBRUFBQUFBQUFBQUFBQUFBQUFBQUFBV0FvMEFXUURJQUFBQ21BQTBBamtBV2dJV0FDb0NHQUFjQXhJQUZ3SXJBQzhCOEFBdUFTUUFIZ0QyQUVVQjd3QlNBUDhBVWdNOUFGSUNJd0JTQWg0QUxnRmJBRklCVWdBWUFpQUFTd0xPQUJnQTlnQlNBQUQveVFBQUFDd0FMQUJjQUlRQXlBRGFBUlFCUmdGNkFad0JxQUhDQWQ0Q0VBSXlBbDRDZmdLa0FzWURBQU1NQXlJQUFBQUJBQUFBRmdDTUFBd0FaZ0FIQUFFQUFBQUFBQUFBQUFBQUFBQUFCQUFEZUp5Y2xOOXFHMWNReG4rS0piV2hOQmZGQk9mR25NdTJPQ3MxMkNHeHI5WjFUSllhSzlVcS9RT2xzSmJXa3BDMHUreXU1TGowQVhyZHQraGI1S3JQMFljb3ZTNHpHaW5hdEJBc1FzeTNPalBmZkdmbW13UHM4Zzg3MU9yM2dUK2JQeGl1c2Q4OE5ueVBCODBEd3p0Y05QNHlYTitJYVRCby9HcTR5WmVOcnVHUGVGdi8zZkRISE5aL05ueWZ2ZnE1NFU5NFV0ODEvT21PNDIvRER6ams3UkxYNEJtL0dhNnhSMmI0SHJ2OFpIaUhoeGhucmM1RDJvWWJmTWErNFNiN1FJOHhKVlBHSkF4eFhETm15SnljbUlLUW1Kd3gxOFFNY0FUNFRDbjExNFJJa1dQNHY3OUdoSlRrUk1vNG9zUXhKV1JLUk1ISUdIL1JySlJYV2xIcTVJcWttay9KaUlncnpaZ1FrZUJJR1pLU0VETlJucEtTakdOYXRDam9xOTZNa2dLUGdqRlRQRkp5aHJUb2NNNEZQVWFNS1hDY0s1TW9DMG01cHVTR1NPczdpNURPOUlsSktFelZuSVNCNm5TcUw5YnNnQXNjSFRLTjNXUytxREFjNFBoT3MwV2J4RGkrd3RQL2JrTlp0ZTVLVGNSQyt5azl2R0txT205MGdpUHR1TlQxK1ZaeHlURnVxLzVVbFh5NFJ3TlZKN01lYzhWYzV5L3prenhSa3VEY0hqNmhPaWgwajNDYzZuZEFxQjM1bm9BZUwrbndtcDUrKzNUcDRuTkpqNEFYbXR1aGkrTnJPbHh5cGhtQjR1WFp1VHJta2g5eGZFT2dNY0lkVzMrazUvTDFoc3pjTGRyRkdYS1BHWmx1Z2N4WTdpL09qN2Vhc094UVduRkhvYTdvNng1SnBPeUJkRVgyTEdKb3JzalVGVFB0NWNvYmhmVnZZSTZRMDFKbisrNWN0bUZodTdmYTRsdFMzV0hIM0RUSjVKYUtQalJWN3ozUDNPZy9qNGdCS1ZjYTBTZGxSb3VTVzczYkt5TG1USEdjcVk5ZjZwYVUrT3NjcVhPckxvbVpxWUtBUkhseU12MGJtVzlDMDk2ditON1pXeUtiTjlNZG5heHZ0VTBWWVU0Mlp2UmF1N2M2QzYzTDhjWUVXamJWMUhKa3dzSzh2S2w0WDZLOWl2NVEzVi9vNjVieW1DNnh2cTR5Ly93Lzc4QVRQTm9jY3NRSkk2MGovQWtMZXlQYStrNjBlYzZKOW1CQ3JGSHlhcjdSYmduREVSNVBPZUtJNXp5dGNQcWNjVXFIa3p0b1hHWjFPT1hGZXllYkhHN040b3puRDFYVFZyMk94K3V2WjF2UDYvTTcrUElMRGlvdm95aVhQY2haR05zNy8xOFNNUk10Ym0rekwrNFIzcjhBQUFELy93TUFCMXRNTUFBQUF3QUFBQUFBQVAvT0FESUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQT09Iik7Cn0KLmQyLTE4NDQ1MDEyNTEgLnRleHQtYm9sZCB7Cglmb250LWZhbWlseTogImQyLTE4NDQ1MDEyNTEtZm9udC1ib2xkIjsKfQpAZm9udC1mYWNlIHsKCWZvbnQtZmFtaWx5OiBkMi0xODQ0NTAxMjUxLWZvbnQtYm9sZDsKCXNyYzogdXJsKCJkYXRhOmFwcGxpY2F0aW9uL2ZvbnQtd29mZjtiYXNlNjQsZDA5R1JnQUJBQUFBQUJBa0FBb0FBQUFBR0d3QUFndUZBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJQVXk4eUFBQUE5QUFBQUdBQUFBQmdYeEhYcm1OdFlYQUFBQUZVQUFBQW93QUFBT1FFYndWQloyeDVaZ0FBQWZnQUFBbGtBQUFNc0ZFUlN5Vm9aV0ZrQUFBTFhBQUFBRFlBQUFBMkczOGUxR2hvWldFQUFBdVVBQUFBSkFBQUFDUUtmd1hxYUcxMGVBQUFDN2dBQUFDa0FBQUFyRlRUQnpwc2IyTmhBQUFNWEFBQUFGZ0FBQUJZUTBwR2NHMWhlSEFBQUF5MEFBQUFJQUFBQUNBQVF3RDNibUZ0WlFBQUROUUFBQU12QUFBSUtnandWa0Z3YjNOMEFBQVFCQUFBQUNBQUFBQWcvOUVBTWdBREFpb0N2QUFGQUFBQ2lnSllBQUFBU3dLS0FsZ0FBQUZlQURJQktRQUFBZ3NIQXdNRUF3SUNCR0FBQXZjQUFBQURBQUFBQUFBQUFBQkJSRUpQQUNBQUlQLy9BdTcvQmdBQUE5Z0JFU0FBQVo4QUFBQUFBZkFDbEFBQUFDQUFBM2ljZk01SkxzQmdITWJocDFvMVZkVTgxOHc1SkVJYUlpS1NydDFBSkNJT1pkaUsrUmEyVHZLWGZQYnlMcC9GKzBNbWw2RlMrRWFya2F1dDIzRGdTT2ZFcVRNWGVsZHUzTHFMSVBtK1E1M2o1T2Q2bDY3L1BINlU4UldmOFJIdjhSYXY4UkxQOFJTUDhSRDM2ZTIvWmZZTXlCVUdsWVlNR3pGcVRHVmNiVUpqMHBScE0yYk5tYmRnMFpKbEsxYTExbExacGkzYmR1enlDd0FBLy84REFNQitKNW9BZUp4c1ZuMXNHMmY5L3o3UG5lOGF4M2s1bjgvbmwvajE3RHZiaVozWTU3UHo0dFJKNHpocGF6ZHZUWnB1ZWVtcS90YnUxelROMnBTbVZhWWhzVEhZWExyTlJTc01Oa0JNQWxSQTA0UzBEUUppWWh2VEN2dWpHK01QcG8yQk90QWtGRVpBMDBqTzZDNU9taGIrU0w2bngzZlA4LzE4dnAvdjUvdUFBWVlCOEZGOEJRaW9nUVl3QXdjZ016NG1LRXVTUUtmbGRGcmdpYlNFR0hvWW05WG52aXVGeVhDWWpIaXZlaTdPenFMaURMNnlNWGQzOGVqUmY4MTJkYW5QdlBTeWVnbWRmUmtBVno0RHdIMjRCRFhBQUxDMExJbWlKRkFVd2Nxc0lBbjB6Y2JIR3VxY2RhVEovdG4xNTY5L0kvUjZDTzNMWk9MemN2S1UrakF1YlN3Ky9UUUFBQUZGQUp6QkpXREFBWDR0TnpsaHRYSVdpdWIwUUFtRW5FZ3BTVkVRR0RtaHgrTDd1Ym1lYUNqUmx6c3pNTnVmaWllUytiRUxtZTR4WEhMbHM4MWpEV1RkL3Q2K2cySDBTRVFRdmVya1pITVFBRUdzc29iYjhGVndBaGo4b3Fna1V5azVZZVZwVVJUOEZNVlpySElpbGVZcE5EMzY2Tmo0cGRIc01kOEJlMXBvMmRzOE1SaksyZzZNbWdwZlBUWDN0UkhaUDhPN0VqTjdqaTBFN0ZOSEFFTVJBQmR3Q1l6QTdjaWVFaVE1a2RMeTFoSis4ZGlUSThPWGowU2Iyc2Rpc2JIMkpsektYVjVZZUhMZ2ZHanF3SUhEUWREeUt3S2d2K2g4YXZYaGZKek1DVndSUGExKyt1R0h1TFQ4MVBJR3dCYU9ITDRLbnYrRm93cERFUlNab1NoMDZ2QVQ0NGNlUHpSd3I3ZG9iNDhVamt6ZGJSRk5jMy96MzE4RmsvVE5XTjBMUjQ4dEdJMExTK3JidnRobUh2QUJMZ0doMTRJcGxuRnBZM0Z6SGMvaEVwZzIxMlZXSmxpQm9MbGltWHpsTzYvKzlkdlBGbkJKL1NlcVZkZlZKY1FlKy9FV3BnOXhDUXliMy9pNFlobGhYTnBZWFlZdHpEcDNyUDQ3eTh1aXFDZ3lJeENTWUxWeVhQR3BIL1NRWkgxSkM0WTZYRkovOW5qeTg1MDNOeFpSLzFkU3k1MGZBVlQ1YjlQenN1eFFEeVVJM0xaZVBoZzhsODh2OW84TUx2VmtjcmdrVFEwVmpyYStoMFpQeUJIWTNtTU1sNkFlK0owSzFJU3M3YUtWVVJDS0gvZWZ5V1dWSzg4OU1GTG83Tzd1TE9CU2NQTEE0RFN2L3Z2amo5R1JlRnVicUdFU0ttdllpSzlDUksrUGxMWnFGVkdTb2lURjhIOFZpK2Yxa3loazZYa3djVkNZQ01XaWN2TzRMeU4yM1pkclg0anM5L1pJWXJRamNyQXIzemx2YW92OW4xdjB1end1YzZDK05kK2Fta3kyUktidFRrK1QyODM0YlFmN1UxUHRnTUFPZ0ZsY0FscERJaWcrVG1DdXY0QStld0UzTGk5dnJHcDRFZFFERUY1Y0FoK0FUTWlzMWNyTHFWU2EzZkZFQ01SbVA5UEVJeGVlaWxMMUZHbGtqZmtIOGtiV1NOSjFkUFRTNGtzOXUrb01KRlczcXh1WDFMZms0OG5rY1JuRjFiZmlKeFRsZUFMRk54WlJTQ3dHQWtWUi9UMWdpRlRXME50b0hld2dBUEIrclFIVGV1L1JrazRLeHdqYWVXbE52bm8vL2p3My9GQVpDMkZQVDBCcFBkazVlKytTa2ZRTTdMSUgyUU1aaitsUTlzQmtnMCt5Y2ZlNEF2Tm4xRC9MVGNJWm5qMWtiSGJaZUwybXZaVTFiTVVyWUtsMmlpVFFBaU56dEg2WVRycWsxVVh3YTBhRCtuMTlMdEowdGt5NmN2N01aR3RtZGxKTVRiU0VMU0dUejZ2Z2xXc0ZoMnYzL1lYeEM5bWxmT0dMMFRmTjlUcVBnY29hV2tIcjRMaXpGMisxSWs5UnlONS91bmZ3YzduWVFGTy80Rld5MlRaYmpPME1UcGk2ejQyT0xYYTcrVmxYb2JlbnlEVWM4VHExK21DUUttdG9IYThBQzk0dHJyU3NlVW1SZDdDMEphSlBwazUzelNiRDdYYXF2R1FrSFhsc2s4eHNzMFZJdFpvZXV6QnlibmVUcmZEOWpiNjRRMWl5Mk44MDEvY043TzBIck9mK1I3UU90anVjUktPRzltbXFUZk1VUmNoSjdSVGtHVGl6cDIrdWEyQzZsY1RxdThaOFhFbkZ4Wm12dnlDMStGT20zWXVqSTR2WjdNa2NHNnhKeWI3RERqZnFEQ3V0R2hZRU5nQzBpTi9Rb3FiSDlCMDlvTmtjYzllZVBZSGhQayt5MFZubk1EbmRodytqQjA0Wm5NcEUwa1ROR1F3KzBYMVcvUUlBQWY1S0ZOTm9IVnFoQy9icHpJaEtNcTNvdVZkRFNrN3dNaWRVVGNBdmFRVEptcndzRkVWb0JhK1N4bGE3MmkvcXIzelNPZE0rd0RxOU5rZTRjMFpwOGYxa2lLNUpUcVpkSHJNL1BEeDFUMjU1bjB1U1hDNUpDaWQ2cEtCczk1bWMzVGNjN1MyWkVGa1g4amdUamFRNTE1d1pDcGxPMXZvdEhmc0N4Z1lyYSs3cWswZGk2STFJV0FxSFF1R0lXZzdZK1VhQ3NObWJYSnZjOUdyRjFqVUs4clkyT1VaZ2ROSnBwcmRNTisxUGpPd3R1N3hOSVJ0ZXVYYlkzbnh5V3IyT2ZLbVFuVmVmaDBvRjBnRHdIcjZCUlFnQkFBMWhlQlNnVXFuOHBwS0I5L1gxU0hXOXRIMm1HNjlzKzNoYXBsbEJvcm5leStRM3YvV2puejY3a01VcjZ2eXIxOVUvL0hMZ292WitaUTJaOFFvMDZId3JqTXhzQy92WGhhNHlVMk9nS2JNcGFMcDdQeFkyM3VYTkNKMHkwTnAzQUlRTHJlc2V3OGlhcldoVnZ3MGh2UjE3dGQ3T3g1VmUxcmN2UHJ5LzdQSUcyN1IvcldpMXh4TnREdm5qVzdEYjFPZXJZWXMvdEE2V25XZnM1Ry9KU0hxTDJ3U2kxYXc3ZWh0L20zMmdhNnJoanB2QkxZdW9LZ1paczZkenVkUFo3SHd1TjUrTnhtTFJXRFJhN2VIdXhiSFJjOTNuaXoyOUJhMlZ0YlI2SzRQWWl0YUJCVGNBZnlzN1haYWl4SFBzTGZ2UjRMdjJTbmVkeU15bXZCbUhZVWhNVFRSSExLRVg4ZmZpRHVITFo4ZVhzazc3MEJNb3NHMCtPblowR2EyRCtUWithZkVXY21kQjVKcU10anA3WTFPM0JhMGVTc1FOaGdkSk1weFFQd0FFWEdVTlBZdldRZExyZW10T2ladHphbnN6YlVxNU1XZWhic1NQaTN2OFdZL1A3WW81M0YyaCs4WTdEbm4yT0pLT2pnN1IyeDArWVJJOVUzWW56ekpXMW1nS2RJVDdKeVRicE1VcTJlejF0VUpIckc5NlUvTk1aUTNONDBWdDBocjhvcUlJU2pvdGF5Nnd3ekJoYWloWFlDNmVQeSs0VEhZano2Wk4vei94eGlucW9ZZk92aDRKVXVSSnlyUzVWNmF5aGo1RnEyQzVRNXRNMVNaL043SzM3UFkyaWRieVVpM2gyV2M2T1kyUzZ2dEsyT0ZDZzJwamY3QmwwNS93S2xxdHprSytPZ0hUTzU0SW9YcTNwZWtyeTArMlVVYUtwT3RxMGcrMjF6VFFKRjFEdDM3cC9MVW9YVWVUZEMzZGdsWnZCZ2RGY1o5d1U0K0R3WnRxNDJ0Q1BoVEtDNi9wT1pzcXU5RUdXZ1huVHQ3VDZaMUhFL1Y0eWVwcmNORG1YY0dRa2Y3RmxZRmFzNUhjeGRSa0xsM2oyNGRlb2NnRlpBaTRIT2hQNy9qelFXRkFlRWV0M1QxZXZjdU1WTllRZ1o4QmczWXZUeE9TVEJPMFBtMDN4WGVSTTF3eGNHMmlMSXVpTEgrRUVnOC9yUDcySDRvVVVwU1FwR3oyRkx5TlZyZnVmNzFsdEtvMkFxcjhFSGZBR0w0QnRRRE1qdjJDc1Znd0dJdmhqb2dnUkxRL0FLUjd6enRvRlJwdjA1WldIb29LZU1JTkRpTnJkUEZsYi9GWHU2ZzVncFRDNk84cW03b3JEZjhCQUFELy93TUFZMFdtN1FBQkFBQUFBZ3VGcmpRNWMxOFBQUFVBQVFQb0FBQUFBTmhkb0lRQUFBQUEzV1l2TnY0My9zUUliUVB4QUFFQUF3QUNBQUFBQUFBQUFBRUFBQVBZL3U4QUFBaVkvamYrTndodEFBRUFBQUFBQUFBQUFBQUFBQUFBQUFBcmVKd0V3REZLeEVBVXh2SC8rd0pCSVNoQ0RMR3gwQUZCazdRS1pvclgyRDFRaUlXRnBWNUMwQnZZZXdnYld5K3dUYXE5elRhelAvM3h5QWFVeTA2dmhCNlk5RUdvSWZUSlpDT2hkMEkxb1I5Q0M2RTNRZ09YR2ppclJvNTB6TFV5Ymx1U01sZXFTZlpNcjQ0TDNlUFdjbXRkV1pWd084ZXJGMXd6cmh1U01tN2Z1UDF6YWwrYzZJNjVPcURYSVkwdFBGbUxRL20xcnF4N0FBQUEvLzhEQUZMV0cwOEFBQUFzQUN3QVVBQ0VBTEFBMUFEb0FSZ0JKQUUrQVU0QmNBR1NBYmdCK0FJS0FrUUNmQUt1QXRvRERBTkFBMllEemdQd0Evd0VDQVFnQkR3RWJnU1FCTHdFN0FVTUJVZ0ZiZ1dRQmNnRitBWVlCaVFHT2daWUFBRUFBQUFyQUpBQURBQmpBQWNBQVFBQUFBQUFBQUFBQUFBQUFBQUVBQU40bkp5VXoyNGJaUlRGZjA1czB3ckJBa1ZWdW9tK0JZc2l0V05USlZYYnJDYWtWa1pFY2ZDNElDU0VOTFludHVYeHpNZ3pkaHFlZ0RWdndWdDB4VVB3SElnMXV0ZlhybDBRQlN1S2RXYm0vam5mdWVkK3dBRi9zaytsZWgvNHJaNGFybkJVdnphOHg3MzZoZUY5V3ZVOXcxVWUxWDQzWEdOUVd4aXU4M210WS9najNsWi9NWHlQNCtxUGh1OXpXRzBaL3BpbjFRUERuK3c3L2pEOEtjZThYZUlLUE9kbnd4VU95UTN2Y2NBUGh2ZDVnTldzVkhsQTAzQ056emd5WE9jSTZES21KR0ZNeWhESERXT0d6SmtSVXhBU00yUE1EVEVESEFFK0NhVytUWWtVT1liLytEWWlwR1JHcEJWSGxEZ1NRaElpQ2taVzhTZk55cmpXanRKbnBraTYrWlNNaU9ocHhvU0lGRWZHa0l5VW1JbldLU25KZVVtREJnVjk1WnRUVXVCUk1DYkJJMlBHa0FadFdselNaY1NZQWtkTEt3bXprSXdiU202SnRMK3pDRkdtVDB4S1lhem1wQXlVcDFOK3NXWUhYT0pvazJ2c1p1WExyUXFQY1h5cjJjSk5ZaHhmNHVtLzIyQzIzWGZGSm1LaGVvcUdQUkxsZWFzVEhLbmkwdGZuRzhVbEwzRTc2YlBONU1NYURaU2R6SHBNajduT1grWW5lY0lreGJsRGZFSjFVT2dlNGpqVDU0QlFGZm1PZ0M0WHRIbE5WNTk5T25Ud3VhSkx3Q3ZOYmRQQjhSVnRyampYakVEeDhsdExIWFBGOXppK0p0QVlxUjJiUHFLNVBMMGhOM2NMZDNHR25HTktybHNnTTViemkvUGpuU1lzTzVSdHVhTlFWL1IxanlSUzlrQlVrVDJMR0pvcmNuWEZWTFZjZWFNdy9RYm1DUGxhNm16ZmZaZHRXTmp1cmJiNGpreDMyREUzVGpLNUphTVBUZFY3enpPMyt1Y1JNU0NqcHhGOU1xWTBLTG5UczEwVE1TZkJjYTQrdnRBdEtmSFhPZExuVGwwU00xVUdBYW5XbVpIcmIyUytDWTE3Zjh2M3p1NFMyYnlwN3Voa2ZhcGR1a2psZEdOR3IxVzkxYmZRVkk0M0p0Q3dxV2FXSXhPV3lzdVRpdmNsMnR2aUg2cjdDNzNkTXA1d1JrYkM0Rzgzd0ZNOG1oeHp3aWtqN1NDVlV4WjJPelQxaG1qeWdsTTkvWVJZbytTK2ZLTTZTWVVUUEo1eHdna3ZlUGFlamlzbXpyaTROWmZOM2o3bm5OSG05RCtkWWhuZjVveFg2M2YvM3ZWWFpkclVzemllckorZTd6ekZSLy9EclYvd2VPdSs3T2d0SUp1enNHcnZ0dUtLaUtsd2NZZWJXcmlIZUg4QkFBRC8vd01BOUxkUFVRQUFBd0FBQUFBQUFQL09BRElBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUE9PSIpOwp9Ci5kMi0xODQ0NTAxMjUxIC50ZXh0LWl0YWxpYyB7Cglmb250LWZhbWlseTogImQyLTE4NDQ1MDEyNTEtZm9udC1pdGFsaWMiOwp9CkBmb250LWZhY2UgewoJZm9udC1mYW1pbHk6IGQyLTE4NDQ1MDEyNTEtZm9udC1pdGFsaWM7CglzcmM6IHVybCgiZGF0YTphcHBsaWNhdGlvbi9mb250LXdvZmY7YmFzZTY0LGQwOUdSZ0FCQUFBQUFBMUFBQW9BQUFBQUZSd0FBUmhSQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFCUFV5OHlBQUFBOUFBQUFHQUFBQUJnVzFTVmVHTnRZWEFBQUFGVUFBQUFqZ0FBQUw0RGFBT01aMng1WmdBQUFlUUFBQWJWQUFBSnhLdzF6VnhvWldGa0FBQUl2QUFBQURZQUFBQTJHN1VyMm1ob1pXRUFBQWowQUFBQUpBQUFBQ1FMZUFqRGFHMTBlQUFBQ1JnQUFBQjhBQUFBZkRWNUE1NXNiMk5oQUFBSmxBQUFBRUFBQUFCQUtPQXJYRzFoZUhBQUFBblVBQUFBSUFBQUFDQUFOd0QyYm1GdFpRQUFDZlFBQUFNckFBQUlNZ250VnpOd2IzTjBBQUFOSUFBQUFDQUFBQUFnLzhZQU1nQURBZUVCa0FBRkFBQUNpZ0pZLy9FQVN3S0tBbGdBUkFGZUFESUJJd0FBQWdzRkF3TUVBd2tDQkNBQUFIY0FBQUFEQUFBQUFBQUFBQUJCUkVKUEFBRUFJUC8vQXU3L0JnQUFBOWdCRVNBQUFaTUFBQUFBQWVZQ2xBQUFBQ0FBQTNpY2RNMDlTc01BQUliaEp5Yit4YWp4WDZPREJ4Q3Y0U3JPZ29pSUNCN0E0NGp0Q2RLeEhYcVZ6b1ZlNFN0MGJubkhkM2hRS0JWb1ZIcDBXcVhhdlFlUG5qeDc4ZXJOdTAvZmZoUFd2QTlmZnBMTXNzZzg0NHpTWjVwSmhobmtQMzhyWVZPRnpvMHRwY3FkVzl0MjdOcXpyM2FnY2VqSXNkYUpVMmZPWGJoMDVab2xBQUFBLy84REFOSUVJdDhBQUhpY2ZGVmJiQnRaR2Y3UG1jbE1temlKN2JGbll0ZVhlTTU0Sm5FbWR1eXhQWEVUMjdrNlR1STB0eWFFemEzWmJVdTdoQ28wc0Z1MFczVmIwS3JhQjhoS2ZXR0YxSlVBQ2RRWDFBV2tmWUVYQkFGVWhGQ0ZGbGdlRmtwQUxSSmdoZFd5MnN5Z3NYTnhnc1NMTmZMUitiL0wvMy8vZ1RxUUFQQTFmQThvT0EzTjRBUTNnTWFGS0VyVGRTSlFtcUlRbHRVVmptT2xPMmo3emx2MDRITi9hWHY3UDJxUUhybjkzZkcvWDNpQTcrMnRvOWVXYjkweUZ1OWV1dlNwWjgrTUNQcnRNd0FBQkJsekYvZmdiNEFJVUNmS3FXUU9hd2xlWUdXWmlFM1k3ZUo1TFpIV2RhSnJGTU1nOWFXYlhZdTNwM3VtUFRxbnQrV2VINVpJS1M5bHVQRGR4bDlscEJYYm16Zk8zWHU1b0VmYVc1WHN4UnU5WjFmU0xmWWY5QmxQQW1FQXdFQUFjQ2ZlZ2dad1dRcTBCTzkyTVF3aEZLY2wwcW1rVEFqNThydEwxOGR1bjcrYTdGKzk5R0twZUFsdmpjMVBmU1p1ZklSR3BpWXpHaHpXVWZBV05BSi9WSWZsQ0hXczB2ZVhQbjl0ZG5OMi9ibys5TUxLeGZIaUJieFZtRjI4NWpEK2pIampLWnFiS2FSajFYcUt1WXMrUW1Wd1dReUZJeGMwWGFPSVRoaEdTYVIxL2RDU2QvcEs2dGlLcG1RZE5KZGJ5NStpeVlKVG5wUlVkOEluRGFhQ2NkdmlYT0ZMUzFwYktHdDRpK0ZZWHpUMk8xbU1qQzRuOGxrTEQwSFkzRVVQVVJsOHg5QXFuak9NMjFXeFhHQ1k5eVl2cWhOcktiV1g3K1JrZjlkOE9uTzJOYzJMM2duYjVlV2h6Ym1ZNk9rUzNFTWJnd01GcnlQaENoOXF3UXJlQmpkSXg2cHIrdjhYYzlaSjJlV0pyWDAxNThJbjFTaXRxei9hNno0cEIxZTAvQmlWd1F2aFdyeEtSMElNZjZDRjB0SldoeTJGVCthdmRvNHZkZW45QVZ1ZDhaUFRyWU1SZjBZSStLZS9ibUxLMlU1U0s3WVgxNFkzWnRUb1ZNS25OZVdud2g2SDVnNmljRU5Mb3k4ZW5BTU15SlJRR1pVaENORUtwcUx2anluRGtGckZHc1V3MURHMUQrTHpSUElOdCtYR21qenkrVmgycW1OMEtTN25IQlNYdjh4dFpzaTAyTUhIZmFSZkM4VGVsLzBwUVN6MVhaSFYrYm5CTDN3NllmV1RXcjJNUWgyUlg4dGllMkdocTZlbjJzOGdBSG9QYjRPbk1vMHNxNlhUbFpsa0tjSlpzb25Jc0ZUd3F4TmRkcnA5UnMybFR1Vkt2VFJkOUJXanczajdXWmJFK3J1RGt2RUxwTHBhR3NjalVlTTdwZ2xCQVBnWVA4UXkrQUdBZ1VDeGlxV2F1L0F4M2dhbnBUeVYxRGxMcE51MWIvUG4rcGxYSm00aTVLQVlGdFh6dHJ6RGd6Kzc5eVo3bW5JaTNFUFRoM3p4VTFTR1NKVnZsYTZ3VDVvNXhycFd3RnFlcGVWWitXeThMcllRenFacE9qZVJwZWtSZDFFZHR2UVUrR0xITU5vWmxlSjZtNnIxZHpzQ3JscE5SMTlIbnFFeXROUnlPR21aaGRnK0V6M21XQVhocEdGSE9mNERLa016K0d0bjBlMXF3a3JDcW5vUXNNZVRLK3JZU21KeVZSMWZpWFJPYSttRTlXTzdzamk4T1JldC92WU5iQXdOakF4dURBMFVyTnJtaDZhRy9vbksxVnl4Tll5Yk1CRmxhd056aVJ5dVFyQXN6OWUva1dlbzhGeTBzaXNTY2krSG5jRnZTNE9wUUZlN09FMmlMdTBSZnFjdjJMa2ZydUNWK3doRlJwZTFYRFlpL3kwY090Q2pWZlpTQmJOTzE4bi96UGZ4NlVhaFVBQ0hGNksxKyttTis3VmhmblQvWlRsMnVKNzJKaEE2dnB3cXM0RmVSV1d3MS9SRllPV0RmalRRL2xLbngzM0c3cFZLd1N6YVdWYXpwNGRPNVh1TVI0RE1UOHhkZEJPVlFhbE5aU29wSzdLY1NsYnNxajRzVmdzRTNwbzE1cHZ4WlUrWDBDZEhzdTNkMFl3NnFrYkhmRkZPQzhueGRHc3UyVFZqUzdiSndiWW84U3BCYjY2OW96OHNCZHBjM3M1Z1FIYUt2V3JuVU5qaTNHdnVvZ1c4ZnJoUDB6cEg4bGhqTlpaUU5mdjAzYjRralRJakRTV3AvOHdydHBzWnlpYzJlUnNjOXBndDM5bnNiVVRPVE4zcnIrZU1wMDVuSUZCZnA3UE5WdTF1Y3hmOUErMkE1NmoyVWVLNC9aWDY0REFOUmYrSU9seXlIb1cyODdZQjNSSGtVTnA0ekhtc01VVUxobmVNVk40d0JEMEE2QU8wQTQwQUdxVnhQQzlvYWFzZ3VqTlNrbWlHcGgwUzk3VUpZdy90R0g4bDQwUWFsWkRIOEZidkZnRHd6OUFPaEU3Y1BmcWlDQ1hMQ21FWWxycEtTbmFFRU4xOHh2N2F1QU5qUkRkNTdiZUtmMXh0cXZ6cmIzNEo3UmgvRW9kRWNVaEVnWm92TDZvblJVa3FFdU5EUU9aakFQU2JxZytFVXpSaEgwclhXSUVvKzFpcyt2dkZjNUZUVFN6ZDNObzhON3Y5d3FSNnlsRlAyMFZ1QmVFbjY3emlkclc3MS8vOXIrdDhsT2RWWWRQU0lwaTdjQmZXb2VIQTMwcW9tQUx2VVh4OFM5am00NzJxbi9lb0FNajh3RnlDTFZpM1pwTlYwbW1kMUZ4d05jUXlMT1lEeE8vMVBmZXRxTE5YOHZJZVJRcU1ibFE4TTk4M3Y0SytaLzRRS0FCV0Q3RlNBL3A1L2F1SmhIVUdDK1lGaFBCUHJUT0IwcmhmYmlhLytEWjErWk8zOXZNQWo5Q09kYVp4R2hWY20zZ2U3VlFhZ1dBRWo4TkQvTkRpenRWUXVjRUZpT0R5RXp3dThKNVFDKzlwL1M4QUFBRC8vd01BSlJ6Nm5RQUFBQUFCQUFBQUFSaFJjTkh5Z1Y4UFBQVUFBUVBvQUFBQUFOaGRvTXdBQUFBQTNXWXZOLzY5L3QwSUhRUEpBQUlBQXdBQ0FBQUFBQUFBQUFFQUFBUFkvdThBQUFoQS9yMzl2QWdkQStnQXd2L1JBQUFBQUFBQUFBQUFBQUFmQW5RQUpBRElBQUFDVEFBNUFpWUFJd0lyQUNNQ0dRQW5BYk1BSlFJWEFDY0I0UUFsQWhNQUFRSUxBQjhBN1FBZkFQZ0FMQU1mQUI4Q0RRQWZBZ01BSndJWC8vWUNHUUFuQVZZQUh3R1MvL3dCUlFBOEFoQUFPQUhBQURzQ3d3QkdBYTMvMUFEeUFCY0E4di9oQWVQLzNBRlVBRmdBN1FBZkFBQUFSd0FBQUM0QUxnQmtBSWdBc0FEb0FSWUJUZ0dJQWRBQitnSUdBaWdDYWdLVUFzSUMvQU0yQTFRRGtBTytBK29FQ0FSQ0JHNEVoQVNpQkxBRXZnVE1CT0lBQVFBQUFCOEFqQUFNQUdZQUJ3QUJBQUFBQUFBQUFBQUFBQUFBQUFRQUEzaWNuSlRkYmhwWEZJVS9ZcUJOL3k0cUszSnVySE9aU3M3Z1JuR1V4RmZqT2xaR1JaQXlwRDlTVldtQU1TQmdac1FNT000VDlMcHYwYmZJVlIralQxSDF1dHFiRFdFaXExWlFGR3NOWi8rc3MvYmFCOWpuWC9hb1ZPOENmOVdYaGlzYzFuODJmSWN2NmszRGU1elZQek5jNWFqMnQrRWFnOXBidzNVZTFEcUdQK0ZkOVEvRG4vSzQrcHZodXh4VUx3eC96cVBxdnVFdjl4ei9HUDZLeDd4YjRRbzg1WGZERlE3SUROOWhuMThONzNFUHExbXBjbzlqd3pXKzV0QnduVU9neTVpQ0tXTVNoamd1R1ROa3daeVluSkNZT1dNdWlSbmdDUENaVXVpdkNaRWl4L0RHWHlOQ0N1WkVXbkZFZ1dOS3lKU0luSkZWZkt0WkthKzBvL1NaSzVKdVBnVWpJbnFhTVNFaXdaRXlKQ1VoWnFKMUNnb3ludE9nUVU1ZitXWVU1SGprakpuaWtUSm5TSU0yRnpUcE1tSk1qdU5DS3dtemtKUkxDcTZJdEwrekNGR21UMHhDYnF3V0pBeVVwMU4rc1dZSE5IRzB5VFIydTNLelZPRUl4NCthTGR3a3h2RXRudjUzVzh6S2ZkZHNJcGFxcDJqWVk2bzhyM1NDSTFWYyt2cjhvTGpnT1c0bmZjcE1idGRvb094azFtTjZMSFQrTWovSkV5WUp6aDNnRTZxRFFuY2Z4NWwrQjRTcXlFOEVkSGxKbTlkMDlkdW5Rd2VmRmwwQ1htaHVtdzZPNzJqVDRsd3pBc1dyc3d0MVRJdGZjSHhQb0RGU096WjlSSFA1ZWtObTdoYnU0Z3k1eDR4TXQwQm1MUGNYNThjN1RWaDJLQzI1STFkWDlIV1BKRkwyUUZTUlBZc1ltaXN5ZGNWTXRWeDdJemY5QnVZSU9TMTB0dS9QWlJ1V3RudnJMYjRtMVIxMkxJeVRURzdGNkxhcGVoOTQ1a3IvZVVRTVNPbHBSSitVR1EwS3J2VnVyNGhZTU1WeHJqNStxVnRTNEc5eXBNKzF1aVJtcGd3Q0VxMHpKOU8va2ZrbU5PNzlrdStkdlNXeWVUUGQwY25tVnJ0MGtjckoxb3hlcTNycnM5QlVqcmNtMExDcHBwWWpFNWJLcTV1Szl5WGFLL0VQMWYyNXZtNHBEd20wcmt5eWYrTXJjTXd6VGpobHBGMmtlc0p5Y3lhdmhFU2NxZ0lUWW8yU04vT05hdlVJanhNOG5uRENDYzk0OG9HV2F6Yk8rTGdTbiszK1B1ZWMwZWIwMXR1c1l0dWM4YUpVN2Y4Ny82bHNqL1Uram9lYnI2YzdUL1BCUjdqMkc0NUs3MlpIWHdQWm9LVlZlNzhkTFNKbXdzVWRiR3ZoN3VQOUJ3QUEvLzhEQUhLaFVVQUFBQU1BQVAvMUFBRC96Z0F5QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBPSIpOwp9XV0+PC9zdHlsZT48c3R5bGUgdHlwZT0idGV4dC9jc3MiPjwhW0NEQVRBWy5zaGFwZSB7CiAgc2hhcGUtcmVuZGVyaW5nOiBnZW9tZXRyaWNQcmVjaXNpb247CiAgc3Ryb2tlLWxpbmVqb2luOiByb3VuZDsKfQouY29ubmVjdGlvbiB7CiAgc3Ryb2tlLWxpbmVjYXA6IHJvdW5kOwogIHN0cm9rZS1saW5lam9pbjogcm91bmQ7Cn0KLmJsZW5kIHsKICBtaXgtYmxlbmQtbW9kZTogbXVsdGlwbHk7CiAgb3BhY2l0eTogMC41Owp9CgoJCS5kMi0xODQ0NTAxMjUxIC5maWxsLU4xe2ZpbGw6IzBBMEYyNTt9CgkJLmQyLTE4NDQ1MDEyNTEgLmZpbGwtTjJ7ZmlsbDojNjc2QzdFO30KCQkuZDItMTg0NDUwMTI1MSAuZmlsbC1ON3tmaWxsOiNGRkZGRkY7fQoJCS5kMi0xODQ0NTAxMjUxIC5maWxsLUIxe2ZpbGw6IzAwMDUzNjt9CgkJLmQyLTE4NDQ1MDEyNTEgLmZpbGwtQjJ7ZmlsbDojMEY2NkI3O30KCQkuZDItMTg0NDUwMTI1MSAuZmlsbC1CNHtmaWxsOiM4N0JGRjM7fQoJCS5kMi0xODQ0NTAxMjUxIC5maWxsLUI1e2ZpbGw6I0JDRERGQjt9CgkJLmQyLTE4NDQ1MDEyNTEgLnN0cm9rZS1CMXtzdHJva2U6IzAwMDUzNjt9CgkJLmQyLTE4NDQ1MDEyNTEgLnN0cm9rZS1CMntzdHJva2U6IzBGNjZCNzt9LmFwcGVuZGl4IHRleHQudGV4dHtmaWxsOiMwQTBGMjV9Lm1key0tY29sb3ItZmctZGVmYXVsdDojMEEwRjI1Oy0tY29sb3ItZmctbXV0ZWQ6IzY3NkM3RTstLWNvbG9yLWZnLXN1YnRsZTojOTQ5OUFCOy0tY29sb3ItY2FudmFzLWRlZmF1bHQ6I0ZGRkZGRjstLWNvbG9yLWNhbnZhcy1zdWJ0bGU6I0VFRjFGODstLWNvbG9yLWJvcmRlci1kZWZhdWx0OiMwMDA1MzY7LS1jb2xvci1ib3JkZXItbXV0ZWQ6IzBGNjZCNzstLWNvbG9yLW5ldXRyYWwtbXV0ZWQ6I0VFRjFGODstLWNvbG9yLWFjY2VudC1mZzojMEY2NkI3Oy0tY29sb3ItYWNjZW50LWVtcGhhc2lzOiMwRjY2Qjc7LS1jb2xvci1hdHRlbnRpb24tc3VidGxlOiM2NzZDN0U7LS1jb2xvci1kYW5nZXItZmc6cmVkO30ubGlnaHQtY29kZXtkaXNwbGF5OiBibG9ja30uZGFyay1jb2Rle2Rpc3BsYXk6IG5vbmV9XV0+PC9zdHlsZT48ZyBjbGFzcz0iVDI1bElGUnBiV1U9Ij48ZyBjbGFzcz0ic2hhcGUiID48cmVjdCB4PSIxMiIgeT0iNDgiIHdpZHRoPSI3MTEiIGhlaWdodD0iMTIxOSIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSIjODdCRkYzIiBjbGFzcz0iIHN0cm9rZS1CMSBmaWxsLUI0IiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiAvPjwvZz48dGV4dCB4PSIzNjcuNSIgeT0iODEiIGZpbGw9IiMwQTBGMjUiIGNsYXNzPSJ0ZXh0IGZpbGwtTjEiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjI4cHgiPk9uZSBUaW1lPC90ZXh0PjwvZz48ZyBjbGFzcz0iVWxOMGRXUnBieUJYYjNKclpteHZkdz09Ij48ZyBjbGFzcz0ic2hhcGUiID48cmVjdCB4PSI3NDIiIHk9IjEyIiB3aWR0aD0iMzQyIiBoZWlnaHQ9IjEyOTEiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0iIzg3QkZGMyIgY2xhc3M9IiBzdHJva2UtQjEgZmlsbC1CNCIgc3R5bGU9InN0cm9rZS13aWR0aDoyOyIgLz48L2c+PHRleHQgeD0iOTEzIiB5PSI0NSIgZmlsbD0iIzBBMEYyNSIgY2xhc3M9InRleHQgZmlsbC1OMSIgc3R5bGU9InRleHQtYW5jaG9yOm1pZGRsZTtmb250LXNpemU6MjhweCI+UlN0dWRpbyBXb3JrZmxvdzwvdGV4dD48L2c+PGcgY2xhc3M9IlQyNWxJRlJwYldVdVIybDBhSFZpIj48ZyBjbGFzcz0ic2hhcGUiID48cmVjdCB4PSIxNjAiIHk9Ijk4IiB3aWR0aD0iOTMiIGhlaWdodD0iNjYiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0iI0JDRERGQiIgY2xhc3M9IiBzdHJva2UtQjEgZmlsbC1CNSIgc3R5bGU9InN0cm9rZS13aWR0aDoyOyIgLz48L2c+PHRleHQgeD0iMjA2LjUiIHk9IjEzNi41IiBmaWxsPSIjMEEwRjI1IiBjbGFzcz0idGV4dC1ib2xkIGZpbGwtTjEiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPkdpdGh1YjwvdGV4dD48L2c+PGcgY2xhc3M9IlQyNWxJRlJwYldVdVFXTmpiM1Z1ZEE9PSI+PGcgY2xhc3M9InNoYXBlIiA+PHJlY3QgeD0iOTYiIHk9IjM4MCIgd2lkdGg9IjEwNCIgaGVpZ2h0PSI2NiIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSIjQkNEREZCIiBjbGFzcz0iIHN0cm9rZS1CMSBmaWxsLUI1IiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiAvPjwvZz48dGV4dCB4PSIxNDgiIHk9IjQxOC41IiBmaWxsPSIjMEEwRjI1IiBjbGFzcz0idGV4dC1ib2xkIGZpbGwtTjEiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPkFjY291bnQ8L3RleHQ+PC9nPjxnIGNsYXNzPSJUMjVsSUZScGJXVXVTVzV6ZEdGc2JBPT0iPjxnIGNsYXNzPSJzaGFwZSIgPjxyZWN0IHg9IjIyMCIgeT0iMzgwIiB3aWR0aD0iOTAiIGhlaWdodD0iNjYiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0iI0JDRERGQiIgY2xhc3M9IiBzdHJva2UtQjEgZmlsbC1CNSIgc3R5bGU9InN0cm9rZS13aWR0aDoyOyIgLz48L2c+PHRleHQgeD0iMjY1IiB5PSI0MTguNSIgZmlsbD0iIzBBMEYyNSIgY2xhc3M9InRleHQtYm9sZCBmaWxsLU4xIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5JbnN0YWxsPC90ZXh0PjwvZz48ZyBjbGFzcz0iVDI1bElGUnBiV1V1VWxOMGRXUnBidz09Ij48ZyBjbGFzcz0ic2hhcGUiID48cmVjdCB4PSI5OCIgeT0iNjA3IiB3aWR0aD0iMTAxIiBoZWlnaHQ9IjY2IiBzdHJva2U9IiMwMDA1MzYiIGZpbGw9IiNCQ0RERkIiIGNsYXNzPSIgc3Ryb2tlLUIxIGZpbGwtQjUiIHN0eWxlPSJzdHJva2Utd2lkdGg6MjsiIC8+PC9nPjx0ZXh0IHg9IjE0OC41IiB5PSI2NDUuNSIgZmlsbD0iIzBBMEYyNSIgY2xhc3M9InRleHQtYm9sZCBmaWxsLU4xIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5SU3R1ZGlvPC90ZXh0PjwvZz48ZyBjbGFzcz0iVDI1bElGUnBiV1V1VG1WM0lFSnNiMmNnVUhKdmFtVmpkQT09Ij48ZyBjbGFzcz0ic2hhcGUiID48cmVjdCB4PSI2NiIgeT0iODc5IiB3aWR0aD0iMTY1IiBoZWlnaHQ9IjY2IiBzdHJva2U9IiMwMDA1MzYiIGZpbGw9IiNCQ0RERkIiIGNsYXNzPSIgc3Ryb2tlLUIxIGZpbGwtQjUiIHN0eWxlPSJzdHJva2Utd2lkdGg6MjsiIC8+PC9nPjx0ZXh0IHg9IjE0OC41IiB5PSI5MTcuNSIgZmlsbD0iIzBBMEYyNSIgY2xhc3M9InRleHQtYm9sZCBmaWxsLU4xIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5OZXcgQmxvZyBQcm9qZWN0PC90ZXh0PjwvZz48ZyBjbGFzcz0iVDI1bElGUnBiV1V1VG05MFpTQjBhR1VnUjJsMElGQmhibVZzIj48ZyBjbGFzcz0ic2hhcGUiID48cmVjdCB4PSI2MiIgeT0iMTE1MSIgd2lkdGg9IjE3MyIgaGVpZ2h0PSI2NiIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSIjQkNEREZCIiBjbGFzcz0iIHN0cm9rZS1CMSBmaWxsLUI1IiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiAvPjwvZz48dGV4dCB4PSIxNDguNSIgeT0iMTE4OS41IiBmaWxsPSIjMEEwRjI1IiBjbGFzcz0idGV4dC1ib2xkIGZpbGwtTjEiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPk5vdGUgdGhlIEdpdCBQYW5lbDwvdGV4dD48L2c+PGcgY2xhc3M9IlQyNWxJRlJwYldVdVRtVjBiR2xtZVE9PSI+PGcgY2xhc3M9InNoYXBlIiA+PHJlY3QgeD0iNDU0IiB5PSI5OCIgd2lkdGg9IjkzIiBoZWlnaHQ9IjY2IiBzdHJva2U9IiMwMDA1MzYiIGZpbGw9IiNCQ0RERkIiIGNsYXNzPSIgc3Ryb2tlLUIxIGZpbGwtQjUiIHN0eWxlPSJzdHJva2Utd2lkdGg6MjsiIC8+PC9nPjx0ZXh0IHg9IjUwMC41IiB5PSIxMzYuNSIgZmlsbD0iIzBBMEYyNSIgY2xhc3M9InRleHQtYm9sZCBmaWxsLU4xIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5OZXRsaWZ5PC90ZXh0PjwvZz48ZyBjbGFzcz0iVDI1bElGUnBiV1V1VEc5bmFXNGdkMmwwYUNCSGFYUm9kV0k9Ij48ZyBjbGFzcz0ic2hhcGUiID48cmVjdCB4PSI1MDIiIHk9IjI0NCIgd2lkdGg9IjE3MCIgaGVpZ2h0PSI2NiIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSIjQkNEREZCIiBjbGFzcz0iIHN0cm9rZS1CMSBmaWxsLUI1IiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiAvPjwvZz48dGV4dCB4PSI1ODciIHk9IjI4Mi41IiBmaWxsPSIjMEEwRjI1IiBjbGFzcz0idGV4dC1ib2xkIGZpbGwtTjEiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPkxvZ2luIHdpdGggR2l0aHViPC90ZXh0PjwvZz48ZyBjbGFzcz0iVDI1bElGUnBiV1V1VG1WM0lGZGxZbk5wZEdVPSI+PGcgY2xhc3M9InNoYXBlIiA+PHJlY3QgeD0iMzQ3IiB5PSIyNDQiIHdpZHRoPSIxMzUiIGhlaWdodD0iNjYiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0iI0JDRERGQiIgY2xhc3M9IiBzdHJva2UtQjEgZmlsbC1CNSIgc3R5bGU9InN0cm9rZS13aWR0aDoyOyIgLz48L2c+PHRleHQgeD0iNDE0LjUiIHk9IjI4Mi41IiBmaWxsPSIjMEEwRjI1IiBjbGFzcz0idGV4dC1ib2xkIGZpbGwtTjEiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPk5ldyBXZWJzaXRlPC90ZXh0PjwvZz48ZyBjbGFzcz0iVDI1bElGUnBiV1V1Um5KdmJTQkhhWFJvZFdJZ2NtVndidz09Ij48ZyBjbGFzcz0ic2hhcGUiID48cmVjdCB4PSIzMzAiIHk9IjM4MCIgd2lkdGg9IjE2OSIgaGVpZ2h0PSI2NiIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSIjQkNEREZCIiBjbGFzcz0iIHN0cm9rZS1CMSBmaWxsLUI1IiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiAvPjwvZz48dGV4dCB4PSI0MTQuNSIgeT0iNDE4LjUiIGZpbGw9IiMwQTBGMjUiIGNsYXNzPSJ0ZXh0LWJvbGQgZmlsbC1OMSIgc3R5bGU9InRleHQtYW5jaG9yOm1pZGRsZTtmb250LXNpemU6MTZweCI+RnJvbSBHaXRodWIgcmVwbzwvdGV4dD48L2c+PGcgY2xhc3M9IlQyNWxJRlJwYldVdVEyaHZiM05sSUZKbGNHOD0iPjxnIGNsYXNzPSJzaGFwZSIgPjxyZWN0IHg9IjM0NiIgeT0iNjA3IiB3aWR0aD0iMTM3IiBoZWlnaHQ9IjY2IiBzdHJva2U9IiMwMDA1MzYiIGZpbGw9IiNCQ0RERkIiIGNsYXNzPSIgc3Ryb2tlLUIxIGZpbGwtQjUiIHN0eWxlPSJzdHJva2Utd2lkdGg6MjsiIC8+PC9nPjx0ZXh0IHg9IjQxNC41IiB5PSI2NDUuNSIgZmlsbD0iIzBBMEYyNSIgY2xhc3M9InRleHQtYm9sZCBmaWxsLU4xIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5DaG9vc2UgUmVwbzwvdGV4dD48L2c+PGcgY2xhc3M9IlQyNWxJRlJwYldVdVEyaHZiM05sSUU1aGJXVWdabTl5SUhkbFluTnBkR1U9Ij48ZyBjbGFzcz0ic2hhcGUiID48cmVjdCB4PSIzMDMiIHk9Ijc0MyIgd2lkdGg9IjIyNCIgaGVpZ2h0PSI2NiIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSIjQkNEREZCIiBjbGFzcz0iIHN0cm9rZS1CMSBmaWxsLUI1IiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiAvPjwvZz48dGV4dCB4PSI0MTUiIHk9Ijc4MS41IiBmaWxsPSIjMEEwRjI1IiBjbGFzcz0idGV4dC1ib2xkIGZpbGwtTjEiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPkNob29zZSBOYW1lIGZvciB3ZWJzaXRlPC90ZXh0PjwvZz48ZyBjbGFzcz0iVDI1bElGUnBiV1V1VTNCbFkybG1lU0JtYjJ4a1pYST0iPjxnIGNsYXNzPSJzaGFwZSIgPjxyZWN0IHg9IjM0MyIgeT0iMTAxNSIgd2lkdGg9IjE0NCIgaGVpZ2h0PSI2NiIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSIjQkNEREZCIiBjbGFzcz0iIHN0cm9rZS1CMSBmaWxsLUI1IiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiAvPjwvZz48dGV4dCB4PSI0MTUiIHk9IjEwNTMuNSIgZmlsbD0iIzBBMEYyNSIgY2xhc3M9InRleHQtYm9sZCBmaWxsLU4xIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5TcGVjaWZ5IGZvbGRlcjwvdGV4dD48L2c+PGcgY2xhc3M9IlQyNWxJRlJwYldVdVJHVndiRzk1SVNFaCI+PGcgY2xhc3M9InNoYXBlIiA+PHJlY3QgeD0iMzYwIiB5PSIxMTUxIiB3aWR0aD0iMTEwIiBoZWlnaHQ9IjY2IiBzdHJva2U9IiMwMDA1MzYiIGZpbGw9IiNCQ0RERkIiIGNsYXNzPSIgc3Ryb2tlLUIxIGZpbGwtQjUiIHN0eWxlPSJzdHJva2Utd2lkdGg6MjsiIC8+PC9nPjx0ZXh0IHg9IjQxNSIgeT0iMTE4OS41IiBmaWxsPSIjMEEwRjI1IiBjbGFzcz0idGV4dC1ib2xkIGZpbGwtTjEiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPkRlcGxveSEhITwvdGV4dD48L2c+PGcgY2xhc3M9IlVsTjBkV1JwYnlCWGIzSnJabXh2ZHk1U1UzUjFaR2x2Ij48ZyBjbGFzcz0ic2hhcGUiID48cmVjdCB4PSI5MTMiIHk9IjY3OCIgd2lkdGg9IjEwMSIgaGVpZ2h0PSI2NiIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSIjQkNEREZCIiBjbGFzcz0iIHN0cm9rZS1CMSBmaWxsLUI1IiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiAvPjwvZz48dGV4dCB4PSI5NjMuNSIgeT0iNzE2LjUiIGZpbGw9IiMwQTBGMjUiIGNsYXNzPSJ0ZXh0LWJvbGQgZmlsbC1OMSIgc3R5bGU9InRleHQtYW5jaG9yOm1pZGRsZTtmb250LXNpemU6MTZweCI+UlN0dWRpbzwvdGV4dD48L2c+PGcgY2xhc3M9IlVsTjBkV1JwYnlCWGIzSnJabXh2ZHk1T1pYY2dSbTlzWkdWeSI+PGcgY2xhc3M9InNoYXBlIiA+PHJlY3QgeD0iOTAxIiB5PSI4MTQiIHdpZHRoPSIxMjUiIGhlaWdodD0iNjYiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0iI0JDRERGQiIgY2xhc3M9IiBzdHJva2UtQjEgZmlsbC1CNSIgc3R5bGU9InN0cm9rZS13aWR0aDoyOyIgLz48L2c+PHRleHQgeD0iOTYzLjUiIHk9Ijg1Mi41IiBmaWxsPSIjMEEwRjI1IiBjbGFzcz0idGV4dC1ib2xkIGZpbGwtTjEiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPk5ldyBGb2xkZXI8L3RleHQ+PC9nPjxnIGNsYXNzPSJVbE4wZFdScGJ5QlhiM0pyWm14dmR5NURjbVZoZEdVZ1VHOXpkQT09Ij48ZyBjbGFzcz0ic2hhcGUiID48cmVjdCB4PSI5MDAiIHk9IjEwNDEiIHdpZHRoPSIxMjciIGhlaWdodD0iNjYiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0iI0JDRERGQiIgY2xhc3M9IiBzdHJva2UtQjEgZmlsbC1CNSIgc3R5bGU9InN0cm9rZS13aWR0aDoyOyIgLz48L2c+PHRleHQgeD0iOTYzLjUiIHk9IjEwNzkuNSIgZmlsbD0iIzBBMEYyNSIgY2xhc3M9InRleHQtYm9sZCBmaWxsLU4xIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5DcmVhdGUgUG9zdDwvdGV4dD48L2c+PGcgY2xhc3M9IlVsTjBkV1JwYnlCWGIzSnJabXh2ZHk1VVpYSnRhVzVoYkE9PSI+PGcgY2xhc3M9InNoYXBlIiA+PHJlY3QgeD0iODQ5IiB5PSIxMTg3IiB3aWR0aD0iMTEwIiBoZWlnaHQ9IjY2IiBzdHJva2U9IiMwMDA1MzYiIGZpbGw9IiNCQ0RERkIiIGNsYXNzPSIgc3Ryb2tlLUIxIGZpbGwtQjUiIHN0eWxlPSJzdHJva2Utd2lkdGg6MjsiIC8+PC9nPjx0ZXh0IHg9IjkwNCIgeT0iMTIyNS41IiBmaWxsPSIjMEEwRjI1IiBjbGFzcz0idGV4dC1ib2xkIGZpbGwtTjEiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPlRlcm1pbmFsPC90ZXh0PjwvZz48ZyBjbGFzcz0iVWxOMGRXUnBieUJYYjNKclpteHZkeTVRY21Wd1lYSmxJRk5wZEdVPSI+PGcgY2xhc3M9InNoYXBlIiA+PHJlY3QgeD0iODM4IiB5PSI2MiIgd2lkdGg9IjEzMiIgaGVpZ2h0PSI2NiIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSIjQkNEREZCIiBjbGFzcz0iIHN0cm9rZS1CMSBmaWxsLUI1IiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiAvPjwvZz48dGV4dCB4PSI5MDQiIHk9IjEwMC41IiBmaWxsPSIjMEEwRjI1IiBjbGFzcz0idGV4dC1ib2xkIGZpbGwtTjEiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPlByZXBhcmUgU2l0ZTwvdGV4dD48L2c+PGcgY2xhc3M9IlVsTjBkV1JwYnlCWGIzSnJabXh2ZHk1SGFYUkxjbUZyWlc0PSI+PGcgY2xhc3M9InNoYXBlIiA+PHJlY3QgeD0iOTA1IiB5PSIyMDgiIHdpZHRoPSIxMTciIGhlaWdodD0iNjYiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0iI0JDRERGQiIgY2xhc3M9IiBzdHJva2UtQjEgZmlsbC1CNSIgc3R5bGU9InN0cm9rZS13aWR0aDoyOyIgLz48L2c+PHRleHQgeD0iOTYzLjUiIHk9IjI0Ni41IiBmaWxsPSIjMEEwRjI1IiBjbGFzcz0idGV4dC1ib2xkIGZpbGwtTjEiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPkdpdEtyYWtlbjwvdGV4dD48L2c+PGcgY2xhc3M9IlVsTjBkV1JwYnlCWGIzSnJabXh2ZHk1RWIyNWxJR1p2Y2lCT2IzYz0iPjxnIGNsYXNzPSJzaGFwZSIgPjxyZWN0IHg9Ijg5MyIgeT0iNDM1IiB3aWR0aD0iMTQxIiBoZWlnaHQ9IjY2IiBzdHJva2U9IiMwMDA1MzYiIGZpbGw9IiNCQ0RERkIiIGNsYXNzPSIgc3Ryb2tlLUIxIGZpbGwtQjUiIHN0eWxlPSJzdHJva2Utd2lkdGg6MjsiIC8+PC9nPjx0ZXh0IHg9Ijk2My41IiB5PSI0NzMuNSIgZmlsbD0iIzBBMEYyNSIgY2xhc3M9InRleHQtYm9sZCBmaWxsLU4xIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5Eb25lIGZvciBOb3c8L3RleHQ+PC9nPjxnIGNsYXNzPSJUMjVsSUZScGJXVXVLRWRwZEdoMVlpQXRKbWQwT3lCQlkyTnZkVzUwS1Zzd1hRPT0iPjxtYXJrZXIgaWQ9Im1rLWQyLTE4NDQ1MDEyNTEtMzQ4ODM3ODEzNCIgbWFya2VyV2lkdGg9IjEwIiBtYXJrZXJIZWlnaHQ9IjEyIiByZWZYPSI3IiByZWZZPSI2IiB2aWV3Qm94PSIwIDAgMTAgMTIiIG9yaWVudD0iYXV0byIgbWFya2VyVW5pdHM9InVzZXJTcGFjZU9uVXNlIj4gPHBvbHlnb24gcG9pbnRzPSIwLDAgMTAsNiAwLDEyIiBmaWxsPSIjMDAwNTM2IiBjbGFzcz0iY29ubmVjdGlvbiBmaWxsLUIxIiBzdHJva2Utd2lkdGg9IjIiIC8+IDwvbWFya2VyPjxwYXRoIGQ9Ik0gMTkxLjUgMTY2IEwgMTkxLjUgMTk0IFMgMTkxLjUgMjA0IDE4MS41IDIwNCBMIDE1OC41IDIwNCBTIDE0OC41IDIwNCAxNDguNSAyMTQgTCAxNDguNSAzNzYiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0ibm9uZSIgY2xhc3M9ImNvbm5lY3Rpb24gc3Ryb2tlLUIxIiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiBtYXJrZXItZW5kPSJ1cmwoI21rLWQyLTE4NDQ1MDEyNTEtMzQ4ODM3ODEzNCkiIG1hc2s9InVybCgjZDItMTg0NDUwMTI1MSkiIC8+PHRleHQgeD0iMTQ5IiB5PSIyNTYiIGZpbGw9IiM2NzZDN0UiIGNsYXNzPSJ0ZXh0LWl0YWxpYyBmaWxsLU4yIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5jcmVhdGU8L3RleHQ+PC9nPjxnIGNsYXNzPSJUMjVsSUZScGJXVXVLRWRwZEdoMVlpQXRKbWQwT3lCSmJuTjBZV3hzS1Zzd1hRPT0iPjxwYXRoIGQ9Ik0gMjIyLjUgMTY2IEwgMjIyLjUgMTk0IFMgMjIyLjUgMjA0IDIzMi41IDIwNCBMIDI1NS41IDIwNCBTIDI2NS41IDIwNCAyNjUuNSAyMTQgTCAyNjUuNSAzNzYiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0ibm9uZSIgY2xhc3M9ImNvbm5lY3Rpb24gc3Ryb2tlLUIxIiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiBtYXJrZXItZW5kPSJ1cmwoI21rLWQyLTE4NDQ1MDEyNTEtMzQ4ODM3ODEzNCkiIG1hc2s9InVybCgjZDItMTg0NDUwMTI1MSkiIC8+PHRleHQgeD0iMjY1LjUiIHk9IjI1NiIgZmlsbD0iIzY3NkM3RSIgY2xhc3M9InRleHQtaXRhbGljIGZpbGwtTjIiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPmdpdDwvdGV4dD48L2c+PGcgY2xhc3M9IlQyNWxJRlJwYldVdUtFRmpZMjkxYm5RZ0xTWm5kRHNnVWxOMGRXUnBieWxiTUYwPSI+PHBhdGggZD0iTSAxNDguNSA0NDggTCAxNDguNSA2MDMiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0ibm9uZSIgY2xhc3M9ImNvbm5lY3Rpb24gc3Ryb2tlLUIxIiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiBtYXJrZXItZW5kPSJ1cmwoI21rLWQyLTE4NDQ1MDEyNTEtMzQ4ODM3ODEzNCkiIG1hc2s9InVybCgjZDItMTg0NDUwMTI1MSkiIC8+PHRleHQgeD0iMTQ5IiB5PSI1MzIiIGZpbGw9IiM2NzZDN0UiIGNsYXNzPSJ0ZXh0LWl0YWxpYyBmaWxsLU4yIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij51c2V0aGlzIHNldHVwPC90ZXh0PjwvZz48ZyBjbGFzcz0iVDI1bElGUnBiV1V1S0ZKVGRIVmthVzhnTFNabmREc2dUbVYzSUVKc2IyY2dVSEp2YW1WamRDbGJNRjA9Ij48cGF0aCBkPSJNIDE0OC41IDY3NSBMIDE0OC41IDg3NSIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSJub25lIiBjbGFzcz0iY29ubmVjdGlvbiBzdHJva2UtQjEiIHN0eWxlPSJzdHJva2Utd2lkdGg6MjsiIG1hcmtlci1lbmQ9InVybCgjbWstZDItMTg0NDUwMTI1MS0zNDg4Mzc4MTM0KSIgbWFzaz0idXJsKCNkMi0xODQ0NTAxMjUxKSIgLz48dGV4dCB4PSIxNDkiIHk9Ijc4MiIgZmlsbD0iIzY3NkM3RSIgY2xhc3M9InRleHQtaXRhbGljIGZpbGwtTjIiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPmNyZWF0ZTwvdGV4dD48L2c+PGcgY2xhc3M9IlQyNWxJRlJwYldVdUtFNWxkeUJDYkc5bklGQnliMnBsWTNRZ0xTWm5kRHNnVG05MFpTQjBhR1VnUjJsMElGQmhibVZzS1Zzd1hRPT0iPjxwYXRoIGQ9Ik0gMTQ4LjUgOTQ3IEwgMTQ4LjUgMTE0NyIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSJub25lIiBjbGFzcz0iY29ubmVjdGlvbiBzdHJva2UtQjEiIHN0eWxlPSJzdHJva2Utd2lkdGg6MjsiIG1hcmtlci1lbmQ9InVybCgjbWstZDItMTg0NDUwMTI1MS0zNDg4Mzc4MTM0KSIgbWFzaz0idXJsKCNkMi0xODQ0NTAxMjUxKSIgLz48dGV4dCB4PSIxNDkiIHk9IjEwNTQiIGZpbGw9IiM2NzZDN0UiIGNsYXNzPSJ0ZXh0LWl0YWxpYyBmaWxsLU4yIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5HaXQgUGFuZWw8L3RleHQ+PC9nPjxnIGNsYXNzPSJUMjVsSUZScGJXVXVLRTVsZEd4cFpua2dMU1puZERzZ1RHOW5hVzRnZDJsMGFDQkhhWFJvZFdJcFd6QmQiPjxwYXRoIGQ9Ik0gNTE2Ljc1IDE2NiBMIDUxNi43NSAxOTQgUyA1MTYuNzUgMjA0IDUyNi43NSAyMDQgTCA1NzcuNSAyMDQgUyA1ODcuNSAyMDQgNTg3LjUgMjE0IEwgNTg3LjUgMjQwIiBzdHJva2U9IiMwMDA1MzYiIGZpbGw9Im5vbmUiIGNsYXNzPSJjb25uZWN0aW9uIHN0cm9rZS1CMSIgc3R5bGU9InN0cm9rZS13aWR0aDoyOyIgbWFya2VyLWVuZD0idXJsKCNtay1kMi0xODQ0NTAxMjUxLTM0ODgzNzgxMzQpIiBtYXNrPSJ1cmwoI2QyLTE4NDQ1MDEyNTEpIiAvPjwvZz48ZyBjbGFzcz0iVDI1bElGUnBiV1V1S0U1bGRHeHBabmtnTFNabmREc2dUbVYzSUZkbFluTnBkR1VwV3pCZCI+PHBhdGggZD0iTSA0ODUuNzUgMTY2IEwgNDg1Ljc1IDE5NCBTIDQ4NS43NSAyMDQgNDc1Ljc1IDIwNCBMIDQyNSAyMDQgUyA0MTUgMjA0IDQxNSAyMTQgTCA0MTUgMjQwIiBzdHJva2U9IiMwMDA1MzYiIGZpbGw9Im5vbmUiIGNsYXNzPSJjb25uZWN0aW9uIHN0cm9rZS1CMSIgc3R5bGU9InN0cm9rZS13aWR0aDoyOyIgbWFya2VyLWVuZD0idXJsKCNtay1kMi0xODQ0NTAxMjUxLTM0ODgzNzgxMzQpIiBtYXNrPSJ1cmwoI2QyLTE4NDQ1MDEyNTEpIiAvPjwvZz48ZyBjbGFzcz0iVDI1bElGUnBiV1V1S0U1bGR5QlhaV0p6YVhSbElDMG1aM1E3SUVaeWIyMGdSMmwwYUhWaUlISmxjRzhwV3pCZCI+PHBhdGggZD0iTSA0MTUgMzEyIEwgNDE1IDM3NiIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSJub25lIiBjbGFzcz0iY29ubmVjdGlvbiBzdHJva2UtQjEiIHN0eWxlPSJzdHJva2Utd2lkdGg6MjsiIG1hcmtlci1lbmQ9InVybCgjbWstZDItMTg0NDUwMTI1MS0zNDg4Mzc4MTM0KSIgbWFzaz0idXJsKCNkMi0xODQ0NTAxMjUxKSIgLz48L2c+PGcgY2xhc3M9IlQyNWxJRlJwYldVdUtFWnliMjBnUjJsMGFIVmlJSEpsY0c4Z0xTWm5kRHNnUTJodmIzTmxJRkpsY0c4cFd6QmQiPjxtYXJrZXIgaWQ9Im1rLWQyLTE4NDQ1MDEyNTEtMjE3NzIwNjU2OSIgbWFya2VyV2lkdGg9IjEwIiBtYXJrZXJIZWlnaHQ9IjEyIiByZWZYPSI3IiByZWZZPSI2IiB2aWV3Qm94PSIwIDAgMTAgMTIiIG9yaWVudD0iYXV0byIgbWFya2VyVW5pdHM9InVzZXJTcGFjZU9uVXNlIj4gPHBvbHlnb24gcG9pbnRzPSIwLDAgMTAsNiAwLDEyIiBmaWxsPSIjMEY2NkI3IiBjbGFzcz0iY29ubmVjdGlvbiBmaWxsLUIyIiBzdHJva2Utd2lkdGg9IjIiIC8+IDwvbWFya2VyPjxwYXRoIGQ9Ik0gNDE1IDQ0OCBMIDQxNSA2MDMiIHN0cm9rZT0iIzBGNjZCNyIgZmlsbD0ibm9uZSIgY2xhc3M9ImNvbm5lY3Rpb24gc3Ryb2tlLUIyIiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7c3Ryb2tlLWRhc2hhcnJheTo2LjAwMDAwMCw1LjkxOTM4NDsiIG1hcmtlci1lbmQ9InVybCgjbWstZDItMTg0NDUwMTI1MS0yMTc3MjA2NTY5KSIgbWFzaz0idXJsKCNkMi0xODQ0NTAxMjUxKSIgLz48dGV4dCB4PSI0MTUiIHk9IjUzMiIgZmlsbD0iIzY3NkM3RSIgY2xhc3M9InRleHQtaXRhbGljIGZpbGwtTjIiIHN0eWxlPSJ0ZXh0LWFuY2hvcjptaWRkbGU7Zm9udC1zaXplOjE2cHgiPmFjY2VzczwvdGV4dD48L2c+PGcgY2xhc3M9IlQyNWxJRlJwYldVdUtFTm9iMjl6WlNCU1pYQnZJQzBtWjNRN0lFTm9iMjl6WlNCT1lXMWxJR1p2Y2lCM1pXSnphWFJsS1Zzd1hRPT0iPjxwYXRoIGQ9Ik0gNDE1IDY3NSBMIDQxNSA3MzkiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0ibm9uZSIgY2xhc3M9ImNvbm5lY3Rpb24gc3Ryb2tlLUIxIiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiBtYXJrZXItZW5kPSJ1cmwoI21rLWQyLTE4NDQ1MDEyNTEtMzQ4ODM3ODEzNCkiIG1hc2s9InVybCgjZDItMTg0NDUwMTI1MSkiIC8+PC9nPjxnIGNsYXNzPSJUMjVsSUZScGJXVXVLRU5vYjI5elpTQk9ZVzFsSUdadmNpQjNaV0p6YVhSbElDMG1aM1E3SUZOd1pXTnBabmtnWm05c1pHVnlLVnN3WFE9PSI+PHBhdGggZD0iTSA0MTUgODExIEwgNDE1IDEwMTEiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0ibm9uZSIgY2xhc3M9ImNvbm5lY3Rpb24gc3Ryb2tlLUIxIiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiBtYXJrZXItZW5kPSJ1cmwoI21rLWQyLTE4NDQ1MDEyNTEtMzQ4ODM3ODEzNCkiIG1hc2s9InVybCgjZDItMTg0NDUwMTI1MSkiIC8+PHRleHQgeD0iNDE1IiB5PSI5MTgiIGZpbGw9IiM2NzZDN0UiIGNsYXNzPSJ0ZXh0LWl0YWxpYyBmaWxsLU4yIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5cX3NpdGU8L3RleHQ+PC9nPjxnIGNsYXNzPSJUMjVsSUZScGJXVXVLRk53WldOcFpua2dabTlzWkdWeUlDMG1aM1E3SUVSbGNHeHZlU0VoSVNsYk1GMD0iPjxwYXRoIGQ9Ik0gNDE1IDEwODMgTCA0MTUgMTE0NyIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSJub25lIiBjbGFzcz0iY29ubmVjdGlvbiBzdHJva2UtQjEiIHN0eWxlPSJzdHJva2Utd2lkdGg6MjsiIG1hcmtlci1lbmQ9InVybCgjbWstZDItMTg0NDUwMTI1MS0zNDg4Mzc4MTM0KSIgbWFzaz0idXJsKCNkMi0xODQ0NTAxMjUxKSIgLz48L2c+PGcgY2xhc3M9IlVsTjBkV1JwYnlCWGIzSnJabXh2ZHk0b1VsTjBkV1JwYnlBdEptZDBPeUJPWlhjZ1JtOXNaR1Z5S1Zzd1hRPT0iPjxwYXRoIGQ9Ik0gOTY0IDc0NiBMIDk2NCA4MTAiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0ibm9uZSIgY2xhc3M9ImNvbm5lY3Rpb24gc3Ryb2tlLUIxIiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiBtYXJrZXItZW5kPSJ1cmwoI21rLWQyLTE4NDQ1MDEyNTEtMzQ4ODM3ODEzNCkiIG1hc2s9InVybCgjZDItMTg0NDUwMTI1MSkiIC8+PC9nPjxnIGNsYXNzPSJVbE4wZFdScGJ5QlhiM0pyWm14dmR5NG9UbVYzSUVadmJHUmxjaUF0Sm1kME95QkRjbVZoZEdVZ1VHOXpkQ2xiTUYwPSI+PHBhdGggZD0iTSA5NjQgODgyIEwgOTY0IDEwMzciIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0ibm9uZSIgY2xhc3M9ImNvbm5lY3Rpb24gc3Ryb2tlLUIxIiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiBtYXJrZXItZW5kPSJ1cmwoI21rLWQyLTE4NDQ1MDEyNTEtMzQ4ODM3ODEzNCkiIG1hc2s9InVybCgjZDItMTg0NDUwMTI1MSkiIC8+PHRleHQgeD0iOTY0IiB5PSI5NjYiIGZpbGw9IiM2NzZDN0UiIGNsYXNzPSJ0ZXh0LWl0YWxpYyBmaWxsLU4yIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5pbmRleC5xbWQ8L3RleHQ+PC9nPjxnIGNsYXNzPSJVbE4wZFdScGJ5QlhiM0pyWm14dmR5NG9RM0psWVhSbElGQnZjM1FnTFNabmREc2dWR1Z5YldsdVlXd3BXekJkIj48cGF0aCBkPSJNIDkyMi41ODMwMDggMTEwOSBMIDkyMi41ODMwMDggMTE4MyIgc3Ryb2tlPSIjMDAwNTM2IiBmaWxsPSJub25lIiBjbGFzcz0iY29ubmVjdGlvbiBzdHJva2UtQjEiIHN0eWxlPSJzdHJva2Utd2lkdGg6MjsiIG1hcmtlci1lbmQ9InVybCgjbWstZDItMTg0NDUwMTI1MS0zNDg4Mzc4MTM0KSIgbWFzaz0idXJsKCNkMi0xODQ0NTAxMjUxKSIgLz48L2c+PGcgY2xhc3M9IlVsTjBkV1JwYnlCWGIzSnJabXh2ZHk0b1ZHVnliV2x1WVd3Z0xTWm5kRHNnVUhKbGNHRnlaU0JUYVhSbEtWc3dYUT09Ij48cGF0aCBkPSJNIDg4NS45MTYwMTYgMTE4NSBMIDg4NS45MTYwMTYgMTE1NyBTIDg4NS45MTYwMTYgMTE0NyA4NzUuOTE2MDE2IDExNDcgTCA4NTQuNSAxMTQ3IFMgODQ0LjUgMTE0NyA4NDQuNSAxMTM3IEwgODQ0LjUgMTc4IFMgODQ0LjUgMTY4IDg1NC41IDE2OCBMIDg3Mi4yNSAxNjggUyA4ODIuMjUgMTY4IDg4Mi4yNSAxNTggTCA4ODIuMjUgMTMyIiBzdHJva2U9IiMwMDA1MzYiIGZpbGw9Im5vbmUiIGNsYXNzPSJjb25uZWN0aW9uIHN0cm9rZS1CMSIgc3R5bGU9InN0cm9rZS13aWR0aDoyOyIgbWFya2VyLWVuZD0idXJsKCNtay1kMi0xODQ0NTAxMjUxLTM0ODgzNzgxMzQpIiBtYXNrPSJ1cmwoI2QyLTE4NDQ1MDEyNTEpIiAvPjx0ZXh0IHg9Ijg0NSIgeT0iNjU3IiBmaWxsPSIjNjc2QzdFIiBjbGFzcz0idGV4dC1pdGFsaWMgZmlsbC1OMiIgc3R5bGU9InRleHQtYW5jaG9yOm1pZGRsZTtmb250LXNpemU6MTZweCI+PHRzcGFuIHg9Ijg0NSIgZHk9IjAiPnF1YXJ0byByZW5kZXI8L3RzcGFuPjx0c3BhbiB4PSI4NDUiIGR5PSIxOC41Ij4gcXVhcnRvIHByZXZpZXc8L3RzcGFuPjwvdGV4dD48L2c+PGcgY2xhc3M9IlVsTjBkV1JwYnlCWGIzSnJabXh2ZHk0b1VISmxjR0Z5WlNCVGFYUmxJQzBtWjNRN0lFZHBkRXR5WVd0bGJpbGJNRjA9Ij48cGF0aCBkPSJNIDkyNi4yNSAxMzAgTCA5MjYuMjUgMjA0IiBzdHJva2U9IiMwMDA1MzYiIGZpbGw9Im5vbmUiIGNsYXNzPSJjb25uZWN0aW9uIHN0cm9rZS1CMSIgc3R5bGU9InN0cm9rZS13aWR0aDoyOyIgbWFya2VyLWVuZD0idXJsKCNtay1kMi0xODQ0NTAxMjUxLTM0ODgzNzgxMzQpIiBtYXNrPSJ1cmwoI2QyLTE4NDQ1MDEyNTEpIiAvPjwvZz48ZyBjbGFzcz0iVWxOMGRXUnBieUJYYjNKclpteHZkeTRvUjJsMFMzSmhhMlZ1SUMwbVozUTdJRVJ2Ym1VZ1ptOXlJRTV2ZHlsYk1GMD0iPjxwYXRoIGQ9Ik0gOTY0IDI3NiBMIDk2NCA0MzEiIHN0cm9rZT0iIzAwMDUzNiIgZmlsbD0ibm9uZSIgY2xhc3M9ImNvbm5lY3Rpb24gc3Ryb2tlLUIxIiBzdHlsZT0ic3Ryb2tlLXdpZHRoOjI7IiBtYXJrZXItZW5kPSJ1cmwoI21rLWQyLTE4NDQ1MDEyNTEtMzQ4ODM3ODEzNCkiIG1hc2s9InVybCgjZDItMTg0NDUwMTI1MSkiIC8+PHRleHQgeD0iOTY0IiB5PSIzNjAiIGZpbGw9IiM2NzZDN0UiIGNsYXNzPSJ0ZXh0LWl0YWxpYyBmaWxsLU4yIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5zdGFnZSBhbGwsIHB1c2g8L3RleHQ+PC9nPjxnIGNsYXNzPSJVbE4wZFdScGJ5QlhiM0pyWm14dmR5NG9SRzl1WlNCbWIzSWdUbTkzSUMwbVozUTdJRkpUZEhWa2FXOHBXekJkIj48cGF0aCBkPSJNIDk2NCA1MDMgTCA5NjQgNjc0IiBzdHJva2U9IiMwMDA1MzYiIGZpbGw9Im5vbmUiIGNsYXNzPSJjb25uZWN0aW9uIHN0cm9rZS1CMSIgc3R5bGU9InN0cm9rZS13aWR0aDoyOyIgbWFya2VyLWVuZD0idXJsKCNtay1kMi0xODQ0NTAxMjUxLTM0ODgzNzgxMzQpIiBtYXNrPSJ1cmwoI2QyLTE4NDQ1MDEyNTEpIiAvPjx0ZXh0IHg9Ijk2NC41IiB5PSI1OTUiIGZpbGw9IiM2NzZDN0UiIGNsYXNzPSJ0ZXh0LWl0YWxpYyBmaWxsLU4yIiBzdHlsZT0idGV4dC1hbmNob3I6bWlkZGxlO2ZvbnQtc2l6ZToxNnB4Ij5SaW5zZSBhbmQgUmVwZWF0PC90ZXh0PjwvZz48bWFzayBpZD0iZDItMTg0NDUwMTI1MSIgbWFza1VuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeD0iLTg5IiB5PSItODkiIHdpZHRoPSIxMjc0IiBoZWlnaHQ9IjE0OTMiPgo8cmVjdCB4PSItODkiIHk9Ii04OSIgd2lkdGg9IjEyNzQiIGhlaWdodD0iMTQ5MyIgZmlsbD0id2hpdGUiPjwvcmVjdD4KPHJlY3QgeD0iMTI2IiB5PSIyNDAiIHdpZHRoPSI0NiIgaGVpZ2h0PSIyMSIgZmlsbD0iYmxhY2siPjwvcmVjdD4KPHJlY3QgeD0iMjU0IiB5PSIyNDAiIHdpZHRoPSIyMyIgaGVpZ2h0PSIyMSIgZmlsbD0iYmxhY2siPjwvcmVjdD4KPHJlY3QgeD0iMTA0IiB5PSI1MTYiIHdpZHRoPSI5MCIgaGVpZ2h0PSIyMSIgZmlsbD0iYmxhY2siPjwvcmVjdD4KPHJlY3QgeD0iMTI2IiB5PSI3NjYiIHdpZHRoPSI0NiIgaGVpZ2h0PSIyMSIgZmlsbD0iYmxhY2siPjwvcmVjdD4KPHJlY3QgeD0iMTE3IiB5PSIxMDM4IiB3aWR0aD0iNjQiIGhlaWdodD0iMjEiIGZpbGw9ImJsYWNrIj48L3JlY3Q+CjxyZWN0IHg9IjM5MSIgeT0iNTE2IiB3aWR0aD0iNDgiIGhlaWdodD0iMjEiIGZpbGw9ImJsYWNrIj48L3JlY3Q+CjxyZWN0IHg9IjM5NSIgeT0iOTAyIiB3aWR0aD0iNDAiIGhlaWdodD0iMjEiIGZpbGw9ImJsYWNrIj48L3JlY3Q+CjxyZWN0IHg9IjkyNyIgeT0iOTUwIiB3aWR0aD0iNzQiIGhlaWdodD0iMjEiIGZpbGw9ImJsYWNrIj48L3JlY3Q+CjxyZWN0IHg9Ijc5MSIgeT0iNjQxIiB3aWR0aD0iMTA4IiBoZWlnaHQ9IjM3IiBmaWxsPSJibGFjayI+PC9yZWN0Pgo8cmVjdCB4PSI5MTQiIHk9IjM0NCIgd2lkdGg9IjEwMCIgaGVpZ2h0PSIyMSIgZmlsbD0iYmxhY2siPjwvcmVjdD4KPHJlY3QgeD0iOTA1IiB5PSI1NzkiIHdpZHRoPSIxMTkiIGhlaWdodD0iMjEiIGZpbGw9ImJsYWNrIj48L3JlY3Q+CjwvbWFzaz48L3N2Zz48L3N2Zz4K" style="height:50.0%"></a></p>
+</section><section id="references" class="level2" data-number="9"><h2 data-number="9" class="anchored" data-anchor-id="references">
+<span class="header-section-number">9</span> References</h2>
+<ol type="1">
+<li><a href="https://jcoliver.github.io/learn-r/010-github.html" class="uri">https://jcoliver.github.io/learn-r/010-github.html</a></li>
+<li><a href="https://info5940.infosci.cornell.edu/setup/git/git-configure/" class="uri">https://info5940.infosci.cornell.edu/setup/git/git-configure/</a></li>
+<li><a href="https://posit-conf-2024.github.io/quarto-websites/" class="uri">https://posit-conf-2024.github.io/quarto-websites/</a></li>
+<li>Alice Bartlett. <em>Git for Humans</em> <a href="https://speakerdeck.com/alicebartlett/git-for-humans" class="uri">https://speakerdeck.com/alicebartlett/git-for-humans</a>
+</li>
+</ol>
+
+
+</section><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{2024,
+  author = {},
+  title = {\textless Iconify-Icon Icon=“entypo:publish” Width=“1.2rem”
+    Height=“1.2rem”\textgreater\textless/Iconify-Icon\textgreater{} {I}
+    {Publish,} Therefore {I} {Am}},
+  date = {2024-06-23},
+  url = {https://madhatterguide.netlify.app/content/courses/Analytics/40-Workflow/Modules/30-BlogSite/},
+  langid = {en},
+  abstract = {Putting it all out there on the web}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-2024" class="csl-entry quarto-appendix-citeas" role="listitem">
+<span>“&lt;Iconify-Icon Icon=<span>‘entypo:publish’</span>
+Width=<span>‘1.2rem’</span>
+Height=<span>‘1.2rem’</span>&gt;&lt;/Iconify-Icon&gt; I Publish,
+Therefore I Am.”</span> 2024. June 23. <a href="https://madhatterguide.netlify.app/content/courses/Analytics/40-Workflow/Modules/30-BlogSite/">https://madhatterguide.netlify.app/content/courses/Analytics/40-Workflow/Modules/30-BlogSite/</a>.
+</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/madhatterguide\.netlify\.app");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><nav class="page-navigation column-body"><div class="nav-page nav-page-previous">
+      <a href="../../../../../../content/courses/Analytics/40-Workflow/Modules/200-EDA-Workflow/index.html" class="pagination-link" aria-label="<iconify-icon icon=&quot;guidance:falling-rocks&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon><iconify-icon icon=&quot;game-icons:falling&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> Facing the Abyss">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><iconify-icon icon="guidance:falling-rocks" width="1.2em" height="1.2em"></iconify-icon><iconify-icon icon="game-icons:falling" width="1.2em" height="1.2em"></iconify-icon> Facing the Abyss</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../../../../../content/courses/Analytics/40-Workflow/Modules/40-DataShapingCleaning/index.html" class="pagination-link" aria-label="<iconify-icon icon=&quot;twemoji:carpentry-saw&quot; width=&quot;1.2rem&quot; height=&quot;1.2rem&quot;></iconify-icon> Data Carpentry">
+        <span class="nav-page-text"><iconify-icon icon="twemoji:carpentry-saw" width="1.2rem" height="1.2rem"></iconify-icon> Data Carpentry</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>License: <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</a></p>
+</div>   
+    <div class="nav-footer-center">
+<p>Website made with ❤️ and <a href="https://quarto.org/">Quarto</a>, by Arvind V.</p>
+</div>
+    <div class="nav-footer-right">
+<p>Hosted by Netlify <a href="https://www.netlify.com"><iconify-icon inline="" icon="simple-icons:netlify" aria-label="Icon netlify from simple-icons Iconify.design set." title="Icon netlify from simple-icons Iconify.design set."></iconify-icon></a>.</p>
+</div>
+  </div>
+</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"right","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+<script src="../../../../../../site_libs/quarto-html/zenscroll-min.js"></script>
+<script src="../../../../../../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.js" defer="true"></script>
+</body></html>

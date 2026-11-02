@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="dcterms.date" content="2022-11-22">
+<title>Exploratory Data Analysis and Statistical Inference in R – The Mad Hatter’s Guide to Data Viz and Stats in R</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../content/courses/Analytics/05-Tools/listing.html" rel="next">
+<link href="../../../content/materials/icon-park-twotone--concept-sharing.svg" rel="icon" type="image/svg+xml">
+<script src="../../../site_libs/quarto-listing/list.min.js"></script>
+<script src="../../../site_libs/quarto-listing/quarto-listing.js"></script>
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-12757e4b7af482b2d9c5bd8860d2b707.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-33e633d2a9e5093507fd4bb078e98b08.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.css" rel="stylesheet">
+<script src="../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
+<script src="../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-contrib/tachyons-4.12.0/tachyons.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-title','listing-date',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
+      
+      searchColumns: ["listing-date","listing-title","listing-author"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script><style>html{ scroll-behavior: smooth; }</style>
+<link href="../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script><script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script><script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script><link rel="stylesheet" href="../../../css/fira.css">
+<link rel="stylesheet" href="../../../css/roboto-condensed.css">
+<link rel="stylesheet" href="../../../css/vollkorn.css">
+<link rel="stylesheet" href="../../../css/fraunces.css">
+<link rel="stylesheet" href="../../../css/styles.css">
+<meta property="og:title" content="Exploratory Data Analysis and Statistical Inference in R – The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta property="og:description" content="This is Arvind V.’s website for teaching Data Viz and Stats in R">
+<meta property="og:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/Austen.jpg">
+<meta property="og:site_name" content="The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta name="twitter:title" content="Exploratory Data Analysis and Statistical Inference in R – The Mad Hatter’s Guide to Data Viz and Stats in R">
+<meta name="twitter:description" content="This is Arvind V.’s website for teaching Data Viz and Stats in R">
+<meta name="twitter:image" content="https://madhatterguide.netlify.app/content/courses/Analytics/Austen.jpg">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">The Mad Hatter’s Guide to Data Viz and Stats in R</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/arvindvenkatadri/dataviz"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/arvind_v"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/arvindvenkatadri"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="mailto:arvind.venkatadri@gmail.com"> <i class="bi bi-envelope" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+</div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../content/courses/Analytics/listing.html">Data Viz and Stats</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+      <a href="../../../index.html" class="sidebar-logo-link">
+      <img src="../../../content/materials/images/1book25.jpg" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none"><img src="../../../content/materials/images/1book25.jpg" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none"></a>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../content/courses/Analytics/listing.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Data Viz and Stats</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../content/courses/Analytics/05-Tools/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tools</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/05-Tools/10-Intro-to-R/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa-brands:r-project"></iconify-icon> Introduction to R and RStudio</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../content/courses/Analytics/500-DataKits/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Studio Flow and Data Kits</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/500-DataKits/Modules/WallAndPanel/12-day-studio-index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">12-Day Studio Index</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/500-DataKits/Modules/Healthcare/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa-brands:r-project"></iconify-icon> Healthcare Data Kits</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../content/courses/Analytics/10-Descriptive/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visualization</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/10-Descriptive/Modules/05-NatureData/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icon-park-twotone:data-user" width="1.2em" height="1.2em"></iconify-icon> Data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/10-Descriptive/Modules/06-Inspect/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="grommet-icons:inspect" width="1.2em" height="1.2em"></iconify-icon> Inspect Data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/10-Descriptive/Modules/09-Graphs/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="carbon:chart-3d" width="1.2em" height="1.2em"></iconify-icon> Graphs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/10-Descriptive/Modules/10-FavStats/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="carbon:summary-kpi" width="1.2em" height="1.2em"></iconify-icon> Summaries</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/10-Descriptive/Modules/20-Counts/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="eos-icons:counting" width="1.2em" height="1.2em"></iconify-icon> Counts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/10-Descriptive/Modules/22-Quantities/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fluent-mdl2:quantity" width="1.2em" height="1.2em"></iconify-icon> Quantities</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/10-Descriptive/Modules/24-Groups/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="lucide:group" width="1.2em" height="1.2em"></iconify-icon> Groups</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/10-Descriptive/Modules/26-Distributions/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="clarity:bell-curve-line" width="1.2em" height="1.2em"></iconify-icon> Distributions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/10-Descriptive/Modules/28-Violins/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="material-symbols:light-group-rounded" width="1.2em" height="1.2em"></iconify-icon> Groups and Distributions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/10-Descriptive/Modules/30-Change/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icon-park-outline:change" width="1.2em" height="1.2em"></iconify-icon> Change</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/10-Descriptive/Modules/40-CatData/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icon-park-outline:proportional-scaling"></iconify-icon> Proportions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/10-Descriptive/Modules/60-PartWhole/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="ic:round-pie-chart-outline"></iconify-icon> Hierarchy</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/10-Descriptive/Modules/70-EvolutionFlow/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="carbon:sankey-diagram"></iconify-icon> Evolution and Flow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/10-Descriptive/Modules/80-Ranking/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="ph:ranking-bold" width="1.2em" height="1.2em"></iconify-icon> Ratings and Rankings</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/10-Descriptive/Modules/45-SurveyData/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="wpf:survey" width="1.2em" height="1.2em"></iconify-icon> Surveys</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/10-Descriptive/Modules/50-Time/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fluent-mdl2:hour-glass" width="1.2em" height="1.2em"></iconify-icon> Time</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Space</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth3 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/95-Intro/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> Introduction to Maps</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/10-Data/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> What is Vector Data?</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/15-Static/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> The Grammar of Maps</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/10-Descriptive/Modules/90-Space/Modules/20-Leaflet/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="gis:proj-geo" width="1.2em" height="1.2em"></iconify-icon> Interactive Maps with leaflet</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/10-Descriptive/Modules/100-Networks/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="bx:network-chart" width="1.2em" height="1.2em"></iconify-icon> Networks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/10-Descriptive/Modules/180-RefMat/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="eos-icons:miscellaneous"></iconify-icon> Miscellaneous Graphing Tools, and References</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../content/courses/Analytics/20-Inference/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inference</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/20-Inference/Modules/10-Intro/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Basics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/20-Inference/Modules/20-SampProb/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🎲 Samples</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/20-Inference/Modules/60-SimTest/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Randomization</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/20-Inference/Modules/100-OneMean/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">One Mean</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/20-Inference/Modules/110-TwoMeans/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Two Independent Means</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/20-Inference/Modules/120-PairedMeans/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Two Paired Means</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/20-Inference/Modules/130-ThreeMeansOrMore/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Multiple Means (ANOVA)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/20-Inference/Modules/150-Correlation/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Correlation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/20-Inference/Modules/180-OneProp/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">One Proportion</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/20-Inference/Modules/190-TwoProp/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Two Proportions</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../content/courses/Analytics/30-Modelling/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modelling</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/30-Modelling/Modules/20-LinReg/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linear Regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/30-Modelling/Modules/30-LogReg/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logistic Regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/30-Modelling/Modules/50-ModelTimeSeries/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🕔 Time Series</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../content/courses/Analytics/40-Workflow/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Workflow</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/40-Workflow/Modules/200-EDA-Workflow/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="guidance:falling-rocks" width="1.2em" height="1.2em"></iconify-icon><iconify-icon icon="game-icons:falling" width="1.2em" height="1.2em"></iconify-icon> Facing the Abyss</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/40-Workflow/Modules/30-BlogSite/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="entypo:publish" width="1.2rem" height="1.2rem"></iconify-icon> I Publish, therefore I Am</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/40-Workflow/Modules/40-DataShapingCleaning/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="twemoji:carpentry-saw" width="1.2rem" height="1.2rem"></iconify-icon> Data Carpentry</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../content/courses/Analytics/50-Arts/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Arts</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/50-Arts/Modules/10-Colour/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Colours</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/50-Arts/Modules/20-Fonts/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fonts for Charts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/50-Arts/Modules/30-MoreFonts/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Font Effects in Charts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/50-Arts/Modules/40-Branding/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Branding and Typography</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/50-Arts/Modules/50-Annotations1/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Annotations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/50-Arts/Modules/60-Annotations2/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">More Annotations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/50-Arts/Modules/70-Highlighting/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Highlighting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/50-Arts/Modules/80-Scales/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Scales</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../content/courses/Analytics/60-AI-tools/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">AI Tools</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/60-AI-tools/Modules/10-LLMs/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using gander and ellmer</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/60-AI-tools/Modules/20-Github-Pilot/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using Github Copilot and other AI tools to generate R code</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/60-AI-tools/Modules/30-Explain/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using LLMs to Explain Stat models</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../content/courses/Analytics/70-CaseStudies/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Case Studies</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/70-CaseStudies/Modules/05-Demo/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="healthicons:elderly-outline" width="1.2em" height="1.2em"></iconify-icon> Demo:Product Packaging and Elderly People</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/70-CaseStudies/Modules/10-IkeaFurniture/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="simple-icons:ikea" width="1.2em" height="1.2em"></iconify-icon> Ikea Furniture</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/70-CaseStudies/Modules/20-MovieProfits/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="noto:movie-camera" width="1.2em" height="1.2em"></iconify-icon> Movie Profits</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/70-CaseStudies/Modules/30-GenderWorkplace/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icons8:gender" width="1.2em" height="1.2em"></iconify-icon> Gender at the Work Place</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/70-CaseStudies/Modules/40-Heptathlon/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="icon-park-outline:sport" width="1.2em" height="1.2em"></iconify-icon> Heptathlon</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/70-CaseStudies/Modules/60-SchoolScores/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="ic:twotone-school" width="1.2em" height="1.2em"></iconify-icon> School Scores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/70-CaseStudies/Modules/80-ChildrensGames/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa6-solid:children"></iconify-icon><iconify-icon icon="icon-park-solid:play-basketball"></iconify-icon> Children's Games</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/70-CaseStudies/Modules/90-ValentinesDay/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="mingcute:hand-heart-line"></iconify-icon> Valentine’s Day Spending</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/70-CaseStudies/Modules/100-WomenLiveMen/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="noto:mage-light-skin-tone"></iconify-icon> Women Live Longer?</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/70-CaseStudies/Modules/110-ChildrenHearingLoss/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa6-solid:ear-deaf"></iconify-icon><iconify-icon icon="fa-regular:sad-tear"></iconify-icon> Hearing Loss in Children</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/70-CaseStudies/Modules/200-CaliforniaTransitPayments/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="openmoji:california-flag"></iconify-icon><iconify-icon icon="material-symbols:transit-ticket-outline-sharp"></iconify-icon> California Transit Payments</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/70-CaseStudies/Modules/250-Seaweed/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="iconoir:sea-waves"></iconify-icon><iconify-icon icon="mdi:weed"></iconify-icon> Seaweed Nutrients</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/70-CaseStudies/Modules/300-Coffee/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa:coffee"></iconify-icon> Coffee Flavours</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/70-CaseStudies/Modules/350-LegionnairesDisease/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="fa6-solid:disease"></iconify-icon> Legionnaire’s Disease in the USA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/70-CaseStudies/Modules/400-AntarcticSeaIce/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="iconoir:sea-waves"></iconify-icon><iconify-icon icon="openmoji:floating-ice"></iconify-icon>  Antarctic Sea ice</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/70-CaseStudies/Modules/450-CholeraInLondon/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="simple-icons:transportforlondon"></iconify-icon><iconify-icon icon="hugeicons:water-pump"></iconify-icon>  William Farr's Observations on Cholera in London</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../content/courses/Analytics/1000-Projects/listing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Projects</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/courses/Analytics/1000-Projects/Modules/300-NoFreeHunch/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><iconify-icon icon="game-icons:sherlock-holmes" width="1.2em" height="1.2em"></iconify-icon> No Free Hunch</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#abstract" id="toc-abstract" class="nav-link active" data-scroll-target="#abstract"><span class="header-section-number">1</span> Abstract</a></li>
+  <li><a href="#what-you-will-learn" id="toc-what-you-will-learn" class="nav-link" data-scroll-target="#what-you-will-learn"><span class="header-section-number">2</span> What you will learn</a></li>
+  <li><a href="#what-you-will-not-learn-here" id="toc-what-you-will-not-learn-here" class="nav-link" data-scroll-target="#what-you-will-not-learn-here"><span class="header-section-number">3</span> What you will <strong>not</strong> learn here:</a></li>
+  <li><a href="#our-tools" id="toc-our-tools" class="nav-link" data-scroll-target="#our-tools"><span class="header-section-number">4</span> Our Tools</a></li>
+  <li><a href="#pedagogical-notes" id="toc-pedagogical-notes" class="nav-link" data-scroll-target="#pedagogical-notes"><span class="header-section-number">5</span> Pedagogical Notes</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">6</span> References</a></li>
+  <li><a href="#learning-r-with-ai" id="toc-learning-r-with-ai" class="nav-link" data-scroll-target="#learning-r-with-ai"><span class="header-section-number">7</span> Learning R with AI</a></li>
+  <li><a href="#foseda-and-business-analytics-courses-elsewhere" id="toc-foseda-and-business-analytics-courses-elsewhere" class="nav-link" data-scroll-target="#foseda-and-business-analytics-courses-elsewhere"><span class="header-section-number">8</span> FOSEDA and Business Analytics Courses elsewhere</a></li>
+  <li><a href="#modules" id="toc-modules" class="nav-link" data-scroll-target="#modules"><span class="header-section-number">9</span> Modules</a></li>
+  </ul></nav>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(10)</span></div></div></div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">Exploratory Data Analysis and Statistical Inference in R</h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-body">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 22, 2022</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">November 2, 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header><p><br></p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="Austen.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="Austen.jpg" class="quarto-figure quarto-figure-center figure-img" style="width:50.0%;height:50.0%"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><strong>It is a truth universally acknowledged, that a Srishti Art and Design student, in possession of a good Mac, must be terrified of coding.</strong></p>
+<div style="text-align: right">
+<p>- <a href="https://www.gutenberg.org/ebooks/1342">Code and Prejudice</a>, Jane Austen, 1813</p>
+</div>
+</blockquote>
+<section id="abstract" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="abstract">
+<span class="header-section-number">1</span> Abstract</h2>
+<p>This Course takes Art-Design Students (“Peasants”) on a journey of Exploratory Data Analysis and Visualization (EDAV) and Statistics: using data to derive insights, make predictions, and decide on plans of action that can be communicated and actualized in an Art and Design context.</p>
+<div class="pa4">
+<div class="athelas ml0 mt0 pl4 black-90 bl bw2 b--blue">
+<p><span class="f5 f4-m f3-l lh-copy measure mt0">“EDA is the process of examining the data at hand, to find patterns in it, and to obtain insights. It is not a rigid process, but a fluid iterative one, where in one chases down alleyways and cul-de-sacs of inquiry, and sometimes comes back empty-handed. But in the end, one has a thorough understanding of the data structure and its variables: their values, their measures and variations, and their possible relationships. One also develops hypotheses for modelling, statistical investigation and plans for the application of machine learning procedures to the data to enable decision making.”</span></p>
+</div>
+</div>
+<p><br> The Course starts with <strong>Descriptive Analytics / EDA</strong>: Datasets from various domains of business, design, and scientific activity are introduced. The datasets are motivated from the point of view of the types of information they contain: students will relate the Data Variables (Qualitative and Quantitative) to various types of Data/Information Visualizations.</p>
+<p><strong>Statistical Concepts</strong> such as <strong><em>Sampling, Hypothesis Tests, Simulation / Modelling, and Uncertainty</em></strong> will be introduced. Students will be motivated to set up their own Hypotheses, which they would answer after analyzing the data that they would gather using a <em>random sampling experiment</em>;</p>
+<p>The Course will include in a full <strong>Exploratory Data Analysis and Visualization Workflow</strong> using <a href="https://posit.co/products/open-source/rstudio/?sid=1">RStudio</a> and <a href="https://quarto.org">Quarto</a> resulting in a publication-worthy documents (HTML / PDF/ Word) on a personal website.</p>
+<p>A diagram from a very popular textbook by <a href="https://moderndive.com/index.html">Ismay and Kim</a> may be relevant here:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="https://moderndive.com/images/flowcharts/flowchart/flowchart.002.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="https://moderndive.com/images/flowcharts/flowchart/flowchart.002.png" class="quarto-figure quarto-figure-center figure-img" style="width:50.0%;height:50.0%"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="what-you-will-learn" class="level2" data-number="2"><h2 data-number="2" class="anchored" data-anchor-id="what-you-will-learn">
+<span class="header-section-number">2</span> What you will learn</h2>
+<ul>
+<li>
+<strong>Data Basics</strong>: What does data look like and why should we care?</li>
+<li>Understand the <strong>R language</strong>, and appreciate how close it is to plain English, for the most part</li>
+<li>
+<strong>Data Wrangling</strong>: Cleaning up, labelling and setting up data for Visualization and Analysis</li>
+<li>Rapidly and intuitively creating <strong>Graphs and Data Visualizations</strong> using geometric metaphors to explore data for insights,</li>
+<li>Since Data Viz and Stats are inseparable Siamese Twins, use <strong>Statistical Tests, Procedures, Models, and Simulations</strong> and to answer Business and Design Questions</li>
+<li>Create crisp and readable <strong>Reports with Quarto</strong> that can be shared in a Design and Business Context</li>
+<li>Use <strong>Git and GitHub</strong> to manage your code and website versions, and to share your work with others</li>
+<li>Create a <strong>Personal Website</strong> to showcase your work</li>
+<li>Use colours, fonts, and themes in your visualizations, reports, and websites</li>
+</ul></section><section id="what-you-will-not-learn-here" class="level2" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="what-you-will-not-learn-here">
+<span class="header-section-number">3</span> What you will <strong>not</strong> learn here:</h2>
+<ul>
+<li><del><span class="bg-moon-gray">Using <strong>ML algorithms</strong> for Regression, Classification, and Clustering to develop Design Research Insights</span></del></li>
+<li><del><span class="bg-moon-gray">Use <strong>Linear Programming</strong> to make Business Decisions</span></del></li>
+<li><del><span class="bg-moon-gray">Using <strong>AI tools in RStudio</strong> where appropriate for code and text completion, and code development using prompts in English (Hindi, Kannada, Tamil, Gujarati, Tulu…)</span></del></li>
+<li><span style="background-color:yellow;">In the long run, everything is FOMO…</span></li>
+</ul></section><section id="our-tools" class="level2" data-number="4"><h2 data-number="4" class="anchored" data-anchor-id="our-tools">
+<span class="header-section-number">4</span> Our Tools</h2>
+<ol type="1">
+<li>
+<p><strong>R</strong> <a href="https://cran.r-project.org/" class="uri">https://cran.r-project.org/</a> and <strong>RStudio</strong> <a href="https://posit.co/" class="uri">https://posit.co/</a></p>
+<p>R is a freely available language and environment for statistical computing and graphics which provides a wide variety of statistical and graphical techniques: <em>linear and nonlinear modelling, statistical tests, time series analysis, classification, clustering</em>,etc. RStudio is an <strong>integrated development environment (IDE) for R and Python</strong>.</p>
+</li>
+<li>
+<p><strong>Quarto</strong> <a href="https://quarto.org" class="uri">https://quarto.org</a></p>
+<p>Quarto is an open-source scientific and technical publishing system built on Pandoc, and integrated into RStudio. It extends the functionality of R Markdown, Jupyter Notebooks, and other markdown formats to provide a unified authoring framework for data science and scientific communication. Quarto supports multiple programming languages, including R, Python, Julia, and Observable JavaScript.</p>
+</li>
+<li>
+<p>(Very Foreseeable Future): <strong>Positron</strong> IDE <a href="https://positron.posit.co/" class="uri">https://positron.posit.co/</a></p>
+<p>Positron IDE is a new IDE from Posit, <del>in public beta as of June 2024</del>. Positron unifies exploration and production work in one free, AI-powered environment, empowering the full spectrum of data science in Python and R.</p>
+</li>
+<li>
+<p>(In a No-Code version of this course): <strong>Orange Data Mining</strong> <a href="https://orangedatamining.com/" class="uri">https://orangedatamining.com/</a></p>
+<p>Orange is also a <a href="https://en.wikipedia.org/wiki/Free_and_open-source_software">FOSS</a> visual point-and-click software for Data Mining and ML, developed at the University of Slovenia, in Ljubljana, Slovenia. It can be thought of like Photoshop for Data Science. It is component-based software, with a large toolbox of components (called widgets) for data preprocessing, feature scoring and filtering, modeling, model evaluation, and exploration techniques. It includes a wide range of standard ML algorithms, and can also be extended using Python scripts. Orange is used for both research and education at many universities worldwide.</p>
+</li>
+</ol>
+<div>
+<center>
+<div class="quarto-video"><iframe data-external="1" src="https://www.youtube.com/embed/HXjnDIgGDuI" width="560" height="400" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</center>
+<p>Introduction to Orange</p>
+</div>
+<ol type="1">
+<li>
+<p><strong>Radiant – Business analytics using R and Shiny</strong> <a href="https://radiant-rstats.github.io/docs/index.html" class="uri">https://radiant-rstats.github.io/docs/index.html</a></p>
+<p>Radiant is a FOSS platform-independent browser-based interface for business analytics in R, developed at the University of San Diego. The application is based on the Shiny package and can be run using R, or in your browser with no installation required. The tool automatically installs a version of R and adds a Shiny-based GUI that removes the need to write R-code. Radiant can also be installed on top of an existing installation of R and invoked from within RStudio.</p>
+</li>
+</ol>
+<div>
+<center>
+<div class="quarto-video"><iframe data-external="1" src="https://www.youtube.com/embed/7L3hDpLw53I" width="560" height="400" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</center>
+<p>Introduction to Radiant</p>
+</div>
+</section><section id="pedagogical-notes" class="level2" data-number="5"><h2 data-number="5" class="anchored" data-anchor-id="pedagogical-notes">
+<span class="header-section-number">5</span> Pedagogical Notes</h2>
+<p>Why this course is what it is, and why it does what it does!</p>
+<p><span class="bg-light-green">Read this only if you are planning to be an educator yourself, or if you want to understand why your Facilitator/Teacher is, you know,…like this!!</span></p>
+<section id="primm" class="level4"><h4 class="anchored" data-anchor-id="primm">PRIMM</h4>
+<p>The method followed will be based on <a href="https://primmportal.com">PRIMM</a>:</p>
+<ul>
+<li>PREDICT: Inspect the code and guess at what the code might do, write predictions</li>
+<li>RUN: the code provided and check what happens</li>
+<li>INFER: what the parameters of the code do and write comments to explain. What bells and whistles can you see?</li>
+<li>MODIFY: the parameters code provided to understand the options available. Write comments to show what you have aimed for and achieved.</li>
+<li>MAKE: take an idea/concept of your own, and graph it.</li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="https://primmportal.com/wp-content/uploads/2018/08/primm-diagram.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="From https://primmportal.com, used without permission"><img src="https://primmportal.com/wp-content/uploads/2018/08/primm-diagram.png" class="quarto-figure quarto-figure-center figure-img" style="width:50.0%;height:50.0%" alt="From https://primmportal.com, used without permission"></a></p>
+</figure>
+</div>
+<figcaption>From https://primmportal.com, used <em>without permission</em></figcaption></figure>
+</div>
+</div>
+</div>
+<p>So in this course, wherever you see “YOUR TURN”, please respond with questions of the data, explanations, more questions and <a href="https://youtu.be/JJYz8pyXOG4">if you are already confident</a>, code chunks to create new calculations and graphs.</p>
+</section><section id="and-why-teach-r-in-this-way" class="level4"><h4 class="anchored" data-anchor-id="and-why-teach-r-in-this-way">And why teach R in this way?</h4>
+<p>Because we all know two things:</p>
+<ul>
+<li>Pretty decent English</li>
+<li><a href="https://youtu.be/ZK1PBh-yMZE"><span class="math inline">y = mx + c</span></a></li>
+</ul>
+<p>Let us hear from Amelia McNamara:</p>
+<div>
+<center>
+<div class="quarto-video"><iframe data-external="1" src="https://www.youtube.com/embed/ScpUmLfZBeA" width="560" height="400" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</center>
+<p>Talk by Amelia McNamara</p>
+</div>
+<div>
+<center>
+<div class="quarto-video"><iframe data-external="1" src="https://www.youtube.com/embed/aq5SrjXZDy4" width="560" height="400" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</center>
+<p>And another Talk by Amelia McNamara</p>
+</div>
+</section></section><section id="references" class="level2" data-number="6"><h2 data-number="6" class="anchored" data-anchor-id="references">
+<span class="header-section-number">6</span> References</h2>
+<section id="visualization-and-r-language" class="level4"><h4 class="anchored" data-anchor-id="visualization-and-r-language">Visualization and R language</h4>
+<ol type="1">
+<li>Hadley Wickham, Mine Cetinkaya-Rundel, and Garett Grolemund. <em>R for Data Science (2e)</em>. <a href="https://r4ds.hadley.nz" class="uri">https://r4ds.hadley.nz</a>. The most important reference for data visualization and analysis in R. Available free online.</li>
+<li>Robert Kabacoff. <em>Modern Data Visualization with R</em>. <u><a href="https://rkabacoff.github.io/datavis/" class="uri">https://rkabacoff.github.io/datavis/</a></u>. Available free online.</li>
+<li>Jack Dougherty and Ilya Ilyankou, <em>Hands-On Data Visualization: Interactive Storytelling from Spreadsheets to Code</em>, <a href="https://handsondataviz.org/" class="uri">https://handsondataviz.org/</a>. Available free online.</li>
+<li>Claus O. Wilke, <em>Fundamentals of Data Visualization</em>, <a href="https://clauswilke.com/dataviz/" class="uri">https://clauswilke.com/dataviz/</a>. Available free online.</li>
+<li>Jonathan Schwabish, <em>Better Data Visualizations: A Guide for Scholars, Researchers, and Wonks</em>, Columbia University Press, 2021.</li>
+<li>Alberto Cairo, <em>The Functional Art: An introduction to information graphics and visualization</em>, New Riders. 2013. ISBN-9780133041361.</li>
+<li>Cole Nussbaumer Knaflic, <em>Storytelling With Data: A Data Visualization Guide for Business Professionals</em>, Wiley 2015. ISBN-9781119002253.</li>
+<li>Reza Mohammadi(2025). <em>Data Science Foundations and Machine Learning with R: From Data to Decisions.</em> <a href="https://book-data-science-r.netlify.app/" class="uri">https://book-data-science-r.netlify.app/</a>
+</li>
+</ol></section><section id="analytics" class="level4"><h4 class="anchored" data-anchor-id="analytics">Analytics</h4>
+<ol type="1">
+<li>Judd, C.M., McClelland, G.H., &amp; Ryan, C.S. (2017). <em>Data Analysis: A Model Comparison Approach To Regression, ANOVA, and Beyond</em>. Third Edition (3rd ed.). Routledge. <a href="https://doi.org/10.4324/9781315744131" class="uri">https://doi.org/10.4324/9781315744131</a>
+</li>
+<li>Thomas Maydon, <em>The 4 Types of Data Analytics</em>. <a href="https://www.kdnuggets.com/2017/07/4-types-data-analytics.html" class="uri">https://www.kdnuggets.com/2017/07/4-types-data-analytics.html</a>
+</li>
+<li>Keith McNulty. <em>Handbook of Regression Modeling in People Analytics: With Examples in R, Python and Julia</em> <a href="https://peopleanalytics-regression-book.org" class="uri">https://peopleanalytics-regression-book.org</a>. Available free online.</li>
+<li>James R Evans, <em>Business Analytics: Methods, Models, and Decisions</em>, Pearson Education, 2021.</li>
+<li>Dimitris Bertsimas, Robert Freund, <em>Data, Models, and Decisions: the Fundamentals of Management Science</em>, Dynamic Ideas Press, 2004.</li>
+<li>Cliff T. Ragsdale, <em>Spreadsheet Modeling &amp; Decision Analysis: A Practical Introduction to Management Science</em>, South Western, Cengage Learning, Mason, OH, 2012.</li>
+</ol></section><section id="statistics" class="level4"><h4 class="anchored" data-anchor-id="statistics">Statistics</h4>
+<ol type="1">
+<li>Mine Cetinkaya-Rundel, Johanna Hardin. <em>Introduction to Modern Statistics</em>. <a href="https://openintro-ims2.netlify.app" class="uri">https://openintro-ims2.netlify.app</a>. Available free online.</li>
+<li>Daniel T. Kaplan. <em>Statistical Models (second edition)</em>. <a href="https://dtkaplan.github.io/SM2-bookdown/" class="uri">https://dtkaplan.github.io/SM2-bookdown/</a>. Available free online.</li>
+<li>Daniel T. Kaplan, <em>Compact Introduction to Classical Inference</em>, 2020. <a href="https://dtkaplan.github.io/CompactInference/" class="uri">https://dtkaplan.github.io/CompactInference/</a>. Available free online.</li>
+<li>Daniel T. Kaplan and Frank Shaw, <em>Statistical Modeling: Computational Technique</em>. <a href="https://www.mosaic-web.org/go/SM2-technique/" class="uri">https://www.mosaic-web.org/go/SM2-technique/</a>. Available free online.</li>
+<li>Jonas Kristoffer Lindeløv. <em>Common statistical tests are linear models (or: how to teach stats)</em>. <a href="https://lindeloev.github.io/tests-as-linear/" class="uri">https://lindeloev.github.io/tests-as-linear/</a>. Available free online.</li>
+</ol></section></section><section id="learning-r-with-ai" class="level2" data-number="7"><h2 data-number="7" class="anchored" data-anchor-id="learning-r-with-ai">
+<span class="header-section-number">7</span> Learning R with AI</h2>
+<p>Of course.</p>
+<ol type="1">
+<li>Using Claude in RStudio. <a href="https://posit.co/blog/posit-ai-now-available-all" class="uri">https://posit.co/blog/posit-ai-now-available-all</a>
+</li>
+<li>Github Copilot in RStudio. <a href="https://docs.posit.co/ide/user/ide/guide/tools/copilot.html" class="uri">https://docs.posit.co/ide/user/ide/guide/tools/copilot.html</a>
+</li>
+<li><a href="https://openai.com/index/improvements-to-data-analysis-in-chatgpt/" class="uri">https://openai.com/index/improvements-to-data-analysis-in-chatgpt/</a></li>
+<li><a href="https://rtutor.ai" class="uri">https://rtutor.ai</a></li>
+<li><a href="https://intro2r.library.duke.edu/ai.html" class="uri">https://intro2r.library.duke.edu/ai.html</a></li>
+<li><a href="https://chatlize.ai" class="uri">https://chatlize.ai</a></li>
+</ol></section><section id="foseda-and-business-analytics-courses-elsewhere" class="level2" data-number="8"><h2 data-number="8" class="anchored" data-anchor-id="foseda-and-business-analytics-courses-elsewhere">
+<span class="header-section-number">8</span> FOSEDA and Business Analytics Courses elsewhere</h2>
+<ol type="1">
+<li>University of San Diego, Rady School of Business. <a href="http://lab.rady.ucsd.edu/sawtooth/business_analytics_in_r/index.html" class="uri">http://lab.rady.ucsd.edu/sawtooth/business_analytics_in_r/index.html</a>
+</li>
+</ol></section><section id="modules" class="level2" data-number="9"><h2 data-number="9" class="anchored" data-anchor-id="modules">
+<span class="header-section-number">9</span> Modules</h2>
+
+
+
+</section><div class="quarto-listing quarto-listing-container-table" id="listing-listing">
+<table class="quarto-listing-table table table-striped table-hover">
+<thead><tr>
+<th>
+Title
+</th>
+
+<th>
+Date
+</th>
+
+</tr></thead>
+<tbody class="list">
+<tr data-index="0" data-listing-date-sort="1672425000000" data-listing-file-modified-sort="1789189013415" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="1" data-listing-title-sort="<iconify-icon icon=&quot;bi:tools&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> Tools and Software" data-listing-filename-sort="listing.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+ if (href) { window.location=href ; return false; }">
+<td>
+<a href="../../../content/courses/Analytics/05-Tools/listing.html" class="title listing-title"><iconify-icon icon="bi:tools" width="1.2em" height="1.2em"></iconify-icon> Tools and Software</a>
+</td>
+<td>
+<span class="listing-date">Dec 31, 2022</span>
+</td>
+
+</tr>
+<tr data-index="1" data-listing-date-sort="1757269800000" data-listing-file-modified-sort="1789871569093" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="10" data-listing-title-sort="<iconify-icon icon=&quot;solar:case-bold&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> Studio Flow + Data Kits" data-listing-filename-sort="listing.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+ if (href) { window.location=href ; return false; }">
+<td>
+<a href="../../../content/courses/Analytics/500-DataKits/listing.html" class="title listing-title"><iconify-icon icon="solar:case-bold" width="1.2em" height="1.2em"></iconify-icon> Studio Flow + Data Kits</a>
+</td>
+<td>
+<span class="listing-date">Sep 8, 2025</span>
+</td>
+
+</tr>
+<tr data-index="2" data-listing-date-sort="1672425000000" data-listing-file-modified-sort="1792022333956" data-listing-date-modified-sort="1793557800000" data-listing-reading-time-sort="1" data-listing-word-count-sort="1" data-listing-title-sort="<iconify-icon icon=&quot;streamline-ultimate:task-finger-show&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> <iconify-icon icon=&quot;akar-icons:image&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon>  Data Visualization" data-listing-filename-sort="listing.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+ if (href) { window.location=href ; return false; }">
+<td>
+<a href="../../../content/courses/Analytics/10-Descriptive/listing.html" class="title listing-title"><iconify-icon icon="streamline-ultimate:task-finger-show" width="1.2em" height="1.2em"></iconify-icon><iconify-icon icon="akar-icons:image" width="1.2em" height="1.2em"></iconify-icon> Data Visualization</a>
+</td>
+<td>
+<span class="listing-date">Dec 31, 2022</span>
+</td>
+
+</tr>
+<tr data-index="3" data-listing-date-sort="1669746600000" data-listing-file-modified-sort="1780970198820" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="561" data-listing-title-sort="<iconify-icon icon=&quot;game-icons:sherlock-holmes&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> Statistical Inference" data-listing-filename-sort="listing.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+ if (href) { window.location=href ; return false; }">
+<td>
+<a href="../../../content/courses/Analytics/20-Inference/listing.html" class="title listing-title"><iconify-icon icon="game-icons:sherlock-holmes" width="1.2em" height="1.2em"></iconify-icon> Statistical Inference</a>
+</td>
+<td>
+<span class="listing-date">Nov 30, 2022</span>
+</td>
+
+</tr>
+<tr data-index="4" data-listing-date-sort="1681324200000" data-listing-file-modified-sort="1788617978299" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="42" data-listing-title-sort="<iconify-icon icon=&quot;file-icons:3d-model&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> Inferential Modelling" data-listing-filename-sort="listing.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+ if (href) { window.location=href ; return false; }">
+<td>
+<a href="../../../content/courses/Analytics/30-Modelling/listing.html" class="title listing-title"><iconify-icon icon="file-icons:3d-model" width="1.2em" height="1.2em"></iconify-icon> Inferential Modelling</a>
+</td>
+<td>
+<span class="listing-date">Apr 13, 2023</span>
+</td>
+
+</tr>
+<tr data-index="5" data-listing-date-sort="1644345000000" data-listing-file-modified-sort="1778051943843" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="12" data-listing-title-sort="<iconify-icon icon=&quot;uil:process&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> Workflow" data-listing-filename-sort="listing.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+ if (href) { window.location=href ; return false; }">
+<td>
+<a href="../../../content/courses/Analytics/40-Workflow/listing.html" class="title listing-title"><iconify-icon icon="uil:process" width="1.2em" height="1.2em"></iconify-icon> Workflow</a>
+</td>
+<td>
+<span class="listing-date">Feb 9, 2022</span>
+</td>
+
+</tr>
+<tr data-index="6" data-listing-date-sort="1753986600000" data-listing-file-modified-sort="1782525206041" data-listing-date-modified-sort="1793557800000" data-listing-reading-time-sort="1" data-listing-word-count-sort="3" data-listing-title-sort="<iconify-icon icon=&quot;streamline-emojis:man-artist-2&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> Artful Stuff in Data Viz" data-listing-filename-sort="listing.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+ if (href) { window.location=href ; return false; }">
+<td>
+<a href="../../../content/courses/Analytics/50-Arts/listing.html" class="title listing-title"><iconify-icon icon="streamline-emojis:man-artist-2" width="1.2em" height="1.2em"></iconify-icon> Artful Stuff in Data Viz</a>
+</td>
+<td>
+<span class="listing-date">Aug 1, 2025</span>
+</td>
+
+</tr>
+<tr data-index="7" data-listing-date-sort="1757269800000" data-listing-file-modified-sort="1792805400817" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="10" data-listing-title-sort="<iconify-icon icon=&quot;solar:case-bold&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> Hunches for Peasants" data-listing-filename-sort="listing.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+ if (href) { window.location=href ; return false; }">
+<td>
+<a href="../../../content/courses/Analytics/1000-Projects/listing.html" class="title listing-title"><iconify-icon icon="solar:case-bold" width="1.2em" height="1.2em"></iconify-icon> Hunches for Peasants</a>
+</td>
+<td>
+<span class="listing-date">Sep 8, 2025</span>
+</td>
+
+</tr>
+<tr data-index="8" data-listing-date-sort="1725215400000" data-listing-file-modified-sort="1792805609566" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="9" data-listing-title-sort="<iconify-icon icon=&quot;solar:case-bold&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> Case Studies" data-listing-filename-sort="listing.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+ if (href) { window.location=href ; return false; }">
+<td>
+<a href="../../../content/courses/Analytics/70-CaseStudies/listing.html" class="title listing-title"><iconify-icon icon="solar:case-bold" width="1.2em" height="1.2em"></iconify-icon> Case Studies</a>
+</td>
+<td>
+<span class="listing-date">Sep 2, 2024</span>
+</td>
+
+</tr>
+<tr data-index="9" data-listing-date-sort="1753036200000" data-listing-file-modified-sort="1778051944336" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="1" data-listing-title-sort="<iconify-icon icon=&quot;hugeicons:artificial-intelligence-01&quot; width=&quot;1.2em&quot; height=&quot;1.2em&quot;></iconify-icon> Using AI tools in R" data-listing-filename-sort="listing.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+ if (href) { window.location=href ; return false; }">
+<td>
+<a href="../../../content/courses/Analytics/60-AI-tools/listing.html" class="title listing-title"><iconify-icon icon="hugeicons:artificial-intelligence-01" width="1.2em" height="1.2em"></iconify-icon> Using AI tools in R</a>
+</td>
+<td>
+<span class="listing-date">Jul 21, 2025</span>
+</td>
+
+</tr>
+</tbody>
+</table>
+<div class="listing-no-matching d-none">No matching items</div>
+</div><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/madhatterguide\.netlify\.app");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><nav class="page-navigation column-body"><div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../../content/courses/Analytics/05-Tools/listing.html" class="pagination-link" aria-label="Tools">
+        <span class="nav-page-text">Tools</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>License: <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</a></p>
+</div>   
+    <div class="nav-footer-center">
+<p>Website made with ❤️ and <a href="https://quarto.org/">Quarto</a>, by Arvind V.</p>
+</div>
+    <div class="nav-footer-right">
+<p>Hosted by Netlify <a href="https://www.netlify.com"><iconify-icon inline="" icon="simple-icons:netlify" aria-label="Icon netlify from simple-icons Iconify.design set." title="Icon netlify from simple-icons Iconify.design set."></iconify-icon></a>.</p>
+</div>
+  </div>
+</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"right","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+<script src="../../../site_libs/quarto-html/zenscroll-min.js"></script>
+<script src="../../../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.js" defer="true"></script>
+</body></html>
