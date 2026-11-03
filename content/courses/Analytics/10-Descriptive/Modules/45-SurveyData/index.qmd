@@ -111,9 +111,9 @@ Are there any surprises, peasants of Gantiganahalli?
 #| message: false
 #| echo: false
 #| warning: false
-read_csv("../../../../../materials/Data/pronouns.csv") %>% 
-  filter(No == "3") %>% 
-  tt(theme = "striped") %>%  
+read_csv("../../../../../materials/Data/pronouns.csv") |> 
+  filter(No == "3") |> 
+  tt(theme = "striped") |>  
   style_tt(color = "black",fontsize = 0.75, line = "tblr",
     line_width = 0.4,
     line_color = "white")
@@ -133,18 +133,17 @@ where several respondents rate a product or a service on a scale of
 
 ![Likert Scale Questionnaire Samples](../../../../../materials/images/likert-scales.png){#fig-likert-scales}
 
-As seen, we can use Likert Scale based questionnaire for a variety of aspects in our survey instruments.
-
 
 ## {{< iconify fluent likert-16-regular >}} Plots for Survey Data
 
-How does this data look like, and how does one plot it? Let us consider a fictitious example, followed by a real world dataset.
+How does this data look like, and how does one plot it? Let us consider a fictitious example, followed by a real world dataset. We will then go back to a fictional `Design Research` situation and manufacture, munge, and plot a dataset. 
+
+### Dummy Dataset for Likert Plots
 
 ```{r}
-#| label: fig-likert-dummy
+#| label: likert-dummy-data
 #| warning: false
-#| eval: false
-#| echo: false
+#| code-fold: true
 #| 
 
 ## Use Dummy Data Creating from ggstats help vignette
@@ -189,12 +188,60 @@ df_dk <-
   ) |>
   mutate(across(everything(), ~ factor(.x, levels = likert_levels_dk)))
 
-## Now plot this:
-
-gglikert(df) + labs(title = "Demo Likert Plot", subtitle = "Made from ggstats help file")
-
+head(df_dk)
 
 ```
+
+Here `q1`, `q2`... are the questions in the survey. The data is in a *wide format*, where each column corresponds to a question, and each row corresponds to a respondent's answers to all the questions. The answers/responses are, of course, `categorical data`, and on a Likert scale, which is an `ordinal scale` that measures the *degree of agreement or disagreement with a statement or question*. We can plot the `counts` of responses for each question using a `Likert plot`.
+
+The `gglikert()` function from the `ggstats` package can be used to create such plots easily. Note however, that from a publication point of view, `gglikert()` imposes its own `theme` on the plot. But the `gglikert()` plot is exceptionally detailed and well-annotated, and very simple to use!!
+
+::: callout-note
+### `geom_likert()` also exists
+
+If we are finicky about themes, we can use `geom_likert()` to plot the data, and then apply our own `ggplot` theme to the plot. One task (at least ) that we have to perform is to pivot the data to long form first, into columns typically called `question` and `response`, and then use the `geom_likert()` function to plot the data. `gglikert()` performs this pivoting internally.[^7].
+
+We will dally with `geom_likert()` briefly, before setting firmly on `gglikert()`.
+
+:::
+
+
+### First Likert Plot
+
+```{r}
+#| label: fig-likert-dummy-data
+#| fig-cap: Likert Plots with Dummy Data 
+#| fig-subcap: 
+#|  - Plot with `geom_likert`
+#|  - Plot with `gglikert`
+#| warning: false
+#| code-fold: true
+#| layout-ncol: 2
+#| 
+# Plot with `geom_likert`
+df_dk |> pivot_longer(cols = everything(), names_to = "questions", values_to = "responses") |> 
+  mutate(questions = as_factor(questions), 
+         responses = as_factor(responses)) |> 
+  ggplot(aes(y = questions, fill = responses)) + 
+  geom_likert() +
+  labs(title = "Demo Likert Plot", 
+       subtitle = "Made from ggstats help file",
+       caption = "Using geom_likert")
+
+# Plot with `gglikert`
+df_dk |>
+  gglikert(sort = "ascending", width = 0.5, totals_size = 3,
+           add_labels = T, labels_size = 3,
+           reverse_likert = F) +
+  labs(title = "Demo Likert Plot", 
+       subtitle = "Made from ggstats help file",
+       caption = "Using gglikert") + 
+  geom_vline(xintercept = 0) + 
+  theme_madhatter()
+
+```
+
+Note the sorting and annotation of the bars in the `gglikert()` plot, @fig-likert-dummy-data-2. 
 
 ## {{< iconify grommet-icons test >}} Case Study-1: A fictitious app Survey dataset
 
@@ -214,12 +261,13 @@ where each questions is to be answered on a scale of : "always",
 "often", "sometimes","rarely", "never".
 :::
 
-Such data may look for example as follows:
+Such data may look for example as follows: Note how we set **Variable Levels** for each of the `[q1-q4]` variables: 
 
 ```{r}
 #| column: body-outset-right
 #| layout: [[55],[-5],[45]]
-#| echo: false
+#| code-fold: true
+#| 
 
 set.seed(42)
 score_labels = c("never","rarely", "often", "always") 
@@ -239,10 +287,10 @@ quickez_data <-
          q3 = mosaic::sample(score_labels, replace = TRUE, size = 200,
                              prob = c(0.2, 0.1, 0.1, 0.6)),
          q4 = mosaic::sample(score_labels, replace = TRUE, size = 200,
-                             prob = c(0.4, 0.2, 0.1, 0.3))) %>%
+                             prob = c(0.4, 0.2, 0.1, 0.3))) |>
   
 # Need to mutate before set_variable_level???Why??
-   mutate(across(everything(), ~ factor(.x, levels = score_labels))) %>% 
+   mutate(across(everything(), ~ factor(.x, levels = score_labels))) |> 
   
   # Set VARIABLE labels
   labelled::set_variable_labels(q1 = question_labels[1],
@@ -250,71 +298,42 @@ quickez_data <-
                                 q3 = question_labels[3],
                                 q4 = question_labels[4]) 
 
-quickez_data %>% head(10) %>% 
-  kbl(caption = "First 10 Responses", centering = TRUE) %>%
-  kable_classic_2(html_font = "Cambria", full_width = F) %>% 
+quickez_data |> head(10) |> 
+  kbl(caption = "First 10 Responses", centering = TRUE) |>
+  kable_classic_2(html_font = "Cambria", full_width = F) |> 
   kable_styling(bootstrap_options = c("striped", "hover", "responsive"))
 str(quickez_data)
 
 ```
 
-The columns here correspond to the 4 questions (q1-q4) and the rows
-contain the 200 responses, which have been coded as (1:4). Such data is
-also a form of *Categorical data* and we need to count and plot counts
-for each of the survey questions. Such a plot is called a **Likert
-plot** and it looks like this:
+The columns here correspond to the 4 questions `(q1-q4)` and the rows
+contain the 200 responses, which have been coded as `(1:4)`. Let's plot this now:
+
 
 ```{r}
-#| label: theme-diagnostic
-#| eval: false
-#| echo: false
-#| 
-exists("theme_madhatter")
-
-theme_get()$text$family
-theme_get()$geom$paper
-
-theme_set(theme_madhatter())
-
-theme_get()$text$family
-theme_get()$geom$paper
-
-```
-
-```{r}
-#| echo: false
 #| label: fig-QUICK_EZ-app
 #| fig-cap: "Likert Plot for the User Survey for QuickEZ"
-#| fig-align: "center"
-#| out-width: "75%"
+#| fig-alt: "Likert Plot for the User Survey for QuickEZ, using ggstats package"
+#| code-fold: true
 #| 
 
-
-p <- quickez_data %>%
+# Plot with `gglikert`
+quickez_data |>
   gglikert(sort = "ascending", width = 0.5, totals_size = 3,
            add_labels = T, labels_size = 3,
            reverse_likert = F) +
   labs(title = "QuickEZ App Survey Results") +
-  geom_vline(xintercept = 0)
-p + theme_madhatter()
-
-```
-```{r}
-#| label: gglikert-theme-check
-#| eval: false
-#| echo: false
-#| 
-p$theme
-packageVersion("ggstats")
-packageVersion("ggplot2")
+  geom_vline(xintercept = 0) + 
+  theme_madhatter()
 
 ```
 
-Based on this chart, since it looks like about 40% the survey
+Based on @fig-QUICK_EZ-app, it looks like about 40% the survey
 respondents have not heard of our app, we need more publicity, and many do not find it easy to use 😿, so we have serious re-design and user
 testing to do !! But at least those who have managed to get past the
 hurdles are stating they will continue to use the app, so it does the
 job, but we can make it easier to use.
+
 
 ## {{< iconify grommet-icons test >}} Case Study-2: EUROFAM Survey dataset
 
@@ -346,7 +365,7 @@ study**](https://doi.org/10.1093/geront/48.6.752) were:
 >     services/supports?
 
 We will select the variables from the `efc` data set that related to
-*coping* (on part of care-givers) and plot their responses after
+***coping*** (on part of care-givers) and plot their responses after
 inspecting them:
 
 ```{r}
@@ -360,12 +379,12 @@ glimpse(efc)
 #| layout-nrow: 2
 #| column: body-outset-right
 
-efc %>% 
-  select(dplyr::contains("cop")) %>% 
+efc |> 
+  select(dplyr::contains("cop")) |> 
   head(20) 
 ##
-efc %>% 
-  select(dplyr::contains("cop")) %>% 
+efc |> 
+  select(dplyr::contains("cop")) |> 
   str()
 
 ```
@@ -376,26 +395,24 @@ The `cop`ing related variables have responses on the Likert Scale
 labels are actually ( and perhaps usually ) the *questions* in the
 survey.
 
-We can plot this data using the `gglikert` function[^5] from package `ggstats`:
+We easily can plot this data using the `gglikert` function[^5] from package `ggstats`:
 
 ```{r}
-#| echo: false
 #| label: fig-efc-survey
 #| fig-cap: "Likert Plot for the User Survey for EUROFAM Healthcare Dataset"
-#| fig-align: "center"
-#| out-width: "75%"
+#| code-fold: true
 #| 
 
-efc %>% 
-  select(dplyr::contains("cop")) %>% 
+efc |> 
+  select(dplyr::contains("cop")) |> 
   gglikert(labels_size = 3, width = 0.75) +
   labs(title = "Caregiver Survey from EUROFAM") + 
   scale_fill_brewer(name = "Responses",
     labels = c("never", "sometimes", "often", "always"), 
     palette = "Set3", direction = -1) +
     geom_vline(xintercept = 0) + 
-    theme_madhatter() +
-    theme(legend.position = "bottom") 
+    theme(legend.position = "bottom")  + 
+    theme_madhatter()
 
 ```
 
@@ -406,7 +423,7 @@ that policy and publicity related efforts may be required.
 
 ## {{< iconify fluent-emoji label >}} Labelled Data
 
-Note how the y-axis has been populated with **Survey Questions**: this
+Note how in @fig-QUICK_EZ-app the y-axis has been populated with **Survey Questions**: this
 is an example of a *labelled dataset*, where not only do the variables
 have *names* i.e. column names, but also have longish text **labels**
 that add information to the data variables. The **data values** ( i.e
@@ -432,17 +449,15 @@ with info function.
 :::
 
 Let us manually create one such dataset, since this is a common-enough
-situation[^2] that we have survey data and then have to label the
-variables and the values before plotting. We will use the R package `labelled` to label our data.[^1]. 
+situation[^2] that [we have survey data and then have to label the
+variables and the values before plotting]{style="background-color:yellow;"}. We will use the R package `labelled` to label our data.[^1]. 
 
 It is also possible to label the tibble, the columns, and the values in similar fashion using the `sjlabelled` package[^3] and the `labelr` package[^4].
 
 ```{r}
-#| echo: false
-#| label: fig-R-usage-survey
-#| fig-cap: "Likert Plot for Do You Use R? Survey"
-#| fig-align: "center"
-#| out-width: "75%"
+#| label: tbl-R-usage-survey
+#| tbl-cap: "Likert Plot for Do You Use R? Survey"
+#| code-fold: true
 #| 
 set.seed(427)
 
@@ -469,10 +484,10 @@ my_survey_data <-
          q4 = mosaic::sample(value_labels, replace = TRUE, size = 200,
                              prob = c(0.4, 0.2, 0.1, 0.3)),
          q5 = mosaic::sample(value_labels, replace = TRUE, size = 200,
-                             prob = c(0.1, 0.2, 0.5, 0.2))) %>%
+                             prob = c(0.1, 0.2, 0.5, 0.2))) |>
   
   # Set VARIABLE labels
-  labelled::set_variable_labels(.data = ., 
+  labelled::set_variable_labels(.data = _, 
                                 q1 = variable_labels[1],
                                 q2 = variable_labels[2],
                                 q3 = variable_labels[3],
@@ -482,9 +497,19 @@ my_survey_data <-
 ###
 head(my_survey_data, 6)
 ###
-str(my_survey_data)
-##
-my_survey_data %>% 
+labelled::look_for(my_survey_data)
+
+```
+Note how `labelled::look_for` is rather like a `skimr::skim` function, but it also shows the variable labels and value labels for each variable in the dataset. We will need this shortly. 
+
+Let us plot the Likert Plot:
+
+```{r}
+#| label: fig-R-usage-survey
+#| fig-cap: "Likert Plot for Do You Use R? Survey"
+#| code-fold: true
+#| 
+my_survey_data |> 
   gglikert(labels_size = 3, width = 0.5) +
   labs(title = "Do you use R? A Survey",
        subtitle = "Creating and Using Labelled Data",
@@ -494,8 +519,8 @@ my_survey_data %>%
     labels = c("never", "sometimes", "often", "always"),
       ) +
   geom_vline(xintercept = 0) + 
-  theme_madhatter() + 
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom") + 
+  theme_madhatter() 
 
 ```
 
@@ -513,7 +538,7 @@ items. An example from the field of medical diagnosis is the opinions of
 two specialists on a common set of patients. However, that is for a more
 advanced course!
 
-[^1]: Introduction to `labelled`:<https://larmarange.github.io/labelled/articles/intro_labelled.html#using-labelled-with-dplyrmagrittr>
+[^1]: Introduction to `labelled`: <https://larmarange.github.io/labelled/articles/intro_labelled.html#using-labelled-with-dplyrmagrittr>
 
 [^2]: Piping Hot Data: Leveraging Labelled Data in R,
     <https://www.pipinghotdata.com/posts/2020-12-23-leveraging-labelled-data-in-r/>
@@ -526,6 +551,8 @@ advanced course!
 [^5]: Using the `ggstats` package: There seems to be an internal ggplot theme that is forced by `ggstats::gglikert`. This prevents my global/site-wide `_setup.qmd` from kicking in and I have to apply it locally here. 
 
 [^6]: Bangdiwala, S.I., Shankar, V. The agreement chart. BMC Med Res Methodol 13, 97 (2013). https://doi.org/10.1186/1471-2288-13-97
+
+[^7]: Joseph Larmarange Hibon, Private Communication. 2 November 2026.
 
 ## {{< iconify mingcute thought-line >}} Wait, But Why?
 
@@ -584,7 +611,7 @@ cite_packages(
   output = "table",
   out.dir = ".",
   out.format = "html",
-  pkgs = c("ggstats", "labelled", "sjPlot")) %>%
+  pkgs = c("ggstats", "labelled", "sjPlot")) |>
   knitr::kable(format = "simple")
 
 ```
